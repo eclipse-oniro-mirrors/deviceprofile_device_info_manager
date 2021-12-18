@@ -68,6 +68,8 @@ private:
     void RegisterCallbacks();
     void FlushProfileItems();
     std::string GenerateKey(const std::string& udid, const std::string& key, KeyType keyType);
+
+    void OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo);
     bool CheckSyncOption(const SyncOptions& syncOptions);
     int32_t NotifySyncStart(const sptr<IRemoteObject>& profileEventNotifier);
     void SetServiceType(const std::string& udid, const std::string& serviceId, ServiceCharacteristicProfile& profile);

@@ -94,6 +94,7 @@ void DeviceManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
     auto onlineNotifyTask = [this, deviceInfo = deviceInfo]() {
         HILOGI("online networkId = %{public}s",
             DeviceProfileUtils::AnonymizeDeviceId(deviceInfo->GetDeviceId()).c_str());
+        DeviceProfileStorageManager::GetInstance().OnNodeOnline(deviceInfo);
         AddDeviceIds(deviceInfo->GetDeviceId());
         std::string deviceId = deviceInfo->GetDeviceId();
         std::lock_guard<std::mutex> autoLock(deviceLock_);

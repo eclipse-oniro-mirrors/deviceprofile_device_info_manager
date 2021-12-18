@@ -485,5 +485,15 @@ int32_t DeviceProfileStorageManager::UnRegisterSyncCallback()
     kvStoreSyncCallback_ = nullptr;
     return onlineSyncTbl_->UnRegisterSyncCallback();
 }
+
+void DeviceProfileStorageManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
+{
+    HILOGI("called");
+    std::vector<std::string> onlineDevice = { deviceInfo->GetDeviceId() };
+    int32_t errCode = onlineSyncTbl_->SyncDeviceProfile(onlineDevice, SyncMode::PUSH);
+    if (errCode != ERR_OK) {
+        HILOGE("online sync errCode = %{public}d", errCode);
+    }
+}
 } // namespace DeviceProfile
 } // namespace OHOS
