@@ -41,6 +41,9 @@ public:
     int32_t UnsubscribeProfileEvents(const std::list<ProfileEvent>& profileEvents,
         const sptr<IRemoteObject>& profileEventNotifier,
         std::list<ProfileEvent>& failedEvents) override;
+    int32_t SyncDeviceProfile(const SyncOptions& syncOptions,
+        const sptr<IRemoteObject>& profileEventNotifier) override;
+
 protected:
     void OnStart() override;
     void OnStop() override;

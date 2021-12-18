@@ -92,6 +92,13 @@ int32_t DistributedDeviceProfileService::UnsubscribeProfileEvents(const std::lis
     return SubscribeManager::GetInstance().UnsubscribeProfileEvents(profileEvents,
         profileEventNotifier, failedEvents);
 }
+
+int32_t DistributedDeviceProfileService::SyncDeviceProfile(const SyncOptions& syncOptions,
+    const sptr<IRemoteObject>& profileEventNotifier)
+{
+    return DeviceProfileStorageManager::GetInstance().SyncDeviceProfile(syncOptions, profileEventNotifier);
+}
+
 void DistributedDeviceProfileService::OnStart()
 {
     HILOGI("called");

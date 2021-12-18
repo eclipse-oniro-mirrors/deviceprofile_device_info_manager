@@ -27,6 +27,8 @@
 #include "single_instance.h"
 
 #include "device_manager.h"
+#include "sync_options.h"
+
 #include "nlohmann/json.hpp"
 
 namespace OHOS {
@@ -50,17 +52,24 @@ public:
     int32_t DeleteDeviceProfile(const std::string& serviceId);
     int32_t GetDeviceProfile(const std::string& udid, const std::string& serviceId,
         ServiceCharacteristicProfile& profile);
+    int32_t SyncDeviceProfile(const SyncOptions& syncOptions,
+        const sptr<IRemoteObject>& profileEventNotifier);
 
     int32_t SubscribeKvStore(const std::shared_ptr<DistributedKv::KvStoreObserver>& observer);
     int32_t UnSubscribeKvStore(const std::shared_ptr<DistributedKv::KvStoreObserver>& observer);
     int32_t RegisterSyncCallback(const std::shared_ptr<DistributedKv::KvStoreSyncCallback>& sycnCb);
     int32_t UnRegisterSyncCallback();
+    void NotifySyncCompleted();
+    void NotifySubscriberDied(const sptr<IRemoteObject>& profileEventNotifier);
+
 private:
     bool WaitKvDataService();
     void RestoreServiceItemLocked(const std::string& value);
     void RegisterCallbacks();
     void FlushProfileItems();
     std::string GenerateKey(const std::string& udid, const std::string& key, KeyType keyType);
+    bool CheckSyncOption(const SyncOptions& syncOptions);
+    int32_t NotifySyncStart(const sptr<IRemoteObject>& profileEventNotifier);
     void SetServiceType(const std::string& udid, const std::string& serviceId, ServiceCharacteristicProfile& profile);
 
 private:
@@ -76,6 +85,9 @@ private:
     std::atomic<bool> inited_ {false};
     std::shared_ptr<DistributedKv::KvStoreObserver> kvStoreObserver_;
     std::shared_ptr<DistributedKv::KvStoreSyncCallback> kvStoreSyncCallback_;
+    std::mutex profileSyncLock_;
+    sptr<IRemoteObject> syncEventNotifier_;
+    std::atomic<bool> isSync_ {false};
 };
 } // namespace DeviceProfile
 } // namespace OHOS

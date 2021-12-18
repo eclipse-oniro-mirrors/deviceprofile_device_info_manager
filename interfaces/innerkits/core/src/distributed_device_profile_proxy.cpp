@@ -135,5 +135,25 @@ int32_t DistributedDeviceProfileProxy::UnsubscribeProfileEvents(
     }
     return errCode;
 }
+
+int32_t DistributedDeviceProfileProxy::SyncDeviceProfile(const SyncOptions& syncOptions,
+    const sptr<IRemoteObject>& profileEventNotifier)
+{
+    sptr<IRemoteObject> remote = Remote();
+    MessageParcel data;
+    if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) {
+        HILOGE("write inteface token failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+
+    if (!syncOptions.Marshalling(data)) {
+        HILOGE("marshall option failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+
+    PARCEL_WRITE_HELPER(data, RemoteObject, profileEventNotifier);
+    MessageParcel reply;
+    PARCEL_TRANSACT_SYNC_RET_INT(remote, SYNC_DEVICE_PROFILE, data, reply);
+}
 } // namespace DeviceProfile
 } // namespace OHOS

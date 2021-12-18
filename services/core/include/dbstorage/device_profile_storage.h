@@ -45,6 +45,8 @@ public:
     virtual int32_t PutDeviceProfile(const std::string& key, const std::string& value);
     virtual int32_t PutDeviceProfileBatch(const std::vector<std::string>& keys,
         const std::vector<std::string>& values);
+    virtual int32_t SyncDeviceProfile(const std::vector<std::string>& deviceIdList,
+        DistributedKv::SyncMode syncMode);
 
     void SetOptions(const DistributedKv::Options& options);
     StorageInitStatus GetInitStatus();
@@ -59,6 +61,7 @@ private:
     bool InitKvStore();
     DistributedKv::Status GetKvStore();
     void DeleteKvStore();
+    void SubscribeDeviceProfileKvStore();
 
 private:
     DistributedKv::Options options_;

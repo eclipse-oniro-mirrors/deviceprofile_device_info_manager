@@ -191,6 +191,7 @@ bool SubscribeManager::CheckSubsOfUid(int32_t uid)
 void SubscribeManager::OnSubscriberDied(const sptr<IRemoteObject>& profileEventNotifier)
 {
     HILOGI("called");
+    DeviceProfileStorageManager::GetInstance().NotifySubscriberDied(profileEventNotifier);
     std::lock_guard<std::mutex> autoLock(handlerLock_);
     auto iter = notifiersMap_.find(profileEventNotifier);
     if (iter != notifiersMap_.end()) {

@@ -27,6 +27,7 @@ public:
     explicit DistributedDeviceProfileProxy(const sptr<IRemoteObject>& impl)
         : IRemoteProxy<IDistributedDeviceProfile>(impl) {}
     ~DistributedDeviceProfileProxy() = default;
+
     int32_t PutDeviceProfile(const ServiceCharacteristicProfile& profile) override;
     int32_t GetDeviceProfile(const std::string& udid, const std::string& serviceId,
         ServiceCharacteristicProfile& profile) override;
@@ -37,6 +38,8 @@ public:
     int32_t UnsubscribeProfileEvents(const std::list<ProfileEvent>& profileEvents,
         const sptr<IRemoteObject>& profileEventNotifier,
         std::list<ProfileEvent>& failedEvents) override;
+    int32_t SyncDeviceProfile(const SyncOptions& syncOptions,
+        const sptr<IRemoteObject>& profileEventNotifier) override;
 
 private:
     static inline BrokerDelegator<DistributedDeviceProfileProxy> delegator_;

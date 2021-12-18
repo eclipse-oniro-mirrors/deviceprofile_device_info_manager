@@ -23,6 +23,7 @@
 #include "iprofile_event_notifier.h"
 #include "profile_event.h"
 #include "subscribe_info.h"
+#include "sync_options.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -34,6 +35,7 @@ public:
         DELETE_DEVICE_PROFILE = 3,
         SUBSCRIBE_PROFILE_EVENT = 4,
         UNSUBSCRIBE_PROFILE_EVENT = 5,
+        SYNC_DEVICE_PROFILE = 6
     };
 
     virtual int32_t PutDeviceProfile(const ServiceCharacteristicProfile& profile) = 0;
@@ -46,6 +48,9 @@ public:
     virtual int32_t UnsubscribeProfileEvents(const std::list<ProfileEvent>& profileEvents,
         const sptr<IRemoteObject>& profileEventNotifier,
         std::list<ProfileEvent>& failedEvents) = 0;
+    virtual int32_t SyncDeviceProfile(const SyncOptions& syncOptions,
+        const sptr<IRemoteObject>& profileEventNotifier) = 0;
+
     DECLARE_INTERFACE_DESCRIPTOR(u"OHOS.DeviceProfile.IDistributedDeviceProfile");
 };
 } // namespace DeviceProfile

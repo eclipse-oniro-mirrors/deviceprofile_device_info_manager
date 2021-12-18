@@ -45,6 +45,8 @@ public:
     bool ConnectSoftbus();
     bool TransformDeviceId(const std::string& fromDeviceId, std::string& toDeviceId,
         DeviceIdType toType);
+    void GetDeviceIdList(std::list<std::string>& deviceIdList);
+    void GetDeviceList(std::list<std::shared_ptr<DeviceInfo>>& deviceList);
 
 private:
     static void OnNodeOnlineAdapter(NodeBasicInfo* info);
@@ -60,6 +62,7 @@ private:
     void AddDeviceIds(const std::string& networkId);
     void RemoveDeviceIds(const std::string& networkId);
     void RecoverDevicesIfNeeded();
+
 private:
     INodeStateCb nodeStateCb_;
     std::mutex deviceLock_;

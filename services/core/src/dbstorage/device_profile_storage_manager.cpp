@@ -260,6 +260,130 @@ int32_t DeviceProfileStorageManager::DeleteDeviceProfile(const std::string& serv
     }
     return errCode;
 }
+
+int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOptions,
+    const sptr<IRemoteObject>& profileEventNotifier)
+{
+    if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
+        HILOGE("kvstore init failed");
+        return ERR_DP_INIT_DB_FAILED;
+    }
+
+    if (!CheckSyncOption(syncOptions)) {
+        HILOGW("device list has offline device");
+        return ERR_DP_INVALID_PARAMS;
+    }
+
+    int32_t result = NotifySyncStart(profileEventNotifier);
+    if (result != ERR_OK) {
+        return result;
+    }
+
+    auto syncTask = [syncOptions, this]() {
+        HILOGI("start sync");
+        if (onlineSyncTbl_ == nullptr) {
+            HILOGI("param init error");
+            NotifySyncCompleted();
+            return;
+        }
+        auto devicesList = syncOptions.GetDeviceList();
+        if (devicesList.empty()) {
+            DeviceManager::GetInstance().GetDeviceIdList(devicesList);
+        }
+        std::vector<std::string> devicesVector(std::vector<std::string> { devicesList.begin(), devicesList.end() });
+        int32_t result = onlineSyncTbl_->SyncDeviceProfile(devicesVector, syncOptions.GetSyncMode());
+        if (result != ERR_OK) {
+            HILOGE("sync failed result : %{public}d", result);
+            NotifySyncCompleted();
+            return;
+        }
+    };
+    if (!storageHandler_->PostTask(syncTask)) {
+        HILOGE("post task failed");
+        NotifySyncCompleted();
+        return ERR_DP_POST_TASK_FAILED;
+    }
+    return ERR_OK;
+}
+
+int32_t DeviceProfileStorageManager::NotifySyncStart(const sptr<IRemoteObject>& profileEventNotifier)
+{
+    {
+        std::lock_guard<std::mutex> autoLock(profileSyncLock_);
+        if (isSync_) {
+            HILOGW("sync busy");
+            return ERR_DP_DEVICE_SYNC_BUSY;
+        }
+        isSync_ = true;
+        syncEventNotifier_ = profileEventNotifier;
+    }
+
+    SubscribeInfo subscribeInfo;
+    subscribeInfo.profileEvent = ProfileEvent::EVENT_SYNC_COMPLETED;
+    std::list<SubscribeInfo> subscribeInfos;
+    subscribeInfos.emplace_back(subscribeInfo);
+    std::list<ProfileEvent> failedEvents;
+    if (SubscribeManager::GetInstance().SubscribeProfileEvents(
+        subscribeInfos, profileEventNotifier, failedEvents) != ERR_OK) {
+        HILOGE("subscribe sync event failed");
+        std::lock_guard<std::mutex> autoLock(profileSyncLock_);
+        isSync_ = false;
+        syncEventNotifier_ = nullptr;
+        return ERR_DP_SUBSCRIBE_FAILED;
+    }
+    return ERR_OK;
+}
+
+void DeviceProfileStorageManager::NotifySyncCompleted()
+{
+    HILOGI("called");
+    std::list<ProfileEvent> profileEvents;
+    profileEvents.emplace_back(ProfileEvent::EVENT_SYNC_COMPLETED);
+    std::list<ProfileEvent> failedEvents;
+    std::lock_guard<std::mutex> autoLock(profileSyncLock_);
+    int32_t ret = SubscribeManager::GetInstance().UnsubscribeProfileEvents(
+        profileEvents, syncEventNotifier_, failedEvents);
+    if (ret != ERR_OK) {
+        HILOGW("unsubscribe sync event failed");
+    }
+
+    isSync_ = false;
+    syncEventNotifier_ = nullptr;
+}
+
+void DeviceProfileStorageManager::NotifySubscriberDied(const sptr<IRemoteObject>& profileEventNotifier)
+{
+    HILOGI("called");
+    std::lock_guard<std::mutex> autoLock(profileSyncLock_);
+    if (profileEventNotifier != syncEventNotifier_) {
+        return;
+    }
+
+    isSync_ = false;
+    syncEventNotifier_ = nullptr;
+}
+
+bool DeviceProfileStorageManager::CheckSyncOption(const SyncOptions& syncOptions)
+{
+    std::list<std::shared_ptr<DeviceInfo>> onlineDevices;
+    DeviceManager::GetInstance().GetDeviceList(onlineDevices);
+    std::list<std::string> onlineDeviceIds;
+    for (const auto& onlineDevice : onlineDevices) {
+        onlineDeviceIds.emplace_back(onlineDevice->GetDeviceId());
+    }
+
+    // check whether deviceId is online
+    auto syncDeviceIds = syncOptions.GetDeviceList();
+    for (const auto& syncDeviceId : syncDeviceIds) {
+        auto iter = find(onlineDeviceIds.begin(), onlineDeviceIds.end(), syncDeviceId);
+        if (iter == onlineDeviceIds.end()) {
+            HILOGE("deviceId: %{public}s is not online", DeviceProfileUtils::AnonymizeDeviceId(syncDeviceId).c_str());
+            return false;
+        }
+    }
+    return true;
+}
+
 void DeviceProfileStorageManager::RestoreServiceItemLocked(const std::string& value)
 {
     auto restoreItems = nlohmann::json::parse(value, nullptr, false);

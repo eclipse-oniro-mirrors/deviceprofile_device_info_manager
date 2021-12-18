@@ -61,6 +61,7 @@ void ProfileSyncHandler::NotifySyncCompleted(const SyncResult& syncResults)
             profileEventNotifier->OnSyncCompleted(syncResults);
         }
     }
+    DeviceProfileStorageManager::GetInstance().NotifySyncCompleted();
 }
 
 int32_t ProfileSyncHandler::Register()

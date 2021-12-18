@@ -244,5 +244,19 @@ int32_t DeviceProfileStorage::DeleteDeviceProfile(const std::string& key)
     }
     return static_cast<int32_t>(status);
 }
+
+int32_t DeviceProfileStorage::SyncDeviceProfile(const std::vector<std::string>& deviceIdList,
+    DistributedKv::SyncMode syncMode)
+{
+    std::unique_lock<std::shared_mutex> writeLock(storageLock_);
+    if (kvStorePtr_ == nullptr) {
+        return ERR_DP_INVALID_PARAMS;
+    }
+    Status status = kvStorePtr_->Sync(deviceIdList, syncMode);
+    if (status != Status::SUCCESS) {
+        HILOGE("sync failed, error = %{public}d", status);
+    }
+    return static_cast<int32_t>(status);
+}
 } // namespace DeviceProfile
 } // namespace OHOS

@@ -304,5 +304,23 @@ bool DeviceManager::TransformDeviceId(const std::string& fromDeviceId,
     }
     return false;
 }
+
+void DeviceManager::GetDeviceIdList(std::list<std::string>& deviceIdList)
+{
+    deviceIdList.clear();
+    std::lock_guard<std::mutex> autoLock(deviceLock_);
+    for (const auto& [_, deviceInfo] : remoteDeviceInfoMap_) {
+        deviceIdList.emplace_back(deviceInfo->GetDeviceId());
+    }
+}
+
+void DeviceManager::GetDeviceList(std::list<std::shared_ptr<DeviceInfo>>& deviceList)
+{
+    deviceList.clear();
+    std::lock_guard<std::mutex> autoLock(deviceLock_);
+    for (const auto& [_, deviceInfo] : remoteDeviceInfoMap_) {
+        deviceList.emplace_back(deviceInfo);
+    }
+}
 } // namespace DeviceProfile
 } // namespace OHOS

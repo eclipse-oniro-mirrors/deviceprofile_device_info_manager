@@ -37,6 +37,7 @@ DistributedDeviceProfileStub::DistributedDeviceProfileStub()
     funcsMap_[GET_DEVICE_PROFILE] = &DistributedDeviceProfileStub::GetDeviceProfileInner;
     funcsMap_[SUBSCRIBE_PROFILE_EVENT] = &DistributedDeviceProfileStub::SubscribeProfileEventInner;
     funcsMap_[UNSUBSCRIBE_PROFILE_EVENT] = &DistributedDeviceProfileStub::UnsubscribeProfileEventInner;
+    funcsMap_[SYNC_DEVICE_PROFILE] = &DistributedDeviceProfileStub::SyncDeviceProfileInner;
 }
 
 bool DistributedDeviceProfileStub::EnforceInterfaceToken(MessageParcel& data)
@@ -63,6 +64,7 @@ int32_t DistributedDeviceProfileStub::OnRemoteRequest(uint32_t code, MessageParc
     HILOGW("unknown request code, please check");
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
+
 int32_t DistributedDeviceProfileStub::PutDeviceProfileInner(MessageParcel& data, MessageParcel& reply)
 {
     HILOGI("called");
@@ -152,6 +154,18 @@ int32_t DistributedDeviceProfileStub::UnsubscribeProfileEventInner(MessageParcel
         }
     }
     return errCode;
+}
+
+int32_t DistributedDeviceProfileStub::SyncDeviceProfileInner(MessageParcel& data, MessageParcel& reply)
+{
+    SyncOptions syncOption;
+    if (!syncOption.Unmarshalling(data)) {
+        HILOGD("unmarshalling failed");
+        return ERR_NULL_OBJECT;
+    }
+
+    sptr<IRemoteObject> eventNotifier = data.ReadRemoteObject();
+    return SyncDeviceProfile(syncOption, eventNotifier);
 }
 } // namespace DeviceProfile
 } // namespace OHOS

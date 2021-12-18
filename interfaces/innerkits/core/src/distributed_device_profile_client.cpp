@@ -37,6 +37,7 @@ constexpr int32_t RETRY_TIMES_GET_SERVICE = 5;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileClient);
+
 int32_t DistributedDeviceProfileClient::PutDeviceProfile(const ServiceCharacteristicProfile& profile)
 {
     if (CheckProfileInvalidity(profile)) {
@@ -183,6 +184,20 @@ int32_t DistributedDeviceProfileClient::UnsubscribeProfileEvents(const std::list
     }
     return errCode;
 }
+
+int32_t DistributedDeviceProfileClient::SyncDeviceProfile(const SyncOptions& syncOptions,
+    const std::shared_ptr<IProfileEventCallback>& syncCb)
+{
+    auto dps = GetDeviceProfileService();
+    if (dps == nullptr) {
+        return ERR_DP_GET_SERVICE_FAILED;
+    }
+
+    sptr<IRemoteObject> notifier =
+        sptr<ProfileEventNotifierStub>(new (std::nothrow) ProfileEventNotifierStub(syncCb));
+    return dps->SyncDeviceProfile(syncOptions, notifier);
+}
+
 sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfileService()
 {
     std::lock_guard<std::mutex> lock(serviceLock_);

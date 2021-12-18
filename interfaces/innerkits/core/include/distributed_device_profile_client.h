@@ -44,6 +44,9 @@ public:
     int32_t UnsubscribeProfileEvents(const std::list<ProfileEvent>& profileEvents,
         const std::shared_ptr<IProfileEventCallback>& eventCb,
         std::list<ProfileEvent>& failedEvents);
+    int32_t SyncDeviceProfile(const SyncOptions& syncOptions,
+        const std::shared_ptr<IProfileEventCallback>& syncCb);
+
 private:
     class DeviceProfileDeathRecipient : public IRemoteObject::DeathRecipient {
     public:
