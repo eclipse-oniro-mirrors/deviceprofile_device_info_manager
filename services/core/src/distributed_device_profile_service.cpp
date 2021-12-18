@@ -15,6 +15,7 @@
 
 #include "distributed_device_profile_service.h"
 
+#include "content_sensor_manager.h"
 #include "device_manager.h"
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
@@ -45,6 +46,10 @@ bool DistributedDeviceProfileService::Init()
     }
     if (!DeviceProfileStorageManager::GetInstance().Init()) {
         HILOGE("DeviceProfileStorageManager init failed");
+        return false;
+    }
+    if (!ContentSensorManager::GetInstance().Init()) {
+        HILOGE("ContentSensorManager init failed");
         return false;
     }
     if (!SubscribeManager::GetInstance().Init()) {

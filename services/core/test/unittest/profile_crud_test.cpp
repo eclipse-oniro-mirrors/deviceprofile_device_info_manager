@@ -197,6 +197,34 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_002, TestSize.Level1)
 }
 
 /**
+ * @tc.name: CollectDeviceProfile_001
+ * @tc.desc: collect system profile infomation
+ * @tc.type: FUNC
+ */
+HWTEST_F(ProfileCrudTest, CollectDeviceProfile_001, TestSize.Level1)
+{
+    ServiceCharacteristicProfile profile;
+    DistributedDeviceProfileClient::GetInstance().GetDeviceProfile("", "system", profile);
+    std::string jsonData = profile.GetCharacteristicProfileJson();
+    auto json = nlohmann::json::parse(jsonData);
+    EXPECT_EQ(json["type"], 11);
+}
+
+/**
+ * @tc.name: CollectDeviceProfile_002
+ * @tc.desc: collect device profile infomation
+ * @tc.type: FUNC
+ */
+HWTEST_F(ProfileCrudTest, CollectDeviceProfile_002, TestSize.Level1)
+{
+    ServiceCharacteristicProfile profile;
+    DistributedDeviceProfileClient::GetInstance().GetDeviceProfile("", "device", profile);
+    std::string jsonData = profile.GetCharacteristicProfileJson();
+    auto json = nlohmann::json::parse(jsonData);
+    EXPECT_TRUE(!jsonData.empty());
+}
+
+/**
  * @tc.name: DeleteDeviceProfile_001
  * @tc.desc: delete device profile
  * @tc.type: FUNC
