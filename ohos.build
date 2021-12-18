@@ -1,0 +1,27 @@
+{
+    "parts": {
+        "device_profile_core": {
+            "variants": ["phone", "wearable"],
+            "inner_kits": [
+                {
+                    "header": {
+                        "header_base": "//foundation/deviceprofile/device_profile_core/interfaces/innerkits/core/include",
+                        "header_files": [
+                            "distributed_device_profile_client.h",
+                            "distributed_device_profile_proxy.h",
+                            "idistributed_device_profile.h"
+
+                        ]
+                    },
+                    "name": "//foundation/deviceprofile/device_profile_core/interfaces/innerkits/core:distributed_device_profile_client"
+                }
+            ],
+            "module_list": [
+                "//foundation/deviceprofile/device_profile_core/sa_profile:dps_sa_profile",
+                "//foundation/deviceprofile/device_profile_core/services/core:distributed_device_profile"
+            ],
+            "system_kits": []
+        }
+    },
+    "subsystem": "deviceprofile"
+}
