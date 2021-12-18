@@ -49,7 +49,8 @@ int32_t ProfileEventNotifierStub::OnRemoteRequest(uint32_t code, MessageParcel& 
 
     auto iter = handlersMap_.find(code);
     if (iter != handlersMap_.end()) {
-        if (auto handler = iter->second; handler != nullptr) {
+        auto handler = iter->second;
+        if (handler != nullptr) {
             return (this->*handler)(data, reply);
         }
     }

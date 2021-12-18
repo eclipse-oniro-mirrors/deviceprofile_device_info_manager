@@ -38,7 +38,8 @@ bool SubscribeInfoChecker::Check(const std::list<SubscribeInfo>& subscribeInfos)
         auto profileEvent = subscribeInfo.profileEvent;
         auto iter = checkersMap_.find(profileEvent);
         if (iter != checkersMap_.end()) {
-            if (auto func = iter->second; func != nullptr) {
+            auto func = iter->second;
+            if (func != nullptr) {
                 return (this->*func)(subscribeInfo);
             }
         }
