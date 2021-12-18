@@ -195,5 +195,38 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_002, TestSize.Level1)
     std::string jsonData = profile.GetCharacteristicProfileJson();
     EXPECT_TRUE(jsonData.empty());
 }
+
+/**
+ * @tc.name: DeleteDeviceProfile_001
+ * @tc.desc: delete device profile
+ * @tc.type: FUNC
+ */
+HWTEST_F(ProfileCrudTest, DeleteDeviceProfile_001, TestSize.Level1)
+{
+    auto dps = DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    if (dps == nullptr) {
+        DTEST_LOG << "device profile service is nullptr" << std::endl;
+        return;
+    }
+
+    ServiceCharacteristicProfile profilePut;
+    profilePut.SetServiceId("fakeSystem");
+    profilePut.SetServiceType("fakeSystem");
+    nlohmann::json j;
+    j["harmonyVersion"] = "2.2.0";
+    profilePut.SetCharacteristicProfileJson(j.dump());
+    int32_t result = DistributedDeviceProfileClient::GetInstance().PutDeviceProfile(profilePut);
+    EXPECT_TRUE(result == ERR_OK);
+    result = DistributedDeviceProfileClient::GetInstance().DeleteDeviceProfile("fakeSystem");
+    EXPECT_TRUE(result == ERR_OK);
+
+    ServiceCharacteristicProfile profileGet;
+    DistributedDeviceProfileClient::GetInstance().GetDeviceProfile("", "fakeSystem", profileGet);
+    auto profileStr = profileGet.GetCharacteristicProfileJson();
+    auto profileJson = nlohmann::json::parse(profileStr, nullptr, false);
+    if (!profileJson.is_discarded()) {
+        EXPECT_TRUE(!profileJson.empty());
+    }
+}
 }
 }

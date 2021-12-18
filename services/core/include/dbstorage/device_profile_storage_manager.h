@@ -45,6 +45,7 @@ public:
     void OnKvStoreInitDone();
 
     int32_t PutDeviceProfile(const ServiceCharacteristicProfile& profile);
+    int32_t DeleteDeviceProfile(const std::string& serviceId);
     int32_t GetDeviceProfile(const std::string& udid, const std::string& serviceId,
         ServiceCharacteristicProfile& profile);
 

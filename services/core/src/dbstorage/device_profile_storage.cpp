@@ -185,5 +185,19 @@ int32_t DeviceProfileStorage::PutDeviceProfileBatch(const std::vector<std::strin
     }
     return static_cast<int32_t>(status);
 }
+
+int32_t DeviceProfileStorage::DeleteDeviceProfile(const std::string& key)
+{
+    std::unique_lock<std::shared_mutex> writeLock(storageLock_);
+    if (kvStorePtr_ == nullptr) {
+        return ERR_DP_INVALID_PARAMS;
+    }
+    Key k(key);
+    Status status = kvStorePtr_->Delete(k);
+    if (status != Status::SUCCESS) {
+        HILOGE("delete failed, error = %{public}d", status);
+    }
+    return static_cast<int32_t>(status);
+}
 } // namespace DeviceProfile
 } // namespace OHOS

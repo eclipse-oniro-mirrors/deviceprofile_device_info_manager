@@ -52,6 +52,19 @@ int32_t DistributedDeviceProfileClient::GetDeviceProfile(const std::string& udid
     }
     return dps->GetDeviceProfile(udid, serviceId, profile);
 }
+
+int32_t DistributedDeviceProfileClient::DeleteDeviceProfile(const std::string& serviceId)
+{
+    if (serviceId.empty()) {
+        return ERR_DP_INVALID_PARAMS;
+    }
+
+    auto dps = GetDeviceProfileService();
+    if (dps == nullptr) {
+        return ERR_DP_GET_SERVICE_FAILED;
+    }
+    return dps->DeleteDeviceProfile(serviceId);
+}
 sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfileService()
 {
     std::lock_guard<std::mutex> lock(serviceLock_);

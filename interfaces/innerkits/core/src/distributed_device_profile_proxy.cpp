@@ -60,5 +60,18 @@ int32_t DistributedDeviceProfileProxy::GetDeviceProfile(const std::string& udid,
     profile.Unmarshalling(reply);
     return ERR_OK;
 }
+
+int32_t DistributedDeviceProfileProxy::DeleteDeviceProfile(const std::string& serviceId)
+{
+    sptr<IRemoteObject> remote = Remote();
+    MessageParcel data;
+    if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) {
+        HILOGE("write inteface token failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    PARCEL_WRITE_HELPER(data, String, serviceId);
+    MessageParcel reply;
+    PARCEL_TRANSACT_SYNC_RET_INT(remote, DELETE_DEVICE_PROFILE, data, reply);
+}
 } // namespace DeviceProfile
 } // namespace OHOS

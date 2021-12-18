@@ -29,6 +29,7 @@ public:
     int32_t PutDeviceProfile(const ServiceCharacteristicProfile& profile) override;
     int32_t GetDeviceProfile(const std::string& udid, const std::string& serviceId,
         ServiceCharacteristicProfile& profile) override;
+    int32_t DeleteDeviceProfile(const std::string& serviceId) override;
 
 private:
     static inline BrokerDelegator<DistributedDeviceProfileProxy> delegator_;

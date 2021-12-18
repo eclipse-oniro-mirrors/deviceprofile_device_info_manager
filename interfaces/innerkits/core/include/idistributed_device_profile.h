@@ -26,11 +26,13 @@ public:
     enum {
         PUT_DEVICE_PROFILE = 1,
         GET_DEVICE_PROFILE = 2,
+        DELETE_DEVICE_PROFILE = 3,
     };
 
     virtual int32_t PutDeviceProfile(const ServiceCharacteristicProfile& profile) = 0;
     virtual int32_t GetDeviceProfile(const std::string& udid, const std::string& serviceId,
         ServiceCharacteristicProfile& profile) = 0;
+    virtual int32_t DeleteDeviceProfile(const std::string& serviceId) = 0;
     DECLARE_INTERFACE_DESCRIPTOR(u"OHOS.DeviceProfile.IDistributedDeviceProfile");
 };
 } // namespace DeviceProfile

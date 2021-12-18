@@ -31,6 +31,7 @@ const std::string TAG = "DistributedDeviceProfileStub";
 DistributedDeviceProfileStub::DistributedDeviceProfileStub()
 {
     funcsMap_[PUT_DEVICE_PROFILE] = &DistributedDeviceProfileStub::PutDeviceProfileInner;
+    funcsMap_[DELETE_DEVICE_PROFILE] = &DistributedDeviceProfileStub::DeleteDeviceProfileInner;
     funcsMap_[GET_DEVICE_PROFILE] = &DistributedDeviceProfileStub::GetDeviceProfileInner;
 }
 
@@ -82,6 +83,12 @@ int32_t DistributedDeviceProfileStub::GetDeviceProfileInner(MessageParcel& data,
         return ERR_FLATTEN_OBJECT;
     }
     return ret;
+}
+
+int32_t DistributedDeviceProfileStub::DeleteDeviceProfileInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    return DeleteDeviceProfile(data.ReadString());
 }
 } // namespace DeviceProfile
 } // namespace OHOS

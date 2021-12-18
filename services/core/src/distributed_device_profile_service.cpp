@@ -61,6 +61,11 @@ int32_t DistributedDeviceProfileService::GetDeviceProfile(const std::string& udi
     return DeviceProfileStorageManager::GetInstance().GetDeviceProfile(udid, serviceId, profile);
 }
 
+int32_t DistributedDeviceProfileService::DeleteDeviceProfile(const std::string& serviceId)
+{
+    HILOGI("service id %{public}s", serviceId.c_str());
+    return DeviceProfileStorageManager::GetInstance().DeleteDeviceProfile(serviceId);
+}
 void DistributedDeviceProfileService::OnStart()
 {
     HILOGI("called");

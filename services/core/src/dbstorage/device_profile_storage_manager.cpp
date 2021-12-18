@@ -223,6 +223,40 @@ void DeviceProfileStorageManager::SetServiceType(const std::string& udid,
     }
 }
 
+int32_t DeviceProfileStorageManager::DeleteDeviceProfile(const std::string& serviceId)
+{
+    if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
+        HILOGE("kvstore init failed");
+        return ERR_DP_INIT_DB_FAILED;
+    }
+
+    std::unique_lock<std::mutex> autoLock(serviceLock_);
+    if (servicesJson_[serviceId] == nullptr) {
+        HILOGW("can't find service %{public}s", serviceId.c_str());
+        return ERR_DP_INVALID_PARAMS;
+    }
+    nlohmann::json original = servicesJson_[serviceId];
+    servicesJson_.erase(serviceId);
+    std::string servicesKey = GenerateKey(localUdid_, SERVICES, KeyType::SERVICE_LIST);
+    std::string servicesValue = servicesJson_.dump();
+    int32_t errCode = ERR_OK;
+    std::string serviceKey = GenerateKey(localUdid_, serviceId, KeyType::SERVICE);
+    if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_SUCCEED) {
+        errCode = onlineSyncTbl_->DeleteDeviceProfile(serviceKey);
+        if (errCode != ERR_OK) {
+            servicesJson_[serviceId] = std::move(original);
+            return errCode;
+        }
+        errCode = onlineSyncTbl_->PutDeviceProfile(servicesKey, servicesValue);
+        if (errCode != ERR_OK) {
+            HILOGW("update services failed, errorCode = %{public}d", errCode);
+        }
+    } else {
+        profileItems_.erase(serviceKey);
+        profileItems_[servicesKey] = std::move(servicesValue);
+    }
+    return errCode;
+}
 void DeviceProfileStorageManager::RestoreServiceItemLocked(const std::string& value)
 {
     auto restoreItems = nlohmann::json::parse(value, nullptr, false);
