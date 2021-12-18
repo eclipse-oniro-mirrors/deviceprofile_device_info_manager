@@ -21,10 +21,13 @@
 #include "device_manager.h"
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
+#include "device_profile_utils.h"
 
 #include "ipc_object_proxy.h"
 #include "ipc_skeleton.h"
 #include "iservice_registry.h"
+#include "subscribe_info.h"
+#include "subscribe_manager.h"
 #include "system_ability_definition.h"
 
 namespace OHOS {
@@ -305,10 +308,58 @@ void DeviceProfileStorageManager::FlushProfileItems()
     }
 }
 
+void DeviceProfileStorageManager::RegisterCallbacks()
+{
+    HILOGI("called");
+    int32_t errCode = ERR_OK;
+    if (kvStoreObserver_ != nullptr) {
+        errCode = onlineSyncTbl_->SubscribeKvStore(kvStoreObserver_);
+        HILOGI("SubscribeKvStore errCode = %{public}d", errCode);
+    }
+    if (kvStoreSyncCallback_ != nullptr) {
+        errCode = onlineSyncTbl_->RegisterSyncCallback(kvStoreSyncCallback_);
+        HILOGI("RegisterSyncCallback errCode = %{public}d", errCode);
+    }
+}
+
 void DeviceProfileStorageManager::OnKvStoreInitDone()
 {
+    RegisterCallbacks();
     FlushProfileItems();
 }
 
+int32_t DeviceProfileStorageManager::SubscribeKvStore(const std::shared_ptr<KvStoreObserver>& observer)
+{
+    std::lock_guard<std::mutex> autoLock(callbackLock_);
+    kvStoreObserver_ = observer;
+    if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_SUCCEED) {
+        return onlineSyncTbl_->SubscribeKvStore(observer);
+    }
+    return ERR_OK;
+}
+
+int32_t DeviceProfileStorageManager::UnSubscribeKvStore(const std::shared_ptr<KvStoreObserver>& observer)
+{
+    std::lock_guard<std::mutex> autoLock(callbackLock_);
+    kvStoreObserver_ = nullptr;
+    return onlineSyncTbl_->UnSubscribeKvStore(observer);
+}
+
+int32_t DeviceProfileStorageManager::RegisterSyncCallback(const std::shared_ptr<KvStoreSyncCallback>& sycnCb)
+{
+    std::lock_guard<std::mutex> autoLock(callbackLock_);
+    kvStoreSyncCallback_ = sycnCb;
+    if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_SUCCEED) {
+        return onlineSyncTbl_->RegisterSyncCallback(sycnCb);
+    }
+    return ERR_OK;
+}
+
+int32_t DeviceProfileStorageManager::UnRegisterSyncCallback()
+{
+    std::lock_guard<std::mutex> autoLock(callbackLock_);
+    kvStoreSyncCallback_ = nullptr;
+    return onlineSyncTbl_->UnRegisterSyncCallback();
+}
 } // namespace DeviceProfile
 } // namespace OHOS

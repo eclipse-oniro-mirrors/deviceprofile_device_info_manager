@@ -19,6 +19,7 @@
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
 #include "service_characteristic_profile.h"
+#include "subscribe_manager.h"
 
 #include "system_ability_definition.h"
 
@@ -46,6 +47,10 @@ bool DistributedDeviceProfileService::Init()
         HILOGE("DeviceProfileStorageManager init failed");
         return false;
     }
+    if (!SubscribeManager::GetInstance().Init()) {
+        HILOGE("SubscribeManager init failed");
+        return false;
+    }
     HILOGI("init succeeded");
     return true;
 }
@@ -65,6 +70,22 @@ int32_t DistributedDeviceProfileService::DeleteDeviceProfile(const std::string& 
 {
     HILOGI("service id %{public}s", serviceId.c_str());
     return DeviceProfileStorageManager::GetInstance().DeleteDeviceProfile(serviceId);
+}
+
+int32_t DistributedDeviceProfileService::SubscribeProfileEvents(const std::list<SubscribeInfo>& subscribeInfos,
+    const sptr<IRemoteObject>& profileEventNotifier,
+    std::list<ProfileEvent>& failedEvents)
+{
+    return SubscribeManager::GetInstance().SubscribeProfileEvents(subscribeInfos,
+        profileEventNotifier, failedEvents);
+}
+
+int32_t DistributedDeviceProfileService::UnsubscribeProfileEvents(const std::list<ProfileEvent>& profileEvents,
+    const sptr<IRemoteObject>& profileEventNotifier,
+    std::list<ProfileEvent>& failedEvents)
+{
+    return SubscribeManager::GetInstance().UnsubscribeProfileEvents(profileEvents,
+        profileEventNotifier, failedEvents);
 }
 void DistributedDeviceProfileService::OnStart()
 {

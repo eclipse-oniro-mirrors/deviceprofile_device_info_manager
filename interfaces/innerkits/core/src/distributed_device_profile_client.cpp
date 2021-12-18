@@ -15,6 +15,10 @@
 
 #include "distributed_device_profile_client.h"
 
+#include <chrono>
+#include <thread>
+#include <unistd.h>
+
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 
@@ -24,9 +28,12 @@
 
 namespace OHOS {
 namespace DeviceProfile {
+using namespace std::chrono_literals;
+
 namespace {
 const std::string TAG = "DistributedDeviceProfileClient";
 const std::string JSON_NULL = "null";
+constexpr int32_t RETRY_TIMES_GET_SERVICE = 5;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileClient);
@@ -65,6 +72,117 @@ int32_t DistributedDeviceProfileClient::DeleteDeviceProfile(const std::string& s
     }
     return dps->DeleteDeviceProfile(serviceId);
 }
+
+int32_t DistributedDeviceProfileClient::SubscribeProfileEvent(const SubscribeInfo& subscribeInfo,
+    const std::shared_ptr<IProfileEventCallback>& eventCb)
+{
+    std::list<SubscribeInfo> subscribeInfos;
+    subscribeInfos.emplace_back(subscribeInfo);
+    std::list<ProfileEvent> failedEvents;
+    return SubscribeProfileEvents(subscribeInfos, eventCb, failedEvents);
+}
+
+int32_t DistributedDeviceProfileClient::SubscribeProfileEvents(const std::list<SubscribeInfo>& subscribeInfos,
+    const std::shared_ptr<IProfileEventCallback>& eventCb,
+    std::list<ProfileEvent>& failedEvents)
+{
+    if (subscribeInfos.empty() || eventCb == nullptr) {
+        return ERR_DP_INVALID_PARAMS;
+    }
+
+    ProfileEvents subProfileEvents;
+    for (auto& subscribeInfo : subscribeInfos) {
+        subProfileEvents.set(static_cast<uint32_t>(subscribeInfo.profileEvent));
+    }
+    // duplicated profile event is disallowed
+    if (subProfileEvents.count() != subscribeInfos.size()) {
+        return ERR_DP_INVALID_PARAMS;
+    }
+
+    std::unique_lock<std::mutex> autoLock(subscribeLock_);
+    sptr<IRemoteObject> notifier;
+    auto iter = subscribeRecords_.find(eventCb);
+    if (iter != subscribeRecords_.end()) {
+        notifier = iter->second.notifier;
+    } else {
+        notifier = sptr<ProfileEventNotifierStub>(
+            new (std::nothrow) ProfileEventNotifierStub(eventCb));
+    }
+    autoLock.unlock();
+
+    auto dps = GetDeviceProfileService();
+    if (dps == nullptr) {
+        return ERR_DP_GET_SERVICE_FAILED;
+    }
+
+    failedEvents.clear();
+    int32_t errCode = dps->SubscribeProfileEvents(subscribeInfos, notifier, failedEvents);
+    for (auto failedEvent : failedEvents) {
+        subProfileEvents.reset(static_cast<uint32_t>(failedEvent));
+    }
+
+    autoLock.lock();
+    iter = subscribeRecords_.find(eventCb);
+    if (iter != subscribeRecords_.end()) {
+        MergeSubscribeInfoLocked(iter->second.subscribeInfos, subscribeInfos);
+        iter->second.profileEvents |= subProfileEvents;
+    } else {
+        SubscribeRecord record {subscribeInfos, notifier, subProfileEvents};
+        subscribeRecords_.emplace(eventCb, std::move(record));
+    }
+    return errCode;
+}
+
+int32_t DistributedDeviceProfileClient::UnsubscribeProfileEvent(ProfileEvent profileEvent,
+    const std::shared_ptr<IProfileEventCallback>& eventCb)
+{
+    std::list<ProfileEvent> profileEvents;
+    profileEvents.emplace_back(profileEvent);
+    std::list<ProfileEvent> failedEvents;
+    return UnsubscribeProfileEvents(profileEvents, eventCb, failedEvents);
+}
+
+int32_t DistributedDeviceProfileClient::UnsubscribeProfileEvents(const std::list<ProfileEvent>& profileEvents,
+    const std::shared_ptr<IProfileEventCallback>& eventCb,
+    std::list<ProfileEvent>& failedEvents)
+{
+    if (profileEvents.empty() || eventCb == nullptr) {
+        return ERR_DP_INVALID_PARAMS;
+    }
+
+    std::unique_lock<std::mutex> autoLock(subscribeLock_);
+    ProfileEvents unsubProfileEvents;
+    for (auto profileEvent : profileEvents) {
+        unsubProfileEvents.set(static_cast<uint32_t>(profileEvent));
+    }
+    auto iter = subscribeRecords_.find(eventCb);
+    if (iter == subscribeRecords_.end()) {
+        return ERR_DP_NOT_SUBSCRIBED;
+    }
+    sptr<IRemoteObject> notifier = iter->second.notifier;
+    autoLock.unlock();
+
+    auto dps = GetDeviceProfileService();
+    if (dps == nullptr) {
+        return ERR_DP_GET_SERVICE_FAILED;
+    }
+
+    failedEvents.clear();
+    int32_t errCode = dps->UnsubscribeProfileEvents(profileEvents, notifier, failedEvents);
+    autoLock.lock();
+    iter = subscribeRecords_.find(eventCb);
+    if (iter != subscribeRecords_.end()) {
+        for (auto failedEvent : failedEvents) {
+            unsubProfileEvents.reset(static_cast<uint32_t>(failedEvent));
+        }
+        auto& subProfileEvents = iter->second.profileEvents;
+        subProfileEvents &= ~unsubProfileEvents;
+        if (subProfileEvents.none()) {
+            subscribeRecords_.erase(iter);
+        }
+    }
+    return errCode;
+}
 sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfileService()
 {
     std::lock_guard<std::mutex> lock(serviceLock_);
@@ -99,12 +217,67 @@ bool DistributedDeviceProfileClient::CheckProfileInvalidity(const ServiceCharact
            profile.GetCharacteristicProfileJson().empty() ||
            profile.GetCharacteristicProfileJson() == JSON_NULL;
 }
+
+void DistributedDeviceProfileClient::MergeSubscribeInfoLocked(std::list<SubscribeInfo>& subscribeInfos,
+    const std::list<SubscribeInfo>& newSubscribeInfos)
+{
+    for (const auto& newSubscribeInfo : newSubscribeInfos) {
+        auto iter = std::find_if(subscribeInfos.begin(), subscribeInfos.end(),
+            [&newSubscribeInfo](const auto& subscribeInfo) {
+            return subscribeInfo.profileEvent == newSubscribeInfo.profileEvent;
+        });
+        if (iter != subscribeInfos.end()) {
+            subscribeInfos.emplace_back(newSubscribeInfo);
+            continue;
+        }
+        // override with the new suscribe info for same profile event
+        if (*iter != newSubscribeInfo) {
+            *iter = newSubscribeInfo;
+        }
+    }
+}
+
 void DistributedDeviceProfileClient::OnServiceDied(const sptr<IRemoteObject>& remote)
 {
     HILOGI("called");
     {
         std::lock_guard<std::mutex> lock(serviceLock_);
         dpProxy_ = nullptr;
+    }
+
+    std::lock_guard<std::mutex> lock(subscribeLock_);
+    if (dpClientHandler_ == nullptr) {
+        auto runner = AppExecFwk::EventRunner::Create("dpclient" + std::to_string(getpid()));
+        dpClientHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
+    }
+
+    // try resubscribe when device profile service died
+    auto resubscribe = [this]() {
+        int32_t retryTimes = 0;
+        sptr<IDistributedDeviceProfile> dps;
+        do {
+            std::this_thread::sleep_for(500ms);
+            dps = GetDeviceProfileService();
+            if (dps != nullptr) {
+                HILOGI("get service succeeded");
+                break;
+            }
+            if (retryTimes++ == RETRY_TIMES_GET_SERVICE) {
+                HILOGE("get service timeout");
+                return;
+            }
+        } while (true);
+
+        std::list<ProfileEvent> failedEvents;
+        std::lock_guard<std::mutex> lock(subscribeLock_);
+        for (const auto& [_, subscribeRecord] : subscribeRecords_) {
+            int32_t errCode = dps->SubscribeProfileEvents(subscribeRecord.subscribeInfos,
+                subscribeRecord.notifier, failedEvents);
+            HILOGI("resubscribe result = %{public}d", errCode);
+        }
+    };
+    if (dpClientHandler_ != nullptr && !dpClientHandler_->PostTask(resubscribe)) {
+        HILOGE("post task failed");
     }
 }
 

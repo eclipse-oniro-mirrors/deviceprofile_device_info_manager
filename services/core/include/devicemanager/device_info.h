@@ -13,31 +13,34 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_DEVICE_PROFILE_ERRORS_H
-#define OHOS_DEVICE_PROFILE_ERRORS_H
+#ifndef OHOS_DEVICE_PROFILE_DEVICE_INFO_H
+#define OHOS_DEVICE_PROFILE_DEVICE_INFO_H
 
-#include "errors.h"
+#include <string>
+
+#include "parcel.h"
 
 namespace OHOS {
 namespace DeviceProfile {
 enum {
-    DEVICE_PROFILE_MODULE_DDP = 0,
+    UNKNOWN_TYPE = 0x00,
 };
 
-constexpr ErrCode DEVICE_PROFILE_ERR_OFFSET = ErrCodeOffset(SUBSYS_DEVICEPROFILE, DEVICE_PROFILE_MODULE_DDP);
+class DeviceInfo {
+public:
+    DeviceInfo(const std::string& deviceName, const std::string& deviceId, int32_t deviceType)
+        : deviceName_(deviceName), deviceId_(deviceId), deviceType_(deviceType) {}
+    ~DeviceInfo() = default;
 
-enum {
-    // DEVICE_PROFILE_ERR_OFFSET(98566143)
-    ERR_DP_INVALID_PARAMS = 98566144,
-    ERR_DP_INTERFACE_CHECK_FAILED = 98566145,
-    ERR_DP_GET_LOCAL_UDID_FAILED = 98566146,
-    ERR_DP_GET_SERVICE_FAILED = 98566147,
-    ERR_DP_INIT_DB_FAILED = 98566148,
-    ERR_DP_NOT_SUBSCRIBED = 98566149,
-    ERR_DP_UNSUBSCRIBE_FAILED = 98566150,
-    ERR_DP_SUBSCRIBE_FAILED = 98566151,
-    ERR_DP_SUBSCRIBE_LIMIT_EXCEEDED = 98566152,
+    const std::string& GetDeviceName() const;
+    const std::string& GetDeviceId() const;
+    int32_t GetDeviceType() const;
+
+private:
+    std::string deviceName_;
+    std::string deviceId_;
+    int32_t deviceType_ = UNKNOWN_TYPE;
 };
 } // namespace DeviceProfile
 } // namespace OHOS
-#endif // OHOS_DEVICE_PROFILE_ERRORS_H
+#endif // OHOS_DEVICE_PROFILE_DEVICE_INFO_H

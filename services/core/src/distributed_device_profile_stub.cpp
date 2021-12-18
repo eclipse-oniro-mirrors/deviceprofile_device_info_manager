@@ -20,6 +20,8 @@
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_storage.h"
+#include "device_profile_utils.h"
+#include "iprofile_event_notifier.h"
 #include "parcel_helper.h"
 
 namespace OHOS {
@@ -33,6 +35,8 @@ DistributedDeviceProfileStub::DistributedDeviceProfileStub()
     funcsMap_[PUT_DEVICE_PROFILE] = &DistributedDeviceProfileStub::PutDeviceProfileInner;
     funcsMap_[DELETE_DEVICE_PROFILE] = &DistributedDeviceProfileStub::DeleteDeviceProfileInner;
     funcsMap_[GET_DEVICE_PROFILE] = &DistributedDeviceProfileStub::GetDeviceProfileInner;
+    funcsMap_[SUBSCRIBE_PROFILE_EVENT] = &DistributedDeviceProfileStub::SubscribeProfileEventInner;
+    funcsMap_[UNSUBSCRIBE_PROFILE_EVENT] = &DistributedDeviceProfileStub::UnsubscribeProfileEventInner;
 }
 
 bool DistributedDeviceProfileStub::EnforceInterfaceToken(MessageParcel& data)
@@ -89,6 +93,65 @@ int32_t DistributedDeviceProfileStub::DeleteDeviceProfileInner(MessageParcel& da
 {
     HILOGI("called");
     return DeleteDeviceProfile(data.ReadString());
+}
+
+int32_t DistributedDeviceProfileStub::SubscribeProfileEventInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    uint32_t numSubscribeInfos = data.ReadUint32();
+    if (numSubscribeInfos == 0) {
+        return ERR_DP_INVALID_PARAMS;
+    }
+
+    std::list<SubscribeInfo> subscribeInfos;
+    for (uint32_t i = 0; i < numSubscribeInfos; i++) {
+        SubscribeInfo subscribeInfo;
+        if (!subscribeInfo.Unmarshalling(data)) {
+            return ERR_NULL_OBJECT;
+        }
+        HILOGD("profile event = %{public}d", subscribeInfo.profileEvent);
+        subscribeInfos.emplace_back(std::move(subscribeInfo));
+    }
+    sptr<IRemoteObject> eventNotifier = data.ReadRemoteObject();
+    std::list<ProfileEvent> failedEvents;
+
+    int32_t errCode = SubscribeProfileEvents(subscribeInfos, eventNotifier, failedEvents);
+    HILOGI("errCode = %{public}d", errCode);
+    if (errCode != ERR_OK) {
+        if (!DeviceProfileUtils::WriteProfileEvents(failedEvents, reply)) {
+            HILOGW("write profile events failed");
+        }
+    }
+    return errCode;
+}
+
+int32_t DistributedDeviceProfileStub::UnsubscribeProfileEventInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    uint32_t numEvents = data.ReadUint32();
+    if (numEvents == 0) {
+        return ERR_DP_INVALID_PARAMS;
+    }
+
+    std::list<ProfileEvent> profileEvents;
+    for (uint32_t i = 0; i < numEvents; i++) {
+        ProfileEvent profileEvent = static_cast<ProfileEvent>(data.ReadUint32());
+        if (profileEvent >= EVENT_PROFILE_END || profileEvent == EVENT_UNKNOWN) {
+            return ERR_DP_INVALID_PARAMS;
+        }
+        profileEvents.emplace_back(profileEvent);
+    }
+    sptr<IRemoteObject> eventNotifier = data.ReadRemoteObject();
+    std::list<ProfileEvent> failedEvents;
+
+    int32_t errCode = UnsubscribeProfileEvents(profileEvents, eventNotifier, failedEvents);
+    HILOGI("errCode = %{public}d", errCode);
+    if (errCode != ERR_OK) {
+        if (!DeviceProfileUtils::WriteProfileEvents(failedEvents, reply)) {
+            HILOGW("write profile events failed");
+        }
+    }
+    return errCode;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

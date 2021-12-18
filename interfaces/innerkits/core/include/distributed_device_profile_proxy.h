@@ -18,6 +18,7 @@
 
 #include "idistributed_device_profile.h"
 #include "iremote_proxy.h"
+#include "profile_event.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -30,6 +31,12 @@ public:
     int32_t GetDeviceProfile(const std::string& udid, const std::string& serviceId,
         ServiceCharacteristicProfile& profile) override;
     int32_t DeleteDeviceProfile(const std::string& serviceId) override;
+    int32_t SubscribeProfileEvents(const std::list<SubscribeInfo>& subscribeInfos,
+        const sptr<IRemoteObject>& profileEventNotifier,
+        std::list<ProfileEvent>& failedEvents) override;
+    int32_t UnsubscribeProfileEvents(const std::list<ProfileEvent>& profileEvents,
+        const sptr<IRemoteObject>& profileEventNotifier,
+        std::list<ProfileEvent>& failedEvents) override;
 
 private:
     static inline BrokerDelegator<DistributedDeviceProfileProxy> delegator_;

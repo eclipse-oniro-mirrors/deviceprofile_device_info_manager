@@ -22,13 +22,15 @@ config("device_profile_core_config") {
     "include",
     "include/devicemanager",
     "include/dbstorage",
+    "include/subscribemanager",
     "${device_profile_path}/common/include",
     "${device_profile_innerkits}/core/include",
     "//third_party/json/include",
   ]
 }
 
-dp_common_sources = []
+dp_common_sources =
+    [ "${device_profile_path}/common/src/device_profile_utils.cpp" ]
 
 ohos_shared_library("distributed_device_profile") {
   install_enable = true
@@ -37,10 +39,21 @@ ohos_shared_library("distributed_device_profile") {
     "src/dbstorage/device_profile_storage_manager.cpp",
     "src/dbstorage/kvstore_death_recipient.cpp",
     "src/dbstorage/online_sync_table.cpp",
+    "src/devicemanager/device_info.cpp",
     "src/devicemanager/device_manager.cpp",
     "src/distributed_device_profile_service.cpp",
     "src/distributed_device_profile_stub.cpp",
+    "src/profile_change_notification.cpp",
     "src/service_characteristic_profile.cpp",
+    "src/subscribemanager/profile_change_handler.cpp",
+    "src/subscribemanager/profile_event_handler.cpp",
+    "src/subscribemanager/profile_event_handler_factory.cpp",
+    "src/subscribemanager/profile_event_notifier_proxy.cpp",
+    "src/subscribemanager/profile_sync_handler.cpp",
+    "src/subscribemanager/subscribe_info.cpp",
+    "src/subscribemanager/subscribe_info_checker.cpp",
+    "src/subscribemanager/subscribe_manager.cpp",
+    "src/subscribemanager/subscriber_death_recipient.cpp",
   ]
 
   sources += dp_common_sources

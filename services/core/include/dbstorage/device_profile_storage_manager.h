@@ -26,6 +26,7 @@
 #include "service_characteristic_profile.h"
 #include "single_instance.h"
 
+#include "device_manager.h"
 #include "nlohmann/json.hpp"
 
 namespace OHOS {
@@ -39,6 +40,7 @@ enum KeyType {
 
 class DeviceProfileStorageManager {
     DECLARE_SINGLE_INSTANCE(DeviceProfileStorageManager);
+    friend class DeviceProfile::DeviceManager;
 
 public:
     bool Init();
@@ -49,16 +51,21 @@ public:
     int32_t GetDeviceProfile(const std::string& udid, const std::string& serviceId,
         ServiceCharacteristicProfile& profile);
 
+    int32_t SubscribeKvStore(const std::shared_ptr<DistributedKv::KvStoreObserver>& observer);
+    int32_t UnSubscribeKvStore(const std::shared_ptr<DistributedKv::KvStoreObserver>& observer);
+    int32_t RegisterSyncCallback(const std::shared_ptr<DistributedKv::KvStoreSyncCallback>& sycnCb);
+    int32_t UnRegisterSyncCallback();
 private:
     bool WaitKvDataService();
     void RestoreServiceItemLocked(const std::string& value);
+    void RegisterCallbacks();
     void FlushProfileItems();
     std::string GenerateKey(const std::string& udid, const std::string& key, KeyType keyType);
-
     void SetServiceType(const std::string& udid, const std::string& serviceId, ServiceCharacteristicProfile& profile);
 
 private:
     std::mutex serviceLock_;
+    std::mutex callbackLock_;
     nlohmann::json servicesJson_;
     std::unique_ptr<DeviceProfileStorage> onlineSyncTbl_;
     std::shared_ptr<AppExecFwk::EventHandler> storageHandler_;
@@ -67,6 +74,8 @@ private:
     std::map<std::string, std::string> profileItems_;
     std::atomic<bool> kvDataServiceFailed_ {false};
     std::atomic<bool> inited_ {false};
+    std::shared_ptr<DistributedKv::KvStoreObserver> kvStoreObserver_;
+    std::shared_ptr<DistributedKv::KvStoreSyncCallback> kvStoreSyncCallback_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

@@ -18,7 +18,9 @@
 
 #include "idistributed_device_profile.h"
 #include "single_instance.h"
-
+#include "iprofile_event_callback.h"
+#include "profile_event_notifier_stub.h"
+#include "profile_event.h"
 #include "event_handler.h"
 #include "iremote_object.h"
 
@@ -32,19 +34,40 @@ public:
     int32_t GetDeviceProfile(const std::string& udid, const std::string& serviceId,
         ServiceCharacteristicProfile& profile);
     int32_t DeleteDeviceProfile(const std::string& serviceId);
+    int32_t SubscribeProfileEvent(const SubscribeInfo& subscribeInfo,
+        const std::shared_ptr<IProfileEventCallback>& eventCb);
+    int32_t UnsubscribeProfileEvent(ProfileEvent profileEvent,
+        const std::shared_ptr<IProfileEventCallback>& eventCb);
+    int32_t SubscribeProfileEvents(const std::list<SubscribeInfo>& subscribeInfos,
+        const std::shared_ptr<IProfileEventCallback>& eventCb,
+        std::list<ProfileEvent>& failedEvents);
+    int32_t UnsubscribeProfileEvents(const std::list<ProfileEvent>& profileEvents,
+        const std::shared_ptr<IProfileEventCallback>& eventCb,
+        std::list<ProfileEvent>& failedEvents);
 private:
     class DeviceProfileDeathRecipient : public IRemoteObject::DeathRecipient {
     public:
         void OnRemoteDied(const wptr<IRemoteObject>& remote) override;
     };
 
+    struct SubscribeRecord {
+        std::list<SubscribeInfo> subscribeInfos;
+        sptr<IRemoteObject> notifier;
+        ProfileEvents profileEvents;
+    };
+
     sptr<IDistributedDeviceProfile> GetDeviceProfileService();
     bool CheckProfileInvalidity(const ServiceCharacteristicProfile& profile);
     void OnServiceDied(const sptr<IRemoteObject>& remote);
+    void MergeSubscribeInfoLocked(std::list<SubscribeInfo>& subscribeInfos,
+        const std::list<SubscribeInfo>& newSubscribeInfos);
+
     std::mutex serviceLock_;
+    std::mutex subscribeLock_;
     sptr<IDistributedDeviceProfile> dpProxy_;
     sptr<IRemoteObject::DeathRecipient> dpDeathRecipient_;
     std::shared_ptr<AppExecFwk::EventHandler> dpClientHandler_;
+    std::map<std::shared_ptr<IProfileEventCallback>, SubscribeRecord> subscribeRecords_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

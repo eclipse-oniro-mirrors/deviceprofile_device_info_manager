@@ -30,9 +30,13 @@ config("distributed_device_profile_client_config") {
 ohos_shared_library("distributed_device_profile_client") {
   install_enable = true
   sources = [
+    "${device_profile_path}/common/src/device_profile_utils.cpp",
+    "${device_profile_service}/src/profile_change_notification.cpp",
     "${device_profile_service}/src/service_characteristic_profile.cpp",
+    "${device_profile_service}/src/subscribemanager/subscribe_info.cpp",
     "src/distributed_device_profile_client.cpp",
     "src/distributed_device_profile_proxy.cpp",
+    "src/profile_event_notifier_stub.cpp",
   ]
 
   configs = [ ":distributed_device_profile_client_config" ]

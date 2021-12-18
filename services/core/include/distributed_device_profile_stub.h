@@ -35,6 +35,8 @@ public:
     int32_t PutDeviceProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t DeleteDeviceProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetDeviceProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t SubscribeProfileEventInner(MessageParcel& data, MessageParcel& reply);
+    int32_t UnsubscribeProfileEventInner(MessageParcel& data, MessageParcel& reply);
 private:
     using Func = int32_t(DistributedDeviceProfileStub::*)(MessageParcel& data, MessageParcel& reply);
 

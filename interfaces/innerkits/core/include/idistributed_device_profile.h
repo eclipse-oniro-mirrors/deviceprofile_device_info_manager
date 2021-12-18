@@ -16,8 +16,13 @@
 #ifndef OHOS_I_DISTRIBUTED_DEVICE_PROFILE_H
 #define OHOS_I_DISTRIBUTED_DEVICE_PROFILE_H
 
+#include <list>
+
 #include "iremote_broker.h"
 #include "service_characteristic_profile.h"
+#include "iprofile_event_notifier.h"
+#include "profile_event.h"
+#include "subscribe_info.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -27,12 +32,20 @@ public:
         PUT_DEVICE_PROFILE = 1,
         GET_DEVICE_PROFILE = 2,
         DELETE_DEVICE_PROFILE = 3,
+        SUBSCRIBE_PROFILE_EVENT = 4,
+        UNSUBSCRIBE_PROFILE_EVENT = 5,
     };
 
     virtual int32_t PutDeviceProfile(const ServiceCharacteristicProfile& profile) = 0;
     virtual int32_t GetDeviceProfile(const std::string& udid, const std::string& serviceId,
         ServiceCharacteristicProfile& profile) = 0;
     virtual int32_t DeleteDeviceProfile(const std::string& serviceId) = 0;
+    virtual int32_t SubscribeProfileEvents(const std::list<SubscribeInfo>& subscribeInfos,
+        const sptr<IRemoteObject>& profileEventNotifier,
+        std::list<ProfileEvent>& failedEvents) = 0;
+    virtual int32_t UnsubscribeProfileEvents(const std::list<ProfileEvent>& profileEvents,
+        const sptr<IRemoteObject>& profileEventNotifier,
+        std::list<ProfileEvent>& failedEvents) = 0;
     DECLARE_INTERFACE_DESCRIPTOR(u"OHOS.DeviceProfile.IDistributedDeviceProfile");
 };
 } // namespace DeviceProfile

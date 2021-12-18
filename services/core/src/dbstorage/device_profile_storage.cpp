@@ -24,6 +24,7 @@
 #include "service_characteristic_profile.h"
 
 #include "datetime_ex.h"
+#include "profile_change_handler.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -71,6 +72,50 @@ void DeviceProfileStorage::Init()
         kvStoreInitCallback_();
     }
     initStatus_ = StorageInitStatus::INIT_SUCCEED;
+}
+
+int32_t DeviceProfileStorage::SubscribeKvStore(const std::shared_ptr<KvStoreObserver>& observer)
+{
+    HILOGD("called");
+    if (kvStorePtr_ == nullptr || observer == nullptr) {
+        return ERR_DP_INVALID_PARAMS;
+    }
+    Status status = kvStorePtr_->SubscribeKvStore(SubscribeType::DEFAULT, observer);
+    HILOGI("status %{public}d", status);
+    return static_cast<int32_t>(status);
+}
+
+int32_t DeviceProfileStorage::UnSubscribeKvStore(const std::shared_ptr<KvStoreObserver>& observer)
+{
+    HILOGD("called");
+    if (kvStorePtr_ == nullptr || observer == nullptr) {
+        return ERR_DP_INVALID_PARAMS;
+    }
+    Status status = kvStorePtr_->UnSubscribeKvStore(SubscribeType::DEFAULT, observer);
+    HILOGI("status %{public}d", status);
+    return static_cast<int32_t>(status);
+}
+
+int32_t DeviceProfileStorage::RegisterSyncCallback(const std::shared_ptr<KvStoreSyncCallback>& sycnCb)
+{
+    HILOGD("called");
+    if (kvStorePtr_ == nullptr || sycnCb == nullptr) {
+        return ERR_DP_INVALID_PARAMS;
+    }
+    Status status = kvStorePtr_->RegisterSyncCallback(sycnCb);
+    HILOGI("status %{public}d", status);
+    return static_cast<int32_t>(status);
+}
+
+int32_t DeviceProfileStorage::UnRegisterSyncCallback()
+{
+    HILOGD("called");
+    if (kvStorePtr_ == nullptr) {
+        return ERR_DP_INVALID_PARAMS;
+    }
+    Status status = kvStorePtr_->UnRegisterSyncCallback();
+    HILOGI("status %{public}d", status);
+    return static_cast<int32_t>(status);
 }
 
 StorageInitStatus DeviceProfileStorage::GetInitStatus()

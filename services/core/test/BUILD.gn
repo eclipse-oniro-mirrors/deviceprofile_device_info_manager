@@ -49,7 +49,23 @@ ohos_unittest("profile_crud_test") {
     public_deps = device_profile_public_deps
   }
 }
+
+ohos_unittest("event_subscribe_test") {
+  module_out_path = module_output_path
+
+  sources = [ "unittest/event_subscribe_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  if (is_standard_system) {
+    external_deps = device_profile_external_deps
+    public_deps = device_profile_public_deps
+  }
+}
+
 group("unittest") {
   testonly = true
-  deps = [ ":profile_crud_test" ]
+  deps = [
+    ":event_subscribe_test",
+    ":profile_crud_test",
+  ]
 }

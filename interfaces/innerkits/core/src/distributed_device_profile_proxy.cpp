@@ -16,6 +16,7 @@
 #include "distributed_device_profile_proxy.h"
 
 #include "device_profile_log.h"
+#include "device_profile_utils.h"
 #include "parcel_helper.h"
 
 namespace OHOS {
@@ -23,6 +24,7 @@ namespace DeviceProfile {
 namespace {
 const std::string TAG = "DistributedDeviceProfileProxy";
 }
+
 int32_t DistributedDeviceProfileProxy::PutDeviceProfile(const ServiceCharacteristicProfile& profile)
 {
     sptr<IRemoteObject> remote = Remote();
@@ -72,6 +74,66 @@ int32_t DistributedDeviceProfileProxy::DeleteDeviceProfile(const std::string& se
     PARCEL_WRITE_HELPER(data, String, serviceId);
     MessageParcel reply;
     PARCEL_TRANSACT_SYNC_RET_INT(remote, DELETE_DEVICE_PROFILE, data, reply);
+}
+
+int32_t DistributedDeviceProfileProxy::SubscribeProfileEvents(
+    const std::list<SubscribeInfo>& subscribeInfos,
+    const sptr<IRemoteObject>& profileEventNotifier,
+    std::list<ProfileEvent>& failedEvents)
+{
+    sptr<IRemoteObject> remote = Remote();
+    MessageParcel data;
+    if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) {
+        HILOGE("write inteface token failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    size_t size = subscribeInfos.size();
+    PARCEL_WRITE_HELPER(data, Uint32, static_cast<uint32_t>(size));
+    for (const auto& subscribeInfo : subscribeInfos) {
+        if (!subscribeInfo.Marshalling(data)) {
+            HILOGE("marshall subscribe info failed");
+            return ERR_FLATTEN_OBJECT;
+        }
+    }
+    PARCEL_WRITE_HELPER(data, RemoteObject, profileEventNotifier);
+    MessageParcel reply;
+    MessageOption option;
+    int32_t errCode = remote->SendRequest(SUBSCRIBE_PROFILE_EVENT, data, reply, option);
+    if (errCode != ERR_OK) {
+        HILOGE("transact failed, errCode = %{public}d", errCode);
+        if (!DeviceProfileUtils::ReadProfileEvents(reply, failedEvents)) {
+            HILOGW("read profile events failed");
+        }
+    }
+    return errCode;
+}
+
+int32_t DistributedDeviceProfileProxy::UnsubscribeProfileEvents(
+    const std::list<ProfileEvent>& profileEvents,
+    const sptr<IRemoteObject>& profileEventNotifier,
+    std::list<ProfileEvent>& failedEvents)
+{
+    sptr<IRemoteObject> remote = Remote();
+    MessageParcel data;
+    if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) {
+        HILOGE("write inteface token failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    if (!DeviceProfileUtils::WriteProfileEvents(profileEvents, data)) {
+        return ERR_FLATTEN_OBJECT;
+    }
+
+    PARCEL_WRITE_HELPER(data, RemoteObject, profileEventNotifier);
+    MessageParcel reply;
+    MessageOption option;
+    int32_t errCode = remote->SendRequest(UNSUBSCRIBE_PROFILE_EVENT, data, reply, option);
+    if (errCode != ERR_OK) {
+        HILOGE("transact failed, errCode = %{public}d", errCode);
+        if (!DeviceProfileUtils::ReadProfileEvents(reply, failedEvents)) {
+            HILOGW("read profile events failed");
+        }
+    }
+    return errCode;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

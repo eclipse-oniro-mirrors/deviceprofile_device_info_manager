@@ -21,6 +21,8 @@
 
 #include "distributed_kv_data_manager.h"
 #include "event_handler.h"
+#include "kvstore_observer.h"
+#include "kvstore_sync_callback.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -47,6 +49,10 @@ public:
     void SetOptions(const DistributedKv::Options& options);
     StorageInitStatus GetInitStatus();
     bool RegisterKvStoreInitCallback(const KvStoreInitCallback& callback);
+    int32_t SubscribeKvStore(const std::shared_ptr<DistributedKv::KvStoreObserver>& observer);
+    int32_t UnSubscribeKvStore(const std::shared_ptr<DistributedKv::KvStoreObserver>& observer);
+    int32_t RegisterSyncCallback(const std::shared_ptr<DistributedKv::KvStoreSyncCallback>& sycnCb);
+    int32_t UnRegisterSyncCallback();
 
 private:
     bool TryGetKvStore();
