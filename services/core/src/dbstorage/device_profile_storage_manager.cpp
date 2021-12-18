@@ -156,6 +156,73 @@ int32_t DeviceProfileStorageManager::PutDeviceProfile(const ServiceCharacteristi
     return errCode;
 }
 
+int32_t DeviceProfileStorageManager::GetDeviceProfile(const std::string& udid,
+    const std::string& serviceId, ServiceCharacteristicProfile& profile)
+{
+    if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
+        HILOGE("kvstore init failed");
+        return ERR_DP_INIT_DB_FAILED;
+    }
+
+    std::string key;
+    std::string value;
+    int32_t result = ERR_OK;
+    if (udid.empty()) {
+        key = GenerateKey(localUdid_, serviceId, KeyType::SERVICE);
+        SetServiceType(udid, serviceId, profile);
+    } else {
+        std::string queryUdid;
+        if (!DeviceManager::GetInstance().TransformDeviceId(udid, queryUdid,
+            DeviceIdType::UDID)) {
+            HILOGE("transform to networkid failed");
+            return ERR_DP_INVALID_PARAMS;
+        }
+        key = GenerateKey(queryUdid, serviceId, KeyType::SERVICE);
+        SetServiceType(queryUdid, serviceId, profile);
+    }
+    std::unique_lock<std::mutex> autoLock(serviceLock_);
+    auto itItem = profileItems_.find(key);
+    if (itItem != profileItems_.end()) {
+        value = profileItems_[key];
+    } else {
+        autoLock.unlock();
+        result = onlineSyncTbl_->GetDeviceProfile(key, value);
+    }
+    profile.SetServiceId(serviceId);
+    profile.SetCharacteristicProfileJson(value);
+    return result;
+}
+
+void DeviceProfileStorageManager::SetServiceType(const std::string& udid,
+    const std::string& serviceId, ServiceCharacteristicProfile& profile)
+{
+    std::unique_lock<std::mutex> autoLock(serviceLock_);
+    if (udid.empty()) {
+        auto jsonData = servicesJson_[serviceId];
+        if (jsonData != nullptr) {
+            profile.SetServiceType(jsonData[SERVICE_TYPE]);
+        }
+        return;
+    }
+
+    std::string value;
+    std::string key = GenerateKey(udid, SERVICES, KeyType::SERVICE_LIST);
+    int32_t result = onlineSyncTbl_->GetDeviceProfile(key, value);
+    if (result != ERR_OK) {
+        HILOGE("get service type failed");
+        return;
+    }
+    auto jsonData = nlohmann::json::parse(value, nullptr, false);
+    if (jsonData.is_discarded()) {
+        HILOGE("parse error");
+        return;
+    }
+    auto typeData = jsonData[serviceId];
+    if (typeData != nullptr && typeData[SERVICE_TYPE] != nullptr) {
+        profile.SetServiceType(typeData[SERVICE_TYPE]);
+    }
+}
+
 void DeviceProfileStorageManager::RestoreServiceItemLocked(const std::string& value)
 {
     auto restoreItems = nlohmann::json::parse(value, nullptr, false);

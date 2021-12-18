@@ -40,5 +40,10 @@ void DeviceManager::GetLocalDeviceUdid(std::string& udid)
     GetDevUdid(localDeviceId, DEVICE_ID_SIZE);
     udid = localDeviceId;
 }
+bool DeviceManager::TransformDeviceId(const std::string& fromDeviceId,
+    std::string& toDeviceId, DeviceIdType toType)
+{
+    return false;
+}
 } // namespace DeviceProfile
 } // namespace OHOS

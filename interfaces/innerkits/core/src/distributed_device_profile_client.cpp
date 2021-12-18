@@ -43,6 +43,15 @@ int32_t DistributedDeviceProfileClient::PutDeviceProfile(const ServiceCharacteri
     return dps->PutDeviceProfile(profile);
 }
 
+int32_t DistributedDeviceProfileClient::GetDeviceProfile(const std::string& udid, const std::string& serviceId,
+    ServiceCharacteristicProfile& profile)
+{
+    auto dps = GetDeviceProfileService();
+    if (dps == nullptr) {
+        return ERR_DP_GET_SERVICE_FAILED;
+    }
+    return dps->GetDeviceProfile(udid, serviceId, profile);
+}
 sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfileService()
 {
     std::lock_guard<std::mutex> lock(serviceLock_);

@@ -29,6 +29,8 @@ class DistributedDeviceProfileClient {
 
 public:
     int32_t PutDeviceProfile(const ServiceCharacteristicProfile& profile);
+    int32_t GetDeviceProfile(const std::string& udid, const std::string& serviceId,
+        ServiceCharacteristicProfile& profile);
 private:
     class DeviceProfileDeathRecipient : public IRemoteObject::DeathRecipient {
     public:

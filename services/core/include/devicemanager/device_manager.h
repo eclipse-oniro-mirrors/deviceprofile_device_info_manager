@@ -23,11 +23,18 @@
 
 namespace OHOS {
 namespace DeviceProfile {
+enum DeviceIdType : uint8_t {
+    NETWORKID = 0,
+    UDID = 1,
+    UUID = 2
+};
 class DeviceManager {
     DECLARE_SINGLE_INSTANCE(DeviceManager);
 public:
     bool Init();
     void GetLocalDeviceUdid(std::string& udid);
+    bool TransformDeviceId(const std::string& fromDeviceId, std::string& toDeviceId,
+        DeviceIdType toType);
 };
 } // namespace DeviceProfile
 } // namespace OHOS

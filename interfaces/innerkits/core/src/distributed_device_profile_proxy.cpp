@@ -38,5 +38,27 @@ int32_t DistributedDeviceProfileProxy::PutDeviceProfile(const ServiceCharacteris
     MessageParcel reply;
     PARCEL_TRANSACT_SYNC_RET_INT(remote, PUT_DEVICE_PROFILE, data, reply);
 }
+
+int32_t DistributedDeviceProfileProxy::GetDeviceProfile(const std::string& udid, const std::string& serviceId,
+    ServiceCharacteristicProfile& profile)
+{
+    sptr<IRemoteObject> remote = Remote();
+    MessageParcel data;
+    if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) {
+        HILOGE("write interface token failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    PARCEL_WRITE_HELPER(data, String, udid);
+    PARCEL_WRITE_HELPER(data, String, serviceId);
+    MessageParcel reply;
+    MessageOption option;
+    int32_t error = remote->SendRequest(GET_DEVICE_PROFILE, data, reply, option);
+    if (error != ERR_NONE) {
+        HILOGE("transact failed, error: %{public}d", error);
+        return error;
+    }
+    profile.Unmarshalling(reply);
+    return ERR_OK;
+}
 } // namespace DeviceProfile
 } // namespace OHOS

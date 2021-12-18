@@ -168,5 +168,32 @@ HWTEST_F(ProfileCrudTest, PutDeviceProfile_005, TestSize.Level1)
     int32_t result = DistributedDeviceProfileClient::GetInstance().PutDeviceProfile(profile);
     EXPECT_TRUE(result == ERR_OK);
 }
+
+/**
+ * @tc.name: GetDeviceProfile_001
+ * @tc.desc: get device profile with normal deviceid
+ * @tc.type: FUNC
+ */
+HWTEST_F(ProfileCrudTest, GetDeviceProfile_001, TestSize.Level1)
+{
+    ServiceCharacteristicProfile profile;
+    DistributedDeviceProfileClient::GetInstance().GetDeviceProfile("", "test", profile);
+    std::string jsonData = profile.GetCharacteristicProfileJson();
+    auto json = nlohmann::json::parse(jsonData);
+    EXPECT_EQ(json["testApiLevel"], 7);
+}
+
+/**
+ * @tc.name: GetDeviceProfile_002
+ * @tc.desc: get device profile with unnormal deviceid
+ * @tc.type: FUNC
+ */
+HWTEST_F(ProfileCrudTest, GetDeviceProfile_002, TestSize.Level1)
+{
+    ServiceCharacteristicProfile profile;
+    DistributedDeviceProfileClient::GetInstance().GetDeviceProfile("123456789", "test", profile);
+    std::string jsonData = profile.GetCharacteristicProfileJson();
+    EXPECT_TRUE(jsonData.empty());
+}
 }
 }

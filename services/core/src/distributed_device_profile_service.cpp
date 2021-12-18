@@ -55,6 +55,12 @@ int32_t DistributedDeviceProfileService::PutDeviceProfile(const ServiceCharacter
     return DeviceProfileStorageManager::GetInstance().PutDeviceProfile(profile);
 }
 
+int32_t DistributedDeviceProfileService::GetDeviceProfile(const std::string& udid, const std::string& serviceId,
+    ServiceCharacteristicProfile& profile)
+{
+    return DeviceProfileStorageManager::GetInstance().GetDeviceProfile(udid, serviceId, profile);
+}
+
 void DistributedDeviceProfileService::OnStart()
 {
     HILOGI("called");

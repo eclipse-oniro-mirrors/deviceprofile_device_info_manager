@@ -33,6 +33,7 @@ public:
         MessageOption& option) override;
 
     int32_t PutDeviceProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetDeviceProfileInner(MessageParcel& data, MessageParcel& reply);
 private:
     using Func = int32_t(DistributedDeviceProfileStub::*)(MessageParcel& data, MessageParcel& reply);
 

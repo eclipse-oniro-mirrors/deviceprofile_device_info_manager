@@ -20,6 +20,7 @@
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_storage.h"
+#include "parcel_helper.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -30,6 +31,7 @@ const std::string TAG = "DistributedDeviceProfileStub";
 DistributedDeviceProfileStub::DistributedDeviceProfileStub()
 {
     funcsMap_[PUT_DEVICE_PROFILE] = &DistributedDeviceProfileStub::PutDeviceProfileInner;
+    funcsMap_[GET_DEVICE_PROFILE] = &DistributedDeviceProfileStub::GetDeviceProfileInner;
 }
 
 bool DistributedDeviceProfileStub::EnforceInterfaceToken(MessageParcel& data)
@@ -64,6 +66,22 @@ int32_t DistributedDeviceProfileStub::PutDeviceProfileInner(MessageParcel& data,
         return ERR_NULL_OBJECT;
     }
     return PutDeviceProfile(profile);
+}
+
+int32_t DistributedDeviceProfileStub::GetDeviceProfileInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    std::string udid;
+    std::string serviceId;
+    ServiceCharacteristicProfile profile;
+    PARCEL_READ_HELPER(data, String, udid);
+    PARCEL_READ_HELPER(data, String, serviceId);
+    int32_t ret = GetDeviceProfile(udid, serviceId, profile);
+    if (!profile.Marshalling(reply)) {
+        HILOGE("marshall profile failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return ret;
 }
 } // namespace DeviceProfile
 } // namespace OHOS
