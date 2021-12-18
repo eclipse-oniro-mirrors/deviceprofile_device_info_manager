@@ -15,6 +15,7 @@ import("//build/ohos.gni")
 import("//build/ohos_var.gni")
 
 device_profile_path = "//foundation/deviceprofile/device_profile_core"
+device_profile_service = "${device_profile_path}/services/core"
 
 config("distributed_device_profile_client_config") {
   visibility = [ ":*" ]
@@ -29,6 +30,7 @@ config("distributed_device_profile_client_config") {
 ohos_shared_library("distributed_device_profile_client") {
   install_enable = true
   sources = [
+    "${device_profile_service}/src/service_characteristic_profile.cpp",
     "src/distributed_device_profile_client.cpp",
     "src/distributed_device_profile_proxy.cpp",
   ]

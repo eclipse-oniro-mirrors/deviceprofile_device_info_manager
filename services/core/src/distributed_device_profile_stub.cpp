@@ -19,6 +19,7 @@
 
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
+#include "device_profile_storage.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -28,6 +29,7 @@ const std::string TAG = "DistributedDeviceProfileStub";
 
 DistributedDeviceProfileStub::DistributedDeviceProfileStub()
 {
+    funcsMap_[PUT_DEVICE_PROFILE] = &DistributedDeviceProfileStub::PutDeviceProfileInner;
 }
 
 bool DistributedDeviceProfileStub::EnforceInterfaceToken(MessageParcel& data)
@@ -53,6 +55,15 @@ int32_t DistributedDeviceProfileStub::OnRemoteRequest(uint32_t code, MessageParc
     }
     HILOGW("unknown request code, please check");
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
+}
+int32_t DistributedDeviceProfileStub::PutDeviceProfileInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    ServiceCharacteristicProfile profile;
+    if (!profile.Unmarshalling(data)) {
+        return ERR_NULL_OBJECT;
+    }
+    return PutDeviceProfile(profile);
 }
 } // namespace DeviceProfile
 } // namespace OHOS

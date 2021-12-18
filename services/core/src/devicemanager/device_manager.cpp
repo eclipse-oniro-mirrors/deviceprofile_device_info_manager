@@ -13,30 +13,32 @@
  * limitations under the License.
  */
 
-#include "distributed_device_profile_proxy.h"
+#include "device_manager.h"
+
+#include "parameter.h"
 
 #include "device_profile_log.h"
-#include "parcel_helper.h"
 
 namespace OHOS {
 namespace DeviceProfile {
 namespace {
-const std::string TAG = "DistributedDeviceProfileProxy";
+const std::string TAG = "DeviceManager";
+
+constexpr int32_t DEVICE_ID_SIZE = 65;
 }
-int32_t DistributedDeviceProfileProxy::PutDeviceProfile(const ServiceCharacteristicProfile& profile)
+
+IMPLEMENT_SINGLE_INSTANCE(DeviceManager);
+
+bool DeviceManager::Init()
 {
-    sptr<IRemoteObject> remote = Remote();
-    MessageParcel data;
-    if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) {
-        HILOGE("write interface token failed");
-        return ERR_FLATTEN_OBJECT;
-    }
-    if (!profile.Marshalling(data)) {
-        HILOGE("marshall profile failed");
-        return ERR_FLATTEN_OBJECT;
-    }
-    MessageParcel reply;
-    PARCEL_TRANSACT_SYNC_RET_INT(remote, PUT_DEVICE_PROFILE, data, reply);
+    return true;
+}
+
+void DeviceManager::GetLocalDeviceUdid(std::string& udid)
+{
+    char localDeviceId[DEVICE_ID_SIZE] = {0};
+    GetDevUdid(localDeviceId, DEVICE_ID_SIZE);
+    udid = localDeviceId;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

@@ -13,23 +13,20 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_I_DISTRIBUTED_DEVICE_PROFILE_H
-#define OHOS_I_DISTRIBUTED_DEVICE_PROFILE_H
+#ifndef OHOS_DISTRIBUTED_DEVICE_PROFILE_ONLINE_SYNC_TABLE_H
+#define OHOS_DISTRIBUTED_DEVICE_PROFILE_ONLINE_SYNC_TABLE_H
 
-#include "iremote_broker.h"
-#include "service_characteristic_profile.h"
+#include "device_profile_storage.h"
 
 namespace OHOS {
 namespace DeviceProfile {
-class IDistributedDeviceProfile : public IRemoteBroker {
+class OnlineSyncTable : public DeviceProfileStorage {
 public:
-    enum {
-        PUT_DEVICE_PROFILE = 1,
-    };
+    OnlineSyncTable();
+    ~OnlineSyncTable() = default;
 
-    virtual int32_t PutDeviceProfile(const ServiceCharacteristicProfile& profile) = 0;
-    DECLARE_INTERFACE_DESCRIPTOR(u"OHOS.DeviceProfile.IDistributedDeviceProfile");
+    void Init() override;
 };
 } // namespace DeviceProfile
 } // namespace OHOS
-#endif // OHOS_I_DISTRIBUTED_DEVICE_PROFILE_H
+#endif // OHOS_DISTRIBUTED_DEVICE_PROFILE_ONLINE_SYNC_TABLE_H

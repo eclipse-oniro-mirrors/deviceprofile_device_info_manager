@@ -20,8 +20,11 @@ config("device_profile_core_config") {
   visibility = [ ":*" ]
   include_dirs = [
     "include",
+    "include/devicemanager",
+    "include/dbstorage",
     "${device_profile_path}/common/include",
     "${device_profile_innerkits}/core/include",
+    "//third_party/json/include",
   ]
 }
 
@@ -30,8 +33,14 @@ dp_common_sources = []
 ohos_shared_library("distributed_device_profile") {
   install_enable = true
   sources = [
+    "src/dbstorage/device_profile_storage.cpp",
+    "src/dbstorage/device_profile_storage_manager.cpp",
+    "src/dbstorage/kvstore_death_recipient.cpp",
+    "src/dbstorage/online_sync_table.cpp",
+    "src/devicemanager/device_manager.cpp",
     "src/distributed_device_profile_service.cpp",
     "src/distributed_device_profile_stub.cpp",
+    "src/service_characteristic_profile.cpp",
   ]
 
   sources += dp_common_sources
@@ -40,16 +49,25 @@ ohos_shared_library("distributed_device_profile") {
 
   deps = [
     "//base/hiviewdfx/hilog/interfaces/native/innerkits:libhilog",
+    "//base/startup/syspara_lite/interfaces/innerkits/native/syspara:syspara",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
+    "//foundation/distributeddatamgr/distributeddatamgr/interfaces/innerkits/distributeddata:distributeddata_inner",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//utils/native/base:utils",
   ]
 
   external_deps = [
+    "dsoftbus_standard:softbus_client",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
   ]
 
   part_name = "device_profile_core"
   subsystem_name = "deviceprofile"
+}
+
+group("unittest") {
+  testonly = true
+  deps = [ "test:unittest" ]
 }

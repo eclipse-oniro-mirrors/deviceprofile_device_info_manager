@@ -13,30 +13,36 @@
  * limitations under the License.
  */
 
-#include "distributed_device_profile_proxy.h"
+#include "online_sync_table.h"
 
 #include "device_profile_log.h"
-#include "parcel_helper.h"
 
 namespace OHOS {
 namespace DeviceProfile {
+using namespace OHOS::DistributedKv;
+
 namespace {
-const std::string TAG = "DistributedDeviceProfileProxy";
+const std::string TAG = "OnlineSyncTable";
+
+const std::string APP_ID = "distributed_device_profile_service";
+const std::string STORE_ID = "online_sync_storage";
 }
-int32_t DistributedDeviceProfileProxy::PutDeviceProfile(const ServiceCharacteristicProfile& profile)
+
+OnlineSyncTable::OnlineSyncTable() : DeviceProfileStorage(APP_ID, STORE_ID)
 {
-    sptr<IRemoteObject> remote = Remote();
-    MessageParcel data;
-    if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) {
-        HILOGE("write interface token failed");
-        return ERR_FLATTEN_OBJECT;
-    }
-    if (!profile.Marshalling(data)) {
-        HILOGE("marshall profile failed");
-        return ERR_FLATTEN_OBJECT;
-    }
-    MessageParcel reply;
-    PARCEL_TRANSACT_SYNC_RET_INT(remote, PUT_DEVICE_PROFILE, data, reply);
+}
+
+void OnlineSyncTable::Init()
+{
+    HILOGD("called");
+    Options options = {
+        .createIfMissing = true,
+        .encrypt = false,
+        .autoSync = false,
+        .kvStoreType = KvStoreType::SINGLE_VERSION,
+    };
+    SetOptions(options);
+    DeviceProfileStorage::Init();
 }
 } // namespace DeviceProfile
 } // namespace OHOS

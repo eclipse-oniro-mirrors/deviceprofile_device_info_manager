@@ -31,6 +31,7 @@ public:
     DistributedDeviceProfileService();
     ~DistributedDeviceProfileService() = default;
 
+    int32_t PutDeviceProfile(const ServiceCharacteristicProfile& profile) override;
 protected:
     void OnStart() override;
     void OnStop() override;

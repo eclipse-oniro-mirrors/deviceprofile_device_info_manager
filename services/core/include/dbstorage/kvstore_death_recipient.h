@@ -13,23 +13,17 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_I_DISTRIBUTED_DEVICE_PROFILE_H
-#define OHOS_I_DISTRIBUTED_DEVICE_PROFILE_H
+#ifndef OHOS_KVSTORE_DEATH_RECIPIENT_H
+#define OHOS_KVSTORE_DEATH_RECIPIENT_H
 
-#include "iremote_broker.h"
-#include "service_characteristic_profile.h"
+#include "iremote_object.h"
 
 namespace OHOS {
 namespace DeviceProfile {
-class IDistributedDeviceProfile : public IRemoteBroker {
+class KvStoreDeathRecipient : public IRemoteObject::DeathRecipient {
 public:
-    enum {
-        PUT_DEVICE_PROFILE = 1,
-    };
-
-    virtual int32_t PutDeviceProfile(const ServiceCharacteristicProfile& profile) = 0;
-    DECLARE_INTERFACE_DESCRIPTOR(u"OHOS.DeviceProfile.IDistributedDeviceProfile");
+    void OnRemoteDied(const wptr<IRemoteObject>& remote) override;
 };
 } // namespace DeviceProfile
 } // namespace OHOS
-#endif // OHOS_I_DISTRIBUTED_DEVICE_PROFILE_H
+#endif // OHOS_KVSTORE_DEATH_RECIPIENT_H

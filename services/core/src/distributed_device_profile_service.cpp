@@ -15,8 +15,10 @@
 
 #include "distributed_device_profile_service.h"
 
+#include "device_manager.h"
 #include "device_profile_log.h"
-
+#include "device_profile_storage_manager.h"
+#include "service_characteristic_profile.h"
 
 #include "system_ability_definition.h"
 
@@ -36,8 +38,21 @@ DistributedDeviceProfileService::DistributedDeviceProfileService()
 
 bool DistributedDeviceProfileService::Init()
 {
+    if (!DeviceManager::GetInstance().Init()) {
+        HILOGE("DeviceManager init failed");
+        return false;
+    }
+    if (!DeviceProfileStorageManager::GetInstance().Init()) {
+        HILOGE("DeviceProfileStorageManager init failed");
+        return false;
+    }
     HILOGI("init succeeded");
     return true;
+}
+
+int32_t DistributedDeviceProfileService::PutDeviceProfile(const ServiceCharacteristicProfile& profile)
+{
+    return DeviceProfileStorageManager::GetInstance().PutDeviceProfile(profile);
 }
 
 void DistributedDeviceProfileService::OnStart()

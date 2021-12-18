@@ -27,6 +27,8 @@ namespace DeviceProfile {
 class DistributedDeviceProfileClient {
     DECLARE_SINGLE_INSTANCE(DistributedDeviceProfileClient);
 
+public:
+    int32_t PutDeviceProfile(const ServiceCharacteristicProfile& profile);
 private:
     class DeviceProfileDeathRecipient : public IRemoteObject::DeathRecipient {
     public:
@@ -34,6 +36,7 @@ private:
     };
 
     sptr<IDistributedDeviceProfile> GetDeviceProfileService();
+    bool CheckProfileInvalidity(const ServiceCharacteristicProfile& profile);
     void OnServiceDied(const sptr<IRemoteObject>& remote);
     std::mutex serviceLock_;
     sptr<IDistributedDeviceProfile> dpProxy_;

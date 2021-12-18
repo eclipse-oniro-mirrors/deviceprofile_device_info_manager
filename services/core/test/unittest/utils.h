@@ -13,23 +13,13 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_I_DISTRIBUTED_DEVICE_PROFILE_H
-#define OHOS_I_DISTRIBUTED_DEVICE_PROFILE_H
-
-#include "iremote_broker.h"
-#include "service_characteristic_profile.h"
+#ifndef OHOS_DEVICE_PROFILE_UNITTEST_UTILS_H
+#define OHOS_DEVICE_PROFILE_UNITTEST_UTILS_H
 
 namespace OHOS {
 namespace DeviceProfile {
-class IDistributedDeviceProfile : public IRemoteBroker {
-public:
-    enum {
-        PUT_DEVICE_PROFILE = 1,
-    };
-
-    virtual int32_t PutDeviceProfile(const ServiceCharacteristicProfile& profile) = 0;
-    DECLARE_INTERFACE_DESCRIPTOR(u"OHOS.DeviceProfile.IDistributedDeviceProfile");
-};
+#define DTEST_LOG std::cout << __FILE__ << ":" << __LINE__ << ":"
 } // namespace DeviceProfile
 } // namespace OHOS
-#endif // OHOS_I_DISTRIBUTED_DEVICE_PROFILE_H
+
+#endif // OHOS_DEVICE_PROFILE_UNITTEST_UTILS_H

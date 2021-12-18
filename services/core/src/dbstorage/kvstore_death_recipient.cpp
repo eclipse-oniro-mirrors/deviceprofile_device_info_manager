@@ -13,30 +13,21 @@
  * limitations under the License.
  */
 
-#include "distributed_device_profile_proxy.h"
+#include "kvstore_death_recipient.h"
 
 #include "device_profile_log.h"
-#include "parcel_helper.h"
+#include "device_profile_storage_manager.h"
 
 namespace OHOS {
 namespace DeviceProfile {
 namespace {
-const std::string TAG = "DistributedDeviceProfileProxy";
+const std::string TAG = "KvStoreDeathRecipient";
 }
-int32_t DistributedDeviceProfileProxy::PutDeviceProfile(const ServiceCharacteristicProfile& profile)
+
+void KvStoreDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
 {
-    sptr<IRemoteObject> remote = Remote();
-    MessageParcel data;
-    if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) {
-        HILOGE("write interface token failed");
-        return ERR_FLATTEN_OBJECT;
-    }
-    if (!profile.Marshalling(data)) {
-        HILOGE("marshall profile failed");
-        return ERR_FLATTEN_OBJECT;
-    }
-    MessageParcel reply;
-    PARCEL_TRANSACT_SYNC_RET_INT(remote, PUT_DEVICE_PROFILE, data, reply);
+    HILOGI("called");
+    DeviceProfileStorageManager::GetInstance().Init();
 }
 } // namespace DeviceProfile
 } // namespace OHOS

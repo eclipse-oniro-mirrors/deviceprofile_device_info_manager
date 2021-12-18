@@ -26,6 +26,7 @@ public:
     explicit DistributedDeviceProfileProxy(const sptr<IRemoteObject>& impl)
         : IRemoteProxy<IDistributedDeviceProfile>(impl) {}
     ~DistributedDeviceProfileProxy() = default;
+    int32_t PutDeviceProfile(const ServiceCharacteristicProfile& profile) override;
 
 private:
     static inline BrokerDelegator<DistributedDeviceProfileProxy> delegator_;

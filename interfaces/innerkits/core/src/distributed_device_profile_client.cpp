@@ -26,9 +26,22 @@ namespace OHOS {
 namespace DeviceProfile {
 namespace {
 const std::string TAG = "DistributedDeviceProfileClient";
+const std::string JSON_NULL = "null";
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileClient);
+int32_t DistributedDeviceProfileClient::PutDeviceProfile(const ServiceCharacteristicProfile& profile)
+{
+    if (CheckProfileInvalidity(profile)) {
+        return ERR_DP_INVALID_PARAMS;
+    }
+
+    auto dps = GetDeviceProfileService();
+    if (dps == nullptr) {
+        return ERR_DP_GET_SERVICE_FAILED;
+    }
+    return dps->PutDeviceProfile(profile);
+}
 
 sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfileService()
 {
@@ -57,6 +70,13 @@ sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfile
     return dpProxy_;
 }
 
+bool DistributedDeviceProfileClient::CheckProfileInvalidity(const ServiceCharacteristicProfile& profile)
+{
+    return profile.GetServiceId().empty() ||
+           profile.GetServiceType().empty() ||
+           profile.GetCharacteristicProfileJson().empty() ||
+           profile.GetCharacteristicProfileJson() == JSON_NULL;
+}
 void DistributedDeviceProfileClient::OnServiceDied(const sptr<IRemoteObject>& remote)
 {
     HILOGI("called");
