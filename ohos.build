@@ -22,7 +22,8 @@
             ],
             "module_list": [
                 "//foundation/deviceprofile/device_profile_core/sa_profile:dps_sa_profile",
-                "//foundation/deviceprofile/device_profile_core/services/core:distributed_device_profile"
+                "//foundation/deviceprofile/device_profile_core/services/core:distributed_device_profile",
+                "//foundation/deviceprofile/device_profile_core/tools/dp:dp"
             ],
             "system_kits": [],
             "test_list": [
