@@ -16,7 +16,9 @@ import("//build/ohos_var.gni")
 
 device_profile_path = "//foundation/deviceprofile/device_profile_core"
 device_profile_innerkits = "${device_profile_path}/interfaces/innerkits"
-device_profile_configs = [ "${device_profile_innerkits}/device_profile_core:distributed_device_profile_client_config" ]
+device_profile_configs = [
+  "${device_profile_innerkits}/core:distributed_device_profile_client_config",
+]
 
 ohos_executable("dp") {
   install_enable = true
@@ -37,7 +39,7 @@ ohos_executable("dp") {
   ]
 
   deps = [
-    "${device_profile_innerkits}/device_profile_core:distributed_device_profile_client",
+    "${device_profile_innerkits}/core:distributed_device_profile_client",
     "//utils/native/base:utils",
   ]
 
