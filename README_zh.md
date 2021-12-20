@@ -159,31 +159,29 @@ DistributedDeviceProfileClient::GetInstance().SyncDeviceProfile(syncOption,
 ```c++
 auto callback = std::make_shared<ProfileEventCallback>();
 std::list<SubscribeInfo> subscribeInfos;
+
+// 订阅EVENT_PROFILE_CHANGED事件
 ExtraInfo extraInfo;
 extraInfo["deviceId"] = deviceId;
 extraInfo["serviceIds"] = serviceIds;
-
-// 订阅EVENT_PROFILE_CHANGED事件
-SubscribeInfo info1;
-info1.profileEvent = ProfileEvent::EVENT_PROFILE_CHANGED;
-info1.extraInfo = std::move(extraInfo);
-subscribeInfos.emplace_back(info1);
+SubscribeInfo changeEventInfo;
+changeEventInfo.profileEvent = ProfileEvent::EVENT_PROFILE_CHANGED;
+changeEventInfo.extraInfo = std::move(extraInfo);
+subscribeInfos.emplace_back(changeEventInfo);
 
 // 订阅EVENT_SYNC_COMPLETED事件
-SubscribeInfo info2;
-info2.profileEvent = ProfileEvent::EVENT_SYNC_COMPLETED;
-info2.extraInfo = std::move(extraInfo);
-subscribeInfos.emplace_back(info2);
+SubscribeInfo syncEventInfo;
+syncEventInfo.profileEvent = ProfileEvent::EVENT_SYNC_COMPLETED;
+subscribeInfos.emplace_back(syncEventInfo);
 
-std::list<ProfileEvent> failedEvents;
 // 执行订阅接口
+std::list<ProfileEvent> failedEvents;
 DistributedDeviceProfileClient::GetInstance().SubscribeProfileEvents(subscribeInfos,
     callback, failedEvents);
-sleep(SUBSCRIBE_SLEEP_TIME);
+
+// 解除订阅
 std::list<ProfileEvent> profileEvents;
 profileEvents.emplace_back(ProfileEvent::EVENT_PROFILE_CHANGED);
-failedEvents.clear();
-// 解除订阅
 DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(profileEvents,
     callback, failedEvents);
 ```
