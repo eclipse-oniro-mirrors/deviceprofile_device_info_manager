@@ -1,0 +1,96 @@
+# Copyright (c) 2021 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+import("//build/ohos_var.gni")
+
+device_profile_path = "//foundation/deviceprofile/device_profile_core"
+device_profile_innerkits = "${device_profile_path}/interfaces/innerkits"
+distributed_datamgr_innerkits =
+    "//foundation/distributeddatamgr/distributeddatamgr/interfaces/innerkits"
+
+config("device_profile_core_config") {
+  visibility = [ ":*" ]
+  include_dirs = [
+    "include",
+    "include/devicemanager",
+    "include/contentsensor",
+    "include/dbstorage",
+    "include/subscribemanager",
+    "${device_profile_path}/common/include",
+    "${device_profile_innerkits}/core/include",
+    "${distributed_datamgr_innerkits}/distributeddata/include",
+    "//third_party/json/include",
+  ]
+}
+
+dp_common_sources =
+    [ "${device_profile_path}/common/src/device_profile_utils.cpp" ]
+
+ohos_shared_library("distributed_device_profile") {
+  install_enable = true
+  sources = [
+    "src/contentsensor/content_collector.cpp",
+    "src/contentsensor/content_sensor_manager.cpp",
+    "src/contentsensor/device_info_collector.cpp",
+    "src/contentsensor/system_info_collector.cpp",
+    "src/dbstorage/device_profile_storage.cpp",
+    "src/dbstorage/device_profile_storage_manager.cpp",
+    "src/dbstorage/kvstore_death_recipient.cpp",
+    "src/dbstorage/online_sync_table.cpp",
+    "src/devicemanager/device_info.cpp",
+    "src/devicemanager/device_manager.cpp",
+    "src/distributed_device_profile_service.cpp",
+    "src/distributed_device_profile_stub.cpp",
+    "src/profile_change_notification.cpp",
+    "src/service_characteristic_profile.cpp",
+    "src/subscribemanager/profile_change_handler.cpp",
+    "src/subscribemanager/profile_event_handler.cpp",
+    "src/subscribemanager/profile_event_handler_factory.cpp",
+    "src/subscribemanager/profile_event_notifier_proxy.cpp",
+    "src/subscribemanager/profile_sync_handler.cpp",
+    "src/subscribemanager/subscribe_info.cpp",
+    "src/subscribemanager/subscribe_info_checker.cpp",
+    "src/subscribemanager/subscribe_manager.cpp",
+    "src/subscribemanager/subscriber_death_recipient.cpp",
+    "src/sync_options.cpp",
+  ]
+
+  sources += dp_common_sources
+
+  configs = [ ":device_profile_core_config" ]
+
+  deps = [
+    "//base/hiviewdfx/hilog/interfaces/native/innerkits:libhilog",
+    "//base/startup/syspara_lite/interfaces/innerkits/native/syspara:syspara",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
+    "//foundation/distributeddatamgr/distributeddatamgr/interfaces/innerkits/distributeddata:distributeddata_inner",
+    "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
+    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
+    "//utils/native/base:utils",
+  ]
+
+  external_deps = [
+    "dsoftbus_standard:softbus_client",
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
+  ]
+
+  part_name = "device_profile_core"
+  subsystem_name = "deviceprofile"
+}
+
+group("unittest") {
+  testonly = true
+  deps = [ "test:unittest" ]
+}
