@@ -170,7 +170,30 @@ ErrCode DpShellCommand::PutCommand()
 
 ErrCode DpShellCommand::DeleteCommand()
 {
-    return ERR_OK;
+    int32_t result = ERR_OK;
+    std::string serviceType;
+    std::string ;
+    std::string serviceId;
+
+    while (true) {
+        int option = getopt_long(argc_, argv_, SHORT_OPTIONS.c_str(), LONG_OPTIONS, nullptr);
+        HILOGI("option: %{public}d, optopt: %{public}d, optind: %{public}d", option, optopt, optind);
+        if (optind < 0 || optind > argc_) {
+            return OHOS::ERR_INVALID_VALUE;
+        }
+
+        if (option == -1) {
+            break;
+        }
+        result = HandleNormalOption(option, deviceId, serviceId, serviceType);
+    }
+
+    if (result == ERR_OK) {
+        DistributedDeviceProfileClient::GetInstance().DeleteDeviceProfile(serviceId);
+    } else {
+        resultReceiver_.append(HELP_MSG_DELETE);
+    }
+    return result;
 }
 
 ErrCode DpShellCommand::SyncCommand()
