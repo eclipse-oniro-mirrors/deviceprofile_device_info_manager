@@ -172,7 +172,7 @@ ErrCode DpShellCommand::DeleteCommand()
 {
     int32_t result = ERR_OK;
     std::string serviceType;
-    std::string ;
+    std::string deviceId;
     std::string serviceId;
 
     while (true) {
