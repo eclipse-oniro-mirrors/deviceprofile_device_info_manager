@@ -61,6 +61,11 @@ const std::string HELP_MSG_SUBSCRIBE =
     "  -h, --help                               list available commands\n"
     "  -s  <service-ids>                        subscribe device info by service ids\n"
     "  -d  <device-id>                          subscribe device info by device id\n";
+const std::string HELP_MSG_DELETE =
+    "usage: dp delete <options>\n"
+    "options list:\n"
+    "  -h, --help                               list available commands\n"
+    "  -s  <service-id>                        service id to delete\n";
 }  // namespace
 
 class DpShellCommand : public OHOS::DeviceProfile::ShellCommand {
