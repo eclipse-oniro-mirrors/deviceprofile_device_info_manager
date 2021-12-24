@@ -48,6 +48,7 @@ ohos_shared_library("distributed_device_profile") {
     "src/dbstorage/device_profile_storage_manager.cpp",
     "src/dbstorage/kvstore_death_recipient.cpp",
     "src/dbstorage/online_sync_table.cpp",
+    "src/dbstorage/sync_coordinator.cpp",
     "src/devicemanager/device_info.cpp",
     "src/devicemanager/device_manager.cpp",
     "src/distributed_device_profile_service.cpp",

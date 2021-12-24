@@ -248,6 +248,7 @@ int32_t DeviceProfileStorage::DeleteDeviceProfile(const std::string& key)
 int32_t DeviceProfileStorage::SyncDeviceProfile(const std::vector<std::string>& deviceIdList,
     DistributedKv::SyncMode syncMode)
 {
+    HILOGI("called");
     std::unique_lock<std::shared_mutex> writeLock(storageLock_);
     if (kvStorePtr_ == nullptr) {
         return ERR_DP_INVALID_PARAMS;

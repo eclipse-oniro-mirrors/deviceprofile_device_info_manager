@@ -20,12 +20,25 @@
 
 namespace OHOS {
 namespace DeviceProfile {
-class OnlineSyncTable : public DeviceProfileStorage {
+class OnlineSyncTable : public std::enable_shared_from_this<OnlineSyncTable>,
+                        public DeviceProfileStorage,
+                        public DistributedKv::KvStoreSyncCallback {
 public:
     OnlineSyncTable();
     ~OnlineSyncTable() = default;
 
     void Init() override;
+    int32_t RegisterSyncCallback(const std::shared_ptr<DistributedKv::KvStoreSyncCallback>& sycnCb) override;
+    int32_t UnRegisterSyncCallback() override;
+    int32_t SyncDeviceProfile(const std::vector<std::string>& deviceIds, DistributedKv::SyncMode syncMode) override;
+
+    void SyncCompleted(const std::map<std::string, DistributedKv::Status>& results) override;
+
+private:
+    std::shared_ptr<DistributedKv::KvStoreSyncCallback> manualSyncCallback_;
+    std::vector<std::string> onlineDeviceIds_;
+    std::atomic<int32_t> retrySyncTimes_ {0};
+    std::mutex tableLock_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

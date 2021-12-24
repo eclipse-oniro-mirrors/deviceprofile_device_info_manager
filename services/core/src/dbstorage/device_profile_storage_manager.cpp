@@ -22,6 +22,7 @@
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_utils.h"
+#include "sync_coordinator.h"
 
 #include "ipc_object_proxy.h"
 #include "ipc_skeleton.h"
@@ -41,6 +42,8 @@ const std::string TAG = "DeviceProfileStorageManager";
 const std::string SERVICE_TYPE = "type";
 const std::string SERVICES = "services";
 constexpr int32_t RETRY_TIMES_WAIT_KV_DATA = 30;
+constexpr int32_t INTREVAL_POST_ONLINE_SYNC_MS = 50;
+constexpr int32_t RETRY_TIMES_POST_ONLINE_SYNC = 15;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DeviceProfileStorageManager);
@@ -48,12 +51,16 @@ IMPLEMENT_SINGLE_INSTANCE(DeviceProfileStorageManager);
 bool DeviceProfileStorageManager::Init()
 {
     if (!inited_) {
+        if (!SyncCoordinator::GetInstance().Init()) {
+            HILOGE("SyncCoordinator init failed");
+            return false;
+        }
         DeviceManager::GetInstance().GetLocalDeviceUdid(localUdid_);
         if (localUdid_.empty()) {
             HILOGE("get local udid failed");
             return false;
         }
-        onlineSyncTbl_ = std::make_unique<OnlineSyncTable>();
+        onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
         if (onlineSyncTbl_ == nullptr) {
             return false;
         }
@@ -290,6 +297,7 @@ int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOp
         if (devicesList.empty()) {
             DeviceManager::GetInstance().GetDeviceIdList(devicesList);
         }
+        SyncCoordinator::GetInstance().SetSyncTrigger(false);
         std::vector<std::string> devicesVector(std::vector<std::string> { devicesList.begin(), devicesList.end() });
         int32_t result = onlineSyncTbl_->SyncDeviceProfile(devicesVector, syncOptions.GetSyncMode());
         if (result != ERR_OK) {
@@ -298,8 +306,8 @@ int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOp
             return;
         }
     };
-    if (!storageHandler_->PostTask(syncTask)) {
-        HILOGE("post task failed");
+    if (!SyncCoordinator::GetInstance().DispatchSyncTask(syncTask)) {
+        HILOGE("post sync task failed");
         NotifySyncCompleted();
         return ERR_DP_POST_TASK_FAILED;
     }
@@ -308,13 +316,13 @@ int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOp
 
 int32_t DeviceProfileStorageManager::NotifySyncStart(const sptr<IRemoteObject>& profileEventNotifier)
 {
+    if (!SyncCoordinator::GetInstance().AcquireSync()) {
+        HILOGW("sync busy");
+        return ERR_DP_DEVICE_SYNC_BUSY;
+    }
+
     {
         std::lock_guard<std::mutex> autoLock(profileSyncLock_);
-        if (isSync_) {
-            HILOGW("sync busy");
-            return ERR_DP_DEVICE_SYNC_BUSY;
-        }
-        isSync_ = true;
         syncEventNotifier_ = profileEventNotifier;
     }
 
@@ -326,8 +334,8 @@ int32_t DeviceProfileStorageManager::NotifySyncStart(const sptr<IRemoteObject>& 
     if (SubscribeManager::GetInstance().SubscribeProfileEvents(
         subscribeInfos, profileEventNotifier, failedEvents) != ERR_OK) {
         HILOGE("subscribe sync event failed");
+        SyncCoordinator::GetInstance().ReleaseSync();
         std::lock_guard<std::mutex> autoLock(profileSyncLock_);
-        isSync_ = false;
         syncEventNotifier_ = nullptr;
         return ERR_DP_SUBSCRIBE_FAILED;
     }
@@ -337,17 +345,16 @@ int32_t DeviceProfileStorageManager::NotifySyncStart(const sptr<IRemoteObject>& 
 void DeviceProfileStorageManager::NotifySyncCompleted()
 {
     HILOGI("called");
+    SyncCoordinator::GetInstance().ReleaseSync();
+    std::lock_guard<std::mutex> autoLock(profileSyncLock_);
     std::list<ProfileEvent> profileEvents;
     profileEvents.emplace_back(ProfileEvent::EVENT_SYNC_COMPLETED);
     std::list<ProfileEvent> failedEvents;
-    std::lock_guard<std::mutex> autoLock(profileSyncLock_);
     int32_t ret = SubscribeManager::GetInstance().UnsubscribeProfileEvents(
         profileEvents, syncEventNotifier_, failedEvents);
     if (ret != ERR_OK) {
         HILOGW("unsubscribe sync event failed");
     }
-
-    isSync_ = false;
     syncEventNotifier_ = nullptr;
 }
 
@@ -359,7 +366,7 @@ void DeviceProfileStorageManager::NotifySubscriberDied(const sptr<IRemoteObject>
         return;
     }
 
-    isSync_ = false;
+    SyncCoordinator::GetInstance().ReleaseSync();
     syncEventNotifier_ = nullptr;
 }
 
@@ -488,11 +495,34 @@ int32_t DeviceProfileStorageManager::UnRegisterSyncCallback()
 
 void DeviceProfileStorageManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
 {
-    HILOGI("called");
-    std::vector<std::string> onlineDevice = { deviceInfo->GetDeviceId() };
-    int32_t errCode = onlineSyncTbl_->SyncDeviceProfile(onlineDevice, SyncMode::PUSH);
-    if (errCode != ERR_OK) {
-        HILOGE("online sync errCode = %{public}d", errCode);
+    std::string deviceId = deviceInfo->GetDeviceId();
+    HILOGI("online deviceId %{public}s", DeviceProfileUtils::AnonymizeDeviceId(deviceId).c_str());
+    PostOnlineSync(deviceId, 0);
+}
+
+void DeviceProfileStorageManager::PostOnlineSync(const std::string& deviceId, int32_t retryTimes)
+{
+    if (retryTimes >= RETRY_TIMES_POST_ONLINE_SYNC) {
+        HILOGE("reach max retry times");
+        return;
+    }
+
+    auto onlineSyncTaks = [this, deviceId = std::move(deviceId), retryTimes = retryTimes]() mutable {
+        if (!SyncCoordinator::GetInstance().AcquireSync()) {
+            PostOnlineSync(deviceId, retryTimes++);
+            return;
+        }
+        HILOGI("current retry times = %{public}d", retryTimes);
+        std::vector<std::string> onlineDeviceId = { deviceId };
+        SyncCoordinator::GetInstance().SetSyncTrigger(true);
+        int32_t errCode = onlineSyncTbl_->SyncDeviceProfile(onlineDeviceId, SyncMode::PUSH);
+        if (errCode != ERR_OK) {
+            HILOGE("online sync errCode = %{public}d", errCode);
+        }
+    };
+    if (!storageHandler_->PostTask(onlineSyncTaks, INTREVAL_POST_ONLINE_SYNC_MS)) {
+        HILOGE("post task failed");
+        return;
     }
 }
 } // namespace DeviceProfile
