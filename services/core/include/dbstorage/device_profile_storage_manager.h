@@ -70,6 +70,7 @@ private:
     std::string GenerateKey(const std::string& udid, const std::string& key, KeyType keyType);
 
     void OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo);
+    void PostOnlineSync(const std::string& deviceId, int32_t retryTimes);
     bool CheckSyncOption(const SyncOptions& syncOptions);
     int32_t NotifySyncStart(const sptr<IRemoteObject>& profileEventNotifier);
     void SetServiceType(const std::string& udid, const std::string& serviceId, ServiceCharacteristicProfile& profile);
@@ -78,7 +79,7 @@ private:
     std::mutex serviceLock_;
     std::mutex callbackLock_;
     nlohmann::json servicesJson_;
-    std::unique_ptr<DeviceProfileStorage> onlineSyncTbl_;
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_;
     std::shared_ptr<AppExecFwk::EventHandler> storageHandler_;
     sptr<IRemoteObject::DeathRecipient> kvStoreDeathRecipient_;
     std::string localUdid_;

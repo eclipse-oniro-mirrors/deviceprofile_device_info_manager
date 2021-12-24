@@ -47,14 +47,14 @@ public:
         const std::vector<std::string>& values);
     virtual int32_t SyncDeviceProfile(const std::vector<std::string>& deviceIdList,
         DistributedKv::SyncMode syncMode);
+    virtual int32_t RegisterSyncCallback(const std::shared_ptr<DistributedKv::KvStoreSyncCallback>& sycnCb);
+    virtual int32_t UnRegisterSyncCallback();
 
     void SetOptions(const DistributedKv::Options& options);
     StorageInitStatus GetInitStatus();
     bool RegisterKvStoreInitCallback(const KvStoreInitCallback& callback);
     int32_t SubscribeKvStore(const std::shared_ptr<DistributedKv::KvStoreObserver>& observer);
     int32_t UnSubscribeKvStore(const std::shared_ptr<DistributedKv::KvStoreObserver>& observer);
-    int32_t RegisterSyncCallback(const std::shared_ptr<DistributedKv::KvStoreSyncCallback>& sycnCb);
-    int32_t UnRegisterSyncCallback();
 
 private:
     bool TryGetKvStore();
