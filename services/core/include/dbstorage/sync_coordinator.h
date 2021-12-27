@@ -35,7 +35,7 @@ public:
     void ReleaseSync();
     void SetSyncTrigger(bool isOnlineTrigger);
     bool IsOnlineSync();
-    bool DispatchSyncTask(const SyncTask& syncTask);
+    bool DispatchSyncTask(const SyncTask& syncTask, int64_t delayTime = 0);
 
 private:
     std::atomic<bool> isOnlineTrigger_ {false};

@@ -30,7 +30,8 @@ const std::string TAG = "OnlineSyncTable";
 
 const std::string APP_ID = "distributed_device_profile_service";
 const std::string STORE_ID = "online_sync_storage";
-constexpr int32_t MAX_RETRY_SYNC_TIMES = 10;
+constexpr int32_t MAX_RETRY_SYNC_TIMES = 30;
+constexpr int32_t INTERVAL_RETRY_SYNC_MS = 100;
 }
 
 OnlineSyncTable::OnlineSyncTable() : DeviceProfileStorage(APP_ID, STORE_ID)
@@ -122,9 +123,10 @@ void OnlineSyncTable::SyncCompleted(const std::map<std::string, Status>& results
     if ((retrySyncTimes_++ < MAX_RETRY_SYNC_TIMES) && !failedDeviceIds.empty()) {
         auto retrySyncTask = [this, deviceIds = std::move(failedDeviceIds)]() {
             HILOGI("retrying sync...");
-            SyncDeviceProfile(deviceIds, SyncMode::PUSH);
+            DeviceProfileStorage::SyncDeviceProfile(deviceIds, SyncMode::PUSH);
         };
-        if (!SyncCoordinator::GetInstance().DispatchSyncTask(retrySyncTask)) {
+        if (!SyncCoordinator::GetInstance().DispatchSyncTask(retrySyncTask,
+            INTERVAL_RETRY_SYNC_MS)) {
             HILOGE("post online sync retry task failed");
             return;
         }
