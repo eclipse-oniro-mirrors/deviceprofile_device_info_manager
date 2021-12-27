@@ -62,9 +62,9 @@ bool SyncCoordinator::IsOnlineSync()
     return isOnlineTrigger_;
 }
 
-bool SyncCoordinator::DispatchSyncTask(const SyncTask& syncTask)
+bool SyncCoordinator::DispatchSyncTask(const SyncTask& syncTask, int64_t delayTime)
 {
-    if (!syncHandler_->PostTask(syncTask)) {
+    if (!syncHandler_->PostTask(syncTask, delayTime)) {
         HILOGE("post task failed");
         isOnSync_ = false;
         return false;
