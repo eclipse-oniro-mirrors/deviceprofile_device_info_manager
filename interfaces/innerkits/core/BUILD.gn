@@ -42,7 +42,7 @@ ohos_shared_library("distributed_device_profile_client") {
     "src/profile_event_notifier_stub.cpp",
   ]
 
-  configs = [ ":distributed_device_profile_client_config" ]
+  public_configs = [ ":distributed_device_profile_client_config" ]
 
   deps = [
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
