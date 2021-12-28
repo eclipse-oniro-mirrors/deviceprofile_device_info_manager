@@ -12,6 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#ifndef OHOS_DEVICE_PROFILE_PROFILE_EVENT_HANDLER_H
+#define OHOS_DEVICE_PROFILE_PROFILE_EVENT_HANDLER_H
+
 #include <map>
 #include <unordered_set>
 #include <list>
@@ -25,9 +29,6 @@
 #include "profile_change_notification.h"
 #include "subscribe_info.h"
 #include "single_instance.h"
-
-#ifndef OHOS_DEVICE_PROFILE_PROFILE_EVENT_HANDLER_H
-#define OHOS_DEVICE_PROFILE_PROFILE_EVENT_HANDLER_H
 
 namespace OHOS {
 namespace DeviceProfile {
