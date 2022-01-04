@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,7 +30,7 @@ public:
     void Init() override;
     int32_t RegisterSyncCallback(const std::shared_ptr<DistributedKv::KvStoreSyncCallback>& sycnCb) override;
     int32_t UnRegisterSyncCallback() override;
-    int32_t SyncDeviceProfile(const std::vector<std::string>& deviceIds, DistributedKv::SyncMode syncMode) override;
+    int32_t SyncDeviceProfile(const std::vector<std::string>& deviceIds, SyncMode syncMode) override;
 
     void SyncCompleted(const std::map<std::string, DistributedKv::Status>& results) override;
     void NotifySyncCompleted(const std::map<std::string, DistributedKv::Status>& results);

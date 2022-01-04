@@ -1,4 +1,4 @@
-# Copyright (c) 2021 Huawei Device Co., Ltd.
+# Copyright (c) 2021-2022 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -15,38 +15,29 @@ import("//build/ohos.gni")
 import("//build/ohos_var.gni")
 
 device_profile_path = "//foundation/deviceprofile/device_profile_core"
-device_profile_innerkits = "${device_profile_path}/interfaces/innerkits"
-device_profile_configs = [
-  "${device_profile_innerkits}/core:distributed_device_profile_client_config",
-]
+
+config("dp_tools_config") {
+  visibility = [ ":*" ]
+  include_dirs = [ "include" ]
+}
 
 ohos_executable("dp") {
   install_enable = true
 
-  configs = []
-
-  configs += device_profile_configs
-
-  include_dirs = [
-    "include",
-    "//third_party/json/include",
-  ]
+  configs = [ ":dp_tools_config" ]
 
   sources = [
-    "${device_profile_path}/tools/dp/src/dp_command.cpp",
-    "${device_profile_path}/tools/dp/src/main.cpp",
-    "${device_profile_path}/tools/dp/src/shell_command.cpp",
+    "src/dp_command.cpp",
+    "src/main.cpp",
+    "src/shell_command.cpp",
   ]
 
-  deps = [
-    "${device_profile_innerkits}/core:distributed_device_profile_client",
-    "//utils/native/base:utils",
-  ]
-
+  deps = [ "${device_profile_path}/interfaces/innerkits/core:distributed_device_profile_client" ]
   external_deps = [
     "dsoftbus_standard:softbus_client",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
+    "utils_base:utils",
   ]
 
   part_name = "device_profile_core"

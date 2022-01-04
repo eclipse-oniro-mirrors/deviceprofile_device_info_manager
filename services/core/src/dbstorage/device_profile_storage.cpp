@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -246,14 +246,14 @@ int32_t DeviceProfileStorage::DeleteDeviceProfile(const std::string& key)
 }
 
 int32_t DeviceProfileStorage::SyncDeviceProfile(const std::vector<std::string>& deviceIdList,
-    DistributedKv::SyncMode syncMode)
+    SyncMode syncMode)
 {
     HILOGI("called");
     std::unique_lock<std::shared_mutex> writeLock(storageLock_);
     if (kvStorePtr_ == nullptr) {
         return ERR_DP_INVALID_PARAMS;
     }
-    Status status = kvStorePtr_->Sync(deviceIdList, syncMode);
+    Status status = kvStorePtr_->Sync(deviceIdList, static_cast<DistributedKv::SyncMode>(syncMode));
     if (status != Status::SUCCESS) {
         HILOGE("sync failed, error = %{public}d", status);
     }

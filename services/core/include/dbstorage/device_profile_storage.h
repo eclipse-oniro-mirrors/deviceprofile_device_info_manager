@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,6 +18,8 @@
 
 #include <atomic>
 #include <shared_mutex>
+
+#include "sync_options.h"
 
 #include "distributed_kv_data_manager.h"
 #include "event_handler.h"
@@ -46,7 +48,7 @@ public:
     virtual int32_t PutDeviceProfileBatch(const std::vector<std::string>& keys,
         const std::vector<std::string>& values);
     virtual int32_t SyncDeviceProfile(const std::vector<std::string>& deviceIdList,
-        DistributedKv::SyncMode syncMode);
+        SyncMode syncMode);
     virtual int32_t RegisterSyncCallback(const std::shared_ptr<DistributedKv::KvStoreSyncCallback>& sycnCb);
     virtual int32_t UnRegisterSyncCallback();
 
