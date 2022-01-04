@@ -57,18 +57,20 @@ void OnlineSyncTable::Init()
 
 int32_t OnlineSyncTable::RegisterSyncCallback(const std::shared_ptr<KvStoreSyncCallback>& syncCb)
 {
+    HILOGI("called");
     if (syncCb == nullptr) {
         return ERR_DP_INVALID_PARAMS;
     }
     std::lock_guard<std::mutex> autoLock(tableLock_);
-    manualSyncCallback_ = syncCb;
+    syncCallback_ = syncCb;
     return ERR_OK;
 }
 
 int32_t  OnlineSyncTable::UnRegisterSyncCallback()
 {
+    HILOGI("called");
     std::lock_guard<std::mutex> autoLock(tableLock_);
-    manualSyncCallback_ = nullptr;
+    syncCallback_ = nullptr;
     return ERR_OK;
 }
 
@@ -95,11 +97,8 @@ int32_t OnlineSyncTable::SyncDeviceProfile(const std::vector<std::string>& devic
 void OnlineSyncTable::SyncCompleted(const std::map<std::string, Status>& results)
 {
     if (!SyncCoordinator::GetInstance().IsOnlineSync()) {
-        std::lock_guard<std::mutex> autoLock(tableLock_);
-        if (manualSyncCallback_ != nullptr) {
-            HILOGI("manual sync callback");
-            manualSyncCallback_->SyncCompleted(results);
-        }
+        HILOGI("manual sync callback");
+        NotifySyncCompleted(results);
         return;
     }
 
@@ -125,13 +124,25 @@ void OnlineSyncTable::SyncCompleted(const std::map<std::string, Status>& results
             HILOGI("retrying sync...");
             DeviceProfileStorage::SyncDeviceProfile(deviceIds, SyncMode::PUSH);
         };
-        if (!SyncCoordinator::GetInstance().DispatchSyncTask(retrySyncTask,
+        if (SyncCoordinator::GetInstance().DispatchSyncTask(retrySyncTask,
             INTERVAL_RETRY_SYNC_MS)) {
-            HILOGE("post online sync retry task failed");
             return;
+        } else {
+            HILOGE("post online sync retry task failed");
         }
     }
+    // notify and release when there is no retry
+    NotifySyncCompleted(results);
     SyncCoordinator::GetInstance().ReleaseSync();
+}
+
+void OnlineSyncTable::NotifySyncCompleted(const std::map<std::string, Status>& results)
+{
+    std::lock_guard<std::mutex> autoLock(tableLock_);
+    if (syncCallback_ != nullptr) {
+        HILOGI("notify sync callback");
+        syncCallback_->SyncCompleted(results);
+    }
 }
 } // namespace DeviceProfile
 } // namespace OHOS
