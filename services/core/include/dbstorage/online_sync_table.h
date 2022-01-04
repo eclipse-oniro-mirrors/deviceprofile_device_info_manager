@@ -33,9 +33,10 @@ public:
     int32_t SyncDeviceProfile(const std::vector<std::string>& deviceIds, DistributedKv::SyncMode syncMode) override;
 
     void SyncCompleted(const std::map<std::string, DistributedKv::Status>& results) override;
+    void NotifySyncCompleted(const std::map<std::string, DistributedKv::Status>& results);
 
 private:
-    std::shared_ptr<DistributedKv::KvStoreSyncCallback> manualSyncCallback_;
+    std::shared_ptr<DistributedKv::KvStoreSyncCallback> syncCallback_;
     std::vector<std::string> onlineDeviceIds_;
     std::atomic<int32_t> retrySyncTimes_ {0};
     std::mutex tableLock_;
