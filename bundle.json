@@ -4,7 +4,7 @@
     "version": "3.1",
     "publishAs": "code-segment",
     "segment": {
-      "destpath": "foundation/deviceprofile/device_profile_core"
+      "destPath": "foundation/deviceprofile/device_profile_core"
     },
     "dirs": {},
     "scripts": {},
@@ -35,7 +35,8 @@
         "sub_component": [
           "//foundation/deviceprofile/device_profile_core/sa_profile:dps_sa_profile",
           "//foundation/deviceprofile/device_profile_core/services/core:distributed_device_profile",
-          "//foundation/deviceprofile/device_profile_core/tools/dp:dp"
+          "//foundation/deviceprofile/device_profile_core/tools/dp:dp",
+          "//foundation/deviceprofile/device_profile_core/permission:authority_json"
         ],
         "inner_kits": [
           {

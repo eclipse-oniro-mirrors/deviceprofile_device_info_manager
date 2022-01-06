@@ -15,8 +15,10 @@
 
 #include "distributed_device_profile_service.h"
 
+#include "authority_manager.h"
 #include "content_sensor_manager.h"
 #include "device_manager.h"
+#include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
 #include "service_characteristic_profile.h"
@@ -56,24 +58,39 @@ bool DistributedDeviceProfileService::Init()
         HILOGE("SubscribeManager init failed");
         return false;
     }
+    if (!AuthorityManager::GetInstance().Init()) {
+        HILOGE("AuthorityManager init failed");
+        return false;
+    }
     HILOGI("init succeeded");
     return true;
 }
 
 int32_t DistributedDeviceProfileService::PutDeviceProfile(const ServiceCharacteristicProfile& profile)
 {
+    if (!AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_W,
+        profile.GetServiceId())) {
+        return ERR_DP_PERMISSION_DENIED;
+    }
     return DeviceProfileStorageManager::GetInstance().PutDeviceProfile(profile);
 }
 
 int32_t DistributedDeviceProfileService::GetDeviceProfile(const std::string& udid, const std::string& serviceId,
     ServiceCharacteristicProfile& profile)
 {
+    if (!AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_R,
+        serviceId)) {
+        return ERR_DP_PERMISSION_DENIED;
+    }
     return DeviceProfileStorageManager::GetInstance().GetDeviceProfile(udid, serviceId, profile);
 }
 
 int32_t DistributedDeviceProfileService::DeleteDeviceProfile(const std::string& serviceId)
 {
-    HILOGI("service id %{public}s", serviceId.c_str());
+    if (!AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_W,
+        serviceId)) {
+        return ERR_DP_PERMISSION_DENIED;
+    }
     return DeviceProfileStorageManager::GetInstance().DeleteDeviceProfile(serviceId);
 }
 
@@ -96,6 +113,9 @@ int32_t DistributedDeviceProfileService::UnsubscribeProfileEvents(const std::lis
 int32_t DistributedDeviceProfileService::SyncDeviceProfile(const SyncOptions& syncOptions,
     const sptr<IRemoteObject>& profileEventNotifier)
 {
+    if (!AuthorityManager::GetInstance().CheckInterfaceAuthority("sync")) {
+        return ERR_DP_PERMISSION_DENIED;
+    }
     return DeviceProfileStorageManager::GetInstance().SyncDeviceProfile(syncOptions, profileEventNotifier);
 }
 

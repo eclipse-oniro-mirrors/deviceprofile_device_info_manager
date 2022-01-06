@@ -17,6 +17,7 @@
 
 #include <string>
 
+#include "authority_manager.h"
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_storage.h"
@@ -56,6 +57,10 @@ int32_t DistributedDeviceProfileStub::OnRemoteRequest(uint32_t code, MessageParc
         if (!EnforceInterfaceToken(data)) {
             HILOGW("check interface token failed");
             return ERR_DP_INTERFACE_CHECK_FAILED;
+        }
+        if (!AuthorityManager::GetInstance().CheckCallerTrust()) {
+            HILOGE("caller is not trusted");
+            return ERR_DP_PERMISSION_DENIED;
         }
         if (func != nullptr) {
             return (this->*func)(data, reply);

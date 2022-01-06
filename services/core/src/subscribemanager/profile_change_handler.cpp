@@ -20,6 +20,8 @@
 #include "datetime_ex.h"
 #include "string_ex.h"
 
+#include "authority_manager.h"
+#include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
 #include "device_profile_utils.h"
@@ -241,6 +243,25 @@ int32_t ProfileChangeHandler::Unregister()
 {
     HILOGI("called");
     return DeviceProfileStorageManager::GetInstance().UnSubscribeKvStore(shared_from_this());
+}
+
+int32_t ProfileChangeHandler::Subscribe(const SubscribeInfo& subscribeInfo,
+    const sptr<IRemoteObject>& profileEventNotifier)
+{
+    const auto& extraInfo = subscribeInfo.extraInfo;
+    const auto& serviceIdsJson = extraInfo["serviceIds"];
+    std::vector<std::string> serviceIds;
+    for (const auto& serviceIdJson : serviceIdsJson) {
+        std::string serviceId = serviceIdJson;
+        HILOGI("serviceId = %{public}s", serviceId.c_str());
+        serviceIds.emplace_back(std::move(serviceId));
+    }
+
+    if (!AuthorityManager::GetInstance().CheckServicesAuthority(AuthValue::AUTH_R,
+        serviceIds)) {
+        return ERR_DP_PERMISSION_DENIED;
+    }
+    return ProfileEventHandler::Subscribe(subscribeInfo, profileEventNotifier);
 }
 } // namespace DeviceProfile
 } // namespace OHOS
