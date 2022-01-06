@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,12 +34,12 @@ void SyncOptions::AddDevice(const std::string& deviceId)
     syncDevIds_.emplace_back(deviceId);
 }
 
-DistributedKv::SyncMode SyncOptions::GetSyncMode() const
+SyncMode SyncOptions::GetSyncMode() const
 {
     return syncMode_;
 }
 
-void SyncOptions::SetSyncMode(DistributedKv::SyncMode mode)
+void SyncOptions::SetSyncMode(SyncMode mode)
 {
     syncMode_ = mode;
 }
@@ -58,7 +58,7 @@ bool SyncOptions::Unmarshalling(Parcel& parcel)
 {
     int32_t mode = 0;
     PARCEL_READ_HELPER_RET(parcel, Int32, mode, false);
-    syncMode_ = static_cast<DistributedKv::SyncMode>(mode);
+    syncMode_ = static_cast<DeviceProfile::SyncMode>(mode);
     int32_t size = 0;
     PARCEL_READ_HELPER_RET(parcel, Int32, size, false);
     for (int32_t i = 0; i < size; i++) {

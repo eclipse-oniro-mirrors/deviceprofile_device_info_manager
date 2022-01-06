@@ -1,4 +1,4 @@
-# Copyright (c) 2021 Huawei Device Co., Ltd.
+# Copyright (c) 2021-2022 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -16,21 +16,19 @@ import("//build/ohos_var.gni")
 
 device_profile_path = "//foundation/deviceprofile/device_profile_core"
 device_profile_service = "${device_profile_path}/services/core"
-distributed_datamgr_innerkits =
-    "//foundation/distributeddatamgr/distributeddatamgr/interfaces/innerkits"
 
 config("distributed_device_profile_client_config") {
   visibility = [ ":*" ]
   include_dirs = [
     "include",
     "${device_profile_path}/common/include",
-    "${distributed_datamgr_innerkits}/distributeddata/include",
     "//third_party/json/include",
   ]
 }
 
 ohos_shared_library("distributed_device_profile_client") {
   install_enable = true
+
   sources = [
     "${device_profile_path}/common/src/device_profile_utils.cpp",
     "${device_profile_service}/src/profile_change_notification.cpp",
@@ -44,18 +42,14 @@ ohos_shared_library("distributed_device_profile_client") {
 
   public_configs = [ ":distributed_device_profile_client_config" ]
 
-  deps = [
+  public_deps = [
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
+    "//foundation/communication/ipc/interfaces/innerkits/ipc_core:ipc_core",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//utils/native/base:utils",
   ]
-
-  public_deps = [ "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler" ]
-
-  external_deps = [
-    "hiviewdfx_hilog_native:libhilog",
-    "ipc:ipc_core",
-  ]
+  external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
 
   part_name = "device_profile_core"
   subsystem_name = "deviceprofile"

@@ -135,7 +135,7 @@ DistributedDeviceProfileClient::GetInstance().DeleteDeviceProfile(serviceId);
 ```c++
 // 定义同步模式和范围
 SyncOptions syncOption;
-syncOption.SetSyncMode((OHOS::DistributedKv::SyncMode)atoi(mode.c_str()));
+syncOption.SetSyncMode((OHOS::DeviceProfile::SyncMode)atoi(mode.c_str()));
 for (const auto& deviceId : deviceIds) {
     syncOption.AddDevice(deviceId);
 }

@@ -1,4 +1,4 @@
-# Copyright (c) 2021 Huawei Device Co., Ltd.
+# Copyright (c) 2021-2022 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -26,17 +26,15 @@ device_profile_configs =
 
 device_profile_deps = [
   "${device_profile_innerkits}/core:distributed_device_profile_client",
-  "//base/hiviewdfx/hilog/interfaces/native/innerkits:libhilog",
-  "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
-  "//utils/native/base:utils",
+  "//third_party/googletest:gtest_main",
 ]
 
 device_profile_external_deps = [
+  "appexecfwk_standard:libeventhandler",
   "hiviewdfx_hilog_native:libhilog",
   "ipc:ipc_core",
+  "utils_base:utils",
 ]
-
-device_profile_public_deps = [ "//third_party/googletest:gtest_main" ]
 
 ohos_unittest("profile_crud_test") {
   module_out_path = module_output_path
@@ -44,10 +42,7 @@ ohos_unittest("profile_crud_test") {
   sources = [ "unittest/profile_crud_test.cpp" ]
   configs = device_profile_configs
   deps = device_profile_deps
-  if (is_standard_system) {
-    external_deps = device_profile_external_deps
-    public_deps = device_profile_public_deps
-  }
+  external_deps = device_profile_external_deps
 }
 
 ohos_unittest("event_subscribe_test") {
@@ -56,10 +51,7 @@ ohos_unittest("event_subscribe_test") {
   sources = [ "unittest/event_subscribe_test.cpp" ]
   configs = device_profile_configs
   deps = device_profile_deps
-  if (is_standard_system) {
-    external_deps = device_profile_external_deps
-    public_deps = device_profile_public_deps
-  }
+  external_deps = device_profile_external_deps
 }
 
 group("unittest") {
