@@ -1,0 +1,63 @@
+{
+    "name": "@ohos/device_profile_core",
+    "description": "device profile",
+    "version": "3.1",
+    "publishAs": "code-segment",
+    "segment": {
+      "destpath": "foundation/deviceprofile/device_profile_core"
+    },
+    "dirs": {},
+    "scripts": {},
+    "license": "Apache License 2.0",
+    "component": {
+      "name": "device_profile_core",
+      "subsystem": "deviceprofile",
+      "adapted_system_type": [ "standard" ],
+      "rom": "",
+      "ram": "",
+      "deps": {
+        "components": [
+          "distributeddatamgr",
+          "dsoftbus_standard",
+          "eventhandler",
+          "hiviewdfx_hilog_native",
+          "ipc",
+          "safwk",
+          "samgr_standard",
+          "startup_l2",
+          "utils_base"
+        ],
+        "third_party": [
+          "json"
+        ]
+      },
+      "build": {
+        "sub_component": [
+          "//foundation/deviceprofile/device_profile_core/sa_profile:dps_sa_profile",
+          "//foundation/deviceprofile/device_profile_core/services/core:distributed_device_profile",
+          "//foundation/deviceprofile/device_profile_core/tools/dp:dp"
+        ],
+        "inner_kits": [
+          {
+            "name": "//foundation/deviceprofile/device_profile_core/interfaces/innerkits/core:distributed_device_profile_client",
+            "header": {
+              "header_files": [
+                "distributed_device_profile_client.h",
+                "distributed_device_profile_proxy.h",
+                "idistributed_device_profile.h",
+                "iprofile_event_callback.h",
+                "profile_change_notification.h",
+                "profile_event.h",
+                "service_characteristic_profile.h",
+                "subscribe_info.h"
+              ],
+              "header_base": "//foundation/deviceprofile/device_profile_core/interfaces/innerkits/core/include/"
+            }
+          }
+        ],
+        "test": [
+          "//foundation/deviceprofile/device_profile_core/services/core:unittest"
+        ]
+      }
+    }
+  }
