@@ -54,10 +54,23 @@ ohos_unittest("event_subscribe_test") {
   external_deps = device_profile_external_deps
 }
 
+ohos_unittest("profile_authority_test") {
+  module_out_path = module_output_path
+
+  sources = [
+    "${device_profile_service}/core/src/authority/authority_manager.cpp",
+    "unittest/profile_authority_test.cpp",
+  ]
+  configs = device_profile_configs
+  deps = [ "//third_party/googletest:gtest_main" ]
+  external_deps = device_profile_external_deps
+}
+
 group("unittest") {
   testonly = true
   deps = [
-    ":event_subscribe_test",
+    # ":event_subscribe_test",
+    ":profile_authority_test",
     ":profile_crud_test",
   ]
 }

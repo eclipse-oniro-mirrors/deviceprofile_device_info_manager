@@ -1,0 +1,62 @@
+{
+  "fakeProcess1": {
+    "servicesAuthority": {
+      "all": 3
+    }
+  },
+  "fakeProcess2": {
+    "servicesAuthority": {
+      "all": true
+    }
+  },
+  "fakeProcess3": {
+    "servicesAuthority": {
+      "all": "read"
+    }
+  },
+  "fakeProcess4": {
+    "servicesAuthority": {
+      "specific": {
+        "storage": -1
+      }
+    }
+  },
+  "fakeProcess5": {
+    "servicesAuthority": {
+      "specific": {
+        "system": 4
+      }
+    }
+  },
+  "fakeProcess6": {
+    "servicesAuthority": {
+      "prefix": {
+        "camerRear": 2
+      }
+    }
+  },
+  "fakeProcess7": {
+    "interfacesAuthority": {
+      "fakeInterface": {}
+    }
+  },
+  "fakeProcess8": {
+    "interfacesAuthority": {
+      "sync": 1
+    }
+  },
+  "fakeProcess9": {
+    "interfacesAuthority": {
+    }
+  },
+  "fakeProcess10": {
+    "servicesAuthority": {
+    }
+  },
+  "fakeProcess11": {
+    "fakeKey1": {
+    },
+    "fakeKey2": {
+    }
+  }
+}

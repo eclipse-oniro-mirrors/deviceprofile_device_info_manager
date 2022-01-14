@@ -40,6 +40,8 @@ public:
 private:
     int32_t Register() override;
     int32_t Unregister() override;
+    int32_t Subscribe(const SubscribeInfo& subscribeInfo,
+        const sptr<IRemoteObject>& profileEventNotifier) override;
 
     void ConvertEntry(const std::vector<DistributedKv::Entry>& entries, ProfileChangeType changeType,
         std::vector<ProfileEntry>& profileEntries, Service2Index& service2Index);

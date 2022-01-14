@@ -1,0 +1,17 @@
+{
+  "profile_authority_test": {
+    "servicesAuthority": {
+      "all": 1,
+      "specific": {
+        "storage": 3,
+        "system": 3
+      },
+      "prefix": {
+        "cameraRear": 3
+      }
+    },
+    "interfacesAuthority": {
+      "sync": {}
+    }
+  }
+}

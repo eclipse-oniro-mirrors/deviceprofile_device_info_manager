@@ -23,6 +23,7 @@ config("device_profile_core_config") {
   visibility = [ ":*" ]
   include_dirs = [
     "include",
+    "include/authority",
     "include/devicemanager",
     "include/contentsensor",
     "include/dbstorage",
@@ -36,6 +37,7 @@ config("device_profile_core_config") {
 ohos_shared_library("distributed_device_profile") {
   install_enable = true
   sources = [
+    "src/authority/authority_manager.cpp",
     "src/contentsensor/content_collector.cpp",
     "src/contentsensor/content_sensor_manager.cpp",
     "src/contentsensor/device_info_collector.cpp",

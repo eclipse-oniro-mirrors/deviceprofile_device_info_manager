@@ -47,7 +47,8 @@ public:
     bool Init();
     bool IsRegistered() const;
 
-    int32_t Subscribe(const SubscribeInfo& subscribeInfo, const sptr<IRemoteObject>& profileEventNotifier);
+    virtual int32_t Subscribe(const SubscribeInfo& subscribeInfo,
+        const sptr<IRemoteObject>& profileEventNotifier);
     int32_t Unsubscribe(const sptr<IRemoteObject>& profileEventNotifier);
     void OnSubscriberDied(const sptr<IRemoteObject>& profileEventNotifier);
 
