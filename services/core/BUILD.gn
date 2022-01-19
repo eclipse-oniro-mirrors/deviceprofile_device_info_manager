@@ -69,9 +69,9 @@ ohos_shared_library("distributed_device_profile") {
   configs = [ ":device_profile_core_config" ]
 
   external_deps = [
-    "appexecfwk_standard:libeventhandler",
     "distributeddatamgr:distributeddata_inner",
     "dsoftbus_standard:softbus_client",
+    "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "safwk:system_ability_fwk",
