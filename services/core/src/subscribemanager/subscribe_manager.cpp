@@ -40,6 +40,10 @@ bool SubscribeManager::Init()
 {
     subscriberDeathRecipient_ = sptr<IRemoteObject::DeathRecipient>(
         new (std::nothrow) SubscriberDeathRecipient);
+    if (subscriberDeathRecipient_ == nullptr) {
+        HILOGE("null death recipient");
+        return false;
+    }
     HILOGI("init succeeded");
     return true;
 }
