@@ -18,10 +18,13 @@
 #include <cinttypes>
 #include <thread>
 
+#include "device_manager.h"
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
+#include "device_profile_utils.h"
 #include "service_characteristic_profile.h"
+#include "trust_group_manager.h"
 
 #include "datetime_ex.h"
 #include "profile_change_handler.h"
@@ -33,7 +36,6 @@ using namespace std::chrono_literals;
 
 namespace {
 const std::string TAG = "DeviceProfileStorage";
-
 constexpr int32_t RETRY_TIMES_GET_KVSTORE = 10;
 }
 
@@ -249,15 +251,41 @@ int32_t DeviceProfileStorage::SyncDeviceProfile(const std::vector<std::string>& 
     SyncMode syncMode)
 {
     HILOGI("called");
+    if (!CheckTrustGroup(deviceIdList)) {
+        return ERR_DP_UNTRUSTED_GROUP;
+    }
+
     std::unique_lock<std::shared_mutex> writeLock(storageLock_);
     if (kvStorePtr_ == nullptr) {
         return ERR_DP_INVALID_PARAMS;
     }
+
     Status status = kvStorePtr_->Sync(deviceIdList, static_cast<DistributedKv::SyncMode>(syncMode));
     if (status != Status::SUCCESS) {
         HILOGE("sync failed, error = %{public}d", status);
     }
     return static_cast<int32_t>(status);
+}
+
+bool DeviceProfileStorage::CheckTrustGroup(const std::vector<std::string>& deviceIdList)
+{
+    if (deviceIdList.empty()) {
+        HILOGE("device list is empty");
+        return false;
+    }
+    for (const auto& deviceId : deviceIdList) {
+        std::string udid;
+        if (!DeviceManager::GetInstance().TransformDeviceId(deviceId, udid, DeviceIdType::UDID)) {
+            HILOGE("%{public}s transform to udid failed", DeviceProfileUtils::AnonymizeDeviceId(deviceId).c_str());
+            return false;
+        }
+
+        if (!TrustGroupManager::GetInstance().CheckTrustGroup(udid)) {
+            HILOGE("%{public}s not in trust group", DeviceProfileUtils::AnonymizeDeviceId(deviceId).c_str());
+            return false;
+        }
+    }
+    return true;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

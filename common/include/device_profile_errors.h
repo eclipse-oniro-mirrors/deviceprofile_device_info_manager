@@ -40,6 +40,7 @@ enum {
     ERR_DP_POST_TASK_FAILED = 98566153,
     ERR_DP_DEVICE_SYNC_BUSY = 98566154,
     ERR_DP_PERMISSION_DENIED = 98566155,
+    ERR_DP_UNTRUSTED_GROUP = 98566156,
 };
 } // namespace DeviceProfile
 } // namespace OHOS

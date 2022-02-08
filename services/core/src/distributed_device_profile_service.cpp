@@ -23,8 +23,8 @@
 #include "device_profile_storage_manager.h"
 #include "service_characteristic_profile.h"
 #include "subscribe_manager.h"
-
 #include "system_ability_definition.h"
+#include "trust_group_manager.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -50,10 +50,6 @@ bool DistributedDeviceProfileService::Init()
         HILOGE("DeviceProfileStorageManager init failed");
         return false;
     }
-    if (!ContentSensorManager::GetInstance().Init()) {
-        HILOGE("ContentSensorManager init failed");
-        return false;
-    }
     if (!SubscribeManager::GetInstance().Init()) {
         HILOGE("SubscribeManager init failed");
         return false;
@@ -62,6 +58,8 @@ bool DistributedDeviceProfileService::Init()
         HILOGE("AuthorityManager init failed");
         return false;
     }
+    TrustGroupManager::GetInstance().Init();
+    ContentSensorManager::GetInstance().Init();
     HILOGI("init succeeded");
     return true;
 }
