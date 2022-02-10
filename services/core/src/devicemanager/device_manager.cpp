@@ -255,16 +255,16 @@ std::unique_ptr<NodeBasicInfo> DeviceManager::GetLocalBasicInfo()
 
 bool DeviceManager::GetUdidByNetworkId(const std::string& networkId, std::string& udid)
 {
-    return GetUuidOrUdidByNetworkId(networkId, NodeDeivceInfoKey::NODE_KEY_UDID, udid);
+    return GetUuidOrUdidByNetworkId(networkId, NodeDeviceInfoKey::NODE_KEY_UDID, udid);
 }
 
 bool DeviceManager::GetUuidByNetworkId(const std::string& networkId, std::string& uuid)
 {
-    return GetUuidOrUdidByNetworkId(networkId, NodeDeivceInfoKey::NODE_KEY_UUID, uuid);
+    return GetUuidOrUdidByNetworkId(networkId, NodeDeviceInfoKey::NODE_KEY_UUID, uuid);
 }
 
 bool DeviceManager::GetUuidOrUdidByNetworkId(const std::string& networkId,
-    NodeDeivceInfoKey keyType, std::string& uuidOrUdid)
+    NodeDeviceInfoKey keyType, std::string& uuidOrUdid)
 {
     if (networkId.empty()) {
         return false;

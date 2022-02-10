@@ -53,7 +53,7 @@ private:
     static void OnNodeOfflineAdapter(NodeBasicInfo* info);
     static void OnNodeBasicInfoChangedAdapter(NodeBasicInfoType type, NodeBasicInfo* info);
 
-    bool GetUuidOrUdidByNetworkId(const std::string& nodeId, NodeDeivceInfoKey keyType,
+    bool GetUuidOrUdidByNetworkId(const std::string& nodeId, NodeDeviceInfoKey keyType,
         std::string& uuidOrUdid);
     void OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo);
     void OnNodeOffline(const std::string& deviceId);
