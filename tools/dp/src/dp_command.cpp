@@ -278,7 +278,7 @@ ErrCode DpShellCommand::SubscribeCommand()
     return result;
 }
 
-int32_t DpShellCommand::HandleNormalOption(const int option, std::string& deviceId,
+int32_t DpShellCommand::HandleNormalOption(int option, std::string& deviceId,
     std::string& serviceId, std::string& serviceType)
 {
     HILOGI("%{public}s start, option: %{public}d", __func__, option);
@@ -325,7 +325,7 @@ int32_t DpShellCommand::HandleNormalOption(const int option, std::string& device
     return result;
 }
 
-int32_t DpShellCommand::HandleSyncOption(const int option, std::string& mode, std::list<std::string>& deviceIds)
+int32_t DpShellCommand::HandleSyncOption(int option, std::string& mode, std::list<std::string>& deviceIds)
 {
     HILOGI("%{public}s start, option: %{public}d", __func__, option);
     int32_t result = ERR_OK;
@@ -367,7 +367,7 @@ int32_t DpShellCommand::HandleSyncOption(const int option, std::string& mode, st
     return result;
 }
 
-int32_t DpShellCommand::HandleSubscribeOption(const int option, std::string& deviceId,
+int32_t DpShellCommand::HandleSubscribeOption(int option, std::string& deviceId,
     std::list<std::string>& serviceIds)
 {
     HILOGI("%{public}s start, option: %{public}d", __func__, option);
