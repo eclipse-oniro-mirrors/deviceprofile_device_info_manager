@@ -66,7 +66,7 @@ bool TrustGroupManager::CheckTrustGroup(const std::string& deviceId)
 
     uint32_t groupNum = 0;
     char* returnGroups = nullptr;
-    int32_t ret = hichainGmInstance_->getRelatedGroups(AUTH_APPID.c_str(), deviceId.c_str(),
+    int32_t ret = hichainGmInstance_->getRelatedGroups(ANY_OS_ACCOUNT, AUTH_APPID.c_str(), deviceId.c_str(),
         &returnGroups, &groupNum);
     if (ret != ERR_OK) {
         HILOGE("faild , ret: %d", ret);
