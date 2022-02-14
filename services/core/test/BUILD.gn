@@ -43,6 +43,8 @@ ohos_unittest("profile_crud_test") {
   configs = device_profile_configs
   deps = device_profile_deps
   external_deps = device_profile_external_deps
+  part_name = "device_profile_core"
+  subsystem_name = "deviceprofile"
 }
 
 ohos_unittest("event_subscribe_test") {
@@ -52,6 +54,8 @@ ohos_unittest("event_subscribe_test") {
   configs = device_profile_configs
   deps = device_profile_deps
   external_deps = device_profile_external_deps
+  part_name = "device_profile_core"
+  subsystem_name = "deviceprofile"
 }
 
 ohos_unittest("profile_authority_test") {
@@ -64,6 +68,8 @@ ohos_unittest("profile_authority_test") {
   configs = device_profile_configs
   deps = [ "//third_party/googletest:gtest_main" ]
   external_deps = device_profile_external_deps
+  part_name = "device_profile_core"
+  subsystem_name = "deviceprofile"
 }
 
 group("unittest") {
