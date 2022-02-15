@@ -39,7 +39,7 @@ public:
     std::string ExecCommand();
     std::string GetCommandErrorMsg() const;
     std::string GetUnknownOptionMsg(std::string &unknownOption) const;
-    std::string GetMessageFromCode(const int32_t code) const;
+    std::string GetMessageFromCode(int32_t code) const;
 
     virtual ErrCode CreateCommandMap() = 0;
     virtual ErrCode CreateMessageMap() = 0;

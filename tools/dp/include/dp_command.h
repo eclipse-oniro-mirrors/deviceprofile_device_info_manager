@@ -86,12 +86,12 @@ private:
     ErrCode SyncCommand();
     ErrCode SubscribeCommand();
 
-    int32_t HandleUnknownOption(const char optopt);
-    int32_t HandleNormalOption(const int option, std::string& deviceId,
+    int32_t HandleUnknownOption(char optopt);
+    int32_t HandleNormalOption(int option, std::string& deviceId,
         std::string& serviceId, std::string& serviceType);
-    int32_t HandleSyncOption(const int option, std::string& mode,
+    int32_t HandleSyncOption(int option, std::string& mode,
         std::list<std::string>& deviceIds);
-    int32_t HandleSubscribeOption(const int option, std::string& deviceId,
+    int32_t HandleSubscribeOption(int option, std::string& deviceId,
         std::list<std::string>& serviceIds);
 };
 

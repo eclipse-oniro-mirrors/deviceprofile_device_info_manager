@@ -101,7 +101,7 @@ std::string ShellCommand::GetUnknownOptionMsg(std::string &unknownOption) const
     return result;
 }
 
-std::string ShellCommand::GetMessageFromCode(const int32_t code) const
+std::string ShellCommand::GetMessageFromCode(int32_t code) const
 {
     HILOGI("[%{public}s(%{public}s)] enter", __FILE__, __FUNCTION__);
     HILOGI("code = %{public}d", code);
