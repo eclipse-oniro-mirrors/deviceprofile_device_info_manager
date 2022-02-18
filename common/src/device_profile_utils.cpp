@@ -29,9 +29,9 @@ const std::string EMPTY_DEVICE_ID = "";
 bool DeviceProfileUtils::WriteProfileEvents(const std::list<ProfileEvent>& profileEvents, Parcel& parcel)
 {
     size_t size = profileEvents.size();
-    PARCEL_WRITE_HELPER(parcel, Uint32, static_cast<uint32_t>(size));
+    PARCEL_WRITE_HELPER_RET(parcel, Uint32, static_cast<uint32_t>(size), false);
     for (auto profileEvent : profileEvents) {
-        PARCEL_WRITE_HELPER(parcel, Uint32, static_cast<uint32_t>(profileEvent));
+        PARCEL_WRITE_HELPER_RET(parcel, Uint32, static_cast<uint32_t>(profileEvent), false);
     }
     return true;
 }
