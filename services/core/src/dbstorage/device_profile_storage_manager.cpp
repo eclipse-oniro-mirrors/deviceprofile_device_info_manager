@@ -288,11 +288,6 @@ int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOp
 
     auto syncTask = [syncOptions, this]() {
         HILOGI("start sync");
-        if (onlineSyncTbl_ == nullptr) {
-            HILOGI("param init error");
-            NotifySyncCompleted();
-            return;
-        }
         auto devicesList = syncOptions.GetDeviceList();
         if (devicesList.empty()) {
             DeviceManager::GetInstance().GetDeviceIdList(devicesList);
