@@ -134,13 +134,15 @@ void ProfileChangeHandler::ConvertEntry(const std::vector<Entry>& entries,
 {
     for (const auto& entry : entries) {
         auto profileKey = ProfileKey::Parse(entry.key.ToString());
-        if (profileKey != nullptr && profileKey->type == KeyType::SERVICE) {
-            std::string trimmedKey = std::move(profileKey->serviceId);
-            HILOGI("key = %{public}s, state = %{public}d", trimmedKey.c_str(), changeType);
-            service2Index.emplace(trimmedKey, profileEntries.size());
-            profileEntries.emplace_back(std::move(trimmedKey), entry.value.ToString(), changeType);
+        if (profileKey == nullptr || profileKey->type != KeyType::SERVICE) {
+            HILOGW("profileKey is invalid");
             continue;
         }
+
+        std::string trimmedKey = std::move(profileKey->serviceId);
+        HILOGI("key = %{public}s, state = %{public}d", trimmedKey.c_str(), changeType);
+        service2Index.emplace(trimmedKey, profileEntries.size());
+        profileEntries.emplace_back(std::move(trimmedKey), entry.value.ToString(), changeType);
         HILOGD("key = %{public}s, value = %{public}s, state = %{public}d", profileKey->serviceId.c_str(),
             entry.value.ToString().c_str(), changeType);
     }
