@@ -78,7 +78,7 @@ ErrCode DpShellCommand::HelpCommand()
 ErrCode DpShellCommand::GetDeviceCommand()
 {
     resultReceiver_.append("[remote device list]\n");
-    NodeBasicInfo *info = NULL;
+    NodeBasicInfo *info = nullptr;
     int32_t infoNum = 0;
     int32_t ret = GetAllNodeDeviceInfo("dp", &info, &infoNum);
     if (ret != ERR_OK) {
