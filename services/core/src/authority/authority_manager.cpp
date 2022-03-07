@@ -17,6 +17,7 @@
 
 #include <fstream>
 
+#include "accesstoken_kit.h"
 #include "file_ex.h"
 #include "ipc_skeleton.h"
 #include "securec.h"
@@ -25,12 +26,12 @@
 
 namespace OHOS {
 namespace DeviceProfile {
+using namespace OHOS::Security::AccessToken;
+
 namespace {
 const std::string TAG = "AuthorityManager";
 
-constexpr int32_t BUF_SIZE = 256;
-constexpr int32_t ROOT_UID = 0;
-constexpr int32_t SYSTEM_UID = 1000;
+constexpr uint32_t INVALID_TOKEN_ID = 0;
 const std::string INTERFACES = "interfacesAuthority";
 const std::string SERVICES = "servicesAuthority";
 const std::string SERVICES_ALL = "all";
@@ -292,34 +293,30 @@ bool AuthorityManager::CheckPrefixServiceAuth(const nlohmann::json& prefixSvcsJs
 
 bool AuthorityManager::CheckCallerTrust()
 {
-    int32_t callingUid = IPCSkeleton::GetCallingUid();
-    HILOGI("calling uid is %{public}d", callingUid);
-    return (callingUid == SYSTEM_UID || callingUid == ROOT_UID);
+    auto tokenID = IPCSkeleton::GetCallingTokenID();
+    if (tokenID == INVALID_TOKEN_ID) {
+        HILOGW("invalid token id");
+        return false;
+    }
+    ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(tokenID);
+    HILOGD("tokenID:%{public}u, tokenType:%{public}d", tokenID, tokenType);
+    // currently only support native trusted caller
+    return tokenType == ATokenTypeEnum::TOKEN_NATIVE;
 }
 
 std::string AuthorityManager::GetCallingProcName()
 {
-    char buf[BUF_SIZE] = {0};
-    int32_t pid = IPCSkeleton::GetCallingPid();
-    HILOGI("pid = %{public}d", pid);
-    (void)snprintf_s(buf, BUF_SIZE, BUF_SIZE - 1, "/proc/%d/cmdline", pid);
-
+    // called after CheckCallerTrust, and keep same policy with CheckCallerTrust
+    NativeTokenInfo nativeTokenInfo;
+    auto tokenID = IPCSkeleton::GetCallingTokenID();
+    auto errCode = AccessTokenKit::GetNativeTokenInfo(tokenID, nativeTokenInfo);
+    HILOGI("get token info errCode = %{public}d", errCode);
     std::string procName;
-    if (!LoadStringFromFile(std::string(buf, strlen(buf)), procName)) {
-        HILOGE("load string failed");
-        return procName;
+    if (errCode == EOK) {
+        procName = std::move(nativeTokenInfo.processName);
+        HILOGI("procName:%{public}s", procName.c_str());
     }
-    auto pos = procName.find_last_not_of(" \n\r\t");
-    if (pos != std::string::npos) {
-        procName.erase(pos + 1);
-    }
-
-    pos = procName.find_last_of("/");
-    if (pos != std::string::npos) {
-        procName = procName.substr(pos + 1);
-    }
-    HILOGI("calling proc is %{public}s", procName.c_str());
-    return procName.c_str();
+    return procName;
 }
 } // namespace DeviceProfile
 } // namespace OHOS
