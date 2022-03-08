@@ -68,7 +68,7 @@ int32_t DistributedDeviceProfileProxy::DeleteDeviceProfile(const std::string& se
     sptr<IRemoteObject> remote = Remote();
     MessageParcel data;
     if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) {
-        HILOGE("write inteface token failed");
+        HILOGE("write interface token failed");
         return ERR_FLATTEN_OBJECT;
     }
     PARCEL_WRITE_HELPER(data, String, serviceId);
@@ -84,7 +84,7 @@ int32_t DistributedDeviceProfileProxy::SubscribeProfileEvents(
     sptr<IRemoteObject> remote = Remote();
     MessageParcel data;
     if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) {
-        HILOGE("write inteface token failed");
+        HILOGE("write interface token failed");
         return ERR_FLATTEN_OBJECT;
     }
     size_t size = subscribeInfos.size();
@@ -116,7 +116,7 @@ int32_t DistributedDeviceProfileProxy::UnsubscribeProfileEvents(
     sptr<IRemoteObject> remote = Remote();
     MessageParcel data;
     if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) {
-        HILOGE("write inteface token failed");
+        HILOGE("write interface token failed");
         return ERR_FLATTEN_OBJECT;
     }
     if (!DeviceProfileUtils::WriteProfileEvents(profileEvents, data)) {
@@ -142,7 +142,7 @@ int32_t DistributedDeviceProfileProxy::SyncDeviceProfile(const SyncOptions& sync
     sptr<IRemoteObject> remote = Remote();
     MessageParcel data;
     if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) {
-        HILOGE("write inteface token failed");
+        HILOGE("write interface token failed");
         return ERR_FLATTEN_OBJECT;
     }
 
