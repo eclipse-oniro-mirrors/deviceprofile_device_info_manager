@@ -119,7 +119,7 @@ HWTEST_F(ProfileAuthorityTest, CheckAuthority_003, TestSize.Level0)
 
 /**
  * @tc.name: CheckAuthority_004
- * @tc.desc: check authority of a empty serviceId
+ * @tc.desc: check authority of an empty serviceId
  * @tc.type: FUNC
  */
 HWTEST_F(ProfileAuthorityTest, CheckAuthority_004, TestSize.Level0)

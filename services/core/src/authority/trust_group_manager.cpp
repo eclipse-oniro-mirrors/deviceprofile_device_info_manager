@@ -69,12 +69,12 @@ bool TrustGroupManager::CheckTrustGroup(const std::string& deviceId)
     int32_t ret = hichainGmInstance_->getRelatedGroups(ANY_OS_ACCOUNT, AUTH_APPID.c_str(), deviceId.c_str(),
         &returnGroups, &groupNum);
     if (ret != ERR_OK) {
-        HILOGE("faild , ret: %d", ret);
+        HILOGE("failed, ret:%{public}d", ret);
         return false;
     }
 
     if (returnGroups == nullptr || groupNum == 0) {
-        HILOGE("faild, returnGroups is nullptr");
+        HILOGE("failed, returnGroups is nullptr");
         return false;
     }
 

@@ -421,7 +421,7 @@ HWTEST_F(EventSubscribeTest, SubscribeWithUnsusbscribe002, TestSize.Level2)
     }
 
     /**
-     * @tc.steps: step4. put a other subscribed service profile
+     * @tc.steps: step4. put a subscribed service profile
      * @tc.expected: step4. can't receive notification.
      */
     errCode = PutFakeStorage();
