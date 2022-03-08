@@ -39,7 +39,7 @@ ProfileEventNotifierStub::HandlersMap ProfileEventNotifierStub::InitHandlersMap(
 int32_t ProfileEventNotifierStub::OnRemoteRequest(uint32_t code, MessageParcel& data,
     MessageParcel& reply, MessageOption& option)
 {
-    HILOGI("code = %{public}d", code);
+    HILOGI("code = %{public}u", code);
     std::u16string descriptor = ProfileEventNotifierStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
     if (descriptor != remoteDescriptor) {

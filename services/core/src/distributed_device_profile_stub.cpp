@@ -49,7 +49,7 @@ bool DistributedDeviceProfileStub::EnforceInterfaceToken(MessageParcel& data)
 int32_t DistributedDeviceProfileStub::OnRemoteRequest(uint32_t code, MessageParcel& data,
     MessageParcel& reply, MessageOption& option)
 {
-    HILOGI("code = %{public}d, flags = %{public}d", code, option.GetFlags());
+    HILOGI("code = %{public}u, flags = %{public}d", code, option.GetFlags());
 
     auto iter = funcsMap_.find(code);
     if (iter != funcsMap_.end()) {
