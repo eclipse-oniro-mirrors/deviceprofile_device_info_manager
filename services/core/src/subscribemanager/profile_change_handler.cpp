@@ -194,7 +194,7 @@ void ProfileChangeHandler::NotifyProfileChangedLocked(const ProfileChangeNotific
     for (auto index : indexes) {
         filteredEntries.emplace_back(profileEntries[index]);
     }
-    HILOGI("filtered with %{public}zu entrie(s)", size);
+    HILOGI("filtered with %{public}zu entries", size);
     bool isLocal = changeNotification.IsLocal();
     std::string deviceId = changeNotification.GetDeviceId();
     ProfileChangeNotification filteredNotification(filteredEntries, deviceId, isLocal);
