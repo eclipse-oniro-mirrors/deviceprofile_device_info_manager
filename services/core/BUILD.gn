@@ -70,6 +70,7 @@ ohos_shared_library("distributed_device_profile") {
   configs = [ ":device_profile_core_config" ]
 
   external_deps = [
+    "access_token:libaccesstoken_sdk",
     "deviceauth_standard:deviceauth_sdk",
     "distributeddatamgr:distributeddata_inner",
     "dsoftbus_standard:softbus_client",
