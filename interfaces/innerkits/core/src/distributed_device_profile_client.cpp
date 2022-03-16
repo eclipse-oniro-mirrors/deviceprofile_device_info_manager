@@ -241,14 +241,12 @@ void DistributedDeviceProfileClient::MergeSubscribeInfoLocked(std::list<Subscrib
             [&newSubscribeInfo](const auto& subscribeInfo) {
             return subscribeInfo.profileEvent == newSubscribeInfo.profileEvent;
         });
-        if (iter != subscribeInfos.end()) {
+        if (iter == subscribeInfos.end()) {
             subscribeInfos.emplace_back(newSubscribeInfo);
             continue;
         }
-        // override with the new suscribe info for same profile event
-        if (*iter != newSubscribeInfo) {
-            *iter = newSubscribeInfo;
-        }
+        // override with the new subscribe info for same profile event
+        *iter = newSubscribeInfo;
     }
 }
 

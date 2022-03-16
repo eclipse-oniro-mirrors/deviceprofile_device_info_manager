@@ -57,6 +57,9 @@ std::unique_ptr<ProfileKey> ProfileKey::Parse(const std::string& entryKey)
 
     int32_t index = 0;
     auto profileKey = std::make_unique<ProfileKey>();
+    if (profileKey == nullptr) {
+        return nullptr;
+    }
     profileKey->udid = std::move(vec[index++]);
     if (profileKey->udid.size() != DEVICE_ID_SIZE) {
         HILOGE("parse udid failed");
@@ -191,7 +194,7 @@ void ProfileChangeHandler::NotifyProfileChangedLocked(const ProfileChangeNotific
     for (auto index : indexes) {
         filteredEntries.emplace_back(profileEntries[index]);
     }
-    HILOGI("filtered with %{public}zu entrie(s)", size);
+    HILOGI("filtered with %{public}zu entries", size);
     bool isLocal = changeNotification.IsLocal();
     std::string deviceId = changeNotification.GetDeviceId();
     ProfileChangeNotification filteredNotification(filteredEntries, deviceId, isLocal);

@@ -40,7 +40,7 @@ bool SyncCoordinator::Init()
 bool SyncCoordinator::AcquireSync()
 {
     if (isOnSync_) {
-        HILOGI("acquire from %{publiic}s", isOnlineTrigger_ ? "online" : "manual");
+        HILOGI("acquire from %{public}s", isOnlineTrigger_ ? "online" : "manual");
         return false;
     }
     isOnSync_ = true;
