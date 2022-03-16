@@ -173,7 +173,7 @@ HWTEST_F(ProfileAuthorityTest, CheckAuthority_006, TestSize.Level0)
 
 /**
  * @tc.name: CheckAuthority_007
- * @tc.desc: check authority of mulitiple serviceIds
+ * @tc.desc: check authority of multiple serviceIds
  * @tc.type: FUNC
  */
 HWTEST_F(ProfileAuthorityTest, CheckAuthority_007, TestSize.Level0)
