@@ -33,8 +33,8 @@ public:
     IProfileEventCallback() = default;
     virtual ~IProfileEventCallback() = default;
 
-    virtual void OnSyncCompleted(const SyncResult& syncResults) {};
-    virtual void OnProfileChanged(const ProfileChangeNotification& changeNotification) {};
+    virtual void OnSyncCompleted(const SyncResult& syncResults) {}
+    virtual void OnProfileChanged(const ProfileChangeNotification& changeNotification) {}
 };
 }  // namespace DeviceProfile
 }  // namespace OHOS

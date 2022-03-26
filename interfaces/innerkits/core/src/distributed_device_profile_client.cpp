@@ -107,7 +107,7 @@ int32_t DistributedDeviceProfileClient::SubscribeProfileEvents(const std::list<S
         notifier = iter->second.notifier;
     } else {
         notifier = sptr<ProfileEventNotifierStub>(
-            new (std::nothrow) ProfileEventNotifierStub(eventCb));
+            new ProfileEventNotifierStub(eventCb));
     }
     autoLock.unlock();
 
@@ -194,7 +194,7 @@ int32_t DistributedDeviceProfileClient::SyncDeviceProfile(const SyncOptions& syn
     }
 
     sptr<IRemoteObject> notifier =
-        sptr<ProfileEventNotifierStub>(new (std::nothrow) ProfileEventNotifierStub(syncCb));
+        sptr<ProfileEventNotifierStub>(new ProfileEventNotifierStub(syncCb));
     return dps->SyncDeviceProfile(syncOptions, notifier);
 }
 
@@ -218,7 +218,7 @@ sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfile
     HILOGI("get service succeeded");
     if (dpDeathRecipient_ == nullptr) {
         dpDeathRecipient_ = sptr<IRemoteObject::DeathRecipient>(
-            new (std::nothrow) DeviceProfileDeathRecipient);
+            new DeviceProfileDeathRecipient);
     }
     object->AddDeathRecipient(dpDeathRecipient_);
     dpProxy_ = iface_cast<IDistributedDeviceProfile>(object);

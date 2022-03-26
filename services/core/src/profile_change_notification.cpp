@@ -75,7 +75,7 @@ bool ProfileEntry::Marshalling(Parcel& parcel) const
 {
     PARCEL_WRITE_HELPER_RET(parcel, String, key, false);
     PARCEL_WRITE_HELPER_RET(parcel, String, value, false);
-    PARCEL_WRITE_HELPER_RET(parcel, Uint8, changeType, false);
+    PARCEL_WRITE_HELPER_RET(parcel, Uint8, static_cast<uint8_t>(changeType), false);
     return true;
 }
 

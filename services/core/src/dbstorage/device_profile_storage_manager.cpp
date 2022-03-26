@@ -61,10 +61,6 @@ bool DeviceProfileStorageManager::Init()
             return false;
         }
         onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
-        if (onlineSyncTbl_ == nullptr) {
-            return false;
-        }
-
         kvStoreDeathRecipient_ = sptr<IRemoteObject::DeathRecipient>(new KvStoreDeathRecipient());
         auto runner = AppExecFwk::EventRunner::Create("dpstorage");
         storageHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
@@ -125,7 +121,7 @@ std::string DeviceProfileStorageManager::GenerateKey(const std::string& udid,
     const std::string& key, KeyType keyType)
 {
     std::string tmp;
-    tmp.append(udid).append("/").append(std::to_string(keyType)).append("/").append(key);
+    tmp.append(udid).append("/").append(std::to_string(static_cast<int8_t>(keyType))).append("/").append(key);
     return tmp;
 }
 

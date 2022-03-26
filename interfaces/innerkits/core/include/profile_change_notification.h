@@ -23,7 +23,7 @@
 
 namespace OHOS {
 namespace DeviceProfile {
-enum ProfileChangeType : uint8_t {
+enum class ProfileChangeType : uint8_t {
     UNKNOWN_CHANGE_TYPE = 0,
     INSERTED = 1,
     UPDATED = 2,
@@ -53,7 +53,7 @@ public:
         std::string& networkId, bool isLocal)
         : profileEntries_(std::move(profileEntries)),
           deviceId_(std::move(networkId)), isLocal_(isLocal) {}
-    ProfileChangeNotification() {};
+    ProfileChangeNotification() {}
     ~ProfileChangeNotification() = default;
 
     const std::vector<ProfileEntry>& GetProfileEntries() const;

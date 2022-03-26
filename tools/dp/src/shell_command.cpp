@@ -22,6 +22,8 @@ namespace OHOS {
 namespace DeviceProfile {
 namespace {
 const std::string TAG = "ShellCommand";
+
+const std::string HELP_MSG_NO_OPTION = "error: you must specify an option at least.";
 }
 
 ShellCommand::ShellCommand(int argc, char *argv[], std::string name)

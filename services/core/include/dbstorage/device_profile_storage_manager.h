@@ -33,7 +33,7 @@
 
 namespace OHOS {
 namespace DeviceProfile {
-enum KeyType {
+enum class KeyType : int8_t {
     UNKNOWN = -1,
     SERVICE = 0,
     SERVICE_LIST = 1,

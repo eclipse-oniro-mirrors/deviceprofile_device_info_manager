@@ -38,14 +38,14 @@ void ProfileEventNotifierProxy::OnSyncCompleted(const SyncResult& syncResults)
         return;
     }
     if (!data.WriteInt32(static_cast<int32_t>(syncResults.size()))) {
-        HILOGW("write syncResults size failed");
+        HILOGE("write syncResults size failed");
         return;
     }
 
     for (const auto& [deviceId, syncResult] : syncResults) {
         if (!data.WriteString(deviceId) ||
             !data.WriteInt32(static_cast<int32_t>(syncResult))) {
-            HILOGW("write syncResults failed");
+            HILOGE("write syncResults failed");
             return;
         }
     }

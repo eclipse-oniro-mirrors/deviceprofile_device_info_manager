@@ -27,7 +27,7 @@
 
 namespace OHOS {
 namespace DeviceProfile {
-enum DeviceIdType : uint8_t {
+enum class DeviceIdType : uint8_t {
     NETWORKID = 0,
     UDID = 1,
     UUID = 2
@@ -35,6 +35,7 @@ enum DeviceIdType : uint8_t {
 
 class DeviceManager {
     DECLARE_SINGLE_INSTANCE(DeviceManager);
+
 public:
     bool Init();
     std::unique_ptr<NodeBasicInfo> GetLocalBasicInfo();
