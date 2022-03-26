@@ -23,7 +23,7 @@
 namespace OHOS {
 namespace DeviceProfile {
 // must keep same with DistributedKv::SyncMode
-enum class SyncMode {
+enum class SyncMode : int64_t {
     PULL,
     PUSH,
     PUSH_PULL,

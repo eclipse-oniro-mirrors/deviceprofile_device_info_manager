@@ -24,7 +24,7 @@ namespace OHOS {
 namespace DeviceProfile {
 class ProfileEventNotifierStub : public IRemoteStub<IProfileEventNotifier> {
 public:
-    ProfileEventNotifierStub(const std::shared_ptr<IProfileEventCallback>& profileEventCb)
+    explicit ProfileEventNotifierStub(const std::shared_ptr<IProfileEventCallback>& profileEventCb)
         : profileEventCb_(profileEventCb) {}
     ~ProfileEventNotifierStub() = default;
 

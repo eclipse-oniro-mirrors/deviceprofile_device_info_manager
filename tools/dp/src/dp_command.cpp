@@ -27,8 +27,49 @@
 namespace OHOS {
 namespace DeviceProfile {
 namespace {
+const std::string TAG = "DpShellCommand";
+const std::string DP_TOOL_NAME = "dp";
+const std::string DP_HELP_MSG = "usage: dp <command> <options>\n"
+                             "These are common dp commands list:\n"
+                             "  help         list available commands\n"
+                             "  getDevice    list all devices\n"
+                             "  query        query device info with options\n"
+                             "  put          put device info with options\n"
+                             "  sync         sync device info with options\n"
+                             "  delete       delete device info with options\n"
+                             "  subscribe    subscribe device info with options\n";
+const std::string HELP_MSG_QUERY =
+    "usage: dp query <options>\n"
+    "options list:\n"
+    "  -h, --help                               list available commands\n"
+    "  -d  <device-id>                          query device info by a device id\n"
+    "  -s  <service-id>                         query device info by a service id\n";
+const std::string HELP_MSG_SYNC =
+    "usage: dp sync <options>\n"
+    "options list:\n"
+    "  -h, --help                               list available commands\n"
+    "  -d  <device-ids>                         sync device info by a device ids\n"
+    "  -m  <mode>                               sync device info by mode\n";
+const std::string HELP_MSG_PUT =
+    "usage: dp put <options>\n"
+    "options list:\n"
+    "  -h, --help                               list available commands\n"
+    "  -s  <service-id>                         put device info by service id\n"
+    "  -t  <service-type>                       put device info by service type\n";
+const std::string HELP_MSG_SUBSCRIBE =
+    "usage: dp subscribe <options>\n"
+    "options list:\n"
+    "  -h, --help                               list available commands\n"
+    "  -s  <service-ids>                        subscribe device info by service ids\n"
+    "  -d  <device-id>                          subscribe device info by device id\n";
+const std::string HELP_MSG_DELETE =
+    "usage: dp delete <options>\n"
+    "options list:\n"
+    "  -h, --help                               list available commands\n"
+    "  -s  <service-id>                        service id to delete\n";
 constexpr int32_t API_LEVEL = 7;
 constexpr int32_t SYNC_SLEEP_TIME = 10;
+constexpr int32_t BASE = 10;
 constexpr int32_t SUBSCRIBE_SLEEP_TIME = 120;
 const std::string SHORT_OPTIONS = "hd:s:m:t:";
 const struct option LONG_OPTIONS[] = {
@@ -40,6 +81,7 @@ const struct option LONG_OPTIONS[] = {
     {0, 0, 0, 0},
 };
 }
+
 DpShellCommand::DpShellCommand(int argc, char *argv[]) : ShellCommand(argc, argv, DP_TOOL_NAME)
 {
 }
@@ -200,7 +242,7 @@ ErrCode DpShellCommand::SyncCommand()
 {
     int32_t result = ERR_OK;
     std::list<std::string> deviceIds;
-    std::string mode;
+    std::string modeStr;
     while (true) {
         int option = getopt_long(argc_, argv_, SHORT_OPTIONS.c_str(), LONG_OPTIONS, nullptr);
         HILOGI("option: %{public}d, optopt: %{public}d, optind: %{public}d", option, optopt, optind);
@@ -211,12 +253,13 @@ ErrCode DpShellCommand::SyncCommand()
         if (option == -1) {
             break;
         }
-        result = HandleSyncOption(option, mode, deviceIds);
+        result = HandleSyncOption(option, modeStr, deviceIds);
     }
 
     if (result == ERR_OK) {
         SyncOptions syncOption;
-        syncOption.SetSyncMode((OHOS::DeviceProfile::SyncMode)atoi(mode.c_str()));
+        int64_t mode = strtol(modeStr.c_str(), nullptr, BASE);
+        syncOption.SetSyncMode((OHOS::DeviceProfile::SyncMode)mode);
         for (const auto& deviceId : deviceIds) {
             syncOption.AddDevice(deviceId);
         }
@@ -408,6 +451,16 @@ int32_t DpShellCommand::HandleSubscribeOption(int option, std::string& deviceId,
         }
     }
     return result;
+}
+
+void ProfileEventCallback::OnSyncCompleted(const SyncResult& syncResults)
+{
+    HILOGI("OnSyncCompleted");
+}
+
+void ProfileEventCallback::OnProfileChanged(const ProfileChangeNotification& changeNotification)
+{
+    HILOGI("OnProfileChanged");
 }
 }  // namespace DeviceProfile
 }  // namespace OHOS

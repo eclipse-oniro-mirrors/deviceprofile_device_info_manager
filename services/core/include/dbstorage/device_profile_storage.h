@@ -28,7 +28,7 @@
 
 namespace OHOS {
 namespace DeviceProfile {
-enum StorageInitStatus {
+enum class StorageInitStatus {
     UNINITED = 1,
     INIT_FAILED = 2,
     INIT_SUCCEED = 3

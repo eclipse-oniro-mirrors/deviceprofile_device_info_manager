@@ -55,7 +55,7 @@ int32_t DistributedDeviceProfileStub::OnRemoteRequest(uint32_t code, MessageParc
     if (iter != funcsMap_.end()) {
         auto func = iter->second;
         if (!EnforceInterfaceToken(data)) {
-            HILOGW("check interface token failed");
+            HILOGE("check interface token failed");
             return ERR_DP_INTERFACE_CHECK_FAILED;
         }
         if (!AuthorityManager::GetInstance().CheckCallerTrust()) {

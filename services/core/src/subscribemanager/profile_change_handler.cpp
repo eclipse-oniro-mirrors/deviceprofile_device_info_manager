@@ -143,11 +143,12 @@ void ProfileChangeHandler::ConvertEntry(const std::vector<Entry>& entries,
         }
 
         std::string trimmedKey = std::move(profileKey->serviceId);
-        HILOGI("key = %{public}s, state = %{public}d", trimmedKey.c_str(), changeType);
+        HILOGI("key = %{public}s, state = %{public}u", trimmedKey.c_str(),
+            static_cast<uint8_t>(changeType));
         service2Index.emplace(trimmedKey, profileEntries.size());
         profileEntries.emplace_back(std::move(trimmedKey), entry.value.ToString(), changeType);
-        HILOGD("key = %{public}s, value = %{public}s, state = %{public}d", profileKey->serviceId.c_str(),
-            entry.value.ToString().c_str(), changeType);
+        HILOGD("key = %{public}s, value = %{public}s, state = %{public}u", profileKey->serviceId.c_str(),
+            entry.value.ToString().c_str(), static_cast<uint8_t>(changeType));
     }
 }
 
