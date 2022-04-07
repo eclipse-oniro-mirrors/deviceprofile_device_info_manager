@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -54,13 +54,18 @@ int32_t DistributedDeviceProfileProxy::GetDeviceProfile(const std::string& udid,
     PARCEL_WRITE_HELPER(data, String, serviceId);
     MessageParcel reply;
     MessageOption option;
-    int32_t error = remote->SendRequest(GET_DEVICE_PROFILE, data, reply, option);
-    if (error != ERR_NONE) {
-        HILOGE("transact failed, error: %{public}d", error);
-        return error;
+    int32_t errCode = remote->SendRequest(GET_DEVICE_PROFILE, data, reply, option);
+    if (errCode != ERR_NONE) {
+        HILOGE("transact failed, errCode = %{public}d", errCode);
+        return errCode;
     }
-    profile.Unmarshalling(reply);
-    return ERR_OK;
+    int32_t ret = reply.ReadInt32();
+    if (!profile.Unmarshalling(reply)) {
+        HILOGE("profile unmarshall failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    HILOGI("ret = %{public}d", ret);
+    return ret;
 }
 
 int32_t DistributedDeviceProfileProxy::DeleteDeviceProfile(const std::string& serviceId)
@@ -99,13 +104,17 @@ int32_t DistributedDeviceProfileProxy::SubscribeProfileEvents(
     MessageParcel reply;
     MessageOption option;
     int32_t errCode = remote->SendRequest(SUBSCRIBE_PROFILE_EVENT, data, reply, option);
-    if (errCode != ERR_OK) {
+    if (errCode != ERR_NONE) {
         HILOGE("transact failed, errCode = %{public}d", errCode);
-        if (!DeviceProfileUtils::ReadProfileEvents(reply, failedEvents)) {
-            HILOGW("read profile events failed");
-        }
+        return errCode;
     }
-    return errCode;
+    int32_t ret = reply.ReadInt32();
+    if ((ret != ERR_OK) && !DeviceProfileUtils::ReadProfileEvents(reply, failedEvents)) {
+        HILOGE("read profile events failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    HILOGI("ret = %{public}d", ret);
+    return ret;
 }
 
 int32_t DistributedDeviceProfileProxy::UnsubscribeProfileEvents(
@@ -127,13 +136,17 @@ int32_t DistributedDeviceProfileProxy::UnsubscribeProfileEvents(
     MessageParcel reply;
     MessageOption option;
     int32_t errCode = remote->SendRequest(UNSUBSCRIBE_PROFILE_EVENT, data, reply, option);
-    if (errCode != ERR_OK) {
+    if (errCode != ERR_NONE) {
         HILOGE("transact failed, errCode = %{public}d", errCode);
-        if (!DeviceProfileUtils::ReadProfileEvents(reply, failedEvents)) {
-            HILOGW("read profile events failed");
-        }
+        return errCode;
     }
-    return errCode;
+    int32_t ret = reply.ReadInt32();
+    if ((ret != ERR_OK) && !DeviceProfileUtils::ReadProfileEvents(reply, failedEvents)) {
+        HILOGW("read profile events failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    HILOGI("ret = %{public}d", ret);
+    return ret;
 }
 
 int32_t DistributedDeviceProfileProxy::SyncDeviceProfile(const SyncOptions& syncOptions,
