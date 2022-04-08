@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -89,11 +89,11 @@ int32_t DistributedDeviceProfileStub::GetDeviceProfileInner(MessageParcel& data,
     PARCEL_READ_HELPER(data, String, udid);
     PARCEL_READ_HELPER(data, String, serviceId);
     int32_t ret = GetDeviceProfile(udid, serviceId, profile);
-    if (!profile.Marshalling(reply)) {
+    if (!(reply.WriteInt32(ret) && profile.Marshalling(reply))) {
         HILOGE("marshall profile failed");
         return ERR_FLATTEN_OBJECT;
     }
-    return ret;
+    return ERR_NONE;
 }
 
 int32_t DistributedDeviceProfileStub::DeleteDeviceProfileInner(MessageParcel& data, MessageParcel& reply)
@@ -124,12 +124,14 @@ int32_t DistributedDeviceProfileStub::SubscribeProfileEventInner(MessageParcel& 
 
     int32_t errCode = SubscribeProfileEvents(subscribeInfos, eventNotifier, failedEvents);
     HILOGI("errCode = %{public}d", errCode);
-    if (errCode != ERR_OK) {
-        if (!DeviceProfileUtils::WriteProfileEvents(failedEvents, reply)) {
-            HILOGW("write profile events failed");
-        }
+    if (!reply.WriteInt32(errCode)) {
+        return ERR_FLATTEN_OBJECT;
     }
-    return errCode;
+    if ((errCode != ERR_OK) && !DeviceProfileUtils::WriteProfileEvents(failedEvents, reply)) {
+        HILOGE("write profile events failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return ERR_NONE;
 }
 
 int32_t DistributedDeviceProfileStub::UnsubscribeProfileEventInner(MessageParcel& data, MessageParcel& reply)
@@ -153,12 +155,14 @@ int32_t DistributedDeviceProfileStub::UnsubscribeProfileEventInner(MessageParcel
 
     int32_t errCode = UnsubscribeProfileEvents(profileEvents, eventNotifier, failedEvents);
     HILOGI("errCode = %{public}d", errCode);
-    if (errCode != ERR_OK) {
-        if (!DeviceProfileUtils::WriteProfileEvents(failedEvents, reply)) {
-            HILOGW("write profile events failed");
-        }
+    if (!reply.WriteInt32(errCode)) {
+        return ERR_FLATTEN_OBJECT;
     }
-    return errCode;
+    if ((errCode != ERR_OK) && !DeviceProfileUtils::WriteProfileEvents(failedEvents, reply)) {
+        HILOGE("write profile events failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return ERR_NONE;
 }
 
 int32_t DistributedDeviceProfileStub::SyncDeviceProfileInner(MessageParcel& data, MessageParcel& reply)
