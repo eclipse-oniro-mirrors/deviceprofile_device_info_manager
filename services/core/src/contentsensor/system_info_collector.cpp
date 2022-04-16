@@ -32,10 +32,12 @@ const std::string EMPTY_PARAM = "";
 const std::string SYSTEM_OS_TYPE = "type";
 const std::string DEVICE_OHOS_VERSION = "harmonyVersion";
 const std::string DEVICE_API_LEVEL = "harmonyApiLevel";
-const std::string SYSTEM_OS_TYPE_PARAM = "hw_sc.build.os.enable";
+const std::string DEVICE_OHOS_NAME = "OpenHarmony";
 const std::string DEVICE_API_LEVEL_PARAM = "hw_sc.build.os.apiversion";
 const std::string DEVICE_OHOS_VERSION_PARAM = "hw_sc.build.os.version";
-constexpr int32_t OHOS_TYPE = 11;
+const std::string DEVICE_OHOS_NAME_PARAM = "const.ohos.name";
+constexpr int32_t OHOS_TYPE_UNKNOWN = -1;
+constexpr int32_t OHOS_TYPE = 10;
 }
 
 void SystemInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& profile)
@@ -51,7 +53,10 @@ void SystemInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& pro
 
 int32_t SystemInfoCollector::GetOsType()
 {
-    return OHOS_TYPE;
+    if (system::GetParameter(DEVICE_OHOS_NAME_PARAM, EMPTY_PARAM) == DEVICE_OHOS_NAME) {
+        return OHOS_TYPE;
+    }
+    return OHOS_TYPE_UNKNOWN;
 }
 
 std::string SystemInfoCollector::GetApiVersion()
