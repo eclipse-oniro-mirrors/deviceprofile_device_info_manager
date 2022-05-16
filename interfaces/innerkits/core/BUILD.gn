@@ -43,7 +43,7 @@ ohos_shared_library("distributed_device_profile_client") {
   public_configs = [ ":distributed_device_profile_client_config" ]
 
   public_deps = [
-    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
+    "//foundation/bundlemanager/bundle_framework/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/communication/ipc/interfaces/innerkits/ipc_core:ipc_core",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
