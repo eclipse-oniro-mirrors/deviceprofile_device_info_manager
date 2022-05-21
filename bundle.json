@@ -57,7 +57,8 @@
           }
         ],
         "test": [
-          "//foundation/deviceprofile/device_profile_core/services/core:unittest"
+          "//foundation/deviceprofile/device_profile_core/services/core:unittest",
+          "//foundation/deviceprofile/device_profile_core/services/core/test/fuzztest/deviceprofile_fuzzer:fuzztest"
         ]
       }
     }
