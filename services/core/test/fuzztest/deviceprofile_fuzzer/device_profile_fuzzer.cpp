@@ -70,7 +70,7 @@ void FuzzDeviceProfile(const uint8_t* rawData, size_t size)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     if (size < OHOS::DeviceProfile::THRESHOLD) {
-        return -1;
+        return 0;
     }
 
     OHOS::DeviceProfile::FuzzDeviceProfile(data, size);
