@@ -147,7 +147,7 @@ void ProfileChangeHandler::ConvertEntry(const std::vector<Entry>& entries,
             static_cast<uint8_t>(changeType));
         service2Index.emplace(trimmedKey, profileEntries.size());
         profileEntries.emplace_back(std::move(trimmedKey), entry.value.ToString(), changeType);
-        HILOGD("key = %{public}s, value = %{public}s, state = %{public}u", profileKey->serviceId.c_str(),
+        HILOGD("value = %{public}s, state = %{public}u",
             entry.value.ToString().c_str(), static_cast<uint8_t>(changeType));
     }
 }
