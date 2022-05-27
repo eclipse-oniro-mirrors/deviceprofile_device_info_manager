@@ -40,7 +40,7 @@ constexpr int32_t OHOS_TYPE_UNKNOWN = -1;
 constexpr int32_t OHOS_TYPE = 10;
 }
 
-void SystemInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& profile)
+bool SystemInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& profile)
 {
     profile.SetServiceId(SERVICE_ID);
     profile.SetServiceType(SERVICE_TYPE);
@@ -49,6 +49,7 @@ void SystemInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& pro
     jsonData[DEVICE_OHOS_VERSION] = GetOsVersion();
     jsonData[DEVICE_API_LEVEL] = GetApiVersion();
     profile.SetCharacteristicProfileJson(jsonData.dump());
+    return true;
 }
 
 int32_t SystemInfoCollector::GetOsType()

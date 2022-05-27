@@ -42,7 +42,7 @@ const std::string DEVICE_TYPE_PARAM = "ro.build.characteristics";
 constexpr int32_t DEVICE_UUID_LENGTH = 65;
 }
 
-void DeviceInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& profile)
+bool DeviceInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& profile)
 {
     profile.SetServiceId(SERVICE_ID);
     profile.SetServiceType(SERVICE_TYPE);
@@ -55,6 +55,7 @@ void DeviceInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& pro
     jsonData[DEVICE_PRODUCT_ID] = GetDeviceProductId();
     jsonData[DEVICE_SN] = GetDeviceSerial();
     profile.SetCharacteristicProfileJson(jsonData.dump());
+    return true;
 }
 
 std::string DeviceInfoCollector::GetDeviceModel()

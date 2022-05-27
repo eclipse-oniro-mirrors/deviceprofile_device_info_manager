@@ -24,7 +24,7 @@ class ContentCollector {
 public:
     ContentCollector() = default;
     virtual ~ContentCollector() = default;
-    virtual void ConvertToProfileData(ServiceCharacteristicProfile& profile) = 0;
+    virtual bool ConvertToProfileData(ServiceCharacteristicProfile& profile) = 0;
 
     void DoCollect(ServiceCharacteristicProfile& profileData);
 };

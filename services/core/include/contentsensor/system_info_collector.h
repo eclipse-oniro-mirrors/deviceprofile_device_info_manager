@@ -25,7 +25,7 @@ namespace OHOS {
 namespace DeviceProfile {
 class SystemInfoCollector : public ContentCollector {
 public:
-    void ConvertToProfileData(ServiceCharacteristicProfile& profile) override;
+    bool ConvertToProfileData(ServiceCharacteristicProfile& profile) override;
 
 private:
     int32_t GetOsType();
