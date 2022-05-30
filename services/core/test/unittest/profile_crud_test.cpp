@@ -211,7 +211,7 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_001, TestSize.Level2)
     char (*osOutput)[PCID_MAIN_BYTES] = nullptr;
     int32_t length;
     if (!DecodeOsSyscap((char *)intValues, &osOutput, &length)) {
-        HILOGE("DecodeOsSyscap failed");
+        DTEST_LOG << "DecodeOsSyscap failed" << std::endl;
         return;
     }
     for (int i = 0; i < length; i++) {
@@ -221,7 +221,7 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_001, TestSize.Level2)
     std::string capabilities = jsonObject[CHARACTER_PRIVATE_SYSCAP];
     char (*priOutput)[PCID_MAIN_BYTES] = nullptr;
     if (!DecodePrivateSyscap((char *)capabilities.c_str(), &priOutput, &length)) {
-        HILOGE("DecodePrivateSyscap failed");
+        DTEST_LOG << "DecodePrivateSyscap failed" << std::endl;
         return;
     }
     for (int i = 0; i < length; i++) {
