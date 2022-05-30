@@ -25,7 +25,7 @@ namespace OHOS {
 namespace DeviceProfile {
 class DeviceInfoCollector : public ContentCollector {
 public:
-    void ConvertToProfileData(ServiceCharacteristicProfile& profile) override;
+    bool ConvertToProfileData(ServiceCharacteristicProfile& profile) override;
 
 private:
     std::string GetDeviceModel();

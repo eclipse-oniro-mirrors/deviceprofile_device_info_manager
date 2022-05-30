@@ -34,6 +34,7 @@ device_profile_external_deps = [
   "eventhandler:libeventhandler",
   "hiviewdfx_hilog_native:libhilog",
   "ipc:ipc_core",
+  "syscap_codec:syscap_interface_shared",
   "utils_base:utils",
 ]
 

@@ -17,6 +17,7 @@
 
 #include "device_info_collector.h"
 #include "device_profile_log.h"
+#include "syscap_info_collector.h"
 #include "system_info_collector.h"
 
 namespace OHOS {
@@ -44,9 +45,12 @@ bool ContentSensorManager::Collect()
         std::list<std::shared_ptr<ContentCollector>> taskList;
         taskList.push_back(std::make_shared<DeviceInfoCollector>());
         taskList.push_back(std::make_shared<SystemInfoCollector>());
+        taskList.push_back(std::make_shared<SyscapInfoCollector>());
         for (auto& task : taskList) {
             ServiceCharacteristicProfile profileData;
-            task->ConvertToProfileData(profileData);
+            if (!task->ConvertToProfileData(profileData)) {
+                continue;
+            }
             task->DoCollect(profileData);
         }
     };

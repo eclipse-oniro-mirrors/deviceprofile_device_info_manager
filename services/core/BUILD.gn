@@ -42,6 +42,7 @@ ohos_shared_library("distributed_device_profile") {
     "src/contentsensor/content_collector.cpp",
     "src/contentsensor/content_sensor_manager.cpp",
     "src/contentsensor/device_info_collector.cpp",
+    "src/contentsensor/syscap_info_collector.cpp",
     "src/contentsensor/system_info_collector.cpp",
     "src/dbstorage/device_profile_storage.cpp",
     "src/dbstorage/device_profile_storage_manager.cpp",
@@ -80,6 +81,7 @@ ohos_shared_library("distributed_device_profile") {
     "safwk:system_ability_fwk",
     "samgr_standard:samgr_proxy",
     "startup_l2:syspara",
+    "syscap_codec:syscap_interface_shared",
     "utils_base:utils",
   ]
 
