@@ -48,6 +48,7 @@ public:
         DeviceIdType toType);
     void GetDeviceIdList(std::list<std::string>& deviceIdList);
     void GetDeviceList(std::list<std::shared_ptr<DeviceInfo>>& deviceList);
+    void RemoveDeviceIdsByUdid(const std::string& udid);
 
 private:
     static void OnNodeOnlineAdapter(NodeBasicInfo* info);
@@ -62,6 +63,7 @@ private:
     void AddLocalDeviceIds();
     void AddDeviceIds(const std::string& networkId);
     void RemoveDeviceIds(const std::string& networkId);
+    void RemoveExpireDeviceIds(const std::string& networkId);
     void RecoverDevicesIfNeeded();
 
 private:

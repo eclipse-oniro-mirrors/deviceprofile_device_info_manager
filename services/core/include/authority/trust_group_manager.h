@@ -21,6 +21,7 @@
 #include "device_auth.h"
 #include "device_auth_defines.h"
 #include "nlohmann/json.hpp"
+#include "event_handler.h"
 #include "single_instance.h"
 
 namespace OHOS {
@@ -45,7 +46,16 @@ public:
     bool CheckTrustGroup(const std::string& deviceId);
 
 private:
+    static void OnDeviceUnBoundAdapter(const char* peerUdid, const char* groupInfo);
+    static bool CheckDeviceId(const std::string udid);
+    static std::string GetDeviceUdid();
+    void InitDataChangeListener();
+
+private:
     const DeviceGroupManager* hichainGmInstance_ = nullptr;
+    DataChangeListener dataChangeListener_;
+    static std::shared_ptr<AppExecFwk::EventHandler> trustGroupMgrHandler_;
+    
 };
 }  // namespace DeviceProfile
 }  // namespace OHOS

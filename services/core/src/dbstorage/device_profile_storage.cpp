@@ -267,6 +267,22 @@ int32_t DeviceProfileStorage::SyncDeviceProfile(const std::vector<std::string>& 
     return static_cast<int32_t>(status);
 }
 
+int32_t DeviceProfileStorage::RemoveDeviceData(const std::string networkId)
+{
+    HILOGI("called");
+
+    std::unique_lock<std::shared_mutex> writeLock(storageLock_);
+    if (kvStorePtr_ == nullptr) {
+        return ERR_DP_INVALID_PARAMS;
+    }
+
+    Status status = kvStorePtr_->RemoveDeviceData(networkId);
+    if (status != Status::SUCCESS) {
+        HILOGE("remote device data failed, error = %{public}d", status);
+    }
+    return static_cast<int32_t>(status);
+}
+
 bool DeviceProfileStorage::CheckTrustGroup(const std::vector<std::string>& deviceIdList)
 {
     if (deviceIdList.empty()) {

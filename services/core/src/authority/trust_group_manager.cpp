@@ -17,6 +17,9 @@
 
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
+#include "device_profile_storage_manager.h"
+#include "device_profile_utils.h"
+#include "device_manager.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -38,6 +41,8 @@ void from_json(const nlohmann::json& jsonObject, GroupInfo& groupInfo)
     jsonObject.at(FIELD_GROUP_VISIBILITY).get_to(groupInfo.groupVisibility);
 }
 
+std::shared_ptr<AppExecFwk::EventHandler> TrustGroupManager::trustGroupMgrHandler_;
+
 void TrustGroupManager::Init()
 {
     if (InitDeviceAuthService() != ERR_OK) {
@@ -50,7 +55,20 @@ void TrustGroupManager::Init()
         HILOGE("auth GetGmInstance failed");
         return;
     }
+
+    InitDataChangeListener();
+    if(hichainGmInstance_->regDataChangeListener(AUTH_APPID.c_str(), &dataChangeListener_) != 0){
+        HILOGE("auth RegDataChangeListener failed");
+        return;
+    }
+    auto runner = AppExecFwk::EventRunner::Create("trustGroupMgr");
+    trustGroupMgrHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
     HILOGI("init succeeded");
+}
+
+void TrustGroupManager::InitDataChangeListener()
+{
+    dataChangeListener_.onDeviceUnBound = OnDeviceUnBoundAdapter;
 }
 
 bool TrustGroupManager::CheckTrustGroup(const std::string& deviceId)
@@ -105,5 +123,50 @@ bool TrustGroupManager::CheckTrustGroup(const std::string& deviceId)
     HILOGE("check failed, not in trust group");
     return false;
 }
+
+void TrustGroupManager::OnDeviceUnBoundAdapter(const char* peerUdid, const char* groupInfo)
+{
+    const std::string udid = peerUdid;
+    if (!CheckDeviceId(udid)) {
+        return;
+    }
+
+    auto removeUnBoundDeviceTask = [udid = std::move(udid)]() {
+        HILOGI("remove unbound deivce profile task start, udid = %{public}s",
+            DeviceProfileUtils::AnonymizeDeviceId(udid).c_str());
+        
+        if(DeviceProfileStorageManager::GetInstance().RemoveUnBoundDeviceProfile(udid) != ERR_OK){
+            HILOGE("remove unbound device profile task failed, udid = %{public}s",
+                DeviceProfileUtils::AnonymizeDeviceId(udid).c_str());
+        } else {
+            HILOGI("remove unbound deivce profile task success, udid = %{public}s",
+                DeviceProfileUtils::AnonymizeDeviceId(udid).c_str());
+        }
+        DeviceManager::GetInstance().RemoveDeviceIdsByUdid(udid);
+    };
+
+    if (!trustGroupMgrHandler_->PostTask(removeUnBoundDeviceTask)) {
+        HILOGE("post task failed");
+        return;
+    }
+}
+
+bool TrustGroupManager::CheckDeviceId(const std::string udid)
+{
+    std::string localDeviceId;
+    DeviceManager::GetInstance().GetLocalDeviceUdid(localDeviceId);
+    if (udid.empty() || localDeviceId.empty()) {
+        HILOGE("device id is empty");
+        return false;
+    }
+
+    if (udid == localDeviceId) {
+        HILOGI("device id is local device, not remove device profile, device udid = %{public}s",
+            DeviceProfileUtils::AnonymizeDeviceId(udid).c_str());
+        return false;
+    }
+    return true;
+}
+
 } // namespace DeviceProfile
 } // namespace OHOS

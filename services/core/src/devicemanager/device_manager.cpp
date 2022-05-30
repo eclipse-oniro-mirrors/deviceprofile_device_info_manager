@@ -94,11 +94,14 @@ void DeviceManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
     auto onlineNotifyTask = [this, deviceInfo = deviceInfo]() {
         HILOGI("online networkId = %{public}s",
             DeviceProfileUtils::AnonymizeDeviceId(deviceInfo->GetDeviceId()).c_str());
-        DeviceProfileStorageManager::GetInstance().OnNodeOnline(deviceInfo);
+        RemoveExpireDeviceIds(deviceInfo->GetDeviceId());
         AddDeviceIds(deviceInfo->GetDeviceId());
-        std::string deviceId = deviceInfo->GetDeviceId();
-        std::lock_guard<std::mutex> autoLock(deviceLock_);
-        remoteDeviceInfoMap_[deviceId] = deviceInfo;
+        {
+            std::string deviceId = deviceInfo->GetDeviceId();
+            std::lock_guard<std::mutex> autoLock(deviceLock_);
+            remoteDeviceInfoMap_[deviceId] = deviceInfo;
+        }
+        DeviceProfileStorageManager::GetInstance().OnNodeOnline(deviceInfo);
     };
     if (!devMgrHandler_->PostTask(onlineNotifyTask)) {
         HILOGE("post task failed");
@@ -111,7 +114,6 @@ void DeviceManager::OnNodeOffline(const std::string& deviceId)
     auto offlineNotifyTask = [this, deviceId = std::move(deviceId)]() {
         HILOGI("offline networkId = %{public}s",
             DeviceProfileUtils::AnonymizeDeviceId(deviceId).c_str());
-        RemoveDeviceIds(deviceId);
         std::lock_guard<std::mutex> autoLock(deviceLock_);
         remoteDeviceInfoMap_.erase(deviceId);
     };
@@ -215,16 +217,44 @@ void DeviceManager::AddDeviceIds(const std::string& networkId)
     deviceIdsList_.emplace_back(std::move(deviceIds));
 }
 
+void DeviceManager::RemoveExpireDeviceIds(const std::string& networkId)
+{
+    HILOGI("called");
+    std::string udid;
+    if (!GetUdidByNetworkId(networkId, udid)) {
+        return;
+    }
+    if(udid.empty()){
+        return;
+    }
+    RemoveDeviceIdsByUdid(udid);
+}
+
 void DeviceManager::RemoveDeviceIds(const std::string& networkId)
 {
     HILOGI("called");
     std::lock_guard<std::mutex> autoLock(deviceLock_);
-    for (auto iter = deviceIdsList_.begin(); iter != deviceIdsList_.end(); iter++) {
-        if ((*iter)[static_cast<uint8_t>(DeviceIdType::NETWORKID)] == networkId) {
-            deviceIdsList_.erase(iter);
-            return;
-        }
+    auto iter = std::find_if(deviceIdsList_.begin(), deviceIdsList_.end(), [&networkId](const auto& deviceIds) {
+        return deviceIds[static_cast<uint8_t>(DeviceIdType::NETWORKID)] == networkId;
+    });
+    if (iter != deviceIdsList_.end()) {
+        deviceIdsList_.erase(iter);
     }
+    return;
+}
+
+void DeviceManager::RemoveDeviceIdsByUdid(const std::string& udid)
+{
+    HILOGI("called");
+    std::lock_guard<std::mutex> autoLock(deviceLock_);
+    auto iter = std::find_if(deviceIdsList_.begin(), deviceIdsList_.end(), [&udid](const auto& deviceIds) {
+        return deviceIds[static_cast<uint8_t>(DeviceIdType::UDID)] == udid;
+    });
+    if (iter != deviceIdsList_.end()) {
+        deviceIdsList_.erase(iter);
+        HILOGI("remove device udid %{public}s", DeviceProfileUtils::AnonymizeDeviceId(udid).c_str());
+    }
+    return;
 }
 
 void DeviceManager::DisconnectSoftbus()

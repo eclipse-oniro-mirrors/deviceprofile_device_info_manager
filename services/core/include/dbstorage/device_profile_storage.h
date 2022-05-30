@@ -49,6 +49,7 @@ public:
         const std::vector<std::string>& values);
     virtual int32_t SyncDeviceProfile(const std::vector<std::string>& deviceIdList,
         SyncMode syncMode);
+    virtual int32_t RemoveDeviceData(const std::string networkId);
     virtual int32_t RegisterSyncCallback(const std::shared_ptr<DistributedKv::KvStoreSyncCallback>& sycnCb);
     virtual int32_t UnRegisterSyncCallback();
 

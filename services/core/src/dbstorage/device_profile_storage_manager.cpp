@@ -264,6 +264,34 @@ int32_t DeviceProfileStorageManager::DeleteDeviceProfile(const std::string& serv
     return errCode;
 }
 
+int32_t DeviceProfileStorageManager::RemoveUnBoundDeviceProfile(const std::string& udid)
+{
+    if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
+        HILOGE("kvstore init failed");
+        return ERR_DP_INIT_DB_FAILED;
+    }
+
+    std::unique_lock<std::mutex> autoLock(serviceLock_);
+    if (onlineSyncTbl_->GetInitStatus() != StorageInitStatus::INIT_SUCCEED) {
+        HILOGE("kvstore not init");
+        return ERR_DP_NOT_INIT_DB;
+    }
+
+    int32_t errCode = ERR_OK;
+    std::string networkId;
+    if (!DeviceManager::GetInstance().TransformDeviceId(udid, networkId, DeviceIdType::NETWORKID)) {
+        HILOGE("udid transform to networkid failed, udid = %{public}s",
+            DeviceProfileUtils::AnonymizeDeviceId(udid).c_str());
+        return ERR_DP_GET_NETWORKID_FAILED;
+    }
+
+    errCode = onlineSyncTbl_->RemoveDeviceData(networkId);
+    if (errCode != ERR_OK) {
+        HILOGE("remove unbound device profile failed, errorCode = %{public}d", errCode);
+    }
+    return errCode;
+}
+
 int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOptions,
     const sptr<IRemoteObject>& profileEventNotifier)
 {
