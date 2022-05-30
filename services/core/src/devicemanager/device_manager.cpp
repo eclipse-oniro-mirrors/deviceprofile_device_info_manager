@@ -224,7 +224,7 @@ void DeviceManager::RemoveExpireDeviceIds(const std::string& networkId)
     if (!GetUdidByNetworkId(networkId, udid)) {
         return;
     }
-    if(udid.empty()){
+    if (udid.empty()) {
         return;
     }
     RemoveDeviceIdsByUdid(udid);

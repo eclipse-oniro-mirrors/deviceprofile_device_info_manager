@@ -55,7 +55,6 @@ private:
     const DeviceGroupManager* hichainGmInstance_ = nullptr;
     DataChangeListener dataChangeListener_;
     static std::shared_ptr<AppExecFwk::EventHandler> trustGroupMgrHandler_;
-    
 };
 }  // namespace DeviceProfile
 }  // namespace OHOS
