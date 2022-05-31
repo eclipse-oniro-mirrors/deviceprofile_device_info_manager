@@ -61,6 +61,7 @@ public:
     int32_t UnRegisterSyncCallback();
     void NotifySyncCompleted();
     void NotifySubscriberDied(const sptr<IRemoteObject>& profileEventNotifier);
+    int32_t RemoveUnBoundDeviceProfile(const std::string& udid);
 
 private:
     bool WaitKvDataService();
