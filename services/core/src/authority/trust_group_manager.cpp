@@ -30,6 +30,8 @@ constexpr int32_t VISIBILITY_PUBLIC = -1;
 const std::string AUTH_APPID = "device_profile_auth";
 }
 
+std::shared_ptr<AppExecFwk::EventHandler> TrustGroupManager::trustGroupMgrHandler_;
+
 IMPLEMENT_SINGLE_INSTANCE(TrustGroupManager);
 
 void from_json(const nlohmann::json& jsonObject, GroupInfo& groupInfo)
@@ -40,8 +42,6 @@ void from_json(const nlohmann::json& jsonObject, GroupInfo& groupInfo)
     jsonObject.at(FIELD_GROUP_TYPE).get_to(groupInfo.groupType);
     jsonObject.at(FIELD_GROUP_VISIBILITY).get_to(groupInfo.groupVisibility);
 }
-
-std::shared_ptr<AppExecFwk::EventHandler> TrustGroupManager::trustGroupMgrHandler_;
 
 void TrustGroupManager::Init()
 {
