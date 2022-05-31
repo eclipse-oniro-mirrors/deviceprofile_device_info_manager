@@ -273,6 +273,7 @@ int32_t DeviceProfileStorage::RemoveDeviceData(const std::string networkId)
 
     std::unique_lock<std::shared_mutex> writeLock(storageLock_);
     if (kvStorePtr_ == nullptr) {
+        HILOGE("null kvstore");
         return ERR_DP_INVALID_PARAMS;
     }
 

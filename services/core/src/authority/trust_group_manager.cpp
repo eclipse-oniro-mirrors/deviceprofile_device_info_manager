@@ -160,8 +160,6 @@ bool TrustGroupManager::CheckDeviceId(const std::string udid)
     }
 
     if (udid == localDeviceId) {
-        HILOGI("device id is local device, not remove device profile, device udid = %{public}s",
-            DeviceProfileUtils::AnonymizeDeviceId(udid).c_str());
         return false;
     }
     return true;

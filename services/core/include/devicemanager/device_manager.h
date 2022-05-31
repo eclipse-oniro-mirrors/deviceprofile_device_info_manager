@@ -63,7 +63,7 @@ private:
     void AddLocalDeviceIds();
     void AddDeviceIds(const std::string& networkId);
     void RemoveDeviceIds(const std::string& networkId);
-    void RemoveExpireDeviceIds(const std::string& networkId);
+    void RemoveExpiredDeviceIds(const std::string& networkId);
     void RecoverDevicesIfNeeded();
 
 private:

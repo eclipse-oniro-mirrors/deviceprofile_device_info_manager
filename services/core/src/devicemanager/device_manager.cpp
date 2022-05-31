@@ -94,7 +94,7 @@ void DeviceManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
     auto onlineNotifyTask = [this, deviceInfo = deviceInfo]() {
         HILOGI("online networkId = %{public}s",
             DeviceProfileUtils::AnonymizeDeviceId(deviceInfo->GetDeviceId()).c_str());
-        RemoveExpireDeviceIds(deviceInfo->GetDeviceId());
+        RemoveExpiredDeviceIds(deviceInfo->GetDeviceId());
         AddDeviceIds(deviceInfo->GetDeviceId());
         {
             std::string deviceId = deviceInfo->GetDeviceId();
@@ -217,7 +217,7 @@ void DeviceManager::AddDeviceIds(const std::string& networkId)
     deviceIdsList_.emplace_back(std::move(deviceIds));
 }
 
-void DeviceManager::RemoveExpireDeviceIds(const std::string& networkId)
+void DeviceManager::RemoveExpiredDeviceIds(const std::string& networkId)
 {
     HILOGI("called");
     std::string udid;

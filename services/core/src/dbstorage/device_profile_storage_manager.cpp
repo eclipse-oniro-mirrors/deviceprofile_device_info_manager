@@ -286,9 +286,6 @@ int32_t DeviceProfileStorageManager::RemoveUnBoundDeviceProfile(const std::strin
     }
 
     errCode = onlineSyncTbl_->RemoveDeviceData(networkId);
-    if (errCode != ERR_OK) {
-        HILOGE("remove unbound device profile failed, errorCode = %{public}d", errCode);
-    }
     return errCode;
 }
 
