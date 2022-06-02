@@ -191,7 +191,7 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_001, TestSize.Level2)
     profile.SetServiceId(SERVICE_ID);
     profile.SetServiceType(SERVICE_TYPE);
     int32_t result = DistributedDeviceProfileClient::GetInstance().GetDeviceProfile("", SERVICE_ID, profile);
-    EXPECT_TRUE(result == 0);
+    EXPECT_TRUE(result == ERR_DP_PERMISSION_DENIED);
 
     std::string jsonData = profile.GetCharacteristicProfileJson();
     DTEST_LOG << "jsonData:" << jsonData << std::endl;
