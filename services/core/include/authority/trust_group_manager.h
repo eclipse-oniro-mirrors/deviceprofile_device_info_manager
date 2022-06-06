@@ -52,7 +52,6 @@ private:
     void InitDataChangeListener();
 
 private:
-    std::mutex hichainLock_;
     const DeviceGroupManager* hichainGmInstance_ = nullptr;
     DataChangeListener dataChangeListener_;
 };
