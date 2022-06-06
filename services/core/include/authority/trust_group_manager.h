@@ -46,12 +46,14 @@ public:
     bool CheckTrustGroup(const std::string& deviceId);
 
 private:
+    bool InitHichainService();
     static void OnDeviceUnBoundAdapter(const char* peerUdid, const char* groupInfo);
     static bool CheckDeviceId(const std::string udid);
     static std::string GetDeviceUdid();
     void InitDataChangeListener();
 
 private:
+    std::mutex hichainLock_;
     const DeviceGroupManager* hichainGmInstance_ = nullptr;
     DataChangeListener dataChangeListener_;
     static std::shared_ptr<AppExecFwk::EventHandler> trustGroupMgrHandler_;
