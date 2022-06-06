@@ -42,10 +42,10 @@ class TrustGroupManager {
     DECLARE_SINGLE_INSTANCE(TrustGroupManager);
 
 public:
-    void Init();
     bool CheckTrustGroup(const std::string& deviceId);
 
 private:
+    bool InitHichainService();
     static void OnDeviceUnBoundAdapter(const char* peerUdid, const char* groupInfo);
     static bool CheckDeviceId(const std::string udid);
     static std::string GetDeviceUdid();
@@ -54,7 +54,6 @@ private:
 private:
     const DeviceGroupManager* hichainGmInstance_ = nullptr;
     DataChangeListener dataChangeListener_;
-    static std::shared_ptr<AppExecFwk::EventHandler> trustGroupMgrHandler_;
 };
 }  // namespace DeviceProfile
 }  // namespace OHOS
