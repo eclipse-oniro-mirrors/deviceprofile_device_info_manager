@@ -20,6 +20,7 @@
 #include "device_profile_storage_manager.h"
 #include "device_profile_utils.h"
 #include "device_manager.h"
+#include "sync_coordinator.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -29,8 +30,6 @@ const std::string TAG = "TrustGroupManager";
 constexpr int32_t VISIBILITY_PUBLIC = -1;
 const std::string AUTH_APPID = "device_profile_auth";
 }
-
-std::shared_ptr<AppExecFwk::EventHandler> TrustGroupManager::trustGroupMgrHandler_;
 
 IMPLEMENT_SINGLE_INSTANCE(TrustGroupManager);
 
@@ -53,15 +52,6 @@ void from_json(const nlohmann::json& jsonObject, GroupInfo& groupInfo)
     }
 }
 
-void TrustGroupManager::Init()
-{
-    auto runner = AppExecFwk::EventRunner::Create("trustGroupMgr");
-    trustGroupMgrHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
-    if (trustGroupMgrHandler_ == nullptr) {
-        HILOGE("create event runner failed");
-    }
-}
-
 bool TrustGroupManager::InitHichainService()
 {
     if (hichainGmInstance_ != nullptr) {
@@ -80,9 +70,6 @@ bool TrustGroupManager::InitHichainService()
     }
     
     InitDataChangeListener();
-    if (hichainGmInstance_->regDataChangeListener(AUTH_APPID.c_str(), &dataChangeListener_) != 0) {
-        HILOGE("auth RegDataChangeListener failed");
-    }
     HILOGI("init succeeded");
     return true;
 }
@@ -90,11 +77,13 @@ bool TrustGroupManager::InitHichainService()
 void TrustGroupManager::InitDataChangeListener()
 {
     dataChangeListener_.onDeviceUnBound = OnDeviceUnBoundAdapter;
+    if (hichainGmInstance_->regDataChangeListener(AUTH_APPID.c_str(), &dataChangeListener_) != 0) {
+        HILOGE("auth RegDataChangeListener failed");
+    }
 }
 
 bool TrustGroupManager::CheckTrustGroup(const std::string& deviceId)
 {
-    std::lock_guard<std::mutex> autoLock(hichainLock_);
     if (!InitHichainService()) {
         HILOGE("auth GetGmInstance failed");
         return false;
@@ -149,28 +138,24 @@ void TrustGroupManager::OnDeviceUnBoundAdapter(const char* peerUdid, const char*
         return;
     }
 
-    if (trustGroupMgrHandler_ == nullptr) {
-        return;
-    }
-
     auto removeUnBoundDeviceTask = [udid = std::move(udid)]() {
-        HILOGI("remove unbound deivce profile task start, udid = %{public}s",
+        HILOGI("remove unbound deivce profile start, udid = %{public}s",
             DeviceProfileUtils::AnonymizeDeviceId(udid).c_str());
         if (GetInstance().CheckTrustGroup(udid)) {
-            HILOGI("unbound device still in trust group, can't remove device data");
+            HILOGI("unbound device in trust group");
             return;
         }
         
         if (DeviceProfileStorageManager::GetInstance().RemoveUnBoundDeviceProfile(udid) != ERR_OK) {
-            HILOGE("remove unbound device profile task failed, udid = %{public}s",
+            HILOGE("remove unbound device profile failed, udid = %{public}s",
                 DeviceProfileUtils::AnonymizeDeviceId(udid).c_str());
         } else {
-            HILOGI("remove unbound deivce profile task success, udid = %{public}s",
+            HILOGI("remove unbound deivce profile success, udid = %{public}s",
                 DeviceProfileUtils::AnonymizeDeviceId(udid).c_str());
         }
         DeviceManager::GetInstance().RemoveDeviceIdsByUdid(udid);
     };
-    if (!trustGroupMgrHandler_->PostTask(removeUnBoundDeviceTask)) {
+    if (!SyncCoordinator::GetInstance().DispatchSyncTask(removeUnBoundDeviceTask)) {
         HILOGE("post task failed");
         return;
     }

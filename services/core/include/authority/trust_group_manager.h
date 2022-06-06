@@ -42,7 +42,6 @@ class TrustGroupManager {
     DECLARE_SINGLE_INSTANCE(TrustGroupManager);
 
 public:
-    void Init();
     bool CheckTrustGroup(const std::string& deviceId);
 
 private:
@@ -56,7 +55,6 @@ private:
     std::mutex hichainLock_;
     const DeviceGroupManager* hichainGmInstance_ = nullptr;
     DataChangeListener dataChangeListener_;
-    static std::shared_ptr<AppExecFwk::EventHandler> trustGroupMgrHandler_;
 };
 }  // namespace DeviceProfile
 }  // namespace OHOS
