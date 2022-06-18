@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,12 +15,9 @@
 
 #include "device_info_collector.h"
 
-#include "device_profile_errors.h"
 #include "device_profile_log.h"
-
 #include "nlohmann/json.hpp"
 #include "parameter.h"
-#include "parameters.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -35,10 +32,7 @@ const std::string DEVICE_MODEL = "model";
 const std::string DEVICE_UDID = "udid";
 const std::string DEVICE_TYPE = "devType";
 const std::string DEVICE_MANU = "manu";
-const std::string DEVICE_PRODUCT_ID = "prodId";
 const std::string DEVICE_SN = "sn";
-const std::string DEVICE_NAME_PARAM = "ro.product.name";
-const std::string DEVICE_TYPE_PARAM = "ro.build.characteristics";
 constexpr int32_t DEVICE_UUID_LENGTH = 65;
 }
 
@@ -50,9 +44,8 @@ bool DeviceInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& pro
     jsonData[DEVICE_NAME] = GetDeviceName();
     jsonData[DEVICE_MODEL] = GetDeviceModel();
     jsonData[DEVICE_UDID] = GetDeviceUdid();
-    jsonData[DEVICE_TYPE] = GetDeviceType();
+    jsonData[DEVICE_TYPE] = GetDevType();
     jsonData[DEVICE_MANU] = GetDeviceManufacturer();
-    jsonData[DEVICE_PRODUCT_ID] = GetDeviceProductId();
     jsonData[DEVICE_SN] = GetDeviceSerial();
     profile.SetCharacteristicProfileJson(jsonData.dump());
     return true;
@@ -60,31 +53,64 @@ bool DeviceInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& pro
 
 std::string DeviceInfoCollector::GetDeviceModel()
 {
-    return GetProductModel();
+    const char* model = GetProductModel();
+    if (model == nullptr) {
+        HILOGE("get failed");
+        return EMPTY_PARAM;
+    }
+    std::string deviceModel = model;
+    free((char*)model);
+    return deviceModel;
+}
+
+std::string DeviceInfoCollector::GetDevType()
+{
+    const char* type = GetDeviceType();
+    if (type == nullptr) {
+        HILOGE("get failed");
+        return EMPTY_PARAM;
+    }
+    std::string deviceType = type;
+    free((char*)type);
+    return deviceType;
 }
 
 std::string DeviceInfoCollector::GetDeviceManufacturer()
 {
-    return GetManufacture();
+    const char* facture = GetManufacture();
+    if (facture == nullptr) {
+        HILOGE("get failed");
+        return EMPTY_PARAM;
+    }
+    std::string manuFacture = facture;
+    free((char*)facture);
+    return manuFacture;
 }
 
 std::string DeviceInfoCollector::GetDeviceSerial()
 {
-    return GetSerial();
-}
-
-std::string DeviceInfoCollector::GetDeviceType()
-{
-    return system::GetParameter(DEVICE_TYPE_PARAM, EMPTY_PARAM);
+    const char* serial = GetSerial();
+    if (serial == nullptr) {
+        HILOGE("get failed");
+        return EMPTY_PARAM;
+    }
+    std::string deviceSerial = serial;
+    free((char*)serial);
+    return deviceSerial;
 }
 
 std::string DeviceInfoCollector::GetDeviceName()
 {
-    std::string devName = system::GetParameter(DEVICE_NAME_PARAM, EMPTY_PARAM);
+    const char* name = GetMarketName();
+    if (name == nullptr) {
+        return GetDeviceModel();
+    }
+    std::string devName = name;
+    free((char*)name);
     if (!devName.empty()) {
         return devName;
     }
-    return GetProductModel();
+    return GetDeviceModel();
 }
 
 std::string DeviceInfoCollector::GetDeviceUdid()
@@ -92,11 +118,6 @@ std::string DeviceInfoCollector::GetDeviceUdid()
     char localDeviceId[DEVICE_UUID_LENGTH] = {0};
     GetDevUdid(localDeviceId, DEVICE_UUID_LENGTH);
     return localDeviceId;
-}
-
-std::string DeviceInfoCollector::GetDeviceProductId()
-{
-    return "";
 }
 } // namespace DeviceProfile
 } // namespace OHOS
