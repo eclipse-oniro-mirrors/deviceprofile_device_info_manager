@@ -36,8 +36,6 @@ namespace {
     const std::string SERVICE_TYPE = "syscap";
     const std::string CHARACTER_PRIVATE_SYSCAP = "privatesyscap";
     const std::string CHARACTER_OS_SYSCAP = "ossyscap";
-    constexpr int32_t PCID_MAIN_INTS = 32;
-    constexpr int32_t PCID_MAIN_BYTES = 128;
 }
 using namespace testing;
 using namespace testing::ext;
@@ -208,7 +206,7 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_001, TestSize.Level2)
         intValues[i++] = value;
     }
 
-    char (*osOutput)[PCID_MAIN_BYTES] = nullptr;
+    char (*osOutput)[SINGLE_SYSCAP_LEN] = nullptr;
     int32_t length;
     if (!DecodeOsSyscap((char *)intValues, &osOutput, &length)) {
         DTEST_LOG << "DecodeOsSyscap failed" << std::endl;
@@ -219,7 +217,7 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_001, TestSize.Level2)
     }
 
     std::string capabilities = jsonObject[CHARACTER_PRIVATE_SYSCAP];
-    char (*priOutput)[PCID_MAIN_BYTES] = nullptr;
+    char (*priOutput)[SINGLE_SYSCAP_LEN] = nullptr;
     if (!DecodePrivateSyscap((char *)capabilities.c_str(), &priOutput, &length)) {
         DTEST_LOG << "DecodePrivateSyscap failed" << std::endl;
         return;

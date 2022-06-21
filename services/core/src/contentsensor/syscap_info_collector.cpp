@@ -30,9 +30,8 @@ namespace {
     const std::string SERVICE_TYPE = "syscap";
     const std::string CHARACTER_PRIVATE_SYSCAP = "privatesyscap";
     const std::string CHARACTER_OS_SYSCAP = "ossyscap";
-    constexpr int32_t MAX_DATALEN = 1024;
+    constexpr int32_t MAX_DATALEN = 1128;
     constexpr int32_t INT_BYTES_LEN = 4;
-    constexpr int32_t PCID_MAIN_BYTES = 128;
 }
 
 bool SyscapInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& profile)
