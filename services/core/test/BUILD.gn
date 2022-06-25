@@ -32,6 +32,7 @@ device_profile_deps = [
 device_profile_external_deps = [
   "access_token:libaccesstoken_sdk",
   "eventhandler:libeventhandler",
+  "hisysevent_native:libhisysevent",
   "hiviewdfx_hilog_native:libhilog",
   "ipc:ipc_core",
   "syscap_codec:syscap_interface_shared",
@@ -41,7 +42,10 @@ device_profile_external_deps = [
 ohos_unittest("profile_crud_test") {
   module_out_path = module_output_path
 
-  sources = [ "unittest/profile_crud_test.cpp" ]
+  sources = [
+    "unittest/dp_hisysevent_report.cpp",
+    "unittest/profile_crud_test.cpp",
+  ]
   configs = device_profile_configs
   deps = device_profile_deps
   external_deps = device_profile_external_deps

@@ -15,6 +15,7 @@
 
 #include "gtest/gtest.h"
 
+#include "dp_hisysevent_report.h"
 #include "utils.h"
 
 #define private public
@@ -227,6 +228,17 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_001, TestSize.Level2)
     for (int i = 0; i < length; i++) {
         DTEST_LOG << "PrivateSyscap: " << *(priOutput + i) << std::endl;
     }
+}
+
+/**
+ * @tc.name: DfxErrorPrint_001
+ * @tc.desc: print hisysevent error event
+ * @tc.type: FUNC
+ */
+HWTEST_F(ProfileCrudTest, DfxErrorPrint_001, TestSize.Level0)
+{
+    int ret = DpHiSysEventReport::ReportSyncFault(DEVICE_PROFILE_SYNC_FAILED, -1);
+    EXPECT_TRUE(ret == 0);
 }
 }
 }

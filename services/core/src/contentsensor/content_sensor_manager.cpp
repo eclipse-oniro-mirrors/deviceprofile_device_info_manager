@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,8 +17,11 @@
 
 #include "device_info_collector.h"
 #include "device_profile_log.h"
+#include "dfx/dp_hitrace_report.h"
 #include "syscap_info_collector.h"
 #include "system_info_collector.h"
+
+#include "hitrace_meter.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -46,6 +49,7 @@ bool ContentSensorManager::Collect()
         taskList.push_back(std::make_shared<DeviceInfoCollector>());
         taskList.push_back(std::make_shared<SystemInfoCollector>());
         taskList.push_back(std::make_shared<SyscapInfoCollector>());
+        HITRACE_METER_NAME(HITRACE_TAG_DEVICE_PROFILE, DP_CONTENT_SENSOR_TRACE);
         for (auto& task : taskList) {
             ServiceCharacteristicProfile profileData;
             if (!task->ConvertToProfileData(profileData)) {

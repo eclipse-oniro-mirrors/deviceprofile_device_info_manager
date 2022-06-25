@@ -21,10 +21,14 @@
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
+#include "dfx/dp_hitrace_report.h"
 #include "service_characteristic_profile.h"
 #include "subscribe_manager.h"
 #include "system_ability_definition.h"
 #include "trust_group_manager.h"
+
+#include "hitrace_meter.h"
+
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -95,6 +99,7 @@ int32_t DistributedDeviceProfileService::SubscribeProfileEvents(const std::list<
     const sptr<IRemoteObject>& profileEventNotifier,
     std::list<ProfileEvent>& failedEvents)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_SYNC_TRACE);
     return SubscribeManager::GetInstance().SubscribeProfileEvents(subscribeInfos,
         profileEventNotifier, failedEvents);
 }

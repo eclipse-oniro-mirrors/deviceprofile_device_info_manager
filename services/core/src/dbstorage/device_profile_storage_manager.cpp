@@ -18,12 +18,17 @@
 #include <chrono>
 #include <thread>
 
+#include <unistd.h>
+
 #include "device_manager.h"
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_utils.h"
+#include "dfx/dp_hisysevent_report.h"
+#include "dfx/dp_hitrace_report.h"
 #include "sync_coordinator.h"
 
+#include "hitrace_meter.h"
 #include "ipc_object_proxy.h"
 #include "ipc_skeleton.h"
 #include "iservice_registry.h"
@@ -127,6 +132,7 @@ std::string DeviceProfileStorageManager::GenerateKey(const std::string& udid,
 
 int32_t DeviceProfileStorageManager::PutDeviceProfile(const ServiceCharacteristicProfile& profile)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_PUT_TRACE);
     if (kvDataServiceFailed_ || onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
         HILOGE("kvstore init failed");
         return ERR_DP_INIT_DB_FAILED;
@@ -165,6 +171,7 @@ int32_t DeviceProfileStorageManager::PutDeviceProfile(const ServiceCharacteristi
 int32_t DeviceProfileStorageManager::GetDeviceProfile(const std::string& udid,
     const std::string& serviceId, ServiceCharacteristicProfile& profile)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_GET_TRACE);
     if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
         HILOGE("kvstore init failed");
         return ERR_DP_INIT_DB_FAILED;
@@ -231,6 +238,7 @@ void DeviceProfileStorageManager::SetServiceType(const std::string& udid,
 
 int32_t DeviceProfileStorageManager::DeleteDeviceProfile(const std::string& serviceId)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_DELETE_TRACE);
     if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
         HILOGE("kvstore init failed");
         return ERR_DP_INIT_DB_FAILED;
@@ -309,14 +317,24 @@ int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOp
 
     auto syncTask = [syncOptions, this]() {
         HILOGI("start sync");
+        int ret = DpHiSysEventReport::ReportSyncBehavior(BehaviorEvent::DEVICE_PROFILE_SYNC_EVENT);
+        if (ret != 0) {
+            HILOGE("hisysevent write failed! ret %{public}d.", ret);
+        }
+
         auto devicesList = syncOptions.GetDeviceList();
         if (devicesList.empty()) {
             DeviceManager::GetInstance().GetDeviceIdList(devicesList);
         }
+        
         SyncCoordinator::GetInstance().SetSyncTrigger(false);
         std::vector<std::string> devicesVector(std::vector<std::string> { devicesList.begin(), devicesList.end() });
         int32_t result = onlineSyncTbl_->SyncDeviceProfile(devicesVector, syncOptions.GetSyncMode());
         if (result != ERR_OK) {
+            int ret = DpHiSysEventReport::ReportSyncFault(FaultEvent::DEVICE_PROFILE_SYNC_FAILED, result);
+            if (ret != 0) {
+                HILOGE("hisysevent write failed! ret %{public}d.", ret);
+            }
             HILOGE("sync failed result : %{public}d", result);
             NotifySyncCompleted();
             return;
@@ -337,6 +355,8 @@ int32_t DeviceProfileStorageManager::NotifySyncStart(const sptr<IRemoteObject>& 
         return ERR_DP_DEVICE_SYNC_BUSY;
     }
 
+    StartAsyncTrace(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_SYNC_TRACE, getpid());
+    
     {
         std::lock_guard<std::mutex> autoLock(profileSyncLock_);
         syncEventNotifier_ = profileEventNotifier;
@@ -362,6 +382,7 @@ void DeviceProfileStorageManager::NotifySyncCompleted()
 {
     HILOGI("called");
     SyncCoordinator::GetInstance().ReleaseSync();
+    FinishAsyncTrace(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_SYNC_TRACE, getpid());
     std::lock_guard<std::mutex> autoLock(profileSyncLock_);
     std::list<ProfileEvent> profileEvents;
     profileEvents.emplace_back(ProfileEvent::EVENT_SYNC_COMPLETED);
