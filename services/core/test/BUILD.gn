@@ -42,10 +42,7 @@ device_profile_external_deps = [
 ohos_unittest("profile_crud_test") {
   module_out_path = module_output_path
 
-  sources = [
-    "unittest/dp_hisysevent_report.cpp",
-    "unittest/profile_crud_test.cpp",
-  ]
+  sources = [ "unittest/profile_crud_test.cpp" ]
   configs = device_profile_configs
   deps = device_profile_deps
   external_deps = device_profile_external_deps

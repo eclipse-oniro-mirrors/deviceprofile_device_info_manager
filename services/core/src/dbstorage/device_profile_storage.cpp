@@ -23,8 +23,6 @@
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
 #include "device_profile_utils.h"
-#include "dfx/dp_hisysevent_report.h"
-#include "dfx/dp_hitrace_report.h"
 #include "service_characteristic_profile.h"
 #include "trust_group_manager.h"
 
@@ -272,6 +270,7 @@ int32_t DeviceProfileStorage::SyncDeviceProfile(const std::vector<std::string>& 
 int32_t DeviceProfileStorage::RemoveDeviceData(const std::string networkId)
 {
     HILOGI("called");
+
     std::unique_lock<std::shared_mutex> writeLock(storageLock_);
     if (kvStorePtr_ == nullptr) {
         HILOGE("null kvstore");

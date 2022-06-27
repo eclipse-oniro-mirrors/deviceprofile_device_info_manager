@@ -16,7 +16,9 @@
 #ifndef OHOS_DEVICEPROFILE_HITRACE_REPORT_H
 #define OHOS_DEVICEPROFILE_HITRACE_REPORT_H
 
-#include "hisysevent.h"
+#include <string>
+
+#include "hitrace_meter.h"
 
 namespace OHOS {
 namespace DeviceProfile {

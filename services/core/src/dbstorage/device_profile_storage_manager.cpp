@@ -18,17 +18,14 @@
 #include <chrono>
 #include <thread>
 
-#include <unistd.h>
-
 #include "device_manager.h"
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_utils.h"
-#include "dfx/dp_hisysevent_report.h"
 #include "dfx/dp_hitrace_report.h"
+#include "hisysevent.h"
 #include "sync_coordinator.h"
 
-#include "hitrace_meter.h"
 #include "ipc_object_proxy.h"
 #include "ipc_skeleton.h"
 #include "iservice_registry.h"
@@ -38,6 +35,7 @@
 
 namespace OHOS {
 namespace DeviceProfile {
+using namespace OHOS::HiviewDFX;
 using namespace std::chrono_literals;
 using namespace OHOS::DistributedKv;
 
@@ -46,9 +44,14 @@ const std::string TAG = "DeviceProfileStorageManager";
 
 const std::string SERVICE_TYPE = "type";
 const std::string SERVICES = "services";
+const std::string DOMAIN_NAME = std::string(HiSysEvent::Domain::DEVICE_PROFILE);
+const std::string DEVICE_PROFILE_SYNC_FAILED = "DEVICE_PROFILE_SYNC_FAILED";
+const std::string DEVICE_PROFILE_SYNC_EVENT = "DEVICE_PROFILE_SYNC_EVENT";
+const std::string FAULT_CODE_KEY = "FAULT_CODE";
 constexpr int32_t RETRY_TIMES_WAIT_KV_DATA = 30;
 constexpr int32_t INTREVAL_POST_ONLINE_SYNC_MS = 50;
 constexpr int32_t RETRY_TIMES_POST_ONLINE_SYNC = 15;
+constexpr int32_t FIX_TASK_ID = 0;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DeviceProfileStorageManager);
@@ -315,26 +318,19 @@ int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOp
         return result;
     }
 
+    StartAsyncTrace(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_SYNC_TRACE, FIX_TASK_ID);
     auto syncTask = [syncOptions, this]() {
         HILOGI("start sync");
-        int ret = DpHiSysEventReport::ReportSyncBehavior(BehaviorEvent::DEVICE_PROFILE_SYNC_EVENT);
-        if (ret != 0) {
-            HILOGE("hisysevent write failed! ret %{public}d.", ret);
-        }
-
+        ReportBehaviorEvent(DEVICE_PROFILE_SYNC_EVENT);
         auto devicesList = syncOptions.GetDeviceList();
         if (devicesList.empty()) {
             DeviceManager::GetInstance().GetDeviceIdList(devicesList);
         }
-        
         SyncCoordinator::GetInstance().SetSyncTrigger(false);
         std::vector<std::string> devicesVector(std::vector<std::string> { devicesList.begin(), devicesList.end() });
         int32_t result = onlineSyncTbl_->SyncDeviceProfile(devicesVector, syncOptions.GetSyncMode());
         if (result != ERR_OK) {
-            int ret = DpHiSysEventReport::ReportSyncFault(FaultEvent::DEVICE_PROFILE_SYNC_FAILED, result);
-            if (ret != 0) {
-                HILOGE("hisysevent write failed! ret %{public}d.", ret);
-            }
+            ReportFaultEvent(DEVICE_PROFILE_SYNC_FAILED, FAULT_CODE_KEY, result);
             HILOGE("sync failed result : %{public}d", result);
             NotifySyncCompleted();
             return;
@@ -355,8 +351,6 @@ int32_t DeviceProfileStorageManager::NotifySyncStart(const sptr<IRemoteObject>& 
         return ERR_DP_DEVICE_SYNC_BUSY;
     }
 
-    StartAsyncTrace(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_SYNC_TRACE, getpid());
-    
     {
         std::lock_guard<std::mutex> autoLock(profileSyncLock_);
         syncEventNotifier_ = profileEventNotifier;
@@ -382,7 +376,7 @@ void DeviceProfileStorageManager::NotifySyncCompleted()
 {
     HILOGI("called");
     SyncCoordinator::GetInstance().ReleaseSync();
-    FinishAsyncTrace(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_SYNC_TRACE, getpid());
+    FinishAsyncTrace(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_SYNC_TRACE, FIX_TASK_ID);
     std::lock_guard<std::mutex> autoLock(profileSyncLock_);
     std::list<ProfileEvent> profileEvents;
     profileEvents.emplace_back(ProfileEvent::EVENT_SYNC_COMPLETED);
@@ -559,6 +553,23 @@ void DeviceProfileStorageManager::PostOnlineSync(const std::string& deviceId, in
     if (!storageHandler_->PostTask(onlineSyncTaks, INTREVAL_POST_ONLINE_SYNC_MS)) {
         HILOGE("post task failed");
         return;
+    }
+}
+
+void DeviceProfileStorageManager::ReportBehaviorEvent(const std::string& event)
+{
+    int ret = HiSysEvent::Write(DOMAIN_NAME, event, HiSysEvent::EventType::BEHAVIOR);
+    if (ret != 0) {
+        HILOGE("hisysevent write failed! ret %{public}d.", ret);
+    }
+}
+
+void DeviceProfileStorageManager::ReportFaultEvent(const std::string& event,
+    const std::string& key, const int32_t result)
+{
+    int ret = HiSysEvent::Write(DOMAIN_NAME, event, HiSysEvent::EventType::FAULT, key, result);
+    if (ret != 0) {
+        HILOGE("hisysevent write failed! ret %{public}d.", ret);
     }
 }
 } // namespace DeviceProfile

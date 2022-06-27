@@ -15,7 +15,6 @@
 
 #include "gtest/gtest.h"
 
-#include "dp_hisysevent_report.h"
 #include "utils.h"
 
 #define private public
@@ -23,6 +22,7 @@
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "distributed_device_profile_client.h"
+#include "hisysevent.h"
 #include "nlohmann/json.hpp"
 #include "syscap_info_collector.h"
 #include "syscap_interface.h"
@@ -31,12 +31,16 @@
 
 namespace OHOS {
 namespace DeviceProfile {
+using namespace OHOS::HiviewDFX;
 namespace {
     const std::string TAG = "SyscapInfoCollector";
     const std::string SERVICE_ID = "syscap";
     const std::string SERVICE_TYPE = "syscap";
     const std::string CHARACTER_PRIVATE_SYSCAP = "privatesyscap";
     const std::string CHARACTER_OS_SYSCAP = "ossyscap";
+    const std::string DEVICE_PROFILE_SYNC_FAILED = "DEVICE_PROFILE_SYNC_FAILED";
+    const std::string FAULT_CODE_KEY = "FAULT_CODE";
+    const std::string DOMAIN_NAME = std::string(HiSysEvent::Domain::DEVICE_PROFILE);
     constexpr int32_t PCID_MAIN_INTS = 32;
     constexpr int32_t PCID_MAIN_BYTES = 128;
 }
@@ -235,9 +239,10 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_001, TestSize.Level2)
  * @tc.desc: print hisysevent error event
  * @tc.type: FUNC
  */
-HWTEST_F(ProfileCrudTest, DfxErrorPrint_001, TestSize.Level0)
+HWTEST_F(ProfileCrudTest, DfxErrorPrint_001, TestSize.Level2)
 {
-    int ret = DpHiSysEventReport::ReportSyncFault(DEVICE_PROFILE_SYNC_FAILED, -1);
+    int ret = HiSysEvent::Write(DOMAIN_NAME, DEVICE_PROFILE_SYNC_FAILED,
+        HiSysEvent::EventType::FAULT, FAULT_CODE_KEY, -1);
     EXPECT_TRUE(ret == 0);
 }
 }

@@ -75,6 +75,8 @@ private:
     bool CheckSyncOption(const SyncOptions& syncOptions);
     int32_t NotifySyncStart(const sptr<IRemoteObject>& profileEventNotifier);
     void SetServiceType(const std::string& udid, const std::string& serviceId, ServiceCharacteristicProfile& profile);
+    void ReportBehaviorEvent(const std::string& event);
+    void ReportFaultEvent(const std::string& event, const std::string& key, const int32_t result);
 
 private:
     std::mutex serviceLock_;

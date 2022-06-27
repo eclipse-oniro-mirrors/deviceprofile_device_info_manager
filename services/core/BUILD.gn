@@ -53,7 +53,6 @@ ohos_shared_library("distributed_device_profile") {
     "src/dbstorage/sync_coordinator.cpp",
     "src/devicemanager/device_info.cpp",
     "src/devicemanager/device_manager.cpp",
-    "src/dfx/hisysevent_report.cpp",
     "src/distributed_device_profile_service.cpp",
     "src/distributed_device_profile_stub.cpp",
     "src/profile_change_notification.cpp",

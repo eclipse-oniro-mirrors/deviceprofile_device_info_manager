@@ -21,8 +21,6 @@
 #include "syscap_info_collector.h"
 #include "system_info_collector.h"
 
-#include "hitrace_meter.h"
-
 namespace OHOS {
 namespace DeviceProfile {
 namespace {

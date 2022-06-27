@@ -27,9 +27,6 @@
 #include "system_ability_definition.h"
 #include "trust_group_manager.h"
 
-#include "hitrace_meter.h"
-
-
 namespace OHOS {
 namespace DeviceProfile {
 namespace {
@@ -99,7 +96,7 @@ int32_t DistributedDeviceProfileService::SubscribeProfileEvents(const std::list<
     const sptr<IRemoteObject>& profileEventNotifier,
     std::list<ProfileEvent>& failedEvents)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_SYNC_TRACE);
+    HITRACE_METER_NAME(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_SUB_TRACE);
     return SubscribeManager::GetInstance().SubscribeProfileEvents(subscribeInfos,
         profileEventNotifier, failedEvents);
 }
