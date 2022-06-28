@@ -13,6 +13,9 @@
       "name": "device_profile_core",
       "subsystem": "deviceprofile",
       "adapted_system_type": [ "standard" ],
+      "hisysevent_config":[
+        "//foundation/deviceprofile/device_profile_core/hisysevent.yaml"
+      ],
       "rom": "",
       "ram": "",
       "deps": {
