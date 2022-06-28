@@ -20,6 +20,7 @@
 #include "device_profile_storage_manager.h"
 #include "device_profile_utils.h"
 #include "device_manager.h"
+#include "sync_coordinator.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -30,54 +31,60 @@ constexpr int32_t VISIBILITY_PUBLIC = -1;
 const std::string AUTH_APPID = "device_profile_auth";
 }
 
-std::shared_ptr<AppExecFwk::EventHandler> TrustGroupManager::trustGroupMgrHandler_;
-
 IMPLEMENT_SINGLE_INSTANCE(TrustGroupManager);
 
 void from_json(const nlohmann::json& jsonObject, GroupInfo& groupInfo)
 {
-    jsonObject.at(FIELD_GROUP_NAME).get_to(groupInfo.groupName);
-    jsonObject.at(FIELD_GROUP_ID).get_to(groupInfo.groupId);
-    jsonObject.at(FIELD_GROUP_OWNER).get_to(groupInfo.groupOwner);
-    jsonObject.at(FIELD_GROUP_TYPE).get_to(groupInfo.groupType);
-    jsonObject.at(FIELD_GROUP_VISIBILITY).get_to(groupInfo.groupVisibility);
+    if (jsonObject.find(FIELD_GROUP_NAME) != jsonObject.end()) {
+        jsonObject.at(FIELD_GROUP_NAME).get_to(groupInfo.groupName);
+    }
+    if (jsonObject.find(FIELD_GROUP_ID) != jsonObject.end()) {
+        jsonObject.at(FIELD_GROUP_ID).get_to(groupInfo.groupId);
+    }
+    if (jsonObject.find(FIELD_GROUP_OWNER) != jsonObject.end()) {
+        jsonObject.at(FIELD_GROUP_OWNER).get_to(groupInfo.groupOwner);
+    }
+    if (jsonObject.find(FIELD_GROUP_TYPE) != jsonObject.end()) {
+        jsonObject.at(FIELD_GROUP_TYPE).get_to(groupInfo.groupType);
+    }
+    if (jsonObject.find(FIELD_GROUP_VISIBILITY) != jsonObject.end()) {
+        jsonObject.at(FIELD_GROUP_VISIBILITY).get_to(groupInfo.groupVisibility);
+    }
 }
 
-void TrustGroupManager::Init()
+bool TrustGroupManager::InitHichainService()
 {
+    if (hichainGmInstance_ != nullptr) {
+        return true;
+    }
+
     if (InitDeviceAuthService() != ERR_OK) {
         HILOGE("auth InitDeviceAuthService failed");
-        return;
+        return false;
     }
 
     hichainGmInstance_ = GetGmInstance();
     if (hichainGmInstance_ == nullptr) {
         HILOGE("auth GetGmInstance failed");
-        return;
+        return false;
     }
-
+    
     InitDataChangeListener();
-    if (hichainGmInstance_->regDataChangeListener(AUTH_APPID.c_str(), &dataChangeListener_) != 0) {
-        HILOGE("auth RegDataChangeListener failed");
-        return;
-    }
-    auto runner = AppExecFwk::EventRunner::Create("trustGroupMgr");
-    trustGroupMgrHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
     HILOGI("init succeeded");
+    return true;
 }
 
 void TrustGroupManager::InitDataChangeListener()
 {
     dataChangeListener_.onDeviceUnBound = OnDeviceUnBoundAdapter;
+    if (hichainGmInstance_->regDataChangeListener(AUTH_APPID.c_str(), &dataChangeListener_) != 0) {
+        HILOGE("auth RegDataChangeListener failed");
+    }
 }
 
 bool TrustGroupManager::CheckTrustGroup(const std::string& deviceId)
 {
-    if (hichainGmInstance_ == nullptr) {
-        Init();
-    }
-
-    if (hichainGmInstance_ == nullptr) {
+    if (!InitHichainService()) {
         HILOGE("auth GetGmInstance failed");
         return false;
     }
@@ -132,19 +139,23 @@ void TrustGroupManager::OnDeviceUnBoundAdapter(const char* peerUdid, const char*
     }
 
     auto removeUnBoundDeviceTask = [udid = std::move(udid)]() {
-        HILOGI("remove unbound deivce profile task start, udid = %{public}s",
+        HILOGI("remove unbound deivce profile start, udid = %{public}s",
             DeviceProfileUtils::AnonymizeDeviceId(udid).c_str());
+        if (GetInstance().CheckTrustGroup(udid)) {
+            HILOGI("unbound device in trust group");
+            return;
+        }
         
         if (DeviceProfileStorageManager::GetInstance().RemoveUnBoundDeviceProfile(udid) != ERR_OK) {
-            HILOGE("remove unbound device profile task failed, udid = %{public}s",
+            HILOGE("remove unbound device profile failed, udid = %{public}s",
                 DeviceProfileUtils::AnonymizeDeviceId(udid).c_str());
         } else {
-            HILOGI("remove unbound deivce profile task success, udid = %{public}s",
+            HILOGI("remove unbound deivce profile success, udid = %{public}s",
                 DeviceProfileUtils::AnonymizeDeviceId(udid).c_str());
         }
         DeviceManager::GetInstance().RemoveDeviceIdsByUdid(udid);
     };
-    if (!trustGroupMgrHandler_->PostTask(removeUnBoundDeviceTask)) {
+    if (!SyncCoordinator::GetInstance().DispatchSyncTask(removeUnBoundDeviceTask)) {
         HILOGE("post task failed");
         return;
     }

@@ -21,6 +21,7 @@
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
+#include "dfx/dp_hitrace_report.h"
 #include "service_characteristic_profile.h"
 #include "subscribe_manager.h"
 #include "system_ability_definition.h"
@@ -58,7 +59,6 @@ bool DistributedDeviceProfileService::Init()
         HILOGE("AuthorityManager init failed");
         return false;
     }
-    TrustGroupManager::GetInstance().Init();
     ContentSensorManager::GetInstance().Init();
     HILOGI("init succeeded");
     return true;
@@ -96,6 +96,7 @@ int32_t DistributedDeviceProfileService::SubscribeProfileEvents(const std::list<
     const sptr<IRemoteObject>& profileEventNotifier,
     std::list<ProfileEvent>& failedEvents)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_SUB_TRACE);
     return SubscribeManager::GetInstance().SubscribeProfileEvents(subscribeInfos,
         profileEventNotifier, failedEvents);
 }

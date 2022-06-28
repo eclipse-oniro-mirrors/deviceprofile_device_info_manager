@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,11 +15,10 @@
 
 #include "system_info_collector.h"
 
-#include "device_profile_errors.h"
 #include "device_profile_log.h"
-
 #include "nlohmann/json.hpp"
-#include "parameters.h"
+#include "parameter.h"
+#include "securec.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -33,9 +32,6 @@ const std::string SYSTEM_OS_TYPE = "type";
 const std::string DEVICE_OHOS_VERSION = "harmonyVersion";
 const std::string DEVICE_API_LEVEL = "harmonyApiLevel";
 const std::string DEVICE_OHOS_NAME = "OpenHarmony";
-const std::string DEVICE_API_LEVEL_PARAM = "hw_sc.build.os.apiversion";
-const std::string DEVICE_OHOS_VERSION_PARAM = "hw_sc.build.os.version";
-const std::string DEVICE_OHOS_NAME_PARAM = "const.ohos.name";
 constexpr int32_t OHOS_TYPE_UNKNOWN = -1;
 constexpr int32_t OHOS_TYPE = 10;
 }
@@ -47,27 +43,32 @@ bool SystemInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& pro
     nlohmann::json jsonData;
     jsonData[SYSTEM_OS_TYPE] = GetOsType();
     jsonData[DEVICE_OHOS_VERSION] = GetOsVersion();
-    jsonData[DEVICE_API_LEVEL] = GetApiVersion();
+    jsonData[DEVICE_API_LEVEL] = GetSdkApiVersion();
     profile.SetCharacteristicProfileJson(jsonData.dump());
     return true;
 }
 
 int32_t SystemInfoCollector::GetOsType()
 {
-    if (system::GetParameter(DEVICE_OHOS_NAME_PARAM, EMPTY_PARAM) == DEVICE_OHOS_NAME) {
+    const char* osFullName = GetOSFullName();
+    if (strncmp(osFullName, DEVICE_OHOS_NAME.c_str(), strlen(DEVICE_OHOS_NAME.c_str())) == 0) {
+        free((char*)osFullName);
         return OHOS_TYPE;
     }
+    free((char*)osFullName);
+    HILOGE("get failed");
     return OHOS_TYPE_UNKNOWN;
 }
-
-std::string SystemInfoCollector::GetApiVersion()
-{
-    return system::GetParameter(DEVICE_API_LEVEL_PARAM, EMPTY_PARAM);
-}
-
 std::string SystemInfoCollector::GetOsVersion()
 {
-    return system::GetParameter(DEVICE_OHOS_VERSION_PARAM, EMPTY_PARAM);
+    const char* version = GetDisplayVersion();
+    if (version == nullptr) {
+        HILOGE("get failed");
+        return EMPTY_PARAM;
+    }
+    std::string osVersion = version;
+    free((char*)version);
+    return osVersion;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

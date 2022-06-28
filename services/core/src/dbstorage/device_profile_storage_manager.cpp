@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,6 +22,8 @@
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_utils.h"
+#include "dfx/dp_hitrace_report.h"
+#include "hisysevent.h"
 #include "sync_coordinator.h"
 
 #include "ipc_object_proxy.h"
@@ -33,6 +35,7 @@
 
 namespace OHOS {
 namespace DeviceProfile {
+using namespace OHOS::HiviewDFX;
 using namespace std::chrono_literals;
 using namespace OHOS::DistributedKv;
 
@@ -41,9 +44,14 @@ const std::string TAG = "DeviceProfileStorageManager";
 
 const std::string SERVICE_TYPE = "type";
 const std::string SERVICES = "services";
+const std::string DOMAIN_NAME = std::string(HiSysEvent::Domain::DEVICE_PROFILE);
+const std::string DEVICE_PROFILE_SYNC_FAILED = "DEVICE_PROFILE_SYNC_FAILED";
+const std::string DEVICE_PROFILE_SYNC_EVENT = "DEVICE_PROFILE_SYNC_EVENT";
+const std::string FAULT_CODE_KEY = "FAULT_CODE";
 constexpr int32_t RETRY_TIMES_WAIT_KV_DATA = 30;
 constexpr int32_t INTREVAL_POST_ONLINE_SYNC_MS = 50;
 constexpr int32_t RETRY_TIMES_POST_ONLINE_SYNC = 15;
+constexpr int32_t FIX_TASK_ID = 0;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DeviceProfileStorageManager);
@@ -127,6 +135,7 @@ std::string DeviceProfileStorageManager::GenerateKey(const std::string& udid,
 
 int32_t DeviceProfileStorageManager::PutDeviceProfile(const ServiceCharacteristicProfile& profile)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_PUT_TRACE);
     if (kvDataServiceFailed_ || onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
         HILOGE("kvstore init failed");
         return ERR_DP_INIT_DB_FAILED;
@@ -165,6 +174,7 @@ int32_t DeviceProfileStorageManager::PutDeviceProfile(const ServiceCharacteristi
 int32_t DeviceProfileStorageManager::GetDeviceProfile(const std::string& udid,
     const std::string& serviceId, ServiceCharacteristicProfile& profile)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_GET_TRACE);
     if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
         HILOGE("kvstore init failed");
         return ERR_DP_INIT_DB_FAILED;
@@ -231,6 +241,7 @@ void DeviceProfileStorageManager::SetServiceType(const std::string& udid,
 
 int32_t DeviceProfileStorageManager::DeleteDeviceProfile(const std::string& serviceId)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_DELETE_TRACE);
     if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
         HILOGE("kvstore init failed");
         return ERR_DP_INIT_DB_FAILED;
@@ -307,8 +318,10 @@ int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOp
         return result;
     }
 
+    StartAsyncTrace(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_SYNC_TRACE, FIX_TASK_ID);
     auto syncTask = [syncOptions, this]() {
         HILOGI("start sync");
+        ReportBehaviorEvent(DEVICE_PROFILE_SYNC_EVENT);
         auto devicesList = syncOptions.GetDeviceList();
         if (devicesList.empty()) {
             DeviceManager::GetInstance().GetDeviceIdList(devicesList);
@@ -317,6 +330,7 @@ int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOp
         std::vector<std::string> devicesVector(std::vector<std::string> { devicesList.begin(), devicesList.end() });
         int32_t result = onlineSyncTbl_->SyncDeviceProfile(devicesVector, syncOptions.GetSyncMode());
         if (result != ERR_OK) {
+            ReportFaultEvent(DEVICE_PROFILE_SYNC_FAILED, FAULT_CODE_KEY, result);
             HILOGE("sync failed result : %{public}d", result);
             NotifySyncCompleted();
             return;
@@ -362,6 +376,7 @@ void DeviceProfileStorageManager::NotifySyncCompleted()
 {
     HILOGI("called");
     SyncCoordinator::GetInstance().ReleaseSync();
+    FinishAsyncTrace(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_SYNC_TRACE, FIX_TASK_ID);
     std::lock_guard<std::mutex> autoLock(profileSyncLock_);
     std::list<ProfileEvent> profileEvents;
     profileEvents.emplace_back(ProfileEvent::EVENT_SYNC_COMPLETED);
@@ -444,7 +459,6 @@ void DeviceProfileStorageManager::FlushProfileItems()
     for (const auto& [key, value] : profileItems_) {
         keys.emplace_back(key);
         values.emplace_back(value);
-        HILOGD("key = %{public}s, value = %{public}s", key.c_str(), value.c_str());
     }
     profileItems_.clear();
     autoLock.unlock();
@@ -539,6 +553,23 @@ void DeviceProfileStorageManager::PostOnlineSync(const std::string& deviceId, in
     if (!storageHandler_->PostTask(onlineSyncTaks, INTREVAL_POST_ONLINE_SYNC_MS)) {
         HILOGE("post task failed");
         return;
+    }
+}
+
+void DeviceProfileStorageManager::ReportBehaviorEvent(const std::string& event)
+{
+    int ret = HiSysEvent::Write(DOMAIN_NAME, event, HiSysEvent::EventType::BEHAVIOR);
+    if (ret != 0) {
+        HILOGE("hisysevent write failed! ret %{public}d.", ret);
+    }
+}
+
+void DeviceProfileStorageManager::ReportFaultEvent(const std::string& event,
+    const std::string& key, const int32_t result)
+{
+    int ret = HiSysEvent::Write(DOMAIN_NAME, event, HiSysEvent::EventType::FAULT, key, result);
+    if (ret != 0) {
+        HILOGE("hisysevent write failed! ret %{public}d.", ret);
     }
 }
 } // namespace DeviceProfile

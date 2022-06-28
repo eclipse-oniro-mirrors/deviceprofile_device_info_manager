@@ -22,6 +22,7 @@
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "distributed_device_profile_client.h"
+#include "hisysevent.h"
 #include "nlohmann/json.hpp"
 #include "syscap_info_collector.h"
 #include "syscap_interface.h"
@@ -30,12 +31,16 @@
 
 namespace OHOS {
 namespace DeviceProfile {
+using namespace OHOS::HiviewDFX;
 namespace {
     const std::string TAG = "SyscapInfoCollector";
     const std::string SERVICE_ID = "syscap";
     const std::string SERVICE_TYPE = "syscap";
     const std::string CHARACTER_PRIVATE_SYSCAP = "privatesyscap";
     const std::string CHARACTER_OS_SYSCAP = "ossyscap";
+    const std::string DEVICE_PROFILE_SYNC_FAILED = "DEVICE_PROFILE_SYNC_FAILED";
+    const std::string FAULT_CODE_KEY = "FAULT_CODE";
+    const std::string DOMAIN_NAME = std::string(HiSysEvent::Domain::DEVICE_PROFILE);
 }
 using namespace testing;
 using namespace testing::ext;
@@ -189,7 +194,7 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_001, TestSize.Level2)
     profile.SetServiceId(SERVICE_ID);
     profile.SetServiceType(SERVICE_TYPE);
     int32_t result = DistributedDeviceProfileClient::GetInstance().GetDeviceProfile("", SERVICE_ID, profile);
-    EXPECT_TRUE(result == 0);
+    EXPECT_TRUE(result == ERR_DP_PERMISSION_DENIED);
 
     std::string jsonData = profile.GetCharacteristicProfileJson();
     DTEST_LOG << "jsonData:" << jsonData << std::endl;
@@ -225,6 +230,18 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_001, TestSize.Level2)
     for (int i = 0; i < length; i++) {
         DTEST_LOG << "PrivateSyscap: " << *(priOutput + i) << std::endl;
     }
+}
+
+/**
+ * @tc.name: DfxErrorPrint_001
+ * @tc.desc: print hisysevent error event
+ * @tc.type: FUNC
+ */
+HWTEST_F(ProfileCrudTest, DfxErrorPrint_001, TestSize.Level2)
+{
+    int ret = HiSysEvent::Write(DOMAIN_NAME, DEVICE_PROFILE_SYNC_FAILED,
+        HiSysEvent::EventType::FAULT, FAULT_CODE_KEY, -1);
+    EXPECT_TRUE(ret == 0);
 }
 }
 }

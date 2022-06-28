@@ -34,7 +34,7 @@ ohos_executable("dp") {
 
   deps = [ "${device_profile_path}/interfaces/innerkits/core:distributed_device_profile_client" ]
   external_deps = [
-    "dsoftbus_standard:softbus_client",
+    "dsoftbus:softbus_client",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "utils_base:utils",
