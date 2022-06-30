@@ -26,6 +26,7 @@ device_profile_configs =
 
 device_profile_deps = [
   "${device_profile_innerkits}/core:distributed_device_profile_client",
+  "${device_profile_service}/core:distributed_device_profile",
   "//third_party/googletest:gtest_main",
 ]
 
@@ -75,11 +76,23 @@ ohos_unittest("profile_authority_test") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("content_sersor_test") {
+  module_out_path = module_output_path
+
+  sources = [ "unittest/content_sensor_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_profile_core"
+  subsystem_name = "deviceprofile"
+}
+
 group("unittest") {
   testonly = true
   deps = [
     # ":event_subscribe_test",
     # ":profile_authority_test",
+    ":content_sersor_test",
     ":profile_crud_test",
   ]
 }
