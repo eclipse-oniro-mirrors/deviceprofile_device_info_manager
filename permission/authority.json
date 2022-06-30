@@ -1,2 +1,9 @@
 {
+    "foundation": {
+        "servicesAuthority": {
+          "specific": {
+            "syscap": 1
+          }
+        }
+    }
 }
