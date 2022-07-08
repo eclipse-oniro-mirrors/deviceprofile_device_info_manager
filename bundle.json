@@ -20,15 +20,20 @@
       "ram": "",
       "deps": {
         "components": [
-          "distributeddatamgr",
-          "dsoftbus",
-          "eventhandler",
+          "utils_base",
+          "hisysevent_native",
+          "startup_l2",
           "hiviewdfx_hilog_native",
           "ipc",
-          "safwk",
+          "syscap_codec",
+          "access_token",
+          "device_auth",
           "samgr_standard",
-          "startup_l2",
-          "utils_base"
+          "distributeddatamgr",
+          "hitrace_native",
+          "eventhandler",
+          "safwk",
+          "dsoftbus"
         ],
         "third_party": [
           "json"
