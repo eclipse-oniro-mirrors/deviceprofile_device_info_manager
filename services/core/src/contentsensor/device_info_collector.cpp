@@ -53,60 +53,60 @@ bool DeviceInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& pro
 
 std::string DeviceInfoCollector::GetDeviceModel()
 {
-    const char* model = GetProductModel();
-    if (model == nullptr) {
+    // The pointer is const in the interface. So no longer free char* productModelTempl.
+    const char* productModelTempl = GetProductModel();
+    if (productModelTempl == nullptr) {
         HILOGE("get failed");
         return EMPTY_PARAM;
     }
-    std::string deviceModel = model;
-    free((char*)model);
+    std::string deviceModel = productModelTempl;
     return deviceModel;
 }
 
 std::string DeviceInfoCollector::GetDevType()
 {
-    const char* type = GetDeviceType();
-    if (type == nullptr) {
+    // The pointer is const in the interface. So no longer free char* deviceTypeTempl.
+    const char* deviceTypeTempl = GetDeviceType();
+    if (deviceTypeTempl == nullptr) {
         HILOGE("get failed");
         return EMPTY_PARAM;
     }
-    std::string deviceType = type;
-    free((char*)type);
+    std::string deviceType = deviceTypeTempl;
     return deviceType;
 }
 
 std::string DeviceInfoCollector::GetDeviceManufacturer()
 {
-    const char* facture = GetManufacture();
-    if (facture == nullptr) {
+    // The pointer is const in the interface. So no longer free char* manuFactureTempl.
+    const char* manuFactureTempl = GetManufacture();
+    if (manuFactureTempl == nullptr) {
         HILOGE("get failed");
         return EMPTY_PARAM;
     }
-    std::string manuFacture = facture;
-    free((char*)facture);
+    std::string manuFacture = manuFactureTempl;
     return manuFacture;
 }
 
 std::string DeviceInfoCollector::GetDeviceSerial()
 {
-    const char* serial = GetSerial();
-    if (serial == nullptr) {
+    // The pointer is const in the interface. So no longer free char* serialTempl.
+    const char* serialTempl = GetSerial();
+    if (serialTempl == nullptr) {
         HILOGE("get failed");
         return EMPTY_PARAM;
     }
-    std::string deviceSerial = serial;
-    free((char*)serial);
+    std::string deviceSerial = serialTempl;
     return deviceSerial;
 }
 
 std::string DeviceInfoCollector::GetDeviceName()
 {
-    const char* name = GetMarketName();
-    if (name == nullptr) {
+    // The pointer is const in the interface. So no longer free char* marketNameTempl.
+    const char* marketNameTempl = GetMarketName();
+    if (marketNameTempl == nullptr) {
         return GetDeviceModel();
     }
-    std::string devName = name;
-    free((char*)name);
+    std::string devName = marketNameTempl;
     if (!devName.empty()) {
         return devName;
     }
