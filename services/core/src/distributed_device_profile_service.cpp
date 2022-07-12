@@ -21,7 +21,7 @@
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
-#include "dfx/dp_hitrace_report.h"
+#include "hitrace_meter.h"
 #include "service_characteristic_profile.h"
 #include "subscribe_manager.h"
 #include "system_ability_definition.h"
@@ -31,6 +31,7 @@ namespace OHOS {
 namespace DeviceProfile {
 namespace {
 const std::string TAG = "DistributedDeviceProfileService";
+const std::string DP_DEVICE_SUB_TRACE = "DP_DEVICE_SUB";
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileService);

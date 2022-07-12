@@ -22,8 +22,8 @@
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_utils.h"
-#include "dfx/dp_hitrace_report.h"
 #include "hisysevent.h"
+#include "hitrace_meter.h"
 #include "sync_coordinator.h"
 
 #include "ipc_object_proxy.h"
@@ -48,6 +48,10 @@ const std::string DOMAIN_NAME = std::string(HiSysEvent::Domain::DEVICE_PROFILE);
 const std::string DEVICE_PROFILE_SYNC_FAILED = "DEVICE_PROFILE_SYNC_FAILED";
 const std::string DEVICE_PROFILE_SYNC_EVENT = "DEVICE_PROFILE_SYNC_EVENT";
 const std::string FAULT_CODE_KEY = "FAULT_CODE";
+const std::string DP_DEVICE_PUT_TRACE = "DP_DEVICE_PUT";
+const std::string DP_DEVICE_GET_TRACE = "DP_DEVICE_GET";
+const std::string DP_DEVICE_DELETE_TRACE = "DP_DEVICE_DELETE";
+const std::string DP_DEVICE_SYNC_TRACE = "DP_DEVICE_SYNC";
 constexpr int32_t RETRY_TIMES_WAIT_KV_DATA = 30;
 constexpr int32_t INTREVAL_POST_ONLINE_SYNC_MS = 50;
 constexpr int32_t RETRY_TIMES_POST_ONLINE_SYNC = 15;
