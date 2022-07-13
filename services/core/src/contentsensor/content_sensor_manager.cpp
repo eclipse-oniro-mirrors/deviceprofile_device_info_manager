@@ -17,7 +17,7 @@
 
 #include "device_info_collector.h"
 #include "device_profile_log.h"
-#include "dfx/dp_hitrace_report.h"
+#include "hitrace_meter.h"
 #include "syscap_info_collector.h"
 #include "system_info_collector.h"
 
@@ -25,6 +25,7 @@ namespace OHOS {
 namespace DeviceProfile {
 namespace {
 const std::string TAG = "ContentSensorManager";
+const std::string DP_CONTENT_SENSOR_TRACE = "DP_CONTENT_SENSOR";
 }
 
 IMPLEMENT_SINGLE_INSTANCE(ContentSensorManager);
