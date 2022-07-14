@@ -15,7 +15,13 @@
 
 #include "shell_command.h"
 
+#include <errors.h>
+#include <functional>
 #include <getopt.h>
+#include <map>
+#include <string>
+#include <vector>
+
 #include "device_profile_log.h"
 
 namespace OHOS {

@@ -15,15 +15,29 @@
 
 #include "distributed_device_profile_client.h"
 
+#include <algorithm>
+#include <bitset>
 #include <chrono>
+#include <functional>
+#include <new>
+#include <nlohmann/json.hpp>
+#include <string>
 #include <thread>
+#include <type_traits>
 #include <unistd.h>
+#include <utility>
 
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
-
+#include "event_handler.h"
+#include "event_runner.h"
+#include "idistributed_device_profile.h"
+#include "if_system_ability_manager.h"
 #include "ipc_skeleton.h"
+#include "iremote_broker.h"
 #include "iservice_registry.h"
+#include "profile_event_notifier_stub.h"
+#include "service_characteristic_profile.h"
 #include "system_ability_definition.h"
 
 namespace OHOS {

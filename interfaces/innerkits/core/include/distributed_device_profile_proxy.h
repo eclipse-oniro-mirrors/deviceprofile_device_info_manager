@@ -16,9 +16,16 @@
 #ifndef OHOS_DISTRIBUTED_DEVICE_PROFILE_PROXY_H
 #define OHOS_DISTRIBUTED_DEVICE_PROFILE_PROXY_H
 
+#include <functional>
+#include <iosfwd>
+#include <list>
+#include <stdint.h>
+
 #include "idistributed_device_profile.h"
+#include "iremote_broker.h"
 #include "iremote_proxy.h"
 #include "profile_event.h"
+#include "refbase.h"
 
 namespace OHOS {
 namespace DeviceProfile {

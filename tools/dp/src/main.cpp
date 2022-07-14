@@ -15,7 +15,11 @@
 
 #include "dp_command.h"
 
+#include <iosfwd>
 #include <iostream>
+#include <ostream>
+
+#include "shell_command.h"
 
 using namespace std;
 using namespace OHOS::DeviceProfile;

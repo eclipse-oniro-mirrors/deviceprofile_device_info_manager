@@ -15,6 +15,10 @@
 
 #include "device_profile_utils.h"
 
+#include <list>
+#include <string>
+
+#include "parcel.h"
 #include "parcel_helper.h"
 
 namespace OHOS {

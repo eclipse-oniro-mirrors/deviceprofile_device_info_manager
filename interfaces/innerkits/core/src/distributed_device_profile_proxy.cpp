@@ -15,9 +15,19 @@
 
 #include "distributed_device_profile_proxy.h"
 
+#include <string>
+
 #include "device_profile_log.h"
 #include "device_profile_utils.h"
+#include "errors.h"
+#include "ipc_types.h"
+#include "iremote_object.h"
+#include "message_option.h"
+#include "message_parcel.h"
 #include "parcel_helper.h"
+#include "service_characteristic_profile.h"
+#include "subscribe_info.h"
+#include "sync_options.h"
 
 namespace OHOS {
 namespace DeviceProfile {

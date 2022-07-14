@@ -12,17 +12,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "dp_command.h"
 
+#include <functional>
 #include <getopt.h>
+#include <istream>
+#include <list>
+#include <map>
+#include <memory>
 #include <sstream>
+#include <streambuf>
+#include <string>
+#include <type_traits>
 #include <unistd.h>
 
 #include "device_profile_log.h"
 #include "distributed_device_profile_client.h"
+#include "iprofile_event_notifier.h"
 #include "nlohmann/json.hpp"
+#include "nlohmann/json_fwd.hpp"
+#include "profile_event.h"
+#include "service_characteristic_profile.h"
 #include "softbus_bus_center.h"
 #include "subscribe_info.h"
+#include "sync_options.h"
 
 namespace OHOS {
 namespace DeviceProfile {

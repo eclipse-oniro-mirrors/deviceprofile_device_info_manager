@@ -15,8 +15,18 @@
 
 #include "subscribe_info.h"
 
+#include <initializer_list>
+#include <iosfwd>
+#include <map>
+#include <nlohmann/json.hpp>
+#include <string>
+#include <type_traits>
+#include <vector>
+
 #include "device_profile_log.h"
+#include "parcel.h"
 #include "parcel_helper.h"
+#include "profile_event.h"
 
 namespace OHOS {
 namespace DeviceProfile {

@@ -15,8 +15,17 @@
 
 #include "profile_event_notifier_stub.h"
 
+#include <iosfwd>
+#include <string>
+#include <utility>
+
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
+#include "errors.h"
+#include "ipc_object_stub.h"
+#include "iprofile_event_callback.h"
+#include "message_parcel.h"
+#include "profile_change_notification.h"
 #include "profile_event.h"
 
 namespace OHOS {

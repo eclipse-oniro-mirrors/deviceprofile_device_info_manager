@@ -15,6 +15,13 @@
 
 #include "profile_change_notification.h"
 
+#include <iosfwd>
+#include <string>
+#include <type_traits>
+#include <vector>
+
+#include "device_profile_log.h"
+#include "parcel.h"
 #include "parcel_helper.h"
 
 namespace OHOS {
