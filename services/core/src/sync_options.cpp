@@ -15,7 +15,12 @@
 
 #include "sync_options.h"
 
+#include <iosfwd>
+#include <list>
+#include <string>
+
 #include "device_profile_log.h"
+#include "parcel.h"
 #include "parcel_helper.h"
 
 namespace OHOS {

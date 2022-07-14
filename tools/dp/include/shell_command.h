@@ -16,8 +16,11 @@
 #ifndef DEVICE_PROFILE_SHELL_COMMAND_H
 #define DEVICE_PROFILE_SHELL_COMMAND_H
 
+#include <cstdint>
 #include <functional>
+#include <iosfwd>
 #include <map>
+#include <stdint.h>
 #include <string>
 #include <vector>
 

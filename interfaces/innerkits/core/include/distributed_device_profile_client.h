@@ -16,13 +16,23 @@
 #ifndef OHOS_DISTRIBUTED_DEVICE_PROFILE_CLIENT_H
 #define OHOS_DISTRIBUTED_DEVICE_PROFILE_CLIENT_H
 
-#include "idistributed_device_profile.h"
-#include "single_instance.h"
-#include "iprofile_event_callback.h"
-#include "profile_event_notifier_stub.h"
-#include "profile_event.h"
+#include <functional>
+#include <iosfwd>
+#include <list>
+#include <map>
+#include <memory>
+#include <mutex>
+#include <stdint.h>
+
 #include "event_handler.h"
+#include "idistributed_device_profile.h"
+#include "iprofile_event_callback.h"
 #include "iremote_object.h"
+#include "profile_event.h"
+#include "profile_event_notifier_stub.h"
+#include "refbase.h"
+#include "single_instance.h"
+#include "subscribe_info.h"
 
 namespace OHOS {
 namespace DeviceProfile {

@@ -16,9 +16,15 @@
 #ifndef OHOS_DEVICE_PROFILE_I_PROFILE_SYNC_CALLBACK_STUB_H
 #define OHOS_DEVICE_PROFILE_I_PROFILE_SYNC_CALLBACK_STUB_H
 
-#include "message_parcel.h"
-#include "iremote_stub.h"
+#include <functional>
+#include <map>
+#include <memory>
+#include <stdint.h>
+
 #include "iprofile_event_notifier.h"
+#include "iremote_stub.h"
+#include "message_parcel.h"
+#include "refbase.h"
 
 namespace OHOS {
 namespace DeviceProfile {

@@ -16,12 +16,14 @@
 #ifndef DEVICE_PROFILE_DP_COMMAND_H
 #define DEVICE_PROFILE_DP_COMMAND_H
 
-#include "shell_command.h"
-
+#include <iosfwd>
 #include <list>
+#include <stdint.h>
 
 #include "device_profile_log.h"
+#include "errors.h"
 #include "iprofile_event_callback.h"
+#include "shell_command.h"
 
 namespace OHOS {
 namespace DeviceProfile {

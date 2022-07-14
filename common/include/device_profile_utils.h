@@ -16,6 +16,7 @@
 #ifndef OHOS_DEVICE_PROFILE_PROFILE_UTILS_H
 #define OHOS_DEVICE_PROFILE_PROFILE_UTILS_H
 
+#include <iosfwd>
 #include <list>
 
 #include "parcel.h"
