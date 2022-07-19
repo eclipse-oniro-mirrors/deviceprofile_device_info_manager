@@ -40,12 +40,19 @@
         ]
       },
       "build": {
-        "sub_component": [
-          "//foundation/deviceprofile/device_profile_core/sa_profile:dps_sa_profile",
-          "//foundation/deviceprofile/device_profile_core/services/core:distributed_device_profile",
-          "//foundation/deviceprofile/device_profile_core/tools/dp:dp",
-          "//foundation/deviceprofile/device_profile_core/permission:authority_json"
-        ],
+        "group_type": {
+          "base_group": [
+            "//foundation/deviceprofile/device_profile_core/tools/dp:dp"
+          ],
+          "fwk_group": [
+            "//foundation/deviceprofile/device_profile_core/interfaces/innerkits/core:distributed_device_profile_client"
+          ],
+          "service_group": [
+            "//foundation/deviceprofile/device_profile_core/permission:authority_json",
+            "//foundation/deviceprofile/device_profile_core/sa_profile:dps_sa_profile",
+            "//foundation/deviceprofile/device_profile_core/services/core:distributed_device_profile"
+          ]
+        },
         "inner_kits": [
           {
             "name": "//foundation/deviceprofile/device_profile_core/interfaces/innerkits/core:distributed_device_profile_client",
