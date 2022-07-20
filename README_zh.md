@@ -190,4 +190,4 @@ DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(profileEv
 
 **[DeviceProfile子系统](zh-cn_topic_0000001115719369.md)**
 
-[device\_profile\_core](https://gitee.com/openharmony-sig/device_profile_core)
+[device\_profile\_core](https://gitee.com/openharmony-sig/device_info_manager)

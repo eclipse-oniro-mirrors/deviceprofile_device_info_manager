@@ -14,7 +14,7 @@
 import("//build/ohos.gni")
 import("//build/ohos_var.gni")
 
-device_profile_path = "//foundation/deviceprofile/device_profile_core"
+device_profile_path = "//foundation/deviceprofile/device_info_manager"
 
 config("dp_tools_config") {
   visibility = [ ":*" ]
@@ -40,6 +40,6 @@ ohos_executable("dp") {
     "utils_base:utils",
   ]
 
-  part_name = "device_profile_core"
+  part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
 }
