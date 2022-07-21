@@ -45,10 +45,10 @@ ohos_fuzztest("DeviceProfileFuzzTest") {
   deps = device_profile_deps
 
   external_deps = [
+    "c_utils:utils",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "safwk:system_ability_fwk",
-    "utils_base:utils",
   ]
 }
 
