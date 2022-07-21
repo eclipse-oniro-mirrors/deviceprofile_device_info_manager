@@ -45,8 +45,8 @@ ohos_shared_library("distributed_device_profile_client") {
   public_deps = [
     "//base/notification/eventhandler/frameworks/eventhandler:libeventhandler",
     "//foundation/communication/ipc/interfaces/innerkits/ipc_core:ipc_core",
-    "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
+    "//foundation/systemabilitymgr/safwk/interfaces/innerkits/safwk:system_ability_fwk",
+    "//foundation/systemabilitymgr/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//utils/native/base:utils",
   ]
   external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
