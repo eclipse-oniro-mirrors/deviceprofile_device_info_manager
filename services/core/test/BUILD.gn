@@ -15,14 +15,14 @@ import("//build/ohos.gni")
 import("//build/ohos_var.gni")
 import("//build/test.gni")
 
-module_output_path = "device_profile_core/deviceprofiletest"
+module_output_path = "device_info_manager/deviceprofiletest"
 
-device_profile_path = "//foundation/deviceprofile/device_profile_core"
+device_profile_path = "//foundation/deviceprofile/device_info_manager"
 device_profile_innerkits = "${device_profile_path}/interfaces/innerkits"
 device_profile_service = "${device_profile_path}/services"
 
 device_profile_configs =
-    [ "${device_profile_service}/core:device_profile_core_config" ]
+    [ "${device_profile_service}/core:device_info_manager_config" ]
 
 device_profile_deps = [
   "${device_profile_innerkits}/core:distributed_device_profile_client",
@@ -47,7 +47,7 @@ ohos_unittest("profile_crud_test") {
   configs = device_profile_configs
   deps = device_profile_deps
   external_deps = device_profile_external_deps
-  part_name = "device_profile_core"
+  part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
 }
 
@@ -58,7 +58,7 @@ ohos_unittest("event_subscribe_test") {
   configs = device_profile_configs
   deps = device_profile_deps
   external_deps = device_profile_external_deps
-  part_name = "device_profile_core"
+  part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
 }
 
@@ -72,7 +72,7 @@ ohos_unittest("profile_authority_test") {
   configs = device_profile_configs
   deps = [ "//third_party/googletest:gtest_main" ]
   external_deps = device_profile_external_deps
-  part_name = "device_profile_core"
+  part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
 }
 
@@ -83,7 +83,7 @@ ohos_unittest("content_sersor_test") {
   configs = device_profile_configs
   deps = device_profile_deps
   external_deps = device_profile_external_deps
-  part_name = "device_profile_core"
+  part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
 }
 

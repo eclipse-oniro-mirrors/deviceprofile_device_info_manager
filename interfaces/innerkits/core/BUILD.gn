@@ -14,7 +14,7 @@
 import("//build/ohos.gni")
 import("//build/ohos_var.gni")
 
-device_profile_path = "//foundation/deviceprofile/device_profile_core"
+device_profile_path = "//foundation/deviceprofile/device_info_manager"
 device_profile_service = "${device_profile_path}/services/core"
 
 config("distributed_device_profile_client_config") {
@@ -51,6 +51,6 @@ ohos_shared_library("distributed_device_profile_client") {
   ]
   external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
 
-  part_name = "device_profile_core"
+  part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
 }
