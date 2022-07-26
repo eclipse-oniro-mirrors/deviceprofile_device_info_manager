@@ -20,7 +20,7 @@
       "ram": "",
       "deps": {
         "components": [
-          "utils_base",
+          "c_utils",
           "hisysevent_native",
           "startup_l2",
           "hiviewdfx_hilog_native",
