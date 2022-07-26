@@ -1,5 +1,5 @@
 {
-    "name": "@ohos/device_profile_core",
+    "name": "@ohos/device_info_manager",
     "description": "device profile",
     "version": "3.1",
     "publishAs": "code-segment",
