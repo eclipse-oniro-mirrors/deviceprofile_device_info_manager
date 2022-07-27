@@ -15,5 +15,5 @@ import("//build/ohos/sa_profile/sa_profile.gni")
 
 ohos_sa_profile("dps_sa_profile") {
   sources = [ "6001.xml" ]
-  part_name = "device_profile_core"
+  part_name = "device_info_manager"
 }

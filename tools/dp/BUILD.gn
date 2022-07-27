@@ -14,7 +14,7 @@
 import("//build/ohos.gni")
 import("//build/ohos_var.gni")
 
-device_profile_path = "//foundation/deviceprofile/device_profile_core"
+device_profile_path = "//foundation/deviceprofile/device_info_manager"
 
 config("dp_tools_config") {
   visibility = [ ":*" ]
@@ -34,12 +34,12 @@ ohos_executable("dp") {
 
   deps = [ "${device_profile_path}/interfaces/innerkits/core:distributed_device_profile_client" ]
   external_deps = [
+    "c_utils:utils",
     "dsoftbus:softbus_client",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "utils_base:utils",
   ]
 
-  part_name = "device_profile_core"
+  part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
 }

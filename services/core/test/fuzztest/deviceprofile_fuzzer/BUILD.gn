@@ -15,13 +15,13 @@
 import("//build/config/features.gni")
 import("//build/ohos.gni")
 import("//build/test.gni")
-module_output_path = "device_profile_core/deviceprofile"
+module_output_path = "device_info_manager/deviceprofile"
 
-device_profile_path = "//foundation/deviceprofile/device_profile_core"
+device_profile_path = "//foundation/deviceprofile/device_info_manager"
 device_profile_service = "${device_profile_path}/services"
 
 device_profile_configs =
-    [ "${device_profile_service}/core:device_profile_core_config" ]
+    [ "${device_profile_service}/core:device_info_manager_config" ]
 device_profile_deps =
     [ "${device_profile_service}/core:distributed_device_profile" ]
 
@@ -29,7 +29,7 @@ device_profile_deps =
 ohos_fuzztest("DeviceProfileFuzzTest") {
   module_out_path = module_output_path
 
-  fuzz_config_file = "//foundation/deviceprofile/device_profile_core/services/core/test/fuzztest/deviceprofile_fuzzer"
+  fuzz_config_file = "//foundation/deviceprofile/device_info_manager/services/core/test/fuzztest/deviceprofile_fuzzer"
 
   cflags = [
     "-g",
@@ -45,10 +45,10 @@ ohos_fuzztest("DeviceProfileFuzzTest") {
   deps = device_profile_deps
 
   external_deps = [
+    "c_utils:utils",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "safwk:system_ability_fwk",
-    "utils_base:utils",
   ]
 }
 

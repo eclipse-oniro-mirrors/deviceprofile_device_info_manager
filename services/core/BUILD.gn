@@ -14,13 +14,13 @@
 import("//build/ohos.gni")
 import("//build/ohos_var.gni")
 
-device_profile_path = "//foundation/deviceprofile/device_profile_core"
+device_profile_path = "//foundation/deviceprofile/device_info_manager"
 device_profile_innerkits = "${device_profile_path}/interfaces/innerkits"
 services = "${device_profile_path}/services"
 device_profile_common_sources =
     [ "${device_profile_path}/common/src/device_profile_utils.cpp" ]
 
-config("device_profile_core_config") {
+config("device_info_manager_config") {
   visibility = [ ":*" ]
   include_dirs = [
     "include",
@@ -70,10 +70,11 @@ ohos_shared_library("distributed_device_profile") {
   ]
   sources += device_profile_common_sources
 
-  configs = [ ":device_profile_core_config" ]
+  configs = [ ":device_info_manager_config" ]
 
   external_deps = [
     "access_token:libaccesstoken_sdk",
+    "c_utils:utils",
     "device_auth:deviceauth_sdk",
     "distributeddatamgr:distributeddata_inner",
     "dsoftbus:softbus_client",
@@ -86,10 +87,9 @@ ohos_shared_library("distributed_device_profile") {
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
     "syscap_codec:syscap_interface_shared",
-    "utils_base:utils",
   ]
 
-  part_name = "device_profile_core"
+  part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
 }
 

@@ -17,6 +17,6 @@ ohos_prebuilt_etc("authority_json") {
   install_enable = true
   source = "authority.json"
   relative_install_dir = "deviceprofile"
-  part_name = "device_profile_core"
+  part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
 }
