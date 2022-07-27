@@ -76,7 +76,7 @@ ohos_unittest("profile_authority_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("content_sersor_test") {
+ohos_unittest("content_sensor_test") {
   module_out_path = module_output_path
 
   sources = [ "unittest/content_sensor_test.cpp" ]
@@ -92,7 +92,7 @@ group("unittest") {
   deps = [
     # ":event_subscribe_test",
     # ":profile_authority_test",
-    ":content_sersor_test",
+    ":content_sensor_test",
     ":profile_crud_test",
   ]
 }

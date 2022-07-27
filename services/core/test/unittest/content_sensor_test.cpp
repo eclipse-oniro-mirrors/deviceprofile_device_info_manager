@@ -15,6 +15,8 @@
 
 #include "gtest/gtest.h"
 
+#include <sys/statvfs.h>
+
 #include "utils.h"
 
 #define private public
@@ -122,6 +124,19 @@ HWTEST_F(ContentSensorTest, GetDeviceSerial_001, TestSize.Level2)
     DeviceInfoCollector devInfo;
     auto result = devInfo.GetDeviceSerial();
     EXPECT_TRUE(result != "");
+}
+
+/**
+ * @tc.name: GetTotalSize_001
+ * @tc.desc: get total size
+ * @tc.type: FUNC
+ */
+HWTEST_F(ContentSensorTest, GetTotalSize_001, TestSize.Level2)
+{
+    const char* PATH_DATA = "/data";
+    struct statvfs diskInfo;
+    int ret = statvfs(PATH_DATA, &diskInfo);
+    EXPECT_TRUE(ret == 0);
 }
 }
 }
