@@ -46,6 +46,8 @@ void OnlineSyncTable::Init()
         .encrypt = false,
         .autoSync = false,
         .kvStoreType = KvStoreType::SINGLE_VERSION,
+        .area = 1,
+        .baseDir = "/data/service/el1/public/database/distributed_device_profile_service"
     };
     SetOptions(options);
     DeviceProfileStorage::Init();
