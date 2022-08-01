@@ -82,7 +82,7 @@ int32_t DeviceProfileStorage::SubscribeKvStore(const std::shared_ptr<KvStoreObse
     if (kvStorePtr_ == nullptr || observer == nullptr) {
         return ERR_DP_INVALID_PARAMS;
     }
-    Status status = kvStorePtr_->SubscribeKvStore(SubscribeType::DEFAULT, observer);
+    Status status = kvStorePtr_->SubscribeKvStore(SubscribeType::SUBSCRIBE_TYPE_REMOTE, observer);
     HILOGI("status %{public}d", status);
     return static_cast<int32_t>(status);
 }
@@ -93,7 +93,7 @@ int32_t DeviceProfileStorage::UnSubscribeKvStore(const std::shared_ptr<KvStoreOb
     if (kvStorePtr_ == nullptr || observer == nullptr) {
         return ERR_DP_INVALID_PARAMS;
     }
-    Status status = kvStorePtr_->UnSubscribeKvStore(SubscribeType::DEFAULT, observer);
+    Status status = kvStorePtr_->UnSubscribeKvStore(SubscribeType::SUBSCRIBE_TYPE_REMOTE, observer);
     HILOGI("status %{public}d", status);
     return static_cast<int32_t>(status);
 }
@@ -157,7 +157,7 @@ Status DeviceProfileStorage::GetKvStore()
 
 void DeviceProfileStorage::DeleteKvStore()
 {
-    Status status = dataManager_.DeleteKvStore(appId_, storeId_);
+    Status status = dataManager_.DeleteKvStore(appId_, storeId_, options_.baseDir);
     if (status != Status::SUCCESS) {
         HILOGE("delete failed, error = %{public}d", status);
     }
