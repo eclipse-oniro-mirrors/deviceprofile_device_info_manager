@@ -86,7 +86,7 @@ ohos_shared_library("distributed_device_profile") {
     "init:libbegetutil",
     "ipc:ipc_core",
     "safwk:system_ability_fwk",
-    "samgr_standard:samgr_proxy",
+    "samgr:samgr_proxy",
     "syscap_codec:syscap_interface_shared",
   ]
 
