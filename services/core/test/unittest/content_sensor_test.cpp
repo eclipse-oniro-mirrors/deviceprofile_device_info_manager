@@ -130,6 +130,7 @@ HWTEST_F(ContentSensorTest, GetDeviceSerial_001, TestSize.Level2)
  * @tc.name: GetTotalSize_001
  * @tc.desc: get total size
  * @tc.type: FUNC
+ * @tc.require: I5J7PW
  */
 HWTEST_F(ContentSensorTest, GetTotalSize_001, TestSize.Level2)
 {
