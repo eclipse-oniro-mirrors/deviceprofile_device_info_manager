@@ -40,7 +40,10 @@ ohos_shared_library("distributed_device_profile_client") {
     "src/profile_event_notifier_stub.cpp",
   ]
 
-  public_configs = [ ":distributed_device_profile_client_config" ]
+  public_configs = [
+    ":distributed_device_profile_client_config",
+    "//foundation/deviceprofile/device_info_manager/test/resource:coverage_flags",
+  ]
 
   public_deps = [
     "//base/notification/eventhandler/frameworks/eventhandler:libeventhandler",
