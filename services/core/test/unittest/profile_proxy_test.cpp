@@ -77,8 +77,8 @@ HWTEST_F(ProfileProxyTest, PutDeviceProfile_001, TestSize.Level3)
     ServiceCharacteristicProfile profile;
     profile.SetServiceId("test");
     profile.SetServiceType("test");
-    nlohmann::json j;
-    profile.SetCharacteristicProfileJson(j.dump());
+    nlohmann::json jsonData;
+    profile.SetCharacteristicProfileJson(jsonData.dump());
     int32_t result = dps->PutDeviceProfile(profile);
     DTEST_LOG << "result: " << result << std::endl;
     EXPECT_NE(result, ERR_INVALID_DATA);
