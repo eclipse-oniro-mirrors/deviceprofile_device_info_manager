@@ -20,8 +20,10 @@ module_output_path = "device_info_manager/deviceprofile"
 device_profile_path = "//foundation/deviceprofile/device_info_manager"
 device_profile_service = "${device_profile_path}/services"
 
-device_profile_configs =
-    [ "${device_profile_service}/core:device_info_manager_config" ]
+device_profile_configs = [
+  "${device_profile_service}/core:device_info_manager_config",
+  "//foundation/deviceprofile/device_info_manager/test/resource:coverage_flags",
+]
 device_profile_deps =
     [ "${device_profile_service}/core:distributed_device_profile" ]
 

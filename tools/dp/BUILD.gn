@@ -24,7 +24,10 @@ config("dp_tools_config") {
 ohos_executable("dp") {
   install_enable = true
 
-  configs = [ ":dp_tools_config" ]
+  configs = [
+    ":dp_tools_config",
+    "//foundation/deviceprofile/device_info_manager/test/resource:coverage_flags",
+  ]
 
   sources = [
     "src/dp_command.cpp",

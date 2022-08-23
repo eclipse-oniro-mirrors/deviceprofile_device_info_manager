@@ -71,7 +71,10 @@ ohos_shared_library("distributed_device_profile") {
   ]
   sources += device_profile_common_sources
 
-  configs = [ ":device_info_manager_config" ]
+  configs = [
+    ":device_info_manager_config",
+    "//foundation/deviceprofile/device_info_manager/test/resource:coverage_flags",
+  ]
 
   external_deps = [
     "access_token:libaccesstoken_sdk",
