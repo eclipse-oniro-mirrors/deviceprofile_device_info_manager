@@ -112,10 +112,10 @@ void ProfileChangeHandler::OnChange(const ChangeNotification& changeNotification
     HILOGI("udid = %{public}s", DeviceProfileUtils::AnonymizeDeviceId(udid).c_str());
     std::string localUdid;
     // won't fail
-    DeviceManager::GetInstance().GetLocalDeviceUdid(localUdid);
+    DpDeviceManager::GetInstance().GetLocalDeviceUdid(localUdid);
 
     std::string networkId;
-    if (!DeviceManager::GetInstance().TransformDeviceId(udid, networkId,
+    if (!DpDeviceManager::GetInstance().TransformDeviceId(udid, networkId,
         DeviceIdType::NETWORKID)) {
         HILOGE("transform to networkid failed");
     }
@@ -213,7 +213,7 @@ void ProfileChangeHandler::FilterChangedProfileLocked(const SubscribeInfo& subsc
     if (!deviceId.empty()) {
         filterInfo.filtered = true;
         std::string networkId;
-        if (!DeviceManager::GetInstance().TransformDeviceId(deviceId, networkId,
+        if (!DpDeviceManager::GetInstance().TransformDeviceId(deviceId, networkId,
             DeviceIdType::NETWORKID)) {
             HILOGE("transform to networkid failed");
             return;

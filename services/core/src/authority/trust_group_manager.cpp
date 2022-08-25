@@ -19,7 +19,7 @@
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
 #include "device_profile_utils.h"
-#include "device_manager.h"
+#include "dp_device_manager.h"
 #include "sync_coordinator.h"
 
 namespace OHOS {
@@ -153,7 +153,7 @@ void TrustGroupManager::OnDeviceUnBoundAdapter(const char* peerUdid, const char*
             HILOGI("remove unbound deivce profile success, udid = %{public}s",
                 DeviceProfileUtils::AnonymizeDeviceId(udid).c_str());
         }
-        DeviceManager::GetInstance().RemoveDeviceIdsByUdid(udid);
+        DpDeviceManager::GetInstance().RemoveDeviceIdsByUdid(udid);
     };
     if (!SyncCoordinator::GetInstance().DispatchSyncTask(removeUnBoundDeviceTask)) {
         HILOGE("post task failed");
@@ -164,7 +164,7 @@ void TrustGroupManager::OnDeviceUnBoundAdapter(const char* peerUdid, const char*
 bool TrustGroupManager::CheckDeviceId(const std::string udid)
 {
     std::string localDeviceId;
-    DeviceManager::GetInstance().GetLocalDeviceUdid(localDeviceId);
+    DpDeviceManager::GetInstance().GetLocalDeviceUdid(localDeviceId);
     if (udid.empty() || localDeviceId.empty()) {
         HILOGE("device id is empty");
         return false;

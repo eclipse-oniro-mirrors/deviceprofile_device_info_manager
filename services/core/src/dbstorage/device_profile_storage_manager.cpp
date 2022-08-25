@@ -18,10 +18,10 @@
 #include <chrono>
 #include <thread>
 
-#include "device_manager.h"
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_utils.h"
+#include "dp_device_manager.h"
 #include "hisysevent.h"
 #include "hitrace_meter.h"
 #include "sync_coordinator.h"
@@ -67,7 +67,7 @@ bool DeviceProfileStorageManager::Init()
             HILOGE("SyncCoordinator init failed");
             return false;
         }
-        DeviceManager::GetInstance().GetLocalDeviceUdid(localUdid_);
+        DpDeviceManager::GetInstance().GetLocalDeviceUdid(localUdid_);
         if (localUdid_.empty()) {
             HILOGE("get local udid failed");
             return false;
@@ -192,7 +192,7 @@ int32_t DeviceProfileStorageManager::GetDeviceProfile(const std::string& udid,
         SetServiceType(udid, serviceId, profile);
     } else {
         std::string queryUdid;
-        if (!DeviceManager::GetInstance().TransformDeviceId(udid, queryUdid,
+        if (!DpDeviceManager::GetInstance().TransformDeviceId(udid, queryUdid,
             DeviceIdType::UDID)) {
             HILOGE("transform to networkid failed");
             return ERR_DP_INVALID_PARAMS;
@@ -294,7 +294,7 @@ int32_t DeviceProfileStorageManager::RemoveUnBoundDeviceProfile(const std::strin
 
     int32_t errCode = ERR_OK;
     std::string networkId;
-    if (!DeviceManager::GetInstance().TransformDeviceId(udid, networkId, DeviceIdType::NETWORKID)) {
+    if (!DpDeviceManager::GetInstance().TransformDeviceId(udid, networkId, DeviceIdType::NETWORKID)) {
         HILOGE("udid transform to networkid failed, udid = %{public}s",
             DeviceProfileUtils::AnonymizeDeviceId(udid).c_str());
         return ERR_DP_GET_NETWORKID_FAILED;
@@ -328,7 +328,7 @@ int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOp
         ReportBehaviorEvent(DEVICE_PROFILE_SYNC_EVENT);
         auto devicesList = syncOptions.GetDeviceList();
         if (devicesList.empty()) {
-            DeviceManager::GetInstance().GetDeviceIdList(devicesList);
+            DpDeviceManager::GetInstance().GetDeviceIdList(devicesList);
         }
         SyncCoordinator::GetInstance().SetSyncTrigger(false);
         std::vector<std::string> devicesVector(std::vector<std::string> { devicesList.begin(), devicesList.end() });
@@ -408,7 +408,7 @@ void DeviceProfileStorageManager::NotifySubscriberDied(const sptr<IRemoteObject>
 bool DeviceProfileStorageManager::CheckSyncOption(const SyncOptions& syncOptions)
 {
     std::list<std::shared_ptr<DeviceInfo>> onlineDevices;
-    DeviceManager::GetInstance().GetDeviceList(onlineDevices);
+    DpDeviceManager::GetInstance().GetDeviceList(onlineDevices);
     std::list<std::string> onlineDeviceIds;
     for (const auto& onlineDevice : onlineDevices) {
         onlineDeviceIds.emplace_back(onlineDevice->GetDeviceId());

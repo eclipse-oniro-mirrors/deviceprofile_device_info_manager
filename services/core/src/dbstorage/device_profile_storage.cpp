@@ -18,11 +18,11 @@
 #include <cinttypes>
 #include <thread>
 
-#include "device_manager.h"
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
 #include "device_profile_utils.h"
+#include "dp_device_manager.h"
 #include "service_characteristic_profile.h"
 #include "trust_group_manager.h"
 
@@ -292,7 +292,7 @@ bool DeviceProfileStorage::CheckTrustGroup(const std::vector<std::string>& devic
     }
     for (const auto& deviceId : deviceIdList) {
         std::string udid;
-        if (!DeviceManager::GetInstance().TransformDeviceId(deviceId, udid, DeviceIdType::UDID)) {
+        if (!DpDeviceManager::GetInstance().TransformDeviceId(deviceId, udid, DeviceIdType::UDID)) {
             HILOGE("%{public}s transform to udid failed", DeviceProfileUtils::AnonymizeDeviceId(deviceId).c_str());
             return false;
         }

@@ -26,7 +26,7 @@
 #include "service_characteristic_profile.h"
 #include "single_instance.h"
 
-#include "device_manager.h"
+#include "dp_device_manager.h"
 #include "sync_options.h"
 
 #include "nlohmann/json.hpp"
@@ -42,7 +42,7 @@ enum class KeyType : int8_t {
 
 class DeviceProfileStorageManager {
     DECLARE_SINGLE_INSTANCE(DeviceProfileStorageManager);
-    friend class DeviceProfile::DeviceManager;
+    friend class DeviceProfile::DpDeviceManager;
 
 public:
     bool Init();

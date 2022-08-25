@@ -15,10 +15,10 @@
 
 #include "online_sync_table.h"
 
-#include "device_manager.h"
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_utils.h"
+#include "dp_device_manager.h"
 #include "sync_coordinator.h"
 
 namespace OHOS {
@@ -111,7 +111,7 @@ void OnlineSyncTable::SyncCompleted(const std::map<std::string, Status>& results
             DeviceProfileUtils::AnonymizeDeviceId(deviceId).c_str(), result);
         if (result != Status::SUCCESS) {
             std::string networkId;
-            if (!DeviceManager::GetInstance().TransformDeviceId(deviceId, networkId,
+            if (!DpDeviceManager::GetInstance().TransformDeviceId(deviceId, networkId,
                 DeviceIdType::NETWORKID)) {
                 HILOGE("transform to networkid failed");
                 continue;
