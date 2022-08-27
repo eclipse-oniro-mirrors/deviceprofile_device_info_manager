@@ -14,6 +14,7 @@
  */
 
 #include <gtest/gtest.h>
+#include <memory>
 
 #include "profile_change_notification.h"
 #include "utils.h"
@@ -72,7 +73,11 @@ HWTEST_F(ProfileChangeNotificationTest, GetProfileEntries_001, TestSize.Level3)
  */
 HWTEST_F(ProfileChangeNotificationTest, GetDeviceId_001, TestSize.Level3)
 {
-    auto temp = new ProfileChangeNotification();
+    std::vector<ProfileEntry> profileEntries;
+    std::string networkId;
+    bool isLocal = true;
+    std::shared_ptr<ProfileChangeNotification> temp =
+        std::make_shared<ProfileChangeNotification>(profileEntries, networkId, isLocal);
     std::string result = temp->GetDeviceId();
     EXPECT_EQ("", result);
 }
@@ -85,7 +90,7 @@ HWTEST_F(ProfileChangeNotificationTest, GetDeviceId_001, TestSize.Level3)
  */
 HWTEST_F(ProfileChangeNotificationTest, IsLocal_001, TestSize.Level3)
 {
-    auto temp = new ProfileChangeNotification();
+    std::shared_ptr<ProfileChangeNotification> temp = std::make_shared<ProfileChangeNotification>();
     bool result = temp->IsLocal();
     EXPECT_EQ(false, result);
 }
@@ -99,7 +104,7 @@ HWTEST_F(ProfileChangeNotificationTest, IsLocal_001, TestSize.Level3)
 HWTEST_F(ProfileChangeNotificationTest, Marshalling_001, TestSize.Level3)
 {
     Parcel parcel;
-    auto temp = new ProfileChangeNotification();
+    std::shared_ptr<ProfileChangeNotification> temp = std::make_shared<ProfileChangeNotification>();
     bool result = temp->Marshalling(parcel);
     EXPECT_EQ(true, result);
 }
@@ -113,7 +118,7 @@ HWTEST_F(ProfileChangeNotificationTest, Marshalling_001, TestSize.Level3)
 HWTEST_F(ProfileChangeNotificationTest, Unmarshalling_001, TestSize.Level3)
 {
     Parcel parcel;
-    auto temp = new ProfileChangeNotification();
+    std::shared_ptr<ProfileChangeNotification> temp = std::make_shared<ProfileChangeNotification>();
     bool result = temp->Unmarshalling(parcel);
     EXPECT_EQ(false, result);
 }
