@@ -35,6 +35,7 @@ device_profile_deps = [
 device_profile_external_deps = [
   "access_token:libaccesstoken_sdk",
   "c_utils:utils",
+  "device_auth:deviceauth_sdk",
   "dsoftbus:softbus_client",
   "eventhandler:libeventhandler",
   "hisysevent_native:libhisysevent",
@@ -85,7 +86,7 @@ ohos_unittest("profile_authority_test") {
     "unittest/profile_authority_test.cpp",
   ]
   configs = device_profile_configs
-  deps = [ "//third_party/googletest:gtest_main" ]
+  deps = device_profile_deps
   external_deps = device_profile_external_deps
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
