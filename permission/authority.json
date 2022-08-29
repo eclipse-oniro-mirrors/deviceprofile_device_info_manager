@@ -15,5 +15,15 @@
         "interfacesAuthority": {
           "sync": {}
         }
+    },
+    "pasteboard_service": {
+        "servicesAuthority": {
+          "specific": {
+            "pasteboard_service": 3
+          }
+        },
+        "interfacesAuthority": {
+          "sync": {}
+        }
     }
 }
