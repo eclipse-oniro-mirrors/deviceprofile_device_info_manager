@@ -68,10 +68,7 @@ ohos_unittest("event_subscribe_test") {
 ohos_unittest("profile_authority_test") {
   module_out_path = module_output_path
 
-  sources = [
-    "${device_profile_service}/core/src/authority/authority_manager.cpp",
-    "unittest/profile_authority_test.cpp",
-  ]
+  sources = [ "unittest/profile_authority_test.cpp" ]
   configs = device_profile_configs
   deps = device_profile_deps
   external_deps = device_profile_external_deps
