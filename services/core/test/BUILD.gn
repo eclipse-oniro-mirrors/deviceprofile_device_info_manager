@@ -36,10 +36,12 @@ device_profile_external_deps = [
   "access_token:libaccesstoken_sdk",
   "c_utils:utils",
   "device_auth:deviceauth_sdk",
+  "dsoftbus:softbus_client",
   "eventhandler:libeventhandler",
   "hisysevent_native:libhisysevent",
   "hiviewdfx_hilog_native:libhilog",
   "ipc:ipc_core",
+  "kv_store:distributeddata_inner",
   "syscap_codec:syscap_interface_shared",
 ]
 
@@ -47,6 +49,17 @@ ohos_unittest("profile_crud_test") {
   module_out_path = module_output_path
 
   sources = [ "unittest/profile_crud_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("profile_storage_test") {
+  module_out_path = module_output_path
+
+  sources = [ "unittest/profile_storage_test.cpp" ]
   configs = device_profile_configs
   deps = device_profile_deps
   external_deps = device_profile_external_deps
@@ -155,6 +168,7 @@ group("unittest") {
     ":profile_crud_test",
     ":profile_entry_test",
     ":profile_proxy_test",
+    ":profile_storage_test",
     ":service_profile_test",
     ":subscribe_info_test",
   ]
