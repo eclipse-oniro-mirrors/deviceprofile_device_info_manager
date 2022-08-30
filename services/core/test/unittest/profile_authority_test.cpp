@@ -31,12 +31,14 @@ using namespace testing;
 using namespace testing::ext;
 
 namespace {
-const std::string AUTHORITY_JSON_DIR = "/data/test/resource/deviceprofile/authority/";
-const std::string INVALID_AUTHORITY = AUTHORITY_JSON_DIR + "invalid_authority.json";
-const std::string VALID_AUTHORITY = AUTHORITY_JSON_DIR + "valid_authority.json";
+const std::string AUTHORITY_JSON_PATH = "/system/etc/deviceprofile/authority.json";
 const std::string TEST_DEVICEID = "1111111111111111111111111";
 const std::string TEST_TRUST_GROUP =
     "{\"groupId\":\"id\",\"groupType\":0,\"groupName\":\"name\",\"groupOwner\":\"test\",\"groupVisibility\":1}";
+const std::string INVALID_AUTHORITY_STR =
+    "{\"fakeProcess1\":{\"servicesAuthority\":{\"all\":3}},\"fakeProcess2\":{\"servicesAuthority\":{\"all\":true}}}";
+const std::string VALID_AUTHORITY_STR = "{\"hdcd\":{\"servicesAuthority\":{\"all\":1,\"specific\":" \
+    "{\"storage\":3,\"system\":3},\"prefix\":{\"cameraRear\":3}},\"interfacesAuthority\":{\"sync\":{}}}}";
 }
 
 class ProfileAuthorityTest : public testing::Test {
@@ -44,6 +46,7 @@ public:
     static void SetUpTestCase();
     static void TearDownTestCase();
     static bool LoadAuthorityCfg(const std::string& filePath);
+    static bool LoadAuthorityByStr(const std::string& jsonStr);
     void SetUp();
     void TearDown();
 };
@@ -75,6 +78,19 @@ bool ProfileAuthorityTest::LoadAuthorityCfg(const std::string& filePath)
     return true;
 }
 
+bool ProfileAuthorityTest::LoadAuthorityByStr(const std::string& jsonStr)
+{
+    AuthorityManager::GetInstance().authJson_ =
+        nlohmann::json::parse(jsonStr.c_str(), nullptr, false);
+    if (AuthorityManager::GetInstance().authJson_.is_discarded()) {
+        return false;
+    }
+
+    AuthorityManager::GetInstance().InitSupportedInterfaces();
+    AuthorityManager::GetInstance().ValidateAuthorityCfg();
+    return true;
+}
+
 /**
  * @tc.name: PrecheckAuthority_001
  * @tc.desc: precheck an authority json with invalid config
@@ -83,7 +99,7 @@ bool ProfileAuthorityTest::LoadAuthorityCfg(const std::string& filePath)
  */
 HWTEST_F(ProfileAuthorityTest, PrecheckAuthority_001, TestSize.Level2)
 {
-    if (!LoadAuthorityCfg(INVALID_AUTHORITY)) {
+    if (!LoadAuthorityByStr(INVALID_AUTHORITY_STR)) {
         return;
     }
 
@@ -98,11 +114,11 @@ HWTEST_F(ProfileAuthorityTest, PrecheckAuthority_001, TestSize.Level2)
  */
 HWTEST_F(ProfileAuthorityTest, CheckAuthority_002, TestSize.Level2)
 {
-    if (!LoadAuthorityCfg(VALID_AUTHORITY)) {
+    if (!LoadAuthorityByStr(VALID_AUTHORITY_STR)) {
         return;
     }
 
-    EXPECT_FALSE(AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_W,
+    EXPECT_EQ(false, AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_W,
         "fakeServiceId"));
 }
 
@@ -114,14 +130,12 @@ HWTEST_F(ProfileAuthorityTest, CheckAuthority_002, TestSize.Level2)
  */
 HWTEST_F(ProfileAuthorityTest, CheckAuthority_003, TestSize.Level2)
 {
-    if (!LoadAuthorityCfg(VALID_AUTHORITY)) {
+    if (!LoadAuthorityByStr(VALID_AUTHORITY_STR)) {
         return;
     }
 
-    EXPECT_TRUE(AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_R,
-        "storage"));
-    EXPECT_TRUE(AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_W,
-        "storage"));
+    EXPECT_EQ(true, AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_R, "storage"));
+    EXPECT_EQ(true, AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_W, "storage"));
 }
 
 /**
@@ -132,13 +146,13 @@ HWTEST_F(ProfileAuthorityTest, CheckAuthority_003, TestSize.Level2)
  */
 HWTEST_F(ProfileAuthorityTest, CheckAuthority_004, TestSize.Level2)
 {
-    if (!LoadAuthorityCfg(VALID_AUTHORITY)) {
+    if (!LoadAuthorityByStr(VALID_AUTHORITY_STR)) {
         return;
     }
 
-    EXPECT_FALSE(AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_R,
+    EXPECT_EQ(false, AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_R,
         ""));
-    EXPECT_FALSE(AuthorityManager::GetInstance().CheckServicesAuthority(AuthValue::AUTH_R,
+    EXPECT_EQ(false, AuthorityManager::GetInstance().CheckServicesAuthority(AuthValue::AUTH_R,
         {"system", ""}));
 }
 
@@ -150,12 +164,12 @@ HWTEST_F(ProfileAuthorityTest, CheckAuthority_004, TestSize.Level2)
  */
 HWTEST_F(ProfileAuthorityTest, CheckAuthority_005, TestSize.Level2)
 {
-    if (!LoadAuthorityCfg(VALID_AUTHORITY)) {
+    if (!LoadAuthorityByStr(VALID_AUTHORITY_STR)) {
         return;
     }
 
-    EXPECT_TRUE(AuthorityManager::GetInstance().CheckServicesAuthority(AuthValue::AUTH_R, {}));
-    EXPECT_FALSE(AuthorityManager::GetInstance().CheckServicesAuthority(AuthValue::AUTH_W, {}));
+    EXPECT_EQ(true, AuthorityManager::GetInstance().CheckServicesAuthority(AuthValue::AUTH_R, {}));
+    EXPECT_EQ(false, AuthorityManager::GetInstance().CheckServicesAuthority(AuthValue::AUTH_W, {}));
 }
 
 /**
@@ -166,18 +180,18 @@ HWTEST_F(ProfileAuthorityTest, CheckAuthority_005, TestSize.Level2)
  */
 HWTEST_F(ProfileAuthorityTest, CheckAuthority_006, TestSize.Level2)
 {
-    if (!LoadAuthorityCfg(VALID_AUTHORITY)) {
+    if (!LoadAuthorityByStr(VALID_AUTHORITY_STR)) {
         return;
     }
 
-    EXPECT_TRUE(AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_R,
+    EXPECT_EQ(true, AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_R,
         "cameraRear1"));
-    EXPECT_TRUE(AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_W,
+    EXPECT_EQ(true, AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_W,
         "cameraRear1"));
 
-    EXPECT_TRUE(AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_R,
+    EXPECT_EQ(true, AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_R,
         "cameraRear2"));
-    EXPECT_TRUE(AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_W,
+    EXPECT_EQ(true, AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_W,
         "cameraRear2"));
 }
 
@@ -189,15 +203,15 @@ HWTEST_F(ProfileAuthorityTest, CheckAuthority_006, TestSize.Level2)
  */
 HWTEST_F(ProfileAuthorityTest, CheckAuthority_007, TestSize.Level2)
 {
-    if (!LoadAuthorityCfg(VALID_AUTHORITY)) {
+    if (!LoadAuthorityByStr(VALID_AUTHORITY_STR)) {
         return;
     }
 
-    EXPECT_TRUE(AuthorityManager::GetInstance().CheckServicesAuthority(AuthValue::AUTH_W,
+    EXPECT_EQ(true, AuthorityManager::GetInstance().CheckServicesAuthority(AuthValue::AUTH_W,
         {"cameraRear1", "cameraRear2", "cameraRear3"}));
-    EXPECT_TRUE(AuthorityManager::GetInstance().CheckServicesAuthority(AuthValue::AUTH_W,
+    EXPECT_EQ(true, AuthorityManager::GetInstance().CheckServicesAuthority(AuthValue::AUTH_W,
         {"storage", "system"}));
-    EXPECT_TRUE(AuthorityManager::GetInstance().CheckServicesAuthority(AuthValue::AUTH_W,
+    EXPECT_EQ(true, AuthorityManager::GetInstance().CheckServicesAuthority(AuthValue::AUTH_W,
         {"cameraRear1", "cameraRear2", "cameraRear3", "storage", "system"}));
 }
 
@@ -209,13 +223,28 @@ HWTEST_F(ProfileAuthorityTest, CheckAuthority_007, TestSize.Level2)
  */
 HWTEST_F(ProfileAuthorityTest, CheckAuthority_008, TestSize.Level2)
 {
-    if (!LoadAuthorityCfg(VALID_AUTHORITY)) {
+    if (!LoadAuthorityByStr(VALID_AUTHORITY_STR)) {
         return;
     }
 
-    EXPECT_TRUE(AuthorityManager::GetInstance().CheckInterfaceAuthority("sync"));
-    EXPECT_FALSE(AuthorityManager::GetInstance().CheckInterfaceAuthority("fakeInterface"));
-    EXPECT_FALSE(AuthorityManager::GetInstance().CheckInterfaceAuthority(""));
+    EXPECT_EQ(true, AuthorityManager::GetInstance().CheckInterfaceAuthority("sync"));
+    EXPECT_EQ(false, AuthorityManager::GetInstance().CheckInterfaceAuthority("fakeInterface"));
+    EXPECT_EQ(false, AuthorityManager::GetInstance().CheckInterfaceAuthority(""));
+}
+
+/**
+ * @tc.name: CheckAuthority_009
+ * @tc.desc: check authority of interfaces
+ * @tc.type: FUNC
+ * @tc.require: I4OH94
+ */
+HWTEST_F(ProfileAuthorityTest, CheckAuthority_009, TestSize.Level2)
+{
+    if (!LoadAuthorityCfg(AUTHORITY_JSON_PATH)) {
+        return;
+    }
+
+    EXPECT_EQ(false, AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_R, "syscap"));
 }
 
 /**
