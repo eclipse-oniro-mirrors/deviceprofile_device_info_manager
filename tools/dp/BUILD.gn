@@ -39,6 +39,7 @@ ohos_executable("dp") {
   external_deps = [
     "c_utils:utils",
     "dsoftbus:softbus_client",
+    "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
   ]

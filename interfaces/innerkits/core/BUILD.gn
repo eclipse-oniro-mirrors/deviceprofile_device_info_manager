@@ -45,15 +45,12 @@ ohos_shared_library("distributed_device_profile_client") {
     "//foundation/deviceprofile/device_info_manager/test/resource:coverage_flags",
   ]
 
-  public_deps = [
-    "//base/notification/eventhandler/frameworks/eventhandler:libeventhandler",
-    "//foundation/communication/ipc/interfaces/innerkits/ipc_core:ipc_core",
-    "//foundation/systemabilitymgr/safwk/interfaces/innerkits/safwk:system_ability_fwk",
-    "//foundation/systemabilitymgr/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
-  ]
   external_deps = [
     "c_utils:utils",
+    "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
+    "samgr:samgr_proxy",
   ]
 
   part_name = "device_info_manager"
