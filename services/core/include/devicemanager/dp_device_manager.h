@@ -23,7 +23,7 @@
 #include "event_handler.h"
 #include "single_instance.h"
 #include "device_info.h"
-#include "softbus_bus_center.h"
+#include "device_manager.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -33,17 +33,16 @@ enum class DeviceIdType : uint8_t {
     UUID = 2
 };
 
-class DeviceManager {
-    DECLARE_SINGLE_INSTANCE(DeviceManager);
+class DpDeviceManager {
+    DECLARE_SINGLE_INSTANCE(DpDeviceManager);
 
 public:
     bool Init();
-    std::unique_ptr<NodeBasicInfo> GetLocalBasicInfo();
     void GetLocalDeviceUdid(std::string& udid);
     bool GetUdidByNetworkId(const std::string& networkId, std::string& udid);
     bool GetUuidByNetworkId(const std::string& networkId, std::string& uuid);
-    void DisconnectSoftbus();
-    bool ConnectSoftbus();
+    void DisconnectDeviceManager();
+    bool ConnectDeviceManager();
     bool TransformDeviceId(const std::string& fromDeviceId, std::string& toDeviceId,
         DeviceIdType toType);
     void GetDeviceIdList(std::list<std::string>& deviceIdList);
@@ -51,15 +50,9 @@ public:
     void RemoveDeviceIdsByUdid(const std::string& udid);
 
 private:
-    static void OnNodeOnlineAdapter(NodeBasicInfo* info);
-    static void OnNodeOfflineAdapter(NodeBasicInfo* info);
-    static void OnNodeBasicInfoChangedAdapter(NodeBasicInfoType type, NodeBasicInfo* info);
-
-    bool GetUuidOrUdidByNetworkId(const std::string& nodeId, NodeDeviceInfoKey keyType,
-        std::string& uuidOrUdid);
+    bool WaitForDnetworkReady();
     void OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo);
     void OnNodeOffline(const std::string& deviceId);
-    void OnNodeBasicInfoChanged(const std::string& deviceId, NodeBasicInfoType type);
     void AddLocalDeviceIds();
     void AddDeviceIds(const std::string& networkId);
     void RemoveDeviceIds(const std::string& networkId);
@@ -67,11 +60,23 @@ private:
     void RecoverDevicesIfNeeded();
 
 private:
-    INodeStateCb nodeStateCb_;
     std::mutex deviceLock_;
     std::shared_ptr<AppExecFwk::EventHandler> devMgrHandler_;
+    std::shared_ptr<DistributedHardware::DeviceStateCallback> stateCallback_;
+    std::shared_ptr<DistributedHardware::DmInitCallback> initCallback_;
     std::map<std::string, std::shared_ptr<DeviceInfo>> remoteDeviceInfoMap_;
     std::list<std::vector<std::string>> deviceIdsList_;
+
+class DeviceInitCallBack : public DistributedHardware::DmInitCallback {
+    void OnRemoteDied() override;
+};
+
+class DpDeviceStateCallback : public DistributedHardware::DeviceStateCallback {
+    void OnDeviceOnline(const DistributedHardware::DmDeviceInfo &deviceInfo) override;
+    void OnDeviceOffline(const DistributedHardware::DmDeviceInfo &deviceInfo) override;
+    void OnDeviceChanged(const DistributedHardware::DmDeviceInfo &deviceInfo) override;
+    void OnDeviceReady(const DistributedHardware::DmDeviceInfo &deviceInfo) override;
+};
 };
 } // namespace DeviceProfile
 } // namespace OHOS

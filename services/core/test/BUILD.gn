@@ -36,6 +36,7 @@ device_profile_external_deps = [
   "access_token:libaccesstoken_sdk",
   "c_utils:utils",
   "device_auth:deviceauth_sdk",
+  "device_manager:devicemanagersdk",
   "dsoftbus:softbus_client",
   "eventhandler:libeventhandler",
   "hisysevent_native:libhisysevent",

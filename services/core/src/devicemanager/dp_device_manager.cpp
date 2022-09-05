@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "device_manager.h"
+#include "dp_device_manager.h"
 
 #include <chrono>
 #include <thread>
@@ -25,71 +25,75 @@
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
 #include "device_profile_utils.h"
+#include "ipc_object_proxy.h"
+#include "ipc_skeleton.h"
+#include "iservice_registry.h"
+#include "system_ability_definition.h"
 
 namespace OHOS {
 namespace DeviceProfile {
 using namespace std::chrono_literals;
+using namespace DistributedHardware;
 
 namespace {
-const std::string TAG = "DeviceManager";
+const std::string TAG = "DpDeviceManager";
 
+constexpr int32_t RETRY_TIMES = 30;
 constexpr uint8_t MAX_DEVICE_TYPE = 3;
 constexpr int32_t DEVICE_ID_SIZE = 65;
-constexpr int32_t MAX_TIMES_CONNECT_SOFTBUS = 10;
+constexpr int32_t MAX_TIMES_CONNECT_DEVICEMANAGER = 10;
 const std::string PKG_NAME = "DBinderBus_" + std::to_string(getpid());
 }
 
-IMPLEMENT_SINGLE_INSTANCE(DeviceManager);
+IMPLEMENT_SINGLE_INSTANCE(DpDeviceManager);
 
-bool DeviceManager::Init()
+bool DpDeviceManager::Init()
 {
-    nodeStateCb_.events = EVENT_NODE_STATE_MASK;
-    nodeStateCb_.onNodeOnline = OnNodeOnlineAdapter;
-    nodeStateCb_.onNodeOffline = OnNodeOfflineAdapter;
-    nodeStateCb_.onNodeBasicInfoChanged = OnNodeBasicInfoChangedAdapter;
-
+    initCallback_ = std::make_shared<DeviceInitCallBack>();
+    stateCallback_ = std::make_shared<DpDeviceStateCallback>();
     auto runner = AppExecFwk::EventRunner::Create("devmgr");
     devMgrHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
     if (devMgrHandler_ == nullptr) {
         return false;
     }
-    if (!ConnectSoftbus()) {
+    if (!ConnectDeviceManager()) {
         return false;
     }
     return true;
 }
 
-void DeviceManager::OnNodeOnlineAdapter(NodeBasicInfo* info)
+void DpDeviceManager::DeviceInitCallBack::OnRemoteDied()
 {
-    if (info == nullptr) {
-        HILOGE("null info");
-        return;
-    }
-    HILOGI("networkId = %{public}s", DeviceProfileUtils::AnonymizeDeviceId(info->networkId).c_str());
-    auto deviceInfo = std::make_shared<DeviceInfo>(
-        info->deviceName, info->networkId, info->deviceTypeId);
-    DeviceManager::GetInstance().OnNodeOnline(deviceInfo);
+    HILOGI("DeviceInitCallBack OnRemoteDied");
+    DpDeviceManager::GetInstance().Init();
 }
 
-void DeviceManager::OnNodeOfflineAdapter(NodeBasicInfo* info)
+void DpDeviceManager::DpDeviceStateCallback::OnDeviceOnline(const DmDeviceInfo &deviceInfo)
 {
-    if (info == nullptr) {
-        HILOGE("null info");
-        return;
-    }
-
-    std::string deviceId = info->networkId;
-    DeviceManager::GetInstance().OnNodeOffline(deviceId);
+    HILOGI("online called");
+    auto dpDeviceInfo = std::make_shared<DeviceInfo>(
+        deviceInfo.deviceName, deviceInfo.deviceId, deviceInfo.deviceTypeId);
+    DpDeviceManager::GetInstance().OnNodeOnline(dpDeviceInfo);
 }
 
-void DeviceManager::OnNodeBasicInfoChangedAdapter(NodeBasicInfoType type,
-    NodeBasicInfo* info)
+void DpDeviceManager::DpDeviceStateCallback::OnDeviceOffline(const DmDeviceInfo &deviceInfo)
 {
-    std::string deviceId = info->networkId;
-    DeviceManager::GetInstance().OnNodeBasicInfoChanged(deviceId, type);
+    HILOGI("offline called");
+    std::string deviceId = deviceInfo.deviceId;
+    DpDeviceManager::GetInstance().OnNodeOffline(deviceId);
 }
 
-void DeviceManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
+void DpDeviceManager::DpDeviceStateCallback::OnDeviceChanged(const DmDeviceInfo &deviceInfo)
+{
+    HILOGD("called");
+}
+
+void DpDeviceManager::DpDeviceStateCallback::OnDeviceReady(const DmDeviceInfo &deviceInfo)
+{
+    HILOGD("called");
+}
+
+void DpDeviceManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
 {
     auto onlineNotifyTask = [this, deviceInfo = deviceInfo]() {
         HILOGI("online networkId = %{public}s",
@@ -109,7 +113,7 @@ void DeviceManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
     }
 }
 
-void DeviceManager::OnNodeOffline(const std::string& deviceId)
+void DpDeviceManager::OnNodeOffline(const std::string& deviceId)
 {
     auto offlineNotifyTask = [this, deviceId = std::move(deviceId)]() {
         HILOGI("offline networkId = %{public}s",
@@ -123,26 +127,63 @@ void DeviceManager::OnNodeOffline(const std::string& deviceId)
     }
 }
 
-void DeviceManager::OnNodeBasicInfoChanged(const std::string& deviceId,
-    NodeBasicInfoType type)
+bool DpDeviceManager::WaitForDnetworkReady()
 {
-    HILOGD("called");
+    auto samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    if (samgr == nullptr) {
+        HILOGE("WaitForDnetworkReady failed to get samgr!");
+        return false;
+    }
+    int32_t retryTimeout = RETRY_TIMES;
+    do {
+        auto dnetworkDm = samgr->CheckSystemAbility(DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID);
+        auto dnetworkSoftBus = samgr->CheckSystemAbility(SOFTBUS_SERVER_SA_ID);
+        if (dnetworkDm != nullptr && dnetworkSoftBus != nullptr) {
+            IPCObjectProxy* dmProxy = reinterpret_cast<IPCObjectProxy*>(dnetworkDm.GetRefPtr());
+            IPCObjectProxy* sbProxy = reinterpret_cast<IPCObjectProxy*>(dnetworkSoftBus.GetRefPtr());
+            // make sure the proxy is not dead
+            if (dmProxy != nullptr && !dmProxy->IsObjectDead() && sbProxy != nullptr && !sbProxy->IsObjectDead()) {
+                return true;
+            }
+        }
+        HILOGI("Waiting for dnentwork service...");
+        std::this_thread::sleep_for(1s);
+        if (--retryTimeout <= 0) {
+            HILOGI("Waiting for dnentwork service timeout(30)s");
+            return false;
+        }
+    } while (true);
+    return false;
 }
 
-bool DeviceManager::ConnectSoftbus()
+bool DpDeviceManager::ConnectDeviceManager()
 {
+    HILOGI("ConnectDeviceManager");
+    bool isReady = WaitForDnetworkReady();
+    if (!isReady) {
+        HILOGE("ConnectDeviceManager wait Dnetwork failed!");
+        return false;
+    }
+
     auto registerTask = [this]() {
         HILOGD("register task...");
         int32_t retryTimes = 0;
         int32_t errCode = ERR_OK;
-        while (retryTimes++ < MAX_TIMES_CONNECT_SOFTBUS) {
-            errCode = RegNodeDeviceStateCb(PKG_NAME.c_str(), &nodeStateCb_);
+        while (retryTimes++ < MAX_TIMES_CONNECT_DEVICEMANAGER) {
+            int32_t ret = DeviceManager::GetInstance().InitDeviceManager(PKG_NAME, initCallback_);
+            if (ret != 0) {
+                HILOGE("init device manager failed, ret:%{public}d", ret);
+                std::this_thread::sleep_for(1s);
+                continue;
+            }
+            errCode = DeviceManager::GetInstance().RegisterDevStateCallback(
+                PKG_NAME, "", stateCallback_);
             if (errCode == ERR_OK) {
                 break;
             }
             HILOGE("register errCode = %{public}d, retrying...", errCode);
 
-            errCode = UnregNodeDeviceStateCb(&nodeStateCb_);
+            errCode = DeviceManager::GetInstance().UnRegisterDevStateCallback(PKG_NAME);
             HILOGI("unregister errCode = %{public}d", errCode);
             std::this_thread::sleep_for(1s);
         }
@@ -160,48 +201,46 @@ bool DeviceManager::ConnectSoftbus()
     return true;
 }
 
-void DeviceManager::RecoverDevicesIfNeeded()
+void DpDeviceManager::RecoverDevicesIfNeeded()
 {
     HILOGI("called");
-    NodeBasicInfo* info = nullptr;
-    int32_t numInfos = 0;
-    if (GetAllNodeDeviceInfo(PKG_NAME.c_str(), &info, &numInfos) != ERR_OK) {
-        FreeNodeInfo(info);
+    std::vector<DmDeviceInfo> deviceList;
+    if (DeviceManager::GetInstance().GetTrustedDeviceList(PKG_NAME, "", deviceList) != ERR_OK) {
         HILOGE("get all node info failed");
         return;
     }
-    for (int32_t i = 0; i < numInfos; i++) {
-        NodeBasicInfo* nodeBasicInfo = info + i;
-        std::string networkId = nodeBasicInfo->networkId;
+    for (DmDeviceInfo dmDeviceInfo : deviceList) {
+        std::string networkId = dmDeviceInfo.networkId;
         HILOGI("deviceId %{public}s found",
             DeviceProfileUtils::AnonymizeDeviceId(networkId).c_str());
         AddDeviceIds(networkId);
         {
             auto deviceInfo = std::make_shared<DeviceInfo>(
-                nodeBasicInfo->deviceName, networkId, nodeBasicInfo->deviceTypeId);
+                dmDeviceInfo.deviceName, networkId, dmDeviceInfo.deviceTypeId);
             std::lock_guard<std::mutex> autoLock(deviceLock_);
             remoteDeviceInfoMap_.emplace(std::move(networkId), deviceInfo);
         }
     }
-    FreeNodeInfo(info);
 }
 
-void DeviceManager::AddLocalDeviceIds()
+void DpDeviceManager::AddLocalDeviceIds()
 {
     HILOGI("called");
-    auto info = GetLocalBasicInfo();
-    if (info != nullptr) {
-        AddDeviceIds(info->networkId);
-    } else {
+    DmDeviceInfo dmInfo;
+    int32_t errCode = DeviceManager::GetInstance().GetLocalDeviceInfo(PKG_NAME, dmInfo);
+    if (errCode != ERR_OK) {
+        HILOGW("errCode = %{public}d", errCode);
         std::string udid;
         GetLocalDeviceUdid(udid);
         std::vector<std::string> deviceIds = {"", std::move(udid), ""};
         std::lock_guard<std::mutex> autoLock(deviceLock_);
         deviceIdsList_.emplace_back(std::move(deviceIds));
+    } else {
+        AddDeviceIds(dmInfo.networkId);
     }
 }
 
-void DeviceManager::AddDeviceIds(const std::string& networkId)
+void DpDeviceManager::AddDeviceIds(const std::string& networkId)
 {
     HILOGI("called");
     std::string udid;
@@ -217,7 +256,7 @@ void DeviceManager::AddDeviceIds(const std::string& networkId)
     deviceIdsList_.emplace_back(std::move(deviceIds));
 }
 
-void DeviceManager::RemoveExpiredDeviceIds(const std::string& networkId)
+void DpDeviceManager::RemoveExpiredDeviceIds(const std::string& networkId)
 {
     HILOGI("called");
     std::string udid;
@@ -230,7 +269,7 @@ void DeviceManager::RemoveExpiredDeviceIds(const std::string& networkId)
     RemoveDeviceIdsByUdid(udid);
 }
 
-void DeviceManager::RemoveDeviceIds(const std::string& networkId)
+void DpDeviceManager::RemoveDeviceIds(const std::string& networkId)
 {
     HILOGI("called");
     std::lock_guard<std::mutex> autoLock(deviceLock_);
@@ -243,7 +282,7 @@ void DeviceManager::RemoveDeviceIds(const std::string& networkId)
     return;
 }
 
-void DeviceManager::RemoveDeviceIdsByUdid(const std::string& udid)
+void DpDeviceManager::RemoveDeviceIdsByUdid(const std::string& udid)
 {
     HILOGI("called");
     std::lock_guard<std::mutex> autoLock(deviceLock_);
@@ -257,61 +296,34 @@ void DeviceManager::RemoveDeviceIdsByUdid(const std::string& udid)
     return;
 }
 
-void DeviceManager::DisconnectSoftbus()
+void DpDeviceManager::DisconnectDeviceManager()
 {
-    int32_t errCode = UnregNodeDeviceStateCb(&nodeStateCb_);
+    int32_t errCode = DeviceManager::GetInstance().UnRegisterDevStateCallback(PKG_NAME);
     if (errCode != ERR_OK) {
         HILOGE("remove failed, errCode = %{public}d", errCode);
     }
 }
 
-void DeviceManager::GetLocalDeviceUdid(std::string& udid)
+void DpDeviceManager::GetLocalDeviceUdid(std::string& udid)
 {
     char localDeviceId[DEVICE_ID_SIZE] = {0};
     GetDevUdid(localDeviceId, DEVICE_ID_SIZE);
     udid = localDeviceId;
 }
 
-std::unique_ptr<NodeBasicInfo> DeviceManager::GetLocalBasicInfo()
+bool DpDeviceManager::GetUdidByNetworkId(const std::string& networkId, std::string& udid)
 {
-    auto info = std::make_unique<NodeBasicInfo>();
-    int32_t errCode = GetLocalNodeDeviceInfo(PKG_NAME.c_str(), info.get());
-    if (errCode != ERR_OK) {
-        HILOGE("errCode = %{public}d", errCode);
-        return nullptr;
-    }
-    return info;
+    return ((DeviceManager::GetInstance().GetUdidByNetworkId(
+        PKG_NAME, networkId, udid) == 0) ? true : false);
 }
 
-bool DeviceManager::GetUdidByNetworkId(const std::string& networkId, std::string& udid)
+bool DpDeviceManager::GetUuidByNetworkId(const std::string& networkId, std::string& uuid)
 {
-    return GetUuidOrUdidByNetworkId(networkId, NodeDeviceInfoKey::NODE_KEY_UDID, udid);
+    return ((DeviceManager::GetInstance().GetUuidByNetworkId(
+        PKG_NAME, networkId, uuid) == 0) ? true : false);
 }
 
-bool DeviceManager::GetUuidByNetworkId(const std::string& networkId, std::string& uuid)
-{
-    return GetUuidOrUdidByNetworkId(networkId, NodeDeviceInfoKey::NODE_KEY_UUID, uuid);
-}
-
-bool DeviceManager::GetUuidOrUdidByNetworkId(const std::string& networkId,
-    NodeDeviceInfoKey keyType, std::string& uuidOrUdid)
-{
-    if (networkId.empty()) {
-        return false;
-    }
-
-    char id[DEVICE_ID_SIZE] = {0};
-    int32_t errCode = GetNodeKeyInfo(PKG_NAME.c_str(), networkId.c_str(), keyType,
-        reinterpret_cast<uint8_t*>(id), DEVICE_ID_SIZE);
-    if (errCode != ERR_OK) {
-        HILOGE("get udid failed, errCode = %{public}d", errCode);
-        return false;
-    }
-    uuidOrUdid = id;
-    return true;
-}
-
-bool DeviceManager::TransformDeviceId(const std::string& fromDeviceId,
+bool DpDeviceManager::TransformDeviceId(const std::string& fromDeviceId,
     std::string& toDeviceId, DeviceIdType toType)
 {
     if (fromDeviceId.empty()) {
@@ -336,7 +348,7 @@ bool DeviceManager::TransformDeviceId(const std::string& fromDeviceId,
     return false;
 }
 
-void DeviceManager::GetDeviceIdList(std::list<std::string>& deviceIdList)
+void DpDeviceManager::GetDeviceIdList(std::list<std::string>& deviceIdList)
 {
     deviceIdList.clear();
     std::lock_guard<std::mutex> autoLock(deviceLock_);
@@ -345,7 +357,7 @@ void DeviceManager::GetDeviceIdList(std::list<std::string>& deviceIdList)
     }
 }
 
-void DeviceManager::GetDeviceList(std::list<std::shared_ptr<DeviceInfo>>& deviceList)
+void DpDeviceManager::GetDeviceList(std::list<std::shared_ptr<DeviceInfo>>& deviceList)
 {
     deviceList.clear();
     std::lock_guard<std::mutex> autoLock(deviceLock_);

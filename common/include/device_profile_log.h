@@ -22,7 +22,7 @@ namespace OHOS {
 namespace DeviceProfile {
 static constexpr OHOS::HiviewDFX::HiLogLabel DP_LOG_LABEL = {
     LOG_CORE,
-    0xD001900,
+    0xD004400,
     "Device_Profile"
 };
 

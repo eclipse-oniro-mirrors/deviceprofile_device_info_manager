@@ -17,10 +17,10 @@
 
 #include "authority_manager.h"
 #include "content_sensor_manager.h"
-#include "device_manager.h"
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
+#include "dp_device_manager.h"
 #include "hitrace_meter.h"
 #include "service_characteristic_profile.h"
 #include "subscribe_manager.h"
@@ -44,7 +44,7 @@ DistributedDeviceProfileService::DistributedDeviceProfileService()
 
 bool DistributedDeviceProfileService::Init()
 {
-    if (!DeviceManager::GetInstance().Init()) {
+    if (!DpDeviceManager::GetInstance().Init()) {
         HILOGE("DeviceManager init failed");
         return false;
     }
