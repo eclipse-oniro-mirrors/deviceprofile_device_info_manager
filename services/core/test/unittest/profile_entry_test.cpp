@@ -52,29 +52,29 @@ void ProfileEntryTest::TearDown()
 }
 
 /**
- * @tc.name: Marshalling_002
+ * @tc.name: Marshalling_001
  * @tc.desc: Marshalling of profile entry
  * @tc.type: FUNC
  * @tc.require: I4NY1T
  */
-HWTEST_F(ProfileEntryTest, Marshalling_002, TestSize.Level3)
+HWTEST_F(ProfileEntryTest, Marshalling_001, TestSize.Level3)
 {
     Parcel parcel;
-    auto temp = new ProfileEntry();
+    std::shared_ptr<ProfileEntry> temp = std::make_shared<ProfileEntry>();
     bool result = temp->Marshalling(parcel);
     EXPECT_EQ(true, result);
 }
 
 /**
- * @tc.name: Unmarshalling_002
+ * @tc.name: Unmarshalling_001
  * @tc.desc: Unmarshalling of profile entry
  * @tc.type: FUNC
  * @tc.require: I4NY1T
  */
-HWTEST_F(ProfileEntryTest, Unmarshalling_002, TestSize.Level3)
+HWTEST_F(ProfileEntryTest, Unmarshalling_001, TestSize.Level3)
 {
     Parcel parcel;
-    auto temp = new ProfileEntry();
+    std::shared_ptr<ProfileEntry> temp = std::make_shared<ProfileEntry>();
     bool result = temp->Unmarshalling(parcel);
     EXPECT_EQ(false, result);
 }

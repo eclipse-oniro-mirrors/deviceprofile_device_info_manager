@@ -5,5 +5,25 @@
             "syscap": 1
           }
         }
+    },
+    "multimodalinput": {
+        "servicesAuthority": {
+          "specific": {
+            "InputDeviceCooperation": 3
+          }
+        },
+        "interfacesAuthority": {
+          "sync": {}
+        }
+    },
+    "pasteboard_service": {
+        "servicesAuthority": {
+          "specific": {
+            "pasteboard_service": 3
+          }
+        },
+        "interfacesAuthority": {
+          "sync": {}
+        }
     }
 }
