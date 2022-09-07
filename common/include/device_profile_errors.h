@@ -43,6 +43,7 @@ enum {
     ERR_DP_UNTRUSTED_GROUP = 98566156,
     ERR_DP_NOT_INIT_DB = 98566157,
     ERR_DP_GET_NETWORKID_FAILED = 98566158,
+    ERR_DP_FILE_FAILED_ERR = 98566159,
 };
 } // namespace DeviceProfile
 } // namespace OHOS

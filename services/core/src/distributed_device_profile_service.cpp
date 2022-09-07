@@ -15,8 +15,12 @@
 
 #include "distributed_device_profile_service.h"
 
+#include "file_ex.h"
+#include "string_ex.h"
+
 #include "authority_manager.h"
 #include "content_sensor_manager.h"
+#include "device_profile_dumper.h"
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
@@ -117,6 +121,23 @@ int32_t DistributedDeviceProfileService::SyncDeviceProfile(const SyncOptions& sy
         return ERR_DP_PERMISSION_DENIED;
     }
     return DeviceProfileStorageManager::GetInstance().SyncDeviceProfile(syncOptions, profileEventNotifier);
+}
+
+int32_t DistributedDeviceProfileService::Dump(int32_t fd, const std::vector<std::u16string>& args)
+{
+    std::vector<std::string> argsInStr8;
+    for (const auto& arg : args) {
+        argsInStr8.emplace_back(Str16ToStr8(arg));
+    }
+
+    std::string result;
+    DeviceProfileDumper::Dump(argsInStr8, result);
+
+    if (!SaveStringToFd(fd, result)) {
+        HILOGE("save to fd failed");
+        return ERR_DP_FILE_FAILED_ERR;
+    }
+    return ERR_OK;
 }
 
 void DistributedDeviceProfileService::OnStart()

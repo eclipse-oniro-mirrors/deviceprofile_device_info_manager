@@ -43,6 +43,7 @@ public:
         std::list<ProfileEvent>& failedEvents) override;
     int32_t SyncDeviceProfile(const SyncOptions& syncOptions,
         const sptr<IRemoteObject>& profileEventNotifier) override;
+    int32_t Dump(int32_t fd, const std::vector<std::u16string>& args) override;
 
 protected:
     void OnStart() override;
