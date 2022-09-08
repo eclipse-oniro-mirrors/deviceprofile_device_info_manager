@@ -576,5 +576,16 @@ void DeviceProfileStorageManager::ReportFaultEvent(const std::string& event,
         HILOGE("hisysevent write failed! ret %{public}d.", ret);
     }
 }
+
+void DeviceProfileStorageManager::DumpLocalProfile(std::string& result)
+{
+    for (const auto& [key, value] : servicesJson_.items()) {
+        result.append("key:");
+        result.append(key);
+        result.append(" value:");
+        result.append(value.dump());
+        result.append("\n");
+    }
+}
 } // namespace DeviceProfile
 } // namespace OHOS
