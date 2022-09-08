@@ -16,6 +16,7 @@
 #include "device_profile_dumper.h"
 
 #include "device_profile_log.h"
+#include "device_profile_storage_manager.h"
 #include "ipc_skeleton.h"
 
 namespace OHOS {
@@ -29,8 +30,8 @@ constexpr int32_t UID_HIDUMPER = 1212;
 
 bool DeviceProfileDumper::DumpDefault(std::string& result)
 {
-    result.append("DeviceProfile Dump\n");
-    result.append("\n");
+    result.append("DeviceProfile Dump:\n");
+    DeviceProfileStorageManager::GetInstance().DumpLocalProfile(result);
     return true;
 }
 
