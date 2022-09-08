@@ -42,9 +42,7 @@
       },
       "build": {
         "group_type": {
-          "base_group": [
-            "//foundation/deviceprofile/device_info_manager/tools/dp:dp"
-          ],
+          "base_group": [],
           "fwk_group": [
             "//foundation/deviceprofile/device_info_manager/interfaces/innerkits/core:distributed_device_profile_client"
           ],
