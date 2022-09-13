@@ -438,7 +438,7 @@ HWTEST_F(ProfileStorageTest, PostOnlineSync_002, TestSize.Level3)
  * @tc.name: SyncDeviceProfile_003
  * @tc.desc: sync device profile
  * @tc.type: FUNC
- * @tc.require: I4NY1U
+ * @tc.require: I5QPGN
  */
 HWTEST_F(ProfileStorageTest, SyncDeviceProfile_003, TestSize.Level3)
 {
