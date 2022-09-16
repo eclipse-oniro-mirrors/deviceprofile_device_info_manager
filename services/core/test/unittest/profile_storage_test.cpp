@@ -74,40 +74,7 @@ void ProfileStorageTest::TearDown()
     DTEST_LOG << "TearDown" << std::endl;
 }
 
-class ProfileEventCallback : public IProfileEventCallback {
-public:
-    ProfileEventCallback() = default;
-    ~ProfileEventCallback() = default;
-
-    void OnSyncCompleted(const SyncResult& syncResults) override
-    {
-    }
-
-    void OnProfileChanged(const ProfileChangeNotification& changeNotification) override
-    {
-        if (!subServiceIds_.empty()) {
-            const auto& profileEntries = changeNotification.GetProfileEntries();
-            for (const auto& ProfileEntry : profileEntries) {
-                auto key = ProfileEntry.key;
-                DTEST_LOG << "key: " << key << std::endl;
-                numNotifications_++;
-            }
-        }
-    }
-
-    void SetSubServiceIds(const std::list<std::string>& subServiceIds)
-    {
-        subServiceIds_ = subServiceIds;
-    }
-
-    int32_t GetNotificationNum() const
-    {
-        return numNotifications_;
-    }
-
-private:
-    std::list<std::string> subServiceIds_;
-    int32_t numNotifications_ {0};
+class StorageProfileEventCallback : public IProfileEventCallback {
 };
 
 /**
@@ -185,7 +152,7 @@ HWTEST_F(ProfileStorageTest, SyncDeviceProfile_001, TestSize.Level3)
     wptr<IRemoteObject> remote;
     DistributedDeviceProfileClient::DeviceProfileDeathRecipient obj;
     obj.OnRemoteDied(remote);
-    auto syncCb = std::make_shared<ProfileEventCallback>();
+    auto syncCb = std::make_shared<StorageProfileEventCallback>();
     SyncOptions syncOptions;
     sptr<IRemoteObject> notifier =
         sptr<ProfileEventNotifierStub>(new ProfileEventNotifierStub(syncCb));
@@ -445,7 +412,7 @@ HWTEST_F(ProfileStorageTest, SyncDeviceProfile_003, TestSize.Level3)
     wptr<IRemoteObject> remote;
     DistributedDeviceProfileClient::DeviceProfileDeathRecipient obj;
     obj.OnRemoteDied(remote);
-    auto syncCb = std::make_shared<ProfileEventCallback>();
+    auto syncCb = std::make_shared<StorageProfileEventCallback>();
     SyncOptions syncOptions;
     sptr<IRemoteObject> notifier =
         sptr<ProfileEventNotifierStub>(new ProfileEventNotifierStub(syncCb));
