@@ -409,38 +409,12 @@ HWTEST_F(ProfileStorageTest, UnRegisterSyncCallback_001, TestSize.Level3)
 }
 
 /**
- * @tc.name: PostOnlineSync_001
- * @tc.desc: PostOnlineSync
- * @tc.type: FUNC
- * @tc.require: I4NY21
- */
-HWTEST_F(ProfileStorageTest, PostOnlineSync_001, TestSize.Level3)
-{
-    int32_t result = 0;
-    DeviceProfileStorageManager::GetInstance().PostOnlineSync("", 1000);
-    EXPECT_EQ(0, result);
-}
-
-/**
- * @tc.name: PostOnlineSync_002
- * @tc.desc: PostOnlineSync
- * @tc.type: FUNC
- * @tc.require: I4NY21
- */
-HWTEST_F(ProfileStorageTest, PostOnlineSync_002, TestSize.Level3)
-{
-    int32_t result = 0;
-    DeviceProfileStorageManager::GetInstance().PostOnlineSync("", 0);
-    EXPECT_EQ(0, result);
-}
-
-/**
  * @tc.name: SyncDeviceProfile_003
  * @tc.desc: sync device profile
  * @tc.type: FUNC
  * @tc.require: I5QPGN
  */
-HWTEST_F(ProfileStorageTest, SyncDeviceProfile_003, TestSize.Level3)
+HWTEST_F(ProfileStorageTest, SyncDeviceProfile_002, TestSize.Level3)
 {
     wptr<IRemoteObject> remote;
     DistributedDeviceProfileClient::DeviceProfileDeathRecipient obj;
