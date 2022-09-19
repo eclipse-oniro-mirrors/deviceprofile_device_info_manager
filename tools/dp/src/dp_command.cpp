@@ -92,7 +92,7 @@ const struct option LONG_OPTIONS[] = {
     {"service-id", required_argument, nullptr, 's'},
     {"mode", required_argument, nullptr, 'm'},
     {"service-type", required_argument, nullptr, 't'},
-    {0, 0, 0, 0},
+    {nullptr, nullptr, nullptr, nullptr},
 };
 }
 
@@ -401,7 +401,6 @@ int32_t DpShellCommand::HandleSyncOption(int option, std::string& mode, std::lis
             std::stringstream input(optarg);
             std::string temp;
             while (std::getline(input, temp, ' ')) {
-                HILOGI("deviceIds: %{public}s", temp.c_str());
                 deviceIds.push_back(temp);
             }
             break;
@@ -444,7 +443,6 @@ int32_t DpShellCommand::HandleSubscribeOption(int option, std::string& deviceId,
             std::stringstream input(optarg);
             std::string temp;
             while (std::getline(input, temp, ' ')) {
-                HILOGI("deviceIds: %{public}s", temp.c_str());
                 serviceIds.push_back(temp);
             }
             break;
