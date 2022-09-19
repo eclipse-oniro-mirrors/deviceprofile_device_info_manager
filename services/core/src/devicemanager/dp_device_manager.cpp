@@ -23,7 +23,6 @@
 #include "parameter.h"
 
 #include "device_profile_log.h"
-#include "device_profile_storage_manager.h"
 #include "device_profile_utils.h"
 #include "ipc_object_proxy.h"
 #include "ipc_skeleton.h"
@@ -105,7 +104,6 @@ void DpDeviceManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
             std::lock_guard<std::mutex> autoLock(deviceLock_);
             remoteDeviceInfoMap_[deviceId] = deviceInfo;
         }
-        DeviceProfileStorageManager::GetInstance().OnNodeOnline(deviceInfo);
     };
     if (!devMgrHandler_->PostTask(onlineNotifyTask)) {
         HILOGE("post task failed");

@@ -53,8 +53,6 @@ const std::string DP_DEVICE_GET_TRACE = "DP_DEVICE_GET";
 const std::string DP_DEVICE_DELETE_TRACE = "DP_DEVICE_DELETE";
 const std::string DP_DEVICE_SYNC_TRACE = "DP_DEVICE_SYNC";
 constexpr int32_t RETRY_TIMES_WAIT_KV_DATA = 30;
-constexpr int32_t INTREVAL_POST_ONLINE_SYNC_MS = 50;
-constexpr int32_t RETRY_TIMES_POST_ONLINE_SYNC = 15;
 constexpr int32_t FIX_TASK_ID = 0;
 }
 
@@ -525,39 +523,6 @@ int32_t DeviceProfileStorageManager::UnRegisterSyncCallback()
     std::lock_guard<std::mutex> autoLock(callbackLock_);
     kvStoreSyncCallback_ = nullptr;
     return onlineSyncTbl_->UnRegisterSyncCallback();
-}
-
-void DeviceProfileStorageManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
-{
-    std::string deviceId = deviceInfo->GetDeviceId();
-    HILOGI("online deviceId %{public}s", DeviceProfileUtils::AnonymizeDeviceId(deviceId).c_str());
-    PostOnlineSync(deviceId, 0);
-}
-
-void DeviceProfileStorageManager::PostOnlineSync(const std::string& deviceId, int32_t retryTimes)
-{
-    if (retryTimes >= RETRY_TIMES_POST_ONLINE_SYNC) {
-        HILOGE("reach max retry times");
-        return;
-    }
-
-    auto onlineSyncTaks = [this, deviceId = std::move(deviceId), retryTimes = retryTimes]() mutable {
-        if (!SyncCoordinator::GetInstance().AcquireSync()) {
-            PostOnlineSync(deviceId, retryTimes++);
-            return;
-        }
-        HILOGI("current retry times = %{public}d", retryTimes);
-        std::vector<std::string> onlineDeviceId = { deviceId };
-        SyncCoordinator::GetInstance().SetSyncTrigger(true);
-        int32_t errCode = onlineSyncTbl_->SyncDeviceProfile(onlineDeviceId, SyncMode::PUSH);
-        if (errCode != ERR_OK) {
-            HILOGE("online sync errCode = %{public}d", errCode);
-        }
-    };
-    if (!storageHandler_->PostTask(onlineSyncTaks, INTREVAL_POST_ONLINE_SYNC_MS)) {
-        HILOGE("post task failed");
-        return;
-    }
 }
 
 void DeviceProfileStorageManager::ReportBehaviorEvent(const std::string& event)
