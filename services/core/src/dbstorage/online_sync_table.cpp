@@ -43,7 +43,7 @@ void OnlineSyncTable::Init()
     HILOGD("called");
     Options options = {
         .createIfMissing = true,
-        .encrypt = false,
+        .encrypt = true,
         .autoSync = false,
         .kvStoreType = KvStoreType::SINGLE_VERSION,
         .area = 1,
