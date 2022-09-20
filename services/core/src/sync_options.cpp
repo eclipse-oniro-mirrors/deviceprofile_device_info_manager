@@ -27,6 +27,7 @@ namespace OHOS {
 namespace DeviceProfile {
 namespace {
 const std::string TAG = "SyncOptions";
+constexpr int32_t MAX_DEVICE_LEN = 1000000;
 }
 
 const std::list<std::string>& SyncOptions::GetDeviceList() const
@@ -66,6 +67,9 @@ bool SyncOptions::Unmarshalling(Parcel& parcel)
     syncMode_ = static_cast<DeviceProfile::SyncMode>(mode);
     int32_t size = 0;
     PARCEL_READ_HELPER_RET(parcel, Int32, size, false);
+    if (size > MAX_DEVICE_LEN) {
+        return false;
+    }
     for (int32_t i = 0; i < size; i++) {
         std::string deviceId;
         PARCEL_READ_HELPER_RET(parcel, String, deviceId, false);

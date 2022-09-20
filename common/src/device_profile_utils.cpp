@@ -27,6 +27,7 @@ namespace {
 const std::string TAG = "DeviceProfileUtils";
 
 constexpr int32_t NON_ANONYMIZED_LENGTH = 6;
+constexpr uint32_t MAX_EVENT_LEN = 1000000;
 const std::string EMPTY_DEVICE_ID = "";
 }
 
@@ -43,6 +44,10 @@ bool DeviceProfileUtils::WriteProfileEvents(const std::list<ProfileEvent>& profi
 bool DeviceProfileUtils::ReadProfileEvents(Parcel& parcel, std::list<ProfileEvent>& profileEvents)
 {
     uint32_t numEvents = parcel.ReadUint32();
+    if (numEvents > MAX_EVENT_LEN) {
+        return false;
+    }
+
     for (uint32_t i = 0; i < numEvents; i++) {
         ProfileEvent profileEvent = static_cast<ProfileEvent>(parcel.ReadUint32());
         if (profileEvent >= EVENT_PROFILE_END || profileEvent == EVENT_UNKNOWN) {
