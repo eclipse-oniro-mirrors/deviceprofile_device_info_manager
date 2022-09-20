@@ -29,6 +29,7 @@ namespace OHOS {
 namespace DeviceProfile {
 namespace {
 const std::string TAG = "DistributedDeviceProfileStub";
+constexpr uint32_t MAX_EVENT_LEN = 1000000;
 }
 
 DistributedDeviceProfileStub::DistributedDeviceProfileStub()
@@ -106,7 +107,7 @@ int32_t DistributedDeviceProfileStub::SubscribeProfileEventInner(MessageParcel& 
 {
     HILOGI("called");
     uint32_t numSubscribeInfos = data.ReadUint32();
-    if (numSubscribeInfos == 0) {
+    if (numSubscribeInfos == 0 || numSubscribeInfos > MAX_EVENT_LEN) {
         return ERR_DP_INVALID_PARAMS;
     }
 
@@ -138,7 +139,7 @@ int32_t DistributedDeviceProfileStub::UnsubscribeProfileEventInner(MessageParcel
 {
     HILOGI("called");
     uint32_t numEvents = data.ReadUint32();
-    if (numEvents == 0) {
+    if (numEvents == 0 || numEvents > MAX_EVENT_LEN) {
         return ERR_DP_INVALID_PARAMS;
     }
 
