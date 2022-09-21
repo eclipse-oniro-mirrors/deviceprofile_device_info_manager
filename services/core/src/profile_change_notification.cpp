@@ -28,6 +28,7 @@ namespace OHOS {
 namespace DeviceProfile {
 namespace {
 const std::string TAG = "ProfileChangeNotification";
+constexpr int32_t MAX_ENTRY_LEN = 1000000;
 }
 
 const std::vector<ProfileEntry>& ProfileChangeNotification::GetProfileEntries() const
@@ -62,7 +63,7 @@ bool ProfileChangeNotification::Marshalling(Parcel& parcel) const
 bool ProfileChangeNotification::Unmarshalling(Parcel& parcel)
 {
     int32_t entrySize = parcel.ReadInt32();
-    if (entrySize < 0) {
+    if (entrySize < 0 || entrySize > MAX_ENTRY_LEN) {
         HILOGE("invalid entrySize = %{public}d", entrySize);
         return false;
     }
