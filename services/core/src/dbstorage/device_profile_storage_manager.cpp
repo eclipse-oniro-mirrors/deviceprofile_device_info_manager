@@ -56,6 +56,8 @@ constexpr int32_t RETRY_TIMES_WAIT_KV_DATA = 30;
 constexpr int32_t INTREVAL_POST_ONLINE_SYNC_MS = 50;
 constexpr int32_t RETRY_TIMES_POST_ONLINE_SYNC = 15;
 constexpr int32_t FIX_TASK_ID = 0;
+constexpr int32_t INDENT = -1;
+const char INDENT_CHAR = ' ';
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DeviceProfileStorageManager);
@@ -156,7 +158,8 @@ int32_t DeviceProfileStorageManager::PutDeviceProfile(const ServiceCharacteristi
         j[SERVICE_TYPE] = profile.GetServiceType();
         servicesJson_[serviceId] = j;
         keys.emplace_back(GenerateKey(localUdid_, SERVICES, KeyType::SERVICE_LIST));
-        values.emplace_back(servicesJson_.dump());
+        values.emplace_back(servicesJson_.dump(INDENT, INDENT_CHAR, false,
+            nlohmann::json::error_handler_t::ignore));
     }
 
     int32_t errCode = ERR_OK;
