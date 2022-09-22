@@ -24,8 +24,27 @@ device_profile_configs = [
   "${device_profile_service}/core:device_info_manager_config",
   "//foundation/deviceprofile/device_info_manager/test/resource:coverage_flags",
 ]
-device_profile_deps =
-    [ "${device_profile_service}/core:distributed_device_profile" ]
+
+device_profile_external_deps = [
+  "access_token:libaccesstoken_sdk",
+  "c_utils:utils",
+  "device_auth:deviceauth_sdk",
+  "device_manager:devicemanagersdk",
+  "dsoftbus:softbus_client",
+  "eventhandler:libeventhandler",
+  "hisysevent_native:libhisysevent",
+  "hiviewdfx_hilog_native:libhilog",
+  "ipc:ipc_core",
+  "kv_store:distributeddata_inner",
+  "syscap_codec:syscap_interface_shared",
+]
+
+device_profile_innerkits = "${device_profile_path}/interfaces/innerkits"
+
+device_profile_deps = [
+  "${device_profile_innerkits}/core:distributed_device_profile_client",
+  "${device_profile_service}/core:distributed_device_profile",
+]
 
 ##############################fuzztest##########################################
 ohos_fuzztest("DeviceProfileFuzzTest") {
@@ -54,11 +73,55 @@ ohos_fuzztest("DeviceProfileFuzzTest") {
   ]
 }
 
+ohos_fuzztest("DpStorageFuzzTest") {
+  module_out_path = module_output_path
+
+  fuzz_config_file = "//foundation/deviceprofile/device_info_manager/services/core/test/fuzztest/deviceprofile_fuzzer"
+
+  cflags = [
+    "-g",
+    "-O0",
+    "-Wno-unused-variable",
+    "-fno-omit-frame-pointer",
+  ]
+
+  configs = device_profile_configs
+
+  sources = [ "dp_storage_fuzzer.cpp" ]
+
+  deps = device_profile_deps
+
+  external_deps = device_profile_external_deps
+}
+
+ohos_fuzztest("DpDmFuzzTest") {
+  module_out_path = module_output_path
+
+  fuzz_config_file = "//foundation/deviceprofile/device_info_manager/services/core/test/fuzztest/deviceprofile_fuzzer"
+
+  cflags = [
+    "-g",
+    "-O0",
+    "-Wno-unused-variable",
+    "-fno-omit-frame-pointer",
+  ]
+
+  configs = device_profile_configs
+
+  sources = [ "dp_dm_fuzzer.cpp" ]
+
+  deps = device_profile_deps
+
+  external_deps = device_profile_external_deps
+}
+
 group("fuzztest") {
   testonly = true
 
   deps = [
     # deps file
     ":DeviceProfileFuzzTest",
+    ":DpDmFuzzTest",
+    ":DpStorageFuzzTest",
   ]
 }
