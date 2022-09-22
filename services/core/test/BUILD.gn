@@ -57,6 +57,17 @@ ohos_unittest("profile_crud_test") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("profile_dm_test") {
+  module_out_path = module_output_path
+
+  sources = [ "unittest/profile_dm_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 ohos_unittest("profile_storage_test") {
   module_out_path = module_output_path
 
@@ -164,6 +175,7 @@ group("unittest") {
     ":profile_authority_test",
     ":profile_change_notification_test",
     ":profile_crud_test",
+    ":profile_dm_test",
     ":profile_entry_test",
     ":profile_proxy_test",
     ":profile_storage_test",
