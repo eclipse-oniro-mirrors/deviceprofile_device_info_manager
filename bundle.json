@@ -34,7 +34,8 @@
           "hitrace_native",
           "eventhandler",
           "safwk",
-          "dsoftbus"
+          "dsoftbus",
+          "dmsfwk"
         ],
         "third_party": [
           "json"

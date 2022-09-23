@@ -15,6 +15,7 @@
 
 #include "content_sensor_manager.h"
 
+#include "app_info_collector.h"
 #include "device_info_collector.h"
 #include "device_profile_log.h"
 #include "hitrace_meter.h"
@@ -50,6 +51,7 @@ bool ContentSensorManager::Collect()
         taskList.push_back(std::make_shared<SystemInfoCollector>());
         taskList.push_back(std::make_shared<SyscapInfoCollector>());
         taskList.push_back(std::make_shared<StorageInfoCollector>());
+        taskList.push_back(std::make_shared<AppInfoCollector>());
         HITRACE_METER_NAME(HITRACE_TAG_DEVICE_PROFILE, DP_CONTENT_SENSOR_TRACE);
         for (auto& task : taskList) {
             ServiceCharacteristicProfile profileData;
