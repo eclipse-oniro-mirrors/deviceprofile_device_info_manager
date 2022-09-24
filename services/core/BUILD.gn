@@ -42,6 +42,7 @@ ohos_shared_library("distributed_device_profile") {
   sources = [
     "src/authority/authority_manager.cpp",
     "src/authority/trust_group_manager.cpp",
+    "src/contentsensor/app_info_collector.cpp",
     "src/contentsensor/content_collector.cpp",
     "src/contentsensor/content_sensor_manager.cpp",
     "src/contentsensor/device_info_collector.cpp",
@@ -83,6 +84,7 @@ ohos_shared_library("distributed_device_profile") {
     "c_utils:utils",
     "device_auth:deviceauth_sdk",
     "device_manager:devicemanagersdk",
+    "dmsfwk:common_sdk",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
