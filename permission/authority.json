@@ -1,4 +1,11 @@
 {
+    "distributedsched": {
+        "servicesAuthority": {
+          "specific": {
+            "appInfo": 1
+          }
+        }
+    },
     "foundation": {
         "servicesAuthority": {
           "specific": {
