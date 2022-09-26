@@ -17,6 +17,7 @@
 
 #include <sys/statvfs.h>
 
+#include "app_info_collector.h"
 #include "utils.h"
 
 #define private public
@@ -138,6 +139,20 @@ HWTEST_F(ContentSensorTest, GetTotalSize_001, TestSize.Level2)
     struct statvfs diskInfo;
     int ret = statvfs(PATH_DATA, &diskInfo);
     EXPECT_TRUE(ret == 0);
+}
+
+/**
+ * @tc.name: GetDmsVersion_001
+ * @tc.desc: get dms version
+ * @tc.type: FUNC
+ * @tc.require: I5RWKZ
+ */
+HWTEST_F(ContentSensorTest, GetDmsVersion_001, TestSize.Level2)
+{
+    AppInfoCollector appInfoCollector;
+    ServiceCharacteristicProfile profile;
+    bool result = appInfoCollector.ConvertToProfileData(profile);
+    EXPECT_EQ(result, true);
 }
 }
 }
