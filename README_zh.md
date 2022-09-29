@@ -1,10 +1,10 @@
-# 介绍<a name="ZH-CN_TOPIC_0000001128264105"></a>
+# 分布式DeviceProfile部件<a name="ZH-CN_TOPIC_0000001128264105"></a>
 
 -   [简介](#section11660541593)
 -   [目录](#section1464106163817)
 -   [约束](#section1718733212019)
 -   [使用](#section10729231131110)
--   [涉及仓](#section176111311166)
+-   [相关仓](#section176111311166)
 
 ## 简介<a name="section11660541593"></a>
 
@@ -19,9 +19,11 @@ DeviceProfile模块组成如下图所示：
 
 ## 系统架构<a name="section13587185873516"></a>
 
+**图 1**  DeviceProfile组件架构图<a name="fig4460722185514"></a> 
+
+
 ![](figures/dp-architecture_zh.png)
 
-**图 1**  DeviceProfile组件架构图<a name="fig4460722185514"></a> 
 
 ## 目录<a name="section1464106163817"></a>
 
@@ -186,8 +188,6 @@ DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(profileEv
     callback, failedEvents);
 ```
 
-## 涉及仓<a name="section176111311166"></a>
+## 相关仓<a name="section176111311166"></a>
 
-**[DeviceProfile子系统](zh-cn_topic_0000001115719369.md)**
-
-[device\_profile\_core](https://gitee.com/openharmony-sig/device_info_manager)
+[**deviceprofile_device_info_manager**](https://gitee.com/openharmony/deviceprofile_device_info_manager)
