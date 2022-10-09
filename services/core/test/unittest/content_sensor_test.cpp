@@ -23,6 +23,8 @@
 #define private public
 #define protected public
 #include "device_info_collector.h"
+#include "syscap_info_collector.h"
+#include "system_info_collector.h"
 #undef private
 #undef protected
 
@@ -30,6 +32,10 @@ namespace OHOS {
 namespace DeviceProfile {
 using namespace testing;
 using namespace testing::ext;
+namespace {
+constexpr int32_t OHOS_TYPE = 10;
+}
+
 
 class ContentSensorTest : public testing::Test {
 public:
@@ -64,7 +70,7 @@ HWTEST_F(ContentSensorTest, GetDeviceName_001, TestSize.Level2)
 {
     DeviceInfoCollector devInfo;
     auto result = devInfo.GetDeviceName();
-    EXPECT_TRUE(result != "");
+    EXPECT_NE(result, "");
 }
 
 /**
@@ -76,7 +82,7 @@ HWTEST_F(ContentSensorTest, GetDeviceModel_002, TestSize.Level2)
 {
     DeviceInfoCollector devInfo;
     auto result = devInfo.GetDeviceModel();
-    EXPECT_TRUE(result != "");
+    EXPECT_NE(result, "");
 }
 
 /**
@@ -88,7 +94,7 @@ HWTEST_F(ContentSensorTest, GetDeviceUdid_003, TestSize.Level2)
 {
     DeviceInfoCollector devInfo;
     auto result = devInfo.GetDeviceUdid();
-    EXPECT_TRUE(result != "");
+    EXPECT_NE(result, "");
 }
 
 /**
@@ -100,7 +106,7 @@ HWTEST_F(ContentSensorTest, GetDevType_004, TestSize.Level2)
 {
     DeviceInfoCollector devInfo;
     auto result = devInfo.GetDevType();
-    EXPECT_TRUE(result != "");
+    EXPECT_NE(result, "");
 }
 
 /**
@@ -112,7 +118,7 @@ HWTEST_F(ContentSensorTest, GetDeviceManufacturer_001, TestSize.Level2)
 {
     DeviceInfoCollector devInfo;
     auto result = devInfo.GetDeviceManufacturer();
-    EXPECT_TRUE(result != "");
+    EXPECT_NE(result, "");
 }
 
 /**
@@ -124,7 +130,7 @@ HWTEST_F(ContentSensorTest, GetDeviceSerial_001, TestSize.Level2)
 {
     DeviceInfoCollector devInfo;
     auto result = devInfo.GetDeviceSerial();
-    EXPECT_TRUE(result != "");
+    EXPECT_NE(result, "");
 }
 
 /**
@@ -138,7 +144,7 @@ HWTEST_F(ContentSensorTest, GetTotalSize_001, TestSize.Level2)
     const char* PATH_DATA = "/data";
     struct statvfs diskInfo;
     int ret = statvfs(PATH_DATA, &diskInfo);
-    EXPECT_TRUE(ret == 0);
+    EXPECT_EQ(ret, 0);
 }
 
 /**
@@ -152,6 +158,98 @@ HWTEST_F(ContentSensorTest, GetDmsVersion_001, TestSize.Level2)
     AppInfoCollector appInfoCollector;
     ServiceCharacteristicProfile profile;
     bool result = appInfoCollector.ConvertToProfileData(profile);
+    EXPECT_EQ(result, true);
+}
+
+/**
+ * @tc.name: GetOsType_001
+ * @tc.desc: GetOsType
+ * @tc.type: FUNC
+ * @tc.require: I52U5M
+ */
+HWTEST_F(ContentSensorTest, GetOsType_001, TestSize.Level3)
+{
+    SystemInfoCollector systemInfo;
+    int32_t result = systemInfo.GetOsType();
+    DTEST_LOG << "result:" << result << std::endl;
+    EXPECT_EQ(result, OHOS_TYPE);
+}
+
+/**
+ * @tc.name: GetOsVersion_001
+ * @tc.desc: GetOsVersion
+ * @tc.type: FUNC
+ * @tc.require: I52U5M
+ */
+HWTEST_F(ContentSensorTest, GetOsVersion_001, TestSize.Level3)
+{
+    SystemInfoCollector systemInfo;
+    std::string result = systemInfo.GetOsVersion();
+    DTEST_LOG << "result:" << result << std::endl;
+    EXPECT_NE(result, "");
+}
+
+/**
+ * @tc.name: SyscapInfoCollector_001
+ * @tc.desc: syscap info collector
+ * @tc.type: FUNC
+ * @tc.require: I59PZ3
+ */
+HWTEST_F(ContentSensorTest, SyscapInfoCollector_001, TestSize.Level3)
+{
+    ServiceCharacteristicProfile profile;
+    profile.SetServiceId("test");
+    profile.SetServiceType("test");
+    SyscapInfoCollector syscapInfo;
+    bool result = syscapInfo.ConvertToProfileData(profile);
+    EXPECT_EQ(result, true);
+}
+
+/**
+ * @tc.name: SyscapInfoCollector_001
+ * @tc.desc: syscap info collector
+ * @tc.type: FUNC
+ * @tc.require: I59PZ3
+ */
+HWTEST_F(ContentSensorTest, SyscapInfoCollector_002, TestSize.Level3)
+{
+    ServiceCharacteristicProfile profile;
+    profile.SetServiceId("");
+    profile.SetServiceType("");
+    SyscapInfoCollector syscapInfo;
+    bool result = syscapInfo.ConvertToProfileData(profile);
+    EXPECT_EQ(result, true);
+}
+
+/**
+ * @tc.name: SyscapInfoCollector_001
+ * @tc.desc: syscap info collector
+ * @tc.type: FUNC
+ * @tc.require: I59PZ3
+ */
+HWTEST_F(ContentSensorTest, SyscapInfoCollector_003, TestSize.Level3)
+{
+    ServiceCharacteristicProfile profile;
+    profile.SetServiceId("");
+    profile.SetServiceType("test");
+    SyscapInfoCollector syscapInfo;
+    bool result = syscapInfo.ConvertToProfileData(profile);
+    EXPECT_EQ(result, true);
+}
+
+/**
+ * @tc.name: SyscapInfoCollector_001
+ * @tc.desc: syscap info collector
+ * @tc.type: FUNC
+ * @tc.require: I59PZ3
+ */
+HWTEST_F(ContentSensorTest, SyscapInfoCollector_004, TestSize.Level3)
+{
+    ServiceCharacteristicProfile profile;
+    profile.SetServiceId("test");
+    profile.SetServiceType("");
+    SyscapInfoCollector syscapInfo;
+    bool result = syscapInfo.ConvertToProfileData(profile);
     EXPECT_EQ(result, true);
 }
 }

@@ -66,6 +66,22 @@ HWTEST_F(ProfileChangeNotificationTest, GetProfileEntries_001, TestSize.Level3)
 }
 
 /**
+ * @tc.name: GetProfileEntries_002
+ * @tc.desc: get profile entries
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(ProfileChangeNotificationTest, GetProfileEntries_002, TestSize.Level3)
+{
+    std::vector<ProfileEntry> profileEntries;
+    std::string networkId;
+    bool isLocal = true;
+    ProfileChangeNotification notification(profileEntries, networkId, isLocal);
+    auto result = notification.GetProfileEntries();
+    EXPECT_EQ(true, result.empty());
+}
+
+/**
  * @tc.name: GetDeviceId_001
  * @tc.desc: get device id
  * @tc.type: FUNC

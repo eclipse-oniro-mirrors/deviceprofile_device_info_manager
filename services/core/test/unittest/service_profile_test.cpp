@@ -92,5 +92,19 @@ HWTEST_F(ServiceProfileTest, Marshalling_001, TestSize.Level3)
     bool result = profile.Marshalling(parcel);
     EXPECT_EQ(true, result);
 }
+
+/**
+ * @tc.name: Unmarshalling_001
+ * @tc.desc: unmarshalling
+ * @tc.type: FUNC
+ * @tc.require: I4OH94
+ */
+HWTEST_F(ServiceProfileTest, Unmarshalling_001, TestSize.Level3)
+{
+    Parcel parcel;
+    ServiceCharacteristicProfile profile;
+    bool result = profile.Unmarshalling(parcel);
+    EXPECT_NE(true, result);
+}
 }
 }
