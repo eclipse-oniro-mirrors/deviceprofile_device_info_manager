@@ -57,6 +57,64 @@ void ProfileDmTest::TearDown()
 }
 
 /**
+ * @tc.name: WaitForDnetworkReady_001
+ * @tc.desc: marshalling
+ * @tc.type: FUNC
+ * @tc.require: I4OH94
+ */
+HWTEST_F(ProfileDmTest, WaitForDnetworkReady_001, TestSize.Level3)
+{
+    bool res = DpDeviceManager::GetInstance().WaitForDnetworkReady();
+    EXPECT_EQ(true, res);
+}
+
+/**
+ * @tc.name: GetUdidByNetworkId_001
+ * @tc.desc: marshalling
+ * @tc.type: FUNC
+ * @tc.require: I4OH94
+ */
+HWTEST_F(ProfileDmTest, GetUdidByNetworkId_001, TestSize.Level3)
+{
+    std::string udid;
+    bool res = DpDeviceManager::GetInstance().GetUdidByNetworkId("", udid);
+    EXPECT_EQ(false, res);
+}
+
+/**
+ * @tc.name: GetUuidByNetworkId_001
+ * @tc.desc: marshalling
+ * @tc.type: FUNC
+ * @tc.require: I4OH94
+ */
+HWTEST_F(ProfileDmTest, GetUuidByNetworkId_001, TestSize.Level3)
+{
+    std::string uuid;
+    DpDeviceManager::GetInstance().AddLocalDeviceIds();
+    DpDeviceManager::GetInstance().RecoverDevicesIfNeeded();
+    bool res = DpDeviceManager::GetInstance().GetUuidByNetworkId("", uuid);
+    EXPECT_EQ(false, res);
+}
+
+/**
+ * @tc.name: TransformDeviceId
+ * @tc.desc: marshalling
+ * @tc.type: FUNC
+ * @tc.require: I4OH94
+ */
+HWTEST_F(ProfileDmTest, TransformDeviceId_001, TestSize.Level3)
+{
+    std::string queryUdid;
+    std::string udid;
+    DpDeviceManager::GetInstance().RemoveDeviceIds("");
+    DpDeviceManager::GetInstance().GetLocalDeviceUdid(udid);
+    DpDeviceManager::GetInstance().RemoveDeviceIdsByUdid("");
+    DpDeviceManager::GetInstance().RemoveExpiredDeviceIds("");
+    bool res = DpDeviceManager::GetInstance().TransformDeviceId("", queryUdid, DeviceIdType::UUID);
+    EXPECT_EQ(false, res);
+}
+
+/**
  * @tc.name: Init_001
  * @tc.desc: set service profile json
  * @tc.type: FUNC
@@ -69,12 +127,12 @@ HWTEST_F(ProfileDmTest, Init_001, TestSize.Level3)
 }
 
 /**
- * @tc.name: WaitForDnetworkReady_001
+ * @tc.name: WaitForDnetworkReady_002
  * @tc.desc: marshalling
  * @tc.type: FUNC
  * @tc.require: I4OH94
  */
-HWTEST_F(ProfileDmTest, WaitForDnetworkReady_001, TestSize.Level3)
+HWTEST_F(ProfileDmTest, WaitForDnetworkReady_002, TestSize.Level3)
 {
     bool res = DpDeviceManager::GetInstance().WaitForDnetworkReady();
     EXPECT_EQ(true, res);
@@ -93,12 +151,12 @@ HWTEST_F(ProfileDmTest, ConnectDeviceManager_001, TestSize.Level3)
 }
 
 /**
- * @tc.name: GetUdidByNetworkId
+ * @tc.name: GetUdidByNetworkId_002
  * @tc.desc: marshalling
  * @tc.type: FUNC
  * @tc.require: I4OH94
  */
-HWTEST_F(ProfileDmTest, GetUdidByNetworkId_001, TestSize.Level3)
+HWTEST_F(ProfileDmTest, GetUdidByNetworkId_002, TestSize.Level3)
 {
     auto dpDeviceInfo = std::make_shared<DeviceInfo>(
         "12345678", "12345678", 0x00);
@@ -109,12 +167,12 @@ HWTEST_F(ProfileDmTest, GetUdidByNetworkId_001, TestSize.Level3)
 }
 
 /**
- * @tc.name: GetUuidByNetworkId
+ * @tc.name: GetUuidByNetworkId_002
  * @tc.desc: marshalling
  * @tc.type: FUNC
  * @tc.require: I4OH94
  */
-HWTEST_F(ProfileDmTest, GetUuidByNetworkId_001, TestSize.Level3)
+HWTEST_F(ProfileDmTest, GetUuidByNetworkId_002, TestSize.Level3)
 {
     std::string uuid;
     DpDeviceManager::GetInstance().OnNodeOffline("");
@@ -125,12 +183,12 @@ HWTEST_F(ProfileDmTest, GetUuidByNetworkId_001, TestSize.Level3)
 }
 
 /**
- * @tc.name: TransformDeviceId
+ * @tc.name: TransformDeviceId_002
  * @tc.desc: marshalling
  * @tc.type: FUNC
  * @tc.require: I4OH94
  */
-HWTEST_F(ProfileDmTest, TransformDeviceId_001, TestSize.Level3)
+HWTEST_F(ProfileDmTest, TransformDeviceId_002, TestSize.Level3)
 {
     std::string queryUdid;
     std::string udid;
