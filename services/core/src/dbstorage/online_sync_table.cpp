@@ -49,8 +49,8 @@ void OnlineSyncTable::Init()
         .area = 1,
         .baseDir = "/data/service/el1/public/database/distributed_device_profile_service"
     };
-	// clean the IMMEDIATE_SYNC_ON_CHANGE
-	options.policies = {};
+    // clean the IMMEDIATE_SYNC_ON_CHANGE
+    options.policies = {};
     SyncPolicy syncPolicy {
         .type = PolicyType::IMMEDIATE_SYNC_ON_ONLINE
     };
