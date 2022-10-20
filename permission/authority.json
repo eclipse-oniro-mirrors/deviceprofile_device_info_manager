@@ -26,7 +26,7 @@
     "pasteboard_service": {
         "servicesAuthority": {
           "specific": {
-            "pasteboard_service": 3
+            "pasteboardService": 3
           }
         },
         "interfacesAuthority": {
