@@ -174,8 +174,8 @@ HWTEST_F(ProfileStorageTest, RestoreServiceItemLocked_001, TestSize.Level3)
 }
 
 /**
- * @tc.name: PutDeviceProfile_001
- * @tc.desc: put device profile with empty service id
+ * @tc.name: SetServiceType_001
+ * @tc.desc: set service type
  * @tc.type: FUNC
  * @tc.require: I4NY23
  */
@@ -184,6 +184,52 @@ HWTEST_F(ProfileStorageTest, SetServiceType_001, TestSize.Level3)
     ServiceCharacteristicProfile profile;
     int result = 0;
     DeviceProfileStorageManager::GetInstance().SetServiceType("", "", profile);
+    EXPECT_EQ(0, result);
+}
+
+/**
+ * @tc.name: SetServiceType_002
+ * @tc.desc: set service type
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, SetServiceType_002, TestSize.Level3)
+{
+    ServiceCharacteristicProfile profile;
+    int result = 0;
+    std::string udid = "1111test1111";
+    DeviceProfileStorageManager::GetInstance().SetServiceType(udid, "", profile);
+    EXPECT_EQ(0, result);
+}
+
+/**
+ * @tc.name: SetServiceType_003
+ * @tc.desc: set service type
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, SetServiceType_003, TestSize.Level3)
+{
+    ServiceCharacteristicProfile profile;
+    int result = 0;
+    std::string serviceId = "2222test2222";
+    DeviceProfileStorageManager::GetInstance().SetServiceType("", serviceId, profile);
+    EXPECT_EQ(0, result);
+}
+
+/**
+ * @tc.name: SetServiceType_004
+ * @tc.desc: set service type
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, SetServiceType_004, TestSize.Level3)
+{
+    ServiceCharacteristicProfile profile;
+    int result = 0;
+    std::string udid = "1111test1111";
+    std::string serviceId = "2222test2222";
+    DeviceProfileStorageManager::GetInstance().SetServiceType(udid, serviceId, profile);
     EXPECT_EQ(0, result);
 }
 
@@ -311,6 +357,21 @@ HWTEST_F(ProfileStorageTest, GetDeviceProfile_003, TestSize.Level3)
     ServiceCharacteristicProfile profile;
     profile.SetServiceId(SERVICE_ID);
     profile.SetServiceType(SERVICE_TYPE);
+    int32_t result = DeviceProfileStorageManager::GetInstance().GetDeviceProfile("test", "", profile);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+}
+
+/**
+ * @tc.name: GetDeviceProfile_004
+ * @tc.desc: get device profile with syscap
+ * @tc.type: FUNC
+ * @tc.require: I59PZ3
+ */
+HWTEST_F(ProfileStorageTest, GetDeviceProfile_004, TestSize.Level3)
+{
+    ServiceCharacteristicProfile profile;
+    profile.SetServiceId(SERVICE_ID);
+    profile.SetServiceType(SERVICE_TYPE);
     int32_t result = DeviceProfileStorageManager::GetInstance().GetDeviceProfile("test", SERVICE_ID, profile);
     EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
 }
@@ -325,6 +386,18 @@ HWTEST_F(ProfileStorageTest, DeleteDeviceProfile_002, TestSize.Level3)
 {
     int32_t result = DeviceProfileStorageManager::GetInstance().DeleteDeviceProfile("test");
     EXPECT_EQ(0, result);
+}
+
+/**
+ * @tc.name: DeleteDeviceProfile_003
+ * @tc.desc: delete an empty profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY21
+ */
+HWTEST_F(ProfileStorageTest, DeleteDeviceProfile_003, TestSize.Level3)
+{
+    int32_t result = DeviceProfileStorageManager::GetInstance().DeleteDeviceProfile("system");
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
 }
 
 /**
@@ -396,7 +469,7 @@ HWTEST_F(ProfileStorageTest, SyncDeviceProfile_002, TestSize.Level3)
 
 /**
  * @tc.name: RemoveUnBoundDeviceProfile_003
- * @tc.desc: delete device profile with empty service id
+ * @tc.desc: remove unBound device profile
  * @tc.type: FUNC
  * @tc.require: I4NY23
  */
@@ -404,6 +477,36 @@ HWTEST_F(ProfileStorageTest, RemoveUnBoundDeviceProfile_003, TestSize.Level3)
 {
     int32_t result = DeviceProfileStorageManager::GetInstance().RemoveUnBoundDeviceProfile("");
     EXPECT_EQ(ERR_DP_GET_NETWORKID_FAILED, result);
+}
+
+/**
+ * @tc.name: RemoveUnBoundDeviceProfile_004
+ * @tc.desc: remove unBound device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, RemoveUnBoundDeviceProfile_004, TestSize.Level3)
+{
+    int32_t result = DeviceProfileStorageManager::GetInstance().RemoveUnBoundDeviceProfile("test");
+    EXPECT_EQ(ERR_DP_GET_NETWORKID_FAILED, result);
+}
+
+/**
+ * @tc.name: ReportFaultEvent_001
+ * @tc.desc: report fault event
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, ReportFaultEvent_001, TestSize.Level3)
+{
+    int res = true;
+    std::string event = "EVENT_TEST";
+    std::string key = "EVENT_KEY";
+    int32_t result = 0;
+    std::string strResult = "returnresult";
+    DeviceProfileStorageManager::GetInstance().DumpLocalProfile(strResult);
+    DeviceProfileStorageManager::GetInstance().ReportFaultEvent(event, key, result);
+    EXPECT_EQ(true, res);
 }
 }
 }
