@@ -66,6 +66,41 @@ HWTEST_F(SubscribeInfoTest, Unmarshalling_001, TestSize.Level3)
 }
 
 /**
+ * @tc.name: Unmarshalling_001
+ * @tc.desc: unmarshalling
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeInfoTest, Unmarshalling_002, TestSize.Level3)
+{
+    Parcel parcel;
+    parcel.WriteUint32(1);
+    parcel.WriteString("test");
+    SubscribeInfo subInfo;
+    bool result = subInfo.Unmarshalling(parcel);
+    EXPECT_FALSE(result);
+}
+
+/**
+ * @tc.name: Unmarshalling_001
+ * @tc.desc: unmarshalling
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeInfoTest, Unmarshalling_003, TestSize.Level3)
+{
+    Parcel parcel;
+    parcel.WriteUint32(1);
+    std::string test = R"(
+        {"key": "value"}
+    )";
+    parcel.WriteString(test);
+    SubscribeInfo subInfo;
+    bool result = subInfo.Unmarshalling(parcel);
+    EXPECT_TRUE(result);
+}
+
+/**
  * @tc.name: operator_001
  * @tc.desc: operator
  * @tc.type: FUNC
