@@ -43,9 +43,8 @@ class TrustGroupManager {
 
 public:
     bool CheckTrustGroup(const std::string& deviceId);
-
-private:
     bool InitHichainService();
+private:
     static void OnDeviceUnBoundAdapter(const char* peerUdid, const char* groupInfo);
     static bool CheckDeviceId(const std::string udid);
     static std::string GetDeviceUdid();
