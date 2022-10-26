@@ -21,10 +21,13 @@
 #define protected public
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
+#include "device_profile_storage.h"
 #include "device_profile_storage_manager.h"
 #include "distributed_device_profile_client.h"
 #include "hisysevent.h"
 #include "nlohmann/json.hpp"
+#include "online_sync_table.h"
+#include "sync_coordinator.h"
 #include "syscap_info_collector.h"
 #include "syscap_interface.h"
 #undef private
@@ -75,6 +78,13 @@ void ProfileStorageTest::TearDown()
 }
 
 class StorageProfileEventCallback : public IProfileEventCallback {
+};
+
+class ProfileSyncHandler : public DistributedKv::KvStoreSyncCallback {
+public:
+    void SyncCompleted(const std::map<std::string, DistributedKv::Status>& results) override
+    {
+    }
 };
 
 /**
@@ -259,9 +269,34 @@ HWTEST_F(ProfileStorageTest, RemoveUnBoundDeviceProfile_002, TestSize.Level3)
     EXPECT_EQ(ERR_DP_NOT_INIT_DB, result);
 }
 
+/*
+ * @tc.name: SubscribeKvStore_001
+ * @tc.desc: SubscribeKvStore
+ * @tc.type: FUNC
+ * @tc.require: I4NY21
+ */
+HWTEST_F(ProfileStorageTest, SubscribeKvStore_001, TestSize.Level3)
+{
+    int32_t result = DeviceProfileStorageManager::GetInstance().SubscribeKvStore(nullptr);
+    EXPECT_EQ(0, result);
+}
+
+/**
+ * @tc.name: RegisterSyncCallback_001
+ * @tc.desc: RegisterSyncCallback
+ * @tc.type: FUNC
+ * @tc.require: I4NY21
+ */
+HWTEST_F(ProfileStorageTest, RegisterSyncCallback_001, TestSize.Level3)
+{
+    int32_t result = DeviceProfileStorageManager::GetInstance().RegisterSyncCallback(nullptr);
+    EXPECT_EQ(0, result);
+}
+
+
 /**
  * @tc.name: Init_001
- * @tc.desc: get device profile with syscap
+ * @tc.desc: init db
  * @tc.type: FUNC
  * @tc.require: I59PZ3
  */
@@ -270,6 +305,18 @@ HWTEST_F(ProfileStorageTest, Init_001, TestSize.Level3)
     bool result = DeviceProfileStorageManager::GetInstance().Init();
     EXPECT_EQ(true, result);
     sleep(2);
+}
+
+/**
+ * @tc.name: Init_002
+ * @tc.desc: init db again
+ * @tc.type: FUNC
+ * @tc.require: I59PZ3
+ */
+HWTEST_F(ProfileStorageTest, Init_002, TestSize.Level3)
+{
+    bool result = DeviceProfileStorageManager::GetInstance().Init();
+    EXPECT_EQ(true, result);
 }
 
 /**
@@ -327,6 +374,19 @@ HWTEST_F(ProfileStorageTest, PutDeviceProfile_004, TestSize.Level3)
     profile.SetCharacteristicProfileJson(j.dump());
     int32_t result = DeviceProfileStorageManager::GetInstance().PutDeviceProfile(profile);
     EXPECT_EQ(0, result);
+}
+
+/**
+ * @tc.name: PutDeviceProfile_005
+ * @tc.desc: get device profile
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, PutDeviceProfile_005, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    int32_t res = onlineSyncTbl_->PutDeviceProfile("test", "test");
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
 }
 
 /**
@@ -401,12 +461,50 @@ HWTEST_F(ProfileStorageTest, DeleteDeviceProfile_003, TestSize.Level3)
 }
 
 /**
- * @tc.name: SubscribeKvStore_001
+ * @tc.name: DeleteDeviceProfile_004
+ * @tc.desc: delete device profile with empty service id after init
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, DeleteDeviceProfile_004, TestSize.Level3)
+{
+    int32_t result = DeviceProfileStorageManager::GetInstance().DeleteDeviceProfile("");
+    EXPECT_EQ(0, result);
+}
+
+/**
+ * @tc.name: DeleteDeviceProfile_005
+ * @tc.desc: put device profile batch
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, DeleteDeviceProfile_005, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    int32_t res = onlineSyncTbl_->DeleteDeviceProfile("test");
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: RemoveDeviceData_001
+ * @tc.desc: put device profile batch
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, RemoveDeviceData_001, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    int32_t res = onlineSyncTbl_->RemoveDeviceData("networkid11111");
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: SubscribeKvStore_002
  * @tc.desc: SubscribeKvStore
  * @tc.type: FUNC
  * @tc.require: I4NY21
  */
-HWTEST_F(ProfileStorageTest, SubscribeKvStore_001, TestSize.Level3)
+HWTEST_F(ProfileStorageTest, SubscribeKvStore_002, TestSize.Level3)
 {
     int32_t result = DeviceProfileStorageManager::GetInstance().SubscribeKvStore(nullptr);
     EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
@@ -425,12 +523,12 @@ HWTEST_F(ProfileStorageTest, UnSubscribeKvStore_001, TestSize.Level3)
 }
 
 /**
- * @tc.name: RegisterSyncCallback_001
+ * @tc.name: RegisterSyncCallback_002
  * @tc.desc: RegisterSyncCallback
  * @tc.type: FUNC
  * @tc.require: I4NY21
  */
-HWTEST_F(ProfileStorageTest, RegisterSyncCallback_001, TestSize.Level3)
+HWTEST_F(ProfileStorageTest, RegisterSyncCallback_002, TestSize.Level3)
 {
     int32_t result = DeviceProfileStorageManager::GetInstance().RegisterSyncCallback(nullptr);
     EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
@@ -449,7 +547,7 @@ HWTEST_F(ProfileStorageTest, UnRegisterSyncCallback_001, TestSize.Level3)
 }
 
 /**
- * @tc.name: SyncDeviceProfile_003
+ * @tc.name: SyncDeviceProfile_002
  * @tc.desc: sync device profile
  * @tc.type: FUNC
  * @tc.require: I5QPGN
@@ -464,7 +562,28 @@ HWTEST_F(ProfileStorageTest, SyncDeviceProfile_002, TestSize.Level3)
     sptr<IRemoteObject> notifier =
         sptr<ProfileEventNotifierStub>(new ProfileEventNotifierStub(syncCb));
     int result = DeviceProfileStorageManager::GetInstance().SyncDeviceProfile(syncOptions, notifier);
-    EXPECT_EQ(0, result);
+    EXPECT_EQ(ERR_DP_SUBSCRIBE_FAILED, result);
+}
+
+/**
+ * @tc.name: SyncDeviceProfile_003
+ * @tc.desc: sync device profile
+ * @tc.type: FUNC
+ * @tc.require: I5QPGN
+ */
+HWTEST_F(ProfileStorageTest, SyncDeviceProfile_003, TestSize.Level3)
+{
+    wptr<IRemoteObject> remote;
+    DistributedDeviceProfileClient::DeviceProfileDeathRecipient obj;
+    obj.OnRemoteDied(remote);
+    auto syncCb = std::make_shared<StorageProfileEventCallback>();
+    syncCb = nullptr;
+    SyncOptions syncOptions;
+    sptr<IRemoteObject> notifier =
+        sptr<ProfileEventNotifierStub>(new ProfileEventNotifierStub(syncCb));
+    notifier = nullptr;
+    int result = DeviceProfileStorageManager::GetInstance().SyncDeviceProfile(syncOptions, notifier);
+    EXPECT_EQ(ERR_DP_SUBSCRIBE_FAILED, result);
 }
 
 /**
@@ -507,6 +626,366 @@ HWTEST_F(ProfileStorageTest, ReportFaultEvent_001, TestSize.Level3)
     DeviceProfileStorageManager::GetInstance().DumpLocalProfile(strResult);
     DeviceProfileStorageManager::GetInstance().ReportFaultEvent(event, key, result);
     EXPECT_EQ(true, res);
+}
+
+/**
+ * @tc.name: CheckSyncOption_001
+ * @tc.desc: report fault event
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, CheckSyncOption_001, TestSize.Level3)
+{
+    SyncOptions syncOptions;
+    std::string deviceId = "1111test2222";
+    syncOptions.AddDevice(deviceId);
+    DeviceProfileStorageManager::GetInstance().NotifySyncCompleted();
+    auto syncCb = std::make_shared<StorageProfileEventCallback>();
+    sptr<IRemoteObject> notifier =
+        sptr<ProfileEventNotifierStub>(new ProfileEventNotifierStub(syncCb));
+    DeviceProfileStorageManager::GetInstance().NotifySubscriberDied(notifier);
+    notifier = nullptr;
+    DeviceProfileStorageManager::GetInstance().NotifySubscriberDied(notifier);
+    bool res = DeviceProfileStorageManager::GetInstance().CheckSyncOption(syncOptions);
+    EXPECT_EQ(false, res);
+}
+
+/**
+ * @tc.name: NotifySyncStart_001
+ * @tc.desc: notify sync start
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, NotifySyncStart_001, TestSize.Level3)
+{
+    auto syncCb = std::make_shared<StorageProfileEventCallback>();
+    sptr<IRemoteObject> notifier =
+        sptr<ProfileEventNotifierStub>(new ProfileEventNotifierStub(syncCb));
+    SyncCoordinator::GetInstance().isOnSync_ = true;
+    int32_t res = DeviceProfileStorageManager::GetInstance().NotifySyncStart(notifier);
+    EXPECT_EQ(ERR_DP_DEVICE_SYNC_BUSY, res);
+}
+
+/**
+ * @tc.name: SubscribeKvStore_003
+ * @tc.desc: subscribe kvstore
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, SubscribeKvStore_003, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    std::shared_ptr<DistributedKv::KvStoreObserver> kvStoreObserver_ = nullptr;
+    int32_t res = onlineSyncTbl_->SubscribeKvStore(kvStoreObserver_);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: GetDeviceProfile_005
+ * @tc.desc: get device profile
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, GetDeviceProfile_005, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    std::string key = "";
+    std::string value = "";
+    int32_t res = onlineSyncTbl_->GetDeviceProfile(key, value);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: SubscribeKvStore_004
+ * @tc.desc: subscribe kvstore
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, SubscribeKvStore_004, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    std::shared_ptr<DistributedKv::KvStoreObserver> kvStoreObserver_ =
+        std::make_shared<DistributedKv::KvStoreObserver>();
+    int32_t res = onlineSyncTbl_->SubscribeKvStore(kvStoreObserver_);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: UnSubscribeKvStore_002
+ * @tc.desc: subscribe kvstore
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, UnSubscribeKvStore_002, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    std::shared_ptr<DistributedKv::KvStoreObserver> kvStoreObserver_ = nullptr;
+    int32_t res = onlineSyncTbl_->UnSubscribeKvStore(kvStoreObserver_);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: UnSubscribeKvStore_003
+ * @tc.desc: subscribe kvstore
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, UnSubscribeKvStore_003, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    std::shared_ptr<DistributedKv::KvStoreObserver> kvStoreObserver_ =
+        std::make_shared<DistributedKv::KvStoreObserver>();
+    int32_t res = onlineSyncTbl_->UnSubscribeKvStore(kvStoreObserver_);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: RegisterSyncCallback_003
+ * @tc.desc: subscribe kvstore
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, RegisterSyncCallback_003, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    std::shared_ptr<DistributedKv::KvStoreSyncCallback> syncCallback = nullptr;
+    int32_t res = onlineSyncTbl_->RegisterSyncCallback(syncCallback);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: RegisterSyncCallback_004
+ * @tc.desc: subscribe kvstore
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, RegisterSyncCallback_004, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    std::shared_ptr<DistributedKv::KvStoreSyncCallback> syncCallback =
+      std::make_shared<ProfileSyncHandler>();
+    int32_t res = onlineSyncTbl_->RegisterSyncCallback(syncCallback);
+    EXPECT_EQ(0, res);
+}
+
+/**
+ * @tc.name: UnRegisterSyncCallback_002
+ * @tc.desc: subscribe kvstore
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, UnRegisterSyncCallback_002, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    int32_t res = onlineSyncTbl_->UnRegisterSyncCallback();
+    EXPECT_EQ(0, res);
+}
+
+/**
+ * @tc.name: GetKvStore_001
+ * @tc.desc: get kvstore
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, GetKvStore_001, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    onlineSyncTbl_->DeleteKvStore();
+    int32_t res = onlineSyncTbl_->GetKvStore();
+    EXPECT_EQ(27459585, res);
+}
+
+/**
+ * @tc.name: PutDeviceProfile_006
+ * @tc.desc: get device profile
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, PutDeviceProfile_006, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    onlineSyncTbl_->kvStorePtr_ = nullptr;
+    int32_t res = onlineSyncTbl_->PutDeviceProfile("test", "test");
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: SubscribeKvStore_005
+ * @tc.desc: subscribe kvstore
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, SubscribeKvStore_005, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    onlineSyncTbl_->kvStorePtr_ = nullptr;
+    std::shared_ptr<DistributedKv::KvStoreObserver> kvStoreObserver_ =
+        std::make_shared<DistributedKv::KvStoreObserver>();
+    int32_t res = onlineSyncTbl_->SubscribeKvStore(kvStoreObserver_);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: SubscribeKvStore_006
+ * @tc.desc: subscribe kvstore
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, SubscribeKvStore_006, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    onlineSyncTbl_->kvStorePtr_ = nullptr;
+    std::shared_ptr<DistributedKv::KvStoreObserver> kvStoreObserver_ = nullptr;
+    int32_t res = onlineSyncTbl_->SubscribeKvStore(kvStoreObserver_);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: UnSubscribeKvStore_004
+ * @tc.desc: subscribe kvstore
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, UnSubscribeKvStore_004, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    onlineSyncTbl_->kvStorePtr_ = nullptr;
+    std::shared_ptr<DistributedKv::KvStoreObserver> kvStoreObserver_ =
+        std::make_shared<DistributedKv::KvStoreObserver>();
+    int32_t res = onlineSyncTbl_->UnSubscribeKvStore(kvStoreObserver_);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: UnSubscribeKvStore_005
+ * @tc.desc: subscribe kvstore
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, UnSubscribeKvStore_005, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    onlineSyncTbl_->kvStorePtr_ = nullptr;
+    std::shared_ptr<DistributedKv::KvStoreObserver> kvStoreObserver_ = nullptr;
+    int32_t res = onlineSyncTbl_->UnSubscribeKvStore(kvStoreObserver_);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: RegisterSyncCallback_005
+ * @tc.desc: subscribe kvstore
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, RegisterSyncCallback_005, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    onlineSyncTbl_->kvStorePtr_ = nullptr;
+    std::shared_ptr<DistributedKv::KvStoreSyncCallback> syncCallback =
+      std::make_shared<ProfileSyncHandler>();
+    int32_t res = onlineSyncTbl_->RegisterSyncCallback(syncCallback);
+    EXPECT_EQ(0, res);
+}
+
+/**
+ * @tc.name: RegisterSyncCallback_006
+ * @tc.desc: subscribe kvstore
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, RegisterSyncCallback_006, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    onlineSyncTbl_->kvStorePtr_ = nullptr;
+    std::shared_ptr<DistributedKv::KvStoreSyncCallback> syncCallback = nullptr;
+    int32_t res = onlineSyncTbl_->RegisterSyncCallback(syncCallback);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: UnRegisterSyncCallback_003
+ * @tc.desc: subscribe kvstore
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, UnRegisterSyncCallback_003, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    onlineSyncTbl_->kvStorePtr_ = nullptr;
+    int32_t res = onlineSyncTbl_->UnRegisterSyncCallback();
+    EXPECT_EQ(0, res);
+}
+
+/**
+ * @tc.name: PutDeviceProfileBatch_001
+ * @tc.desc: put device profile batch
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, PutDeviceProfileBatch_001, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    onlineSyncTbl_->kvStorePtr_ = nullptr;
+    vector<std::string> keys = {"test"};
+    vector<std::string> values = {"test"};
+    int32_t res = onlineSyncTbl_->PutDeviceProfileBatch(keys, values);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: DeleteDeviceProfile_006
+ * @tc.desc: put device profile batch
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, DeleteDeviceProfile_006, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    onlineSyncTbl_->kvStorePtr_ = nullptr;
+    int32_t res = onlineSyncTbl_->DeleteDeviceProfile("test");
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: RemoveDeviceData_002
+ * @tc.desc: remove device data
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, RemoveDeviceData_002, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    onlineSyncTbl_->kvStorePtr_ = nullptr;
+    int32_t res = onlineSyncTbl_->RemoveDeviceData("network1111111");
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: CheckTrustGroup_001
+ * @tc.desc: check trust group
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, CheckTrustGroup_001, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    std::vector<std::string> deviceIdList = {};
+    bool res = onlineSyncTbl_->CheckTrustGroup(deviceIdList);
+    EXPECT_EQ(false, res);
+}
+
+/**
+ * @tc.name: CheckTrustGroup_002
+ * @tc.desc: check trust group
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, CheckTrustGroup_002, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    std::vector<std::string> deviceIdList = {"did1111111"};
+    bool res = onlineSyncTbl_->CheckTrustGroup(deviceIdList);
+    EXPECT_EQ(false, res);
 }
 }
 }
