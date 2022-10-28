@@ -450,35 +450,23 @@ HWTEST_F(ProfileStorageTest, DeleteDeviceProfile_002, TestSize.Level3)
 
 /**
  * @tc.name: DeleteDeviceProfile_003
- * @tc.desc: delete an empty profile
- * @tc.type: FUNC
- * @tc.require: I4NY21
- */
-HWTEST_F(ProfileStorageTest, DeleteDeviceProfile_003, TestSize.Level3)
-{
-    int32_t result = DeviceProfileStorageManager::GetInstance().DeleteDeviceProfile("system");
-    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
-}
-
-/**
- * @tc.name: DeleteDeviceProfile_004
  * @tc.desc: delete device profile with empty service id after init
  * @tc.type: FUNC
  * @tc.require: I4NY23
  */
-HWTEST_F(ProfileStorageTest, DeleteDeviceProfile_004, TestSize.Level3)
+HWTEST_F(ProfileStorageTest, DeleteDeviceProfile_003, TestSize.Level3)
 {
     int32_t result = DeviceProfileStorageManager::GetInstance().DeleteDeviceProfile("");
     EXPECT_EQ(0, result);
 }
 
 /**
- * @tc.name: DeleteDeviceProfile_005
+ * @tc.name: DeleteDeviceProfile_004
  * @tc.desc: put device profile batch
  * @tc.type: FUNC
  * @tc.require: I4OH93
  */
-HWTEST_F(ProfileStorageTest, DeleteDeviceProfile_005, TestSize.Level2)
+HWTEST_F(ProfileStorageTest, DeleteDeviceProfile_004, TestSize.Level2)
 {
     std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
     int32_t res = onlineSyncTbl_->DeleteDeviceProfile("test");
@@ -933,12 +921,12 @@ HWTEST_F(ProfileStorageTest, PutDeviceProfileBatch_001, TestSize.Level2)
 }
 
 /**
- * @tc.name: DeleteDeviceProfile_006
+ * @tc.name: DeleteDeviceProfile_005
  * @tc.desc: put device profile batch
  * @tc.type: FUNC
  * @tc.require: I4OH93
  */
-HWTEST_F(ProfileStorageTest, DeleteDeviceProfile_006, TestSize.Level2)
+HWTEST_F(ProfileStorageTest, DeleteDeviceProfile_005, TestSize.Level2)
 {
     std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
     onlineSyncTbl_->kvStorePtr_ = nullptr;
