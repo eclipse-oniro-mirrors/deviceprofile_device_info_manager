@@ -64,6 +64,7 @@ bool DistributedDeviceProfileService::Init()
         HILOGE("AuthorityManager init failed");
         return false;
     }
+    TrustGroupManager::GetInstance().InitHichainService();
     ContentSensorManager::GetInstance().Init();
     HILOGI("init succeeded");
     return true;
