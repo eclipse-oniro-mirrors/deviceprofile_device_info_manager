@@ -431,5 +431,23 @@ HWTEST_F(EventSubscribeTest, SubscribeWithUnsusbscribe002, TestSize.Level2)
         EXPECT_TRUE(callback->GetNotificationNum() == 1);
     }
 }
+
+/**
+ * @tc.name: SubDeviceProfile_001
+ * @tc.desc: sub device profile
+ * @tc.type: FUNC
+ * @tc.require: I51HKG
+ */
+HWTEST_F(EventSubscribeTest, UnsubDeviceProfile_001, TestSize.Level3)
+{
+    auto callback = std::make_shared<ProfileEventCallback>();
+    std::list<ProfileEvent> profileEvents;
+    profileEvents.emplace_back(ProfileEvent::EVENT_PROFILE_CHANGED);
+    std::list<ProfileEvent> failedEvents;
+    auto result = DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(
+        profileEvents, callback, failedEvents);
+    DTEST_LOG << "result: " << result << std::endl;
+    EXPECT_NE(result, ERR_INVALID_DATA);
+}
 }
 }
