@@ -16,7 +16,14 @@
 #include <gtest/gtest.h>
 #include <memory>
 
+#include "device_profile_errors.h"
+#include "iprofile_event_callback.h"
+#include "iprofile_event_notifier.h"
 #include "profile_change_notification.h"
+#include "profile_event.h"
+#include "profile_event_notifier_proxy.h"
+#include "profile_event_notifier_stub.h"
+
 #include "utils.h"
 
 namespace OHOS {
@@ -30,6 +37,9 @@ public:
     static void TearDownTestCase();
     void SetUp();
     void TearDown();
+};
+
+class StorageProfileEventCallback : public IProfileEventCallback {
 };
 
 void ProfileChangeNotificationTest::SetUpTestCase()
@@ -137,6 +147,87 @@ HWTEST_F(ProfileChangeNotificationTest, Unmarshalling_001, TestSize.Level3)
     std::shared_ptr<ProfileChangeNotification> temp = std::make_shared<ProfileChangeNotification>();
     bool result = temp->Unmarshalling(parcel);
     EXPECT_EQ(false, result);
+}
+
+/**
+ * @tc.name: OnRemoteRequest_001
+ * @tc.desc: OnRemoteRequest of profile event notification
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(ProfileChangeNotificationTest, OnRemoteRequest_001, TestSize.Level3)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option { MessageOption::TF_ASYNC };
+    SyncResult syncResults;
+    syncResults.emplace("testdeviceid", SUCCEEDED);
+    if (!data.WriteInterfaceToken(ProfileEventNotifierProxy::GetDescriptor())) {
+        return;
+    }
+    if (!data.WriteInt32(static_cast<int32_t>(syncResults.size()))) {
+        return;
+    }
+
+    for (const auto& [deviceId, syncResult] : syncResults) {
+        if (!data.WriteString(deviceId) ||
+            !data.WriteInt32(static_cast<int32_t>(syncResult))) {
+            return;
+        }
+    }
+
+    auto syncCb = std::make_shared<StorageProfileEventCallback>();
+    std::shared_ptr<ProfileEventNotifierStub> temp = std::make_shared<ProfileEventNotifierStub>(syncCb);
+    int32_t result = temp->OnRemoteRequest(EVENT_SYNC_COMPLETED, data, reply, option);
+    DTEST_LOG << "result: " << result << std::endl;
+    EXPECT_EQ(0, result);
+}
+/**
+ * @tc.name: OnRemoteRequest_002
+ * @tc.desc: OnRemoteRequest of profile event notification
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(ProfileChangeNotificationTest, OnRemoteRequest_002, TestSize.Level3)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option { MessageOption::TF_ASYNC };
+    if (!data.WriteInterfaceToken(ProfileEventNotifierProxy::GetDescriptor())) {
+        return;
+    }
+
+    auto syncCb = std::make_shared<StorageProfileEventCallback>();
+    std::shared_ptr<ProfileEventNotifierStub> temp = std::make_shared<ProfileEventNotifierStub>(syncCb);
+    int32_t result = temp->OnRemoteRequest(EVENT_PROFILE_CHANGED, data, reply, option);
+    DTEST_LOG << "result: " << result << std::endl;
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+}
+
+/**
+ * @tc.name: OnRemoteRequest_003
+ * @tc.desc: OnRemoteRequest of profile event notification
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(ProfileChangeNotificationTest, OnRemoteRequest_003, TestSize.Level3)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option { MessageOption::TF_ASYNC };
+    SyncResult syncResults;
+    if (!data.WriteInterfaceToken(ProfileEventNotifierProxy::GetDescriptor())) {
+        return;
+    }
+    if (!data.WriteInt32(static_cast<int32_t>(syncResults.size()))) {
+        return;
+    }
+
+    auto syncCb = std::make_shared<StorageProfileEventCallback>();
+    std::shared_ptr<ProfileEventNotifierStub> temp = std::make_shared<ProfileEventNotifierStub>(syncCb);
+    int32_t result = temp->OnRemoteRequest(EVENT_SYNC_COMPLETED, data, reply, option);
+    DTEST_LOG << "result: " << result << std::endl;
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
 }
 }
 }
