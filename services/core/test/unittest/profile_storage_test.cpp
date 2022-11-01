@@ -495,7 +495,7 @@ HWTEST_F(ProfileStorageTest, RemoveDeviceData_001, TestSize.Level2)
 HWTEST_F(ProfileStorageTest, SubscribeKvStore_002, TestSize.Level3)
 {
     int32_t result = DeviceProfileStorageManager::GetInstance().SubscribeKvStore(nullptr);
-    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+    EXPECT_EQ(0, result);
 }
 
 /**
@@ -519,7 +519,7 @@ HWTEST_F(ProfileStorageTest, UnSubscribeKvStore_001, TestSize.Level3)
 HWTEST_F(ProfileStorageTest, RegisterSyncCallback_002, TestSize.Level3)
 {
     int32_t result = DeviceProfileStorageManager::GetInstance().RegisterSyncCallback(nullptr);
-    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+    EXPECT_EQ(0, result);
 }
 
 /**
@@ -582,6 +582,7 @@ HWTEST_F(ProfileStorageTest, SyncDeviceProfile_003, TestSize.Level3)
  */
 HWTEST_F(ProfileStorageTest, RemoveUnBoundDeviceProfile_003, TestSize.Level3)
 {
+    DeviceProfileStorageManager::GetInstance().onlineSyncTbl_->initStatus_ = StorageInitStatus::INIT_SUCCEED;
     int32_t result = DeviceProfileStorageManager::GetInstance().RemoveUnBoundDeviceProfile("");
     EXPECT_EQ(ERR_DP_GET_NETWORKID_FAILED, result);
 }
