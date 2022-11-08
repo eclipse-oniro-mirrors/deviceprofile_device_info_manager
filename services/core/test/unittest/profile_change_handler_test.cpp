@@ -195,7 +195,8 @@ HWTEST_F(ProfileChangeHandlerTest, FilterChangedProfileLocked_001, TestSize.Leve
 {
     SubscribeInfo subInfo;
     subInfo.extraInfo = {
-        {"deviceId", ""}
+        {"deviceId", ""},
+        {"serviceIds", {}}
     };
     ProfileChangeNotification profileNotification;
     FilterInfo filterInfo;
@@ -206,7 +207,7 @@ HWTEST_F(ProfileChangeHandlerTest, FilterChangedProfileLocked_001, TestSize.Leve
 }
 
 /**
- * @tc.name: FilterChangedProfileLocked_001
+ * @tc.name: FilterChangedProfileLocked_002
  * @tc.desc: FilterChangedProfileLocked
  * @tc.type: FUNC
  * @tc.require: I4NY1T
@@ -226,7 +227,7 @@ HWTEST_F(ProfileChangeHandlerTest, FilterChangedProfileLocked_002, TestSize.Leve
 }
 
 /**
- * @tc.name: FilterChangedProfileLocked_001
+ * @tc.name: FilterChangedProfileLocked_003
  * @tc.desc: FilterChangedProfileLocked
  * @tc.type: FUNC
  * @tc.require: I4NY1T
@@ -247,7 +248,7 @@ HWTEST_F(ProfileChangeHandlerTest, FilterChangedProfileLocked_003, TestSize.Leve
 }
 
 /**
- * @tc.name: FilterChangedProfileLocked_001
+ * @tc.name: FilterChangedProfileLocked_004
  * @tc.desc: FilterChangedProfileLocked
  * @tc.type: FUNC
  * @tc.require: I4NY1T
@@ -268,7 +269,7 @@ HWTEST_F(ProfileChangeHandlerTest, FilterChangedProfileLocked_004, TestSize.Leve
 }
 
 /**
- * @tc.name: FilterChangedProfileLocked_001
+ * @tc.name: FilterChangedProfileLocked_005
  * @tc.desc: FilterChangedProfileLocked
  * @tc.type: FUNC
  * @tc.require: I4NY1T
@@ -325,7 +326,7 @@ HWTEST_F(ProfileChangeHandlerTest, NotifyProfileChangedLocked_002, TestSize.Leve
 }
 
 /**
- * @tc.name: NotifyProfileChangedLocked_002
+ * @tc.name: NotifyProfileChangedLocked_003
  * @tc.desc: NotifyProfileChangedLocked
  * @tc.type: FUNC
  * @tc.require: I4NY1T
@@ -385,7 +386,7 @@ HWTEST_F(ProfileChangeHandlerTest, OnChange_001, TestSize.Level3)
 }
 
 /**
- * @tc.name: OnChange_001
+ * @tc.name: OnChange_002
  * @tc.desc: OnChange
  * @tc.type: FUNC
  * @tc.require: I4NY1T
