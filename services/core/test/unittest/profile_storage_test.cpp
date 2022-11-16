@@ -293,32 +293,6 @@ HWTEST_F(ProfileStorageTest, RegisterSyncCallback_001, TestSize.Level3)
     EXPECT_EQ(0, result);
 }
 
-
-/**
- * @tc.name: Init_001
- * @tc.desc: init db
- * @tc.type: FUNC
- * @tc.require: I59PZ3
- */
-HWTEST_F(ProfileStorageTest, Init_001, TestSize.Level3)
-{
-    bool result = DeviceProfileStorageManager::GetInstance().Init();
-    EXPECT_EQ(true, result);
-    sleep(2);
-}
-
-/**
- * @tc.name: Init_002
- * @tc.desc: init db again
- * @tc.type: FUNC
- * @tc.require: I59PZ3
- */
-HWTEST_F(ProfileStorageTest, Init_002, TestSize.Level3)
-{
-    bool result = DeviceProfileStorageManager::GetInstance().Init();
-    EXPECT_EQ(true, result);
-}
-
 /**
  * @tc.name: PutDeviceProfile_002
  * @tc.desc: put device profile with empty service id
