@@ -22,7 +22,9 @@
 
 #define private public
 #define protected public
+#include "content_sensor_manager.h"
 #include "device_info_collector.h"
+#include "storage_info_collector.h"
 #include "syscap_info_collector.h"
 #include "system_info_collector.h"
 #undef private
@@ -251,6 +253,35 @@ HWTEST_F(ContentSensorTest, SyscapInfoCollector_004, TestSize.Level3)
     SyscapInfoCollector syscapInfo;
     bool result = syscapInfo.ConvertToProfileData(profile);
     EXPECT_EQ(result, true);
+}
+
+/**
+ * @tc.name: StorageInfoCollector_001
+ * @tc.desc: syscap info collector
+ * @tc.type: FUNC
+ * @tc.require: I59PZ3
+ */
+HWTEST_F(ContentSensorTest, StorageInfoCollector_001, TestSize.Level3)
+{
+    ServiceCharacteristicProfile profile;
+    profile.SetServiceId("test");
+    profile.SetServiceType("");
+    StorageInfoCollector storageInfo;
+    bool result = storageInfo.ConvertToProfileData(profile);
+    EXPECT_EQ(result, true);
+}
+
+/**
+ * @tc.name: GetTotalSize_002
+ * @tc.desc: get total size
+ * @tc.type: FUNC
+ * @tc.require: I59PZ3
+ */
+HWTEST_F(ContentSensorTest, GetTotalSize_002, TestSize.Level3)
+{
+    StorageInfoCollector storageInfo;
+    int64_t result = storageInfo.GetTotalSize();
+    EXPECT_NE(result, 0);
 }
 }
 }
