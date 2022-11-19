@@ -41,7 +41,7 @@ public:
     void GetLocalDeviceUdid(std::string& udid);
     bool GetUdidByNetworkId(const std::string& networkId, std::string& udid);
     bool GetUuidByNetworkId(const std::string& networkId, std::string& uuid);
-    void DisconnectDeviceManager();
+    bool DisconnectDeviceManager();
     bool ConnectDeviceManager();
     bool TransformDeviceId(const std::string& fromDeviceId, std::string& toDeviceId,
         DeviceIdType toType);
