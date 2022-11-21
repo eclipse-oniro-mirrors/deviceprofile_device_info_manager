@@ -294,12 +294,14 @@ void DpDeviceManager::RemoveDeviceIdsByUdid(const std::string& udid)
     return;
 }
 
-void DpDeviceManager::DisconnectDeviceManager()
+bool DpDeviceManager::DisconnectDeviceManager()
 {
     int32_t errCode = DeviceManager::GetInstance().UnRegisterDevStateCallback(PKG_NAME);
     if (errCode != ERR_OK) {
         HILOGE("remove failed, errCode = %{public}d", errCode);
+        return false;
     }
+    return true;
 }
 
 void DpDeviceManager::GetLocalDeviceUdid(std::string& udid)

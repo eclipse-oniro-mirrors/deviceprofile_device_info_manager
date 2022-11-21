@@ -199,5 +199,19 @@ HWTEST_F(ProfileDmTest, TransformDeviceId_002, TestSize.Level3)
     bool res = DpDeviceManager::GetInstance().TransformDeviceId("", queryUdid, DeviceIdType::UUID);
     EXPECT_EQ(false, res);
 }
+
+/**
+ * @tc.name: DisconnectDeviceManager_001
+ * @tc.desc: marshalling
+ * @tc.type: FUNC
+ * @tc.require: I4OH94
+ */
+HWTEST_F(ProfileDmTest, DisconnectDeviceManager_001, TestSize.Level3)
+{
+    std::string queryUdid;
+    std::string udid;
+    bool res = DpDeviceManager::GetInstance().DisconnectDeviceManager();
+    EXPECT_EQ(true, res);
+}
 }
 }

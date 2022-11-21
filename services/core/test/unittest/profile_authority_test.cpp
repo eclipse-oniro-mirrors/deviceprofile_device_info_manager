@@ -15,11 +15,14 @@
 
 #include "gtest/gtest.h"
 
+#include "test_util.h"
 #include "utils.h"
 
 #define protected public
 #define private public
 #include "authority_manager.h"
+#include "device_manager.h"
+#include "dp_device_manager.h"
 #include "trust_group_manager.h"
 #undef private
 #undef protected
@@ -29,6 +32,7 @@ namespace OHOS {
 namespace DeviceProfile {
 using namespace testing;
 using namespace testing::ext;
+using namespace DistributedHardware;
 
 namespace {
 const std::string AUTHORITY_JSON_PATH = "/system/etc/deviceprofile/authority.json";
@@ -41,6 +45,7 @@ const std::string INVALID_AUTHORITY_STR =
     "{\"fakeProcess1\":{\"servicesAuthority\":{\"all\":3}},\"fakeProcess2\":{\"servicesAuthority\":{\"all\":true}}}";
 const std::string VALID_AUTHORITY_STR = "{\"hdcd\":{\"servicesAuthority\":{\"all\":1,\"specific\":" \
     "{\"storage\":3,\"system\":3},\"prefix\":{\"cameraRear\":3}},\"interfacesAuthority\":{\"sync\":{}}}}";
+const std::string PKG_NAME = "DBinderBus_" + std::to_string(getpid());
 }
 
 class ProfileAuthorityTest : public testing::Test {
@@ -51,7 +56,14 @@ public:
     static bool LoadAuthorityByStr(const std::string& jsonStr);
     void SetUp();
     void TearDown();
+    class DeviceInitCallBack : public DistributedHardware::DmInitCallback {
+    void OnRemoteDied() override;
 };
+};
+
+void ProfileAuthorityTest::DeviceInitCallBack::OnRemoteDied()
+{
+}
 
 void ProfileAuthorityTest::SetUpTestCase()
 {
@@ -316,6 +328,63 @@ HWTEST_F(ProfileAuthorityTest, CheckTrustGroup_002, TestSize.Level2)
     }
     from_json(jsonObject, groupInfo);
     EXPECT_EQ(false, TrustGroupManager::GetInstance().CheckTrustGroup(""));
+}
+
+/**
+ * @tc.name: InitHichainService_002
+ * @tc.desc: init hichain service of interfaces
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileAuthorityTest, InitHichainService_002, TestSize.Level2)
+{
+    std::string localDeviceId;
+    std::shared_ptr<DistributedHardware::DmInitCallback> initCallback_ =
+        std::make_shared<DeviceInitCallBack>();
+    DeviceManager::GetInstance().InitDeviceManager(PKG_NAME, initCallback_);
+    DpDeviceManager::GetInstance().GetLocalDeviceUdid(localDeviceId);
+    DTEST_LOG << "device profile service is nullptr" + localDeviceId << std::endl;
+    TrustGroupManager::GetInstance().OnDeviceUnBoundAdapter(localDeviceId.c_str(), "");
+    EXPECT_EQ(true, TrustGroupManager::GetInstance().InitHichainService());
+}
+
+/**
+ * @tc.name: CheckCallerTrust_001
+ * @tc.desc: init hichain service of interfaces
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileAuthorityTest, CheckCallerTrust_001, TestSize.Level2)
+{
+    TestUtil::MockInvalidTokenID();
+    bool res = AuthorityManager::GetInstance().CheckCallerTrust();
+    EXPECT_EQ(false, res);
+}
+
+/**
+ * @tc.name: CheckCallerTrust_002
+ * @tc.desc: init hichain service of interfaces
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileAuthorityTest, CheckCallerTrust_002, TestSize.Level2)
+{
+    TestUtil::MockPermission();
+    bool res = AuthorityManager::GetInstance().CheckCallerTrust();
+    EXPECT_EQ(true, res);
+}
+
+/**
+ * @tc.name: CheckInterfaceAuthority_001
+ * @tc.desc: init hichain service of interfaces
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileAuthorityTest, CheckInterfaceAuthority_001, TestSize.Level2)
+{
+    AuthorityManager::GetInstance().authJson_.clear();
+    bool res = AuthorityManager::GetInstance().CheckInterfaceAuthority("");
+    EXPECT_EQ(false, res);
 }
 }
 }
