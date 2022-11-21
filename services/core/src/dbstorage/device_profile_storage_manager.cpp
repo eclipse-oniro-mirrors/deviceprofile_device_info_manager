@@ -44,7 +44,6 @@ const std::string TAG = "DeviceProfileStorageManager";
 
 const std::string SERVICE_TYPE = "type";
 const std::string SERVICES = "services";
-const std::string DOMAIN_NAME = std::string(HiSysEvent::Domain::DEVICE_PROFILE);
 const std::string DEVICE_PROFILE_SYNC_FAILED = "DEVICE_PROFILE_SYNC_FAILED";
 const std::string DEVICE_PROFILE_SYNC_EVENT = "DEVICE_PROFILE_SYNC_EVENT";
 const std::string FAULT_CODE_KEY = "FAULT_CODE";
@@ -530,7 +529,7 @@ int32_t DeviceProfileStorageManager::UnRegisterSyncCallback()
 
 void DeviceProfileStorageManager::ReportBehaviorEvent(const std::string& event)
 {
-    int ret = HiSysEvent::Write(DOMAIN_NAME, event, HiSysEvent::EventType::BEHAVIOR);
+    int ret = HiSysEventWrite(HiSysEvent::Domain::DEVICE_PROFILE, event, HiSysEvent::EventType::BEHAVIOR);
     if (ret != 0) {
         HILOGE("hisysevent write failed! ret %{public}d.", ret);
     }
@@ -539,7 +538,7 @@ void DeviceProfileStorageManager::ReportBehaviorEvent(const std::string& event)
 void DeviceProfileStorageManager::ReportFaultEvent(const std::string& event,
     const std::string& key, const int32_t result)
 {
-    int ret = HiSysEvent::Write(DOMAIN_NAME, event, HiSysEvent::EventType::FAULT, key, result);
+    int ret = HiSysEventWrite(HiSysEvent::Domain::DEVICE_PROFILE, event, HiSysEvent::EventType::FAULT, key, result);
     if (ret != 0) {
         HILOGE("hisysevent write failed! ret %{public}d.", ret);
     }
