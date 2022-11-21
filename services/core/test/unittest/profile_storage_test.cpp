@@ -269,30 +269,6 @@ HWTEST_F(ProfileStorageTest, RemoveUnBoundDeviceProfile_002, TestSize.Level3)
     EXPECT_EQ(ERR_DP_NOT_INIT_DB, result);
 }
 
-/*
- * @tc.name: SubscribeKvStore_001
- * @tc.desc: SubscribeKvStore
- * @tc.type: FUNC
- * @tc.require: I4NY21
- */
-HWTEST_F(ProfileStorageTest, SubscribeKvStore_001, TestSize.Level3)
-{
-    int32_t result = DeviceProfileStorageManager::GetInstance().SubscribeKvStore(nullptr);
-    EXPECT_EQ(0, result);
-}
-
-/**
- * @tc.name: RegisterSyncCallback_001
- * @tc.desc: RegisterSyncCallback
- * @tc.type: FUNC
- * @tc.require: I4NY21
- */
-HWTEST_F(ProfileStorageTest, RegisterSyncCallback_001, TestSize.Level3)
-{
-    int32_t result = DeviceProfileStorageManager::GetInstance().RegisterSyncCallback(nullptr);
-    EXPECT_EQ(0, result);
-}
-
 /**
  * @tc.name: PutDeviceProfile_002
  * @tc.desc: put device profile with empty service id
@@ -949,6 +925,138 @@ HWTEST_F(ProfileStorageTest, CheckTrustGroup_002, TestSize.Level2)
     std::vector<std::string> deviceIdList = {"did1111111"};
     bool res = onlineSyncTbl_->CheckTrustGroup(deviceIdList);
     EXPECT_EQ(false, res);
+}
+
+/**
+ * @tc.name: SubscribeKvStore_007
+ * @tc.desc: subscribe kvstore
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, SubscribeKvStore_007, TestSize.Level2)
+{
+    DeviceProfileStorageManager::GetInstance().onlineSyncTbl_->initStatus_ = StorageInitStatus::INIT_SUCCEED;
+    std::shared_ptr<DistributedKv::KvStoreObserver> kvStoreObserver_ = nullptr;
+    int32_t res = DeviceProfileStorageManager::GetInstance().SubscribeKvStore(kvStoreObserver_);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: UnSubscribeKvStore_006
+ * @tc.desc: subscribe kvstore
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, UnSubscribeKvStore_006, TestSize.Level2)
+{
+    DeviceProfileStorageManager::GetInstance().onlineSyncTbl_->initStatus_ = StorageInitStatus::INIT_SUCCEED;
+    std::shared_ptr<DistributedKv::KvStoreObserver> kvStoreObserver_ = nullptr;
+    DeviceProfileStorageManager::GetInstance().profileItems_.clear();
+    DeviceProfileStorageManager::GetInstance().FlushProfileItems();
+    int32_t res = DeviceProfileStorageManager::GetInstance().UnSubscribeKvStore(kvStoreObserver_);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: DeleteDeviceProfile_006
+ * @tc.desc: delete device profile with empty service id after init
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, DeleteDeviceProfile_006, TestSize.Level3)
+{
+    DeviceProfileStorageManager::GetInstance().onlineSyncTbl_->initStatus_ = StorageInitStatus::INIT_SUCCEED;
+    DeviceProfileStorageManager::GetInstance().servicesJson_.clear();
+    int32_t result = DeviceProfileStorageManager::GetInstance().DeleteDeviceProfile("test");
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+}
+
+/**
+ * @tc.name: DeleteDeviceProfile_007
+ * @tc.desc: delete device profile with empty service id after init
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, DeleteDeviceProfile_007, TestSize.Level3)
+{
+    DeviceProfileStorageManager::GetInstance().onlineSyncTbl_->initStatus_ = StorageInitStatus::INIT_SUCCEED;
+    nlohmann::json j;
+    j[SERVICE_TYPE] = "567";
+    DeviceProfileStorageManager::GetInstance().servicesJson_["test"] = j;
+    int32_t result = DeviceProfileStorageManager::GetInstance().DeleteDeviceProfile("test");
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+}
+
+/**
+ * @tc.name: PutDeviceProfile_007
+ * @tc.desc: put device profile with empty service id
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, PutDeviceProfile_007, TestSize.Level3)
+{
+    DeviceProfileStorageManager::GetInstance().onlineSyncTbl_->initStatus_ = StorageInitStatus::INIT_SUCCEED;
+    ServiceCharacteristicProfile profile;
+    profile.SetServiceId("");
+    profile.SetServiceType("test");
+    nlohmann::json j;
+    j["testVersion"] = "3.0.0";
+    j["testApiLevel"] = 8;
+    profile.SetCharacteristicProfileJson(j.dump());
+    int32_t result = DeviceProfileStorageManager::GetInstance().PutDeviceProfile(profile);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+}
+
+/**
+ * @tc.name: RegisterSyncCallback_007
+ * @tc.desc: put device profile with empty service id
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, RegisterSyncCallback_007, TestSize.Level3)
+{
+    ServiceCharacteristicProfile profile;
+    DeviceProfileStorageManager::GetInstance().onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    bool result = DeviceProfileStorageManager::GetInstance().onlineSyncTbl_->RegisterSyncCallback(nullptr);
+    EXPECT_EQ(true, result);
+}
+
+/**
+ * @tc.name: RegisterSyncCallback_008
+ * @tc.desc: put device profile with empty service id
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, RegisterSyncCallback_008, TestSize.Level3)
+{
+    ServiceCharacteristicProfile profile;
+    std::shared_ptr<DistributedKv::KvStoreSyncCallback> syncCallback =
+      std::make_shared<ProfileSyncHandler>();
+    std::shared_ptr<OnlineSyncTable> onlineSyncTblTest_ = std::make_shared<OnlineSyncTable>();
+    std::map<std::string, DistributedKv::Status> results;
+    onlineSyncTblTest_->syncCallback_ = nullptr;
+    onlineSyncTblTest_->NotifySyncCompleted(results);
+    onlineSyncTblTest_->syncCallback_ = syncCallback;
+    onlineSyncTblTest_->NotifySyncCompleted(results);
+    SyncCoordinator::GetInstance().isOnlineTrigger_ = true;
+    onlineSyncTblTest_->SyncCompleted(results);
+    SyncCoordinator::GetInstance().isOnlineTrigger_ = false;
+    onlineSyncTblTest_->SyncCompleted(results);
+    bool result = onlineSyncTblTest_->RegisterSyncCallback(syncCallback);
+    EXPECT_EQ(false, result);
+}
+
+/**
+ * @tc.name: AcquireSync_001
+ * @tc.desc: put device profile with empty service id
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, AcquireSync_001, TestSize.Level3)
+{
+    SyncCoordinator::GetInstance().isOnSync_ = true;
+    bool result = SyncCoordinator::GetInstance().AcquireSync();
+    EXPECT_EQ(false, result);
 }
 }
 }
