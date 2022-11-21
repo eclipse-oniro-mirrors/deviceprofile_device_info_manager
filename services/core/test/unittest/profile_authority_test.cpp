@@ -35,6 +35,8 @@ const std::string AUTHORITY_JSON_PATH = "/system/etc/deviceprofile/authority.jso
 const std::string TEST_DEVICEID = "1111111111111111111111111";
 const std::string TEST_TRUST_GROUP =
     "{\"groupId\":\"id\",\"groupType\":0,\"groupName\":\"name\",\"groupOwner\":\"test\",\"groupVisibility\":1}";
+const std::string TEST_TRUST_GROUP_EMPTY =
+"{}";
 const std::string INVALID_AUTHORITY_STR =
     "{\"fakeProcess1\":{\"servicesAuthority\":{\"all\":3}},\"fakeProcess2\":{\"servicesAuthority\":{\"all\":true}}}";
 const std::string VALID_AUTHORITY_STR = "{\"hdcd\":{\"servicesAuthority\":{\"all\":1,\"specific\":" \
@@ -292,6 +294,23 @@ HWTEST_F(ProfileAuthorityTest, CheckTrustGroup_001, TestSize.Level2)
 {
     GroupInfo groupInfo;
     nlohmann::json jsonObject = nlohmann::json::parse(TEST_TRUST_GROUP, nullptr, false);
+    if (jsonObject.is_discarded()) {
+        return;
+    }
+    from_json(jsonObject, groupInfo);
+    EXPECT_EQ(false, TrustGroupManager::GetInstance().CheckTrustGroup(""));
+}
+
+/**
+ * @tc.name: CheckTrustGroup_002
+ * @tc.desc: check trust group of interfaces
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileAuthorityTest, CheckTrustGroup_002, TestSize.Level2)
+{
+    GroupInfo groupInfo;
+    nlohmann::json jsonObject = nlohmann::json::parse(TEST_TRUST_GROUP_EMPTY, nullptr, false);
     if (jsonObject.is_discarded()) {
         return;
     }

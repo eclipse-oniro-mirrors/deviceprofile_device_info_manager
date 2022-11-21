@@ -167,12 +167,57 @@ ohos_unittest("subscribe_info_test") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("subscribe_manager_test") {
+  module_out_path = module_output_path
+
+  sources = [ "unittest/subscribe_manager_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("profile_change_handler_test") {
+  module_out_path = module_output_path
+
+  sources = [ "unittest/profile_change_handler_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("subscribe_info_checker_test") {
+  module_out_path = module_output_path
+
+  sources = [ "unittest/subscribe_info_checker_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("device_profile_dfx_test") {
+  module_out_path = module_output_path
+
+  sources = [ "unittest/device_profile_dfx_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 group("unittest") {
   testonly = true
   deps = [
     ":content_sensor_test",
     ":event_subscribe_test",
     ":profile_authority_test",
+    ":profile_change_handler_test",
     ":profile_change_notification_test",
     ":profile_crud_test",
     ":profile_dm_test",
@@ -180,6 +225,8 @@ group("unittest") {
     ":profile_proxy_test",
     ":profile_storage_test",
     ":service_profile_test",
+    ":subscribe_info_checker_test",
     ":subscribe_info_test",
+    ":subscribe_manager_test",
   ]
 }
