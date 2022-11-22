@@ -196,6 +196,12 @@ HWTEST_F(ProfileDmTest, TransformDeviceId_002, TestSize.Level3)
     DpDeviceManager::GetInstance().GetLocalDeviceUdid(udid);
     DpDeviceManager::GetInstance().RemoveDeviceIdsByUdid("");
     DpDeviceManager::GetInstance().RemoveExpiredDeviceIds("");
+    std::list<std::string> deviceIdList;
+    deviceIdList.emplace_back("testttt");
+    DpDeviceManager::GetInstance().GetDeviceIdList(deviceIdList);
+    std::shared_ptr<DeviceInfo> device;
+    std::list<std::shared_ptr<DeviceInfo>> deviceList;
+    DpDeviceManager::GetInstance().GetDeviceList(deviceList);
     bool res = DpDeviceManager::GetInstance().TransformDeviceId("", queryUdid, DeviceIdType::UUID);
     EXPECT_EQ(false, res);
 }
@@ -210,6 +216,15 @@ HWTEST_F(ProfileDmTest, DisconnectDeviceManager_001, TestSize.Level3)
 {
     std::string queryUdid;
     std::string udid;
+    std::list<std::string> deviceIdList;
+    std::map<std::string, std::shared_ptr<DeviceInfo>> remoteDeviceInfoMap_;
+    std::shared_ptr<DeviceInfo> deviceInfo = std::make_shared<DeviceInfo>("test", "test", 1);
+    DpDeviceManager::GetInstance().remoteDeviceInfoMap_["testttt"] = deviceInfo;
+    deviceIdList.emplace_back("testttt");
+    DpDeviceManager::GetInstance().GetDeviceIdList(deviceIdList);
+    std::shared_ptr<DeviceInfo> device;
+    std::list<std::shared_ptr<DeviceInfo>> deviceList;
+    DpDeviceManager::GetInstance().GetDeviceList(deviceList);
     bool res = DpDeviceManager::GetInstance().DisconnectDeviceManager();
     EXPECT_EQ(true, res);
 }
