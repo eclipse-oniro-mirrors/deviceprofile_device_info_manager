@@ -216,10 +216,35 @@ ohos_unittest("device_profile_dfx_test") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("device_profile_utils_test") {
+  module_out_path = module_output_path
+
+  sources = [ "unittest/device_profile_utils_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("device_profile_service_test") {
+  module_out_path = module_output_path
+
+  sources = [ "unittest/distributed_device_profile_service_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 group("unittest") {
   testonly = true
   deps = [
     ":content_sensor_test",
+    ":device_profile_dfx_test",
+    ":device_profile_service_test",
+    ":device_profile_utils_test",
     ":event_subscribe_test",
     ":profile_authority_test",
     ":profile_change_handler_test",
