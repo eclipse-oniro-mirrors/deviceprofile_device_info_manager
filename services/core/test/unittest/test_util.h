@@ -22,7 +22,7 @@ namespace OHOS {
 namespace DeviceProfile {
 class TestUtil {
 public:
-    static void MockPermission();
+    static void MockPermission(const std::string& procName);
     static void MockProcessAndPermission(const char* processName,
         const char *perms[], int32_t permsNum);
     static void MockInvalidTokenID();

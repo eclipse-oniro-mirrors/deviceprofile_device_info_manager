@@ -369,7 +369,7 @@ HWTEST_F(ProfileAuthorityTest, CheckCallerTrust_001, TestSize.Level2)
  */
 HWTEST_F(ProfileAuthorityTest, CheckCallerTrust_002, TestSize.Level2)
 {
-    TestUtil::MockPermission();
+    TestUtil::MockPermission("distributedsched");
     bool res = AuthorityManager::GetInstance().CheckCallerTrust();
     EXPECT_EQ(true, res);
 }
