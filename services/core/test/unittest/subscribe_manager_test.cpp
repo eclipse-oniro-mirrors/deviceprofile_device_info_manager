@@ -21,9 +21,12 @@
 #include "ipc_skeleton.h"
 #include "profile_event.h"
 #include "subscribe_info.h"
+#include "subscriber_death_recipient.h"
 #include "utils.h"
 
 #define private public
+#include "profile_event_handler_factory.h"
+#include "profile_sync_handler.h"
 #include "subscribe_manager.h"
 
 namespace OHOS {
@@ -375,6 +378,47 @@ HWTEST_F(SubscribeManagerTest, TryRemoveNotiferLocked003, TestSize.Level3)
     SubscribeManager::GetInstance().TryRemoveNotiferLocked(notifier, unSubProfileEvents);
     ret = SubscribeManager::GetInstance().notifiersMap_.empty();
     EXPECT_FALSE(ret);
+}
+
+/**
+ * @tc.name: Unregister_001
+ * @tc.desc: Unregister
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeManagerTest, Unregister_001, TestSize.Level3)
+{
+    auto handler = std::make_shared<ProfileSyncHandler>("syncHandler");
+    auto result = handler->Unregister();
+
+    std::map<std::string, Status> syncResult;
+    syncResult["testdeviceid"] = Status::SUCCESS;
+    handler->SyncCompleted(syncResult);
+
+    SyncResult syncResults;
+    syncResults.emplace("testdeviceid", SUCCEEDED);
+    handler->NotifySyncCompleted(syncResults);
+
+    auto syncCb = std::make_shared<StorageProfileEventCallback>();
+    wptr<IRemoteObject> notifier =
+    sptr<ProfileEventNotifierStub>(new ProfileEventNotifierStub(syncCb));
+    auto death = std::make_shared<SubscriberDeathRecipient>();
+    death->OnRemoteDied(notifier);
+    DTEST_LOG << "result: " << result << std::endl;
+    EXPECT_EQ(0, result);
+}
+
+/**
+ * @tc.name: GetProfileChangeHandlerInner_001
+ * @tc.desc: GetProfileChangeHandlerInner
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeManagerTest, GetProfileChangeHandlerInner_001, TestSize.Level3)
+{
+    auto result = ProfileEventHandlerFactory::GetInstance().GetProfileChangeHandlerInner();
+    DTEST_LOG << "result: " << result << std::endl;
+    EXPECT_NE(nullptr, result);
 }
 }
 }

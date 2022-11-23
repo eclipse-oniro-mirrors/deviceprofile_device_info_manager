@@ -78,5 +78,21 @@ HWTEST_F(ProfileEntryTest, Unmarshalling_001, TestSize.Level3)
     bool result = temp->Unmarshalling(parcel);
     EXPECT_EQ(false, result);
 }
+
+/**
+ * @tc.name: Unmarshalling_002
+ * @tc.desc: Unmarshalling of profile entry
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(ProfileEntryTest, Unmarshalling_002, TestSize.Level3)
+{
+    Parcel parcel;
+    std::shared_ptr<ProfileEntry> temp = std::make_shared<ProfileEntry>();
+    bool result = temp->Marshalling(parcel);
+    EXPECT_EQ(true, result);
+    result = temp->Unmarshalling(parcel);
+    EXPECT_EQ(true, result);
+}
 }
 }
