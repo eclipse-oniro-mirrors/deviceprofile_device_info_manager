@@ -97,7 +97,11 @@ bool TrustGroupManager::CheckTrustGroup(const std::string& deviceId)
         HILOGE("failed, ret:%{public}d", ret);
         return false;
     }
+    return CheckGroupsInfo(returnGroups, groupNum);
+}
 
+bool TrustGroupManager::CheckGroupsInfo(const char* returnGroups, uint32_t groupNum)
+{
     if (returnGroups == nullptr || groupNum == 0) {
         HILOGE("failed, returnGroups is nullptr");
         return false;
