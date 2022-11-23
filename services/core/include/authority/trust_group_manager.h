@@ -49,6 +49,7 @@ private:
     static bool CheckDeviceId(const std::string udid);
     static std::string GetDeviceUdid();
     void InitDataChangeListener();
+    bool CheckGroupsInfo(const char* returnGroups, uint32_t groupNum);
 
 private:
     const DeviceGroupManager* hichainGmInstance_ = nullptr;
