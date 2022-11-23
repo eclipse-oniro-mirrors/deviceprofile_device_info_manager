@@ -16,6 +16,7 @@
 #include "gtest/gtest.h"
 
 #include "utils.h"
+#include "test_util.h"
 
 #define private public
 #define protected public
@@ -204,35 +205,20 @@ HWTEST_F(ProfileCrudTest, PutDeviceProfile_004, TestSize.Level3)
     EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
 }
 
-
 /**
- * @tc.name: PutDeviceProfile_002
- * @tc.desc: put device profile with empty service type
+ * @tc.name: PutDeviceProfile_005
+ * @tc.desc: put device profile without set characteristics
  * @tc.type: FUNC
  * @tc.require: I4NY23
  */
 HWTEST_F(ProfileCrudTest, PutDeviceProfile_005, TestSize.Level3)
 {
-    ServiceCharacteristicProfile profile;
-    profile.SetServiceId("test");
-    profile.SetServiceType("test");
-    nlohmann::json j;
-    j["testVersion"] = "3.0.0";
-    j["testApiLevel"] = 7;
-    profile.SetCharacteristicProfileJson(j.dump());
-    profile.SetServiceProfileJson(j.dump());
-    int32_t result = DistributedDeviceProfileClient::GetInstance().PutDeviceProfile(profile);
-    EXPECT_NE(ERR_DP_INVALID_PARAMS, result);
-}
+    auto dps = DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    if (dps == nullptr) {
+        DTEST_LOG << "device profile service is nullptr" << std::endl;
+        return;
+    }
 
-/**
- * @tc.name: PutDeviceProfile_002
- * @tc.desc: put device profile with empty service type
- * @tc.type: FUNC
- * @tc.require: I4NY23
- */
-HWTEST_F(ProfileCrudTest, PutDeviceProfile_006, TestSize.Level3)
-{
     ServiceCharacteristicProfile profile;
     profile.SetServiceId("test");
     profile.SetServiceType("test");
@@ -240,9 +226,8 @@ HWTEST_F(ProfileCrudTest, PutDeviceProfile_006, TestSize.Level3)
     j["testVersion"] = "3.0.0";
     j["testApiLevel"] = 7;
     profile.SetCharacteristicProfileJson(j.dump());
-    profile.SetServiceProfileJson(j.dump());
     int32_t result = DistributedDeviceProfileClient::GetInstance().PutDeviceProfile(profile);
-    EXPECT_NE(ERR_DP_INVALID_PARAMS, result);
+    EXPECT_EQ(ERR_DP_PERMISSION_DENIED, result);
 }
 
 /**
@@ -261,6 +246,24 @@ HWTEST_F(ProfileCrudTest, DeleteDeviceProfile_001, TestSize.Level3)
 
     int32_t result = DistributedDeviceProfileClient::GetInstance().DeleteDeviceProfile("");
     EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+}
+
+/**
+ * @tc.name: DeleteDeviceProfile_002
+ * @tc.desc: delete an empty profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY21
+ */
+HWTEST_F(ProfileCrudTest, DeleteDeviceProfile_002, TestSize.Level3)
+{
+    auto dps = DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    if (dps == nullptr) {
+        DTEST_LOG << "device profile service is nullptr" << std::endl;
+        return;
+    }
+
+    int32_t result = DistributedDeviceProfileClient::GetInstance().DeleteDeviceProfile("test");
+    EXPECT_EQ(ERR_DP_PERMISSION_DENIED, result);
 }
 
 /**
@@ -328,6 +331,128 @@ HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_001, TestSize.Level3)
 }
 
 /**
+ * @tc.name: SubscribeProfileEvents_002
+ * @tc.desc: Subscribe device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1U
+ */
+HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_002, TestSize.Level3)
+{
+    auto dps = DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    if (dps == nullptr) {
+        DTEST_LOG << "device profile service is nullptr" << std::endl;
+        return;
+    }
+
+    std::list<SubscribeInfo> subscribeInfos;
+    auto eventCb = std::make_shared<ProfileEventCallback>();
+    std::list<ProfileEvent> failedEvents;
+    int result = DistributedDeviceProfileClient::GetInstance().SubscribeProfileEvents(subscribeInfos,
+        eventCb, failedEvents);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+}
+
+/**
+ * @tc.name: SubscribeProfileEvents_003
+ * @tc.desc: Subscribe device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1U
+ */
+HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_003, TestSize.Level3)
+{
+    auto dps = DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    if (dps == nullptr) {
+        DTEST_LOG << "device profile service is nullptr" << std::endl;
+        return;
+    }
+
+    std::list<SubscribeInfo> subscribeInfos;
+    std::list<ProfileEvent> failedEvents;
+    int result = DistributedDeviceProfileClient::GetInstance().SubscribeProfileEvents(subscribeInfos,
+        nullptr, failedEvents);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+}
+
+/**
+ * @tc.name: SubscribeProfileEvents_004
+ * @tc.desc: Subscribe device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1U
+ */
+HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_004, TestSize.Level3)
+{
+    auto dps = DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    if (dps == nullptr) {
+        DTEST_LOG << "device profile service is nullptr" << std::endl;
+        return;
+    }
+
+    std::list<SubscribeInfo> subscribeInfos;
+    SubscribeInfo subscribeInfo;
+    subscribeInfos.emplace_back(subscribeInfo);
+    std::list<ProfileEvent> failedEvents;
+    auto eventCb = std::make_shared<ProfileEventCallback>();
+    int result = DistributedDeviceProfileClient::GetInstance().SubscribeProfileEvents(subscribeInfos,
+        eventCb, failedEvents);
+    EXPECT_EQ(7, result);
+}
+
+/**
+ * @tc.name: SubscribeProfileEvents_005
+ * @tc.desc: Subscribe device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1U
+ */
+HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_005, TestSize.Level3)
+{
+    auto dps = DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    if (dps == nullptr) {
+        DTEST_LOG << "device profile service is nullptr" << std::endl;
+        return;
+    }
+
+    std::list<SubscribeInfo> subscribeInfos;
+    SubscribeInfo subscribeInfo;
+    subscribeInfos.emplace_back(subscribeInfo);
+    std::list<ProfileEvent> failedEvents;
+    int result = DistributedDeviceProfileClient::GetInstance().SubscribeProfileEvents(subscribeInfos,
+        nullptr, failedEvents);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+}
+
+/**
+ * @tc.name: SubscribeProfileEvents_006
+ * @tc.desc: Subscribe device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1U
+ */
+HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_006, TestSize.Level3)
+{
+    auto callback = std::make_shared<ProfileEventCallback>();
+    std::list<SubscribeInfo> subscribeInfos;
+    std::list<std::string> serviceIds;
+    serviceIds.emplace_back("test");
+    std::string deviceId = "test";
+    ExtraInfo extraInfo;
+    extraInfo["deviceId"] = deviceId;
+    extraInfo["serviceIds"] = serviceIds;
+
+    SubscribeInfo info1;
+    info1.profileEvent = ProfileEvent::EVENT_PROFILE_CHANGED;
+    info1.extraInfo = std::move(extraInfo);
+    subscribeInfos.emplace_back(info1);
+
+    SubscribeInfo info2;
+    info2.profileEvent = ProfileEvent::EVENT_SYNC_COMPLETED;
+    subscribeInfos.emplace_back(info2);
+
+    std::list<ProfileEvent> failedEvents;
+    int result =
+        DistributedDeviceProfileClient::GetInstance().SubscribeProfileEvents(subscribeInfos, callback, failedEvents);
+    EXPECT_EQ(ERR_DP_SUBSCRIBE_FAILED, result);
+}
+
+/**
  * @tc.name: UnsubscribeProfileEvents_001
  * @tc.desc: Unsubscribe device profile
  * @tc.type: FUNC
@@ -353,12 +478,160 @@ HWTEST_F(ProfileCrudTest, UnsubscribeProfileEvents_001, TestSize.Level3)
 }
 
 /**
+ * @tc.name: UnsubscribeProfileEvents_002
+ * @tc.desc: Subscribe device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1U
+ */
+HWTEST_F(ProfileCrudTest, UnsubscribeProfileEvents_002, TestSize.Level3)
+{
+    auto dps = DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    if (dps == nullptr) {
+        DTEST_LOG << "device profile service is nullptr" << std::endl;
+        return;
+    }
+
+    std::list<ProfileEvent> subscribeInfos;
+    auto eventCb = std::make_shared<ProfileEventCallback>();
+    std::list<ProfileEvent> failedEvents;
+    int result = DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(subscribeInfos,
+        eventCb, failedEvents);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+}
+
+/**
+ * @tc.name: UnsubscribeProfileEvents_003
+ * @tc.desc: Subscribe device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1U
+ */
+HWTEST_F(ProfileCrudTest, UnsubscribeProfileEvents_003, TestSize.Level3)
+{
+    auto dps = DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    if (dps == nullptr) {
+        DTEST_LOG << "device profile service is nullptr" << std::endl;
+        return;
+    }
+    std::list<SubscribeInfo> subscribeInfos1;
+    std::list<SubscribeInfo> newSubscribeInfos1;
+    SubscribeInfo subscribeInfo1;
+    SubscribeInfo subscribeInfo2;
+    subscribeInfos1.emplace_back(subscribeInfo1);
+    newSubscribeInfos1.emplace_back(subscribeInfo2);
+    DistributedDeviceProfileClient::GetInstance().MergeSubscribeInfoLocked(subscribeInfos1, newSubscribeInfos1);
+    std::list<ProfileEvent> subscribeInfos;
+    std::list<ProfileEvent> failedEvents;
+    int result = DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(subscribeInfos,
+        nullptr, failedEvents);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+}
+
+/**
+ * @tc.name: SubscribeProfileEvents_004
+ * @tc.desc: Subscribe device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1U
+ */
+HWTEST_F(ProfileCrudTest, UnsubscribeProfileEvents_004, TestSize.Level3)
+{
+    auto dps = DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    if (dps == nullptr) {
+        DTEST_LOG << "device profile service is nullptr" << std::endl;
+        return;
+    }
+    std::list<SubscribeInfo> subscribeInfos1;
+    std::list<SubscribeInfo> newSubscribeInfos1;
+    SubscribeInfo subscribeInfo;
+    subscribeInfos1.emplace_back(subscribeInfo);
+    newSubscribeInfos1.emplace_back(subscribeInfo);
+    DistributedDeviceProfileClient::GetInstance().MergeSubscribeInfoLocked(subscribeInfos1, newSubscribeInfos1);
+    std::list<ProfileEvent> subscribeInfos;
+    ProfileEvent subscribeInfo1;
+    subscribeInfos.emplace_back(subscribeInfo1);
+    std::list<ProfileEvent> failedEvents;
+    auto eventCb = std::make_shared<ProfileEventCallback>();
+    int result = DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(subscribeInfos,
+        eventCb, failedEvents);
+    EXPECT_EQ(ERR_DP_NOT_SUBSCRIBED, result);
+}
+
+/**
+ * @tc.name: UnsubscribeProfileEvents_005
+ * @tc.desc: Subscribe device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1U
+ */
+HWTEST_F(ProfileCrudTest, UnSubscribeProfileEvents_005, TestSize.Level3)
+{
+    auto dps = DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    if (dps == nullptr) {
+        DTEST_LOG << "device profile service is nullptr" << std::endl;
+        return;
+    }
+    std::list<SubscribeInfo> subscribeInfos;
+    std::list<SubscribeInfo> newSubscribeInfos;
+    DistributedDeviceProfileClient::GetInstance().MergeSubscribeInfoLocked(subscribeInfos, newSubscribeInfos);
+    std::list<ProfileEvent> profileEvents;
+    ProfileEvent profileEvent;
+    profileEvents.emplace_back(profileEvent);
+    std::list<ProfileEvent> failedEvents;
+    int result = DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(profileEvents,
+        nullptr, failedEvents);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+}
+
+/**
+ * @tc.name: UnsubscribeProfileEvents_006
+ * @tc.desc: Subscribe device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1U
+ */
+HWTEST_F(ProfileCrudTest, UnSubscribeProfileEvents_006, TestSize.Level3)
+{
+    auto dps = DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    if (dps == nullptr) {
+        DTEST_LOG << "device profile service is nullptr" << std::endl;
+        return;
+    }
+
+    std::list<ProfileEvent> subscribeInfos;
+    ProfileEvent subscribeInfo;
+    subscribeInfos.emplace_back(subscribeInfo);
+    std::list<ProfileEvent> failedEvents;
+    auto eventCb = std::make_shared<ProfileEventCallback>();
+    DistributedDeviceProfileClient::SubscribeRecord subscribeRecord;
+    DistributedDeviceProfileClient::GetInstance().subscribeRecords_[eventCb] = subscribeRecord;
+    int result = DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(subscribeInfos,
+        eventCb, failedEvents);
+    EXPECT_EQ(3, result);
+}
+
+/**
+ * @tc.name: UnsubscribeProfileEvents_007
+ * @tc.desc: Subscribe device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1U
+ */
+HWTEST_F(ProfileCrudTest, UnSubscribeProfileEvents_007, TestSize.Level3)
+{
+    auto callback = std::make_shared<ProfileEventCallback>();
+    std::list<ProfileEvent> profileEvents;
+    SubscribeInfo info1;
+    profileEvents.emplace_back(ProfileEvent::EVENT_PROFILE_CHANGED);
+    profileEvents.emplace_back(ProfileEvent::EVENT_SYNC_COMPLETED);
+    std::list<ProfileEvent> failedEvents;
+    int result =
+        DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(profileEvents, callback, failedEvents);
+    EXPECT_EQ(ERR_DP_NOT_SUBSCRIBED, result);
+}
+
+/**
  * @tc.name: SyncDeviceProfile_001
  * @tc.desc: sync device profile
  * @tc.type: FUNC
  * @tc.require: I4NY1U
  */
-HWTEST_F(ProfileCrudTest, SyncDeviceProfile_002, TestSize.Level3)
+HWTEST_F(ProfileCrudTest, SyncDeviceProfile_001, TestSize.Level3)
 {
     auto dps = DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
     if (dps == nullptr) {
@@ -372,7 +645,7 @@ HWTEST_F(ProfileCrudTest, SyncDeviceProfile_002, TestSize.Level3)
     auto syncCb = std::make_shared<ProfileEventCallback>();
     SyncOptions syncOptions;
     int result = DistributedDeviceProfileClient::GetInstance().SyncDeviceProfile(syncOptions, syncCb);
-    EXPECT_NE(ERR_DP_INVALID_PARAMS, result);
+    EXPECT_EQ(ERR_DP_PERMISSION_DENIED, result);
 }
 
 /**
@@ -465,6 +738,141 @@ HWTEST_F(ProfileCrudTest, DfxErrorPrint_001, TestSize.Level3)
     int ret = HiSysEvent::Write(DOMAIN_NAME, DEVICE_PROFILE_SYNC_FAILED,
         HiSysEvent::EventType::FAULT, FAULT_CODE_KEY, -1);
     EXPECT_EQ(0, ret);
+}
+
+/**
+ * @tc.name: SubscribeProfileEvents_007
+ * @tc.desc: Subscribe device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1U
+ */
+HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_007, TestSize.Level3)
+{
+    TestUtil::MockPermission("distributedsched");
+    auto callback = std::make_shared<ProfileEventCallback>();
+    std::list<SubscribeInfo> subscribeInfos;
+    std::list<std::string> serviceIds;
+    serviceIds.emplace_back("appInfo");
+    std::string deviceId = "";
+    ExtraInfo extraInfo;
+    extraInfo["deviceId"] = deviceId;
+    extraInfo["serviceIds"] = serviceIds;
+
+    SubscribeInfo info1;
+    info1.profileEvent = ProfileEvent::EVENT_PROFILE_CHANGED;
+    info1.extraInfo = std::move(extraInfo);
+    subscribeInfos.emplace_back(info1);
+
+    SubscribeInfo info2;
+    info2.profileEvent = ProfileEvent::EVENT_SYNC_COMPLETED;
+    subscribeInfos.emplace_back(info2);
+
+    std::list<ProfileEvent> failedEvents;
+    int result =
+        DistributedDeviceProfileClient::GetInstance().SubscribeProfileEvents(subscribeInfos, callback, failedEvents);
+    EXPECT_EQ(0, result);
+}
+
+/**
+ * @tc.name: UnsubscribeProfileEvents_008
+ * @tc.desc: Subscribe device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1U
+ */
+HWTEST_F(ProfileCrudTest, UnSubscribeProfileEvents_008, TestSize.Level3)
+{
+    TestUtil::MockPermission("distributedsched");
+    auto callback = std::make_shared<ProfileEventCallback>();
+    std::list<ProfileEvent> profileEvents;
+    SubscribeInfo info1;
+    profileEvents.emplace_back(ProfileEvent::EVENT_PROFILE_CHANGED);
+    profileEvents.emplace_back(ProfileEvent::EVENT_SYNC_COMPLETED);
+    std::list<ProfileEvent> failedEvents;
+    int result =
+        DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(profileEvents, callback, failedEvents);
+    EXPECT_EQ(ERR_DP_NOT_SUBSCRIBED, result);
+}
+
+/**
+ * @tc.name: SyncDeviceProfile_002
+ * @tc.desc: sync device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1U
+ */
+HWTEST_F(ProfileCrudTest, SyncDeviceProfile_002, TestSize.Level3)
+{
+    TestUtil::MockPermission("pasteboard_service");
+    int64_t mode = 2;
+    SyncOptions syncOption;
+    syncOption.SetSyncMode((OHOS::DeviceProfile::SyncMode)mode);
+    syncOption.AddDevice("test");
+    int result = DistributedDeviceProfileClient::GetInstance().SyncDeviceProfile(syncOption,
+        std::make_shared<ProfileEventCallback>());
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+}
+
+/**
+ * @tc.name: PutDeviceProfile_006
+ * @tc.desc: delete an empty profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY21
+ */
+HWTEST_F(ProfileCrudTest, PutDeviceProfile_006, TestSize.Level3)
+{
+    TestUtil::MockPermission("multimodalinput");
+    ServiceCharacteristicProfile profile;
+    profile.SetServiceId("InputDeviceCooperation");
+    profile.SetServiceType("InputDeviceCooperation");
+    nlohmann::json j;
+    j["testVersion"] = "3.0.0";
+    j["testApiLevel"] = 7;
+    profile.SetCharacteristicProfileJson(j.dump());
+    int32_t result = DistributedDeviceProfileClient::GetInstance().PutDeviceProfile(profile);
+    EXPECT_EQ(0, result);
+}
+
+/**
+ * @tc.name: GetDeviceProfile_003
+ * @tc.desc: get device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY22
+ */
+HWTEST_F(ProfileCrudTest, GetDeviceProfile_003, TestSize.Level3)
+{
+    TestUtil::MockPermission("multimodalinput");
+    auto dps = DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    if (dps == nullptr) {
+        DTEST_LOG << "device profile service is nullptr" << std::endl;
+        return;
+    }
+
+    ServiceCharacteristicProfile profile;
+    profile.SetServiceId("InputDeviceCooperation");
+    profile.SetServiceType("InputDeviceCooperation");
+    nlohmann::json j;
+    profile.SetCharacteristicProfileJson(j.dump());
+    int32_t result =
+        DistributedDeviceProfileClient::GetInstance().GetDeviceProfile("", "InputDeviceCooperation", profile);
+    EXPECT_EQ(0, result);
+}
+
+/**
+ * @tc.name: DeleteDeviceProfile_003
+ * @tc.desc: delete an empty profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY21
+ */
+HWTEST_F(ProfileCrudTest, DeleteDeviceProfile_003, TestSize.Level3)
+{
+    TestUtil::MockPermission("multimodalinput");
+    auto dps = DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    if (dps == nullptr) {
+        DTEST_LOG << "device profile service is nullptr" << std::endl;
+        return;
+    }
+
+    int32_t result = DistributedDeviceProfileClient::GetInstance().DeleteDeviceProfile("InputDeviceCooperation");
+    EXPECT_EQ(0, result);
 }
 }
 }

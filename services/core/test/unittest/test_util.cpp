@@ -21,16 +21,12 @@
 
 namespace OHOS {
 namespace DeviceProfile {
-namespace {
-const char* DISTSCHED_PROCESS_NAME = "distributedsched";
-}
-
-void DeviceProfile::TestUtil::MockPermission()
+void DeviceProfile::TestUtil::MockPermission(const std::string& procName)
 {
     static const char *PERMS[] = {
         "ohos.permission.DISTRIBUTED_DATASYNC"
     };
-    MockProcessAndPermission(DISTSCHED_PROCESS_NAME, PERMS, 1);
+    MockProcessAndPermission(procName.c_str(), PERMS, 1);
 }
 
 void DeviceProfile::TestUtil::MockProcessAndPermission(const char* processName, const char *perms[], int32_t permsNum)
