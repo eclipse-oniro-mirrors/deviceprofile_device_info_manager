@@ -204,6 +204,47 @@ HWTEST_F(ProfileCrudTest, PutDeviceProfile_004, TestSize.Level3)
     EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
 }
 
+
+/**
+ * @tc.name: PutDeviceProfile_002
+ * @tc.desc: put device profile with empty service type
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileCrudTest, PutDeviceProfile_005, TestSize.Level3)
+{
+    ServiceCharacteristicProfile profile;
+    profile.SetServiceId("test");
+    profile.SetServiceType("test");
+    nlohmann::json j;
+    j["testVersion"] = "3.0.0";
+    j["testApiLevel"] = 7;
+    profile.SetCharacteristicProfileJson(j.dump());
+    profile.SetServiceProfileJson(j.dump());
+    int32_t result = DistributedDeviceProfileClient::GetInstance().PutDeviceProfile(profile);
+    EXPECT_NE(ERR_DP_INVALID_PARAMS, result);
+}
+
+/**
+ * @tc.name: PutDeviceProfile_002
+ * @tc.desc: put device profile with empty service type
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileCrudTest, PutDeviceProfile_006, TestSize.Level3)
+{
+    ServiceCharacteristicProfile profile;
+    profile.SetServiceId("test");
+    profile.SetServiceType("test");
+    nlohmann::json j;
+    j["testVersion"] = "3.0.0";
+    j["testApiLevel"] = 7;
+    profile.SetCharacteristicProfileJson(j.dump());
+    profile.SetServiceProfileJson(j.dump());
+    int32_t result = DistributedDeviceProfileClient::GetInstance().PutDeviceProfile(profile);
+    EXPECT_NE(ERR_DP_INVALID_PARAMS, result);
+}
+
 /**
  * @tc.name: DeleteDeviceProfile_001
  * @tc.desc: delete an empty profile
