@@ -31,6 +31,10 @@ namespace DeviceProfile {
 using namespace testing;
 using namespace testing::ext;
 
+namespace {
+constexpr int32_t MAX_ENTRY_LEN = 1000001;
+}
+
 class ProfileChangeNotificationTest : public testing::Test {
 public:
     static void SetUpTestCase();
@@ -136,6 +140,24 @@ HWTEST_F(ProfileChangeNotificationTest, Marshalling_001, TestSize.Level3)
 }
 
 /**
+ * @tc.name: Marshalling_001
+ * @tc.desc: marshalling of profile change notification
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(ProfileChangeNotificationTest, Marshalling_002, TestSize.Level3)
+{
+    ProfileEntry entry;
+    std::vector<ProfileEntry> profileEntries(1, entry);
+    std::string networkId = "112223";
+    bool isLocal = true;
+    ProfileChangeNotification notification(profileEntries, networkId, isLocal);
+    Parcel parcel;
+    bool ret = notification.Marshalling(parcel);
+    EXPECT_TRUE(ret);
+}
+
+/**
  * @tc.name: Unmarshalling_001
  * @tc.desc: unmarshalling of profile change notification
  * @tc.type: FUNC
@@ -147,6 +169,71 @@ HWTEST_F(ProfileChangeNotificationTest, Unmarshalling_001, TestSize.Level3)
     std::shared_ptr<ProfileChangeNotification> temp = std::make_shared<ProfileChangeNotification>();
     bool result = temp->Unmarshalling(parcel);
     EXPECT_EQ(false, result);
+}
+
+/**
+ * @tc.name: Unmarshalling_002
+ * @tc.desc: unmarshalling of profile change notification
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(ProfileChangeNotificationTest, Unmarshalling_002, TestSize.Level3)
+{
+    Parcel parcel;
+    parcel.WriteInt32(-1);
+    std::shared_ptr<ProfileChangeNotification> temp = std::make_shared<ProfileChangeNotification>();
+    bool result = temp->Unmarshalling(parcel);
+    EXPECT_FALSE(result);
+}
+
+/**
+ * @tc.name: Unmarshalling_002
+ * @tc.desc: unmarshalling of profile change notification
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(ProfileChangeNotificationTest, Unmarshalling_003, TestSize.Level3)
+{
+    Parcel parcel;
+    parcel.WriteInt32(MAX_ENTRY_LEN);
+    std::shared_ptr<ProfileChangeNotification> temp = std::make_shared<ProfileChangeNotification>();
+    bool result = temp->Unmarshalling(parcel);
+    EXPECT_FALSE(result);
+}
+
+/**
+ * @tc.name: Unmarshalling_002
+ * @tc.desc: unmarshalling of profile change notification
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(ProfileChangeNotificationTest, Unmarshalling_004, TestSize.Level3)
+{
+    Parcel parcel;
+    parcel.WriteInt32(1);
+    parcel.WriteString("111");
+    parcel.WriteString("222");
+    uint8_t type = 1;
+    parcel.WriteUint8(type);
+    parcel.WriteString("222");
+    std::shared_ptr<ProfileChangeNotification> temp = std::make_shared<ProfileChangeNotification>();
+    bool result = temp->Unmarshalling(parcel);
+    EXPECT_TRUE(result);
+}
+
+/**
+ * @tc.name: Unmarshalling_002
+ * @tc.desc: unmarshalling of profile change notification
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(ProfileChangeNotificationTest, Unmarshalling_005, TestSize.Level3)
+{
+    Parcel parcel;
+    parcel.WriteInt32(1);
+    std::shared_ptr<ProfileChangeNotification> temp = std::make_shared<ProfileChangeNotification>();
+    bool result = temp->Unmarshalling(parcel);
+    EXPECT_FALSE(result);
 }
 
 /**
