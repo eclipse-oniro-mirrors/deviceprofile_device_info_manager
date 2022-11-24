@@ -15,6 +15,7 @@
 
 #include <gtest/gtest.h>
 
+#include "device_profile_errors.h"
 #include "distributed_device_profile_service.h"
 #include "subscribe_info.h"
 #include "utils.h"
@@ -129,6 +130,36 @@ HWTEST_F(DistributedDeviceProfileServiceTest, SubscribeProfileEventInner_002, Te
     MessageParcel reply;
     int32_t ret = DistributedDeviceProfileService::GetInstance().GetDeviceProfileInner(data, reply);
     EXPECT_NE(ret, ERR_NONE);
+}
+
+/**
+ * @tc.name: Dump_001
+ * @tc.desc: Dump
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(DistributedDeviceProfileServiceTest, Dump_001, TestSize.Level3)
+{
+    std::vector<std::u16string> args;
+    int32_t fd = 0;
+    int32_t ret = DistributedDeviceProfileService::GetInstance().Dump(fd, args);
+    EXPECT_EQ(ERR_DP_FILE_FAILED_ERR, ret);
+}
+
+/**
+ * @tc.name: Dump_002
+ * @tc.desc: Dump
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(DistributedDeviceProfileServiceTest, Dump_002, TestSize.Level3)
+{
+    std::vector<std::u16string> args;
+    std::u16string help(u"-h");
+    args.emplace_back(help);
+    int32_t fd = 0;
+    int32_t ret = DistributedDeviceProfileService::GetInstance().Dump(fd, args);
+    EXPECT_EQ(ERR_DP_FILE_FAILED_ERR, ret);
 }
 }
 }
