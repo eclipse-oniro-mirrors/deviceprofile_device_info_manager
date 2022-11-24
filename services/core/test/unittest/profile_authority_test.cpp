@@ -39,8 +39,12 @@ const std::string AUTHORITY_JSON_PATH = "/system/etc/deviceprofile/authority.jso
 const std::string TEST_DEVICEID = "1111111111111111111111111";
 const std::string TEST_TRUST_GROUP =
     "{\"groupId\":\"id\",\"groupType\":0,\"groupName\":\"name\",\"groupOwner\":\"test\",\"groupVisibility\":1}";
-const std::string TEST_TRUST_GROUP_EMPTY =
-"{}";
+const std::string TEST_TRUST_GROUPS =
+    "[{\"groupId\":\"id\",\"groupType\":0,\"groupName\":\"name\",\"groupOwner\":\"test\",\"groupVisibility\":1}]";
+const std::string TEST_TRUST_GROUPS_VISIABLE =
+    "[{\"groupId\":\"id\",\"groupType\":0,\"groupName\":\"name\",\"groupOwner\":\"test\",\"groupVisibility\":-1}]";
+const std::string TEST_TRUST_GROUP_EMPTY = "{}";
+const std::string TEST_TRUST_GROUPS_EMPTY = "[{}]";
 const std::string INVALID_AUTHORITY_STR =
     "{\"fakeProcess1\":{\"servicesAuthority\":{\"all\":3}},\"fakeProcess2\":{\"servicesAuthority\":{\"all\":true}}}";
 const std::string VALID_AUTHORITY_STR = "{\"hdcd\":{\"servicesAuthority\":{\"all\":1,\"specific\":" \
@@ -293,6 +297,10 @@ HWTEST_F(ProfileAuthorityTest, CheckDeviceId_001, TestSize.Level2)
 HWTEST_F(ProfileAuthorityTest, InitHichainService_001, TestSize.Level2)
 {
     TrustGroupManager::GetInstance().OnDeviceUnBoundAdapter("", "");
+    
+    std::string localDeviceId;
+    DpDeviceManager::GetInstance().GetLocalDeviceUdid(localDeviceId);
+    TrustGroupManager::GetInstance().OnDeviceUnBoundAdapter(localDeviceId.c_str(), "");
     EXPECT_EQ(true, TrustGroupManager::GetInstance().InitHichainService());
 }
 
@@ -385,6 +393,41 @@ HWTEST_F(ProfileAuthorityTest, CheckInterfaceAuthority_001, TestSize.Level2)
     AuthorityManager::GetInstance().authJson_.clear();
     bool res = AuthorityManager::GetInstance().CheckInterfaceAuthority("");
     EXPECT_EQ(false, res);
+}
+
+/**
+ * @tc.name: CheckTrustGroup_003
+ * @tc.desc: check trust group of interfaces
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileAuthorityTest, CheckTrustGroup_003, TestSize.Level3)
+{
+    EXPECT_EQ(false, TrustGroupManager::GetInstance().CheckGroupsInfo(TEST_TRUST_GROUPS.c_str(), 0));
+    EXPECT_EQ(false, TrustGroupManager::GetInstance().CheckGroupsInfo(TEST_TRUST_GROUPS.c_str(), 1));
+}
+
+/**
+ * @tc.name: CheckTrustGroup_004
+ * @tc.desc: check trust group of interfaces
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileAuthorityTest, CheckTrustGroup_004, TestSize.Level3)
+{
+    EXPECT_EQ(false, TrustGroupManager::GetInstance().CheckGroupsInfo(TEST_TRUST_GROUPS_EMPTY.c_str(), 1));
+}
+
+/**
+ * @tc.name: CheckTrustGroup_005
+ * @tc.desc: check trust group of interfaces
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileAuthorityTest, CheckTrustGroup_005, TestSize.Level3)
+{
+    EXPECT_EQ(false, TrustGroupManager::GetInstance().CheckGroupsInfo(TEST_TRUST_GROUPS_VISIABLE.c_str(), 1));
+    EXPECT_EQ(false, TrustGroupManager::GetInstance().CheckGroupsInfo(AUTHORITY_JSON_PATH.c_str(), 1));
 }
 }
 }
