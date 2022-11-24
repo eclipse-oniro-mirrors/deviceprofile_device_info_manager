@@ -1342,7 +1342,7 @@ HWTEST_F(ProfileStorageTest, RemoveDeviceData_003, TestSize.Level2)
 }
 
 /**
- * @tc.name: SyncDeviceProfile_003
+ * @tc.name: SyncDeviceProfile_004
  * @tc.desc: sync device profile
  * @tc.type: FUNC
  * @tc.require: I5QPGN
@@ -1355,6 +1355,42 @@ HWTEST_F(ProfileStorageTest, SyncDeviceProfile_004, TestSize.Level3)
     std::vector<std::string> deviceIds = {"", std::move("testudid123"), ""};
     int result = deviceProfileStorage->SyncDeviceProfile(deviceIds, SyncMode::PUSH);
     EXPECT_EQ(ERR_DP_UNTRUSTED_GROUP, result);
+}
+
+/**
+ * @tc.name: SyncDeviceProfile_005
+ * @tc.desc: sync device profile
+ * @tc.type: FUNC
+ * @tc.require: I5QPGN
+ */
+HWTEST_F(ProfileStorageTest, SyncDeviceProfile_005, TestSize.Level3)
+{
+    std::shared_ptr<OnlineSyncTable> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    std::vector<std::string> deviceIds = {"", std::move("testudid123"), ""};
+    std::map<std::string, DistributedKv::Status> results;
+    SyncCoordinator::GetInstance().Init();
+    SyncCoordinator::GetInstance().isOnlineTrigger_ = false;
+    onlineSyncTbl_->SyncCompleted(results);
+    SyncCoordinator::GetInstance().isOnlineTrigger_ = true;
+    onlineSyncTbl_->SyncCompleted(results);
+    results["success123"] = Status::SUCCESS;
+    results["test1"] = Status::ERROR;
+    onlineSyncTbl_->SyncCompleted(results);
+    results.clear();
+    results["success123"] = Status::SUCCESS;
+    results["test1"] = Status::ERROR;
+    results["test2"] = Status::ERROR;
+    results["test3"] = Status::ERROR;
+    results["test4"] = Status::ERROR;
+    std::vector<std::string> deviceIds1;
+    deviceIds1.emplace_back("test1");
+    deviceIds1.emplace_back("test2");
+    deviceIds1.emplace_back("test3");
+    deviceIds1.emplace_back("test4");
+    DpDeviceManager::GetInstance().deviceIdsList_.emplace_back(deviceIds1);
+    onlineSyncTbl_->SyncCompleted(results);
+    int result = onlineSyncTbl_->SyncDeviceProfile(deviceIds, SyncMode::PUSH);
+    EXPECT_EQ(0, result);
 }
 }
 }
