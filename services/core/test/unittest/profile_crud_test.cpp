@@ -286,6 +286,29 @@ HWTEST_F(ProfileCrudTest, SubscribeProfileEvent_001, TestSize.Level3)
 }
 
 /**
+ * @tc.name: SyncDeviceProfile_001
+ * @tc.desc: sync device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1U
+ */
+HWTEST_F(ProfileCrudTest, SyncDeviceProfile_001, TestSize.Level3)
+{
+    auto dps = DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    if (dps == nullptr) {
+        DTEST_LOG << "device profile service is nullptr" << std::endl;
+        return;
+    }
+
+    wptr<IRemoteObject> remote;
+    DistributedDeviceProfileClient::DeviceProfileDeathRecipient obj;
+    obj.OnRemoteDied(remote);
+    auto syncCb = std::make_shared<ProfileEventCallback>();
+    SyncOptions syncOptions;
+    int result = DistributedDeviceProfileClient::GetInstance().SyncDeviceProfile(syncOptions, syncCb);
+    EXPECT_EQ(ERR_DP_PERMISSION_DENIED, result);
+}
+
+/**
  * @tc.name: UnsubscribeProfileEvent_001
  * @tc.desc: unsubscribe device profile
  * @tc.type: FUNC
@@ -381,6 +404,7 @@ HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_003, TestSize.Level3)
  */
 HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_004, TestSize.Level3)
 {
+    TestUtil::MockPermission("distributedsched");
     auto dps = DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
     if (dps == nullptr) {
         DTEST_LOG << "device profile service is nullptr" << std::endl;
@@ -428,6 +452,7 @@ HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_005, TestSize.Level3)
  */
 HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_006, TestSize.Level3)
 {
+    TestUtil::MockPermission("distributedsched");
     auto callback = std::make_shared<ProfileEventCallback>();
     std::list<SubscribeInfo> subscribeInfos;
     std::list<std::string> serviceIds;
@@ -623,29 +648,6 @@ HWTEST_F(ProfileCrudTest, UnSubscribeProfileEvents_007, TestSize.Level3)
     int result =
         DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(profileEvents, callback, failedEvents);
     EXPECT_EQ(ERR_DP_NOT_SUBSCRIBED, result);
-}
-
-/**
- * @tc.name: SyncDeviceProfile_001
- * @tc.desc: sync device profile
- * @tc.type: FUNC
- * @tc.require: I4NY1U
- */
-HWTEST_F(ProfileCrudTest, SyncDeviceProfile_001, TestSize.Level3)
-{
-    auto dps = DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
-    if (dps == nullptr) {
-        DTEST_LOG << "device profile service is nullptr" << std::endl;
-        return;
-    }
-
-    wptr<IRemoteObject> remote;
-    DistributedDeviceProfileClient::DeviceProfileDeathRecipient obj;
-    obj.OnRemoteDied(remote);
-    auto syncCb = std::make_shared<ProfileEventCallback>();
-    SyncOptions syncOptions;
-    int result = DistributedDeviceProfileClient::GetInstance().SyncDeviceProfile(syncOptions, syncCb);
-    EXPECT_EQ(ERR_DP_PERMISSION_DENIED, result);
 }
 
 /**
@@ -873,6 +875,46 @@ HWTEST_F(ProfileCrudTest, DeleteDeviceProfile_003, TestSize.Level3)
 
     int32_t result = DistributedDeviceProfileClient::GetInstance().DeleteDeviceProfile("InputDeviceCooperation");
     EXPECT_EQ(0, result);
+}
+
+/**
+ * @tc.name: PutDeviceProfile_007
+ * @tc.desc: put device profile with empty service type
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileCrudTest, PutDeviceProfile_007, TestSize.Level3)
+{
+    ServiceCharacteristicProfile profile;
+    profile.SetServiceId("test");
+    profile.SetServiceType("test");
+    nlohmann::json j;
+    j["testVersion"] = "3.0.0";
+    j["testApiLevel"] = 7;
+    profile.SetCharacteristicProfileJson(j.dump());
+    profile.SetServiceProfileJson(j.dump());
+    int32_t result = DistributedDeviceProfileClient::GetInstance().PutDeviceProfile(profile);
+    EXPECT_NE(ERR_DP_INVALID_PARAMS, result);
+}
+
+/**
+ * @tc.name: PutDeviceProfile_008
+ * @tc.desc: put device profile with empty service type
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileCrudTest, PutDeviceProfile_008, TestSize.Level3)
+{
+    ServiceCharacteristicProfile profile;
+    profile.SetServiceId("test");
+    profile.SetServiceType("test");
+    nlohmann::json j;
+    j["testVersion"] = "3.0.0";
+    j["testApiLevel"] = 7;
+    profile.SetCharacteristicProfileJson(j.dump());
+    profile.SetServiceProfileJson(j.dump());
+    int32_t result = DistributedDeviceProfileClient::GetInstance().PutDeviceProfile(profile);
+    EXPECT_NE(ERR_DP_INVALID_PARAMS, result);
 }
 }
 }
