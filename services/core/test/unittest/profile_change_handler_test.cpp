@@ -23,8 +23,11 @@
 
 #define private public
 #define protected public
+#include "dp_device_manager.h"
 #include "profile_change_handler.h"
 #include "profile_event_handler.h"
+#include "profile_sync_handler.h"
+#include "sync_coordinator.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -380,6 +383,31 @@ HWTEST_F(ProfileChangeHandlerTest, NotifyProfileChanged_001, TestSize.Level3)
  */
 HWTEST_F(ProfileChangeHandlerTest, OnChange_001, TestSize.Level3)
 {
+    std::shared_ptr<ProfileSyncHandler> profileSyncHandler_ =
+        std::make_shared<ProfileSyncHandler>("profileSyncTest");
+    std::vector<std::string> deviceIds = {"", std::move("testudid123"), ""};
+    std::map<std::string, DistributedKv::Status> results;
+    SyncCoordinator::GetInstance().Init();
+    SyncCoordinator::GetInstance().isOnlineTrigger_ = false;
+    profileSyncHandler_->SyncCompleted(results);
+    SyncCoordinator::GetInstance().isOnlineTrigger_ = true;
+    profileSyncHandler_->SyncCompleted(results);
+    results["success123"] = Status::SUCCESS;
+    results["test1"] = Status::ERROR;
+    profileSyncHandler_->SyncCompleted(results);
+    results.clear();
+    results["success123"] = Status::SUCCESS;
+    results["test1"] = Status::ERROR;
+    results["test2"] = Status::ERROR;
+    results["test3"] = Status::ERROR;
+    results["test4"] = Status::ERROR;
+    std::vector<std::string> deviceIds1;
+    deviceIds1.emplace_back("test1");
+    deviceIds1.emplace_back("test2");
+    deviceIds1.emplace_back("test3");
+    deviceIds1.emplace_back("test4");
+    DpDeviceManager::GetInstance().deviceIdsList_.emplace_back(deviceIds1);
+    profileSyncHandler_->SyncCompleted(results);
     DistributedKv::ChangeNotification profileNotification({}, {}, {}, "", true);
     profileChangeHandler_->OnChange(profileNotification);
     ASSERT_TRUE(profileChangeHandler_->profileEventSubscribeInfos_.empty());
