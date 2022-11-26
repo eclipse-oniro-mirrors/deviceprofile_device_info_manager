@@ -16,6 +16,7 @@
 #include <gtest/gtest.h>
 
 #include "device_profile_errors.h"
+#include "distributed_device_profile_client.h"
 #include "distributed_device_profile_service.h"
 #include "subscribe_info.h"
 #include "utils.h"
@@ -37,6 +38,10 @@ public:
     void SetUp();
     void TearDown();
 };
+
+class StorageProfileEventCallback : public IProfileEventCallback {
+};
+
 
 void DistributedDeviceProfileServiceTest::SetUpTestCase()
 {
@@ -160,6 +165,64 @@ HWTEST_F(DistributedDeviceProfileServiceTest, Dump_002, TestSize.Level3)
     int32_t fd = 0;
     int32_t ret = DistributedDeviceProfileService::GetInstance().Dump(fd, args);
     EXPECT_EQ(ERR_DP_FILE_FAILED_ERR, ret);
+}
+
+/**
+ * @tc.name: PutDeviceProfile_001
+ * @tc.desc: put device service without permission
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(DistributedDeviceProfileServiceTest, PutDeviceProfile_001, TestSize.Level3)
+{
+    ServiceCharacteristicProfile profile;
+    profile.SetServiceId("");
+    profile.SetServiceType("");
+    int32_t ret = DistributedDeviceProfileService::GetInstance().PutDeviceProfile(profile);
+    EXPECT_EQ(ERR_DP_PERMISSION_DENIED, ret);
+}
+
+/**
+ * @tc.name: DeleteDeviceProfile_001
+ * @tc.desc: put device service without permission
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(DistributedDeviceProfileServiceTest, DeleteDeviceProfile_001, TestSize.Level3)
+{
+    int32_t ret = DistributedDeviceProfileService::GetInstance().DeleteDeviceProfile("");
+    EXPECT_EQ(ERR_DP_PERMISSION_DENIED, ret);
+}
+
+/**
+ * @tc.name: GetDeviceProfile_001
+ * @tc.desc: put device service without permission
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(DistributedDeviceProfileServiceTest, GetDeviceProfile_001, TestSize.Level3)
+{
+    ServiceCharacteristicProfile profile;
+    profile.SetServiceId("");
+    profile.SetServiceType("");
+    int32_t ret = DistributedDeviceProfileService::GetInstance().GetDeviceProfile("", "", profile);
+    EXPECT_EQ(ERR_DP_PERMISSION_DENIED, ret);
+}
+
+/**
+ * @tc.name: SyncDeviceProfile_001
+ * @tc.desc: put device service without permission
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(DistributedDeviceProfileServiceTest, SyncDeviceProfile_001, TestSize.Level3)
+{
+    auto syncCb = std::make_shared<StorageProfileEventCallback>();
+    sptr<IRemoteObject> notifier =
+        sptr<ProfileEventNotifierStub>(new ProfileEventNotifierStub(syncCb));
+    SyncOptions syncOptions;
+    int32_t ret = DistributedDeviceProfileService::GetInstance().SyncDeviceProfile(syncOptions, notifier);
+    EXPECT_EQ(ERR_DP_PERMISSION_DENIED, ret);
 }
 }
 }
