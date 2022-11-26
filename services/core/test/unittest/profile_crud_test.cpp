@@ -796,6 +796,44 @@ HWTEST_F(ProfileCrudTest, UnSubscribeProfileEvents_008, TestSize.Level3)
 }
 
 /**
+ * @tc.name: UnsubscribeProfileEvents_009
+ * @tc.desc: Subscribe device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1U
+ */
+HWTEST_F(ProfileCrudTest, UnSubscribeProfileEvents_009, TestSize.Level3)
+{
+    TestUtil::MockPermission("distributedsched");
+    auto callback = std::make_shared<ProfileEventCallback>();
+    std::list<SubscribeInfo> subscribeInfos;
+    std::list<std::string> serviceIds;
+    serviceIds.emplace_back("appInfo");
+    std::string deviceId = "";
+    ExtraInfo extraInfo;
+    extraInfo["deviceId"] = deviceId;
+    extraInfo["serviceIds"] = serviceIds;
+
+    SubscribeInfo info1;
+    info1.profileEvent = ProfileEvent::EVENT_PROFILE_CHANGED;
+    info1.extraInfo = std::move(extraInfo);
+    subscribeInfos.emplace_back(info1);
+
+    SubscribeInfo info2;
+    info2.profileEvent = ProfileEvent::EVENT_SYNC_COMPLETED;
+    subscribeInfos.emplace_back(info2);
+
+    std::list<ProfileEvent> failedEvents;
+    int result =
+        DistributedDeviceProfileClient::GetInstance().SubscribeProfileEvents(subscribeInfos, callback, failedEvents);
+    std::list<ProfileEvent> profileEvents;
+    profileEvents.emplace_back(ProfileEvent::EVENT_PROFILE_CHANGED);
+    profileEvents.emplace_back(ProfileEvent::EVENT_SYNC_COMPLETED);
+    result =
+        DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(profileEvents, callback, failedEvents);
+    EXPECT_EQ(0, result);
+}
+
+/**
  * @tc.name: SyncDeviceProfile_002
  * @tc.desc: sync device profile
  * @tc.type: FUNC
