@@ -41,6 +41,7 @@ namespace {
     const std::string CHARACTER_OS_SYSCAP = "ossyscap";
     const std::string DEVICE_PROFILE_SYNC_FAILED = "DEVICE_PROFILE_SYNC_FAILED";
     const std::string FAULT_CODE_KEY = "FAULT_CODE";
+    const std::string DOMAIN_NAME = std::string(HiSysEvent::Domain::DEVICE_PROFILE);
 }
 using namespace testing;
 using namespace testing::ext;
@@ -566,8 +567,12 @@ HWTEST_F(ProfileCrudTest, UnsubscribeProfileEvents_004, TestSize.Level3)
     std::list<SubscribeInfo> subscribeInfos1;
     std::list<SubscribeInfo> newSubscribeInfos1;
     SubscribeInfo subscribeInfo;
+    SubscribeInfo subscribeInfo11;
     subscribeInfos1.emplace_back(subscribeInfo);
     newSubscribeInfos1.emplace_back(subscribeInfo);
+    DistributedDeviceProfileClient::GetInstance().MergeSubscribeInfoLocked(subscribeInfos1, newSubscribeInfos1);
+    newSubscribeInfos1.clear();
+    newSubscribeInfos1.emplace_back(subscribeInfo11);
     DistributedDeviceProfileClient::GetInstance().MergeSubscribeInfoLocked(subscribeInfos1, newSubscribeInfos1);
     std::list<ProfileEvent> subscribeInfos;
     ProfileEvent subscribeInfo1;
@@ -736,7 +741,7 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_002, TestSize.Level3)
  */
 HWTEST_F(ProfileCrudTest, DfxErrorPrint_001, TestSize.Level3)
 {
-    int ret = HiSysEventWrite(HiSysEvent::Domain::DEVICE_PROFILE, DEVICE_PROFILE_SYNC_FAILED,
+    int ret = HiSysEvent::Write(DOMAIN_NAME, DEVICE_PROFILE_SYNC_FAILED,
         HiSysEvent::EventType::FAULT, FAULT_CODE_KEY, -1);
     EXPECT_EQ(0, ret);
 }
@@ -840,7 +845,7 @@ HWTEST_F(ProfileCrudTest, UnSubscribeProfileEvents_009, TestSize.Level3)
  */
 HWTEST_F(ProfileCrudTest, SyncDeviceProfile_002, TestSize.Level3)
 {
-    TestUtil::MockPermission("pasteboard_service");
+    TestUtil::MockPermission("multimodalinput");
     int64_t mode = 2;
     SyncOptions syncOption;
     syncOption.SetSyncMode((OHOS::DeviceProfile::SyncMode)mode);
@@ -952,6 +957,45 @@ HWTEST_F(ProfileCrudTest, PutDeviceProfile_008, TestSize.Level3)
     profile.SetServiceProfileJson(j.dump());
     int32_t result = DistributedDeviceProfileClient::GetInstance().PutDeviceProfile(profile);
     EXPECT_NE(ERR_DP_INVALID_PARAMS, result);
+}
+
+/**
+ * @tc.name: SubscribeProfileEvents_008
+ * @tc.desc: Subscribe device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1U
+ */
+HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_008, TestSize.Level3)
+{
+    TestUtil::MockPermission("distributedsched");
+    auto callback = std::make_shared<ProfileEventCallback>();
+    std::list<SubscribeInfo> subscribeInfos;
+    std::list<std::string> serviceIds;
+    serviceIds.emplace_back("appInfo");
+    std::string deviceId = "";
+    ExtraInfo extraInfo;
+    extraInfo["deviceId"] = deviceId;
+    extraInfo["serviceIds"] = serviceIds;
+
+    SubscribeInfo info1;
+    info1.profileEvent = ProfileEvent::EVENT_PROFILE_CHANGED;
+    info1.extraInfo = std::move(extraInfo);
+    subscribeInfos.emplace_back(info1);
+
+    SubscribeInfo info2;
+    info2.profileEvent = ProfileEvent::EVENT_SYNC_COMPLETED;
+    subscribeInfos.emplace_back(info2);
+
+    std::list<ProfileEvent> failedEvents;
+    DistributedDeviceProfileClient::SubscribeRecord subscribeRecord;
+    subscribeRecord.subscribeInfos = subscribeInfos;
+    subscribeRecord.notifier = sptr<ProfileEventNotifierStub>(
+        new ProfileEventNotifierStub(callback));
+    subscribeRecord.profileEvents.set(static_cast<uint32_t>(ProfileEvent::EVENT_PROFILE_CHANGED));
+    DistributedDeviceProfileClient::GetInstance().subscribeRecords_[callback] = subscribeRecord;
+    int result =
+        DistributedDeviceProfileClient::GetInstance().SubscribeProfileEvents(subscribeInfos, callback, failedEvents);
+    EXPECT_EQ(0, result);
 }
 }
 }
