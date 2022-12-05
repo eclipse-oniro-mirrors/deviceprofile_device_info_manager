@@ -21,6 +21,7 @@
 #include "device_profile_dumper.h"
 #undef private
 #undef protected
+#include "ipc_skeleton.h"
 #include "utils.h"
 
 namespace OHOS {
@@ -79,7 +80,7 @@ HWTEST_F(DeviceProfileDFXTest, DumpDefault_001, TestSize.Level3)
  * @tc.type: FUNC
  * @tc.require: I4NY1T
  */
-HWTEST_F(DeviceProfileDFXTest, CanDump_002, TestSize.Level3)
+HWTEST_F(DeviceProfileDFXTest, CanDump_001, TestSize.Level3)
 {
     auto dumper = std::make_shared<DeviceProfileDumper>();
     auto result = dumper->CanDump();
@@ -92,11 +93,89 @@ HWTEST_F(DeviceProfileDFXTest, CanDump_002, TestSize.Level3)
  * @tc.type: FUNC
  * @tc.require: I4NY1T
  */
-HWTEST_F(DeviceProfileDFXTest, Dump_003, TestSize.Level3)
+HWTEST_F(DeviceProfileDFXTest, Dump_001, TestSize.Level3)
 {
     auto dumper = std::make_shared<DeviceProfileDumper>();
     std::string msg;
     const std::vector<std::string> args;
+    auto result = dumper->Dump(args, msg);
+    EXPECT_EQ(false, result);
+}
+
+/**
+ * @tc.name: CanDump_002
+ * @tc.desc: CanDump
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(DeviceProfileDFXTest, CanDump_002, TestSize.Level3)
+{
+    setuid(1212);
+    auto dumper = std::make_shared<DeviceProfileDumper>();
+    auto result = dumper->CanDump();
+    EXPECT_EQ(true, result);
+}
+
+/**
+ * @tc.name: Dump_002
+ * @tc.desc: Dump
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(DeviceProfileDFXTest, Dump_002, TestSize.Level3)
+{
+    auto dumper = std::make_shared<DeviceProfileDumper>();
+    std::string msg;
+    const std::vector<std::string> args;
+    auto result = dumper->Dump(args, msg);
+    EXPECT_EQ(true, result);
+}
+
+/**
+ * @tc.name: Dump_003
+ * @tc.desc: Dump
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(DeviceProfileDFXTest, Dump_003, TestSize.Level3)
+{
+    auto dumper = std::make_shared<DeviceProfileDumper>();
+    std::string msg;
+    std::vector<std::string> args;
+    args.emplace_back("-h");
+    auto result = dumper->Dump(args, msg);
+    EXPECT_EQ(true, result);
+}
+
+/**
+ * @tc.name: Dump_004
+ * @tc.desc: Dump
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(DeviceProfileDFXTest, Dump_004, TestSize.Level3)
+{
+    auto dumper = std::make_shared<DeviceProfileDumper>();
+    std::string msg;
+    std::vector<std::string> args;
+    args.emplace_back("-g");
+    auto result = dumper->Dump(args, msg);
+    EXPECT_EQ(false, result);
+}
+
+/**
+ * @tc.name: Dump_005
+ * @tc.desc: Dump
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(DeviceProfileDFXTest, Dump_005, TestSize.Level3)
+{
+    auto dumper = std::make_shared<DeviceProfileDumper>();
+    std::string msg;
+    std::vector<std::string> args;
+    args.emplace_back("-h");
+    args.emplace_back("-g");
     auto result = dumper->Dump(args, msg);
     EXPECT_EQ(false, result);
 }
