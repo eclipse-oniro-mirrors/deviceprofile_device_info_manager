@@ -17,6 +17,13 @@
 
 #include "utils.h"
 
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
 #define private public
 #define protected public
 #include "device_profile_errors.h"
@@ -59,10 +66,30 @@ public:
     static void TearDownTestCase();
     void SetUp();
     void TearDown();
+    pid_t getProcessPidByName(const char* proc_name);
+
 public:
     std::shared_ptr<DeviceProfileStorage> deviceProfileStorage;
     std::shared_ptr<DistributedKv::SingleKvStore> kvStorePtr_;
 };
+using namespace std;
+
+pid_t ProfileStorageTest::getProcessPidByName(const char* proc_name)
+{
+    FILE *fp;
+    char buf[100];
+    char cmd[200] = {'\0'};
+    pid_t pid = -1;
+    sprintf(cmd, "pidof %s", proc_name);
+
+    if ((fp = popen(cmd, "r")) != NULL) {
+        if (fgets(buf, 255, fp) != NULL) {
+            pid = atoi(buf);
+        }
+    }
+    pclose(fp);
+    return pid;
+}
 
 ProfileStorageTest::ProfileStorageTest()
 {
@@ -1390,6 +1417,83 @@ HWTEST_F(ProfileStorageTest, SyncDeviceProfile_005, TestSize.Level3)
     DpDeviceManager::GetInstance().deviceIdsList_.emplace_back(deviceIds1);
     onlineSyncTbl_->SyncCompleted(results);
     int result = onlineSyncTbl_->SyncDeviceProfile(deviceIds, SyncMode::PUSH);
+    EXPECT_EQ(0, result);
+}
+
+/**
+ * @tc.name: PutDeviceProfile_009
+ * @tc.desc: put device profile with empty service id
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, PutDeviceProfile_009, TestSize.Level3)
+{
+    DeviceProfileStorageManager::GetInstance().onlineSyncTbl_->initStatus_ = StorageInitStatus::INIT_SUCCEED;
+    ServiceCharacteristicProfile profile;
+    profile.SetServiceId("testttt");
+    profile.SetServiceType("testttt");
+    nlohmann::json j;
+    j["testVersion"] = "3.0.0";
+    j["testApiLevel"] = 8;
+    profile.SetCharacteristicProfileJson(j.dump());
+    nlohmann::json j1;
+    j1["type"] = "testttt";
+    DeviceProfileStorageManager::GetInstance().servicesJson_["testttt"] = j1;
+    int32_t result = DeviceProfileStorageManager::GetInstance().PutDeviceProfile(profile);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+}
+
+/**
+ * @tc.name: WaitKvDataService_002
+ * @tc.desc: sync device profile
+ * @tc.type: FUNC
+ * @tc.require: I5QPGN
+ */
+HWTEST_F(ProfileStorageTest, WaitKvDataService_002, TestSize.Level3)
+{
+    std::string pidName = "distributeddata";
+    pid_t pid = getProcessPidByName(pidName.c_str());
+    kill(pid, SIGKILL);
+    bool result = DeviceProfileStorageManager::GetInstance().WaitKvDataService();
+    EXPECT_EQ(true, result);
+}
+
+/**
+ * @tc.name: SetServiceType_005
+ * @tc.desc: set service type
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, SetServiceType_005, TestSize.Level3)
+{
+    deviceProfileStorage->Init();
+    ServiceCharacteristicProfile profile;
+    nlohmann::json j;
+    j["testVersion"] = "3.0.0";
+    j["testApiLevel"] = 8;
+    profile.SetCharacteristicProfileJson(j.dump());
+    std::vector<std::string> keys;
+    std::vector<std::string> values;
+    keys.emplace_back(DeviceProfileStorageManager::GetInstance().GenerateKey(
+        "test123udid", "services", KeyType::SERVICE_LIST));
+    values.emplace_back(profile.GetCharacteristicProfileJson());
+    int result = -1;
+    if (deviceProfileStorage->kvStorePtr_ == nullptr) {
+        deviceProfileStorage->kvStorePtr_ = kvStorePtr_;
+    }
+    if (deviceProfileStorage != nullptr) {
+        result = deviceProfileStorage->PutDeviceProfile(keys[0], values[0]);
+    }
+    DeviceProfileStorageManager::GetInstance().onlineSyncTbl_ = deviceProfileStorage;
+    
+    std::string udid = "test123udid";
+    std::string serviceId = "test";
+    DeviceProfileStorageManager::GetInstance().SetServiceType(udid, serviceId, profile);
+    std::shared_ptr<DistributedKv::KvStoreSyncCallback> syncCallback =
+        std::make_shared<ProfileSyncHandler>();
+    DeviceProfileStorageManager::GetInstance().kvStoreObserver_ = std::make_shared<DistributedKv::KvStoreObserver>();
+    DeviceProfileStorageManager::GetInstance().kvStoreSyncCallback_ = syncCallback;
+    DeviceProfileStorageManager::GetInstance().RegisterCallbacks();
     EXPECT_EQ(0, result);
 }
 }

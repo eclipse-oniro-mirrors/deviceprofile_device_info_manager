@@ -15,6 +15,7 @@
 
 #include <gtest/gtest.h>
 
+#include "profile_event_handler_factory.h"
 #include "subscribe_info.h"
 #include "subscribe_info_checker.h"
 #include "utils.h"
@@ -164,6 +165,51 @@ HWTEST_F(SubscribeInfoCheckerTest, Check_007, TestSize.Level3)
     std::list<SubscribeInfo> infos(1, subInfo);
     bool ret = SubscribeInfoChecker::GetInstance().Check(infos);
     ASSERT_TRUE(ret);
+}
+
+/**
+ * @tc.name: Check_007
+ * @tc.desc: Check
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeInfoCheckerTest, Check_008, TestSize.Level3)
+{
+    SubscribeInfo subInfo;
+    subInfo.extraInfo["serviceIds"] = nullptr;
+    subInfo.profileEvent = ProfileEvent::EVENT_PROFILE_CHANGED;
+    std::list<SubscribeInfo> infos(1, subInfo);
+    bool ret = SubscribeInfoChecker::GetInstance().Check(infos);
+    ASSERT_FALSE(ret);
+}
+
+/**
+ * @tc.name: Check_007
+ * @tc.desc: Check
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeInfoCheckerTest, Check_009, TestSize.Level3)
+{
+    SubscribeInfo subInfo;
+    subInfo.extraInfo["deviceId"] = nullptr;
+    subInfo.profileEvent = ProfileEvent::EVENT_PROFILE_CHANGED;
+    std::list<SubscribeInfo> infos(1, subInfo);
+    bool ret = SubscribeInfoChecker::GetInstance().Check(infos);
+    ASSERT_FALSE(ret);
+}
+
+/**
+ * @tc.name: GetHandler_001
+ * @tc.desc: GetHandler
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeInfoCheckerTest, GetHandler_001, TestSize.Level3)
+{
+    auto result = ProfileEventHandlerFactory::GetInstance().GetHandler(ProfileEvent::EVENT_PROFILE_END);
+    DTEST_LOG << "result: " << result << std::endl;
+    EXPECT_EQ(nullptr, result);
 }
 }
 }
