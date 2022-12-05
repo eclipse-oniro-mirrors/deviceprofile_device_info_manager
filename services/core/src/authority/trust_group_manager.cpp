@@ -114,10 +114,6 @@ bool TrustGroupManager::CheckGroupsInfo(const char* returnGroups, uint32_t group
     }
 
     std::vector<GroupInfo> groupInfos = jsonObject.get<std::vector<GroupInfo>>();
-    if (groupInfos.empty()) {
-        HILOGE("failed, groupInfos is empty");
-        return false;
-    }
     for (const auto& groupInfo : groupInfos) {
         // check group visibility is whether public or not
         if (groupInfo.groupVisibility != VISIBILITY_PUBLIC) {
