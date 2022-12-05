@@ -23,6 +23,7 @@
 #include "authority_manager.h"
 #include "device_manager.h"
 #include "dp_device_manager.h"
+#include "sync_coordinator.h"
 #include "trust_group_manager.h"
 #undef private
 #undef protected
@@ -43,6 +44,8 @@ const std::string TEST_TRUST_GROUPS =
     "[{\"groupId\":\"id\",\"groupType\":0,\"groupName\":\"name\",\"groupOwner\":\"test\",\"groupVisibility\":1}]";
 const std::string TEST_TRUST_GROUPS_VISIABLE =
     "[{\"groupId\":\"id\",\"groupType\":0,\"groupName\":\"name\",\"groupOwner\":\"test\",\"groupVisibility\":-1}]";
+const std::string TEST_TRUST_GROUPS_SAMEACCOUNT =
+    "[{\"groupId\":\"id\",\"groupType\":256,\"groupName\":\"name\",\"groupOwner\":\"test\",\"groupVisibility\":-1}]";
 const std::string TEST_TRUST_GROUP_EMPTY = "{}";
 const std::string TEST_TRUST_GROUPS_EMPTY = "[{}]";
 const std::string INVALID_AUTHORITY_STR =
@@ -50,6 +53,12 @@ const std::string INVALID_AUTHORITY_STR =
 const std::string VALID_AUTHORITY_STR = "{\"hdcd\":{\"servicesAuthority\":{\"all\":1,\"specific\":" \
     "{\"storage\":3,\"system\":3},\"prefix\":{\"cameraRear\":3}},\"interfacesAuthority\":{\"sync\":{}}}}";
 const std::string PKG_NAME = "DBinderBus_" + std::to_string(getpid());
+const std::string INVALID_INTERFACE_SERVICE = "{\"invalidinterface\":\"invalid\"";
+const std::string INVALID_INTERFACE_VALUE = "{\"interfacesAuthority\":\"invalid\"";
+const std::string INVALID_SERVIES_SPE = "{\"specific\":{\"storage\":\"3\"}}";
+const std::string INVALID_SERVIES_PRE = "{\"prefix\":{\"storage\":\"3\"}}";
+const std::string EMPTY_INTERFACE_VALUE = "{\"interfacesAuthority\":\"\"";
+const std::string EMPTY_AUTHORITY_STR = "{\"distributedsched\":\"\"";
 }
 
 class ProfileAuthorityTest : public testing::Test {
@@ -231,6 +240,12 @@ HWTEST_F(ProfileAuthorityTest, CheckAuthority_007, TestSize.Level2)
         {"storage", "system"}));
     EXPECT_EQ(true, AuthorityManager::GetInstance().CheckServicesAuthority(AuthValue::AUTH_W,
         {"cameraRear1", "cameraRear2", "cameraRear3", "storage", "system"}));
+
+    if (!LoadAuthorityByStr(INVALID_AUTHORITY_STR)) {
+        return;
+    }
+    EXPECT_EQ(false, AuthorityManager::GetInstance().CheckServicesAuthority(AuthValue::AUTH_W,
+        {"storage", "system"}));
 }
 
 /**
@@ -248,6 +263,11 @@ HWTEST_F(ProfileAuthorityTest, CheckAuthority_008, TestSize.Level2)
     EXPECT_EQ(true, AuthorityManager::GetInstance().CheckInterfaceAuthority("sync"));
     EXPECT_EQ(false, AuthorityManager::GetInstance().CheckInterfaceAuthority("fakeInterface"));
     EXPECT_EQ(false, AuthorityManager::GetInstance().CheckInterfaceAuthority(""));
+
+    if (!LoadAuthorityByStr(INVALID_AUTHORITY_STR)) {
+        return;
+    }
+    EXPECT_EQ(false, AuthorityManager::GetInstance().CheckInterfaceAuthority("sync"));
 }
 
 /**
@@ -263,6 +283,73 @@ HWTEST_F(ProfileAuthorityTest, CheckAuthority_009, TestSize.Level2)
     }
 
     EXPECT_EQ(false, AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_R, "syscap"));
+}
+
+/**
+ * @tc.name: CheckAuthority_0010
+ * @tc.desc: check authority of interfaces
+ * @tc.type: FUNC
+ * @tc.require: I4OH94
+ */
+HWTEST_F(ProfileAuthorityTest, CheckAuthority_0010, TestSize.Level2)
+{
+    nlohmann::json jsonObject = nlohmann::json::parse(INVALID_INTERFACE_SERVICE, nullptr, false);
+    if (jsonObject.is_discarded()) {
+        return;
+    }
+
+    EXPECT_EQ(false, AuthorityManager::GetInstance().ValidateProcess(jsonObject));
+}
+
+/**
+ * @tc.name: CheckAuthority_0011
+ * @tc.desc: check authority of interfaces
+ * @tc.type: FUNC
+ * @tc.require: I4OH94
+ */
+HWTEST_F(ProfileAuthorityTest, CheckAuthority_0011, TestSize.Level2)
+{
+    nlohmann::json jsonObject = nlohmann::json::parse(INVALID_INTERFACE_VALUE, nullptr, false);
+    if (jsonObject.is_discarded()) {
+        return;
+    }
+
+    EXPECT_EQ(false, AuthorityManager::GetInstance().ValidateProcess(jsonObject));
+    EXPECT_EQ(false, AuthorityManager::GetInstance().ValidateInterfaces(jsonObject));
+
+    jsonObject = nlohmann::json::parse(EMPTY_INTERFACE_VALUE, nullptr, false);
+    if (jsonObject.is_discarded()) {
+        return;
+    }
+    EXPECT_EQ(false, AuthorityManager::GetInstance().ValidateInterfaces(jsonObject));
+}
+
+/**
+ * @tc.name: CheckAuthority_0012
+ * @tc.desc: check authority of interfaces
+ * @tc.type: FUNC
+ * @tc.require: I4OH94
+ */
+HWTEST_F(ProfileAuthorityTest, CheckAuthority_0012, TestSize.Level2)
+{
+    nlohmann::json jsonObject = nlohmann::json::parse(TEST_TRUST_GROUP_EMPTY, nullptr, false);
+    if (jsonObject.is_discarded()) {
+        return;
+    }
+    EXPECT_EQ(false, AuthorityManager::GetInstance().ValidateServices(jsonObject));
+    EXPECT_EQ(false, AuthorityManager::GetInstance().ValidateInterfaces(jsonObject));
+
+    jsonObject = nlohmann::json::parse(INVALID_SERVIES_SPE, nullptr, false);
+    if (jsonObject.is_discarded()) {
+        return;
+    }    
+    EXPECT_EQ(false, AuthorityManager::GetInstance().ValidateServices(jsonObject));
+
+    jsonObject = nlohmann::json::parse(INVALID_SERVIES_PRE, nullptr, false);
+    if (jsonObject.is_discarded()) {
+        return;
+    }
+    EXPECT_EQ(false, AuthorityManager::GetInstance().ValidateServices(jsonObject));
 }
 
 /**
@@ -351,7 +438,6 @@ HWTEST_F(ProfileAuthorityTest, InitHichainService_002, TestSize.Level2)
         std::make_shared<DeviceInitCallBack>();
     DeviceManager::GetInstance().InitDeviceManager(PKG_NAME, initCallback_);
     DpDeviceManager::GetInstance().GetLocalDeviceUdid(localDeviceId);
-    DTEST_LOG << "device profile service is nullptr" + localDeviceId << std::endl;
     TrustGroupManager::GetInstance().OnDeviceUnBoundAdapter(localDeviceId.c_str(), "");
     EXPECT_EQ(true, TrustGroupManager::GetInstance().InitHichainService());
 }
@@ -427,6 +513,7 @@ HWTEST_F(ProfileAuthorityTest, CheckTrustGroup_004, TestSize.Level3)
 HWTEST_F(ProfileAuthorityTest, CheckTrustGroup_005, TestSize.Level3)
 {
     EXPECT_EQ(false, TrustGroupManager::GetInstance().CheckGroupsInfo(TEST_TRUST_GROUPS_VISIABLE.c_str(), 1));
+    EXPECT_EQ(true, TrustGroupManager::GetInstance().CheckGroupsInfo(TEST_TRUST_GROUPS_SAMEACCOUNT.c_str(), 1));
     EXPECT_EQ(false, TrustGroupManager::GetInstance().CheckGroupsInfo(AUTHORITY_JSON_PATH.c_str(), 1));
 }
 }
