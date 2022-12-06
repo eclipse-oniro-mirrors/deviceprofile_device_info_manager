@@ -66,30 +66,11 @@ public:
     static void TearDownTestCase();
     void SetUp();
     void TearDown();
-    pid_t getProcessPidByName(const char* proc_name);
 
 public:
     std::shared_ptr<DeviceProfileStorage> deviceProfileStorage;
     std::shared_ptr<DistributedKv::SingleKvStore> kvStorePtr_;
 };
-using namespace std;
-
-pid_t ProfileStorageTest::getProcessPidByName(const char* proc_name)
-{
-    FILE *fp;
-    char buf[100];
-    char cmd[200] = {'\0'};
-    pid_t pid = -1;
-    sprintf(cmd, "pidof %s", proc_name);
-
-    if ((fp = popen(cmd, "r")) != NULL) {
-        if (fgets(buf, 255, fp) != NULL) {
-            pid = atoi(buf);
-        }
-    }
-    pclose(fp);
-    return pid;
-}
 
 ProfileStorageTest::ProfileStorageTest()
 {
@@ -1441,21 +1422,6 @@ HWTEST_F(ProfileStorageTest, PutDeviceProfile_009, TestSize.Level3)
     DeviceProfileStorageManager::GetInstance().servicesJson_["testttt"] = j1;
     int32_t result = DeviceProfileStorageManager::GetInstance().PutDeviceProfile(profile);
     EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
-}
-
-/**
- * @tc.name: WaitKvDataService_002
- * @tc.desc: sync device profile
- * @tc.type: FUNC
- * @tc.require: I5QPGN
- */
-HWTEST_F(ProfileStorageTest, WaitKvDataService_002, TestSize.Level3)
-{
-    std::string pidName = "distributeddata";
-    pid_t pid = getProcessPidByName(pidName.c_str());
-    kill(pid, SIGKILL);
-    bool result = DeviceProfileStorageManager::GetInstance().WaitKvDataService();
-    EXPECT_EQ(true, result);
 }
 
 /**
