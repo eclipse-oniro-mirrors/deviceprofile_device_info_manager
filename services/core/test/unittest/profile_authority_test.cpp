@@ -342,7 +342,7 @@ HWTEST_F(ProfileAuthorityTest, CheckAuthority_0012, TestSize.Level2)
     jsonObject = nlohmann::json::parse(INVALID_SERVIES_SPE, nullptr, false);
     if (jsonObject.is_discarded()) {
         return;
-    }    
+    }
     EXPECT_EQ(false, AuthorityManager::GetInstance().ValidateServices(jsonObject));
 
     jsonObject = nlohmann::json::parse(INVALID_SERVIES_PRE, nullptr, false);
