@@ -13,9 +13,9 @@
 
 domain: DEVICE_PROFILE
 
-DEVICE_PROFILE_SYNC_EVENT:
+DP_SYNC_EVENT:
   __BASE: {type: BEHAVIOR, level: MINOR, tag: deviceProfileSyn, desc: device profile sync}
 
-DEVICE_PROFILE_SYNC_FAILED:
+DP_SYNC_FAILED:
   __BASE: {type: FAULT, level: CRITICAL, desc: device profile sync failed}
   FAULT_CODE: {type: INT32, desc: fault code}

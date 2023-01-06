@@ -44,8 +44,8 @@ const std::string TAG = "DeviceProfileStorageManager";
 
 const std::string SERVICE_TYPE = "type";
 const std::string SERVICES = "services";
-const std::string DEVICE_PROFILE_SYNC_FAILED = "DEVICE_PROFILE_SYNC_FAILED";
-const std::string DEVICE_PROFILE_SYNC_EVENT = "DEVICE_PROFILE_SYNC_EVENT";
+const std::string DP_SYNC_FAILED = "DP_SYNC_FAILED";
+const std::string DP_SYNC_EVENT = "DP_SYNC_EVENT";
 const std::string FAULT_CODE_KEY = "FAULT_CODE";
 const std::string DP_DEVICE_PUT_TRACE = "DP_DEVICE_PUT";
 const std::string DP_DEVICE_GET_TRACE = "DP_DEVICE_GET";
@@ -325,7 +325,7 @@ int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOp
     StartAsyncTrace(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_SYNC_TRACE, FIX_TASK_ID);
     auto syncTask = [syncOptions, this]() {
         HILOGI("start sync");
-        ReportBehaviorEvent(DEVICE_PROFILE_SYNC_EVENT);
+        ReportBehaviorEvent(DP_SYNC_EVENT);
         auto devicesList = syncOptions.GetDeviceList();
         if (devicesList.empty()) {
             DpDeviceManager::GetInstance().GetDeviceIdList(devicesList);
@@ -334,7 +334,7 @@ int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOp
         std::vector<std::string> devicesVector(std::vector<std::string> { devicesList.begin(), devicesList.end() });
         int32_t result = onlineSyncTbl_->SyncDeviceProfile(devicesVector, syncOptions.GetSyncMode());
         if (result != ERR_OK) {
-            ReportFaultEvent(DEVICE_PROFILE_SYNC_FAILED, FAULT_CODE_KEY, result);
+            ReportFaultEvent(DP_SYNC_FAILED, FAULT_CODE_KEY, result);
             HILOGE("sync failed result : %{public}d", result);
             NotifySyncCompleted();
             return;

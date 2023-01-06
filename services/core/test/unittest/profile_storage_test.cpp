@@ -47,7 +47,6 @@ namespace {
     const std::string SERVICE_TYPE = "test";
     const std::string CHARACTER_PRIVATE_SYSCAP = "privatesyscap";
     const std::string CHARACTER_OS_SYSCAP = "ossyscap";
-    const std::string DEVICE_PROFILE_SYNC_FAILED = "DEVICE_PROFILE_SYNC_FAILED";
     const std::string FAULT_CODE_KEY = "FAULT_CODE";
     const std::string DOMAIN_NAME = std::string(HiSysEvent::Domain::DEVICE_PROFILE);
     const std::string APP_ID = "distributed_device_profile_service";

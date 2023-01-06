@@ -39,7 +39,7 @@ namespace {
     const std::string SERVICE_TYPE = "syscap";
     const std::string CHARACTER_PRIVATE_SYSCAP = "privatesyscap";
     const std::string CHARACTER_OS_SYSCAP = "ossyscap";
-    const std::string DEVICE_PROFILE_SYNC_FAILED = "DEVICE_PROFILE_SYNC_FAILED";
+    const std::string DP_SYNC_FAILED = "DP_SYNC_FAILED";
     const std::string FAULT_CODE_KEY = "FAULT_CODE";
     const std::string DOMAIN_NAME = std::string(HiSysEvent::Domain::DEVICE_PROFILE);
 }
@@ -741,7 +741,7 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_002, TestSize.Level3)
  */
 HWTEST_F(ProfileCrudTest, DfxErrorPrint_001, TestSize.Level3)
 {
-    int ret = HiSysEvent::Write(DOMAIN_NAME, DEVICE_PROFILE_SYNC_FAILED,
+    int ret = HiSysEvent::Write(DOMAIN_NAME, DP_SYNC_FAILED,
         HiSysEvent::EventType::FAULT, FAULT_CODE_KEY, -1);
     EXPECT_EQ(0, ret);
 }
