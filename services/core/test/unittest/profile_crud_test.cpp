@@ -741,7 +741,7 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_002, TestSize.Level3)
  */
 HWTEST_F(ProfileCrudTest, DfxErrorPrint_001, TestSize.Level3)
 {
-    int ret = HiSysEvent::Write(DOMAIN_NAME, DP_SYNC_FAILED,
+    int ret = HiSysEventWrite(HiSysEvent::Domain::DEVICE_PROFILE, DP_SYNC_FAILED,
         HiSysEvent::EventType::FAULT, FAULT_CODE_KEY, -1);
     EXPECT_EQ(0, ret);
 }
