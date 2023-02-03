@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -50,6 +50,12 @@ bool SyncCoordinator::AcquireSync()
 void SyncCoordinator::ReleaseSync()
 {
     isOnSync_ = false;
+}
+
+bool SyncCoordinator::IsOnSync()
+{
+    HILOGI("isOnSync_ %{public}s", std::to_string(isOnSync_).c_str());
+    return isOnSync_;
 }
 
 void SyncCoordinator::SetSyncTrigger(bool isOnlineTrigger)

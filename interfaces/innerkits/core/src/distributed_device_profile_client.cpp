@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,6 +27,7 @@
 #include <unistd.h>
 #include <utility>
 
+#include "callback/device_profile_load_callback.h"
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "event_handler.h"
@@ -47,10 +48,61 @@ using namespace std::chrono_literals;
 namespace {
 const std::string TAG = "DistributedDeviceProfileClient";
 const std::string JSON_NULL = "null";
-constexpr int32_t RETRY_TIMES_GET_SERVICE = 5;
+constexpr int32_t DP_LOADSA_TIMEOUT_MS = 10000;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileClient);
+
+bool DistributedDeviceProfileClient::LoadDeviceProfileService()
+{
+    std::unique_lock<std::mutex> lock(serviceLock_);
+    sptr<DeviceProfileLoadCallback> loadCallback = new DeviceProfileLoadCallback();
+    if (loadCallback == nullptr) {
+        HILOGE("loadCallback is nullptr.");
+        return false;
+    }
+
+    auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    if (samgrProxy == nullptr) {
+        HILOGE("get samgr failed");
+        return false;
+    }
+
+    int32_t ret = samgrProxy->LoadSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, loadCallback);
+    if (ret != ERR_OK) {
+        HILOGE("Failed to Load systemAbility");
+        return false;
+    }
+
+    auto waitStatus = proxyConVar_.wait_for(lock, std::chrono::milliseconds(DP_LOADSA_TIMEOUT_MS),
+        [this]() { return dpProxy_ != nullptr; });
+    if (!waitStatus) {
+        HILOGE("dp load sa timeout");
+        return false;
+    }
+    return true;
+}
+
+void DistributedDeviceProfileClient::LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject)
+{
+    HILOGI("DistributedDeviceProfileClient FinishStartSA");
+    std::lock_guard<std::mutex> lock(serviceLock_);
+    if (dpDeathRecipient_ == nullptr) {
+        dpDeathRecipient_ = sptr<IRemoteObject::DeathRecipient>(
+            new DeviceProfileDeathRecipient);
+    }
+    if (remoteObject != nullptr) {
+        remoteObject->AddDeathRecipient(dpDeathRecipient_);
+        dpProxy_ = iface_cast<IDistributedDeviceProfile>(remoteObject);
+        proxyConVar_.notify_one();
+    }
+}
+
+void DistributedDeviceProfileClient::LoadSystemAbilityFail()
+{
+    std::lock_guard<std::mutex> lock(serviceLock_);
+    dpProxy_ = nullptr;
+}
 
 int32_t DistributedDeviceProfileClient::PutDeviceProfile(const ServiceCharacteristicProfile& profile)
 {
@@ -60,6 +112,7 @@ int32_t DistributedDeviceProfileClient::PutDeviceProfile(const ServiceCharacteri
 
     auto dps = GetDeviceProfileService();
     if (dps == nullptr) {
+        HILOGE("get dp service failed");
         return ERR_DP_GET_SERVICE_FAILED;
     }
     return dps->PutDeviceProfile(profile);
@@ -214,29 +267,41 @@ int32_t DistributedDeviceProfileClient::SyncDeviceProfile(const SyncOptions& syn
 
 sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfileService()
 {
-    std::lock_guard<std::mutex> lock(serviceLock_);
-    if (dpProxy_ != nullptr) {
-        return dpProxy_;
+    {
+        std::lock_guard<std::mutex> lock(serviceLock_);
+        if (dpProxy_ != nullptr) {
+            return dpProxy_;
+        }
+        auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+        if (samgrProxy == nullptr) {
+            HILOGE("get samgr failed");
+            return nullptr;
+        }
+        auto object = samgrProxy->GetSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID);
+        if (object != nullptr) {
+            HILOGI("get service succeeded");
+            if (dpDeathRecipient_ == nullptr) {
+                dpDeathRecipient_ = sptr<IRemoteObject::DeathRecipient>(
+                    new DeviceProfileDeathRecipient);
+            }
+            object->AddDeathRecipient(dpDeathRecipient_);
+            dpProxy_ = iface_cast<IDistributedDeviceProfile>(object);
+            return dpProxy_;
+        }
     }
 
-    auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    if (samgrProxy == nullptr) {
-        HILOGE("get samgr failed");
-        return nullptr;
+    HILOGW("object is null");
+    if (LoadDeviceProfileService()) {
+        std::lock_guard<std::mutex> lock(serviceLock_);
+        if (dpProxy_ != nullptr) {
+            return dpProxy_;
+        } else {
+            HILOGE("load dp service failed");
+            return nullptr;
+        }
     }
-    auto object = samgrProxy->GetSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID);
-    if (object == nullptr) {
-        HILOGE("get service failed");
-        return nullptr;
-    }
-    HILOGI("get service succeeded");
-    if (dpDeathRecipient_ == nullptr) {
-        dpDeathRecipient_ = sptr<IRemoteObject::DeathRecipient>(
-            new DeviceProfileDeathRecipient);
-    }
-    object->AddDeathRecipient(dpDeathRecipient_);
-    dpProxy_ = iface_cast<IDistributedDeviceProfile>(object);
-    return dpProxy_;
+    HILOGE("load dp service failed");
+    return nullptr;
 }
 
 bool DistributedDeviceProfileClient::CheckProfileInvalidity(const ServiceCharacteristicProfile& profile)
@@ -267,45 +332,8 @@ void DistributedDeviceProfileClient::MergeSubscribeInfoLocked(std::list<Subscrib
 void DistributedDeviceProfileClient::OnServiceDied(const sptr<IRemoteObject>& remote)
 {
     HILOGI("called");
-    {
-        std::lock_guard<std::mutex> lock(serviceLock_);
-        dpProxy_ = nullptr;
-    }
-
-    std::lock_guard<std::mutex> lock(subscribeLock_);
-    if (dpClientHandler_ == nullptr) {
-        auto runner = AppExecFwk::EventRunner::Create("dpclient" + std::to_string(getpid()));
-        dpClientHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
-    }
-
-    // try resubscribe when device profile service died
-    auto resubscribe = [this]() {
-        int32_t retryTimes = 0;
-        sptr<IDistributedDeviceProfile> dps;
-        do {
-            std::this_thread::sleep_for(500ms);
-            dps = GetDeviceProfileService();
-            if (dps != nullptr) {
-                HILOGI("get service succeeded");
-                break;
-            }
-            if (retryTimes++ == RETRY_TIMES_GET_SERVICE) {
-                HILOGE("get service timeout");
-                return;
-            }
-        } while (true);
-
-        std::list<ProfileEvent> failedEvents;
-        std::lock_guard<std::mutex> lock(subscribeLock_);
-        for (const auto& [_, subscribeRecord] : subscribeRecords_) {
-            int32_t errCode = dps->SubscribeProfileEvents(subscribeRecord.subscribeInfos,
-                subscribeRecord.notifier, failedEvents);
-            HILOGI("resubscribe result = %{public}d", errCode);
-        }
-    };
-    if (dpClientHandler_ != nullptr && !dpClientHandler_->PostTask(resubscribe)) {
-        HILOGE("post task failed");
-    }
+    std::lock_guard<std::mutex> lock(serviceLock_);
+    dpProxy_ = nullptr;
 }
 
 void DistributedDeviceProfileClient::DeviceProfileDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)

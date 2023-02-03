@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,8 +17,9 @@
 #define OHOS_DISTRIBUTED_DEVICE_PROFILE_SERVICE_H
 
 #include "distributed_device_profile_stub.h"
+#include "event_handler.h"
+#include "event_runner.h"
 #include "single_instance.h"
-
 #include "system_ability.h"
 
 namespace OHOS {
@@ -44,13 +45,20 @@ public:
     int32_t SyncDeviceProfile(const SyncOptions& syncOptions,
         const sptr<IRemoteObject>& profileEventNotifier) override;
     int32_t Dump(int32_t fd, const std::vector<std::u16string>& args) override;
+    void DelayUnloadTask() override;
+    void DeviceOnline();
 
 protected:
-    void OnStart() override;
+    void OnStart(const std::unordered_map<std::string, std::string>& startReason) override;
     void OnStop() override;
+    int32_t OnIdle(const std::unordered_map<std::string, std::string>& idleReason) override;
 
 private:
     bool Init();
+private:
+    std::shared_ptr<AppExecFwk::EventHandler> unloadHandler_;
+    std::mutex unloadMutex_;
+    std::atomic<bool> isOnline_ {false};
 };
 } // namespace DeviceProfile
 } // namespace OHOS

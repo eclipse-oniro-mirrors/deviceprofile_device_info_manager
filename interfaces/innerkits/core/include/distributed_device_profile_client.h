@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -56,6 +56,8 @@ public:
         std::list<ProfileEvent>& failedEvents);
     int32_t SyncDeviceProfile(const SyncOptions& syncOptions,
         const std::shared_ptr<IProfileEventCallback>& syncCb);
+    void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
+    void LoadSystemAbilityFail();
 
 private:
     class DeviceProfileDeathRecipient : public IRemoteObject::DeathRecipient {
@@ -70,11 +72,13 @@ private:
     };
 
     sptr<IDistributedDeviceProfile> GetDeviceProfileService();
+    bool LoadDeviceProfileService();
     bool CheckProfileInvalidity(const ServiceCharacteristicProfile& profile);
     void OnServiceDied(const sptr<IRemoteObject>& remote);
     void MergeSubscribeInfoLocked(std::list<SubscribeInfo>& subscribeInfos,
         const std::list<SubscribeInfo>& newSubscribeInfos);
 
+    std::condition_variable proxyConVar_;
     std::mutex serviceLock_;
     std::mutex subscribeLock_;
     sptr<IDistributedDeviceProfile> dpProxy_;

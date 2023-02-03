@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -178,6 +178,7 @@ HWTEST_F(ProfileDmTest, GetUuidByNetworkId_002, TestSize.Level3)
     DpDeviceManager::GetInstance().OnNodeOffline("");
     DpDeviceManager::GetInstance().AddLocalDeviceIds();
     DpDeviceManager::GetInstance().RecoverDevicesIfNeeded();
+    DpDeviceManager::GetInstance().GetTrustedDeviceList();
     bool res = DpDeviceManager::GetInstance().GetUuidByNetworkId("", uuid);
     EXPECT_EQ(false, res);
 }

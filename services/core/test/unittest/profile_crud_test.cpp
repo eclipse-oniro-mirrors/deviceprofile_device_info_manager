@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -57,6 +57,7 @@ public:
 void ProfileCrudTest::SetUpTestCase()
 {
     DTEST_LOG << "SetUpTestCase" << std::endl;
+    DistributedDeviceProfileClient::GetInstance().DeleteDeviceProfile("111111");
 }
 
 void ProfileCrudTest::TearDownTestCase()
@@ -627,12 +628,11 @@ HWTEST_F(ProfileCrudTest, UnSubscribeProfileEvents_006, TestSize.Level3)
     ProfileEvent subscribeInfo;
     subscribeInfos.emplace_back(subscribeInfo);
     std::list<ProfileEvent> failedEvents;
-    auto eventCb = std::make_shared<ProfileEventCallback>();
+    auto eventCb11 = std::make_shared<ProfileEventCallback>();
     DistributedDeviceProfileClient::SubscribeRecord subscribeRecord;
-    DistributedDeviceProfileClient::GetInstance().subscribeRecords_[eventCb] = subscribeRecord;
     int result = DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(subscribeInfos,
-        eventCb, failedEvents);
-    EXPECT_EQ(3, result);
+        eventCb11, failedEvents);
+    EXPECT_EQ(ERR_DP_NOT_SUBSCRIBED, result);
 }
 
 /**
@@ -992,7 +992,6 @@ HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_008, TestSize.Level3)
     subscribeRecord.notifier = sptr<ProfileEventNotifierStub>(
         new ProfileEventNotifierStub(callback));
     subscribeRecord.profileEvents.set(static_cast<uint32_t>(ProfileEvent::EVENT_PROFILE_CHANGED));
-    DistributedDeviceProfileClient::GetInstance().subscribeRecords_[callback] = subscribeRecord;
     int result =
         DistributedDeviceProfileClient::GetInstance().SubscribeProfileEvents(subscribeInfos, callback, failedEvents);
     EXPECT_EQ(0, result);
