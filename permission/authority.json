@@ -36,7 +36,7 @@
     "msdp_sa": {
         "servicesAuthority": {
           "specific": {
-            "FusionInteraction": 3
+            "DeviceStatus": 3
           }
         },
         "interfacesAuthority": {
