@@ -36,7 +36,7 @@
     "msdp_sa": {
         "servicesAuthority": {
           "specific": {
-            "DeviceStatus": 3
+            "deviceStatus": 3
           }
         },
         "interfacesAuthority": {
