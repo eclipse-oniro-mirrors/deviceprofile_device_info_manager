@@ -32,5 +32,15 @@
         "interfacesAuthority": {
           "sync": {}
         }
+    },
+    "msdp_sa": {
+        "servicesAuthority": {
+          "specific": {
+            "deviceStatus": 3
+          }
+        },
+        "interfacesAuthority": {
+          "sync": {}
+        }
     }
 }
