@@ -48,6 +48,8 @@
             "//foundation/deviceprofile/device_info_manager/interfaces/innerkits/core:distributed_device_profile_client"
           ],
           "service_group": [
+            "//foundation/deviceprofile/device_info_manager/etc/profile:deviceprofile_trust",
+            "//foundation/deviceprofile/device_info_manager/etc/init:etc",
             "//foundation/deviceprofile/device_info_manager/permission:authority_json",
             "//foundation/deviceprofile/device_info_manager/sa_profile:dps_sa_profile",
             "//foundation/deviceprofile/device_info_manager/services/core:distributed_device_profile"

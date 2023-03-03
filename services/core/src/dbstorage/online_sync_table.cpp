@@ -74,7 +74,7 @@ int32_t OnlineSyncTable::RegisterSyncCallback(const std::shared_ptr<KvStoreSyncC
     return ERR_OK;
 }
 
-int32_t  OnlineSyncTable::UnRegisterSyncCallback()
+int32_t OnlineSyncTable::UnRegisterSyncCallback()
 {
     HILOGI("called");
     std::lock_guard<std::mutex> autoLock(tableLock_);

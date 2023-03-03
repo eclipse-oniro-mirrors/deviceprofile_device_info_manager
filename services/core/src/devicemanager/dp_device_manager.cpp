@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,6 +24,7 @@
 
 #include "device_profile_log.h"
 #include "device_profile_utils.h"
+#include "distributed_device_profile_service.h"
 #include "ipc_object_proxy.h"
 #include "ipc_skeleton.h"
 #include "iservice_registry.h"
@@ -67,12 +68,33 @@ void DpDeviceManager::DeviceInitCallBack::OnRemoteDied()
     DpDeviceManager::GetInstance().Init();
 }
 
+void DpDeviceManager::GetTrustedDeviceList()
+{
+    std::vector<DmDeviceInfo> deviceList;
+    int32_t ret = DeviceManager::GetInstance().GetTrustedDeviceList(PKG_NAME, "", deviceList);
+    if (ret != ERR_OK) {
+        HILOGE("GetTrustedDeviceList Failed!");
+        return;
+    }
+    if (deviceList.empty()) {
+        HILOGI("deviceList is empty!");
+        return;
+    }
+    for (const DmDeviceInfo& dmDeviceInfo : deviceList) {
+        auto dpDeviceInfo = std::make_shared<DeviceInfo>(
+            dmDeviceInfo.deviceName, dmDeviceInfo.deviceId, dmDeviceInfo.deviceTypeId);
+        DpDeviceManager::GetInstance().OnNodeOnline(dpDeviceInfo);
+    }
+    DistributedDeviceProfileService::GetInstance().DeviceOnline();
+}
+
 void DpDeviceManager::DpDeviceStateCallback::OnDeviceOnline(const DmDeviceInfo &deviceInfo)
 {
     HILOGI("online called");
     auto dpDeviceInfo = std::make_shared<DeviceInfo>(
         deviceInfo.deviceName, deviceInfo.deviceId, deviceInfo.deviceTypeId);
     DpDeviceManager::GetInstance().OnNodeOnline(dpDeviceInfo);
+    DistributedDeviceProfileService::GetInstance().DeviceOnline();
 }
 
 void DpDeviceManager::DpDeviceStateCallback::OnDeviceOffline(const DmDeviceInfo &deviceInfo)
@@ -177,6 +199,7 @@ bool DpDeviceManager::ConnectDeviceManager()
             errCode = DeviceManager::GetInstance().RegisterDevStateCallback(
                 PKG_NAME, "", stateCallback_);
             if (errCode == ERR_OK) {
+                DpDeviceManager::GetInstance().GetTrustedDeviceList();
                 break;
             }
             HILOGE("register errCode = %{public}d, retrying...", errCode);

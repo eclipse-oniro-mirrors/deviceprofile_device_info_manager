@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,9 +26,16 @@
 #include "device_profile_storage_manager.h"
 #include "dp_device_manager.h"
 #include "hitrace_meter.h"
+#include "if_system_ability_manager.h"
+#include "ipc_object_proxy.h"
+#include "ipc_skeleton.h"
+#include "iprofile_event_notifier.h"
+#include "iservice_registry.h"
+#include "sa_profiles.h"
 #include "service_characteristic_profile.h"
-#include "subscribe_manager.h"
+#include "sync_coordinator.h"
 #include "system_ability_definition.h"
+#include "subscribe_manager.h"
 #include "trust_group_manager.h"
 
 namespace OHOS {
@@ -36,6 +43,13 @@ namespace DeviceProfile {
 namespace {
 const std::string TAG = "DistributedDeviceProfileService";
 const std::string DP_DEVICE_SUB_TRACE = "DP_DEVICE_SUB";
+const std::string TASK_ID = "unload";
+const std::string BOOT_COMPLETED_EVENT = "usual.event.BOOT_COMPLETED";
+const std::string STRING_DEVICE_ONLINE = "deviceonline";
+const std::string EVENT_ID = "eventId";
+const std::string NAME = "name";
+constexpr int32_t DELAY_TIME = 180000;
+constexpr int32_t UNLOAD_IMMEDIATELY = 0;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileService);
@@ -65,7 +79,11 @@ bool DistributedDeviceProfileService::Init()
         return false;
     }
     TrustGroupManager::GetInstance().InitHichainService();
-    ContentSensorManager::GetInstance().Init();
+    auto runner = AppExecFwk::EventRunner::Create("unload");
+    unloadHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
+    if (unloadHandler_ == nullptr) {
+        return false;
+    }
     HILOGI("init succeeded");
     return true;
 }
@@ -77,6 +95,13 @@ int32_t DistributedDeviceProfileService::PutDeviceProfile(const ServiceCharacter
         return ERR_DP_PERMISSION_DENIED;
     }
     return DeviceProfileStorageManager::GetInstance().PutDeviceProfile(profile);
+}
+
+void DistributedDeviceProfileService::DeviceOnline()
+{
+    HILOGI("device online begin");
+    isOnline_ = true;
+    unloadHandler_->RemoveTask(TASK_ID);
 }
 
 int32_t DistributedDeviceProfileService::GetDeviceProfile(const std::string& udid, const std::string& serviceId,
@@ -141,16 +166,60 @@ int32_t DistributedDeviceProfileService::Dump(int32_t fd, const std::vector<std:
     return ERR_OK;
 }
 
-void DistributedDeviceProfileService::OnStart()
+void DistributedDeviceProfileService::DelayUnloadTask()
+{
+    HILOGI("delay unload task begin");
+    auto task = [this]() {
+        HILOGI("do unload task");
+        auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+        if (samgrProxy == nullptr) {
+            HILOGE("get samgr failed");
+            return;
+        }
+        int32_t ret = samgrProxy->UnloadSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID);
+        if (ret != ERR_OK) {
+            HILOGE("remove system ability failed");
+            return;
+        }
+    };
+    unloadHandler_->RemoveTask(TASK_ID);
+    if (!isOnline_) {
+        HILOGI("delay unload task post task");
+        unloadHandler_->PostTask(task, TASK_ID, DELAY_TIME);
+    }
+}
+
+void DistributedDeviceProfileService::OnStart(const std::unordered_map<std::string, std::string>& startReason)
 {
     HILOGI("called");
     if (!Init()) {
         HILOGE("init failed");
         return;
     }
+
+    HILOGI("start reason %{public}s", startReason.at(NAME).c_str());
+    if (startReason.at(NAME) == BOOT_COMPLETED_EVENT) {
+        ContentSensorManager::GetInstance().Init();
+    }
+    DelayUnloadTask();
     if (!Publish(this)) {
         HILOGE("publish SA failed");
         return;
+    }
+}
+
+int32_t DistributedDeviceProfileService::OnIdle(const std::unordered_map<std::string, std::string>& idleReason)
+{
+    HILOGI("idle reason %{public}s", idleReason.at(EVENT_ID).c_str());
+    if (idleReason.at(EVENT_ID) == std::to_string(DEVICE_ONLINE)) {
+        if (!SyncCoordinator::GetInstance().IsOnSync()) {
+            HILOGI("can unload");
+            return UNLOAD_IMMEDIATELY;
+        } else {
+            return DELAY_TIME;
+        }
+    } else {
+        return UNLOAD_IMMEDIATELY;
     }
 }
 

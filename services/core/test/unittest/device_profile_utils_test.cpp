@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,6 +17,7 @@
 
 #include "device_profile_dumper.h"
 #include "device_profile_utils.h"
+#include "distributed_device_profile_client.h"
 #include "sync_options.h"
 #include "subscribe_info.h"
 #include "utils.h"
@@ -42,6 +43,7 @@ public:
 void DeviceProfileUtilsTest::SetUpTestCase()
 {
     DTEST_LOG << "SetUpTestCase" << std::endl;
+    DistributedDeviceProfileClient::GetInstance().DeleteDeviceProfile("111111");
 }
 
 void DeviceProfileUtilsTest::TearDownTestCase()

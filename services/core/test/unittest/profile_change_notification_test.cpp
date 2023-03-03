@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,6 +17,7 @@
 #include <memory>
 
 #include "device_profile_errors.h"
+#include "distributed_device_profile_client.h"
 #include "iprofile_event_callback.h"
 #include "iprofile_event_notifier.h"
 #include "profile_change_notification.h"
@@ -49,6 +50,7 @@ class StorageProfileEventCallback : public IProfileEventCallback {
 void ProfileChangeNotificationTest::SetUpTestCase()
 {
     DTEST_LOG << "SetUpTestCase" << std::endl;
+    DistributedDeviceProfileClient::GetInstance().DeleteDeviceProfile("111111");
 }
 
 void ProfileChangeNotificationTest::TearDownTestCase()

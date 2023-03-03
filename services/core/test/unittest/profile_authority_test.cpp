@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,6 +22,7 @@
 #define private public
 #include "authority_manager.h"
 #include "device_manager.h"
+#include "distributed_device_profile_client.h"
 #include "dp_device_manager.h"
 #include "sync_coordinator.h"
 #include "trust_group_manager.h"
@@ -80,6 +81,7 @@ void ProfileAuthorityTest::DeviceInitCallBack::OnRemoteDied()
 
 void ProfileAuthorityTest::SetUpTestCase()
 {
+    DistributedDeviceProfileClient::GetInstance().DeleteDeviceProfile("111111");
 }
 
 void ProfileAuthorityTest::TearDownTestCase()
