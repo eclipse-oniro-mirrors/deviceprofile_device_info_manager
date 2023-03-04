@@ -62,6 +62,13 @@ DistributedDeviceProfileService::DistributedDeviceProfileService()
 
 bool DistributedDeviceProfileService::Init()
 {
+    auto runner = AppExecFwk::EventRunner::Create("unload");
+    if (unloadHandler_ == nullptr) {
+        unloadHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
+    }
+    if (unloadHandler_ == nullptr) {
+        return false;
+    }
     if (!DpDeviceManager::GetInstance().Init()) {
         HILOGE("DeviceManager init failed");
         return false;
@@ -79,11 +86,6 @@ bool DistributedDeviceProfileService::Init()
         return false;
     }
     TrustGroupManager::GetInstance().InitHichainService();
-    auto runner = AppExecFwk::EventRunner::Create("unload");
-    unloadHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
-    if (unloadHandler_ == nullptr) {
-        return false;
-    }
     HILOGI("init succeeded");
     return true;
 }
