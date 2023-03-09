@@ -1,98 +1,96 @@
-# 介绍<a name="ZH-CN_TOPIC_0000001128264105"></a>
+# Distributed DeviceProfile
 
--   [简介](#section11660541593)
--   [目录](#section1464106163817)
--   [约束](#section1718733212019)
--   [使用](#section10729231131110)
--   [涉及仓](#section176111311166)
+## Introduction
 
-## 简介<a name="section11660541593"></a>
+DeviceProfile is used to manage device hardware capabilities and system software features. A typical device profile includes the device type, device name, OS type, and OS version. By allowing quick access to local and remote device profiles, DeviceProfile lays the foundation for initiating distributed services. 
 
-DeviceProfile是设备硬件能力和系统软件特征的管理器，典型的Profile有设备类型、设备名称、设备OS类型、OS版本号等。DeviceProfile提供快速访问本地和远端设备Profile的能力，是发起分布式业务的基础。主要功能如下：
+DeviceProfile provides the following functions:
 
--   本地设备Profile的插入、删除、查询。
--   远程设备Profile的查询。
--   订阅远程Profile变化的通知。
--   跨设备同步Profile。
+-   Inserting, deleting, and querying profiles of local devices.
+-   Querying remote device profile information.
+-   Subscribing to remote device profile changes.
+-   Synchronizing profile information across devices.
 
-DeviceProfile模块组成如下图所示：
+The following figure shows the architecture of the DeviceProfile module.
 
-## 系统架构<a name="section13587185873516"></a>
+## Architecture
 
-![](figures/dp-architecture_zh.png)
+**Figure 1** DeviceProfile component architecture
 
-**图 1**  DeviceProfile组件架构图<a name="fig4460722185514"></a> 
 
-## 目录<a name="section1464106163817"></a>
+![](figures/dp-architecture_en.png)
 
-DeviceProfile主要代码目录结构如下：
+
+## Directory Structure
+
+The main code directory structure of DeviceProfile is as follows:
 
 ```
 ├── interfaces
-│   └── innerkits
-│       └── distributeddeviceprofile            // innerkits接口
+│   └── innerkits
+│       └── distributeddeviceprofile            // innerkits APIs
 ├── ohos.build
-├── sa_profile                                  // said声明文件
-│   ├── 6001.xml
-│   └── BUILD.gn
+├── sa_profile                                  // SAID profile
+│   ├── 6001.xml
+│   └── BUILD.gn
 └── services
-    └── distributeddeviceprofile
-        ├── BUILD.gn
-        ├── include
-        │   ├── authority                       // 权限校验
-        │   ├── contentsensor                   // CS数据采集头文件
-        │   ├── dbstorage                       // 数据库操作头文件
-        │   ├── devicemanager                   // 设备管理头文件
-        │   └── subscribemanager                // 订阅管理头文件
-        ├── src
-        │   ├── authority                       // 权限校验
-        │   ├── contentsensor                   // CS数据采集实现
-        │   ├── dbstorage                       // 数据库操作实现
-        │   ├── devicemanager                   // 设备管理实现
-        │   └── subscribemanager                // 订阅管理实现
-        └── test                                // 测试用例
+    └── distributeddeviceprofile
+        ├── BUILD.gn
+        ├── include
+        │   ├── authority                       // Permission verification
+        │   ├── contentsensor                   // Header file for content sensor data collection
+        │   ├── dbstorage                       // Header file for database operations
+        │   ├── devicemanager                   // Header file for device management
+        │   └── subscribemanager                // Header file for subscription management
+        ├── src
+        │   ├── authority                       // Permission verification
+        │   ├── contentsensor                   // Implementation of content sensor data collection
+        │   ├── dbstorage                       // Implementation of database operations
+        │   ├── devicemanager                   // Implementation of device management
+        │   └── subscribemanager                // Implementation of subscription management
+        └── test                                // Test cases
 ```
 
-## 约束<a name="section1718733212019"></a>
+## Constraints
 
--   组网设备需在同一局域网中。
--   组网之前，需先完成设备绑定，绑定流程参见安全子系统中说明。
+-   The devices between which you want to set up a connection must be in the same LAN.
+-   Before setting up a connection between two devices, you must bind the devices. For details about the binding process, see the Security subsystem readme file.
 
-## 使用<a name="section10729231131110"></a>
+## Usage
 
-### 查询Profile信息
+### Querying Profile Information
 
-* GetDeviceProfile参数描述
+* Parameters of **GetDeviceProfile**
 
-| 名称      | 类型                          | 必填 | 描述                                |
+| Name     | Type                         | Mandatory| Description                               |
 | --------- | ---------------------------- | ---- | ----------------------------------- |
-| deviceId  | std::string                  | 是   | 查询指定设备的profile,空值表示查询本地 |
-| serviceId | std::string                  | 是   | 查询的service id                     |
-| profile   | ServiceCharacteristicProfile | 是   | 返回值                               |
+| deviceId  | std::string                  | Yes  | ID of the device whose profile is to be queried. A null value indicates the local device.|
+| serviceId | std::string                  | Yes  | Service ID.                    |
+| profile   | ServiceCharacteristicProfile | Yes  | Device profile information returned.                              |
 
-* 代码示例
+* Sample code
 
 ```c++
-// 声明返回值
+// Declare the return value.
 ServiceCharacteristicProfile profile;
-// 执行查询接口GetDeviceProfile
+// Call GetDeviceProfile.
 DistributedDeviceProfileClient::GetInstance().GetDeviceProfile(deviceId, serviceId, profile);
 std::string jsonData = profile.GetCharacteristicProfileJson();
 result.append("jsonData:" + jsonData + "\n");
 ```
 
-### 插入Profile信息
+### Inserting Profile Information
 
-* PutDeviceProfile参数描述
+* Parameters of **PutDeviceProfile**
 
-| 名称      | 类型                          | 必填 | 描述                                |
+| Name     | Type                         | Mandatory| Description                               |
 | --------- | ---------------------------- | ---- | ----------------------------------- |
-| profile   | ServiceCharacteristicProfile | 是   | 需要插入的profile信息                |
+| profile   | ServiceCharacteristicProfile | Yes  | Profile information to insert.               |
 
-* 代码示例
+* Sample code
 
 ```c++
-// 声明并填充插入数据
+// Declare and fill in the data to insert.
 ServiceCharacteristicProfile profile;
 profile.SetServiceId(serviceId);
 profile.SetServiceType(serviceType);
@@ -100,67 +98,67 @@ nlohmann::json j;
 j["testVersion"] = "3.0.0";
 j["testApiLevel"] = API_LEVEL;
 profile.SetCharacteristicProfileJson(j.dump());
-// 执行插入接口PutDeviceProfile
+// Call PutDeviceProfile.
 DistributedDeviceProfileClient::GetInstance().PutDeviceProfile(profile);
 ```
 
-### 删除Profile信息
+### Deleting Profile Information
 
-* DeleteDeviceProfile参数描述
+* Parameters of **DeleteDeviceProfile**
 
-| 名称      | 类型                          | 必填 | 描述                                |
+| Name     | Type                         | Mandatory| Description                               |
 | --------- | ---------------------------- | ---- | ----------------------------------- |
-| serviceId | std::string                  | 是   | 删除特定serviceid的记录              |
+| serviceId | std::string                  | Yes  | ID of the service record to delete.             |
 
-* 代码示例
+* Sample code
 
 ```c++
-// 声明并填充插入数据
+// Declare and fill in the data to delete.
 std::string serviceId = "test";
 // DeleteDeviceProfile
 DistributedDeviceProfileClient::GetInstance().DeleteDeviceProfile(serviceId);
 ```
 
-### 同步Profile信息
+### Synchronizing Profile Information
 
-* SyncDeviceProfile参数描述
+* Parameters of **SyncDeviceProfile**
 
-| 名称      | 类型                          | 必填 | 描述                                |
+| Name     | Type                         | Mandatory| Description                               |
 | --------- | ---------------------------- | ---- | ----------------------------------- |
-| syncOption| SyncOption                   | 是   | 指定同步范围和模式                    |
-| syncCb    | IProfileEventCallback        | 是   | 同步结果回调                         |
+| syncOption| SyncOption                   | Yes  | Synchronization range and mode.                   |
+| syncCb    | IProfileEventCallback        | Yes  | Callback used to return the synchronization result.                        |
 
-* 代码示例
+* Sample code
 
 ```c++
-// 定义同步模式和范围
+// Define the synchronization mode and range.
 SyncOptions syncOption;
 syncOption.SetSyncMode((OHOS::DeviceProfile::SyncMode)atoi(mode.c_str()));
 for (const auto& deviceId : deviceIds) {
     syncOption.AddDevice(deviceId);
 }
-// 执行同步接口
+// Call SyncDeviceProfile.
 DistributedDeviceProfileClient::GetInstance().SyncDeviceProfile(syncOption,
     std::make_shared<ProfileEventCallback>());
 ```
 
-### 订阅Profile事件（同步、变更事件）
+### Subscribing to Profile Events (Synchronization and Change Events)
 
-* SubscribeProfileEvents参数描述
+* Parameters of **SubscribeProfileEvents**
 
-| 名称           | 类型                          | 必填 | 描述                                |
+| Name          | Type                         | Mandatory| Description                               |
 | -------------- | ---------------------------- | ---- | ----------------------------------- |
-| subscribeInfos | SubscribeInfo                | 是   | 指定订阅的事件类型                    |
-| eventCb        | IProfileEventCallback        | 是   | 订阅事件回调                         |
-| failedEvents   | ProfileEvent                 | 是   | 失败事件                             |
+| subscribeInfos | SubscribeInfo                | Yes  | Type of the event to subscribe to.                   |
+| eventCb        | IProfileEventCallback        | Yes  | Callback used to return the subscription event.                        |
+| failedEvents   | ProfileEvent                 | Yes  | Failure event.                            |
 
-* 代码示例
+* Sample code
 
 ```c++
 auto callback = std::make_shared<ProfileEventCallback>();
 std::list<SubscribeInfo> subscribeInfos;
 
-// 订阅EVENT_PROFILE_CHANGED事件
+// Subscribe to the EVENT_PROFILE_CHANGED event.
 ExtraInfo extraInfo;
 extraInfo["deviceId"] = deviceId;
 extraInfo["serviceIds"] = serviceIds;
@@ -169,25 +167,23 @@ changeEventInfo.profileEvent = ProfileEvent::EVENT_PROFILE_CHANGED;
 changeEventInfo.extraInfo = std::move(extraInfo);
 subscribeInfos.emplace_back(changeEventInfo);
 
-// 订阅EVENT_SYNC_COMPLETED事件
+// Subscribe to the EVENT_SYNC_COMPLETED event.
 SubscribeInfo syncEventInfo;
 syncEventInfo.profileEvent = ProfileEvent::EVENT_SYNC_COMPLETED;
 subscribeInfos.emplace_back(syncEventInfo);
 
-// 执行订阅接口
+// Call SubscribeProfileEvents.
 std::list<ProfileEvent> failedEvents;
 DistributedDeviceProfileClient::GetInstance().SubscribeProfileEvents(subscribeInfos,
     callback, failedEvents);
 
-// 解除订阅
+// Cancel the subscription.
 std::list<ProfileEvent> profileEvents;
 profileEvents.emplace_back(ProfileEvent::EVENT_PROFILE_CHANGED);
 DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(profileEvents,
     callback, failedEvents);
 ```
 
-## 涉及仓<a name="section176111311166"></a>
+## Repositories Involved
 
-**[DeviceProfile子系统](zh-cn_topic_0000001115719369.md)**
-
-[device\_profile\_core](https://gitee.com/openharmony-sig/device_info_manager)
+[**deviceprofile_device_info_manager**](https://gitee.com/openharmony/deviceprofile_device_info_manager)
