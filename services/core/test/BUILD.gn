@@ -84,6 +84,17 @@ ohos_unittest("profile_storage_test") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("profile_sync_test") {
+  module_out_path = module_output_path
+
+  sources = [ "unittest/profile_sync_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 ohos_unittest("event_subscribe_test") {
   module_out_path = module_output_path
 
@@ -257,6 +268,7 @@ group("unittest") {
     ":profile_event_notifier_proxy_test",
     ":profile_proxy_test",
     ":profile_storage_test",
+    ":profile_sync_test",
     ":service_profile_test",
     ":subscribe_info_checker_test",
     ":subscribe_info_test",

@@ -110,6 +110,7 @@ HWTEST_F(ProfileDmTest, TransformDeviceId_001, TestSize.Level3)
     DpDeviceManager::GetInstance().GetLocalDeviceUdid(udid);
     DpDeviceManager::GetInstance().RemoveDeviceIdsByUdid("");
     DpDeviceManager::GetInstance().RemoveExpiredDeviceIds("");
+    DpDeviceManager::GetInstance().GetTrustedDeviceList();
     bool res = DpDeviceManager::GetInstance().TransformDeviceId("", queryUdid, DeviceIdType::UUID);
     EXPECT_EQ(false, res);
 }
@@ -123,6 +124,8 @@ HWTEST_F(ProfileDmTest, TransformDeviceId_001, TestSize.Level3)
 HWTEST_F(ProfileDmTest, Init_001, TestSize.Level3)
 {
     bool res = DpDeviceManager::GetInstance().Init();
+    DpDeviceManager::GetInstance().GetTrustedDeviceList();
+    DpDeviceManager::GetInstance().AddLocalDeviceIds();
     EXPECT_EQ(true, res);
 }
 
@@ -178,7 +181,6 @@ HWTEST_F(ProfileDmTest, GetUuidByNetworkId_002, TestSize.Level3)
     DpDeviceManager::GetInstance().OnNodeOffline("");
     DpDeviceManager::GetInstance().AddLocalDeviceIds();
     DpDeviceManager::GetInstance().RecoverDevicesIfNeeded();
-    DpDeviceManager::GetInstance().GetTrustedDeviceList();
     bool res = DpDeviceManager::GetInstance().GetUuidByNetworkId("", uuid);
     EXPECT_EQ(false, res);
 }

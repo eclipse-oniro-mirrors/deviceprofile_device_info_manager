@@ -628,11 +628,12 @@ HWTEST_F(ProfileCrudTest, UnSubscribeProfileEvents_006, TestSize.Level3)
     ProfileEvent subscribeInfo;
     subscribeInfos.emplace_back(subscribeInfo);
     std::list<ProfileEvent> failedEvents;
-    auto eventCb11 = std::make_shared<ProfileEventCallback>();
+    auto eventCb = std::make_shared<ProfileEventCallback>();
     DistributedDeviceProfileClient::SubscribeRecord subscribeRecord;
+    DistributedDeviceProfileClient::GetInstance().subscribeRecords_[eventCb] = subscribeRecord;
     int result = DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(subscribeInfos,
-        eventCb11, failedEvents);
-    EXPECT_EQ(ERR_DP_NOT_SUBSCRIBED, result);
+        eventCb, failedEvents);
+    EXPECT_EQ(3, result);
 }
 
 /**
@@ -984,6 +985,7 @@ HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_008, TestSize.Level3)
 
     SubscribeInfo info2;
     info2.profileEvent = ProfileEvent::EVENT_SYNC_COMPLETED;
+    info2.extraInfo = std::move(extraInfo);
     subscribeInfos.emplace_back(info2);
 
     std::list<ProfileEvent> failedEvents;
@@ -992,6 +994,47 @@ HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_008, TestSize.Level3)
     subscribeRecord.notifier = sptr<ProfileEventNotifierStub>(
         new ProfileEventNotifierStub(callback));
     subscribeRecord.profileEvents.set(static_cast<uint32_t>(ProfileEvent::EVENT_PROFILE_CHANGED));
+    DistributedDeviceProfileClient::GetInstance().subscribeRecords_[callback] = subscribeRecord;
+    int result =
+        DistributedDeviceProfileClient::GetInstance().SubscribeProfileEvents(subscribeInfos, callback, failedEvents);
+    EXPECT_EQ(0, result);
+}
+
+/**
+ * @tc.name: SubscribeProfileEvents_009
+ * @tc.desc: Subscribe device profile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1U
+ */
+HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_009, TestSize.Level3)
+{
+    TestUtil::MockPermission("distributedsched");
+    auto callback = std::make_shared<ProfileEventCallback>();
+    std::list<SubscribeInfo> subscribeInfos;
+    std::list<std::string> serviceIds;
+    serviceIds.emplace_back("appInfo");
+    std::string deviceId = "";
+    ExtraInfo extraInfo;
+    extraInfo["deviceId"] = deviceId;
+    extraInfo["serviceIds"] = serviceIds;
+
+    SubscribeInfo info1;
+    info1.profileEvent = ProfileEvent::EVENT_PROFILE_CHANGED;
+    info1.extraInfo = std::move(extraInfo);
+    subscribeInfos.emplace_back(info1);
+
+    SubscribeInfo info2;
+    info2.profileEvent = ProfileEvent::EVENT_SYNC_COMPLETED;
+    info2.extraInfo = std::move(extraInfo);
+    subscribeInfos.emplace_back(info2);
+
+    std::list<ProfileEvent> failedEvents;
+    DistributedDeviceProfileClient::SubscribeRecord subscribeRecord;
+    subscribeRecord.subscribeInfos = subscribeInfos;
+    subscribeRecord.notifier = sptr<ProfileEventNotifierStub>(
+        new ProfileEventNotifierStub(callback));
+    subscribeRecord.profileEvents.set(static_cast<uint32_t>(ProfileEvent::EVENT_SYNC_COMPLETED));
+    DistributedDeviceProfileClient::GetInstance().subscribeRecords_[callback] = subscribeRecord;
     int result =
         DistributedDeviceProfileClient::GetInstance().SubscribeProfileEvents(subscribeInfos, callback, failedEvents);
     EXPECT_EQ(0, result);
