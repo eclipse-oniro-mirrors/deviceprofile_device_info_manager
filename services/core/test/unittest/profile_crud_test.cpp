@@ -1055,9 +1055,13 @@ HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_009, TestSize.Level3)
         new ProfileEventNotifierStub(callback));
     subscribeRecord.profileEvents.set(static_cast<uint32_t>(ProfileEvent::EVENT_SYNC_COMPLETED));
     DistributedDeviceProfileClient::GetInstance().subscribeRecords_[callback] = subscribeRecord;
-    int result =
-        DistributedDeviceProfileClient::GetInstance().SubscribeProfileEvents(subscribeInfos, callback, failedEvents);
-    EXPECT_EQ(0, result);
+    DistributedDeviceProfileClient::GetInstance().SubscribeProfileEvents(subscribeInfos, callback, failedEvents);
+    std::list<ProfileEvent> profileEvents;
+    profileEvents.emplace_back(ProfileEvent::EVENT_PROFILE_CHANGED);
+    profileEvents.emplace_back(ProfileEvent::EVENT_SYNC_COMPLETED);
+    int result = DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(profileEvents,
+        nullptr, failedEvents);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
 }
 }
 }
