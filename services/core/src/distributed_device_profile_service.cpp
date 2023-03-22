@@ -214,15 +214,10 @@ int32_t DistributedDeviceProfileService::OnIdle(const std::unordered_map<std::st
 {
     HILOGI("idle reason %{public}s", idleReason.at(EVENT_ID).c_str());
     if (idleReason.at(EVENT_ID) == std::to_string(DEVICE_ONLINE)) {
-        if (!SyncCoordinator::GetInstance().IsOnSync()) {
-            HILOGI("can unload");
-            return UNLOAD_IMMEDIATELY;
-        } else {
-            return DELAY_TIME;
-        }
-    } else {
-        return UNLOAD_IMMEDIATELY;
+        int32_t errCode = DeviceProfileStorageManager::GetInstance().RemoveRemoteDeviceProfile();
+        HILOGI("remove remote device profile, result = %{public}d", errCode);
     }
+    return UNLOAD_IMMEDIATELY;
 }
 
 void DistributedDeviceProfileService::OnStop()
