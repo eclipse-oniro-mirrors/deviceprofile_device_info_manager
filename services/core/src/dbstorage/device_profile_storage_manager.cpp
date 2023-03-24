@@ -304,6 +304,21 @@ int32_t DeviceProfileStorageManager::RemoveUnBoundDeviceProfile(const std::strin
     return errCode;
 }
 
+int32_t DeviceProfileStorageManager::RemoveRemoteDeviceProfile()
+{
+    if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
+        HILOGE("kvstore init failed");
+        return ERR_DP_INIT_DB_FAILED;
+    }
+
+    if (onlineSyncTbl_->GetInitStatus() != StorageInitStatus::INIT_SUCCEED) {
+        HILOGE("kvstore not init");
+        return ERR_DP_NOT_INIT_DB;
+    }
+    int errCode = onlineSyncTbl_->RemoveDeviceData("");
+    return errCode;
+}
+
 int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOptions,
     const sptr<IRemoteObject>& profileEventNotifier)
 {

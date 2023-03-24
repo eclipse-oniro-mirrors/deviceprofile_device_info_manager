@@ -51,10 +51,14 @@ void OnlineSyncTable::Init()
     };
     // clean the IMMEDIATE_SYNC_ON_CHANGE
     options.policies = {};
-    SyncPolicy syncPolicy {
+    SyncPolicy syncPolicyOnline {
         .type = PolicyType::IMMEDIATE_SYNC_ON_ONLINE
     };
-    options.policies.emplace_back(syncPolicy);
+    SyncPolicy syncPolicyOnReady {
+        .type = PolicyType::IMMEDIATE_SYNC_ON_READY
+    };
+    options.policies.emplace_back(syncPolicyOnline);
+    options.policies.emplace_back(syncPolicyOnReady);
     SetOptions(options);
     DeviceProfileStorage::Init();
     int32_t errCode = DeviceProfileStorage::RegisterSyncCallback(shared_from_this());

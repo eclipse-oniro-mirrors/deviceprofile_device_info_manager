@@ -62,6 +62,7 @@ public:
     void NotifySyncCompleted();
     void NotifySubscriberDied(const sptr<IRemoteObject>& profileEventNotifier);
     int32_t RemoveUnBoundDeviceProfile(const std::string& udid);
+    int32_t RemoveRemoteDeviceProfile();
     void DumpLocalProfile(std::string& result);
 
 private:
