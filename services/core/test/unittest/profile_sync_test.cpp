@@ -28,6 +28,7 @@
 #include "device_profile_storage.h"
 #include "device_profile_storage_manager.h"
 #include "distributed_device_profile_client.h"
+#include "distributed_device_profile_service.h"
 #include "hisysevent.h"
 #include "nlohmann/json.hpp"
 #include "online_sync_table.h"
@@ -75,7 +76,6 @@ ProfileSyncTest::ProfileSyncTest()
 void ProfileSyncTest::SetUpTestCase()
 {
     DTEST_LOG << "SetUpTestCase" << std::endl;
-    DistributedDeviceProfileClient::GetInstance().DeleteDeviceProfile("111111");
 }
 
 void ProfileSyncTest::TearDownTestCase()
@@ -157,6 +157,83 @@ HWTEST_F(ProfileSyncTest, SyncDeviceProfile_001, TestSize.Level3)
     int result = DeviceProfileStorageManager::GetInstance().onlineSyncTbl_->
         SyncDeviceProfile(deviceIds, SyncMode::PUSH);
     EXPECT_EQ(0, result);
+}
+
+/**
+ * @tc.name: DeleteDeviceProfile_001
+ * @tc.desc: sync device profile
+ * @tc.type: FUNC
+ * @tc.require: I5QPGN
+ */
+HWTEST_F(ProfileSyncTest, DeleteDeviceProfile_001, TestSize.Level3)
+{
+    int32_t res = DistributedDeviceProfileService::GetInstance().DeleteDeviceProfile("test");
+    EXPECT_EQ(ERR_DP_PERMISSION_DENIED, res);
+}
+
+/**
+ * @tc.name: SyncDeviceProfile_002
+ * @tc.desc: sync device profile
+ * @tc.type: FUNC
+ * @tc.require: I5QPGN
+ */
+HWTEST_F(ProfileSyncTest, SyncDeviceProfile_002, TestSize.Level3)
+{
+    auto syncCb = std::make_shared<StorageProfileEventCallback>();
+    SyncOptions syncOptions;
+    sptr<IRemoteObject> notifier =
+        sptr<ProfileEventNotifierStub>(new ProfileEventNotifierStub(syncCb));
+    int result = DistributedDeviceProfileService::GetInstance().SyncDeviceProfile(syncOptions, notifier);
+    EXPECT_EQ(ERR_DP_PERMISSION_DENIED, result);
+}
+
+/**
+ * @tc.name: OnIdle_001
+ * @tc.desc: sync device profile
+ * @tc.type: FUNC
+ * @tc.require: I5QPGN
+ */
+HWTEST_F(ProfileSyncTest, OnIdle_001, TestSize.Level3)
+{
+    DistributedDeviceProfileService::GetInstance().isOnline_ = true;
+    auto runner = AppExecFwk::EventRunner::Create("unload");
+    DistributedDeviceProfileService::GetInstance().unloadHandler_ =
+        std::make_shared<AppExecFwk::EventHandler>(runner);
+    DistributedDeviceProfileService::GetInstance().DelayUnloadTask();
+    std::unordered_map<std::string, std::string> reason;
+    reason["eventId"] = "2";
+    int result = DistributedDeviceProfileService::GetInstance().OnIdle(reason);
+    EXPECT_EQ(0, result);
+}
+
+/**
+ * @tc.name: OnIdle_002
+ * @tc.desc: sync device profile
+ * @tc.type: FUNC
+ * @tc.require: I5QPGN
+ */
+HWTEST_F(ProfileSyncTest, OnIdle_002, TestSize.Level3)
+{
+    std::unordered_map<std::string, std::string> reason;
+    reason["eventId"] = "1";
+    SyncCoordinator::GetInstance().isOnSync_ = false;
+    int result = DistributedDeviceProfileService::GetInstance().OnIdle(reason);
+    EXPECT_EQ(0, result);
+}
+
+/**
+ * @tc.name: OnIdle_003
+ * @tc.desc: sync device profile
+ * @tc.type: FUNC
+ * @tc.require: I5QPGN
+ */
+HWTEST_F(ProfileSyncTest, OnIdle_003, TestSize.Level3)
+{
+    std::unordered_map<std::string, std::string> reason;
+    reason["eventId"] = "1";
+    SyncCoordinator::GetInstance().isOnSync_ = true;
+    int result = DistributedDeviceProfileService::GetInstance().OnIdle(reason);
+    EXPECT_EQ(180000, result);
 }
 }
 }
