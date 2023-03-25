@@ -16,6 +16,8 @@
 #include "device_profile_fuzzer.h"
 
 #include "iremote_stub.h"
+#define private public
+#define protected public
 #include "distributed_device_profile_service.h"
 
 #include <cstddef>
@@ -38,6 +40,7 @@ namespace {
     int32_t ZERO_MOVE_LEN = 24;
     int32_t FIRST_MOVE_LEN = 16;
     int32_t SECOND_MOVE_LEN = 8;
+    bool flag_ = false;
     const std::u16string DP_INTERFACE_TOKEN = u"OHOS.DeviceProfile.IDistributedDeviceProfile";
 }
 
@@ -61,6 +64,10 @@ void FuzzDeviceProfile(const uint8_t* rawData, size_t size)
     data.RewindRead(0);
     MessageParcel reply;
     MessageOption option;
+    if (!flag_) {
+        DistributedDeviceProfileService::GetInstance().Init();
+        flag_ = true;
+    }
     DistributedDeviceProfileService::GetInstance().OnRemoteRequest(code % MAX_CALL_TRANSACTION, data, reply, option);
 }
 }
@@ -72,8 +79,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     if (size < OHOS::DeviceProfile::THRESHOLD) {
         return 0;
     }
-
     OHOS::DeviceProfile::FuzzDeviceProfile(data, size);
     return 0;
 }
-
