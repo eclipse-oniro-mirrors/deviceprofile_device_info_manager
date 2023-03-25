@@ -277,7 +277,7 @@ sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfile
             HILOGE("get samgr failed");
             return nullptr;
         }
-        auto object = samgrProxy->GetSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID);
+        auto object = samgrProxy->CheckSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID);
         if (object != nullptr) {
             HILOGI("get service succeeded");
             if (dpDeathRecipient_ == nullptr) {
