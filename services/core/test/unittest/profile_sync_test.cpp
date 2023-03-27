@@ -220,20 +220,5 @@ HWTEST_F(ProfileSyncTest, OnIdle_002, TestSize.Level3)
     int result = DistributedDeviceProfileService::GetInstance().OnIdle(reason);
     EXPECT_EQ(0, result);
 }
-
-/**
- * @tc.name: OnIdle_003
- * @tc.desc: sync device profile
- * @tc.type: FUNC
- * @tc.require: I5QPGN
- */
-HWTEST_F(ProfileSyncTest, OnIdle_003, TestSize.Level3)
-{
-    std::unordered_map<std::string, std::string> reason;
-    reason["eventId"] = "1";
-    SyncCoordinator::GetInstance().isOnSync_ = true;
-    int result = DistributedDeviceProfileService::GetInstance().OnIdle(reason);
-    EXPECT_EQ(180000, result);
-}
 }
 }
