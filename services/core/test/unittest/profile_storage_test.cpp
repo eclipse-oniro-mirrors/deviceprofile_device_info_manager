@@ -132,6 +132,11 @@ HWTEST_F(ProfileStorageTest, TryGetKvStore_001, TestSize.Level3)
 {
     ServiceCharacteristicProfile profile;
     DeviceProfileStorageManager::GetInstance().onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    /**
+     * @tc.steps: step1. add RestoreServiceItemLocked
+     */
+    DeviceProfileStorageManager::GetInstance().RestoreServiceItemLocked("");
+    
     bool result = DeviceProfileStorageManager::GetInstance().onlineSyncTbl_->TryGetKvStore();
     EXPECT_EQ(false, result);
 }
@@ -145,6 +150,11 @@ HWTEST_F(ProfileStorageTest, TryGetKvStore_001, TestSize.Level3)
 HWTEST_F(ProfileStorageTest, PutDeviceProfile_001, TestSize.Level3)
 {
     ServiceCharacteristicProfile profile;
+    /**
+     * @tc.steps: step1. add SetServiceType_001
+     */
+    DeviceProfileStorageManager::GetInstance().SetServiceType("", "", profile);
+
     int32_t result = DeviceProfileStorageManager::GetInstance().PutDeviceProfile(profile);
     EXPECT_EQ(ERR_DP_INIT_DB_FAILED, result);
 }
@@ -158,6 +168,12 @@ HWTEST_F(ProfileStorageTest, PutDeviceProfile_001, TestSize.Level3)
 HWTEST_F(ProfileStorageTest, GetDeviceProfile_001, TestSize.Level3)
 {
     ServiceCharacteristicProfile profile;
+    /**
+     * @tc.steps: step1. add SetServiceType_002
+     */
+    std::string udid = "1111test1111";
+    DeviceProfileStorageManager::GetInstance().SetServiceType(udid, "", profile);
+
     int32_t result = DeviceProfileStorageManager::GetInstance().GetDeviceProfile("", "", profile);
     EXPECT_EQ(ERR_DP_INIT_DB_FAILED, result);
 }
@@ -170,6 +186,13 @@ HWTEST_F(ProfileStorageTest, GetDeviceProfile_001, TestSize.Level3)
  */
 HWTEST_F(ProfileStorageTest, DeleteDeviceProfile_001, TestSize.Level3)
 {
+    /**
+     * @tc.steps: step1. add SetServiceType_003
+     */
+    ServiceCharacteristicProfile profile;
+    std::string serviceId = "2222test2222";
+    DeviceProfileStorageManager::GetInstance().SetServiceType("", serviceId, profile);
+
     int32_t result = DeviceProfileStorageManager::GetInstance().DeleteDeviceProfile("");
     EXPECT_EQ(ERR_DP_INIT_DB_FAILED, result);
 }
@@ -182,6 +205,14 @@ HWTEST_F(ProfileStorageTest, DeleteDeviceProfile_001, TestSize.Level3)
  */
 HWTEST_F(ProfileStorageTest, RemoveUnBoundDeviceProfile_001, TestSize.Level3)
 {
+    /**
+     * @tc.steps: step1. add SetServiceType_004
+     */
+    ServiceCharacteristicProfile profile;
+    std::string udid = "1111test1111";
+    std::string serviceId = "2222test2222";
+    DeviceProfileStorageManager::GetInstance().SetServiceType(udid, serviceId, profile);
+
     int32_t result = DeviceProfileStorageManager::GetInstance().RemoveUnBoundDeviceProfile("");
     EXPECT_EQ(ERR_DP_INIT_DB_FAILED, result);
 }
@@ -203,79 +234,6 @@ HWTEST_F(ProfileStorageTest, SyncDeviceProfile_001, TestSize.Level3)
         sptr<ProfileEventNotifierStub>(new ProfileEventNotifierStub(syncCb));
     int result = DeviceProfileStorageManager::GetInstance().SyncDeviceProfile(syncOptions, notifier);
     EXPECT_EQ(ERR_DP_INIT_DB_FAILED, result);
-}
-
-/**
- * @tc.name: RestoreServiceItemLocked_001
- * @tc.desc: RestoreServiceItemLocked
- * @tc.type: FUNC
- * @tc.require: I4NY1U
- */
-HWTEST_F(ProfileStorageTest, RestoreServiceItemLocked_001, TestSize.Level3)
-{
-    int result = 0;
-    DeviceProfileStorageManager::GetInstance().RestoreServiceItemLocked("");
-    EXPECT_EQ(0, result);
-}
-
-/**
- * @tc.name: SetServiceType_001
- * @tc.desc: set service type
- * @tc.type: FUNC
- * @tc.require: I4NY23
- */
-HWTEST_F(ProfileStorageTest, SetServiceType_001, TestSize.Level3)
-{
-    ServiceCharacteristicProfile profile;
-    int result = 0;
-    DeviceProfileStorageManager::GetInstance().SetServiceType("", "", profile);
-    EXPECT_EQ(0, result);
-}
-
-/**
- * @tc.name: SetServiceType_002
- * @tc.desc: set service type
- * @tc.type: FUNC
- * @tc.require: I4NY23
- */
-HWTEST_F(ProfileStorageTest, SetServiceType_002, TestSize.Level3)
-{
-    ServiceCharacteristicProfile profile;
-    int result = 0;
-    std::string udid = "1111test1111";
-    DeviceProfileStorageManager::GetInstance().SetServiceType(udid, "", profile);
-    EXPECT_EQ(0, result);
-}
-
-/**
- * @tc.name: SetServiceType_003
- * @tc.desc: set service type
- * @tc.type: FUNC
- * @tc.require: I4NY23
- */
-HWTEST_F(ProfileStorageTest, SetServiceType_003, TestSize.Level3)
-{
-    ServiceCharacteristicProfile profile;
-    int result = 0;
-    std::string serviceId = "2222test2222";
-    DeviceProfileStorageManager::GetInstance().SetServiceType("", serviceId, profile);
-    EXPECT_EQ(0, result);
-}
-
-/**
- * @tc.name: SetServiceType_004
- * @tc.desc: set service type
- * @tc.type: FUNC
- * @tc.require: I4NY23
- */
-HWTEST_F(ProfileStorageTest, SetServiceType_004, TestSize.Level3)
-{
-    ServiceCharacteristicProfile profile;
-    int result = 0;
-    std::string udid = "1111test1111";
-    std::string serviceId = "2222test2222";
-    DeviceProfileStorageManager::GetInstance().SetServiceType(udid, serviceId, profile);
-    EXPECT_EQ(0, result);
 }
 
 /**

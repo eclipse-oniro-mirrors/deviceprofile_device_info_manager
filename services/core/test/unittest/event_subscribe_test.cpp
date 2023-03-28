@@ -170,6 +170,7 @@ HWTEST_F(EventSubscribeTest, Subscribe001, TestSize.Level2)
 {
     auto callback = std::make_shared<ProfileEventCallback>();
     if (MockSubscribeEvent(callback, {"fakeStorage"}, "")) {
+        EXPECT_TRUE(MockSubscribeEvent(callback, {"fakeStorage"}, ""));
         DTEST_LOG << "subscribe failed" << std::endl;
         return;
     }
@@ -191,6 +192,7 @@ HWTEST_F(EventSubscribeTest, Subscribe002, TestSize.Level2)
 {
     auto callback = std::make_shared<ProfileEventCallback>();
     if (MockSubscribeEvent(callback, {"fakeSystem"}, "")) {
+        EXPECT_TRUE(MockSubscribeEvent(callback, {"fakeSystem"}, ""));
         DTEST_LOG << "subscribe failed" << std::endl;
         return;
     }
