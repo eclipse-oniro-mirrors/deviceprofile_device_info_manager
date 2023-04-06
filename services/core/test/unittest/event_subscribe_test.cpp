@@ -176,6 +176,7 @@ HWTEST_F(EventSubscribeTest, Subscribe001, TestSize.Level2)
     }
 
     int32_t errCode = PutFakeStorage();
+    EXPECT_NE(PutFakeStorage(), ERR_OK);
     if (errCode == ERR_OK) {
         DTEST_LOG << "put succeeded" << std::endl;
         std::this_thread::sleep_for(1s);
@@ -197,6 +198,7 @@ HWTEST_F(EventSubscribeTest, Subscribe002, TestSize.Level2)
         return;
     }
     int32_t errCode = PutFakeStorage();
+    EXPECT_NE(PutFakeStorage(), ERR_OK);
     if (errCode == ERR_OK) {
         DTEST_LOG << "put succeeded" << std::endl;
         std::this_thread::sleep_for(1s);
