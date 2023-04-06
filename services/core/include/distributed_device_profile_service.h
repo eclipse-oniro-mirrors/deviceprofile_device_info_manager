@@ -49,9 +49,9 @@ public:
     void DeviceOnline();
 
 protected:
-    void OnStart(const std::unordered_map<std::string, std::string>& startReason) override;
+    void OnStart(const SystemAbilityOnDemandReason& startReason) override;
     void OnStop() override;
-    int32_t OnIdle(const std::unordered_map<std::string, std::string>& idleReason) override;
+    int32_t OnIdle(const SystemAbilityOnDemandReason& idleReason) override;
 
 private:
     bool Init();
