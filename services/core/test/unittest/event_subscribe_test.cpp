@@ -176,7 +176,7 @@ HWTEST_F(EventSubscribeTest, Subscribe001, TestSize.Level2)
     }
 
     int32_t errCode = PutFakeStorage();
-    EXPECT_EQ(PutFakeStorage(), ERR_OK);
+    EXPECT_EQ(errCode, ERR_OK);
     if (errCode == ERR_OK) {
         DTEST_LOG << "put succeeded" << std::endl;
         std::this_thread::sleep_for(1s);
@@ -198,7 +198,7 @@ HWTEST_F(EventSubscribeTest, Subscribe002, TestSize.Level2)
         return;
     }
     int32_t errCode = PutFakeStorage();
-    EXPECT_EQ(PutFakeStorage(), ERR_OK);
+    EXPECT_EQ(errCode, ERR_OK);
     if (errCode == ERR_OK) {
         DTEST_LOG << "put succeeded" << std::endl;
         std::this_thread::sleep_for(1s);
@@ -216,10 +216,12 @@ HWTEST_F(EventSubscribeTest, Subscribe003, TestSize.Level2)
     auto callback = std::make_shared<ProfileEventCallback>();
     std::list<std::string> serviceIds = {"fakeStorage", "fakeSystem"};
     if (MockSubscribeEvents(callback, serviceIds, "") != ERR_OK) {
+        EXPECT_NE(MockSubscribeEvents(callback, serviceIds, ""), ERR_OK);
         DTEST_LOG << "subscribe failed" << std::endl;
         return;
     }
     int32_t errCode = PutFakeSystem();
+    EXPECT_EQ(errCode, ERR_OK);
     if (errCode == ERR_OK) {
         DTEST_LOG << "put succeeded" << std::endl;
         std::this_thread::sleep_for(1s);
@@ -237,10 +239,12 @@ HWTEST_F(EventSubscribeTest, Subscribe004, TestSize.Level2)
     auto callback = std::make_shared<ProfileEventCallback>();
     std::list<std::string> serviceIds = {"fakeStorage", "fakeSystem"};
     if (MockSubscribeEvent(callback, serviceIds, "fake_device_id") != ERR_OK) {
+        EXPECT_NE(MockSubscribeEvent(callback, serviceIds, "fake_device_id"), ERR_OK);
         DTEST_LOG << "subscribe failed" << std::endl;
         return;
     }
     int32_t errCode = PutFakeStorage();
+    EXPECT_EQ(errCode, ERR_OK);
     if (errCode == ERR_OK) {
         DTEST_LOG << "put succeeded" << std::endl;
         std::this_thread::sleep_for(1s);
@@ -261,6 +265,7 @@ HWTEST_F(EventSubscribeTest, Subscribe005, TestSize.Level2)
      */
     std::list<std::string> serviceIds = {"fakeStorage", "fakeSystem"};
     if (MockSubscribeEvent(callback, serviceIds, "") != ERR_OK) {
+        EXPECT_NE(MockSubscribeEvent(callback, serviceIds, ""), ERR_OK);
         DTEST_LOG << "subscribe failed" << std::endl;
         return;
     }
@@ -270,6 +275,7 @@ HWTEST_F(EventSubscribeTest, Subscribe005, TestSize.Level2)
      * @tc.expected: step2. got one notification.
      */
     int32_t errCode = PutFakeStorage();
+    EXPECT_EQ(errCode, ERR_OK);
     if (errCode == ERR_OK) {
         DTEST_LOG << "put succeeded" << std::endl;
         std::this_thread::sleep_for(1s);
@@ -280,6 +286,7 @@ HWTEST_F(EventSubscribeTest, Subscribe005, TestSize.Level2)
      * @tc.expected: step3. got notification again.
      */
     errCode = PutFakeSystem();
+    EXPECT_EQ(errCode, ERR_OK);
     if (errCode == ERR_OK) {
         DTEST_LOG << "put succeeded" << std::endl;
         std::this_thread::sleep_for(1s);
@@ -351,6 +358,7 @@ HWTEST_F(EventSubscribeTest, SubscribeWithUnsusbscribe001, TestSize.Level2)
      */
     std::list<std::string> serviceIds = {"fakeStorage", "fakeSystem"};
     if (MockSubscribeEvents(callback, serviceIds, "") != ERR_OK) {
+        EXPECT_NE(MockSubscribeEvents(callback, serviceIds, ""), ERR_OK);
         DTEST_LOG << "subscribe failed" << std::endl;
         return;
     }
@@ -360,6 +368,7 @@ HWTEST_F(EventSubscribeTest, SubscribeWithUnsusbscribe001, TestSize.Level2)
      * @tc.expected: step2. got one notification.
      */
     int32_t errCode = PutFakeSystem();
+    EXPECT_EQ(errCode, ERR_OK);
     if (errCode == ERR_OK) {
         DTEST_LOG << "put succeeded" << std::endl;
         std::this_thread::sleep_for(1s);
@@ -372,15 +381,18 @@ HWTEST_F(EventSubscribeTest, SubscribeWithUnsusbscribe001, TestSize.Level2)
     errCode = DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvent(
         ProfileEvent::EVENT_SYNC_COMPLETED, callback);
     if (errCode != ERR_OK) {
+        EXPECT_NE(errCode, ERR_OK);
         DTEST_LOG << "unsubscribe failed" << std::endl;
         return;
     }
+    EXPECT_EQ(errCode, ERR_OK);
 
     /**
      * @tc.steps: step4. put the other subscribed service profile
      * @tc.expected: step4. got notification again.
      */
     errCode = PutFakeStorage();
+    EXPECT_EQ(errCode, ERR_OK);
     if (errCode == ERR_OK) {
         DTEST_LOG << "put succeeded" << std::endl;
         std::this_thread::sleep_for(1s);
@@ -402,6 +414,7 @@ HWTEST_F(EventSubscribeTest, SubscribeWithUnsusbscribe002, TestSize.Level2)
      */
     std::list<std::string> serviceIds = {"fakeStorage", "fakeSystem"};
     if (MockSubscribeEvents(callback, serviceIds, "") != ERR_OK) {
+        EXPECT_NE(MockSubscribeEvents(callback, serviceIds, ""), ERR_OK);
         DTEST_LOG << "subscribe failed" << std::endl;
         return;
     }
@@ -411,6 +424,7 @@ HWTEST_F(EventSubscribeTest, SubscribeWithUnsusbscribe002, TestSize.Level2)
      * @tc.expected: step2. got one notification.
      */
     int32_t errCode = PutFakeSystem();
+    EXPECT_EQ(errCode, ERR_OK);
     if (errCode == ERR_OK) {
         DTEST_LOG << "put succeeded" << std::endl;
         std::this_thread::sleep_for(1s);
@@ -421,6 +435,7 @@ HWTEST_F(EventSubscribeTest, SubscribeWithUnsusbscribe002, TestSize.Level2)
      * @tc.steps: step3. unsubscribe all events
      */
     if (MockUnsubscribeEvents(callback) != ERR_OK) {
+        EXPECT_NE(MockUnsubscribeEvents(callback), ERR_OK);
         DTEST_LOG << "unsubscribe failed" << std::endl;
         return;
     }
@@ -430,6 +445,7 @@ HWTEST_F(EventSubscribeTest, SubscribeWithUnsusbscribe002, TestSize.Level2)
      * @tc.expected: step4. can't receive notification.
      */
     errCode = PutFakeStorage();
+    EXPECT_EQ(errCode, ERR_OK);
     if (errCode == ERR_OK) {
         DTEST_LOG << "put succeeded" << std::endl;
         std::this_thread::sleep_for(1s);
