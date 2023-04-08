@@ -200,8 +200,8 @@ HWTEST_F(ProfileSyncTest, OnIdle_001, TestSize.Level3)
     DistributedDeviceProfileService::GetInstance().unloadHandler_ =
         std::make_shared<AppExecFwk::EventHandler>(runner);
     DistributedDeviceProfileService::GetInstance().DelayUnloadTask();
-    std::unordered_map<std::string, std::string> reason;
-    reason["eventId"] = "2";
+    SystemAbilityOnDemandReason reason;
+    reason.SetId(OnDemandReasonId::SETTING_SWITCH);
     int result = DistributedDeviceProfileService::GetInstance().OnIdle(reason);
     EXPECT_EQ(0, result);
 }
@@ -214,8 +214,8 @@ HWTEST_F(ProfileSyncTest, OnIdle_001, TestSize.Level3)
  */
 HWTEST_F(ProfileSyncTest, OnIdle_002, TestSize.Level3)
 {
-    std::unordered_map<std::string, std::string> reason;
-    reason["eventId"] = "1";
+    SystemAbilityOnDemandReason reason;
+    reason.SetId(OnDemandReasonId::DEVICE_ONLINE);
     SyncCoordinator::GetInstance().isOnSync_ = false;
     int result = DistributedDeviceProfileService::GetInstance().OnIdle(reason);
     EXPECT_EQ(0, result);

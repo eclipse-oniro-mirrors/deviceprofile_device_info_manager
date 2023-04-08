@@ -191,7 +191,7 @@ void DistributedDeviceProfileService::DelayUnloadTask()
     }
 }
 
-void DistributedDeviceProfileService::OnStart(const std::unordered_map<std::string, std::string>& startReason)
+void DistributedDeviceProfileService::OnStart(const SystemAbilityOnDemandReason& startReason)
 {
     HILOGI("called");
     if (!Init()) {
@@ -199,8 +199,8 @@ void DistributedDeviceProfileService::OnStart(const std::unordered_map<std::stri
         return;
     }
 
-    HILOGI("start reason %{public}s", startReason.at(NAME).c_str());
-    if (startReason.at(NAME) == BOOT_COMPLETED_EVENT) {
+    HILOGI("start reason %{public}s", startReason.GetName().c_str());
+    if (startReason.GetName() == BOOT_COMPLETED_EVENT) {
         ContentSensorManager::GetInstance().Init();
     }
     DelayUnloadTask();
@@ -210,10 +210,10 @@ void DistributedDeviceProfileService::OnStart(const std::unordered_map<std::stri
     }
 }
 
-int32_t DistributedDeviceProfileService::OnIdle(const std::unordered_map<std::string, std::string>& idleReason)
+int32_t DistributedDeviceProfileService::OnIdle(const SystemAbilityOnDemandReason& idleReason)
 {
-    HILOGI("idle reason %{public}s", idleReason.at(EVENT_ID).c_str());
-    if (idleReason.at(EVENT_ID) == std::to_string(DEVICE_ONLINE)) {
+    HILOGI("idle reason %{public}d", idleReason.GetId());
+    if (idleReason.GetId() == OnDemandReasonId::DEVICE_ONLINE) {
         int32_t errCode = DeviceProfileStorageManager::GetInstance().RemoveRemoteDeviceProfile();
         HILOGI("remove remote device profile, result = %{public}d", errCode);
     }
