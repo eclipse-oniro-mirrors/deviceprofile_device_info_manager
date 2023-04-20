@@ -22,6 +22,7 @@ device_profile_common_sources =
 
 config("device_info_manager_config") {
   visibility = [ ":*" ]
+  visibility += [ "./test/*" ]
   include_dirs = [
     "include",
     "include/authority",
