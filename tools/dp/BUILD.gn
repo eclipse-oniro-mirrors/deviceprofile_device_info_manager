@@ -13,8 +13,7 @@
 
 import("//build/ohos.gni")
 import("//build/ohos_var.gni")
-
-device_profile_path = "//foundation/deviceprofile/device_info_manager"
+import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
 
 config("dp_tools_config") {
   visibility = [ ":*" ]
@@ -26,7 +25,7 @@ ohos_executable("dp") {
 
   configs = [
     ":dp_tools_config",
-    "//foundation/deviceprofile/device_info_manager/test/resource:coverage_flags",
+    "${device_profile_test}/resource:coverage_flags",
   ]
 
   sources = [
@@ -35,7 +34,7 @@ ohos_executable("dp") {
     "src/shell_command.cpp",
   ]
 
-  deps = [ "${device_profile_path}/interfaces/innerkits/core:distributed_device_profile_client" ]
+  deps = [ "${device_profile_innerkits}/core:distributed_device_profile_client" ]
   external_deps = [
     "c_utils:utils",
     "dsoftbus:softbus_client",

@@ -13,9 +13,7 @@
 
 import("//build/ohos.gni")
 import("//build/ohos_var.gni")
-
-device_profile_path = "//foundation/deviceprofile/device_info_manager"
-device_profile_service = "${device_profile_path}/services/core"
+import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
 
 config("distributed_device_profile_client_config") {
   visibility = [ ":*" ]
@@ -31,10 +29,10 @@ ohos_shared_library("distributed_device_profile_client") {
 
   sources = [
     "${device_profile_path}/common/src/device_profile_utils.cpp",
-    "${device_profile_service}/src/profile_change_notification.cpp",
-    "${device_profile_service}/src/service_characteristic_profile.cpp",
-    "${device_profile_service}/src/subscribemanager/subscribe_info.cpp",
-    "${device_profile_service}/src/sync_options.cpp",
+    "${device_profile_service}/core/src/profile_change_notification.cpp",
+    "${device_profile_service}/core/src/service_characteristic_profile.cpp",
+    "${device_profile_service}/core/src/subscribemanager/subscribe_info.cpp",
+    "${device_profile_service}/core/src/sync_options.cpp",
     "src/callback/device_profile_load_callback.cpp",
     "src/distributed_device_profile_client.cpp",
     "src/distributed_device_profile_proxy.cpp",
@@ -43,7 +41,7 @@ ohos_shared_library("distributed_device_profile_client") {
 
   public_configs = [
     ":distributed_device_profile_client_config",
-    "//foundation/deviceprofile/device_info_manager/test/resource:coverage_flags",
+    "${device_profile_test}/resource:coverage_flags",
   ]
 
   external_deps = [
