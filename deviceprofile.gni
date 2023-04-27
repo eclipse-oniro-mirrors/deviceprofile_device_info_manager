@@ -12,7 +12,9 @@
 # limitations under the License.
 
 device_profile_path = "//foundation/deviceprofile/device_info_manager"
-device_profile_service = "//foundation/deviceprofile/device_info_manager/services"
-device_profile_innerkits = "//foundation/deviceprofile/device_info_manager/interfaces/innerkits"
+device_profile_service =
+    "//foundation/deviceprofile/device_info_manager/services"
+device_profile_innerkits =
+    "//foundation/deviceprofile/device_info_manager/interfaces/innerkits"
 device_profile_test = "//foundation/deviceprofile/device_info_manager/test"
 build_flags = [ "-Werror" ]
