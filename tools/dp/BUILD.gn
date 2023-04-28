@@ -34,7 +34,8 @@ ohos_executable("dp") {
     "src/shell_command.cpp",
   ]
 
-  deps = [ "${device_profile_innerkits}/core:distributed_device_profile_client" ]
+  deps =
+      [ "${device_profile_innerkits}/core:distributed_device_profile_client" ]
   external_deps = [
     "c_utils:utils",
     "dsoftbus:softbus_client",

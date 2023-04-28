@@ -46,7 +46,8 @@ device_profile_deps = [
 ohos_fuzztest("DeviceProfileFuzzTest") {
   module_out_path = module_output_path
 
-  fuzz_config_file = "${device_profile_service}/core/test/fuzztest/deviceprofile_fuzzer"
+  fuzz_config_file =
+      "${device_profile_service}/core/test/fuzztest/deviceprofile_fuzzer"
 
   cflags = [
     "-g",
@@ -72,7 +73,8 @@ ohos_fuzztest("DeviceProfileFuzzTest") {
 ohos_fuzztest("DpStorageFuzzTest") {
   module_out_path = module_output_path
 
-  fuzz_config_file = "${device_profile_service}/core/test/fuzztest/deviceprofile_fuzzer"
+  fuzz_config_file =
+      "${device_profile_service}/core/test/fuzztest/deviceprofile_fuzzer"
 
   cflags = [
     "-g",
@@ -93,7 +95,8 @@ ohos_fuzztest("DpStorageFuzzTest") {
 ohos_fuzztest("DpDmFuzzTest") {
   module_out_path = module_output_path
 
-  fuzz_config_file = "${device_profile_service}/core/test/fuzztest/deviceprofile_fuzzer"
+  fuzz_config_file =
+      "${device_profile_service}/core/test/fuzztest/deviceprofile_fuzzer"
 
   cflags = [
     "-g",
