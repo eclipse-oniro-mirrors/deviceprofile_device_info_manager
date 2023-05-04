@@ -1,4 +1,4 @@
-# Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+# Copyright (c) 2021-2023 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -13,10 +13,8 @@
 
 import("//build/ohos.gni")
 import("//build/ohos_var.gni")
+import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
 
-device_profile_path = "//foundation/deviceprofile/device_info_manager"
-device_profile_innerkits = "${device_profile_path}/interfaces/innerkits"
-services = "${device_profile_path}/services"
 device_profile_common_sources =
     [ "${device_profile_path}/common/src/device_profile_utils.cpp" ]
 
@@ -33,7 +31,7 @@ config("device_info_manager_config") {
     "include/subscribemanager",
     "${device_profile_path}/common/include",
     "${device_profile_innerkits}/core/include",
-    "${services}/core/include",
+    "${device_profile_service}/core/include",
     "//third_party/json/include",
   ]
 }
@@ -77,7 +75,7 @@ ohos_shared_library("distributed_device_profile") {
 
   configs = [
     ":device_info_manager_config",
-    "//foundation/deviceprofile/device_info_manager/test/resource:coverage_flags",
+    "${device_profile_test}/resource:coverage_flags",
   ]
 
   external_deps = [

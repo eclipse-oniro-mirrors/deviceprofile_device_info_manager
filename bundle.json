@@ -17,8 +17,8 @@
       "hisysevent_config":[
         "//foundation/deviceprofile/device_info_manager/hisysevent.yaml"
       ],
-      "rom": "",
-      "ram": "",
+      "rom": "1MB",
+      "ram": "20MB",
       "deps": {
         "components": [
           "c_utils",
