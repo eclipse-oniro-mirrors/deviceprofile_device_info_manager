@@ -12,3 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#ifndef OHOS_DEVICE_PROFILE_IPC_INTERFACE_CODE_H
+#define OHOS_DEVICE_PROFILE_IPC_INTERFACE_CODE_H
+
+#include <cstdint>
+
+/* SAID: 6001 */
+namespace OHOS {
+namespace DeviceProfile {
+enum class IDeviceProfileInterfaceCode : uint32_t {
+    PUT_DEVICE_PROFILE = 1,
+    GET_DEVICE_PROFILE = 2,
+    DELETE_DEVICE_PROFILE = 3,
+    SUBSCRIBE_PROFILE_EVENT = 4,
+    UNSUBSCRIBE_PROFILE_EVENT = 5,
+    SYNC_DEVICE_PROFILE = 6
+};
+} // namespace DeviceProfile
+} // namespace OHOS
+#endif
