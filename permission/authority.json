@@ -42,5 +42,15 @@
         "interfacesAuthority": {
           "sync": {}
         }
+    },
+    "CollaborationFwk": {
+        "servicesAuthority": {
+          "specific": {
+            "collaborationFwk": 3
+          }
+        },
+        "interfacesAuthority": {
+          "sync": {}
+        }
     }
 }
