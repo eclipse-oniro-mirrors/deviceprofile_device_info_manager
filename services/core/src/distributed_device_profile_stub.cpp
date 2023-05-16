@@ -18,6 +18,7 @@
 #include <string>
 
 #include "authority_manager.h"
+#include "deviceprofile_ipc_interface_code.h"
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_storage.h"
@@ -34,12 +35,18 @@ constexpr uint32_t MAX_EVENT_LEN = 1000000;
 
 DistributedDeviceProfileStub::DistributedDeviceProfileStub()
 {
-    funcsMap_[PUT_DEVICE_PROFILE] = &DistributedDeviceProfileStub::PutDeviceProfileInner;
-    funcsMap_[DELETE_DEVICE_PROFILE] = &DistributedDeviceProfileStub::DeleteDeviceProfileInner;
-    funcsMap_[GET_DEVICE_PROFILE] = &DistributedDeviceProfileStub::GetDeviceProfileInner;
-    funcsMap_[SUBSCRIBE_PROFILE_EVENT] = &DistributedDeviceProfileStub::SubscribeProfileEventInner;
-    funcsMap_[UNSUBSCRIBE_PROFILE_EVENT] = &DistributedDeviceProfileStub::UnsubscribeProfileEventInner;
-    funcsMap_[SYNC_DEVICE_PROFILE] = &DistributedDeviceProfileStub::SyncDeviceProfileInner;
+    funcsMap_[static_cast<uint32_t>(IDeviceProfileInterfaceCode::PUT_DEVICE_PROFILE)] =
+        &DistributedDeviceProfileStub::PutDeviceProfileInner;
+    funcsMap_[static_cast<uint32_t>(IDeviceProfileInterfaceCode::DELETE_DEVICE_PROFILE)] =
+        &DistributedDeviceProfileStub::DeleteDeviceProfileInner;
+    funcsMap_[static_cast<uint32_t>(IDeviceProfileInterfaceCode::GET_DEVICE_PROFILE)] =
+        &DistributedDeviceProfileStub::GetDeviceProfileInner;
+    funcsMap_[static_cast<uint32_t>(IDeviceProfileInterfaceCode::SUBSCRIBE_PROFILE_EVENT)] =
+        &DistributedDeviceProfileStub::SubscribeProfileEventInner;
+    funcsMap_[static_cast<uint32_t>(IDeviceProfileInterfaceCode::UNSUBSCRIBE_PROFILE_EVENT)] =
+        &DistributedDeviceProfileStub::UnsubscribeProfileEventInner;
+    funcsMap_[static_cast<uint32_t>(IDeviceProfileInterfaceCode::SYNC_DEVICE_PROFILE)] =
+        &DistributedDeviceProfileStub::SyncDeviceProfileInner;
 }
 
 bool DistributedDeviceProfileStub::EnforceInterfaceToken(MessageParcel& data)
