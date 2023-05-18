@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,6 +17,7 @@
 
 #include <string>
 
+#include "deviceprofile_ipc_interface_code.h"
 #include "device_profile_log.h"
 #include "device_profile_utils.h"
 #include "errors.h"
@@ -48,7 +49,8 @@ int32_t DistributedDeviceProfileProxy::PutDeviceProfile(const ServiceCharacteris
         return ERR_FLATTEN_OBJECT;
     }
     MessageParcel reply;
-    PARCEL_TRANSACT_SYNC_RET_INT(remote, PUT_DEVICE_PROFILE, data, reply);
+    PARCEL_TRANSACT_SYNC_RET_INT(remote, static_cast<uint32_t>(IDeviceProfileInterfaceCode::PUT_DEVICE_PROFILE),
+        data, reply);
 }
 
 int32_t DistributedDeviceProfileProxy::GetDeviceProfile(const std::string& udid, const std::string& serviceId,
@@ -64,7 +66,8 @@ int32_t DistributedDeviceProfileProxy::GetDeviceProfile(const std::string& udid,
     PARCEL_WRITE_HELPER(data, String, serviceId);
     MessageParcel reply;
     MessageOption option;
-    int32_t errCode = remote->SendRequest(GET_DEVICE_PROFILE, data, reply, option);
+    int32_t errCode = remote->SendRequest(static_cast<uint32_t>(IDeviceProfileInterfaceCode::GET_DEVICE_PROFILE),
+        data, reply, option);
     if (errCode != ERR_NONE) {
         HILOGE("transact failed, errCode = %{public}d", errCode);
         return errCode;
@@ -88,7 +91,8 @@ int32_t DistributedDeviceProfileProxy::DeleteDeviceProfile(const std::string& se
     }
     PARCEL_WRITE_HELPER(data, String, serviceId);
     MessageParcel reply;
-    PARCEL_TRANSACT_SYNC_RET_INT(remote, DELETE_DEVICE_PROFILE, data, reply);
+    PARCEL_TRANSACT_SYNC_RET_INT(remote, static_cast<uint32_t>(IDeviceProfileInterfaceCode::DELETE_DEVICE_PROFILE),
+        data, reply);
 }
 
 int32_t DistributedDeviceProfileProxy::SubscribeProfileEvents(
@@ -113,7 +117,8 @@ int32_t DistributedDeviceProfileProxy::SubscribeProfileEvents(
     PARCEL_WRITE_HELPER(data, RemoteObject, profileEventNotifier);
     MessageParcel reply;
     MessageOption option;
-    int32_t errCode = remote->SendRequest(SUBSCRIBE_PROFILE_EVENT, data, reply, option);
+    int32_t errCode = remote->SendRequest(static_cast<uint32_t>(IDeviceProfileInterfaceCode::SUBSCRIBE_PROFILE_EVENT),
+        data, reply, option);
     if (errCode != ERR_NONE) {
         HILOGE("transact failed, errCode = %{public}d", errCode);
         return errCode;
@@ -145,7 +150,8 @@ int32_t DistributedDeviceProfileProxy::UnsubscribeProfileEvents(
     PARCEL_WRITE_HELPER(data, RemoteObject, profileEventNotifier);
     MessageParcel reply;
     MessageOption option;
-    int32_t errCode = remote->SendRequest(UNSUBSCRIBE_PROFILE_EVENT, data, reply, option);
+    int32_t errCode = remote->SendRequest(
+        static_cast<uint32_t>(IDeviceProfileInterfaceCode::UNSUBSCRIBE_PROFILE_EVENT), data, reply, option);
     if (errCode != ERR_NONE) {
         HILOGE("transact failed, errCode = %{public}d", errCode);
         return errCode;
@@ -176,7 +182,8 @@ int32_t DistributedDeviceProfileProxy::SyncDeviceProfile(const SyncOptions& sync
 
     PARCEL_WRITE_HELPER(data, RemoteObject, profileEventNotifier);
     MessageParcel reply;
-    PARCEL_TRANSACT_SYNC_RET_INT(remote, SYNC_DEVICE_PROFILE, data, reply);
+    PARCEL_TRANSACT_SYNC_RET_INT(remote, static_cast<uint32_t>(IDeviceProfileInterfaceCode::SYNC_DEVICE_PROFILE),
+        data, reply);
 }
 } // namespace DeviceProfile
 } // namespace OHOS

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,15 +29,6 @@ namespace OHOS {
 namespace DeviceProfile {
 class IDistributedDeviceProfile : public IRemoteBroker {
 public:
-    enum {
-        PUT_DEVICE_PROFILE = 1,
-        GET_DEVICE_PROFILE = 2,
-        DELETE_DEVICE_PROFILE = 3,
-        SUBSCRIBE_PROFILE_EVENT = 4,
-        UNSUBSCRIBE_PROFILE_EVENT = 5,
-        SYNC_DEVICE_PROFILE = 6
-    };
-
     virtual int32_t PutDeviceProfile(const ServiceCharacteristicProfile& profile) = 0;
     virtual int32_t GetDeviceProfile(const std::string& udid, const std::string& serviceId,
         ServiceCharacteristicProfile& profile) = 0;
