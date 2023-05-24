@@ -114,12 +114,35 @@ ohos_fuzztest("DpDmFuzzTest") {
   external_deps = device_profile_external_deps
 }
 
+ohos_fuzztest("DpClientFuzzTest") {
+  module_out_path = module_output_path
+
+  fuzz_config_file =
+      "${device_profile_service}/core/test/fuzztest/deviceprofile_fuzzer"
+
+  cflags = [
+    "-g",
+    "-O0",
+    "-Wno-unused-variable",
+    "-fno-omit-frame-pointer",
+  ]
+
+  configs = device_profile_configs
+
+  sources = [ "dp_client_fuzzer.cpp" ]
+
+  deps = device_profile_deps
+
+  external_deps = device_profile_external_deps
+}
+
 group("fuzztest") {
   testonly = true
 
   deps = [
     # deps file
     ":DeviceProfileFuzzTest",
+    ":DpClientFuzzTest",
     ":DpDmFuzzTest",
     ":DpStorageFuzzTest",
   ]
