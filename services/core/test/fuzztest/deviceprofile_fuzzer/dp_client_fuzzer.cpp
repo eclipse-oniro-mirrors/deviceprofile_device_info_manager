@@ -140,6 +140,13 @@ void FuzzSubscribeProfileEvent(const uint8_t* data, size_t size)
     ProfileEvent profileEvent = profileEventFuzz[data[0] % DP_EVENT_SIZE];
     DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvent(profileEvent, callback);
 }
+
+void FuzzLoadSystemAbilityFail(const uint8_t* data, size_t size)
+{
+    (void)data;
+    (void)size;
+    DistributedDeviceProfileClient::GetInstance().LoadSystemAbilityFail();
+}
 }
 }
 
@@ -152,5 +159,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::DeviceProfile::FuzzSubscribeProfileEvents(data, size);
     OHOS::DeviceProfile::FuzzSyncDeviceProfile(data, size);
     OHOS::DeviceProfile::FuzzSubscribeProfileEvent(data, size);
+    OHOS::DeviceProfile::FuzzLoadSystemAbilityFail(data, size);
     return 0;
 }
