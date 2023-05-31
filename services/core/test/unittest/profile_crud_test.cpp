@@ -1028,6 +1028,7 @@ HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_008, TestSize.Level3)
  */
 HWTEST_F(ProfileCrudTest, SubscribeProfileEvents_009, TestSize.Level3)
 {
+    DistributedDeviceProfileClient::GetInstance().LoadSystemAbilityFail();
     TestUtil::MockPermission("distributedsched");
     auto callback = std::make_shared<ProfileEventCallback>();
     std::list<SubscribeInfo> subscribeInfos;
