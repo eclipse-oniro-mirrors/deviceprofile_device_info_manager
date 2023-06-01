@@ -426,7 +426,7 @@ bool DeviceProfileStorageManager::CheckSyncOption(const SyncOptions& syncOptions
     DpDeviceManager::GetInstance().GetDeviceList(onlineDevices);
     std::list<std::string> onlineDeviceIds;
     for (const auto& onlineDevice : onlineDevices) {
-        onlineDeviceIds.emplace_back(onlineDevice->GetDeviceId());
+        onlineDeviceIds.emplace_back(onlineDevice->GetNetworkId());
     }
 
     // check whether deviceId is online

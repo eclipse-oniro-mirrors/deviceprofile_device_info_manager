@@ -53,7 +53,7 @@ public:
 private:
     bool WaitForDnetworkReady();
     void OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo);
-    void OnNodeOffline(const std::string& deviceId);
+    void OnNodeOffline(const std::string& networkId);
     void AddLocalDeviceIds();
     void AddDeviceIds(const std::string& networkId);
     void RemoveDeviceIds(const std::string& networkId);
