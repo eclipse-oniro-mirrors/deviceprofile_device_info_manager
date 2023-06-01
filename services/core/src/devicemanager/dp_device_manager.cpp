@@ -82,7 +82,7 @@ void DpDeviceManager::GetTrustedDeviceList()
     }
     for (const DmDeviceInfo& dmDeviceInfo : deviceList) {
         auto dpDeviceInfo = std::make_shared<DeviceInfo>(
-            dmDeviceInfo.deviceName, dmDeviceInfo.deviceId, dmDeviceInfo.deviceTypeId);
+            dmDeviceInfo.deviceName, dmDeviceInfo.networkId, dmDeviceInfo.deviceTypeId);
         DpDeviceManager::GetInstance().OnNodeOnline(dpDeviceInfo);
     }
     DistributedDeviceProfileService::GetInstance().DeviceOnline();
@@ -92,7 +92,7 @@ void DpDeviceManager::DpDeviceStateCallback::OnDeviceOnline(const DmDeviceInfo &
 {
     HILOGI("online called");
     auto dpDeviceInfo = std::make_shared<DeviceInfo>(
-        deviceInfo.deviceName, deviceInfo.deviceId, deviceInfo.deviceTypeId);
+        deviceInfo.deviceName, deviceInfo.networkId, deviceInfo.deviceTypeId);
     DpDeviceManager::GetInstance().OnNodeOnline(dpDeviceInfo);
     DistributedDeviceProfileService::GetInstance().DeviceOnline();
 }
@@ -100,8 +100,8 @@ void DpDeviceManager::DpDeviceStateCallback::OnDeviceOnline(const DmDeviceInfo &
 void DpDeviceManager::DpDeviceStateCallback::OnDeviceOffline(const DmDeviceInfo &deviceInfo)
 {
     HILOGI("offline called");
-    std::string deviceId = deviceInfo.deviceId;
-    DpDeviceManager::GetInstance().OnNodeOffline(deviceId);
+    std::string networkId = deviceInfo.networkId;
+    DpDeviceManager::GetInstance().OnNodeOffline(networkId);
 }
 
 void DpDeviceManager::DpDeviceStateCallback::OnDeviceChanged(const DmDeviceInfo &deviceInfo)
@@ -118,13 +118,13 @@ void DpDeviceManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
 {
     auto onlineNotifyTask = [this, deviceInfo = deviceInfo]() {
         HILOGI("online networkId = %{public}s",
-            DeviceProfileUtils::AnonymizeDeviceId(deviceInfo->GetDeviceId()).c_str());
-        RemoveExpiredDeviceIds(deviceInfo->GetDeviceId());
-        AddDeviceIds(deviceInfo->GetDeviceId());
+            DeviceProfileUtils::AnonymizeDeviceId(deviceInfo->GetNetworkId()).c_str());
+        RemoveExpiredDeviceIds(deviceInfo->GetNetworkId());
+        AddDeviceIds(deviceInfo->GetNetworkId());
         {
-            std::string deviceId = deviceInfo->GetDeviceId();
+            std::string networkId = deviceInfo->GetNetworkId();
             std::lock_guard<std::mutex> autoLock(deviceLock_);
-            remoteDeviceInfoMap_[deviceId] = deviceInfo;
+            remoteDeviceInfoMap_[networkId] = deviceInfo;
         }
     };
     if (!devMgrHandler_->PostTask(onlineNotifyTask)) {
@@ -133,13 +133,12 @@ void DpDeviceManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
     }
 }
 
-void DpDeviceManager::OnNodeOffline(const std::string& deviceId)
+void DpDeviceManager::OnNodeOffline(const std::string& networkId)
 {
-    auto offlineNotifyTask = [this, deviceId = std::move(deviceId)]() {
-        HILOGI("offline networkId = %{public}s",
-            DeviceProfileUtils::AnonymizeDeviceId(deviceId).c_str());
+    auto offlineNotifyTask = [this, networkId = std::move(networkId)]() {
+        HILOGI("offline networkId = %{public}s", DeviceProfileUtils::AnonymizeDeviceId(networkId).c_str());
         std::lock_guard<std::mutex> autoLock(deviceLock_);
-        remoteDeviceInfoMap_.erase(deviceId);
+        remoteDeviceInfoMap_.erase(networkId);
     };
     if (!devMgrHandler_->PostTask(offlineNotifyTask)) {
         HILOGE("post task failed");
@@ -232,12 +231,11 @@ void DpDeviceManager::RecoverDevicesIfNeeded()
     }
     for (DmDeviceInfo dmDeviceInfo : deviceList) {
         std::string networkId = dmDeviceInfo.networkId;
-        HILOGI("deviceId %{public}s found",
-            DeviceProfileUtils::AnonymizeDeviceId(networkId).c_str());
+        HILOGI("deviceId %{public}s found", DeviceProfileUtils::AnonymizeDeviceId(networkId).c_str());
         AddDeviceIds(networkId);
         {
             auto deviceInfo = std::make_shared<DeviceInfo>(
-                dmDeviceInfo.deviceName, networkId, dmDeviceInfo.deviceTypeId);
+                dmDeviceInfo.deviceName, dmDeviceInfo.networkId, dmDeviceInfo.deviceTypeId);
             std::lock_guard<std::mutex> autoLock(deviceLock_);
             remoteDeviceInfoMap_.emplace(std::move(networkId), deviceInfo);
         }
@@ -376,7 +374,7 @@ void DpDeviceManager::GetDeviceIdList(std::list<std::string>& deviceIdList)
     deviceIdList.clear();
     std::lock_guard<std::mutex> autoLock(deviceLock_);
     for (const auto& [_, deviceInfo] : remoteDeviceInfoMap_) {
-        deviceIdList.emplace_back(deviceInfo->GetDeviceId());
+        deviceIdList.emplace_back(deviceInfo->GetNetworkId());
     }
 }
 

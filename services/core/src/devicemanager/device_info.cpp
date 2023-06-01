@@ -22,9 +22,9 @@ const std::string& DeviceInfo::GetDeviceName() const
     return deviceName_;
 }
 
-const std::string& DeviceInfo::GetDeviceId() const
+const std::string& DeviceInfo::GetNetworkId() const
 {
-    return deviceId_;
+    return networkId_;
 }
 
 int32_t DeviceInfo::GetDeviceType() const

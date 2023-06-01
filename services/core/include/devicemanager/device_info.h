@@ -28,17 +28,17 @@ enum {
 
 class DeviceInfo {
 public:
-    DeviceInfo(const std::string& deviceName, const std::string& deviceId, int32_t deviceType)
-        : deviceName_(deviceName), deviceId_(deviceId), deviceType_(deviceType) {}
+    DeviceInfo(const std::string& deviceName, const std::string& networkId, int32_t deviceType)
+        : deviceName_(deviceName), networkId_(networkId), deviceType_(deviceType) {}
     ~DeviceInfo() = default;
 
     const std::string& GetDeviceName() const;
-    const std::string& GetDeviceId() const;
+    const std::string& GetNetworkId() const;
     int32_t GetDeviceType() const;
 
 private:
     std::string deviceName_;
-    std::string deviceId_;
+    std::string networkId_;
     int32_t deviceType_ = UNKNOWN_TYPE;
 };
 } // namespace DeviceProfile
