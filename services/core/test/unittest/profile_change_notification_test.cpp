@@ -110,7 +110,7 @@ HWTEST_F(ProfileChangeNotificationTest, GetDeviceId_001, TestSize.Level3)
     bool isLocal = true;
     std::shared_ptr<ProfileChangeNotification> temp =
         std::make_shared<ProfileChangeNotification>(profileEntries, networkId, isLocal);
-    std::string result = temp->GetNetworkId();
+    std::string result = temp->GetDeviceId();
     EXPECT_EQ("", result);
 }
 

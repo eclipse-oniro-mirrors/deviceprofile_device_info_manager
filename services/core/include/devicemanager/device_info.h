@@ -28,8 +28,8 @@ enum {
 
 class DeviceInfo {
 public:
-    DeviceInfo(const std::string& deviceName, const std::string& deviceId, int32_t deviceType)
-        : deviceName_(deviceName), networkId_(deviceId), deviceType_(deviceType) {}
+    DeviceInfo(const std::string& deviceName, const std::string& networkId, int32_t deviceType)
+        : deviceName_(deviceName), networkId_(networkId), deviceType_(deviceType) {}
     ~DeviceInfo() = default;
 
     const std::string& GetDeviceName() const;
