@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,6 +26,9 @@
 #include <cstdlib>
 #include <fcntl.h>
 #include <string>
+#include "accesstoken_kit.h"
+#include "nativetoken_kit.h"
+#include "token_setproc.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -53,8 +56,31 @@ uint32_t Convert2Uint32(const uint8_t* ptr)
         (ptr[SECOND_BIT] << SECOND_MOVE_LEN) | (ptr[THIRD_BIT]);
 }
 
+void MockPermission(const char* processName)
+{
+    static const char *perms[] = {
+        "ohos.permission.DISTRIBUTED_DATASYNC"
+    };
+
+    uint64_t tokenId;
+    NativeTokenInfoParams infoInstance = {
+        .dcapsNum = 0,
+        .permsNum = 1,
+        .aclsNum = 0,
+        .dcaps = nullptr,
+        .perms = perms,
+        .acls = nullptr,
+        .processName = processName,
+        .aplStr = "system_core",
+    };
+    tokenId = GetAccessTokenId(&infoInstance);
+    SetSelfTokenID(tokenId);
+    OHOS::Security::AccessToken::AccessTokenKit::ReloadNativeTokenInfo();
+}
+
 void FuzzDeviceProfile(const uint8_t* rawData, size_t size)
 {
+    MockPermission("distributedsched");
     uint32_t code = Convert2Uint32(rawData);
     rawData = rawData + OFFSET;
     size = size - OFFSET;
