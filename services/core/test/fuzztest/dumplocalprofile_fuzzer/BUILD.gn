@@ -1,4 +1,4 @@
-# Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+# Copyright (c) 2023 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -23,17 +23,31 @@ device_profile_configs = [
   "${device_profile_test}/resource:coverage_flags",
 ]
 
+device_profile_external_deps = [
+  "access_token:libaccesstoken_sdk",
+  "c_utils:utils",
+  "device_auth:deviceauth_sdk",
+  "device_manager:devicemanagersdk",
+  "dsoftbus:softbus_client",
+  "eventhandler:libeventhandler",
+  "hisysevent_native:libhisysevent",
+  "hiviewdfx_hilog_native:libhilog",
+  "ipc:ipc_core",
+  "kv_store:distributeddata_inner",
+  "syscap_codec:syscap_interface_shared",
+]
+
 device_profile_deps = [
   "${device_profile_innerkits}/core:distributed_device_profile_client",
   "${device_profile_service}/core:distributed_device_profile",
 ]
 
 ##############################fuzztest##########################################
-ohos_fuzztest("DeviceProfileFuzzTest") {
+ohos_fuzztest("DumpLocalProfileFuzzTest") {
   module_out_path = module_output_path
 
   fuzz_config_file =
-      "${device_profile_service}/core/test/fuzztest/deviceprofile_fuzzer"
+      "${device_profile_service}/core/test/fuzztest/dumplocalprofile_fuzzer"
 
   cflags = [
     "-g",
@@ -44,23 +58,15 @@ ohos_fuzztest("DeviceProfileFuzzTest") {
 
   configs = device_profile_configs
 
-  sources = [ "device_profile_fuzzer.cpp" ]
+  sources = [ "dumplocalprofile_fuzzer.cpp" ]
 
   deps = device_profile_deps
 
-  external_deps = [
-    "access_token:libaccesstoken_sdk",
-    "access_token:libnativetoken",
-    "access_token:libtoken_setproc",
-    "c_utils:utils",
-    "hiviewdfx_hilog_native:libhilog",
-    "ipc:ipc_core",
-    "safwk:system_ability_fwk",
-  ]
+  external_deps = device_profile_external_deps
 }
 
 group("fuzztest") {
   testonly = true
 
-  deps = [ ":DeviceProfileFuzzTest" ]
+  deps = [ ":DumpLocalProfileFuzzTest" ]
 }

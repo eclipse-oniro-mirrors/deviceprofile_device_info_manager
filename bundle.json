@@ -75,7 +75,7 @@
         ],
         "test": [
           "//foundation/deviceprofile/device_info_manager/services/core:unittest",
-          "//foundation/deviceprofile/device_info_manager/services/core/test/fuzztest/deviceprofile_fuzzer:fuzztest"
+          "//foundation/deviceprofile/device_info_manager/services/core/test/fuzztest:fuzztest"
         ]
       }
     }
