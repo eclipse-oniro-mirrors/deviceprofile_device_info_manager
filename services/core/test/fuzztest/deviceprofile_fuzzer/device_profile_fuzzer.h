@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef SAMGR_TEST_FUZZTEST_DEVICE_PROFILE_FUZZER_H
-#define SAMGR_TEST_FUZZTEST_DEVICE_PROFILE_FUZZER_H
+#ifndef DEVICE_PROFILE_FUZZER_H
+#define DEVICE_PROFILE_FUZZER_H
 
 #define FUZZ_PROJECT_NAME "device_profile_fuzzer"
 
