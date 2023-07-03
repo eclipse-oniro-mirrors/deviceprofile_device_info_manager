@@ -22,9 +22,9 @@
       "deps": {
         "components": [
           "c_utils",
-          "hisysevent_native",
+          "hisysevent",
           "startup_l2",
-          "hiviewdfx_hilog_native",
+          "hilog",
           "ipc",
           "syscap_codec",
           "access_token",

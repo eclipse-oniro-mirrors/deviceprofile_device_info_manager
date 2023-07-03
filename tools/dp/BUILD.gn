@@ -40,7 +40,7 @@ ohos_executable("dp") {
     "c_utils:utils",
     "dsoftbus:softbus_client",
     "eventhandler:libeventhandler",
-    "hiviewdfx_hilog_native:libhilog",
+    "hilog:libhilog",
     "ipc:ipc_core",
   ]
 
