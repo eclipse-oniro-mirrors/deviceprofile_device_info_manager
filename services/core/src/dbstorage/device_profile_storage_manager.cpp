@@ -365,11 +365,6 @@ int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOp
 
 int32_t DeviceProfileStorageManager::NotifySyncStart(const sptr<IRemoteObject>& profileEventNotifier)
 {
-    if (!SyncCoordinator::GetInstance().AcquireSync()) {
-        HILOGW("sync busy");
-        return ERR_DP_DEVICE_SYNC_BUSY;
-    }
-
     {
         std::lock_guard<std::mutex> autoLock(profileSyncLock_);
         syncEventNotifier_ = profileEventNotifier;
