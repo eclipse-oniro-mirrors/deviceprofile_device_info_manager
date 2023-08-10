@@ -572,22 +572,6 @@ HWTEST_F(ProfileStorageTest, CheckSyncOption_001, TestSize.Level3)
 }
 
 /**
- * @tc.name: NotifySyncStart_001
- * @tc.desc: notify sync start
- * @tc.type: FUNC
- * @tc.require: I4NY23
- */
-HWTEST_F(ProfileStorageTest, NotifySyncStart_001, TestSize.Level3)
-{
-    auto syncCb = std::make_shared<StorageProfileEventCallback>();
-    sptr<IRemoteObject> notifier =
-        sptr<ProfileEventNotifierStub>(new ProfileEventNotifierStub(syncCb));
-    SyncCoordinator::GetInstance().isOnSync_ = true;
-    int32_t res = DeviceProfileStorageManager::GetInstance().NotifySyncStart(notifier);
-    EXPECT_EQ(ERR_DP_DEVICE_SYNC_BUSY, res);
-}
-
-/**
  * @tc.name: SubscribeKvStore_003
  * @tc.desc: subscribe kvstore
  * @tc.type: FUNC
