@@ -23,6 +23,8 @@
 #include <cstdlib>
 #include <fcntl.h>
 #include <string>
+#include <sys/types.h>
+#include "sys/stat.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -36,6 +38,8 @@ void FuzzPutDeviceProfile(const uint8_t* data, size_t size)
     if ((data == nullptr) || (size == 0)) {
         return;
     }
+    std::string baseDir = "/data/service/el1/public/database/distributed_device_profile_service";
+    mkdir(baseDir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     DeviceProfileStorageManager::GetInstance().Init();
     sleep(TIME);
     ServiceCharacteristicProfile profile;

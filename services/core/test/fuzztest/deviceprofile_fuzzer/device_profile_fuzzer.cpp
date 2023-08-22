@@ -26,6 +26,8 @@
 #include <cstdlib>
 #include <fcntl.h>
 #include <string>
+#include <sys/types.h>
+#include "sys/stat.h"
 #include "accesstoken_kit.h"
 #include "nativetoken_kit.h"
 #include "token_setproc.h"
@@ -90,6 +92,8 @@ void FuzzDeviceProfile(const uint8_t* rawData, size_t size)
     data.RewindRead(0);
     MessageParcel reply;
     MessageOption option;
+    std::string baseDir = "/data/service/el1/public/database/distributed_device_profile_service";
+    mkdir(baseDir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     if (!flag_) {
         DistributedDeviceProfileService::GetInstance().Init();
         flag_ = true;
