@@ -36,7 +36,7 @@ namespace OHOS {
 namespace DeviceProfile {
 namespace {
     constexpr size_t THRESHOLD = 10;
-    constexpr uint8_t MAX_CALL_TRANSACTION = 6;
+    constexpr uint8_t MAX_CALL_TRANSACTION = 7;
     constexpr int32_t OFFSET = 4;
     int32_t ZERO_BIT = 0;
     int32_t FIRST_BIT = 1;
