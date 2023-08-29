@@ -173,6 +173,10 @@ void ProfileChangeHandler::NotifyProfileChanged(const ProfileChangeNotification&
 void ProfileChangeHandler::NotifyProfileChangedLocked(const ProfileChangeNotification& changeNotification,
     const FilterInfo& filterInfo, const sptr<IProfileEventNotifier>& profileEventNotifier)
 {
+    if (profileEventNotifier == nullptr) {
+        HILOGE("profileEventNotifier is nullptr!");
+        return;
+    }
     if (!filterInfo.filtered) {
         HILOGD("not filtered");
         profileEventNotifier->OnProfileChanged(changeNotification);
