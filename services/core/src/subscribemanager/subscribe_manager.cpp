@@ -125,6 +125,10 @@ int32_t SubscribeManager::UnsubscribeProfileEvents(const std::list<ProfileEvent>
 void SubscribeManager::TryAddNotifierLocked(const sptr<IRemoteObject>& profileEventNotifier,
     const ProfileEvents& subProfileEvents)
 {
+    if (profileEventNotifier == nullptr) {
+        HILOGE("profileEventNotifier is nullptr!");
+        return;
+    }
     auto iter = notifiersMap_.find(profileEventNotifier);
     if (iter == notifiersMap_.end()) {
         int32_t callingUid = IPCSkeleton::GetCallingUid();
@@ -141,6 +145,10 @@ void SubscribeManager::TryAddNotifierLocked(const sptr<IRemoteObject>& profileEv
 void SubscribeManager::TryRemoveNotiferLocked(const sptr<IRemoteObject>& profileEventNotifier,
     const ProfileEvents& unsubProfileEvents)
 {
+    if (profileEventNotifier == nullptr) {
+        HILOGE("profileEventNotifier is nullptr!");
+        return;
+    }
     auto iter = notifiersMap_.find(profileEventNotifier);
     if (iter == notifiersMap_.end()) {
         return;
