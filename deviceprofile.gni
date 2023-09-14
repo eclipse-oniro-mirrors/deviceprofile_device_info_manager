@@ -17,4 +17,6 @@ device_profile_service =
 device_profile_innerkits =
     "//foundation/deviceprofile/device_info_manager/interfaces/innerkits"
 device_profile_test = "//foundation/deviceprofile/device_info_manager/test"
+
+fuzz_test_output_path = "device_info_manager/device_info_manager"
 build_flags = [ "-Werror" ]
