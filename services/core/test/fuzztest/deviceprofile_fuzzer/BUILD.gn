@@ -16,7 +16,7 @@ import("//build/config/features.gni")
 import("//build/ohos.gni")
 import("//build/test.gni")
 import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
-module_output_path = "device_info_manager/deviceprofile"
+module_output_path = fuzz_test_output_path
 
 device_profile_configs = [
   "${device_profile_service}/core:device_info_manager_config",
