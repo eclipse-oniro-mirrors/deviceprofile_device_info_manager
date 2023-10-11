@@ -39,9 +39,9 @@ config("device_info_manager_config") {
 ohos_shared_library("distributed_device_profile") {
   sanitize = {
     boundary_sanitize = true
-	integer_overflow = true
-	stack_protector_ret = true
-	ubsan = true
+    integer_overflow = true
+    stack_protector_ret = true
+    ubsan = true
   }
   
   install_enable = true
