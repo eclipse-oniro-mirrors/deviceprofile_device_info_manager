@@ -37,6 +37,13 @@ config("device_info_manager_config") {
 }
 
 ohos_shared_library("distributed_device_profile") {
+  sanitize = {
+    boundary_sanitize = true
+	integer_overflow = true
+	ubsan = true
+	stack_protector_ret = true
+  }
+  
   install_enable = true
   sources = [
     "src/authority/authority_manager.cpp",

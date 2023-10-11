@@ -31,6 +31,7 @@ ohos_shared_library("distributed_device_profile_client") {
 	ubsan = true
 	stack_protector_ret = true
   }
+  
   install_enable = true
 
   sources = [
