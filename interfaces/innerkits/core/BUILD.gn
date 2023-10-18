@@ -25,6 +25,14 @@ config("distributed_device_profile_client_config") {
 }
 
 ohos_shared_library("distributed_device_profile_client") {
+  stack_protector_ret = true
+
+  sanitize = {
+    boundary_sanitize = true
+    integer_overflow = true
+    ubsan = true
+  }
+
   install_enable = true
 
   sources = [
