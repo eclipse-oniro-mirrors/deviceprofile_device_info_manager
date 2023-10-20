@@ -46,6 +46,7 @@ void OnlineSyncTable::Init()
         .encrypt = true,
         .autoSync = true,
         .kvStoreType = KvStoreType::SINGLE_VERSION,
+        .securityLevel = DistributedKv::SecurityLevel::S2,
         .area = 1,
         .baseDir = "/data/service/el1/public/database/distributed_device_profile_service"
     };
