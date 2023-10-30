@@ -19,5 +19,8 @@ group("fuzztest") {
     "dumplocalprofile_fuzzer:fuzztest",
     "getdeviceprofile_fuzzer:fuzztest",
     "putdeviceprofile_fuzzer:fuzztest",
+    "putdeviceprofileinner_fuzzer:fuzztest",
+    "subscribeprofileeventinner_fuzzer:fuzztest",
+    "syncdeviceprofileinner_fuzzer:fuzztest",
   ]
 }
