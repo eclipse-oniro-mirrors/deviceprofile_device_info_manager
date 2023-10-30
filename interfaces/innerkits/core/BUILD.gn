@@ -31,6 +31,9 @@ ohos_shared_library("distributed_device_profile_client") {
     boundary_sanitize = true
     integer_overflow = true
     ubsan = true
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
   }
 
   install_enable = true
