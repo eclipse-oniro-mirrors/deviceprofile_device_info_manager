@@ -37,7 +37,7 @@ config("device_info_manager_config") {
 }
 
 ohos_shared_library("distributed_device_profile") {
-  stack_protector_ret = true
+  branch_protector_ret = "pac_ret"
 
   sanitize = {
     boundary_sanitize = true
