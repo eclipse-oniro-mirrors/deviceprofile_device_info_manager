@@ -46,13 +46,14 @@
         "group_type": {
           "base_group": [],
           "fwk_group": [
-            "//foundation/deviceprofile/device_info_manager/old/interfaces/innerkits/core:distributed_device_profile_client",          ],
+            "//foundation/deviceprofile/device_info_manager/old/interfaces/innerkits/core:distributed_device_profile_client"
+          ],
           "service_group": [
             "//foundation/deviceprofile/device_info_manager/etc/profile:deviceprofile_trust",
             "//foundation/deviceprofile/device_info_manager/etc/init:etc",
             "//foundation/deviceprofile/device_info_manager/old/permission:authority_json",
             "//foundation/deviceprofile/device_info_manager/sa_profile:dps_sa_profile",
-            "//foundation/deviceprofile/device_info_manager/old/services/core:distributed_device_profile",
+            "//foundation/deviceprofile/device_info_manager/old/services/core:distributed_device_profile"
           ]
         },
         "inner_kits": [
