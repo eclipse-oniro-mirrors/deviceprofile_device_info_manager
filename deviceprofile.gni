@@ -16,7 +16,8 @@ old_device_profile_service =
     "//foundation/deviceprofile/device_info_manager/old/services"
 old_device_profile_innerkits =
     "//foundation/deviceprofile/device_info_manager/old/interfaces/innerkits"
-old_device_profile_test = "//foundation/deviceprofile/device_info_manager/old/test"
+old_device_profile_test =
+    "//foundation/deviceprofile/device_info_manager/old/test"
 
 old_fuzz_test_output_path = "device_info_manager/device_info_manager"
 
