@@ -11,7 +11,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-device_profile_path = "//foundation/deviceprofile/device_info_manager"
+old_device_profile_path = "//foundation/deviceprofile/device_info_manager/old"
+old_device_profile_service =
+    "//foundation/deviceprofile/device_info_manager/old/services"
+old_device_profile_innerkits =
+    "//foundation/deviceprofile/device_info_manager/old/interfaces/innerkits"
+old_device_profile_test =
+    "//foundation/deviceprofile/device_info_manager/old/test"
+
+old_fuzz_test_output_path = "device_info_manager/device_info_manager"
+
+device_profile_path = "//foundation/deviceprofile/device_info_manager/"
+device_profile_common = "//foundation/deviceprofile/device_info_manager/common"
 device_profile_service =
     "//foundation/deviceprofile/device_info_manager/services"
 device_profile_innerkits =
