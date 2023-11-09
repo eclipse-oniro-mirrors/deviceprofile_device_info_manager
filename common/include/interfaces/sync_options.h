@@ -40,7 +40,7 @@ public:
     void dump() const override;
 
 private:
-    SyncMode syncMode_ {SyncMode::PUSH_PULL};
+    SyncMode syncMode_{SyncMode::PUSH_PULL};
     std::vector<std::string> syncDeviceIds_;
 };
 } // namespace DistributedDeviceProfile

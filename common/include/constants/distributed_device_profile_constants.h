@@ -183,56 +183,70 @@ const std::string CREATE_ACCESSEE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS access
     accesseeHapSignature TEXT,\
     accesseeBindLevel    INTEGER\
 );";
-const std::string CREATE_TURST_DEVICE_TABLE_UNIQUE_INDEX_SQL = "CREATE UNIQUE INDEX if not exists unique_trust_device_table ON trust_device_table \
-                                                                    (deviceId,\
-                                                                     deviceIdType,\
-                                                                     deviceIdHash,\
-                                                                     status);";
-const std::string CREATE_ACCESS_CONTROL_TABLE_UNIQUE_INDEX_SQL = "CREATE UNIQUE INDEX if not exists unique_access_control_table ON access_control_table \
-                                                                        (accesserId,\
-                                                                         accesseeId,\
-                                                                         trustDeviceId,\
-                                                                         sessionKey,\
-                                                                         bindType,\
-                                                                         authenticationType,\
-                                                                         deviceIdType,\
-                                                                         deviceIdHash,\
-                                                                         status,\
-                                                                         validPeriod,\
-                                                                         lastAuthTime,\
-                                                                         bindLevel);";
-const std::string CREATE_ACCESSER_TABLE_UNIQUE_INDEX_SQL = "CREATE UNIQUE INDEX if not exists unique_accesser_table ON accesser_table \
-                                                            (accesserDeviceId,\
-                                                             accesserUserId,\
-                                                             accesserAccountId,\
-                                                             accesserTokenId,\
-                                                             accesserBundleName,\
-                                                             accesserHapSignature,\
-                                                             accesserBindLevel);";
-const std::string CREATE_ACCESSEE_TABLE_UNIQUE_INDEX_SQL = "CREATE UNIQUE INDEX if not exists unique_accessee_table ON accessee_table \
-                                                            (accesseeDeviceId,\
-                                                             accesseeUserId,\
-                                                             accesseeAccountId,\
-                                                             accesseeTokenId,\
-                                                             accesseeBundleName,\
-                                                             accesseeHapSignature,\
-                                                             accesseeBindLevel);";
+const std::string CREATE_TURST_DEVICE_TABLE_UNIQUE_INDEX_SQL =
+     "CREATE UNIQUE INDEX if not exists unique_trust_device_table ON trust_device_table \
+     (deviceId,\
+     deviceIdType,\
+     deviceIdHash,\
+     status);";
+const std::string CREATE_ACCESS_CONTROL_TABLE_UNIQUE_INDEX_SQL =
+     "CREATE UNIQUE INDEX if not exists unique_access_control_table ON access_control_table \
+     accesserId,\
+     accesseeId,\
+     trustDeviceId,\
+     sessionKey,\
+     bindType,\
+     authenticationType,\
+     deviceIdType,\
+     deviceIdHash,\
+     status,\
+     validPeriod,\
+     lastAuthTime,\
+     bindLevel);";
+const std::string CREATE_ACCESSER_TABLE_UNIQUE_INDEX_SQL =
+    "CREATE UNIQUE INDEX if not exists unique_accesser_table ON accesser_table \
+    (accesserDeviceId,\
+    accesserUserId,\
+    accesserAccountId,\
+    accesserTokenId,\
+    accesserBundleName,\
+    accesserHapSignature,\
+    accesserBindLevel);";
+const std::string CREATE_ACCESSEE_TABLE_UNIQUE_INDEX_SQL =
+    "CREATE UNIQUE INDEX if not exists unique_accessee_table ON accessee_table \
+    (accesseeDeviceId,\
+    accesseeUserId,\
+    accesseeAccountId,\
+    accesseeTokenId,\
+    accesseeBundleName,\
+    accesseeHapSignature,\
+    accesseeBindLevel);";
 const std::string TRUST_DEVICE_TABLE = "trust_device_table";
 const std::string ACCESS_CONTROL_TABLE = "access_control_table";
 const std::string ACCESSER_TABLE = "accesser_table";
 const std::string ACCESSEE_TABLE = "accessee_table";
 const std::string SELECT_TRUST_DEVICE_TABLE = "SELECT * FROM trust_device_table";
 const std::string SELECT_TRUST_DEVICE_TABLE_WHERE_DEVICEID = "SELECT * FROM trust_device_table WHERE deviceId = ?";
-const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_ACCESSCONTROLID = "SELECT * FROM access_control_table WHERE accessControlId = ?";
-const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_ACCESSEEID = "SELECT * FROM access_control_table WHERE accesseeId = ? ";
-const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_ACCESSERID = "SELECT * FROM access_control_table WHERE accesserId = ? ";
-const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_BINDTYPE = "SELECT * FROM access_control_table WHERE bindType = ?";
-const std::string SELECT_ACCESS_CONTROL_TABLE= "SELECT * FROM access_control_table";
-const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_TRUSTDEVICEID = "SELECT * FROM access_control_table WHERE trustDeviceId = ? ";
-const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID = "SELECT * FROM accessee_table WHERE accesseeId = ? ";
-const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID = "SELECT * FROM accesser_table WHERE accesserId = ? ";
-const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERUSERID_ACCESSERTOKENID = "SELECT * FROM accesser_table WHERE accesserId = ? and accesserUserId = ? and accesserTokenId = ?";
-const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSERUSEEID_ACCESSEETOKENID = "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeUserId = ? and accesseeTokenId = ?";
+const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_ACCESSCONTROLID =
+    "SELECT * FROM access_control_table WHERE accessControlId = ?";
+const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_ACCESSEEID =
+    "SELECT * FROM access_control_table WHERE accesseeId = ? ";
+const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_ACCESSERID =
+    "SELECT * FROM access_control_table WHERE accesserId = ? ";
+const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_BINDTYPE =
+    "SELECT * FROM access_control_table WHERE bindType = ?";
+const std::string SELECT_ACCESS_CONTROL_TABLE=
+    "SELECT * FROM access_control_table";
+const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_TRUSTDEVICEID =
+    "SELECT * FROM access_control_table WHERE trustDeviceId = ? ";
+const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID =
+    "SELECT * FROM accessee_table WHERE accesseeId = ? ";
+const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID =
+    "SELECT * FROM accesser_table WHERE accesserId = ? ";
+const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERUSERID_ACCESSERTOKENID =
+    "SELECT * FROM accesser_table WHERE accesserId = ? and accesserUserId = ? and accesserTokenId = ?";
+const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSERUSEEID_ACCESSEETOKENID =
+    "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeUserId = ? and accesseeTokenId = ?";
 /* SubscribeTrustInfoManager */
 const std::string SUBSCRIBE_TRUST_INFO_TABLE = "subscribe_trust_info_table";
 const std::string CREATE_SUBSCRIBE_TRUST_INFO_TABLE_SQL = "CREATE TABLE IF NOT EXISTS subscribe_trust_info_table\
@@ -240,7 +254,8 @@ const std::string CREATE_SUBSCRIBE_TRUST_INFO_TABLE_SQL = "CREATE TABLE IF NOT E
     saId                 INTEGER PRIMARY KEY,\
     subscribeTable       TEXT,\
 );";
-const std::string CREATE_SUBSCRIBE_TRUST_INFO_TABLE_UNIQUE_INDEX_SQL = "CREATE UNIQUE INDEX if not exists unique_subscribe_trust_info_table ON subscribe_trust_info_table \
+const std::string CREATE_SUBSCRIBE_TRUST_INFO_TABLE_UNIQUE_INDEX_SQL =
+    "CREATE UNIQUE INDEX if not exists unique_subscribe_trust_info_table ON subscribe_trust_info_table \
 (said,\
  subscribeTable);";
 const std::string TRUST_DEVICE_DELETE = "TrustDeviceDelete";

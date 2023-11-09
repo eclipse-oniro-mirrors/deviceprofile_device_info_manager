@@ -53,7 +53,7 @@ public:
     static int32_t DeviceProfileToEntries(const DeviceProfile& profile, std::map<std::string, std::string>& values);
     static int32_t ServiceProfileToEntries(const ServiceProfile& profile, std::map<std::string, std::string>& values);
     static int32_t CharacteristicProfileToEntries(const CharacteristicProfile& profile,
-                                                  std::map<std::string, std::string>& values);
+        std::map<std::string, std::string>& values);
     static int32_t EntriesToTrustDeviceProfile(const ValuesBucket& values, TrustDeviceProfile& profile);
     static int32_t EntriesToAccessControlProfile(const ValuesBucket& values, AccessControlProfile& profile);
     static int32_t EntriesToAccesser(const ValuesBucket& values, Accesser& accesser);
