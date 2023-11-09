@@ -18,12 +18,12 @@ import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
 config("distributed_device_profile_sdk_config") {
   visibility = [ ":*" ]
   include_dirs = [
-     "include",
-     "include/callback",
-     "${device_profile_common}/include/constants",
-     "${device_profile_common}/include/interfaces",
-     "${device_profile_common}/include/utils",
-     "//third_party/json/include",
+    "include",
+    "include/callback",
+    "${device_profile_common}/include/constants",
+    "${device_profile_common}/include/interfaces",
+    "${device_profile_common}/include/utils",
+    "//third_party/json/include",
   ]
 }
 
@@ -31,14 +31,12 @@ ohos_shared_library("distributed_device_profile_sdk") {
   install_enable = true
 
   sources = [
-     "src/callback/device_profile_load_callback.cpp",
-     "src/distributed_device_profile_client.cpp",
-     "src/distributed_device_profile_proxy.cpp",
+    "src/callback/device_profile_load_callback.cpp",
+    "src/distributed_device_profile_client.cpp",
+    "src/distributed_device_profile_proxy.cpp",
   ]
 
-  public_configs = [
-    ":distributed_device_profile_sdk_config",
-  ]
+  public_configs = [ ":distributed_device_profile_sdk_config" ]
 
   deps = [ "${device_profile_common}:distributed_device_profile_common" ]
 
@@ -47,8 +45,8 @@ ohos_shared_library("distributed_device_profile_sdk") {
     "eventhandler:libeventhandler",
     "hilog:libhilog",
     "ipc:ipc_core",
+    "relational_store:native_rdb",
     "samgr:samgr_proxy",
-    "relational_store:native_rdb"
   ]
 
   part_name = "device_info_manager"
