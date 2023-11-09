@@ -73,13 +73,13 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<ServiceProfi
     return true;
 }
 
-bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<CharacteristicProfile>& charProfile)
+bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<CharacteristicProfile>& charProfiles)
 {
-    if (charProfile.empty() || charProfile.size() > MAX_PROFILE_SIZE) {
+    if (charProfiles.empty() || charProfiles.size() > MAX_PROFILE_SIZE) {
         HILOGE("profile size is invalid!");
         return false;
     }
-    uint32_t size = charProfile.size();
+    uint32_t size = charProfiles.size();
     WRITE_HELPER_RET(parcel, Uint32, size, false);
     for (const auto& profile : charProfile) {
         profile.Marshalling(parcel);
@@ -129,7 +129,7 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::unordered_set<Profi
     uint32_t size = changeTypes.size();
     WRITE_HELPER_RET(parcel, Uint32, size, false);
     for (ProfileChangeType item : changeTypes) {
-        WRITE_HELPER_RET(parcel, Uint32, static_cast<int32_t>(item), false);
+        WRITE_HELPER_RET(parcel, Int32, static_cast<int32_t>(item), false);
     }
     return true;
 }
