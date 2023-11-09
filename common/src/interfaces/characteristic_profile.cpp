@@ -16,6 +16,8 @@
 #include "characteristic_profile.h"
 #include "macro_utils.h"
 #include "distributed_device_profile_constants.h"
+#include "nlohmann/json.hpp"
+#include "profile_utils.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {

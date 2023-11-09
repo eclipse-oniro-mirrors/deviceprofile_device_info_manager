@@ -15,6 +15,9 @@
 
 #include "accesser.h"
 #include "macro_utils.h"
+#include "nlohmann/json.hpp"
+#include "distributed_device_profile_constants.h"
+#include "profile_utils.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
