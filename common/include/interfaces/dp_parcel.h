@@ -17,9 +17,6 @@
 #define OHOS_DP_PARCEL_H
 
 #include "message_parcel.h"
-#include "nlohmann/json.hpp"
-#include "distributed_device_profile_constants.h"
-#include "profile_utils.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
