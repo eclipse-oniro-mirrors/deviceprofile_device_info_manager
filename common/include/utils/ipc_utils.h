@@ -40,7 +40,7 @@ public:
     static bool Marshalling(MessageParcel& parcel, const std::vector<TrustDeviceProfile>& trustDeviceProfiles);
     static bool Marshalling(MessageParcel& parcel, const std::vector<AccessControlProfile>& aclProfiles);
     static bool Marshalling(MessageParcel& parcel, const std::vector<ServiceProfile>& serviceProfiles);
-    static bool Marshalling(MessageParcel& parcel, const std::vector<CharacteristicProfile>& charProfile);
+    static bool Marshalling(MessageParcel& parcel, const std::vector<CharacteristicProfile>& charProfiles);
     static bool Marshalling(MessageParcel& parcel, const std::map<std::string, std::string>& params);
     static bool Marshalling(MessageParcel& parcel, const std::map<std::string,
         OHOS::DistributedDeviceProfile::SubscribeInfo>& listenerMap);
