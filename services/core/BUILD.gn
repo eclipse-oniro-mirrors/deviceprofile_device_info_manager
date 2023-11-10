@@ -90,8 +90,3 @@ ohos_shared_library("distributed_device_profile_svr") {
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
 }
-
-group("unittest") {
-  testonly = true
-  deps = [ "test:unittest" ]
-}
