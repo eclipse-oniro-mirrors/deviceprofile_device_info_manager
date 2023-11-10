@@ -38,6 +38,27 @@ public:
     int32_t SubscribeProfileEventInner(MessageParcel& data, MessageParcel& reply);
     int32_t UnsubscribeProfileEventInner(MessageParcel& data, MessageParcel& reply);
     int32_t SyncDeviceProfileInner(MessageParcel& data, MessageParcel& reply);
+    // new stub interface
+    int32_t PutAccessControlProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t UpdateAccessControlProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetTrustDeviceProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetAllTrustDeviceProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetAccessControlProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetAllAccessControlProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t DeleteAccessControlProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t PutServiceProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t PutServiceProfileBatchInner(MessageParcel& data, MessageParcel& reply);
+    int32_t PutCharacteristicProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t PutCharacteristicProfileBatchInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetDeviceProfileNewInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetServiceProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetCharacteristicProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t DeleteServiceProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t DeleteCharacteristicProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t SubscribeDeviceProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t UnSubscribeDeviceProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t SyncDeviceProfileNewInner(MessageParcel& data, MessageParcel& reply);
+    int32_t SendSubscribeInfosInner(MessageParcel& data, MessageParcel& reply);
     virtual void DelayUnloadTask()
     {
         return;

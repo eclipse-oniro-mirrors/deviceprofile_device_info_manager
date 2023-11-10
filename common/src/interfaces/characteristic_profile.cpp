@@ -94,14 +94,14 @@ bool CharacteristicProfile::operator!=(const CharacteristicProfile& charProfile)
     }
 }
 
-void CharacteristicProfile::dump() const
+std::string CharacteristicProfile::dump() const
 {
     nlohmann::json json;
     json[DEVICE_ID] = ProfileUtils::GetAnonyString(deviceId_);
     json[SERVICE_NAME] = serviceName_;
     json[CHARACTERISTIC_KEY] = characteristicKey_;
     json[CHARACTERISTIC_VALUE] = characteristicValue_;
-    HILOGI("dump %s!", json.dump().c_str());
+    return json.dump();
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

@@ -74,9 +74,11 @@ enum class AuthenticationType : uint32_t {
 };
 enum class BindType : uint32_t {
     MIN = 0,
-    TEMPORARY = 1,
-    PERMANENT = 2,
-    MAX = 3
+    SAME_ACCOUNT = 1,
+    POINT_TO_POINT = 256,
+    COMPATIBLE = 512,
+    DIFF_ACCOUNT = 1282,
+    MAX = 1283
 };
 enum class BindLevel : uint32_t {
     MIN = 0,

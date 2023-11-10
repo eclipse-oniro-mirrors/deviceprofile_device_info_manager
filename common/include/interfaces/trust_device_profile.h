@@ -42,7 +42,7 @@ public:
     void SetStatus(int32_t status);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
-    void dump() const override;
+    std::string dump() const override;
 
 private:
     std::string deviceId_;

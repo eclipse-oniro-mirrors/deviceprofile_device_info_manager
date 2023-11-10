@@ -218,7 +218,7 @@ bool AccessControlProfile::UnMarshalling(MessageParcel& parcel)
     return true;
 }
 
-void AccessControlProfile::dump() const
+std::string AccessControlProfile::dump() const
 {
     nlohmann::json json;
     json[ACCESS_CONTROL_ID] = accessControlId_;
@@ -234,7 +234,7 @@ void AccessControlProfile::dump() const
     json[TRUST_DEVICE_ID] = ProfileUtils::GetAnonyString(trustDeviceId_);;
     json[DEVICE_ID_TYPE] = deviceIdType_;
     json[DEVICE_ID_HASH] = deviceIdHash_;
-    HILOGI("dump %s!", json.dump().c_str());
+    return json.dump();
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

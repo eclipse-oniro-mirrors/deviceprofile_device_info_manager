@@ -130,7 +130,7 @@ bool Accesser::UnMarshalling(MessageParcel& parcel)
     return true;
 }
 
-void Accesser::dump() const
+std::string Accesser::dump() const
 {
     nlohmann::json json;
     json[ACCESSER_ID] = accesserId_;
@@ -141,7 +141,7 @@ void Accesser::dump() const
     json[ACCESSER_BUNDLE_NAME] = accesserBundleName_;
     json[ACCESSER_HAP_SIGNATURE] = accesserHapSignature_;
     json[ACCESSER_BIND_LEVEL] = accesserBindLevel_;
-    HILOGI("dump %s!", json.dump().c_str());
+    return json.dump();
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

@@ -50,8 +50,6 @@ const std::string ACCESS_CONTROL_ID = "accessControlId";
 const std::string ACCESSER_ID = "accesserId";
 const std::string ACCESSEE_ID = "accesseeId";
 const std::string TRUST_DEVICE_ID = "trustDeviceId";
-const std::string ACCESS_DIRECTION = "accessDirection";
-const std::string ACCESS_PERMISSION = "accessPermission";
 const std::string SESSION_KEY = "sessionKey";
 const std::string BIND_TYPE = "bindType";
 const std::string AUTHENTICATION_TYPE = "authenticationType";
@@ -192,8 +190,6 @@ const std::string CREATE_TURST_DEVICE_TABLE_UNIQUE_INDEX_SQL = "CREATE UNIQUE IN
     status);";
 const std::string CREATE_ACCESS_CONTROL_TABLE_UNIQUE_INDEX_SQL = "CREATE UNIQUE INDEX if not exists unique_access_control_table ON access_control_table \
 (\
-    accesserId,\
-    accesseeId,\
     trustDeviceId,\
     sessionKey,\
     bindType,\

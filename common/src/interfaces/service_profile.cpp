@@ -97,13 +97,13 @@ bool ServiceProfile::operator!=(const ServiceProfile& serviceProfile) const
     }
 }
 
-void ServiceProfile::dump() const
+std::string ServiceProfile::dump() const
 {
     nlohmann::json json;
     json[DEVICE_ID] = ProfileUtils::GetAnonyString(deviceId_);
     json[SERVICE_NAME] = serviceName_;
     json[SERVICE_TYPE] = serviceType_;
-    HILOGI("dump %s!", json.dump().c_str());
+    return json.dump();
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

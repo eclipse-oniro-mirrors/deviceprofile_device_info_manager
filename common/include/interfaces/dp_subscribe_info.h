@@ -49,7 +49,7 @@ public:
     void AddProfileChangeType(ProfileChangeType profileChangeType);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
-    void dump() const override;
+    std::string dump() const override;
 
 private:
     int32_t saId_ = -1;

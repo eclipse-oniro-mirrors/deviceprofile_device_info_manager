@@ -37,7 +37,7 @@ public:
     void SetSyncMode(SyncMode mode);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
-    void dump() const override;
+    std::string dump() const override;
 
 private:
     SyncMode syncMode_{SyncMode::PUSH_PULL};

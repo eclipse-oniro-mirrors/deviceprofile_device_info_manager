@@ -90,6 +90,7 @@ int32_t DistributedDeviceProfileProxy::GetAccessControlProfile(std::map<std::str
     sptr<IRemoteObject> remote = nullptr;
     GET_REMOTE_OBJECT(remote);
     MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
     if (!IpcUtils::Marshalling(data, queryParams)) {
         HILOGE("dp ipc write parcel fail");
         return DP_WRITE_PARCEL_FAIL;

@@ -16,6 +16,7 @@
 #ifndef OHOS_DP_PARCEL_H
 #define OHOS_DP_PARCEL_H
 
+#include <string>
 #include "message_parcel.h"
 
 namespace OHOS {
@@ -26,7 +27,7 @@ public:
     virtual ~DpParcel() = default;
     virtual bool Marshalling(MessageParcel& parcel) const = 0;
     virtual bool UnMarshalling(MessageParcel& parcel) = 0;
-    virtual void dump() const = 0;
+    virtual std::string dump() const = 0;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

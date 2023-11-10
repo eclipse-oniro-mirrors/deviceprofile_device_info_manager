@@ -24,9 +24,9 @@ old_fuzz_test_output_path = "device_info_manager/device_info_manager"
 device_profile_path = "//foundation/deviceprofile/device_info_manager/"
 device_profile_common = "//foundation/deviceprofile/device_info_manager/common"
 device_profile_service =
-    "//foundation/deviceprofile/device_info_manager/services"
+    "//foundation/deviceprofile/device_info_manager/services/core"
 device_profile_innerkits =
-    "//foundation/deviceprofile/device_info_manager/interfaces/innerkits"
+    "//foundation/deviceprofile/device_info_manager/interfaces/innerkits/core"
 device_profile_test = "//foundation/deviceprofile/device_info_manager/test"
 
 fuzz_test_output_path = "device_info_manager/device_info_manager"
