@@ -270,7 +270,7 @@ int32_t ProfileUtils::AccesseeToEntries(const AccessControlProfile& aclProfile, 
     values.PutString(ACCESSEE_ACCOUNT_ID, accessee.GetAccesseeAccountId());
     values.PutLong(ACCESSEE_TOKEN_ID, accessee.GetAccesseeTokenId());
     values.PutString(ACCESSEE_BUNDLE_NAME, accessee.GetAccesseeBundleName());
-    values.PutString(ACCESSER_HAP_SIGNATURE, accessee.GetAccesseeHapSignature());
+    values.PutString(ACCESSEE_HAP_SIGNATURE, accessee.GetAccesseeHapSignature());
     values.PutInt(ACCESSEE_BIND_LEVEL, accessee.GetAccesseeBindLevel());
     return DP_SUCCESS;
 }

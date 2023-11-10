@@ -127,10 +127,6 @@ std::shared_ptr<ResultSet> RdbAdapter::Get(const std::string& sql, const std::ve
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
         resultSet = store_->QueryByStep(sql, args);
     }
-    if (resultSet->GoToFirstRow() != E_OK) {
-        resultSet = nullptr;
-        HILOGI("rdbAdapter get failed");
-    }
     return resultSet;
 }
 
