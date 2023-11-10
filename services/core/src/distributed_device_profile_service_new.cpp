@@ -180,7 +180,7 @@ int32_t DistributedDeviceProfileServiceNew::GetTrustDeviceProfile(const std::str
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    return TrustProfileManager::GetInstance().GetTrustDeviceProfile(trustDeviceProfile);
+    return TrustProfileManager::GetInstance().GetTrustDeviceProfile(deviceId, trustDeviceProfile);
 }
 
 int32_t DistributedDeviceProfileServiceNew::GetAllTrustDeviceProfile(std::vector<TrustDeviceProfile>& trustDeviceProfiles)
