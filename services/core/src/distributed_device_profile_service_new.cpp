@@ -161,8 +161,7 @@ int32_t DistributedDeviceProfileServiceNew::PutAccessControlProfile(const Access
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    return DP_SUCCESS;
-//    return TrustProfileManager::GetInstance().PutAccessControlProfile(accessControlProfile);
+    return TrustProfileManager::GetInstance().PutAccessControlProfile(accessControlProfile);
 }
 
 int32_t DistributedDeviceProfileServiceNew::UpdateAccessControlProfile(const AccessControlProfile& accessControlProfile)
@@ -171,8 +170,7 @@ int32_t DistributedDeviceProfileServiceNew::UpdateAccessControlProfile(const Acc
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    return DP_SUCCESS;
-//    return TrustProfileManager::GetInstance().UpdateAccessControlProfile(accessControlProfile);
+    return TrustProfileManager::GetInstance().UpdateAccessControlProfile(accessControlProfile);
 }
 
 int32_t DistributedDeviceProfileServiceNew::GetTrustDeviceProfile(const std::string& deviceId,
@@ -182,8 +180,7 @@ int32_t DistributedDeviceProfileServiceNew::GetTrustDeviceProfile(const std::str
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    return DP_SUCCESS;
-//    return TrustProfileManager::GetInstance().GetTrustDeviceProfile(trustDeviceProfile);
+    return TrustProfileManager::GetInstance().GetTrustDeviceProfile(trustDeviceProfile);
 }
 
 int32_t DistributedDeviceProfileServiceNew::GetAllTrustDeviceProfile(std::vector<TrustDeviceProfile>& trustDeviceProfiles)
@@ -192,8 +189,7 @@ int32_t DistributedDeviceProfileServiceNew::GetAllTrustDeviceProfile(std::vector
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    return DP_SUCCESS;
-//    return TrustProfileManager::GetInstance().GetAllTrustDeviceProfile(trustDeviceProfiles);
+    return TrustProfileManager::GetInstance().GetAllTrustDeviceProfile(trustDeviceProfiles);
 }
 
 int32_t DistributedDeviceProfileServiceNew::GetAccessControlProfile(std::map<std::string, std::string> queryParams,
@@ -203,8 +199,7 @@ int32_t DistributedDeviceProfileServiceNew::GetAccessControlProfile(std::map<std
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    return DP_SUCCESS;
-//    return TrustProfileManager::GetInstance().GetAccessControlProfile(queryParams, accessControlProfiles);
+    return TrustProfileManager::GetInstance().GetAccessControlProfile(queryParams, accessControlProfiles);
 }
 
 int32_t DistributedDeviceProfileServiceNew::GetAllAccessControlProfile(
@@ -214,8 +209,7 @@ int32_t DistributedDeviceProfileServiceNew::GetAllAccessControlProfile(
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    return DP_SUCCESS;
-//    return TrustProfileManager::GetInstance().GetAllAccessControlProfile(accessControlProfiles);
+    return TrustProfileManager::GetInstance().GetAllAccessControlProfile(accessControlProfiles);
 }
 
 int32_t DistributedDeviceProfileServiceNew::DeleteAccessControlProfile(int32_t accessControlId)
@@ -224,8 +218,7 @@ int32_t DistributedDeviceProfileServiceNew::DeleteAccessControlProfile(int32_t a
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    return DP_SUCCESS;
-//    return TrustProfileManager::GetInstance().DeleteAccessControlProfile(accessControlId);
+    return TrustProfileManager::GetInstance().DeleteAccessControlProfile(accessControlId);
 }
 
 int32_t DistributedDeviceProfileServiceNew::PutServiceProfile(const ServiceProfile& serviceProfile)
