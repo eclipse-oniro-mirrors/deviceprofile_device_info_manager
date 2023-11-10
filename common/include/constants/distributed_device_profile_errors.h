@@ -112,7 +112,8 @@ constexpr int32_t DP_GET_PROXY_FAIL = 98566234;
 constexpr int32_t DP_WRITE_PARCEL_FAIL = 98566235;
 constexpr int32_t DP_READ_PARCEL_FAIL = 98566236;
 constexpr int32_t DP_UNLOAD_SA_FAIL = 98566237;
-
+constexpr int32_t DP_UPDATE_ACCESSER_PROFILE_FAIL = 98566238;
+constexpr int32_t DP_UPDATE_ACCESSEE_PROFILE_FAIL = 98566239;
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_ERRORS_H
