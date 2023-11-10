@@ -51,11 +51,13 @@ DistributedDeviceProfileServiceNew::DistributedDeviceProfileServiceNew()
     : SystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, true)
 {
     HILOGE("DPService construct!");
+    Init();
 }
 
 DistributedDeviceProfileServiceNew::~DistributedDeviceProfileServiceNew()
 {
     HILOGE("DPService destruction!");
+    UnInit();
 }
 
 int32_t DistributedDeviceProfileServiceNew::Init()
@@ -64,10 +66,10 @@ int32_t DistributedDeviceProfileServiceNew::Init()
         HILOGE("EventHandlerFactory init failed");
         return DP_CACHE_INIT_FAIL;
     }
-    //    if (TrustProfileManager::GetInstance().Init() != DP_SUCCESS) {
-//        HILOGE("TrustProfileManager init failed");
-//        return DP_TRUST_PROFILE_MANAGER_INIT_FAIL;
-//    }
+    if (TrustProfileManager::GetInstance().Init() != DP_SUCCESS) {
+        HILOGE("TrustProfileManager init failed");
+        return DP_TRUST_PROFILE_MANAGER_INIT_FAIL;
+    }
     if (DeviceProfileManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("DeviceProfileManager init failed");
         return DP_DEVICE_PROFILE_MANAGER_INIT_FAIL;
@@ -94,10 +96,10 @@ int32_t DistributedDeviceProfileServiceNew::Init()
 
 int32_t DistributedDeviceProfileServiceNew::UnInit()
 {
-    //    if (TrustProfileManager::GetInstance().UnInit() != DP_SUCCESS) {
-//        HILOGE("TrustProfileManager init failed");
-//        return DP_TRUST_PROFILE_MANAGER_INIT_FAIL;
-//    }
+    if (TrustProfileManager::GetInstance().UnInit() != DP_SUCCESS) {
+        HILOGE("TrustProfileManager init failed");
+        return DP_TRUST_PROFILE_MANAGER_INIT_FAIL;
+    }
     if (DeviceProfileManager::GetInstance().UnInit() != DP_SUCCESS) {
         HILOGE("DeviceProfileManager init failed");
         return DP_DEVICE_PROFILE_MANAGER_INIT_FAIL;

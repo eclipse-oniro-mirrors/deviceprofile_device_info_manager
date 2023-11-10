@@ -1,0 +1,97 @@
+  # Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+import("//build/ohos_var.gni")
+import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
+
+config("device_info_manager_config") {
+  visibility = [ ":*" ]
+  include_dirs = [
+     "include",
+     "include/contentsensormanager",
+     "include/deviceprofilemanager",
+     "include/deviceprofilemanager/listener",
+     "include/dfx",
+     "include/permissionmanager",
+     "include/persistenceadapter",
+     "include/persistenceadapter/kvadapter",
+     "include/persistenceadapter/rdbadapter",
+     "include/subscribeprofilemanager",
+     "include/trustprofilemanager",
+     "include/utils",
+     "${device_profile_common}/include/constants",
+     "${device_profile_common}/include/interfaces",
+     "${device_profile_common}/include/utils",
+  ]
+}
+
+ohos_shared_library("distributed_device_profile_svr") {
+  install_enable = true
+  sources = [
+      "src/contentsensormanager/collector.cpp",
+      "src/contentsensormanager/content_sensor_manager.cpp",
+      "src/contentsensormanager/device_info_collector.cpp",
+      "src/contentsensormanager/storage_info_collector.cpp",
+      "src/contentsensormanager/syscap_info_collector.cpp",
+      "src/contentsensormanager/system_info_collector.cpp",
+      "src/deviceprofilemanager/device_profile_manager.cpp",
+      "src/deviceprofilemanager/listener/kv_data_change_listener.cpp",
+      "src/deviceprofilemanager/listener/kv_store_death_recipient.cpp",
+      "src/deviceprofilemanager/listener/kv_sync_completed_listener.cpp",
+      "src/deviceprofilemanager/listener/sync_subscriber_death_recipient.cpp",
+      "src/dfx/device_profile_dumper.cpp",
+      "src/permissionmanager/permission_manager.cpp",
+      "src/persistenceadapter/kvadapter/kv_adapter.cpp",
+      "src/persistenceadapter/rdbadapter/rdb_adapter.cpp",
+      "src/subscribeprofilemanager/subscribe_profile_manager.cpp",
+      "src/trustprofilemanager/trust_profile_manager.cpp",
+      "src/utils/profile_cache.cpp",
+      "src/utils/event_handler_factory.cpp",
+      "src/distributed_device_profile_service_new.cpp",
+      "src/distributed_device_profile_stub_new.cpp"
+  ]
+
+  deps = [ "${device_profile_common}:distributed_device_profile_common" ]
+
+  configs = [
+    ":device_info_manager_config"
+  ]
+
+  external_deps = [
+    "access_token:libaccesstoken_sdk",
+    "c_utils:utils",
+    "device_auth:deviceauth_sdk",
+    "device_manager:devicemanagersdk",
+    "dmsfwk:common_sdk",
+    "eventhandler:libeventhandler",
+    "hilog:libhilog",
+    "hisysevent:libhisysevent",
+    "hitrace:hitrace_meter",
+    "init:libbegetutil",
+    "ipc:ipc_core",
+    "kv_store:distributeddata_inner",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "syscap_codec:syscap_interface_shared",
+    "relational_store:native_rdb"
+  ]
+
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+group("unittest") {
+  testonly = true
+  deps = [ "test:unittest" ]
+}
