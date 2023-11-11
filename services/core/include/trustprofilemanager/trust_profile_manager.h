@@ -77,9 +77,13 @@ private:
     int32_t GetResultStatus(const std::string& trustDeviceId, int32_t& trustDeviceStatus);
     int32_t GetAccesserAndAccesseeAndAccessControl(std::shared_ptr<ResultSet> resultSet, std::vector<AccessControlProfile>& profile);
     int32_t DeleteAccessControlProfileCheck(std::shared_ptr<ResultSet> resultSet);
+    int32_t TrustResultSetToTrustDeviceProfile(std::shared_ptr<ResultSet> trustResultSet, TrustDeviceProfile& trustDeviceProfile);
+    int32_t AccesserResultSetToAccesser(std::shared_ptr<ResultSet> accesserResultSet, Accesser& accesser);
+    int32_t AccesseeResultSetToAccessee(std::shared_ptr<ResultSet> accesseeResultSet, Accessee& accessee);
+    int32_t AccessControlResultSetToAccessControlProfile(std::shared_ptr<ResultSet> accessControlResultSet, AccessControlProfile& accessControlProfile);
 private:
     std::shared_ptr<IRdbAdapter> rdbStore_;
-    std::mutex mutex_;
+    std::mutex rdbMutex_;
 };
 
 } // namespace DistributedDeviceProfile
