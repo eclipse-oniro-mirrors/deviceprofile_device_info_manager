@@ -56,7 +56,7 @@ public:
     void SetAccesseeBindLevel(int32_t accesseeBindLevel);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
-    void dump() const override;
+    std::string dump() const override;
 
 private:
     int64_t accesseeId_;

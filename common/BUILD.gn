@@ -15,37 +15,50 @@ import("//build/ohos.gni")
 import("//build/ohos_var.gni")
 import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
 
-config("distributed_device_profile_sdk_config") {
+config("distributed_device_profile_common_config") {
   visibility = [ ":*" ]
   include_dirs = [
-    "include",
-    "include/callback",
-    "${device_profile_common}/include/constants",
-    "${device_profile_common}/include/interfaces",
-    "${device_profile_common}/include/utils",
+    "include/interfaces",
+    "include/constants",
+    "include/utils",
     "//third_party/json/include",
   ]
 }
 
-ohos_shared_library("distributed_device_profile_sdk") {
+ohos_shared_library("distributed_device_profile_common") {
   install_enable = true
 
   sources = [
-    "src/callback/device_profile_load_callback.cpp",
-    "src/distributed_device_profile_client.cpp",
-    "src/distributed_device_profile_proxy.cpp",
+    "src/interfaces/access_control_profile.cpp",
+    "src/interfaces/accessee.cpp",
+    "src/interfaces/accesser.cpp",
+    "src/interfaces/characteristic_profile.cpp",
+    "src/interfaces/device_profile.cpp",
+    "src/interfaces/dp_subscribe_info.cpp",
+    "src/interfaces/profile_change_listener_proxy.cpp",
+    "src/interfaces/profile_change_listener_stub.cpp",
+    "src/interfaces/service_profile.cpp",
+    "src/interfaces/sync_completed_callback_proxy.cpp",
+    "src/interfaces/sync_completed_callback_stub.cpp",
+    "src/interfaces/sync_options.cpp",
+    "src/interfaces/trust_device_profile.cpp",
+    "src/utils/ipc_utils.cpp",
+    "src/utils/profile_utils.cpp",
   ]
 
-  public_configs = [ ":distributed_device_profile_sdk_config" ]
-
-  deps = [ "${device_profile_common}:distributed_device_profile_common" ]
+  public_configs = [ ":distributed_device_profile_common_config" ]
 
   external_deps = [
+    "access_token:libaccesstoken_sdk",
     "c_utils:utils",
+    "device_manager:devicemanagersdk",
+    "dmsfwk:common_sdk",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
+    "init:libbegetutil",
     "ipc:ipc_core",
     "relational_store:native_rdb",
+    "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
   ]
 

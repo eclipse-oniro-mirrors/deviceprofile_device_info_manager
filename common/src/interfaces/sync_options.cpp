@@ -73,7 +73,7 @@ bool SyncOptions::UnMarshalling(MessageParcel& parcel)
     return true;
 }
 
-void SyncOptions::dump() const
+std::string SyncOptions::dump() const
 {
     nlohmann::json json;
     json[SYNC_MODE] = static_cast<int32_t>(syncMode_);
@@ -82,7 +82,7 @@ void SyncOptions::dump() const
         syncDeviceList.push_back(deviceId);
     }
     json[SYNC_DEVICE_IDS] = syncDeviceList;
-    HILOGI("dump %s!", json.dump().c_str());
+    return json.dump();
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

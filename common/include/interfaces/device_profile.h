@@ -67,7 +67,7 @@ public:
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     bool operator!=(const DeviceProfile& deviceProfile) const;
-    void dump() const override;
+    std::string dump() const override;
 
 private:
     std::string deviceId_;

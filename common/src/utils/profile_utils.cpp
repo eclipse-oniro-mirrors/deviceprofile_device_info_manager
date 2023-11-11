@@ -211,13 +211,13 @@ std::string ProfileUtils::GenerateDeviceProfileKey(const std::string& deviceId)
 
 std::string ProfileUtils::GenerateServiceProfileKey(const std::string& deviceId, const std::string& serviceName)
 {
-    return DEV_PREFIX + SEPARATOR + deviceId + SEPARATOR + serviceName;
+    return SVR_PREFIX + SEPARATOR + deviceId + SEPARATOR + serviceName;
 }
 
 std::string ProfileUtils::GenerateCharProfileKey(const std::string& deviceId, const std::string& serviceName,
     const std::string& charKey)
 {
-    return DEV_PREFIX + SEPARATOR + deviceId + SEPARATOR + serviceName + SEPARATOR + charKey;
+    return CHAR_PREFIX + SEPARATOR + deviceId + SEPARATOR + serviceName + SEPARATOR + charKey;
 }
 
 int32_t ProfileUtils::TrustDeviceProfileToEntries(const TrustDeviceProfile& profile, ValuesBucket& values)
@@ -482,7 +482,7 @@ int32_t ProfileUtils::EntriesToDeviceProfile(std::map<std::string, std::string> 
         propertiesMap[SERIAL_NUMBER_ID].length() < MAX_STRING_LEN) {
         profile.SetSerialNumberId(propertiesMap[SERIAL_NUMBER_ID]);
     }
-    int64_t storageCapability = std::atoi(propertiesMap[DEVICE_TYPE_ID].c_str());
+    int64_t storageCapability = std::atoi(propertiesMap[STORAGE_CAPACITY].c_str());
     if (propertiesMap.count(STORAGE_CAPACITY) != 0 && 0 < storageCapability && storageCapability < MAX_STORAGE_LEN) {
         profile.SetStorageCapability(storageCapability);
     }

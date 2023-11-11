@@ -82,14 +82,14 @@ bool TrustDeviceProfile::UnMarshalling(MessageParcel& parcel)
     return true;
 }
 
-void TrustDeviceProfile::dump() const
+std::string TrustDeviceProfile::dump() const
 {
     nlohmann::json json;
     json[DEVICE_ID] = ProfileUtils::GetAnonyString(deviceId_);
     json[DEVICE_ID_TYPE] = deviceIdType_;
     json[DEVICE_ID_HASH] = deviceIdHash_;
     json[STATUS] = status_;
-    HILOGI("dump %s!", json.dump().c_str());
+    return json.dump();
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

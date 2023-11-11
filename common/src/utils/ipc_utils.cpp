@@ -81,7 +81,7 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<Characterist
     }
     uint32_t size = charProfiles.size();
     WRITE_HELPER_RET(parcel, Uint32, size, false);
-    for (const auto& profile : charProfile) {
+    for (const auto& profile : charProfiles) {
         profile.Marshalling(parcel);
     }
     return true;

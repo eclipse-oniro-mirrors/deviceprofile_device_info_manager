@@ -69,7 +69,6 @@ int32_t ContentSensorManager::Collect()
                 continue;
             }
         }
-        deviceProfile.dump();
         DeviceProfileManager::GetInstance().PutDeviceProfile(deviceProfile);
     };
     if (!csCollectorHandler_->PostTask(csTask)) {

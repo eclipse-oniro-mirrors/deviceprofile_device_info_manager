@@ -147,13 +147,13 @@ bool SubscribeInfo::UnMarshalling(MessageParcel& parcel)
     return true;
 }
 
-void SubscribeInfo::dump() const
+std::string SubscribeInfo::dump() const
 {
     nlohmann::json json;
     json[SA_ID] = saId_;
     json[SUBSCRIBE_KEY] = subscribeKey_;
     json[SUBSCRIBE_CHANGE_TYPES] = subscribeChangeTypes_;
-    HILOGI("dump %s!", json.dump().c_str());
+    return json.dump();
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

@@ -32,6 +32,19 @@ config("device_info_manager_config") {
     "${old_device_profile_path}/common/include",
     "${old_device_profile_innerkits}/core/include",
     "${old_device_profile_service}/core/include",
+    "${device_profile_service}/include/",
+    "${device_profile_service}/include/contentsensormanager",
+    "${device_profile_service}/include/deviceprofilemanager",
+    "${device_profile_service}/include/deviceprofilemanager/listener",
+    "${device_profile_service}/include/permissionmanager",
+    "${device_profile_service}/include/persistenceadapter/kvadapter",
+    "${device_profile_service}/include/persistenceadapter/rdbadapter",
+    "${device_profile_service}/include/subscribeprofilemanager",
+    "${device_profile_service}/include/trustprofilemanager",
+    "${device_profile_service}/include/utils",
+    "${device_profile_common}/include/constants",
+    "${device_profile_common}/include/interfaces",
+    "${device_profile_common}/include/utils",
     "//third_party/json/include",
   ]
 }
@@ -87,6 +100,11 @@ ohos_shared_library("distributed_device_profile") {
   configs = [
     ":device_info_manager_config",
     "${old_device_profile_test}/resource:coverage_flags",
+  ]
+
+  deps = [
+    "${device_profile_common}:distributed_device_profile_common",
+    "${device_profile_service}:distributed_device_profile_svr",
   ]
 
   external_deps = [

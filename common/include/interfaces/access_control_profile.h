@@ -79,7 +79,7 @@ public:
     void SetDeviceIdHash(const std::string& deviceIdHash);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
-    void dump() const override;
+    std::string dump() const override;
 
 private:
     int64_t accessControlId_;

@@ -192,7 +192,7 @@ bool DeviceProfile::operator!=(const DeviceProfile& deviceProfile) const
     }
 }
 
-void DeviceProfile::dump() const
+std::string DeviceProfile::dump() const
 {
     nlohmann::json json;
     json[DEVICE_ID] = ProfileUtils::GetAnonyString(deviceId_);
@@ -207,7 +207,7 @@ void DeviceProfile::dump() const
     json[OS_API_LEVEL] = osApiLevel_;
     json[OS_VERSION] = osVersion_;
     json[OS_TYPE] = osType_;
-    HILOGI("dump %s!", json.dump().c_str());
+    return json.dump();
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
