@@ -62,7 +62,7 @@ int32_t DistributedDeviceProfileProxy::GetTrustDeviceProfile(const std::string& 
     WRITE_HELPER(data, String, deviceId);
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::GET_TRUST_DEVICE_PROFILE), data, reply);
-    if (!trustDeviceProfile.UnMarshalling(data)) {
+    if (!trustDeviceProfile.UnMarshalling(reply)) {
         HILOGE("dp ipc write parcel fail");
         return DP_WRITE_PARCEL_FAIL;
     }
