@@ -18,6 +18,7 @@
 #include <list>
 #include <string>
 #include <memory>
+#include <thread>
 #include "device_info_collector.h"
 #include "distributed_device_profile_log.h"
 #include "storage_info_collector.h"
@@ -71,10 +72,7 @@ int32_t ContentSensorManager::Collect()
         }
         DeviceProfileManager::GetInstance().PutDeviceProfile(deviceProfile);
     };
-    if (!csCollectorHandler_->PostTask(csTask)) {
-        HILOGE("post task failed");
-        return DP_CS_POST_TASK_FAIL;
-    }
+    std::thread(csTask).join();
     return DP_SUCCESS;
 }
 } // namespace DeviceProfile
