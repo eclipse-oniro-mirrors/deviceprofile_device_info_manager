@@ -137,7 +137,7 @@ int32_t DistributedDeviceProfileClient::UpdateAccessControlProfile(const AccessC
         HILOGE("get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    return dpService->PutAccessControlProfile(accessControlProfile);
+    return dpService->UpdateAccessControlProfile(accessControlProfile);
 }
 
 int32_t DistributedDeviceProfileClient::GetTrustDeviceProfile(const std::string& deviceId,
