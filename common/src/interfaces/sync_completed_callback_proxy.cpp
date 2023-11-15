@@ -29,7 +29,8 @@ SyncCompletedCallbackProxy::SyncCompletedCallbackProxy(const sptr <IRemoteObject
     HILOGI("constructor!");
 }
 
-void SyncCompletedCallbackProxy::OnSyncCompleted(const SyncResult &syncResults) {
+void SyncCompletedCallbackProxy::OnSyncCompleted(const SyncResult &syncResults)
+{
     HILOGI("called");
     MessageParcel data;
     MessageParcel reply;

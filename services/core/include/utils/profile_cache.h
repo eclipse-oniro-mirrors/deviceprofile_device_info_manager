@@ -44,8 +44,8 @@ public:
     int32_t GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile);
     int32_t GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
         ServiceProfile& serviceProfile);
-    int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName, const std::string& charKey,
-        CharacteristicProfile& charProfile);
+    int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
+        const std::string& charKey, CharacteristicProfile& charProfile);
     int32_t DeleteDeviceProfile(const std::string& deviceId);
     int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName);
     int32_t DeleteCharProfile(const std::string& deviceId, const std::string& serviceName, const std::string& charKey);
@@ -77,7 +77,6 @@ private:
     // The key is descriptor, the value is syncCallback
     std::map<std::u16string, sptr<IRemoteObject>> syncListenerMap_;
     sptr<IRemoteObject::DeathRecipient> syncListenerDeathRecipient_ = nullptr;
-
 };
 } // namespace DeviceProfile
 } // namespace OHOS

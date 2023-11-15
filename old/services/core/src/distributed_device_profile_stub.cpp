@@ -304,7 +304,8 @@ int32_t DistributedDeviceProfileStub::GetAccessControlProfileInner(MessageParcel
         return DP_READ_PARCEL_FAIL;
     }
     std::vector<AccessControlProfile> accessControlProfiles;
-    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetAccessControlProfile(queryParams, accessControlProfiles);
+    int32_t ret =
+        DistributedDeviceProfileServiceNew::GetInstance().GetAccessControlProfile(queryParams, accessControlProfiles);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
@@ -430,7 +431,8 @@ int32_t DistributedDeviceProfileStub::GetServiceProfileInner(MessageParcel& data
     ServiceProfile serviceProfile;
     READ_HELPER(data, String, deviceId);
     READ_HELPER(data, String, serviceName);
-    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetServiceProfile(deviceId, serviceName, serviceProfile);
+    int32_t ret =
+        DistributedDeviceProfileServiceNew::GetInstance().GetServiceProfile(deviceId, serviceName, serviceProfile);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
@@ -451,7 +453,8 @@ int32_t DistributedDeviceProfileStub::GetCharacteristicProfileInner(MessageParce
     READ_HELPER(data, String, serviceName);
     READ_HELPER(data, String, characteristicKey);
     CharacteristicProfile charProfile;
-    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetCharacteristicProfile(deviceId, serviceName, characteristicKey, charProfile);
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
+        characteristicKey, charProfile);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
@@ -485,7 +488,8 @@ int32_t DistributedDeviceProfileStub::DeleteCharacteristicProfileInner(MessagePa
     READ_HELPER(data, String, deviceId);
     READ_HELPER(data, String, serviceName);
     READ_HELPER(data, String, characteristicKey);
-    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().DeleteCharacteristicProfile(deviceId, serviceName, characteristicKey);
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().DeleteCharacteristicProfile(deviceId, serviceName,
+        characteristicKey);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
@@ -532,7 +536,8 @@ int32_t DistributedDeviceProfileStub::SyncDeviceProfileNewInner(MessageParcel& d
         return DP_READ_PARCEL_FAIL;
     }
     sptr<IRemoteObject> syncCompletedCallback = data.ReadRemoteObject();
-    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().SyncDeviceProfile(syncOptions, syncCompletedCallback);
+    int32_t ret =
+        DistributedDeviceProfileServiceNew::GetInstance().SyncDeviceProfile(syncOptions, syncCompletedCallback);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;

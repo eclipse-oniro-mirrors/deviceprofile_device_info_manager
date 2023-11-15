@@ -231,7 +231,7 @@ std::string AccessControlProfile::dump() const
     json[STATUS] = status_;
     json[VALID_PERIOD] = validPeriod_;
     json[LAST_AUTH_TIME] = lastAuthTime_;
-    json[TRUST_DEVICE_ID] = ProfileUtils::GetAnonyString(trustDeviceId_);;
+    json[TRUST_DEVICE_ID] = ProfileUtils::GetAnonyString(trustDeviceId_);
     json[DEVICE_ID_TYPE] = deviceIdType_;
     json[DEVICE_ID_HASH] = deviceIdHash_;
     return json.dump();

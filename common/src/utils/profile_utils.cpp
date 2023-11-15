@@ -181,8 +181,7 @@ int32_t ProfileUtils::SplitString(const std::string& str, const std::string& spl
     size_t pos = strs.find(splits);
     int step = splits.size();
 
-    while (pos != strs.npos)
-    {
+    while (pos != strs.npos) {
         std::string temp = strs.substr(0, pos);
         res.push_back(temp);
         strs = strs.substr(pos + step, strs.size());

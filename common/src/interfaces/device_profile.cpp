@@ -134,11 +134,13 @@ void DeviceProfile::SetOsType(int32_t osType)
     osType_ = osType;
 }
 
-std::string DeviceProfile::GetOsSysCap() const {
+std::string DeviceProfile::GetOsSysCap() const
+{
     return osSysCap_;
 }
 
-void DeviceProfile::SetOsSysCap(const std::string& osSysCap) {
+void DeviceProfile::SetOsSysCap(const std::string& osSysCap)
+{
     osSysCap_ = osSysCap;
 }
 

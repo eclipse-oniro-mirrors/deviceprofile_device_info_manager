@@ -32,12 +32,10 @@ public:
     int Put(int64_t& outRowId, const std::string& table, const ValuesBucket& Values) override;
     int32_t Delete(int32_t& deleteRows, const std::string& table, const std::string& whereClause,
         const std::vector<ValueObject>& bindArgs = {}) override;
-    int32_t Update(int32_t& changedRows, const std::string& table, const ValuesBucket& values, 
-        const std::string& whereClause,
-        const std::vector<ValueObject>& bindArgs = {}) override;
+    int32_t Update(int32_t& changedRows, const std::string& table, const ValuesBucket& values,
+        const std::string& whereClause, const std::vector<ValueObject>& bindArgs = {}) override;
     int32_t CreateTable(const std::string& sql) override;
-    std::shared_ptr <ResultSet> Get(const std::string& sql, 
-        const std::vector<ValueObject>& args = {}) override;
+    std::shared_ptr <ResultSet> Get(const std::string& sql, const std::vector<ValueObject>& args = {}) override;
     int32_t GetRDBPtr();
 
 private:
@@ -52,7 +50,4 @@ public:
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
-
-
-
 #endif // OHOS_DP_RDB_ADAPTER_H

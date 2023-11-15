@@ -21,7 +21,7 @@
 #include "dp_parcel.h"
 
 namespace OHOS {
-namespace DistributedDeviceProfile{
+namespace DistributedDeviceProfile {
 class DeviceProfile : public DpParcel {
 public:
     DeviceProfile()
