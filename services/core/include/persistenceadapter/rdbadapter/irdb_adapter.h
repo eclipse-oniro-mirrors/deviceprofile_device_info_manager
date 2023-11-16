@@ -46,6 +46,4 @@ public:
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
-
-
 #endif // OHOS_DP_IRDB_ADAPTER_H

@@ -46,8 +46,8 @@ public:
         OHOS::DistributedDeviceProfile::SubscribeInfo>& listenerMap);
     static bool Marshalling(MessageParcel& parcel, const std::unordered_set<ProfileChangeType>& changeTypes);
     static bool UnMarshalling(MessageParcel& parcel, std::vector<TrustDeviceProfile>& trustDeviceProfiles);
-    static bool UnMarshalling(MessageParcel&parcel, std::vector<AccessControlProfile>& aclProfiles);
-    static bool UnMarshalling(MessageParcel&parcel, std::vector<ServiceProfile>& serviceProfiles);
+    static bool UnMarshalling(MessageParcel& parcel, std::vector<AccessControlProfile>& aclProfiles);
+    static bool UnMarshalling(MessageParcel& parcel, std::vector<ServiceProfile>& serviceProfiles);
     static bool UnMarshalling(MessageParcel& parcel, std::vector<CharacteristicProfile>& charProfiles);
     static bool UnMarshalling(MessageParcel& parcel, std::map<std::string, std::string>& params);
     static bool UnMarshalling(MessageParcel& parcel, std::map<std::string,

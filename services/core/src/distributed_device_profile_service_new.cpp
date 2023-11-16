@@ -45,7 +45,6 @@ constexpr int32_t UNLOAD_IMMEDIATELY = 0;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileServiceNew);
-//const bool REGISTER_RESULT = SystemAbility::MakeAndRegisterAbility(&DistributedDeviceProfileServiceNew::GetInstance());
 
 DistributedDeviceProfileServiceNew::DistributedDeviceProfileServiceNew()
     : SystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, true)
@@ -183,7 +182,8 @@ int32_t DistributedDeviceProfileServiceNew::GetTrustDeviceProfile(const std::str
     return TrustProfileManager::GetInstance().GetTrustDeviceProfile(deviceId, trustDeviceProfile);
 }
 
-int32_t DistributedDeviceProfileServiceNew::GetAllTrustDeviceProfile(std::vector<TrustDeviceProfile>& trustDeviceProfiles)
+int32_t DistributedDeviceProfileServiceNew::GetAllTrustDeviceProfile(
+    std::vector<TrustDeviceProfile>& trustDeviceProfiles)
 {
     if (!PermissionManager::GetInstance().IsCallerTrust(GET_ALL_TRUST_DEVICE_PROFILE)) {
         HILOGE("the caller is permission denied!");
@@ -267,8 +267,8 @@ int32_t DistributedDeviceProfileServiceNew::GetDeviceProfile(const std::string& 
     return DeviceProfileManager::GetInstance().GetDeviceProfile(deviceId, deviceProfile);
 }
 
-int32_t DistributedDeviceProfileServiceNew::GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
-    ServiceProfile& serviceProfile)
+int32_t DistributedDeviceProfileServiceNew::GetServiceProfile(const std::string& deviceId,
+    const std::string& serviceName, ServiceProfile& serviceProfile)
 {
     if (!PermissionManager::GetInstance().IsCallerTrust(GET_SERVICE_PROFILE)) {
         HILOGE("this caller is permission denied!");
@@ -415,13 +415,9 @@ void DistributedDeviceProfileServiceNew::OnStop()
     }
 }
 
-int32_t DistributedDeviceProfileServiceNew::OnIdle(const SystemAbilityOnDemandReason& idleReason) //存疑
+int32_t DistributedDeviceProfileServiceNew::OnIdle(const SystemAbilityOnDemandReason& idleReason)
 {
     HILOGI("idle reason %{public}d", idleReason.GetId());
-//    if (idleReason.GetId() == OnDemandReasonId::DEVICE_ONLINE) {
-//        int32_t errCode = DeviceProfileStorageManager::GetInstance().RemoveRemoteDeviceProfile();
-//        HILOGI("remove remote device profile, result = %{public}d", errCode);
-//    }
     return UNLOAD_IMMEDIATELY;
 }
 } // namespace DeviceProfile

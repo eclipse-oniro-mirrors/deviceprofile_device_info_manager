@@ -1,9 +1,6 @@
 /*
  * Copyright (c) 2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License")
-{
-
-}
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -246,7 +243,7 @@ int32_t SubscribeProfileManager::NotifyServiceProfileUpdate(const std::string& d
     auto subscriberInfos = GetSubscribeInfos(dbKey);
     ServiceProfile oldServiceProfile;
     ProfileCache::GetInstance().GetServiceProfile(ProfileUtils::GetDeviceIdByDBKey(dbKey),
-        ProfileUtils::GetServiceNameByDBKey(dbKey),oldServiceProfile);
+        ProfileUtils::GetServiceNameByDBKey(dbKey), oldServiceProfile);
     for (const auto& subscriberInfo : subscriberInfos) {
         sptr<IProfileChangeListener> listenerProxy = iface_cast<IProfileChangeListener>(subscriberInfo.GetListener());
         if (listenerProxy == nullptr) {
@@ -353,9 +350,8 @@ int32_t SubscribeProfileManager::NotifyCharProfileDelete(const std::string& dbKe
     }
     return DP_SUCCESS;
 }
-
-std::unordered_set<SubscribeInfo, SubscribeHash, SubscribeCompare>
-    SubscribeProfileManager::GetSubscribeInfos(const std::string& dbKey)
+std::unordered_set<SubscribeInfo, SubscribeHash, SubscribeCompare> SubscribeProfileManager::GetSubscribeInfos(
+    const std::string& dbKey)
 {
     {
         std::lock_guard<std::mutex> lock(subscribeMutex_);

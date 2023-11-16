@@ -195,7 +195,7 @@ int32_t ProfileCache::DeleteCharProfile(const std::string& deviceId, const std::
         HILOGE("Params is invalid!");
         return DP_INVALID_PARAMS;
     }
-    std::string charProfileKey= ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, charKey);
+    std::string charProfileKey = ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, charKey);
     {
         std::lock_guard<std::mutex> lock(charProfileMutex_);
         charProfileMap_.erase(charProfileKey);

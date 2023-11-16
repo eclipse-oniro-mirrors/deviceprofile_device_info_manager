@@ -300,5 +300,3 @@ int32_t ProfileChangeListenerStub::OnCharacteristicProfileUpdateInner(MessagePar
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
-
-

@@ -37,7 +37,7 @@ constexpr int32_t OHOS_TYPE = 10;
 }
 
 bool SystemInfoCollector::ConvertToProfile(DeviceProfile& profile)
-{;
+{
     profile.SetOsType(GetOsType());
     profile.SetOsVersion(GetOsVersion());
     profile.SetOsApiLevel(GetSdkApiVersion());

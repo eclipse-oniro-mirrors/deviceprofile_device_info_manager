@@ -94,7 +94,7 @@ namespace DistributedDeviceProfile {
     do { \
         if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) { \
             HILOGE("Write interface token failed!"); \
-            return ERR_FLATTEN_OBJECT;\
+            return ERR_FLATTEN_OBJECT; \
         } \
     } while (0)
 
@@ -102,7 +102,7 @@ namespace DistributedDeviceProfile {
     do { \
         if (!data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor())) { \
             HILOGE("Write interface token failed!"); \
-            return ERR_FLATTEN_OBJECT;\
+            return ERR_FLATTEN_OBJECT; \
         } \
     } while (0)
 
@@ -110,7 +110,7 @@ namespace DistributedDeviceProfile {
     do { \
         if (!data.WriteInterfaceToken(ISyncCompletedCallback::GetDescriptor())) { \
             HILOGE("Write interface token failed!"); \
-            return ERR_FLATTEN_OBJECT;\
+            return ERR_FLATTEN_OBJECT; \
         } \
     } while (0)
 
@@ -121,7 +121,7 @@ namespace DistributedDeviceProfile {
             HILOGE("PermissionJson not contains the key, %s!", interfaceName.c_str()); \
             return DP_PARSE_PERMISSION_JSON_FAIL; \
         } \
-        permissionMap[interfaceName] = permissionJson[interfaceName].get<std::unordered_set<std::string>>();\
+        permissionMap[interfaceName] = permissionJson[interfaceName].get<std::unordered_set<std::string>>(); \
     } while (0)
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

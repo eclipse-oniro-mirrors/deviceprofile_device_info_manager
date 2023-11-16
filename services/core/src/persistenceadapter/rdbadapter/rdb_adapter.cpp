@@ -36,21 +36,21 @@ namespace {
     const std::string TAG = "rdbAdapter";
 }
 
-RdbAdapter::RdbAdapter() 
+RdbAdapter::RdbAdapter()
 {
-    HILOGI("rdbAdapter constructor"); 
+    HILOGI("rdbAdapter constructor");
 }
 
-RdbAdapter::~RdbAdapter() 
+RdbAdapter::~RdbAdapter()
 {
     HILOGI("rdbAdapter destructor");
 }
 
-int32_t RdbAdapter::Init() 
+int32_t RdbAdapter::Init()
 {
     int32_t retryTimes = RDB_INIT_MAX_TIMES;
-    while (retryTimes > 0){
-        if (GetRDBPtr() == DP_SUCCESS){
+    while (retryTimes > 0) {
+        if (GetRDBPtr() == DP_SUCCESS) {
             HILOGI("rdbAdapter init success");
             return DP_SUCCESS;
         }
@@ -61,7 +61,7 @@ int32_t RdbAdapter::Init()
     return DP_RDBADAPTER_INIT_FAIL;
 }
 
-int32_t RdbAdapter::UnInit() 
+int32_t RdbAdapter::UnInit()
 {
     {
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
@@ -70,9 +70,9 @@ int32_t RdbAdapter::UnInit()
     return DP_SUCCESS;
 }
 
-int32_t RdbAdapter::Put(int64_t& outRowId, const std::string& table, const ValuesBucket& values) 
+int32_t RdbAdapter::Put(int64_t& outRowId, const std::string& table, const ValuesBucket& values)
 {
-    if(TABLES.find(table) == TABLES.end()){
+    if (TABLES.find(table) == TABLES.end()) {
         HILOGI("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
     }
@@ -89,7 +89,7 @@ int32_t RdbAdapter::Put(int64_t& outRowId, const std::string& table, const Value
 int32_t RdbAdapter::Delete(int32_t& deleteRows, const std::string& table, const std::string& whereClause,
     const std::vector<ValueObject>& bindArgs)
 {
-    if(TABLES.find(table) == TABLES.end()){
+    if (TABLES.find(table) == TABLES.end()) {
         HILOGI("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
     }
@@ -104,9 +104,9 @@ int32_t RdbAdapter::Delete(int32_t& deleteRows, const std::string& table, const 
 }
 
 int32_t RdbAdapter::Update(int32_t& changedRows, const std::string& table, const ValuesBucket& values,
-    const std::string& whereClause, const std::vector<ValueObject>& bindArgs) 
+    const std::string& whereClause, const std::vector<ValueObject>& bindArgs)
 {
-    if(TABLES.find(table) == TABLES.end()){
+    if (TABLES.find(table) == TABLES.end()) {
         HILOGI("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
     }
@@ -120,7 +120,7 @@ int32_t RdbAdapter::Update(int32_t& changedRows, const std::string& table, const
     return DP_SUCCESS;
 }
 
-std::shared_ptr<ResultSet> RdbAdapter::Get(const std::string& sql, const std::vector<ValueObject>& args) 
+std::shared_ptr<ResultSet> RdbAdapter::Get(const std::string& sql, const std::vector<ValueObject>& args)
 {
     std::shared_ptr<ResultSet> resultSet = nullptr;
     {
@@ -130,7 +130,7 @@ std::shared_ptr<ResultSet> RdbAdapter::Get(const std::string& sql, const std::ve
     return resultSet;
 }
 
-int32_t RdbAdapter::GetRDBPtr() 
+int32_t RdbAdapter::GetRDBPtr()
 {
     int32_t version = RDB_VERSION;
     OpenCallback helper;
@@ -140,14 +140,14 @@ int32_t RdbAdapter::GetRDBPtr()
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
         store_ = RdbHelper::GetRdbStore(config, version, helper, errCode);
     }
-    if (errCode != E_OK){
+    if (errCode != E_OK) {
         HILOGI("rdbAdapter getRDBPtr failed");
         return DP_GET_RDBSTORE_FAIL;
     }
     return DP_SUCCESS;
 }
 
-int32_t RdbAdapter::CreateTable(const std::string& sql) 
+int32_t RdbAdapter::CreateTable(const std::string& sql)
 {
     {
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
@@ -159,14 +159,13 @@ int32_t RdbAdapter::CreateTable(const std::string& sql)
     return DP_SUCCESS;
 }
 
-
-int32_t OpenCallback::OnCreate(RdbStore& store_) 
+int32_t OpenCallback::OnCreate(RdbStore& store_)
 {
     HILOGI("rdbStore create");
     return NativeRdb::E_OK;
 }
 
-int32_t OpenCallback::OnUpgrade(RdbStore& store_, int oldVersion, int newVersion) 
+int32_t OpenCallback::OnUpgrade(RdbStore& store_, int oldVersion, int newVersion)
 {
     HILOGI("rdbStore upgrade");
     return NativeRdb::E_OK;
