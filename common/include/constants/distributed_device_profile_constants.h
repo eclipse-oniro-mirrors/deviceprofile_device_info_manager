@@ -192,6 +192,8 @@ const std::string CREATE_TURST_DEVICE_TABLE_UNIQUE_INDEX_SQL =
 const std::string CREATE_ACCESS_CONTROL_TABLE_UNIQUE_INDEX_SQL =
 "CREATE UNIQUE INDEX if not exists unique_access_control_table ON access_control_table \
 (\
+    accesserId,\
+    accesseeId,\
     trustDeviceId,\
     sessionKey,\
     bindType,\
