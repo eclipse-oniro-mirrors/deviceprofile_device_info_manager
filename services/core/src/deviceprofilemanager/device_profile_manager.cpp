@@ -16,15 +16,21 @@
 #include <mutex>
 #include <memory>
 #include <algorithm>
-#include "device_profile_manager.h"
+#include <dlfcn.h>
+#include <vector>
+#include <list>
+
 #include "kv_adapter.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 #include "profile_utils.h"
 #include "profile_cache.h"
+#include "dp_detect_utils.h"
+#include "device_profile_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
+constexpr const char *LIB_DP_ADAPTER_NAME = "libdeviceprofileadapter.z.so";
 IMPLEMENT_SINGLE_INSTANCE(DeviceProfileManager);
 namespace {
     const std::string APP_ID = "distributed_device_profile_service";
@@ -401,17 +407,30 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const SyncOptions& syncOptions,
         HILOGE("Params is invalid!");
         return DP_INVALID_PARAMS;
     }
-    std::u16string callerDescriptor = syncCompletedCallback->GetObjectDescriptor();
-    ProfileCache::GetInstance().AddSyncListener(callerDescriptor, syncCompletedCallback);
+    syncProfileCallback_ = iface_cast<ISyncCompletedCallback>(syncCompletedCallback);
     HILOGI("SyncDeviceProfile start!");
     std::vector<std::string> onlineDevices = ProfileUtils::FilterOnlineDevices(syncOptions.GetDeviceList());
+    std::vector<std::string> ohOnlineDevices;
     if (onlineDevices.empty()) {
         HILOGE("Params is invalid!");
         return DP_INVALID_PARAMS;
     }
+    for (auto it = onlineDevices.begin(); it != onlineDevices.end(); it++) {
+        std::string deviceId = *it;
+        if (DPDetectVersion::DetectRemoteDPVersion(deviceId) == DP_SUCCESS) {
+            if (RunloadedFunction(deviceId) != DP_SUCCESS) {
+                HILOGE("Run loaded Function failed");
+                return DP_RUN_LOADED_FUNCTION_FAILED;
+            }
+        } else {
+            ohOnlineDevices.push_back(deviceId);
+        }
+    }
+    std::u16string callerDescriptor = syncCompletedCallback->GetObjectDescriptor();
+    ProfileCache::GetInstance().AddSyncListener(callerDescriptor, syncCompletedCallback);
     {
         std::lock_guard<std::mutex> lock(dpStoreMutex_);
-        int32_t syncResult = deviceProfileStore_->Sync(onlineDevices, syncOptions.GetSyncMode());
+        int32_t syncResult = deviceProfileStore_->Sync(ohOnlineDevices, syncOptions.GetSyncMode());
         if (syncResult != DP_SUCCESS) {
             HILOGI("SyncDeviceProfile fail, res: %d!", syncResult);
             return DP_SYNC_DEVICE_FAIL;
@@ -420,5 +439,91 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const SyncOptions& syncOptions,
     HILOGI("SyncDeviceProfile success, caller: %s!", ProfileUtils::toString(callerDescriptor).c_str());
     return DP_SUCCESS;
 }
+
+bool DeviceProfileManager::LoadDpSyncAdapter()
+{
+    HILOGI("DeviceProfileManager::LoadDpSyncAdapter start.");
+    std::lock_guard<std::mutex> lock(isAdapterLoadLock_);
+    if (isAdapterSoLoaded_ && (dpSyncAdapter_ != nullptr)) {
+        return true;
+    }
+    char path[PATH_MAX + 1] = {0x00};
+    std::string soName = std::string(LIB_LOAD_PATH) + std::string(LIB_DP_ADAPTER_NAME);
+    if ((soName.length() == 0) || (soName.length() > PATH_MAX) || (realpath(soName.c_str(), path) == nullptr)) {
+        HILOGI("File %s canonicalization failed", soName.c_str());
+        return false;
+    }
+    void *so_handle = dlopen(path, RTLD_NOW);
+    if (so_handle == nullptr) {
+        HILOGI("load dp sync adapter so %s failed", soName.c_str());
+        return false;
+    }
+    dlerror();
+    auto func = (CreateDPSyncAdapterFuncPtr)dlsym(so_handle, "CreateDPSyncAdaptertObject");
+    if (dlerror() != nullptr || func == nullptr) {
+        dlclose(so_handle);
+        HILOGI("Create object function is not exist.");
+        return false;
+    }
+    dpSyncAdapter_ = std::shared_ptr<IDPSyncAdapter>(func());
+    if (dpSyncAdapter_->Initialize() != DP_SUCCESS) {
+        dlclose(so_handle);
+        dpSyncAdapter_ = nullptr;
+        isAdapterSoLoaded_ = false;
+        HILOGI("dp sync adapter init failed");
+        return false;
+    }
+    isAdapterSoLoaded_ = true;
+    HILOGI("DeviceProfileManager::LoadDpSyncAdapter sucess");
+    return true;
+}
+
+void DeviceProfileManager::UnloadDpSyncAdapter()
+{
+    HILOGI("DeviceProfileManager::UnloadDpSyncAdapter start.");
+    std::lock_guard<std::mutex> lock(isAdapterLoadLock_);
+    if (dpSyncAdapter_ != nullptr) {
+        dpSyncAdapter_->Release();
+    }
+    dpSyncAdapter_ = nullptr;
+    char path[PATH_MAX + 1] = {0x00};
+    std::string soPathName = std::string(LIB_LOAD_PATH) + std::string(LIB_DP_ADAPTER_NAME);
+    if ((soPathName.length() == 0) || (soPathName.length() > PATH_MAX) ||
+        (realpath(soPathName.c_str(), path) == nullptr)) {
+        HILOGI("File %s canonicalization failed", soPathName.c_str());
+        return;
+    }
+    void *so_handle = dlopen(path, RTLD_NOW | RTLD_NOLOAD);
+    if (so_handle != nullptr) {
+        HILOGI("dp sync adapter so_handle is not nullptr.");
+        dlclose(so_handle);
+        isAdapterSoLoaded_ = false;
+    }
+}
+
+int32_t DeviceProfileManager::RunloadedFunction(std::string deviceId)
+{
+    if (LoadDpSyncAdapter()) {
+        int32_t errCode = dpSyncAdapter_->Initialize();
+        if (errCode != DP_SUCCESS) {
+            HILOGI("init dp sync adapter failed");
+            return DP_SYNC_INIT_FAILED;
+        }
+        const std::list<std::string> deviceIdList = { deviceId };
+        {
+            std::lock_guard<std::mutex> lock(dpSyncMutex_);
+            errCode = dpSyncAdapter_->SyncProfile(deviceIdList, syncProfileCallback_);
+            if (errCode != DP_SUCCESS) {
+                HILOGI("sync profile failed");
+                return DP_SYNC_PROFILE_FAILED;
+            }
+        }
+        return DP_SUCCESS;
+    } else {
+        HILOGI("dp service adapter load failed");
+        return DP_LOAD_SYNC_ADAPTER_FAILED;
+    }
+}
+
 } // namespace DeviceProfile
 } // namespace OHOS

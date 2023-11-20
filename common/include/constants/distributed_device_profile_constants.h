@@ -20,6 +20,12 @@
 #include <string>
 #include <unistd.h>
 
+#ifdef __LP64__
+constexpr const char* LIB_LOAD_PATH = "/system/lib64/";
+#else
+constexpr const char* LIB_LOAD_PATH = "/system/lib/";
+#endif
+
 namespace OHOS {
 namespace DistributedDeviceProfile {
 /* DeviceProfile Attribute */

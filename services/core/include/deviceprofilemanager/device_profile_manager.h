@@ -27,6 +27,7 @@
 #include "kv_data_change_listener.h"
 #include "kv_sync_completed_listener.h"
 #include "kv_store_death_recipient.h"
+#include "i_dp_sync_adapter.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -56,8 +57,16 @@ public:
     int32_t SyncDeviceProfile(const SyncOptions& syncOptions, sptr<IRemoteObject> syncCompletedCallback);
 
 private:
+    bool LoadDpSyncAdapter();
+    void UnloadDpSyncAdapter();
+    int32_t RunloadedFunction(std::string deviceId);
+    bool isAdapterSoLoaded_ = false;
+    std::mutex isAdapterLoadLock_;
     std::mutex dpStoreMutex_;
+    std::mutex dpSyncMutex_;
+    sptr<ISyncCompletedCallback> syncProfileCallback_;
     std::shared_ptr<IKVAdapter> deviceProfileStore_ = nullptr;
+    std::shared_ptr<IDPSyncAdapter> dpSyncAdapter_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS
