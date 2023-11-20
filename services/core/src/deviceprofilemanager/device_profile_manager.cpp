@@ -453,13 +453,13 @@ bool DeviceProfileManager::LoadDpSyncAdapter()
         HILOGI("File %s canonicalization failed", soName.c_str());
         return false;
     }
-    void *so_handle = dlopen(path, RTLD_NOW | RTLD_NODELETE);
+    void *so_handle = dlopen(path, RTLD_NOW);
     if (so_handle == nullptr) {
         HILOGI("load dp sync adapter so %s failed", soName.c_str());
         return false;
     }
     dlerror();
-    auto func = (CreateDPSyncAdapterFuncPtr)dlsym(so_handle, "CreateDPSyncAdapterObject");
+    auto func = (CreateDPSyncAdapterFuncPtr)dlsym(so_handle, "CreateDPSyncAdaptertObject");
     if (dlerror() != nullptr || func == nullptr) {
         dlclose(so_handle);
         HILOGI("Create object function is not exist.");
