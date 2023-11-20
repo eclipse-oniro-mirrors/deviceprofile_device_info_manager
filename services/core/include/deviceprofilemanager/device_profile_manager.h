@@ -57,8 +57,8 @@ public:
     int32_t SyncDeviceProfile(const SyncOptions& syncOptions, sptr<IRemoteObject> syncCompletedCallback);
 
 private:
-    void UnloadDpSyncAdapter();
     bool LoadDpSyncAdapter();
+    void UnloadDpSyncAdapter();
     int32_t RunloadedFunction(std::string deviceId);
     bool isAdapterSoLoaded_ = false;
     std::mutex isAdapterLoadLock_;
