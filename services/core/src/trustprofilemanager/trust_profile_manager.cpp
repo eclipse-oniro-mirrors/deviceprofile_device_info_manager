@@ -1501,7 +1501,7 @@ int32_t TrustProfileManager::UpdateAclCheck(const AccessControlProfile& profile)
         HILOGE("UpdateAccessControlProfile::resultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
-    int32_t rowCount = INIT_VALUE_32;
+    int32_t rowCount;
     resultSet->GetRowCount(rowCount);
     if (rowCount == 0) {
         HILOGE("UpdateAccessControlProfile::accessControlId not find");
