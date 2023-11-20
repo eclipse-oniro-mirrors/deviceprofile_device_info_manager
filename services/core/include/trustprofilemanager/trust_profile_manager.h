@@ -58,7 +58,7 @@ public:
     int32_t GetAccessControlProfile(std::map<std::string, std::string> params,
         std::vector<AccessControlProfile>& profile);
     int32_t DeleteTrustDeviceProfile(const std::string& deviceId);
-    int32_t DeleteAccessControlProfile(int accessControlId);
+    int32_t DeleteAccessControlProfile(int64_t accessControlId);
 private:
     int32_t CreateTable();
     int32_t CreateUniqueIndex();
@@ -73,12 +73,13 @@ private:
         std::vector<AccessControlProfile>& profile);
     int32_t PutAccesserProfile(const AccessControlProfile& profile);
     int32_t PutAccesseeProfile(const AccessControlProfile& profile);
-    int32_t SetAccessControlId(AccessControlProfile &profile);
-    int32_t SetAccesserId(AccessControlProfile &profile);
-    int32_t SetAccesseeId(AccessControlProfile &profile);
+    int32_t SetAccessControlId(AccessControlProfile& profile);
+    int32_t SetAccesserId(AccessControlProfile& profile);
+    int32_t SetAccesseeId(AccessControlProfile& profile);
     int32_t UpdateAccesserProfile(int64_t accesserId, const AccessControlProfile& profile);
     int32_t UpdateAccesseeProfile(int64_t accesseeId, const AccessControlProfile& profile);
-    int32_t UpdateTrustDeviceProfileNotify(const TrustDeviceProfile& oldProfile, const TrustDeviceProfile& newProfile);
+    int32_t UpdateTrustDeviceProfileNotify(const TrustDeviceProfile& oldProfile,
+        const TrustDeviceProfile& newProfile);
     int32_t GetResultStatus(const std::string& trustDeviceId, int32_t& trustDeviceStatus);
     int32_t GetAccesserAndAccesseeAndAccessControl(std::shared_ptr<ResultSet> resultSet,
         std::vector<AccessControlProfile>& profile);
@@ -89,6 +90,8 @@ private:
     int32_t AccesseeResultSetToAccessee(std::shared_ptr<ResultSet> accesseeResultSet, Accessee& accessee);
     int32_t AccessControlResultSetToAccessControlProfile(std::shared_ptr<ResultSet> accessControlResultSet,
         AccessControlProfile& accessControlProfile);
+    int32_t SetAclId(AccessControlProfile& accessControlProfile);
+    int32_t UpdateAclCheck(const AccessControlProfile& profile);
 private:
     std::shared_ptr<IRdbAdapter> rdbStore_;
     std::mutex rdbMutex_;

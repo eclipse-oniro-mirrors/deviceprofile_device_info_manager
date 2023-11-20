@@ -262,6 +262,12 @@ const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEBUNDLENAME 
     "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeBundleName = ? ";
 const std::string SELECT_ACCESSEE_TABLE = "SELECT * FROM accessee_table ";
 const std::string SELECT_ACCESSER_TABLE = "SELECT * FROM accesser_table ";
+const std::string SELECT_ACCESSER_TABLE_WHERE_ALL =
+    "SELECT * FROM accesser_table WHERE accesserDeviceId = ? and accesserUserId = ? and accesserAccountId = ? and \
+    accesserTokenId = ? and accesserBundleName = ? and accesserHapSignature = ? and accesserBindLevel = ? ";
+const std::string SELECT_ACCESSEE_TABLE_WHERE_ALL =
+    "SELECT * FROM accessee_table WHERE accesseeDeviceId = ? and accesseeUserId = ? and accesseeAccountId = ? and \
+    accesseeTokenId = ? and accesseeBundleName = ? and accesseeHapSignature = ? and accesseeBindLevel = ? ";
 /* SubscribeTrustInfoManager */
 const std::string SUBSCRIBE_TRUST_INFO_TABLE = "subscribe_trust_info_table";
 const std::string CREATE_SUBSCRIBE_TRUST_INFO_TABLE_SQL =
