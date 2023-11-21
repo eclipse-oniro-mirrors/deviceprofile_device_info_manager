@@ -559,7 +559,7 @@ int32_t TrustProfileManager::DeleteTrustDeviceProfile(const std::string& deviceI
     int32_t deleteRows;
     {
         std::lock_guard<std::mutex> lock(rdbMutex_);
-        ret = rdbStore_->Delete(deleteRows,TRUST_DEVICE_TABLE, "deviceId = ?",
+        ret = rdbStore_->Delete(deleteRows, TRUST_DEVICE_TABLE, "deviceId = ?",
             std::vector<ValueObject>{ValueObject(deviceId)});
         if (ret != DP_SUCCESS) {
             HILOGE("DeleteTrustDeviceProfile::delete trust_device_table data failed");
@@ -933,8 +933,8 @@ int32_t TrustProfileManager::SetAccesserId(AccessControlProfile& profile)
         return DP_GET_RDBSTORE_FAIL;
     }
     Accesser accesser = profile.GetAccesser();
-	std::shared_ptr<ResultSet> resultSet = rdbStore_->Get(SELECT_ACCESSER_TABLE_WHERE_ALL,
-        std::vector<ValueObject>{ValueObject(accesser.GetAccesserDeviceId()),
+    std::shared_ptr<ResultSet> resultSet = rdbStore_->
+        Get(SELECT_ACCESSER_TABLE_WHERE_ALL, std::vector<ValueObject>{ValueObject(accesser.GetAccesserDeviceId()),
         ValueObject(accesser.GetAccesserUserId()), ValueObject(accesser.GetAccesserAccountId()),
         ValueObject(accesser.GetAccesserTokenId()), ValueObject(accesser.GetAccesserBundleName()),
         ValueObject(accesser.GetAccesserHapSignature()), ValueObject(accesser.GetAccesserBindLevel())});
@@ -982,8 +982,8 @@ int32_t TrustProfileManager::SetAccesseeId(AccessControlProfile &profile)
         return DP_GET_RDBSTORE_FAIL;
     }
     Accessee accessee = profile.GetAccessee();
-	std::shared_ptr<ResultSet> resultSet = rdbStore_->Get(SELECT_ACCESSEE_TABLE_WHERE_ALL,
-        std::vector<ValueObject> {ValueObject(accessee.GetAccesseeDeviceId()), 
+    std::shared_ptr<ResultSet> resultSet = rdbStore_->
+        Get(SELECT_ACCESSEE_TABLE_WHERE_ALL, std::vector<ValueObject>{ValueObject(accessee.GetAccesseeDeviceId()),
         ValueObject(accessee.GetAccesseeUserId()), ValueObject(accessee.GetAccesseeAccountId()),
         ValueObject(accessee.GetAccesseeTokenId()), ValueObject(accessee.GetAccesseeBundleName()),
         ValueObject(accessee.GetAccesseeHapSignature()), ValueObject(accessee.GetAccesseeBindLevel())});
@@ -1088,7 +1088,7 @@ int32_t TrustProfileManager::UpdateTrustDeviceProfileNotify(const TrustDevicePro
     if (oldProfile.GetDeviceId() != newProfile.GetDeviceId() ||
         oldProfile.GetDeviceIdHash() != newProfile.GetDeviceIdHash() ||
         oldProfile.GetDeviceIdType() != newProfile.GetDeviceIdType()) {
-        ret = SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileUpdate(oldProfile,newProfile);
+        ret = SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileUpdate(oldProfile, newProfile);
         if (ret != DP_SUCCESS) {
             HILOGE("UpdateTrustDeviceProfileNotify::NotifyTrustDeviceProfileUpdate failed");
             return DP_NOTIFY_TRUST_DEVICE_FAIL;
@@ -1223,8 +1223,7 @@ int32_t TrustProfileManager::DeleteAccessControlProfileCheck(std::shared_ptr<Res
         std::lock_guard<std::mutex> lock(rdbMutex_);
         ret = rdbStore_->
             Delete(deleteRows, ACCESSEE_TABLE, "accesseeId = ?", std::vector<ValueObject>{ValueObject(accesseeId)});
-        if (ret != DP_SUCCESS)
-        {
+        if (ret != DP_SUCCESS) {
             HILOGE("DeleteAccessControlProfileCheck::delete accessee_table accesseeId failed");
             return DP_DELETE_ACCESSEE_PROFILE_FAIL;
         }
