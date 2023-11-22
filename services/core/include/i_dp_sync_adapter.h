@@ -16,7 +16,6 @@
 #ifndef OH_DISTRIBUTED_DEVICE_I_DP_SYNC_ADAPTER_H
 #define OH_DISTRIBUTED_DEVICE_I_DP_SYNC_ADAPTER_H
 
-#include "sync_options.h"
 #include "i_sync_completed_callback.h"
 
 namespace OHOS {
