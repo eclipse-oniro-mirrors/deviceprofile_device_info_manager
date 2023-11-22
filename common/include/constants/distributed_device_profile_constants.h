@@ -145,6 +145,8 @@ constexpr int32_t RDB_VERSION = 1;
 constexpr int32_t RDB_INIT_MAX_TIMES = 30;
 constexpr int32_t RDB_INIT_INTERVAL_TIME = 100000;
 /* TrustProfile Manager */
+constexpr int32_t INIT_VALUE_32 = -1;
+constexpr int64_t INIT_VALUE_64 = -1;
 const std::string CREATE_TURST_DEVICE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS trust_device_table\
 (\
     deviceId        TEXT PRIMARY KEY,\
@@ -260,10 +262,18 @@ const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERUSERID_ACCE
     "SELECT * FROM accesser_table WHERE accesserId = ? and accesserUserId = ? and accesserBundleName = ?";
 const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEUSEEID_ACCESSEEBUNDLENAME =
     "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeUserId = ? and accesseeBundleName = ?";
+const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERUSERID_ACCESSERACCOUNTID =
+    "SELECT * FROM accesser_table WHERE accesserId = ? and accesserUserId = ? and accesserAccountId = ?";
+const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEUSEEID_ACCESSEEACCOUNTID =
+    "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeUserId = ? and accesseeAccountId = ?";
 const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERUSERID =
     "SELECT * FROM accesser_table WHERE accesserId = ? and accesserUserId = ? ";
 const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEUSERID =
     "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeUserId = ? ";
+const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERTOKENID =
+    "SELECT * FROM accesser_table WHERE accesserId = ? and accesserTokenId = ? ";
+const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEDEVICEID =
+    "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeDeviceId = ? ";
 const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERBUNDLENAME =
     "SELECT * FROM accesser_table WHERE accesserId = ? and accesserBundleName = ? ";
 const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEBUNDLENAME =
