@@ -32,6 +32,7 @@ config("device_info_manager_config") {
     "${old_device_profile_path}/common/include",
     "${old_device_profile_innerkits}/core/include",
     "${old_device_profile_service}/core/include",
+    "${device_profile_path}/radar/include",
     "${device_profile_service}/include/",
     "${device_profile_service}/include/contentsensormanager",
     "${device_profile_service}/include/deviceprofilemanager",
@@ -104,6 +105,7 @@ ohos_shared_library("distributed_device_profile") {
 
   deps = [
     "${device_profile_common}:distributed_device_profile_common",
+    "${device_profile_path}/radar:deviceprofileradar",
     "${device_profile_service}:distributed_device_profile_svr",
   ]
 

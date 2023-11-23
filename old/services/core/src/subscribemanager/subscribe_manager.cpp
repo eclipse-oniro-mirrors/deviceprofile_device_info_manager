@@ -21,6 +21,7 @@
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
+#include "dp_radar_helper.h"
 #include "profile_change_handler.h"
 #include "profile_event_handler_factory.h"
 #include "subscribe_info_checker.h"
@@ -92,6 +93,14 @@ int32_t SubscribeManager::SubscribeProfileEvents(const std::list<SubscribeInfo>&
     if (!subProfileEvents.none()) {
         TryAddNotifierLocked(profileEventNotifier, subProfileEvents);
     }
+    struct RadarInfo info = {
+        .stageRes = failedEvents.empty() ?
+            static_cast<int32_t>(StageRes::STAGE_IDLE) : static_cast<int32_t>(StageRes::STAGE_FAIL),
+        .errCode = ERR_DP_SUBSCRIBE_FAILED,
+    };
+    if (!DpRadarHelper::GetInstance().ReportSubscribeData(info)) {
+        HILOGE("ReportSubscribeData failed");
+    }
     return failedEvents.empty() ? ERR_OK : ERR_DP_SUBSCRIBE_FAILED;
 }
 
@@ -118,6 +127,16 @@ int32_t SubscribeManager::UnsubscribeProfileEvents(const std::list<ProfileEvent>
     }
     if (!unsubProfileEvents.none()) {
         TryRemoveNotiferLocked(profileEventNotifier, unsubProfileEvents);
+    }
+    struct RadarInfo info = {
+        .funcName = "UnsubscribeProfileEvents",
+        .stageRes = failedEvents.empty() ?
+            static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL),
+        .toCallPkg = kvNAME,
+        .errCode = ERR_DP_UNSUBSCRIBE_FAILED,
+    };
+    if (!DpRadarHelper::GetInstance().ReportUnsbscribeData(info)) {
+        HILOGE("ReportUnsbscribeData failed");
     }
     return failedEvents.empty() ? ERR_OK : ERR_DP_UNSUBSCRIBE_FAILED;
 }
