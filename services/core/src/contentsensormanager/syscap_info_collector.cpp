@@ -42,7 +42,7 @@ bool SyscapInfoCollector::ConvertToProfile(DeviceProfile &profile)
     }
 
     std::vector<int32_t> osSyscapData;
-    for (int i = 0; i < PCID_MAIN_BYTES/INT_BYTES_LEN; i++) {
+    for (int32_t i = 0; i < PCID_MAIN_BYTES/INT_BYTES_LEN; i++) {
         int32_t value = *((int32_t *)osBuffer + i);
         osSyscapData.push_back(value);
     }

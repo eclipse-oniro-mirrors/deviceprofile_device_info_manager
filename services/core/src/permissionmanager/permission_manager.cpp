@@ -80,8 +80,8 @@ int32_t PermissionManager::LoadPermissionCfg(const std::string& filePath)
         ifs.close();
         return DP_PARSE_PERMISSION_JSON_FAIL;
     }
-    int parseResult = ParsePermissionJson(permissionJson);
-    HILOGI("permission json %{public}s load success!", permissionJson.dump().c_str());
+    int32_t parseResult = ParsePermissionJson(permissionJson);
+    HILOGI("permission json load result %d!", parseResult);
     ifs.close();
     return parseResult;
 }

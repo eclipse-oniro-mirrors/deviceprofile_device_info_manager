@@ -96,32 +96,32 @@ void AccessControlProfile::SetAuthenticationType(uint32_t authenticationType)
     authenticationType_ = authenticationType;
 }
 
-int AccessControlProfile::GetStatus() const
+int32_t AccessControlProfile::GetStatus() const
 {
     return status_;
 }
 
-void AccessControlProfile::SetStatus(int status)
+void AccessControlProfile::SetStatus(int32_t status)
 {
     status_ = status;
 }
 
-int AccessControlProfile::GetValidPeriod() const
+int32_t AccessControlProfile::GetValidPeriod() const
 {
     return validPeriod_;
 }
 
-void AccessControlProfile::SetValidPeriod(int validPeriod)
+void AccessControlProfile::SetValidPeriod(int32_t validPeriod)
 {
     validPeriod_ = validPeriod;
 }
 
-int AccessControlProfile::GetLastAuthTime() const
+int32_t AccessControlProfile::GetLastAuthTime() const
 {
     return lastAuthTime_;
 }
 
-void AccessControlProfile::SetLastAuthTime(int lastAuthTime)
+void AccessControlProfile::SetLastAuthTime(int32_t lastAuthTime)
 {
     lastAuthTime_ = lastAuthTime;
 }
