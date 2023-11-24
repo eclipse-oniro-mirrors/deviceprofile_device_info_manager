@@ -44,7 +44,7 @@ void DeviceProfile::SetDeviceTypeName(const std::string &deviceTypeName)
     deviceTypeName_ = deviceTypeName;
 }
 
-    int32_t DeviceProfile::GetDeviceTypeId() const
+int32_t DeviceProfile::GetDeviceTypeId() const
 {
     return deviceTypeId_;
 }
@@ -104,12 +104,12 @@ void DeviceProfile::SetStorageCapability(int64_t storageCapability)
     storageCapability_ = storageCapability;
 }
 
-int32_t DeviceProfile::GetOsApiLevel() const
+uint32_t DeviceProfile::GetOsApiLevel() const
 {
     return osApiLevel_;
 }
 
-void DeviceProfile::SetOsApiLevel(int32_t osApiLevel)
+void DeviceProfile::SetOsApiLevel(uint32_t osApiLevel)
 {
     osApiLevel_ = osApiLevel;
 }
@@ -124,12 +124,12 @@ void DeviceProfile::SetOsVersion(const std::string& osVersion)
     osVersion_ = osVersion;
 }
 
-int32_t DeviceProfile::GetOsType() const
+uint32_t DeviceProfile::GetOsType() const
 {
     return osType_;
 }
 
-void DeviceProfile::SetOsType(int32_t osType)
+void DeviceProfile::SetOsType(uint32_t osType)
 {
     osType_ = osType;
 }

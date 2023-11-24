@@ -38,8 +38,8 @@ public:
     void SetDeviceIdType(int32_t deviceType);
     std::string GetDeviceIdHash() const;
     void SetDeviceIdHash(const std::string& deviceIdHash);
-    int32_t GetStatus() const;
-    void SetStatus(int32_t status);
+    uint32_t GetStatus() const;
+    void SetStatus(uint32_t status);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     std::string dump() const override;

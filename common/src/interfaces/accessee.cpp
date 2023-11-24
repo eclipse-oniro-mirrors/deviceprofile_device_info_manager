@@ -94,12 +94,12 @@ void Accessee::SetAccesseeHapSignature(const std::string& accesseeHapSignature)
     accesseeHapSignature_ = accesseeHapSignature;
 }
 
-int32_t Accessee::GetAccesseeBindLevel() const
+uint32_t Accessee::GetAccesseeBindLevel() const
 {
     return accesseeBindLevel_;
 }
 
-void Accessee::SetAccesseeBindLevel(int32_t accesseeBindLevel)
+void Accessee::SetAccesseeBindLevel(uint32_t accesseeBindLevel)
 {
     accesseeBindLevel_ = accesseeBindLevel;
 }

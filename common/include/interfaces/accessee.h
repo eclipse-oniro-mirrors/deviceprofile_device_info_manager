@@ -52,8 +52,8 @@ public:
     void SetAccesseeBundleName(const std::string& accesseeBundleName);
     std::string GetAccesseeHapSignature() const;
     void SetAccesseeHapSignature(const std::string& accesseeHapSignature);
-    int32_t GetAccesseeBindLevel() const;
-    void SetAccesseeBindLevel(int32_t accesseeBindLevel);
+    uint32_t GetAccesseeBindLevel() const;
+    void SetAccesseeBindLevel(uint32_t accesseeBindLevel);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     std::string dump() const override;

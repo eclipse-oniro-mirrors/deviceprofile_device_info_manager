@@ -69,6 +69,8 @@ private:
 
     bool EnforceInterfaceToken(MessageParcel& data);
 
+    void InitNewIpcInterface();
+
 private:
     std::map<uint32_t, Func> funcsMap_;
 };

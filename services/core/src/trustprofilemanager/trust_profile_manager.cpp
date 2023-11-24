@@ -232,8 +232,7 @@ int32_t TrustProfileManager::UpdateAccessControlProfile(const AccessControlProfi
     this->AccessControlProfileToTrustDeviceProfile(profile, trustProfile);
     trustProfile.SetStatus(trustDeviceStatus);
     ret = this->UpdateTrustDeviceProfile(trustProfile);
-    if (ret != DP_SUCCESS)
-    {
+    if (ret != DP_SUCCESS) {
         HILOGE("UpdateAccessControlProfile::UpdateTrustDeviceProfile failed");
         return DP_UPDATE_TRUST_DEVICE_PROFILE_FAIL;
     }
@@ -452,8 +451,8 @@ int32_t TrustProfileManager::GetAccessControlProfile(const std::string &bundleNa
     return DP_SUCCESS;
 }
 
-int32_t TrustProfileManager::GetAccessControlProfile(std::map<std::string, 
-    std::string> params, std::vector<AccessControlProfile>& profile)
+int32_t TrustProfileManager::GetAccessControlProfile(std::map<std::string, std::string> params,
+    std::vector<AccessControlProfile>& profile)
 {
     if (params.find("userId") != params.end() && params.find("bundleName") != params.end() &&
         params.find("bindType") != params.end() && params.find("status") != params.end()) {
@@ -559,7 +558,7 @@ int32_t TrustProfileManager::DeleteTrustDeviceProfile(const std::string& deviceI
     int32_t deleteRows;
     {
         std::lock_guard<std::mutex> lock(rdbMutex_);
-        ret = rdbStore_->Delete(deleteRows,TRUST_DEVICE_TABLE, "deviceId = ?",
+        ret = rdbStore_->Delete(deleteRows, TRUST_DEVICE_TABLE, "deviceId = ?",
             std::vector<ValueObject>{ValueObject(deviceId)});
         if (ret != DP_SUCCESS) {
             HILOGE("DeleteTrustDeviceProfile::delete trust_device_table data failed");
@@ -1088,7 +1087,7 @@ int32_t TrustProfileManager::UpdateTrustDeviceProfileNotify(const TrustDevicePro
     if (oldProfile.GetDeviceId() != newProfile.GetDeviceId() ||
         oldProfile.GetDeviceIdHash() != newProfile.GetDeviceIdHash() ||
         oldProfile.GetDeviceIdType() != newProfile.GetDeviceIdType()) {
-        ret = SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileUpdate(oldProfile,newProfile);
+        ret = SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileUpdate(oldProfile, newProfile);
         if (ret != DP_SUCCESS) {
             HILOGE("UpdateTrustDeviceProfileNotify::NotifyTrustDeviceProfileUpdate failed");
             return DP_NOTIFY_TRUST_DEVICE_FAIL;
@@ -1283,26 +1282,25 @@ int32_t TrustProfileManager::DeleteAccessControlProfileCheck(std::shared_ptr<Res
 int32_t TrustProfileManager::TrustResultSetToTrustDeviceProfile(
     std::shared_ptr<ResultSet> trustResultSet, TrustDeviceProfile& trustDeviceProfile)
 {
-    int32_t ret;
     int32_t columnIndex;
     std::string deviceId;
-    ret = trustResultSet->GetColumnIndex("deviceId", columnIndex);
-    ret = trustResultSet->GetString(columnIndex, deviceId);
+    trustResultSet->GetColumnIndex("deviceId", columnIndex);
+    trustResultSet->GetString(columnIndex, deviceId);
     trustDeviceProfile.SetDeviceId(deviceId);
 
     int32_t deviceIdType;
-    ret = trustResultSet->GetColumnIndex("deviceIdType", columnIndex);
-    ret = trustResultSet->GetInt(columnIndex, deviceIdType);
+    trustResultSet->GetColumnIndex("deviceIdType", columnIndex);
+    trustResultSet->GetInt(columnIndex, deviceIdType);
     trustDeviceProfile.SetDeviceIdType(deviceIdType);
 
     std::string deviceIdHash;
-    ret = trustResultSet->GetColumnIndex("deviceIdHash", columnIndex);
-    ret = trustResultSet->GetString(columnIndex, deviceIdHash);
+    trustResultSet->GetColumnIndex("deviceIdHash", columnIndex);
+    trustResultSet->GetString(columnIndex, deviceIdHash);
     trustDeviceProfile.SetDeviceIdHash(deviceIdHash);
 
     int32_t status;
-    ret = trustResultSet->GetColumnIndex("status", columnIndex);
-    ret = trustResultSet->GetInt(columnIndex, status);
+    trustResultSet->GetColumnIndex("status", columnIndex);
+    trustResultSet->GetInt(columnIndex, status);
     trustDeviceProfile.SetStatus(status);
     return DP_SUCCESS;
 }
@@ -1310,46 +1308,45 @@ int32_t TrustProfileManager::TrustResultSetToTrustDeviceProfile(
 int32_t TrustProfileManager::AccesserResultSetToAccesser(std::shared_ptr<ResultSet> accesserResultSet,
     Accesser& accesser)
 {
-    int32_t ret;
     int32_t columnIndex;
     int64_t accesserId;
-    ret = accesserResultSet->GetColumnIndex("accesserId", columnIndex);
-    ret = accesserResultSet->GetLong(columnIndex, accesserId);
+    accesserResultSet->GetColumnIndex("accesserId", columnIndex);
+    accesserResultSet->GetLong(columnIndex, accesserId);
     accesser.SetAccesserId(accesserId);
 
     std::string accesserDeviceId;
-    ret = accesserResultSet->GetColumnIndex("accesserDeviceId", columnIndex);
-    ret = accesserResultSet->GetString(columnIndex, accesserDeviceId);
+    accesserResultSet->GetColumnIndex("accesserDeviceId", columnIndex);
+    accesserResultSet->GetString(columnIndex, accesserDeviceId);
     accesser.SetAccesserDeviceId(accesserDeviceId);
 
     int32_t accesserUserId;
-    ret = accesserResultSet->GetColumnIndex("accesserUserId", columnIndex);
-    ret = accesserResultSet->GetInt(columnIndex, accesserUserId);
+    accesserResultSet->GetColumnIndex("accesserUserId", columnIndex);
+    accesserResultSet->GetInt(columnIndex, accesserUserId);
     accesser.SetAccesserUserId(accesserUserId);
 
     std::string accesserAccountId;
-    ret = accesserResultSet->GetColumnIndex("accesserAccountId", columnIndex);
-    ret = accesserResultSet->GetString(columnIndex, accesserAccountId);
+    accesserResultSet->GetColumnIndex("accesserAccountId", columnIndex);
+    accesserResultSet->GetString(columnIndex, accesserAccountId);
     accesser.SetAccesserAccountId(accesserAccountId);
 
     int64_t accesserTokenId;
-    ret = accesserResultSet->GetColumnIndex("accesserTokenId", columnIndex);
-    ret = accesserResultSet->GetLong(columnIndex, accesserTokenId);
+    accesserResultSet->GetColumnIndex("accesserTokenId", columnIndex);
+    accesserResultSet->GetLong(columnIndex, accesserTokenId);
     accesser.SetAccesserTokenId(accesserTokenId);
 
     std::string accesserBundleName;
-    ret = accesserResultSet->GetColumnIndex("accesserBundleName", columnIndex);
-    ret = accesserResultSet->GetString(columnIndex, accesserBundleName);
+    accesserResultSet->GetColumnIndex("accesserBundleName", columnIndex);
+    accesserResultSet->GetString(columnIndex, accesserBundleName);
     accesser.SetAccesserBundleName(accesserBundleName);
 
     std::string accesserHapSignature;
-    ret = accesserResultSet->GetColumnIndex("accesserHapSignature", columnIndex);
-    ret = accesserResultSet->GetString(columnIndex, accesserHapSignature);
+    accesserResultSet->GetColumnIndex("accesserHapSignature", columnIndex);
+    accesserResultSet->GetString(columnIndex, accesserHapSignature);
     accesser.SetAccesserHapSignature(accesserHapSignature);
 
     int32_t accesserBindLevel;
-    ret = accesserResultSet->GetColumnIndex("accesserBindLevel", columnIndex);
-    ret = accesserResultSet->GetInt(columnIndex, accesserBindLevel);
+    accesserResultSet->GetColumnIndex("accesserBindLevel", columnIndex);
+    accesserResultSet->GetInt(columnIndex, accesserBindLevel);
     accesser.SetAccesserBindLevel(accesserBindLevel);
     return DP_SUCCESS;
 }
@@ -1359,44 +1356,43 @@ int32_t TrustProfileManager::AccesseeResultSetToAccessee(std::shared_ptr<ResultS
 {
     int32_t columnIndex;
     int64_t accesseeId;
-    int32_t ret;
-    ret = accesseeResultSet->GetColumnIndex("accesseeId", columnIndex);
-    ret = accesseeResultSet->GetLong(columnIndex, accesseeId);
+    accesseeResultSet->GetColumnIndex("accesseeId", columnIndex);
+    accesseeResultSet->GetLong(columnIndex, accesseeId);
     accessee.SetAccesseeId(accesseeId);
 
     std::string accesseeDeviceId;
-    ret = accesseeResultSet->GetColumnIndex("accesseeDeviceId", columnIndex);
-    ret = accesseeResultSet->GetString(columnIndex, accesseeDeviceId);
+    accesseeResultSet->GetColumnIndex("accesseeDeviceId", columnIndex);
+    accesseeResultSet->GetString(columnIndex, accesseeDeviceId);
     accessee.SetAccesseeDeviceId(accesseeDeviceId);
 
     int32_t accesseeUserId;
-    ret = accesseeResultSet->GetColumnIndex("accesserUserId", columnIndex);
-    ret = accesseeResultSet->GetInt(columnIndex, accesseeUserId);
+    accesseeResultSet->GetColumnIndex("accesserUserId", columnIndex);
+    accesseeResultSet->GetInt(columnIndex, accesseeUserId);
     accessee.SetAccesseeUserId(accesseeUserId);
 
     std::string accesseeAccountId;
-    ret = accesseeResultSet->GetColumnIndex("accesseeAccountId", columnIndex);
-    ret = accesseeResultSet->GetString(columnIndex, accesseeAccountId);
+    accesseeResultSet->GetColumnIndex("accesseeAccountId", columnIndex);
+    accesseeResultSet->GetString(columnIndex, accesseeAccountId);
     accessee.SetAccesseeAccountId(accesseeAccountId);
 
     int64_t accesseeTokenId;
-    ret = accesseeResultSet->GetColumnIndex("accesseeTokenId", columnIndex);
-    ret = accesseeResultSet->GetLong(columnIndex, accesseeTokenId);
+    accesseeResultSet->GetColumnIndex("accesseeTokenId", columnIndex);
+    accesseeResultSet->GetLong(columnIndex, accesseeTokenId);
     accessee.SetAccesseeTokenId(accesseeTokenId);
 
     std::string accesseeBundleName;
-    ret = accesseeResultSet->GetColumnIndex("accesseeBundleName", columnIndex);
-    ret = accesseeResultSet->GetString(columnIndex, accesseeBundleName);
+    accesseeResultSet->GetColumnIndex("accesseeBundleName", columnIndex);
+    accesseeResultSet->GetString(columnIndex, accesseeBundleName);
     accessee.SetAccesseeBundleName(accesseeBundleName);
 
     std::string accesseeHapSignature;
-    ret = accesseeResultSet->GetColumnIndex("accesseeHapSignature", columnIndex);
-    ret = accesseeResultSet->GetString(columnIndex, accesseeHapSignature);
+    accesseeResultSet->GetColumnIndex("accesseeHapSignature", columnIndex);
+    accesseeResultSet->GetString(columnIndex, accesseeHapSignature);
     accessee.SetAccesseeHapSignature(accesseeHapSignature);
 
     int32_t accesseeBindLevel;
-    ret = accesseeResultSet->GetColumnIndex("accesseeBindLevel", columnIndex);
-    ret = accesseeResultSet->GetInt(columnIndex, accesseeBindLevel);
+    accesseeResultSet->GetColumnIndex("accesseeBindLevel", columnIndex);
+    accesseeResultSet->GetInt(columnIndex, accesseeBindLevel);
     accessee.SetAccesseeBindLevel(accesseeBindLevel);
     return DP_SUCCESS;
 }
@@ -1405,70 +1401,69 @@ int32_t TrustProfileManager::AccessControlResultSetToAccessControlProfile(
     std::shared_ptr<ResultSet> accessControlResultSet, AccessControlProfile& accessControlProfile)
 {
     int32_t columnIndex;
-    int32_t ret;
     int64_t accessControlId;
-    ret = accessControlResultSet->GetColumnIndex("accessControlId", columnIndex);
-    ret = accessControlResultSet->GetLong(columnIndex, accessControlId);
+    accessControlResultSet->GetColumnIndex("accessControlId", columnIndex);
+    accessControlResultSet->GetLong(columnIndex, accessControlId);
     accessControlProfile.SetAccessControlId(accessControlId);
 
     int64_t accesserId;
-    ret = accessControlResultSet->GetColumnIndex("accesserId", columnIndex);
-    ret = accessControlResultSet->GetLong(columnIndex, accesserId);
+    accessControlResultSet->GetColumnIndex("accesserId", columnIndex);
+    accessControlResultSet->GetLong(columnIndex, accesserId);
     accessControlProfile.SetAccesserId(accesserId);
 
     int64_t accesseeId;
-    ret = accessControlResultSet->GetColumnIndex("accesseeId", columnIndex);
-    ret = accessControlResultSet->GetLong(columnIndex, accesseeId);
+    accessControlResultSet->GetColumnIndex("accesseeId", columnIndex);
+    accessControlResultSet->GetLong(columnIndex, accesseeId);
     accessControlProfile.SetAccesseeId(accesseeId);
 
     std::string trustDeviceId;
-    ret = accessControlResultSet->GetColumnIndex("trustDeviceId", columnIndex);
-    ret = accessControlResultSet->GetString(columnIndex, trustDeviceId);
+    accessControlResultSet->GetColumnIndex("trustDeviceId", columnIndex);
+    accessControlResultSet->GetString(columnIndex, trustDeviceId);
     accessControlProfile.SetTrustDeviceId(trustDeviceId);
     
     std::string sessionKey;
-    ret = accessControlResultSet->GetColumnIndex("sessionKey", columnIndex);
-    ret = accessControlResultSet->GetString(columnIndex, sessionKey);
+    accessControlResultSet->GetColumnIndex("sessionKey", columnIndex);
+    accessControlResultSet->GetString(columnIndex, sessionKey);
     accessControlProfile.SetSessionKey(sessionKey);
 
     int32_t bindType;
-    ret = accessControlResultSet->GetColumnIndex("bindType", columnIndex);
-    ret = accessControlResultSet->GetInt(columnIndex, bindType);
+    accessControlResultSet->GetColumnIndex("bindType", columnIndex);
+    accessControlResultSet->GetInt(columnIndex, bindType);
     accessControlProfile.SetBindType(bindType);
 
     int32_t authenticationType;
-    ret = accessControlResultSet->GetColumnIndex("authenticationType", columnIndex);
-    ret = accessControlResultSet->GetInt(columnIndex, authenticationType);
+    accessControlResultSet->GetColumnIndex("authenticationType", columnIndex);
+    accessControlResultSet->GetInt(columnIndex, authenticationType);
     accessControlProfile.SetAuthenticationType(authenticationType);
 
     int32_t deviceIdType;
-    ret = accessControlResultSet->GetColumnIndex("deviceIdType", columnIndex);
-    ret = accessControlResultSet->GetInt(columnIndex, deviceIdType);
+    accessControlResultSet->GetColumnIndex("deviceIdType", columnIndex);
+    accessControlResultSet->GetInt(columnIndex, deviceIdType);
     accessControlProfile.SetDeviceIdType(deviceIdType);
 
     std::string deviceIdHash;
-    ret = accessControlResultSet->GetColumnIndex("deviceIdHash", columnIndex);
-    ret = accessControlResultSet->GetString(columnIndex, deviceIdHash);
+    accessControlResultSet->GetColumnIndex("deviceIdHash", columnIndex);
+    accessControlResultSet->GetString(columnIndex, deviceIdHash);
     accessControlProfile.SetDeviceIdHash(deviceIdHash);
 
     int32_t status;
-    ret = accessControlResultSet->GetColumnIndex("status", columnIndex);
-    ret = accessControlResultSet->GetInt(columnIndex, status);
+    accessControlResultSet->GetColumnIndex("status", columnIndex);
+    accessControlResultSet->GetInt(columnIndex, status);
     accessControlProfile.SetStatus(status);
 
     int32_t validPeriod;
-    ret = accessControlResultSet->GetColumnIndex("validPeriod", columnIndex);
-    ret = accessControlResultSet->GetInt(columnIndex, validPeriod);
+    accessControlResultSet->GetColumnIndex("validPeriod", columnIndex);
+    accessControlResultSet->GetInt(columnIndex, validPeriod);
     accessControlProfile.SetValidPeriod(validPeriod);
 
     int32_t lastAuthTime;
-    ret = accessControlResultSet->GetColumnIndex("lastAuthTime", columnIndex);
-    ret = accessControlResultSet->GetInt(columnIndex, lastAuthTime);
+    accessControlResultSet->GetColumnIndex("lastAuthTime", columnIndex);
+    accessControlResultSet->GetInt(columnIndex, lastAuthTime);
     accessControlProfile.SetLastAuthTime(lastAuthTime);
 
     int32_t bindLevel;
-    ret = accessControlResultSet->GetColumnIndex("bindLevel", columnIndex);
-    ret = accessControlResultSet->GetInt(columnIndex, bindLevel);
+    accessControlResultSet->GetColumnIndex("bindLevel", columnIndex);
+    accessControlResultSet->GetInt(columnIndex, bindLevel);
     accessControlProfile.SetBindLevel(bindLevel);
     return DP_SUCCESS;
 }

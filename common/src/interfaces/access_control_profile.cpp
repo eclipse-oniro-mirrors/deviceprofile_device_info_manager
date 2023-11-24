@@ -76,22 +76,22 @@ void AccessControlProfile::SetTrustDeviceId(const std::string &trustDeviceId)
     trustDeviceId_ = trustDeviceId;
 }
 
-int AccessControlProfile::GetBindType() const
+uint32_t AccessControlProfile::GetBindType() const
 {
     return bindType_;
 }
 
-void AccessControlProfile::SetBindType(int bindType)
+void AccessControlProfile::SetBindType(uint32_t bindType)
 {
     bindType_ = bindType;
 }
 
-int AccessControlProfile::GetAuthenticationType() const
+uint32_t AccessControlProfile::GetAuthenticationType() const
 {
     return authenticationType_;
 }
 
-void AccessControlProfile::SetAuthenticationType(int authenticationType)
+void AccessControlProfile::SetAuthenticationType(uint32_t authenticationType)
 {
     authenticationType_ = authenticationType;
 }
@@ -148,22 +148,22 @@ void AccessControlProfile::SetAccessee(const Accessee &accessee)
     accessee_ = accessee;
 }
 
-int32_t AccessControlProfile::GetBindLevel() const
+uint32_t AccessControlProfile::GetBindLevel() const
 {
     return bindLevel_;
 }
 
-void AccessControlProfile::SetBindLevel(int32_t bindLevel)
+void AccessControlProfile::SetBindLevel(uint32_t bindLevel)
 {
     bindLevel_ = bindLevel;
 }
 
-int32_t AccessControlProfile::GetDeviceIdType() const
+uint32_t AccessControlProfile::GetDeviceIdType() const
 {
     return deviceIdType_;
 }
 
-void AccessControlProfile::SetDeviceIdType(int32_t deviceIdType)
+void AccessControlProfile::SetDeviceIdType(uint32_t deviceIdType)
 {
     deviceIdType_ = deviceIdType;
 }

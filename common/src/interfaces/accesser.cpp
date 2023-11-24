@@ -94,12 +94,12 @@ void Accesser::SetAccesserHapSignature(const std::string& accesserHapSignature)
     accesserHapSignature_ = accesserHapSignature;
 }
 
-int32_t Accesser::GetAccesserBindLevel() const
+uint32_t Accesser::GetAccesserBindLevel() const
 {
     return accesserBindLevel_;
 }
 
-void Accesser::SetAccesserBindLevel(int32_t accesserBindLevel)
+void Accesser::SetAccesserBindLevel(uint32_t accesserBindLevel)
 {
     accesserBindLevel_ = accesserBindLevel;
 }

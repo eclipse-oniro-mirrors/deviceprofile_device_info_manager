@@ -179,7 +179,7 @@ int32_t ProfileUtils::SplitString(const std::string& str, const std::string& spl
     }
     std::string strs = str + splits;
     size_t pos = strs.find(splits);
-    int step = splits.size();
+    int32_t step = splits.size();
 
     while (pos != strs.npos) {
         std::string temp = strs.substr(0, pos);
@@ -332,56 +332,48 @@ int32_t ProfileUtils::EntriesToTrustDeviceProfile(const ValuesBucket& values, Tr
 
 int32_t ProfileUtils::EntriesToAccessControlProfile(const ValuesBucket& values, AccessControlProfile& profile)
 {
-    ValueObject valueObject;
     std::string strValue = "";
     int32_t intValue = 0;
     int64_t int64Value = 0;
-
-    if (values.GetObject(ACCESS_CONTROL_ID, valueObject) && valueObject.GetLong(int64Value)) {
+    if (GetLongValue(values, ACCESS_CONTROL_ID, int64Value)) {
         profile.SetAccessControlId(int64Value);
     }
-    if (values.GetObject(ACCESSER_ID, valueObject) && valueObject.GetLong(int64Value)) {
+    if (GetLongValue(values, ACCESSER_ID, int64Value)) {
         profile.SetAccesserId(int64Value);
     }
-    if (values.GetObject(ACCESSEE_ID, valueObject) && valueObject.GetLong(int64Value)) {
+    if (GetLongValue(values, ACCESSEE_ID, int64Value)) {
         profile.SetAccesseeId(int64Value);
     }
-    if (values.GetObject(SESSION_KEY, valueObject) && valueObject.GetString(strValue)) {
+    if (GetStringValue(values, SESSION_KEY, strValue)) {
         profile.SetSessionKey(strValue);
     }
-    if (values.GetObject(BIND_TYPE, valueObject) && valueObject.GetInt(intValue)) {
+    if (GetIntValue(values, BIND_TYPE, intValue)) {
         profile.SetBindType(intValue);
     }
-    if (values.GetObject(AUTHENTICATION_TYPE, valueObject) && valueObject.GetInt(intValue)) {
+    if (GetIntValue(values, AUTHENTICATION_TYPE, intValue)) {
         profile.SetAuthenticationType(intValue);
     }
-    if (values.GetObject(BIND_LEVEL, valueObject) && valueObject.GetInt(intValue)) {
+    if (GetIntValue(values, BIND_LEVEL, intValue)) {
         profile.SetBindLevel(intValue);
     }
-    if (values.GetObject(STATUS, valueObject) && valueObject.GetInt(intValue)) {
+    if (GetIntValue(values, STATUS, intValue)) {
         profile.SetStatus(intValue);
     }
-    if (values.GetObject(VALID_PERIOD, valueObject) && valueObject.GetInt(intValue)) {
+    if (GetIntValue(values, VALID_PERIOD, intValue)) {
         profile.SetValidPeriod(intValue);
     }
-    if (values.GetObject(LAST_AUTH_TIME, valueObject) && valueObject.GetInt(intValue)) {
+    if (GetIntValue(values, LAST_AUTH_TIME, intValue)) {
         profile.SetLastAuthTime(intValue);
     }
-    if (values.GetObject(TRUST_DEVICE_ID, valueObject) && valueObject.GetString(strValue)) {
+    if (GetStringValue(values, TRUST_DEVICE_ID, strValue)) {
         profile.SetTrustDeviceId(strValue);
     }
-    if (values.GetObject(DEVICE_TYPE_ID, valueObject) && valueObject.GetInt(intValue)) {
+    if (GetIntValue(values, DEVICE_TYPE_ID, intValue)) {
         profile.SetDeviceIdType(intValue);
     }
-    if (values.GetObject(DEVICE_ID_HASH, valueObject) && valueObject.GetString(strValue)) {
+    if (GetStringValue(values, DEVICE_ID_HASH, strValue)) {
         profile.SetDeviceIdHash(strValue);
     }
-    Accesser accesser;
-    EntriesToAccesser(values, accesser);
-    profile.SetAccesser(accesser);
-    Accessee accessee;
-    EntriesToAccessee(values, accessee);
-    profile.SetAccessee(accessee);
     return DP_SUCCESS;
 }
 
@@ -452,53 +444,45 @@ int32_t ProfileUtils::EntriesToDeviceProfile(std::map<std::string, std::string> 
         return DP_INVALID_PARAMS;
     }
     auto propertiesMap = GetProfilePropertiesMap(values);
-    if (propertiesMap.count(DEVICE_ID) != 0 && 0 < propertiesMap[DEVICE_ID].length() &&
-        propertiesMap[DEVICE_ID].length() < MAX_STRING_LEN) {
+    if (IsPropertyValid(propertiesMap, DEVICE_ID, MAX_STRING_LEN)) {
         profile.SetDeviceId(propertiesMap[DEVICE_ID]);
     }
-    uint32_t deviceTypeId = std::atoi(propertiesMap[DEVICE_TYPE_ID].c_str());
-    if (propertiesMap.count(DEVICE_TYPE_ID) != 0 && static_cast<uint32_t>(DeviceIdType::MIN) < deviceTypeId &&
-        deviceTypeId < static_cast<uint32_t>(DeviceIdType::MAX)) {
+    if (IsPropertyValid(propertiesMap, DEVICE_TYPE_ID, static_cast<uint32_t>(DeviceIdType::MIN),
+        static_cast<uint32_t>(DeviceIdType::MAX))) {
+        uint32_t deviceTypeId = std::atoi(propertiesMap[DEVICE_TYPE_ID].c_str());
         profile.SetDeviceTypeId(deviceTypeId);
     }
-    if (propertiesMap.count(DEVICE_TYPE_NAME) != 0 && 0 < propertiesMap[DEVICE_TYPE_NAME].length() &&
-        propertiesMap[DEVICE_TYPE_NAME].length() < MAX_STRING_LEN) {
+    if (IsPropertyValid(propertiesMap, DEVICE_TYPE_NAME, MAX_STRING_LEN)) {
         profile.SetDeviceTypeName(propertiesMap[DEVICE_TYPE_NAME]);
     }
-    if (propertiesMap.count(DEVICE_NAME) != 0 && 0 < propertiesMap[DEVICE_NAME].length() &&
-        propertiesMap[DEVICE_NAME].length() < MAX_STRING_LEN) {
+    if (IsPropertyValid(propertiesMap, DEVICE_NAME, MAX_STRING_LEN)) {
         profile.SetDeviceName(propertiesMap[DEVICE_NAME]);
     }
-    if (propertiesMap.count(MANUFACTURE_NAME) != 0 && 0 < propertiesMap[MANUFACTURE_NAME].length() &&
-        propertiesMap[MANUFACTURE_NAME].length() < MAX_STRING_LEN) {
+    if (IsPropertyValid(propertiesMap, MANUFACTURE_NAME, MAX_STRING_LEN)) {
         profile.SetManufactureName(propertiesMap[MANUFACTURE_NAME]);
     }
-    if (propertiesMap.count(DEVICE_MODEL) != 0 && 0 < propertiesMap[DEVICE_MODEL].length() &&
-        propertiesMap[DEVICE_MODEL].length() < MAX_STRING_LEN) {
+    if (IsPropertyValid(propertiesMap, DEVICE_MODEL, MAX_STRING_LEN)) {
         profile.SetDeviceModel(propertiesMap[DEVICE_MODEL]);
     }
-    if (propertiesMap.count(SERIAL_NUMBER_ID) != 0 && 0 < propertiesMap[SERIAL_NUMBER_ID].length() &&
-        propertiesMap[SERIAL_NUMBER_ID].length() < MAX_STRING_LEN) {
+    if (IsPropertyValid(propertiesMap, SERIAL_NUMBER_ID, MAX_STRING_LEN)) {
         profile.SetSerialNumberId(propertiesMap[SERIAL_NUMBER_ID]);
     }
-    int64_t storageCapability = std::atoi(propertiesMap[STORAGE_CAPACITY].c_str());
-    if (propertiesMap.count(STORAGE_CAPACITY) != 0 && 0 < storageCapability && storageCapability < MAX_STORAGE_LEN) {
+    if (IsPropertyValid(propertiesMap, STORAGE_CAPACITY, MIN_STORAGE_LEN, MAX_STORAGE_LEN)) {
+        int64_t storageCapability = std::atoi(propertiesMap[STORAGE_CAPACITY].c_str());
         profile.SetStorageCapability(storageCapability);
     }
-    if (propertiesMap.count(OS_SYS_CAPACITY) != 0 && 0 < propertiesMap[OS_SYS_CAPACITY].length() &&
-        propertiesMap[OS_SYS_CAPACITY].length() < MAX_STRING_LEN) {
+    if (IsPropertyValid(propertiesMap, OS_SYS_CAPACITY, MAX_STRING_LEN)) {
         profile.SetOsSysCap(propertiesMap[OS_SYS_CAPACITY]);
     }
-    int32_t osApiLevel = std::atoi(propertiesMap[OS_API_LEVEL].c_str());
-    if (propertiesMap.count(OS_API_LEVEL) != 0 && 0 < osApiLevel && osApiLevel < MAX_OS_API_LEVEL) {
+    if (IsPropertyValid(propertiesMap, OS_API_LEVEL, MIN_OS_API_LEVEL, MAX_OS_API_LEVEL)) {
+        int32_t osApiLevel = std::atoi(propertiesMap[OS_API_LEVEL].c_str());
         profile.SetOsApiLevel(osApiLevel);
     }
-    if (propertiesMap.count(OS_VERSION) != 0 && 0 < propertiesMap[OS_VERSION].length() &&
-        propertiesMap[OS_VERSION].length() < MAX_STRING_LEN) {
+    if (IsPropertyValid(propertiesMap, OS_VERSION, MAX_STRING_LEN)) {
         profile.SetOsVersion(propertiesMap[OS_VERSION]);
     }
-    int32_t osType = std::atoi(propertiesMap[OS_TYPE].c_str());
-    if (propertiesMap.count(OS_TYPE) != 0 && 0 < osType && osType < MAX_OS_TYPE) {
+    if (IsPropertyValid(propertiesMap, OS_TYPE, MIN_OS_TYPE, MAX_OS_TYPE)) {
+        int32_t osType = std::atoi(propertiesMap[OS_TYPE].c_str());
         profile.SetOsType(osType);
     }
     return DP_SUCCESS;
@@ -576,6 +560,73 @@ std::map<std::string, std::string> ProfileUtils::GetProfilePropertiesMap(std::ma
 std::string ProfileUtils::toString(const std::u16string& str16)
 {
     return std::wstring_convert< std::codecvt_utf8_utf16<char16_t>, char16_t >{}.to_bytes(str16);
+}
+
+bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
+    int32_t maxValue)
+{
+    int32_t propertyLength = propertyMap.at(property).length();
+    if (propertyMap.count(property) != 0 && 0 < propertyLength && propertyLength < maxValue) {
+        return true;
+    }
+    return false;
+}
+
+bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
+   int32_t minValue, int32_t maxValue)
+{
+    int32_t value = std::atoi(propertyMap.at(property).c_str());
+    if (propertyMap.count(property) != 0 && minValue < value && value < maxValue) {
+        return true;
+    }
+    return false;
+}
+
+bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
+   uint32_t minValue, uint32_t maxValue)
+{
+    uint32_t value = std::atoi(propertyMap.at(property).c_str());
+    if (propertyMap.count(property) != 0 && minValue < value && value < maxValue) {
+        return true;
+    }
+    return false;
+}
+
+bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
+   int64_t minValue, int64_t maxValue)
+{
+    int64_t value = std::atoi(propertyMap.at(property).c_str());
+    if (propertyMap.count(property) != 0 && minValue < value && value < maxValue) {
+        return true;
+    }
+    return false;
+}
+
+bool ProfileUtils::GetIntValue(const ValuesBucket& values, const std::string& property, int32_t& value)
+{
+    ValueObject valueObject;
+    if (values.GetObject(property, valueObject) && valueObject.GetInt(value)) {
+        return true;
+    }
+    return false;
+}
+
+bool ProfileUtils::GetStringValue(const ValuesBucket& values, const std::string& property, std::string& value)
+{
+    ValueObject valueObject;
+    if (values.GetObject(property, valueObject) && valueObject.GetString(value)) {
+        return true;
+    }
+    return false;
+}
+
+bool ProfileUtils::GetLongValue(const ValuesBucket& values, const std::string& property, int64_t& value)
+{
+    ValueObject valueObject;
+    if (values.GetObject(property, valueObject) && valueObject.GetLong(value)) {
+        return true;
+    }
+    return false;
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

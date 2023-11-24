@@ -54,12 +54,12 @@ void TrustDeviceProfile::SetDeviceIdHash(const std::string& deviceIdHash)
     deviceIdHash_ = deviceIdHash;
 }
 
-int32_t TrustDeviceProfile::GetStatus() const
+uint32_t TrustDeviceProfile::GetStatus() const
 {
     return status_;
 }
 
-void TrustDeviceProfile::SetStatus(int32_t status)
+void TrustDeviceProfile::SetStatus(uint32_t status)
 {
     status_ = status;
 }

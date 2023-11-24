@@ -58,12 +58,12 @@ public:
     void SetStorageCapability(int64_t storageCapability);
     std::string GetOsSysCap() const;
     void SetOsSysCap(const std::string& osSysCap);
-    int32_t GetOsApiLevel() const;
-    void SetOsApiLevel(int32_t osApiLevel);
+    uint32_t GetOsApiLevel() const;
+    void SetOsApiLevel(uint32_t osApiLevel);
     std::string GetOsVersion() const;
     void SetOsVersion(const std::string& osVersion);
-    int32_t GetOsType() const;
-    void SetOsType(int32_t osType);
+    uint32_t GetOsType() const;
+    void SetOsType(uint32_t osType);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     bool operator!=(const DeviceProfile& deviceProfile) const;

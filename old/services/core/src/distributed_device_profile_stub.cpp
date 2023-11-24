@@ -50,47 +50,51 @@ DistributedDeviceProfileStub::DistributedDeviceProfileStub()
         &DistributedDeviceProfileStub::UnsubscribeProfileEventInner;
     funcsMap_[static_cast<uint32_t>(IDeviceProfileInterfaceCode::SYNC_DEVICE_PROFILE)] =
         &DistributedDeviceProfileStub::SyncDeviceProfileInner;
-    // new interface
+    InitNewIpcInterface();
+}
+
+void DistributedDeviceProfileStub::InitNewIpcInterface()
+{
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::PUT_ACL_PROFILE)] =
         &DistributedDeviceProfileStub::PutAccessControlProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::UPDATE_ACL_PROFILE)] =
         &DistributedDeviceProfileStub::UpdateAccessControlProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::GET_TRUST_DEVICE_PROFILE)] =
-            &DistributedDeviceProfileStub::GetTrustDeviceProfileInner;
+        &DistributedDeviceProfileStub::GetTrustDeviceProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::GET_ALL_TRUST_DEVICE_PROFILE)] =
-            &DistributedDeviceProfileStub::GetAllTrustDeviceProfileInner;
+        &DistributedDeviceProfileStub::GetAllTrustDeviceProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::GET_ACL_PROFILE)] =
-            &DistributedDeviceProfileStub::GetAccessControlProfileInner;
+        &DistributedDeviceProfileStub::GetAccessControlProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::GET_ALL_ACL_PROFILE)] =
-            &DistributedDeviceProfileStub::GetAllAccessControlProfileInner;
+        &DistributedDeviceProfileStub::GetAllAccessControlProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::DELETE_ACL_PROFILE)] =
-            &DistributedDeviceProfileStub::DeleteAccessControlProfileInner;
+        &DistributedDeviceProfileStub::DeleteAccessControlProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE)] =
-            &DistributedDeviceProfileStub::PutServiceProfileInner;
+        &DistributedDeviceProfileStub::PutServiceProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE_BATCH)] =
-            &DistributedDeviceProfileStub::PutServiceProfileBatchInner;
+        &DistributedDeviceProfileStub::PutServiceProfileBatchInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE)] =
-            &DistributedDeviceProfileStub::PutCharacteristicProfileInner;
+        &DistributedDeviceProfileStub::PutCharacteristicProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE_BATCH)] =
-            &DistributedDeviceProfileStub::PutCharacteristicProfileBatchInner;
+        &DistributedDeviceProfileStub::PutCharacteristicProfileBatchInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_PROFILE_NEW)] =
-            &DistributedDeviceProfileStub::GetDeviceProfileNewInner;
+        &DistributedDeviceProfileStub::GetDeviceProfileNewInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::GET_SERVICE_PROFILE)] =
-            &DistributedDeviceProfileStub::GetServiceProfileInner;
+        &DistributedDeviceProfileStub::GetServiceProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::GET_CHAR_PROFILE)] =
-            &DistributedDeviceProfileStub::GetCharacteristicProfileInner;
+        &DistributedDeviceProfileStub::GetCharacteristicProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::DEL_SERVICE_PROFILE)] =
-            &DistributedDeviceProfileStub::DeleteServiceProfileInner;
+        &DistributedDeviceProfileStub::DeleteServiceProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::DEL_CHAR_PROFILE)] =
-            &DistributedDeviceProfileStub::DeleteCharacteristicProfileInner;
+        &DistributedDeviceProfileStub::DeleteCharacteristicProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE)] =
-            &DistributedDeviceProfileStub::SubscribeDeviceProfileInner;
+        &DistributedDeviceProfileStub::SubscribeDeviceProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE)] =
-            &DistributedDeviceProfileStub::UnSubscribeDeviceProfileInner;
+        &DistributedDeviceProfileStub::UnSubscribeDeviceProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SYNC_DEVICE_PROFILE_NEW)] =
-            &DistributedDeviceProfileStub::SyncDeviceProfileNewInner;
+        &DistributedDeviceProfileStub::SyncDeviceProfileNewInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SEND_SUBSCRIBE_INFOS)] =
-            &DistributedDeviceProfileStub::SendSubscribeInfosInner;
+        &DistributedDeviceProfileStub::SendSubscribeInfosInner;
 }
 
 bool DistributedDeviceProfileStub::EnforceInterfaceToken(MessageParcel& data)
