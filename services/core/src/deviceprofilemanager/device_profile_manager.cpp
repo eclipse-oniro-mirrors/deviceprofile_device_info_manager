@@ -135,7 +135,8 @@ int32_t DeviceProfileManager::PutServiceProfileBatch(const std::vector<ServicePr
     for (const auto& serviceProfile : serviceProfiles) {
         int32_t putServiceResult = PutServiceProfile(serviceProfile);
         if (PutServiceProfile(serviceProfile) != DP_SUCCESS) {
-            HILOGE("PutServiceProfile fail, service: %s, errcode: %d!", serviceProfile.dump(), putServiceResult);
+            HILOGE("PutServiceProfile fail, service: %s, errcode: %d!", serviceProfile.dump().c_str(),
+                putServiceResult);
             continue;
         }
     }

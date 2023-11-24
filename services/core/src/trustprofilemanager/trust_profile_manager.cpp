@@ -936,7 +936,8 @@ int32_t TrustProfileManager::SetAccesserId(AccessControlProfile& profile)
         std::vector<ValueObject>{ValueObject(accesser.GetAccesserDeviceId()),
         ValueObject(accesser.GetAccesserUserId()), ValueObject(accesser.GetAccesserAccountId()),
         ValueObject(accesser.GetAccesserTokenId()), ValueObject(accesser.GetAccesserBundleName()),
-        ValueObject(accesser.GetAccesserHapSignature()), ValueObject(accesser.GetAccesserBindLevel())});
+        ValueObject(accesser.GetAccesserHapSignature()),
+        ValueObject(static_cast<int32_t>(accesser.GetAccesserBindLevel()))});
     if (resultSet == nullptr) {
         HILOGE("SetAccesserId::resultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
@@ -982,10 +983,11 @@ int32_t TrustProfileManager::SetAccesseeId(AccessControlProfile &profile)
     }
     Accessee accessee = profile.GetAccessee();
 	std::shared_ptr<ResultSet> resultSet = rdbStore_->Get(SELECT_ACCESSEE_TABLE_WHERE_ALL,
-        std::vector<ValueObject> {ValueObject(accessee.GetAccesseeDeviceId()), 
+        std::vector<ValueObject> {ValueObject(accessee.GetAccesseeDeviceId()),
         ValueObject(accessee.GetAccesseeUserId()), ValueObject(accessee.GetAccesseeAccountId()),
         ValueObject(accessee.GetAccesseeTokenId()), ValueObject(accessee.GetAccesseeBundleName()),
-        ValueObject(accessee.GetAccesseeHapSignature()), ValueObject(accessee.GetAccesseeBindLevel())});
+        ValueObject(accessee.GetAccesseeHapSignature()),
+        ValueObject(static_cast<int32_t>(accessee.GetAccesseeBindLevel()))});
     if (resultSet == nullptr) {
         HILOGE("SetAccesserId::resultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
