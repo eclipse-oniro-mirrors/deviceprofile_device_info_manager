@@ -145,8 +145,26 @@ constexpr int32_t RDB_VERSION = 1;
 constexpr int32_t RDB_INIT_MAX_TIMES = 30;
 constexpr int32_t RDB_INIT_INTERVAL_TIME = 100000;
 /* TrustProfile Manager */
-constexpr int32_t INIT_VALUE_32 = -1;
-constexpr int64_t INIT_VALUE_64 = -1;
+const std::string DEVICEID_EQUAL_CONDITION = "deviceId = ?";
+const std::string ACCESSCONTROLID_EQUAL_CONDITION = "accessControlId = ?";
+const std::string ACCESSERID_EQUAL_CONDITION = "accesserId = ? ";
+const std::string ACCESSEEID_EQUAL_CONDITION = "accesseeId = ? ";
+constexpr int32_t ROWCNT_INIT = -1;
+constexpr int32_t RET_INIT = -1;
+constexpr int32_t ROWCOUNT_INIT = -1;
+constexpr int32_t CHANGEROWCNT_INIT = -1;
+constexpr int32_t COLUMNINDEX_INIT = -1;
+constexpr int32_t STATUS_INIT = 0;
+constexpr int32_t BINDTYPE_INIT = -1;
+constexpr int32_t BINDLEVEL_INIT = -1;
+constexpr int32_t DELETEROWS_INIT = -1;
+constexpr int32_t DELETE_ACCESSER_CONDITION = 1;
+constexpr int32_t DELETE_ACCESSEE_CONDITION = 1;
+constexpr int32_t DELETE_TRUST_CONDITION = 0;
+constexpr int64_t ROWID_INIT = -1;
+constexpr int64_t ACCESSERID_INIT = -1;
+constexpr int64_t ACCESSEEID_INIT = -1;
+constexpr int64_t ACCESSCONTROLID_INIT = -1;
 const std::string CREATE_TURST_DEVICE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS trust_device_table\
 (\
     deviceId        TEXT PRIMARY KEY,\

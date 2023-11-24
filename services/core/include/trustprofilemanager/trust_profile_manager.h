@@ -47,6 +47,14 @@ public:
     int32_t GetTrustDeviceProfile(const std::string& deviceId, TrustDeviceProfile& profile);
     int32_t GetAllTrustDeviceProfile(std::vector<TrustDeviceProfile>& profile);
     int32_t GetAllAccessControlProfile(std::vector<AccessControlProfile>& profile);
+    int32_t GetAccessControlProfile(const std::map<std::string, std::string>& params,
+        std::vector<AccessControlProfile>& profile);
+    int32_t DeleteTrustDeviceProfile(const std::string& deviceId);
+    int32_t DeleteAccessControlProfile(int64_t accessControlId);
+
+private:
+    int32_t CreateTable();
+    int32_t CreateUniqueIndex();
     int32_t GetAccessControlProfile(const std::string& bundleName, int32_t bindType,
         int32_t status, std::vector<AccessControlProfile>& profile);
     int32_t GetAccessControlProfile(const std::string& bundleName,
@@ -57,26 +65,19 @@ public:
         const std::string& trustDeviceId, int32_t status, std::vector<AccessControlProfile>& profile);
     int32_t GetAccessControlProfile(int32_t userId, const std::string& accountId,
         std::vector<AccessControlProfile>& profile);
-    int32_t GetAccessControlProfileOnTokenAndDevice(int32_t accesserTokenId, const std::string& accesseeDeviceId,
+    int32_t GetAccessControlProfileByTokenId(int32_t accesserTokenId, const std::string& accesseeDeviceId,
         std::vector<AccessControlProfile>& profile);
-    int32_t GetAccessControlProfile(std::map<std::string, std::string> params,
-        std::vector<AccessControlProfile>& profile);
-    int32_t DeleteTrustDeviceProfile(const std::string& deviceId);
-    int32_t DeleteAccessControlProfile(int64_t accessControlId);
-private:
-    int32_t CreateTable();
-    int32_t CreateUniqueIndex();
-    int32_t AccessControlProfileToTrustDeviceProfile(const AccessControlProfile& accessControlProfile,
+    int32_t ConvertToTrustDeviceProfile(const AccessControlProfile& accessControlProfile,
         TrustDeviceProfile& trustDeviceProfile);
-    int32_t GetAccessControlProfileOnUserIdAndBundleName(std::shared_ptr<ResultSet> resultSet,
+    int32_t GetAclProfileByUserIdAndBundleName(std::shared_ptr<ResultSet> resultSet,
         int32_t userId, const std::string& bundleName, std::vector<AccessControlProfile>& profile);
-    int32_t GetAccessControlProfileOnUserIdAndAccountId(std::shared_ptr<ResultSet> resultSet,
+    int32_t GetAclProfileByUserIdAndAccountId(std::shared_ptr<ResultSet> resultSet,
         int32_t userId, const std::string& accountId, std::vector<AccessControlProfile>& profile);
-    int32_t GetAccessControlProfileOnTokenIdAndDeviceId(std::shared_ptr<ResultSet> resultSet,
+    int32_t GetAclProfileByTokenIdAndDeviceId(std::shared_ptr<ResultSet> resultSet,
         int32_t accesserTokenId, const std::string& accesseeDeviceId, std::vector<AccessControlProfile>& profile);
-    int32_t GetAccessControlProfileOnBundleName(std::shared_ptr<ResultSet> resultSet,
+    int32_t GetAclProfileByBundleName(std::shared_ptr<ResultSet> resultSet,
         const std::string& bundleName, std::vector<AccessControlProfile>& profile);
-    int32_t GetVectorAccessControlProfile(std::shared_ptr<ResultSet> resultSet,
+    int32_t ConvertToAccessControlProfiles(std::shared_ptr<ResultSet> resultSet,
         std::shared_ptr<ResultSet> accesserResultSet, std::shared_ptr<ResultSet> accesseeResultSet,
         std::vector<AccessControlProfile>& profile);
     int32_t PutAccesserProfile(const AccessControlProfile& profile);
@@ -89,40 +90,29 @@ private:
     int32_t UpdateTrustDeviceProfileNotify(const TrustDeviceProfile& oldProfile,
         const TrustDeviceProfile& newProfile);
     int32_t GetResultStatus(const std::string& trustDeviceId, int32_t& trustDeviceStatus);
-    int32_t GetAccesserAndAccesseeAndAccessControl(std::shared_ptr<ResultSet> resultSet,
+    int32_t GetAccessControlProfile(std::shared_ptr<ResultSet> resultSet,
         int64_t accesserId, int64_t accesseeId, std::vector<AccessControlProfile>& profile);
     int32_t DeleteAccessControlProfileCheck(std::shared_ptr<ResultSet> resultSet);
-    int32_t TrustResultSetToTrustDeviceProfile(std::shared_ptr<ResultSet> trustResultSet,
+    int32_t ConvertToTrustDeviceProfile(std::shared_ptr<ResultSet> trustResultSet,
         TrustDeviceProfile& trustDeviceProfile);
-    int32_t AccesserResultSetToAccesser(std::shared_ptr<ResultSet> accesserResultSet, Accesser& accesser);
-    int32_t AccesseeResultSetToAccessee(std::shared_ptr<ResultSet> accesseeResultSet, Accessee& accessee);
-    int32_t AccessControlResultSetToAccessControlProfile(std::shared_ptr<ResultSet> accessControlResultSet,
+    int32_t ConvertToAccesser(std::shared_ptr<ResultSet> accesserResultSet, Accesser& accesser);
+    int32_t ConvertToAccessee(std::shared_ptr<ResultSet> accesseeResultSet, Accessee& accessee);
+    int32_t ConvertToAccessControlProfile(std::shared_ptr<ResultSet> accessControlResultSet,
         AccessControlProfile& accessControlProfile);
     std::shared_ptr<ResultSet> GetResultSet(const std::string& sql, std::vector<ValueObject> condition);
-    int32_t SetAclId(AccessControlProfile& accessControlProfile);
-    int32_t GetAclOnUserAndBundleAndBindAndStauts(std::map<std::string, std::string> params,
-        std::vector<AccessControlProfile>& profile);
-    int32_t GetAclOnUserAndBundleAndDeviceIdAndStauts(std::map<std::string, std::string> params,
-        std::vector<AccessControlProfile>& profile);
-    int32_t GetAclOnBundleAndBindAndStauts(std::map<std::string, std::string> params,
-        std::vector<AccessControlProfile>& profile);
-    int32_t GetAclOnBundleAndDeviceIdAndStauts(std::map<std::string, std::string> params,
-        std::vector<AccessControlProfile>& profile);
-    int32_t GetAclOnUserAndAccount(std::map<std::string, std::string> params,
-        std::vector<AccessControlProfile>& profile);
-    int32_t GetAclVectorOnUserId(std::shared_ptr<ResultSet> resultSet, int64_t accesserId,
+    int32_t SetAccessControlProfileId(AccessControlProfile& accessControlProfile);
+    int32_t GetAccessControlProfiles(std::shared_ptr<ResultSet> resultSet, int64_t accesserId,
         int64_t accesseeId, int32_t userId, std::vector<AccessControlProfile>& profile);
-    int32_t GetAclVectorOnUserIdAndBundleName(std::shared_ptr<ResultSet> resultSet,
+    int32_t GetAccessControlProfiles(std::shared_ptr<ResultSet> resultSet,
         int64_t accesserId, int64_t accesseeId, int32_t userId, const std::string& bundleName,
         std::vector<AccessControlProfile>& profile);
-    int32_t GetAclVectorOnBundleName(std::shared_ptr<ResultSet> resultSet, int64_t accesserId,
+    int32_t GetAccessControlProfiles(std::shared_ptr<ResultSet> resultSet, int64_t accesserId,
         int64_t accesseeId, const std::string& bundleName, std::vector<AccessControlProfile>& profile);
     int32_t DeleteAccesserCheck(int64_t accesserId);
     int32_t DeleteAccesseeCheck(int64_t accesseeId);
     int32_t DeleteTrustDeviceCheck(const AccessControlProfile& profile);
     int32_t UpdateAclCheck(const AccessControlProfile& profile);
-    int32_t GetAclOnTokenIdAndDeviceId(std::map<std::string, std::string> params,
-        std::vector<AccessControlProfile>& profile);
+
 private:
     std::shared_ptr<IRdbAdapter> rdbStore_;
     std::mutex rdbMutex_;
