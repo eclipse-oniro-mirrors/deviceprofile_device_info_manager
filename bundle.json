@@ -115,6 +115,7 @@
         ],
         "test": [
           "//foundation/deviceprofile/device_info_manager/old/services/core:unittest",
+          "//foundation/deviceprofile/device_info_manager/services/core:unittest",
           "//foundation/deviceprofile/device_info_manager/old/services/core/test/fuzztest:fuzztest"
         ]
       }
