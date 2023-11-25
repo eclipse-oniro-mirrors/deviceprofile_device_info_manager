@@ -85,7 +85,7 @@ int32_t ProfileListenerProxy::OnDeviceProfileAdd(const DeviceProfile& profile)
         return ERR_FLATTEN_OBJECT;
     }
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_ADD), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_ADD), data, reply);
     return DP_SUCCESS;
 }
 
