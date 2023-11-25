@@ -409,7 +409,6 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const SyncOptions &syncOptions,
         HILOGE("Params is invalid!");
         return DP_INVALID_PARAMS;
     }
-    // syncProfileCallback_ = iface_cast<ISyncCompletedCallback>(syncCompletedCallback);
     HILOGI("SyncDeviceProfile start!");
     std::vector<std::string> onlineDevices = ProfileUtils::FilterOnlineDevices(syncOptions.GetDeviceList());
     if (onlineDevices.empty()) {
