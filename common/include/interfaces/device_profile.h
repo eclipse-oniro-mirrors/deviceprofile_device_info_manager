@@ -79,9 +79,9 @@ private:
     std::string serialNumberId_;
     int64_t storageCapability_;
     std::string osSysCap_;
-    uint32_t osApiLevel_;
+    int32_t osApiLevel_;
     std::string osVersion_;
-    uint32_t osType_;
+    int32_t osType_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

@@ -54,12 +54,12 @@ void TrustDeviceProfile::SetDeviceIdHash(const std::string& deviceIdHash)
     deviceIdHash_ = deviceIdHash;
 }
 
-uint32_t TrustDeviceProfile::GetStatus() const
+int32_t TrustDeviceProfile::GetStatus() const
 {
     return status_;
 }
 
-void TrustDeviceProfile::SetStatus(uint32_t status)
+void TrustDeviceProfile::SetStatus(int32_t status)
 {
     status_ = status;
 }
@@ -69,7 +69,7 @@ bool TrustDeviceProfile::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, String, deviceId_, false);
     WRITE_HELPER_RET(parcel, Uint32, deviceIdType_, false);
     WRITE_HELPER_RET(parcel, String, deviceIdHash_, false);
-    WRITE_HELPER_RET(parcel, Uint32, status_, false);
+    WRITE_HELPER_RET(parcel, Int32, status_, false);
     return true;
 }
 
@@ -78,7 +78,7 @@ bool TrustDeviceProfile::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, String, deviceId_, false);
     READ_HELPER_RET(parcel, Uint32, deviceIdType_, false);
     READ_HELPER_RET(parcel, String, deviceIdHash_, false);
-    READ_HELPER_RET(parcel, Uint32, status_, false);
+    READ_HELPER_RET(parcel, Int32, status_, false);
     return true;
 }
 

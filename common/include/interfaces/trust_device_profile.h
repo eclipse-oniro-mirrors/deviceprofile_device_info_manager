@@ -28,7 +28,7 @@ public:
         : deviceId_(""),
         deviceIdType_((uint32_t)DeviceIdType::MIN),
         deviceIdHash_(""),
-        status_((uint32_t)Status::MIN)
+        status_((int32_t)Status::MIN)
     {}
     ~TrustDeviceProfile() = default;
 
@@ -38,8 +38,8 @@ public:
     void SetDeviceIdType(int32_t deviceType);
     std::string GetDeviceIdHash() const;
     void SetDeviceIdHash(const std::string& deviceIdHash);
-    uint32_t GetStatus() const;
-    void SetStatus(uint32_t status);
+    int32_t GetStatus() const;
+    void SetStatus(int32_t status);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     std::string dump() const override;
@@ -48,7 +48,7 @@ private:
     std::string deviceId_;
     uint32_t deviceIdType_;
     std::string deviceIdHash_;
-    uint32_t status_;
+    int32_t status_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

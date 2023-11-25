@@ -35,7 +35,7 @@ public:
         bindType_(static_cast<uint32_t>(BindType::MIN)),
         authenticationType_(static_cast<uint32_t>(AuthenticationType::MIN)),
         bindLevel_(static_cast<uint32_t>(BindLevel::MIN)),
-        status_(static_cast<uint32_t>(Status::MIN)),
+        status_(static_cast<int32_t>(Status::MIN)),
         validPeriod_(-1),
         lastAuthTime_(-1),
         trustDeviceId_(""),
