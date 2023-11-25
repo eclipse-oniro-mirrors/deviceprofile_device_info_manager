@@ -57,6 +57,7 @@ public:
     int32_t GetSyncListeners(std::map<std::string, sptr<IRemoteObject>>& syncListeners);
     int32_t RemoveSyncListeners(std::map<std::string, sptr<IRemoteObject>> syncListeners);
     int32_t RemoveSyncListener(const std::string& caller);
+    int32_t RemoveSyncListener(sptr<IRemoteObject> syncListener);
 
 private:
     int32_t RefreshDeviceProfileCache(const std::vector<DeviceProfile>& deviceProfiles);

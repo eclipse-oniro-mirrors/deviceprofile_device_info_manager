@@ -38,11 +38,16 @@ SyncSubscriberDeathRecipient::~SyncSubscriberDeathRecipient()
 void SyncSubscriberDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
 {
     HILOGI("called");
-    if (remote == nullptr || remote->GetObjectDescriptor().size() == 0 ||
-        remote->GetObjectDescriptor().size() > MAX_STRING_LEN) {
-        HILOGE("Param is invalid");
+    if (remote == nullptr) {
+        HILOGE("remote is nullptr!");
         return;
     }
+    sptr<IRemoteObject> diedRemote = remote.promote();
+    if (diedRemote == nullptr) {
+        HILOGE("diedRemote is nullptr!");
+        return;
+    }
+    ProfileCache::GetInstance().RemoveSyncListener();
 }
 } // namespace DeviceProfile
 } // namespace OHOS

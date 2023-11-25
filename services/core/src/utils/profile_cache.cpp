@@ -14,6 +14,7 @@
  */
 
 #include <cinttypes>
+#include <algorithm>
 #include "datetime_ex.h"
 
 #include "profile_cache.h"
@@ -413,6 +414,30 @@ int32_t ProfileCache::RemoveSyncListener(const std::string& caller)
         syncListenerMap_.erase(caller);
     }
     return DP_SUCCESS;
+}
+
+int32_t ProfileCache::RemoveSyncListener(sptr<IRemoteObject> syncListener)
+{
+    if (syncListener == nullptr) {
+        HILOGE("syncListener is nullptr!");
+        return DP_INVALID_PARAMS;
+    }
+    {
+        std::lock_guard<std::mutex> lock(syncListenerMutex_);
+        auto iter = std::find_if(syncListenerMap_.begin(), syncListenerMap_.end(), [&](
+            const std::pair<std::string, sptr<IRemoteObject>> &item)->bool {
+            return item.second == syncListener;
+        });
+        if (iter == syncListenerMap_.end()) {
+            HILOGE("syncListener is not exist!");
+            return DP_NOT_FOUND_FAIL;
+        }
+        DHLOGI("RemoveSyncListener remote procName = %{public}s", iter->first.c_str());
+        if (iter->second != nullptr) {
+            iter->second->RemoveDeathRecipient(syncListenerDeathRecipient_);
+        }
+        syncListenerMap_.erase(iter);
+    }
 }
 } // namespace DeviceProfile
 } // namespace OHOS
