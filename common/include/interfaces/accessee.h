@@ -33,7 +33,7 @@ public:
         accesseeTokenId_(-1),
         accesseeBundleName_(""),
         accesseeHapSignature_(""),
-        accesseeBindLevel_((uint32_t)BindLevel::MIN)
+        accesseeBindLevel_(static_cast<uint32_t>(BindLevel::MIN))
     {}
     ~Accessee() = default;
 

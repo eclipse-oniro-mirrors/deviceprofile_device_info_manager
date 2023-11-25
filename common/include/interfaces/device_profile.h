@@ -27,7 +27,7 @@ public:
     DeviceProfile()
         : deviceId_(""),
         deviceTypeName_(""),
-        deviceTypeId_(-1),
+        deviceTypeId_(0),
         deviceName_(""),
         manufactureName_(""),
         deviceModel_(""),

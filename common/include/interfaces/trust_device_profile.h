@@ -26,9 +26,9 @@ class TrustDeviceProfile : public DpParcel {
 public:
     TrustDeviceProfile()
         : deviceId_(""),
-        deviceIdType_((uint32_t)DeviceIdType::MIN),
+        deviceIdType_(static_cast<uint32_t>(DeviceIdType::MIN)),
         deviceIdHash_(""),
-        status_((int32_t)Status::MIN)
+        status_(static_cast<int32_t>(Status::MIN))
     {}
     ~TrustDeviceProfile() = default;
 

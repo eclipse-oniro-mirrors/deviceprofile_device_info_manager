@@ -33,7 +33,7 @@ public:
         accesserTokenId_(-1),
         accesserBundleName_(""),
         accesserHapSignature_(""),
-        accesserBindLevel_((uint32_t)BindLevel::MIN)
+        accesserBindLevel_(static_cast<uint32_t>(BindLevel::MIN))
     {}
     ~Accesser() = default;
 

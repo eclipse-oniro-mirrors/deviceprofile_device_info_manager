@@ -467,7 +467,7 @@ int32_t ProfileUtils::EntriesToDeviceProfile(std::map<std::string, std::string> 
     if (IsPropertyValid(propertiesMap, SERIAL_NUMBER_ID, MAX_STRING_LEN)) {
         profile.SetSerialNumberId(propertiesMap[SERIAL_NUMBER_ID]);
     }
-    if (IsPropertyValid(propertiesMap, STORAGE_CAPACITY, MIN_STORAGE_LEN, MAX_STORAGE_LEN)) {
+    if (IsPropertyValid(propertiesMap, STORAGE_CAPACITY, MIN_STORAGE, MAX_STORAGE)) {
         int64_t storageCapability = std::atoi(propertiesMap[STORAGE_CAPACITY].c_str());
         profile.SetStorageCapability(storageCapability);
     }
