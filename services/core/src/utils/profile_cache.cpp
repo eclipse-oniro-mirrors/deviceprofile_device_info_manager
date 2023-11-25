@@ -424,8 +424,8 @@ int32_t ProfileCache::RemoveSyncListener(sptr<IRemoteObject> syncListener)
     }
     {
         std::lock_guard<std::mutex> lock(syncListenerMutex_);
-        auto iter = std::find_if(syncListenerMap_.begin(), syncListenerMap_.end(), [&](
-            const std::pair<std::string, sptr<IRemoteObject>> &item)->bool {
+        auto iter = std::find_if(syncListenerMap_.begin(), syncListenerMap_.end(), [=](
+            const std::pair<std::string, sptr<IRemoteObject>>& item)->bool {
             return item.second == syncListener;
         });
         if (iter == syncListenerMap_.end()) {
