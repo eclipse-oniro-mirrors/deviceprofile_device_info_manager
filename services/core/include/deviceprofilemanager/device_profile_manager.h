@@ -64,7 +64,6 @@ private:
     std::mutex isAdapterLoadLock_;
     std::mutex dpStoreMutex_;
     std::mutex dpSyncMutex_;
-    // sptr<ISyncCompletedCallback> syncProfileCallback_;
     std::shared_ptr<IKVAdapter> deviceProfileStore_ = nullptr;
     std::shared_ptr<IDPSyncAdapter> dpSyncAdapter_;
 };
