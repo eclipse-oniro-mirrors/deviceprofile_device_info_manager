@@ -134,8 +134,8 @@ int32_t DeviceProfileManager::PutServiceProfileBatch(const std::vector<ServicePr
     HILOGE("PutServiceProfileBatch call!");
     for (const auto& serviceProfile : serviceProfiles) {
         int32_t putServiceResult = PutServiceProfile(serviceProfile);
-        if (PutServiceProfile(serviceProfile) != DP_SUCCESS) {
-            HILOGE("PutServiceProfile fail, service: %s, errcode: %d!", serviceProfile.dump().c_str(),
+        if (putServiceResult != DP_SUCCESS) {
+            HILOGE("PutServiceProfile fail, serviceProfile: %s, errcode: %d!", serviceProfile.dump().c_str(),
                 putServiceResult);
             continue;
         }
@@ -181,7 +181,7 @@ int32_t DeviceProfileManager::PutCharacteristicProfileBatch(const std::vector<Ch
     for (const auto& charProfile : charProfiles) {
         int32_t putCharacteristicResult = PutCharacteristicProfile(charProfile);
         if (putCharacteristicResult != DP_SUCCESS) {
-            HILOGE("PutServiceProfile fail, service: %s, errcode: %d!", charProfile.dump().c_str(),
+            HILOGE("PutCharacteristic fail, charProfile: %s, errcode: %d!", charProfile.dump().c_str(),
                 putCharacteristicResult);
             continue;
         }
