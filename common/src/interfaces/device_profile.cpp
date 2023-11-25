@@ -104,12 +104,12 @@ void DeviceProfile::SetStorageCapability(int64_t storageCapability)
     storageCapability_ = storageCapability;
 }
 
-uint32_t DeviceProfile::GetOsApiLevel() const
+int32_t DeviceProfile::GetOsApiLevel() const
 {
     return osApiLevel_;
 }
 
-void DeviceProfile::SetOsApiLevel(uint32_t osApiLevel)
+void DeviceProfile::SetOsApiLevel(int32_t osApiLevel)
 {
     osApiLevel_ = osApiLevel;
 }
@@ -124,12 +124,12 @@ void DeviceProfile::SetOsVersion(const std::string& osVersion)
     osVersion_ = osVersion;
 }
 
-uint32_t DeviceProfile::GetOsType() const
+int32_t DeviceProfile::GetOsType() const
 {
     return osType_;
 }
 
-void DeviceProfile::SetOsType(uint32_t osType)
+void DeviceProfile::SetOsType(int32_t osType)
 {
     osType_ = osType;
 }
@@ -155,9 +155,9 @@ bool DeviceProfile::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, String, serialNumberId_, false);
     WRITE_HELPER_RET(parcel, Int64, storageCapability_, false);
     WRITE_HELPER_RET(parcel, String, osSysCap_, false);
-    WRITE_HELPER_RET(parcel, Uint32, osApiLevel_, false);
+    WRITE_HELPER_RET(parcel, Int32, osApiLevel_, false);
     WRITE_HELPER_RET(parcel, String, osVersion_, false);
-    WRITE_HELPER_RET(parcel, Uint32, osType_, false);
+    WRITE_HELPER_RET(parcel, Int32, osType_, false);
     return true;
 }
 
@@ -172,9 +172,9 @@ bool DeviceProfile::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, String, serialNumberId_, false);
     READ_HELPER_RET(parcel, Int64, storageCapability_, false);
     READ_HELPER_RET(parcel, String, osSysCap_, false);
-    READ_HELPER_RET(parcel, Uint32, osApiLevel_, false);
+    READ_HELPER_RET(parcel, Int32, osApiLevel_, false);
     READ_HELPER_RET(parcel, String, osVersion_, false);
-    READ_HELPER_RET(parcel, Uint32, osType_, false);
+    READ_HELPER_RET(parcel, Int32, osType_, false);
     return true;
 }
 

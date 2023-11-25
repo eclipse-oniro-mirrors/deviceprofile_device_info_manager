@@ -565,8 +565,8 @@ std::string ProfileUtils::toString(const std::u16string& str16)
 bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
     int32_t maxValue)
 {
-    int32_t propertyLength = propertyMap.at(property).length();
-    if (propertyMap.count(property) != 0 && 0 < propertyLength && propertyLength < maxValue) {
+    if (propertyMap.count(property) != 0 && 0 < propertyMap.at(property).length() &&
+        propertyMap.at(property).length() < maxValue) {
         return true;
     }
     return false;
@@ -575,8 +575,8 @@ bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& pro
 bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
    int32_t minValue, int32_t maxValue)
 {
-    int32_t value = std::atoi(propertyMap.at(property).c_str());
-    if (propertyMap.count(property) != 0 && minValue < value && value < maxValue) {
+    if (propertyMap.count(property) != 0 && minValue < std::atoi(propertyMap.at(property).c_str()) &&
+        std::atoi(propertyMap.at(property).c_str()) < maxValue) {
         return true;
     }
     return false;
@@ -585,8 +585,8 @@ bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& pro
 bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
    uint32_t minValue, uint32_t maxValue)
 {
-    uint32_t value = std::atoi(propertyMap.at(property).c_str());
-    if (propertyMap.count(property) != 0 && minValue < value && value < maxValue) {
+    if (propertyMap.count(property) != 0 && minValue < std::atoi(propertyMap.at(property).c_str()) &&
+        std::atoi(propertyMap.at(property).c_str()) < maxValue) {
         return true;
     }
     return false;
@@ -595,8 +595,8 @@ bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& pro
 bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
    int64_t minValue, int64_t maxValue)
 {
-    int64_t value = std::atoi(propertyMap.at(property).c_str());
-    if (propertyMap.count(property) != 0 && minValue < value && value < maxValue) {
+    if (propertyMap.count(property) != 0 && minValue < std::atoi(propertyMap.at(property).c_str()) &&
+        std::atoi(propertyMap.at(property).c_str()) < maxValue) {
         return true;
     }
     return false;
