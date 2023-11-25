@@ -179,9 +179,10 @@ int32_t DeviceProfileManager::PutCharacteristicProfileBatch(const std::vector<Ch
 {
     HILOGE("PutCharacteristicProfileBatch call!");
     for (const auto& charProfile : charProfiles) {
-        int32_t putServiceResult = PutCharacteristicProfile(charProfile);
-        if (putServiceResult != DP_SUCCESS) {
-            HILOGE("PutServiceProfile fail, service: %s, errcode: %d!", charProfile.dump(), putServiceResult);
+        int32_t putCharacteristicResult = PutCharacteristicProfile(charProfile);
+        if (putCharacteristicResult != DP_SUCCESS) {
+            HILOGE("PutServiceProfile fail, service: %s, errcode: %d!", charProfile.dump().c_str(),
+                putCharacteristicResult);
             continue;
         }
     }
