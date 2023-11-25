@@ -50,6 +50,7 @@ int32_t DeviceProfileManager::Init()
         initResult = deviceProfileStore_->Init();
     }
     HILOGI("Init finish, res: %d", initResult);
+    LoadDpSyncAdapter();
     return initResult;
 }
 
@@ -61,6 +62,7 @@ int32_t DeviceProfileManager::UnInit()
         deviceProfileStore_->UnInit();
         deviceProfileStore_ = nullptr;
     }
+    UnloadDpSyncAdapter();
     return DP_SUCCESS;
 }
 
@@ -399,7 +401,7 @@ int32_t DeviceProfileManager::GetAllCharacteristicProfile(std::vector<Characteri
     return DP_SUCCESS;
 }
 
-int32_t DeviceProfileManager::SyncDeviceProfile(const SyncOptions& syncOptions,
+int32_t DeviceProfileManager::SyncDeviceProfile(const SyncOptions &syncOptions,
     sptr<IRemoteObject> syncCompletedCallback)
 {
     HILOGI("call!");
@@ -407,30 +409,25 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const SyncOptions& syncOptions,
         HILOGE("Params is invalid!");
         return DP_INVALID_PARAMS;
     }
-    syncProfileCallback_ = iface_cast<ISyncCompletedCallback>(syncCompletedCallback);
+    // syncProfileCallback_ = iface_cast<ISyncCompletedCallback>(syncCompletedCallback);
     HILOGI("SyncDeviceProfile start!");
     std::vector<std::string> onlineDevices = ProfileUtils::FilterOnlineDevices(syncOptions.GetDeviceList());
-    std::vector<std::string> ohOnlineDevices;
     if (onlineDevices.empty()) {
         HILOGE("Params is invalid!");
         return DP_INVALID_PARAMS;
     }
+    std::vector<std::string> openHarmonyDevices;
     for (auto it = onlineDevices.begin(); it != onlineDevices.end(); it++) {
         std::string deviceId = *it;
-        if (DPDetectVersion::DetectRemoteDPVersion(deviceId) == DP_SUCCESS) {
-            if (RunloadedFunction(deviceId) != DP_SUCCESS) {
-                HILOGE("Run loaded Function failed");
-                return DP_RUN_LOADED_FUNCTION_FAILED;
-            }
-        } else {
-            ohOnlineDevices.push_back(deviceId);
+        if (RunloadedFunction(deviceId, syncCompletedCallback) != DP_SUCCESS) {
+            openHarmonyDevices.push_back(deviceId);
         }
     }
     std::u16string callerDescriptor = syncCompletedCallback->GetObjectDescriptor();
     ProfileCache::GetInstance().AddSyncListener(callerDescriptor, syncCompletedCallback);
     {
         std::lock_guard<std::mutex> lock(dpStoreMutex_);
-        int32_t syncResult = deviceProfileStore_->Sync(ohOnlineDevices, syncOptions.GetSyncMode());
+        int32_t syncResult = deviceProfileStore_->Sync(openHarmonyDevices, syncOptions.GetSyncMode());
         if (syncResult != DP_SUCCESS) {
             HILOGI("SyncDeviceProfile fail, res: %d!", syncResult);
             return DP_SYNC_DEVICE_FAIL;
@@ -501,22 +498,15 @@ void DeviceProfileManager::UnloadDpSyncAdapter()
     }
 }
 
-int32_t DeviceProfileManager::RunloadedFunction(std::string deviceId)
+int32_t DeviceProfileManager::RunloadedFunction(std::string deviceId, sptr<IRemoteObject> syncCompletedCallback)
 {
-    if (LoadDpSyncAdapter()) {
-        int32_t errCode = dpSyncAdapter_->Initialize();
-        if (errCode != DP_SUCCESS) {
-            HILOGI("init dp sync adapter failed");
-            return DP_SYNC_INIT_FAILED;
-        }
+    std::lock_guard<std::mutex> lock(dpSyncMutex_);
+    if (isAdapterSoLoaded_ && dpSyncAdapter_.DetectRemoteDPVersion(deviceId) != DP_SUCCESS) {
         const std::list<std::string> deviceIdList = { deviceId };
-        {
-            std::lock_guard<std::mutex> lock(dpSyncMutex_);
-            errCode = dpSyncAdapter_->SyncProfile(deviceIdList, syncProfileCallback_);
-            if (errCode != DP_SUCCESS) {
-                HILOGI("sync profile failed");
-                return DP_SYNC_PROFILE_FAILED;
-            }
+        int32_t errCode = dpSyncAdapter_->SyncProfile(deviceIdList, syncCompletedCallback);
+        if (errCode != DP_SUCCESS) {
+            HILOGI("sync profile failed");
+            return DP_SYNC_PROFILE_FAILED;
         }
         return DP_SUCCESS;
     } else {
