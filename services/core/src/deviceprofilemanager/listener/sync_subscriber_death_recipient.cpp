@@ -22,7 +22,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "KvStoreDeathRecipient";
+    const std::string TAG = "SyncSubscriberDeathRecipient";
 }
 
 SyncSubscriberDeathRecipient::SyncSubscriberDeathRecipient()
@@ -43,7 +43,6 @@ void SyncSubscriberDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remot
         HILOGE("Param is invalid");
         return;
     }
-    ProfileCache::GetInstance().RemoveSyncListener(remote->GetObjectDescriptor());
 }
 } // namespace DeviceProfile
 } // namespace OHOS
