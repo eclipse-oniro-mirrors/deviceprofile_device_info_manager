@@ -59,7 +59,7 @@ public:
 private:
     bool LoadDpSyncAdapter();
     void UnloadDpSyncAdapter();
-    int32_t RunloadedFunction(std::string deviceId, sptr<IRemoteObject> syncCompletedCallbac);
+    int32_t RunloadedFunction(std::string deviceId, sptr<IRemoteObject> syncCompletedCallback);
     bool isAdapterSoLoaded_ = false;
     std::mutex isAdapterLoadLock_;
     std::mutex dpStoreMutex_;
