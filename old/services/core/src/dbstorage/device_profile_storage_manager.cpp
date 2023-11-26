@@ -22,6 +22,7 @@
 #include "device_profile_log.h"
 #include "device_profile_utils.h"
 #include "dp_device_manager.h"
+#include "dp_radar_helper.h"
 #include "hisysevent.h"
 #include "hitrace_meter.h"
 #include "sync_coordinator.h"
@@ -172,6 +173,18 @@ int32_t DeviceProfileStorageManager::PutDeviceProfile(const ServiceCharacteristi
             profileItems_[keys[i]] = values[i];
         }
     }
+    struct RadarInfo info = {
+        .funcName = "PutDeviceProfile",
+        .stageRes = (errCode == ERR_OK) ?
+            static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL),
+        .toCallPkg = kvNAME,
+        .hostName = DpRadarHelper::GetInstance().GetHostNameByServiceId(serviceId),
+        .localUdid = localUdid_,
+        .errCode = errCode,
+    };
+    if (!DpRadarHelper::GetInstance().ReportAddData(info)) {
+        HILOGE("ReportAddData failed");
+    }
     return errCode;
 }
 
@@ -207,6 +220,18 @@ int32_t DeviceProfileStorageManager::GetDeviceProfile(const std::string& udid,
     } else {
         autoLock.unlock();
         result = onlineSyncTbl_->GetDeviceProfile(key, value);
+    }
+    struct RadarInfo info = {
+        .funcName = "GetDeviceProfile",
+        .stageRes = (result == ERR_OK) ?
+            static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL),
+        .toCallPkg = kvNAME,
+        .hostName = DpRadarHelper::GetInstance().GetHostNameByServiceId(serviceId),
+        .localUdid = localUdid_,
+        .errCode = result,
+    };
+    if (!DpRadarHelper::GetInstance().ReportGetData(info)) {
+        HILOGE("ReportGetData failed");
     }
     profile.SetServiceId(serviceId);
     profile.SetCharacteristicProfileJson(value);
@@ -262,6 +287,12 @@ int32_t DeviceProfileStorageManager::DeleteDeviceProfile(const std::string& serv
     std::string servicesValue = servicesJson_.dump();
     int32_t errCode = ERR_OK;
     std::string serviceKey = GenerateKey(localUdid_, serviceId, KeyType::SERVICE);
+    struct RadarInfo info = {
+        .funcName = "DeleteDeviceProfile",
+        .toCallPkg = kvNAME,
+        .hostName = DpRadarHelper::GetInstance().GetHostNameByServiceId(serviceId),
+        .localUdid = localUdid_,
+    };
     if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_SUCCEED) {
         errCode = onlineSyncTbl_->DeleteDeviceProfile(serviceKey);
         if (errCode != ERR_OK) {
@@ -269,12 +300,19 @@ int32_t DeviceProfileStorageManager::DeleteDeviceProfile(const std::string& serv
             return errCode;
         }
         errCode = onlineSyncTbl_->PutDeviceProfile(servicesKey, servicesValue);
+        info.stageRes = (errCode == ERR_OK) ?
+            static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL);
+        info.errCode = errCode;
         if (errCode != ERR_OK) {
             HILOGW("update services failed, errorCode = %{public}d", errCode);
         }
     } else {
+        info.stageRes = static_cast<int32_t>(StageRes::STAGE_SUCC);
         profileItems_.erase(serviceKey);
         profileItems_[servicesKey] = std::move(servicesValue);
+    }
+    if (!DpRadarHelper::GetInstance().ReportDeleteData(info)) {
+        HILOGE("ReportDeleteData failed");
     }
     return errCode;
 }
@@ -348,6 +386,17 @@ int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOp
         SyncCoordinator::GetInstance().SetSyncTrigger(false);
         std::vector<std::string> devicesVector(std::vector<std::string> { devicesList.begin(), devicesList.end() });
         int32_t result = onlineSyncTbl_->SyncDeviceProfile(devicesVector, syncOptions.GetSyncMode());
+        struct RadarInfo info = {
+            .stageRes = (result == ERR_OK) ?
+                static_cast<int32_t>(StageRes::STAGE_IDLE) : static_cast<int32_t>(StageRes::STAGE_FAIL),
+            .bizState = (result == ERR_OK) ?
+                static_cast<int32_t>(BizState::BIZ_STATE_START) : static_cast<int32_t>(BizState::BIZ_STATE_END),
+            .peerUdid = DpRadarHelper::GetInstance().GetStringUdidList(devicesList),
+            .errCode = result,
+        };
+        if (!DpRadarHelper::GetInstance().ReportSyncData(info)) {
+            HILOGE("ReportSyncData failed");
+        }
         if (result != ERR_OK) {
             ReportFaultEvent(DP_SYNC_FAILED, FAULT_CODE_KEY, result);
             HILOGE("sync failed result : %{public}d", result);

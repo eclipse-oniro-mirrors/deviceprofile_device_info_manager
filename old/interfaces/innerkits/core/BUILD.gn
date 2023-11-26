@@ -20,6 +20,7 @@ config("distributed_device_profile_client_config") {
   include_dirs = [
     "include",
     "${old_device_profile_path}/common/include",
+    "${device_profile_path}/radar/include",
     "//third_party/json/include",
   ]
 }
@@ -54,6 +55,8 @@ ohos_shared_library("distributed_device_profile_client") {
     ":distributed_device_profile_client_config",
     "${old_device_profile_test}/resource:coverage_flags",
   ]
+
+  deps = [ "${device_profile_path}/radar:deviceprofileradar" ]
 
   external_deps = [
     "c_utils:utils",
