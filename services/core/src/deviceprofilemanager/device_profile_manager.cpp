@@ -500,12 +500,11 @@ void DeviceProfileManager::UnloadDpSyncAdapter()
 int32_t DeviceProfileManager::RunloadedFunction(std::string deviceId, sptr<IRemoteObject> syncCompletedCallback)
 {
     std::lock_guard<std::mutex> lock(dpSyncMutex_);
-    if (isAdapterSoLoaded_ && dpSyncAdapter_->DetectRemoteDPVersion(deviceId) != DP_SUCCESS) {
+    if (isAdapterSoLoaded_ && dpSyncAdapter_->DetectRemoteDPVersion(deviceId) == DP_SUCCESS) {
         const std::list<std::string> deviceIdList = { deviceId };
         int32_t errCode = dpSyncAdapter_->SyncProfile(deviceIdList, syncCompletedCallback);
         if (errCode != DP_SUCCESS) {
             HILOGI("sync profile failed");
-            return DP_SYNC_PROFILE_FAILED;
         }
         return DP_SUCCESS;
     } else {
