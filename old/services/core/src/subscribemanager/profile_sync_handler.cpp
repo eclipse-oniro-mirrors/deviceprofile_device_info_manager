@@ -18,6 +18,7 @@
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
 #include "device_profile_utils.h"
+#include "dp_radar_helper.h"
 #include "subscribe_manager.h"
 
 namespace OHOS {
@@ -50,6 +51,15 @@ void ProfileSyncHandler::SyncCompleted(const std::map<std::string, Status>& resu
 
 void ProfileSyncHandler::NotifySyncCompleted(const SyncResult& syncResults)
 {
+    struct RadarInfo info = {
+        .funcName = "NotifySyncCompleted",
+        .stageRes = static_cast<int32_t>(StageRes::STAGE_SUCC),
+        .bizState = static_cast<int32_t>(BizState::BIZ_STATE_END),
+        .hostName = kvNAME,
+    };
+    if (!DpRadarHelper::GetInstance().ReportSyncDataCb(info)) {
+        HILOGE("ReportSyncDataCb failed");
+    }
     {
         std::lock_guard<std::mutex> autoLock(notifierLock_);
         for (const auto& [notifier, _] : profileEventSubscribeInfos_) {

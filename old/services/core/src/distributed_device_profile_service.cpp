@@ -25,6 +25,7 @@
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
 #include "dp_device_manager.h"
+#include "dp_radar_helper.h"
 #include "hitrace_meter.h"
 #include "if_system_ability_manager.h"
 #include "ipc_object_proxy.h"
@@ -92,8 +93,20 @@ bool DistributedDeviceProfileService::Init()
 
 int32_t DistributedDeviceProfileService::PutDeviceProfile(const ServiceCharacteristicProfile& profile)
 {
-    if (!AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_W,
-        profile.GetServiceId())) {
+    bool ret = AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_W,
+        profile.GetServiceId());
+    struct RadarInfo info = {
+        .funcName = "PutDeviceProfile",
+        .stageRes = ret ?
+            static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL),
+        .bizState = ret ?
+            static_cast<int32_t>(BizState::BIZ_STATE_START) : static_cast<int32_t>(BizState::BIZ_STATE_END),
+        .errCode = ERR_DP_PERMISSION_DENIED,
+    };
+    if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(info)) {
+        HILOGE("ReportSaCheckAuth failed");
+    }
+    if (!ret) {
         return ERR_DP_PERMISSION_DENIED;
     }
     return DeviceProfileStorageManager::GetInstance().PutDeviceProfile(profile);
@@ -109,8 +122,20 @@ void DistributedDeviceProfileService::DeviceOnline()
 int32_t DistributedDeviceProfileService::GetDeviceProfile(const std::string& udid, const std::string& serviceId,
     ServiceCharacteristicProfile& profile)
 {
-    if (!AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_R,
-        serviceId)) {
+    bool ret = AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_R,
+        serviceId);
+    struct RadarInfo info = {
+        .funcName = "GetDeviceProfile",
+        .stageRes = ret ?
+            static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL),
+        .bizState = ret ?
+            static_cast<int32_t>(BizState::BIZ_STATE_START) : static_cast<int32_t>(BizState::BIZ_STATE_END),
+        .errCode = ERR_DP_PERMISSION_DENIED,
+    };
+    if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(info)) {
+        HILOGE("ReportSaCheckAuth failed");
+    }
+    if (!ret) {
         return ERR_DP_PERMISSION_DENIED;
     }
     return DeviceProfileStorageManager::GetInstance().GetDeviceProfile(udid, serviceId, profile);
@@ -118,8 +143,20 @@ int32_t DistributedDeviceProfileService::GetDeviceProfile(const std::string& udi
 
 int32_t DistributedDeviceProfileService::DeleteDeviceProfile(const std::string& serviceId)
 {
-    if (!AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_W,
-        serviceId)) {
+    bool ret = AuthorityManager::GetInstance().CheckServiceAuthority(AuthValue::AUTH_W,
+        serviceId);
+    struct RadarInfo info = {
+        .funcName = "DeleteDeviceProfile",
+        .stageRes = ret ?
+            static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL),
+        .bizState = ret ?
+            static_cast<int32_t>(BizState::BIZ_STATE_START) : static_cast<int32_t>(BizState::BIZ_STATE_END),
+        .errCode = ERR_DP_PERMISSION_DENIED,
+    };
+    if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(info)) {
+        HILOGE("ReportSaCheckAuth failed");
+    }
+    if (!ret) {
         return ERR_DP_PERMISSION_DENIED;
     }
     return DeviceProfileStorageManager::GetInstance().DeleteDeviceProfile(serviceId);
@@ -145,7 +182,19 @@ int32_t DistributedDeviceProfileService::UnsubscribeProfileEvents(const std::lis
 int32_t DistributedDeviceProfileService::SyncDeviceProfile(const SyncOptions& syncOptions,
     const sptr<IRemoteObject>& profileEventNotifier)
 {
-    if (!AuthorityManager::GetInstance().CheckInterfaceAuthority("sync")) {
+    bool ret = AuthorityManager::GetInstance().CheckInterfaceAuthority("sync");
+    struct RadarInfo info = {
+        .funcName = "SyncDeviceProfile",
+        .stageRes = ret ?
+            static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL),
+        .bizState = ret ?
+            static_cast<int32_t>(BizState::BIZ_STATE_START) : static_cast<int32_t>(BizState::BIZ_STATE_END),
+        .errCode = ERR_DP_PERMISSION_DENIED,
+    };
+    if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(info)) {
+        HILOGE("ReportSaCheckAuth failed");
+    }
+    if (!ret) {
         return ERR_DP_PERMISSION_DENIED;
     }
     return DeviceProfileStorageManager::GetInstance().SyncDeviceProfile(syncOptions, profileEventNotifier);

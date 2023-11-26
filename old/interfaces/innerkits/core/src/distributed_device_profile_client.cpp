@@ -30,6 +30,7 @@
 #include "callback/device_profile_load_callback.h"
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
+#include "dp_radar_helper.h"
 #include "event_handler.h"
 #include "event_runner.h"
 #include "idistributed_device_profile.h"
@@ -69,6 +70,18 @@ bool DistributedDeviceProfileClient::LoadDeviceProfileService()
     }
 
     int32_t ret = samgrProxy->LoadSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, loadCallback);
+    struct RadarInfo info = {
+        .funcName = "LoadDeviceProfileService",
+        .stageRes = (ret == ERR_OK) ?
+            static_cast<int32_t>(StageRes::STAGE_IDLE) : static_cast<int32_t>(StageRes::STAGE_FAIL),
+        .bizState = (ret == ERR_OK) ?
+            static_cast<int32_t>(BizState::BIZ_STATE_START) : static_cast<int32_t>(BizState::BIZ_STATE_END),
+        .toCallPkg = SAMAGRNAME,
+        .errCode = ERR_DP_LOAD_SERVICE_ERR,
+    };
+    if (!DpRadarHelper::GetInstance().ReportLoadDpSa(info)) {
+        HILOGE("ReportLoadDpSa failed");
+    }
     if (ret != ERR_OK) {
         HILOGE("Failed to Load systemAbility");
         return false;
@@ -86,6 +99,14 @@ bool DistributedDeviceProfileClient::LoadDeviceProfileService()
 void DistributedDeviceProfileClient::LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject)
 {
     HILOGI("DistributedDeviceProfileClient FinishStartSA");
+    struct RadarInfo info = {
+        .funcName = "LoadSystemAbilitySuccess",
+        .stageRes = static_cast<int32_t>(StageRes::STAGE_SUCC),
+        .hostName = SAMAGRNAME,
+    };
+    if (!DpRadarHelper::GetInstance().ReportLoadDpSaCb(info)) {
+        HILOGE("ReportLoadDpSaCb failed");
+    }
     std::lock_guard<std::mutex> lock(serviceLock_);
     if (dpDeathRecipient_ == nullptr) {
         dpDeathRecipient_ = sptr<IRemoteObject::DeathRecipient>(
@@ -100,6 +121,16 @@ void DistributedDeviceProfileClient::LoadSystemAbilitySuccess(const sptr<IRemote
 
 void DistributedDeviceProfileClient::LoadSystemAbilityFail()
 {
+    struct RadarInfo info = {
+        .funcName = "LoadSystemAbilityFail",
+        .stageRes = static_cast<int32_t>(StageRes::STAGE_FAIL),
+        .bizState = static_cast<int32_t>(BizState::BIZ_STATE_END),
+        .hostName = SAMAGRNAME,
+        .errCode = ERR_DP_LOAD_SERVICE_ERR,
+    };
+    if (!DpRadarHelper::GetInstance().ReportLoadDpSaCb(info)) {
+        HILOGE("ReportLoadDpSaCb failed");
+    }
     std::lock_guard<std::mutex> lock(serviceLock_);
     dpProxy_ = nullptr;
 }
@@ -278,6 +309,17 @@ sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfile
             return nullptr;
         }
         auto object = samgrProxy->CheckSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID);
+        struct RadarInfo info = {
+            .funcName = "GetDeviceProfileService",
+            .stageRes = (object != nullptr) ?
+                static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL),
+            .bizState = static_cast<int32_t>(BizState::BIZ_STATE_START),
+            .toCallPkg = SAMAGRNAME,
+            .errCode = ERR_DP_LOAD_SERVICE_ERR,
+        };
+        if (!DpRadarHelper::GetInstance().ReportCheckDpSa(info)) {
+            HILOGE("ReportCheckDpSa failed");
+        }
         if (object != nullptr) {
             HILOGI("get service succeeded");
             if (dpDeathRecipient_ == nullptr) {
