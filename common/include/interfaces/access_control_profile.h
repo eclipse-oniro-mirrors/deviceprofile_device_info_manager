@@ -35,7 +35,7 @@ public:
         bindType_(static_cast<uint32_t>(BindType::MIN)),
         authenticationType_(static_cast<uint32_t>(AuthenticationType::MIN)),
         bindLevel_(static_cast<uint32_t>(BindLevel::MIN)),
-        status_(static_cast<uint32_t>(Status::MIN)),
+        status_(static_cast<int32_t>(Status::MIN)),
         validPeriod_(-1),
         lastAuthTime_(-1),
         trustDeviceId_(""),
@@ -57,10 +57,10 @@ public:
     void SetSessionKey(const std::string& sessionKey);
     std::string GetTrustDeviceId() const;
     void SetTrustDeviceId(const std::string& trustDeviceId);
-    int32_t GetBindType() const;
-    void SetBindType(int32_t bindType);
-    int32_t GetAuthenticationType() const;
-    void SetAuthenticationType(int32_t authenticationType);
+    uint32_t GetBindType() const;
+    void SetBindType(uint32_t bindType);
+    uint32_t GetAuthenticationType() const;
+    void SetAuthenticationType(uint32_t authenticationType);
     int32_t GetStatus() const;
     void SetStatus(int32_t status);
     int32_t GetValidPeriod() const;
@@ -71,10 +71,10 @@ public:
     void SetAccesser(const Accesser &accesser);
     Accessee GetAccessee() const;
     void SetAccessee(const Accessee &accessee);
-    int32_t GetBindLevel() const;
-    void SetBindLevel(int32_t bindLevel);
-    int32_t GetDeviceIdType() const;
-    void SetDeviceIdType(int32_t deviceIdType);
+    uint32_t GetBindLevel() const;
+    void SetBindLevel(uint32_t bindLevel);
+    uint32_t GetDeviceIdType() const;
+    void SetDeviceIdType(uint32_t deviceIdType);
     std::string GetDeviceIdHash() const;
     void SetDeviceIdHash(const std::string& deviceIdHash);
     bool Marshalling(MessageParcel& parcel) const override;

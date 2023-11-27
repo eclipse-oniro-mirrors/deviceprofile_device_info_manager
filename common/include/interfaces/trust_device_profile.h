@@ -26,9 +26,9 @@ class TrustDeviceProfile : public DpParcel {
 public:
     TrustDeviceProfile()
         : deviceId_(""),
-        deviceIdType_((uint32_t)DeviceIdType::MIN),
+        deviceIdType_(static_cast<uint32_t>(DeviceIdType::MIN)),
         deviceIdHash_(""),
-        status_((uint32_t)Status::MIN)
+        status_(static_cast<int32_t>(Status::MIN))
     {}
     ~TrustDeviceProfile() = default;
 
@@ -48,7 +48,7 @@ private:
     std::string deviceId_;
     uint32_t deviceIdType_;
     std::string deviceIdHash_;
-    uint32_t status_;
+    int32_t status_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

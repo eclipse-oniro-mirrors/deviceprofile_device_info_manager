@@ -49,7 +49,7 @@ int32_t SubscribeProfileManager::UnInit()
 int32_t SubscribeProfileManager::NotifyProfileChange(ProfileType profileType, ChangeType changeType,
     const std::string& dbKey, const std::string& dbValue)
 {
-    int code = static_cast<int32_t>(profileType) * static_cast<int32_t>(changeType);
+    int32_t code = static_cast<int32_t>(profileType) * static_cast<int32_t>(changeType);
     if (funcsMap_.find(code) == funcsMap_.end()) {
         HILOGE("Params is invalid!");
         return DP_INVALID_PARAMS;

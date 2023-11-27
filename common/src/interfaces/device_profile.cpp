@@ -44,7 +44,7 @@ void DeviceProfile::SetDeviceTypeName(const std::string &deviceTypeName)
     deviceTypeName_ = deviceTypeName;
 }
 
-    int32_t DeviceProfile::GetDeviceTypeId() const
+int32_t DeviceProfile::GetDeviceTypeId() const
 {
     return deviceTypeId_;
 }
@@ -155,9 +155,9 @@ bool DeviceProfile::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, String, serialNumberId_, false);
     WRITE_HELPER_RET(parcel, Int64, storageCapability_, false);
     WRITE_HELPER_RET(parcel, String, osSysCap_, false);
-    WRITE_HELPER_RET(parcel, Uint32, osApiLevel_, false);
+    WRITE_HELPER_RET(parcel, Int32, osApiLevel_, false);
     WRITE_HELPER_RET(parcel, String, osVersion_, false);
-    WRITE_HELPER_RET(parcel, Uint32, osType_, false);
+    WRITE_HELPER_RET(parcel, Int32, osType_, false);
     return true;
 }
 
@@ -172,9 +172,9 @@ bool DeviceProfile::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, String, serialNumberId_, false);
     READ_HELPER_RET(parcel, Int64, storageCapability_, false);
     READ_HELPER_RET(parcel, String, osSysCap_, false);
-    READ_HELPER_RET(parcel, Uint32, osApiLevel_, false);
+    READ_HELPER_RET(parcel, Int32, osApiLevel_, false);
     READ_HELPER_RET(parcel, String, osVersion_, false);
-    READ_HELPER_RET(parcel, Uint32, osType_, false);
+    READ_HELPER_RET(parcel, Int32, osType_, false);
     return true;
 }
 

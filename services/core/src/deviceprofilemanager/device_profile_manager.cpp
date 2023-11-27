@@ -80,20 +80,22 @@ int32_t DeviceProfileManager::PutDeviceProfile(const DeviceProfile& deviceProfil
         return DP_INVALID_PARAMS;
     }
     HILOGI("PutDeviceProfile, deviceId: %s!", ProfileUtils::GetAnonyString(deviceProfile.GetDeviceId()).c_str());
-    std::lock_guard<std::mutex> lock(dpStoreMutex_);
-    if (deviceProfileStore_ == nullptr) {
-        HILOGE("deviceProfileStore is nullptr!");
-        return DP_INVALID_PARAMS;
-    }
     if (ProfileCache::GetInstance().IsDeviceProfileExist(deviceProfile)) {
         HILOGI("the profile is exist!");
         return DP_CACHE_EXIST;
     }
-    std::map<std::string, std::string> entries;
-    ProfileUtils::DeviceProfileToEntries(deviceProfile, entries);
-    if (deviceProfileStore_->PutBatch(entries) != DP_SUCCESS) {
-        HILOGE("PutDeviceProfile fail!");
-        return DP_PUT_KV_DB_FAIL;
+    {
+        std::lock_guard<std::mutex> lock(dpStoreMutex_);
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore is nullptr!");
+            return DP_INVALID_PARAMS;
+        }
+        std::map<std::string, std::string> entries;
+        ProfileUtils::DeviceProfileToEntries(deviceProfile, entries);
+        if (deviceProfileStore_->PutBatch(entries) != DP_SUCCESS) {
+            HILOGE("PutDeviceProfile fail!");
+            return DP_PUT_KV_DB_FAIL;
+        }
     }
     ProfileCache::GetInstance().AddDeviceProfile(deviceProfile);
     return DP_SUCCESS;
@@ -108,20 +110,22 @@ int32_t DeviceProfileManager::PutServiceProfile(const ServiceProfile& servicePro
     }
     HILOGI("PutServiceProfile, deviceId: %s, serviceName: %s!",
         ProfileUtils::GetAnonyString(serviceProfile.GetDeviceId()).c_str(), serviceProfile.GetServiceName().c_str());
-    std::lock_guard<std::mutex> lock(dpStoreMutex_);
-    if (deviceProfileStore_ == nullptr) {
-        HILOGE("deviceProfileStore is nullptr!");
-        return DP_INVALID_PARAMS;
-    }
     if (ProfileCache::GetInstance().IsServiceProfileExist(serviceProfile)) {
         HILOGW("the profile is exist!");
         return DP_CACHE_EXIST;
     }
-    std::map<std::string, std::string> entries;
-    ProfileUtils::ServiceProfileToEntries(serviceProfile, entries);
-    if (deviceProfileStore_->PutBatch(entries) != DP_SUCCESS) {
-        HILOGE("PutServiceProfile fail!");
-        return DP_PUT_KV_DB_FAIL;
+    {
+        std::lock_guard<std::mutex> lock(dpStoreMutex_);
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore is nullptr!");
+            return DP_INVALID_PARAMS;
+        }
+        std::map<std::string, std::string> entries;
+        ProfileUtils::ServiceProfileToEntries(serviceProfile, entries);
+        if (deviceProfileStore_->PutBatch(entries) != DP_SUCCESS) {
+            HILOGE("PutServiceProfile fail!");
+            return DP_PUT_KV_DB_FAIL;
+        }
     }
     ProfileCache::GetInstance().AddServiceProfile(serviceProfile);
     return DP_SUCCESS;
@@ -131,7 +135,12 @@ int32_t DeviceProfileManager::PutServiceProfileBatch(const std::vector<ServicePr
 {
     HILOGE("PutServiceProfileBatch call!");
     for (const auto& serviceProfile : serviceProfiles) {
-        PutServiceProfile(serviceProfile);
+        int32_t putServiceResult = PutServiceProfile(serviceProfile);
+        if (putServiceResult != DP_SUCCESS) {
+            HILOGE("PutServiceProfile fail, serviceProfile: %s, errcode: %d!", serviceProfile.dump().c_str(),
+                putServiceResult);
+            continue;
+        }
     }
     return DP_SUCCESS;
 }
@@ -147,20 +156,22 @@ int32_t DeviceProfileManager::PutCharacteristicProfile(const CharacteristicProfi
     HILOGI("PutCharacteristicProfile, deviceId: %s, serviceName: %s, charKey: %s!",
         ProfileUtils::GetAnonyString(charProfile.GetDeviceId()).c_str(), charProfile.GetServiceName().c_str(),
         charProfile.GetCharacteristicKey().c_str());
-    std::lock_guard<std::mutex> lock(dpStoreMutex_);
-    if (deviceProfileStore_ == nullptr) {
-        HILOGE("deviceProfileStore is nullptr!");
-        return DP_INVALID_PARAMS;
-    }
     if (ProfileCache::GetInstance().IsCharProfileExist(charProfile)) {
         HILOGW("the profile is exist!");
         return DP_CACHE_EXIST;
     }
-    std::map<std::string, std::string> entries;
-    ProfileUtils::CharacteristicProfileToEntries(charProfile, entries);
-    if (deviceProfileStore_->PutBatch(entries) != DP_SUCCESS) {
-        HILOGE("PutCharacteristicProfile fail!");
-        return DP_PUT_KV_DB_FAIL;
+    {
+        std::lock_guard<std::mutex> lock(dpStoreMutex_);
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore is nullptr!");
+            return DP_INVALID_PARAMS;
+        }
+        std::map<std::string, std::string> entries;
+        ProfileUtils::CharacteristicProfileToEntries(charProfile, entries);
+        if (deviceProfileStore_->PutBatch(entries) != DP_SUCCESS) {
+            HILOGE("PutCharacteristicProfile fail!");
+            return DP_PUT_KV_DB_FAIL;
+        }
     }
     ProfileCache::GetInstance().AddCharProfile(charProfile);
     return DP_SUCCESS;
@@ -170,7 +181,12 @@ int32_t DeviceProfileManager::PutCharacteristicProfileBatch(const std::vector<Ch
 {
     HILOGE("PutCharacteristicProfileBatch call!");
     for (const auto& charProfile : charProfiles) {
-        PutCharacteristicProfile(charProfile);
+        int32_t putCharacteristicResult = PutCharacteristicProfile(charProfile);
+        if (putCharacteristicResult != DP_SUCCESS) {
+            HILOGE("PutCharacteristic fail, charProfile: %s, errcode: %d!", charProfile.dump().c_str(),
+                putCharacteristicResult);
+            continue;
+        }
     }
     return DP_SUCCESS;
 }
@@ -182,23 +198,25 @@ int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, Devi
         return DP_INVALID_PARAMS;
     }
     HILOGI("GetDeviceProfile, deviceId: %s!", ProfileUtils::GetAnonyString(deviceId).c_str());
-    std::lock_guard<std::mutex> lock(dpStoreMutex_);
-    if (deviceProfileStore_ == nullptr) {
-        HILOGE("deviceProfileStore is nullptr!");
-        return DP_INVALID_PARAMS;
-    }
     if (ProfileCache::GetInstance().GetDeviceProfile(deviceId, deviceProfile) == DP_SUCCESS) {
         HILOGI("GetDeviceProfile in cache!");
         return DP_SUCCESS;
     }
-    std::string dbKeyPrefix = ProfileUtils::GenerateDeviceProfileKey(deviceId);
-    std::map<std::string, std::string> values;
-    if (deviceProfileStore_->GetByPrefix(dbKeyPrefix, values) != DP_SUCCESS) {
-        HILOGE("Get data fail!");
-        return DP_GET_KV_DB_FAIL;
+    {
+        std::lock_guard<std::mutex> lock(dpStoreMutex_);
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore is nullptr!");
+            return DP_INVALID_PARAMS;
+        }
+        std::string dbKeyPrefix = ProfileUtils::GenerateDeviceProfileKey(deviceId);
+        std::map<std::string, std::string> values;
+        if (deviceProfileStore_->GetByPrefix(dbKeyPrefix, values) != DP_SUCCESS) {
+            HILOGE("Get data fail!");
+            return DP_GET_KV_DB_FAIL;
+        }
+        HILOGI("GetDeviceProfile in db!");
+        ProfileUtils::EntriesToDeviceProfile(values, deviceProfile);
     }
-    HILOGI("GetDeviceProfile in db!");
-    ProfileUtils::EntriesToDeviceProfile(values, deviceProfile);
     return DP_SUCCESS;
 }
 
@@ -211,24 +229,25 @@ int32_t DeviceProfileManager::GetServiceProfile(const std::string& deviceId, con
     }
     HILOGI("PutDeviceProfile, deviceId: %s, serviceName: %s!", ProfileUtils::GetAnonyString(deviceId).c_str(),
         serviceName.c_str());
-    std::lock_guard<std::mutex> lock(dpStoreMutex_);
-    if (deviceProfileStore_ == nullptr) {
-        HILOGE("deviceProfileStore is nullptr!");
-        return DP_INVALID_PARAMS;
-    }
     if (ProfileCache::GetInstance().GetServiceProfile(deviceId, serviceName, serviceProfile) == DP_SUCCESS) {
         HILOGI("GetServiceProfile in cache!");
         return DP_SUCCESS;
     }
-    std::string dbKeyPrefix = ProfileUtils::GenerateServiceProfileKey(deviceId, serviceName);
-    std::map<std::string, std::string> values;
-    if (deviceProfileStore_->GetByPrefix(dbKeyPrefix, values) != DP_SUCCESS) {
-        HILOGE("Get data fail!");
-        return DP_GET_KV_DB_FAIL;
+    {
+        std::lock_guard<std::mutex> lock(dpStoreMutex_);
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore is nullptr!");
+            return DP_INVALID_PARAMS;
+        }
+        std::string dbKeyPrefix = ProfileUtils::GenerateServiceProfileKey(deviceId, serviceName);
+        std::map<std::string, std::string> values;
+        if (deviceProfileStore_->GetByPrefix(dbKeyPrefix, values) != DP_SUCCESS) {
+            HILOGE("Get data fail!");
+            return DP_GET_KV_DB_FAIL;
+        }
+        HILOGI("GetServiceProfile in db!");
+        ProfileUtils::EntriesToServiceProfile(values, serviceProfile);
     }
-    serviceProfile.SetDeviceId(deviceId);
-    serviceProfile.SetServiceName(serviceName);
-    ProfileUtils::EntriesToServiceProfile(values, serviceProfile);
     return DP_SUCCESS;
 }
 
@@ -242,26 +261,25 @@ int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& device
     }
     HILOGI("GetCharacteristicProfile, deviceId: %s, serviceName: %s, charKey: %s!",
         ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
-    std::lock_guard<std::mutex> lock(dpStoreMutex_);
-    if (deviceProfileStore_ == nullptr) {
-        HILOGE("deviceProfileStore is nullptr!");
-        return DP_INVALID_PARAMS;
-    }
     if (ProfileCache::GetInstance().GetCharacteristicProfile(deviceId, serviceName, characteristicKey, charProfile)
         == DP_SUCCESS) {
         HILOGI("GetCharProfile in cache!");
         return DP_SUCCESS;
     }
-    std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, characteristicKey);
-    std::map<std::string, std::string> values;
-    if (deviceProfileStore_->GetByPrefix(profileKeyPrefix, values) != DP_SUCCESS) {
-        HILOGE("Get data fail!");
-        return DP_GET_KV_DB_FAIL;
+    {
+        std::lock_guard<std::mutex> lock(dpStoreMutex_);
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore is nullptr!");
+            return DP_INVALID_PARAMS;
+        }
+        std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, characteristicKey);
+        std::map<std::string, std::string> values;
+        if (deviceProfileStore_->GetByPrefix(profileKeyPrefix, values) != DP_SUCCESS) {
+            HILOGE("Get data fail!");
+            return DP_GET_KV_DB_FAIL;
+        }
+        ProfileUtils::EntriesToCharProfile(values, charProfile);
     }
-    charProfile.SetDeviceId(deviceId);
-    charProfile.SetServiceName(serviceName);
-    charProfile.SetCharacteristicKey(characteristicKey);
-    ProfileUtils::EntriesToCharProfile(values, charProfile);
     return DP_SUCCESS;
 }
 
@@ -273,15 +291,17 @@ int32_t DeviceProfileManager::DeleteServiceProfile(const std::string& deviceId, 
     }
     HILOGI("DeleteServiceProfile, deviceId: %s, serviceName: %s!", ProfileUtils::GetAnonyString(deviceId).c_str(),
         serviceName.c_str());
-    std::lock_guard<std::mutex> lock(dpStoreMutex_);
-    if (deviceProfileStore_ == nullptr) {
-        HILOGE("deviceProfileStore is nullptr!");
-        return DP_INVALID_PARAMS;
-    }
-    std::string profileKeyPrefix = ProfileUtils::GenerateServiceProfileKey(deviceId, serviceName);
-    if (deviceProfileStore_->DeleteByPrefix(profileKeyPrefix) != DP_SUCCESS) {
-        HILOGE("DeleteServiceProfile fail!");
-        return DP_DEL_KV_DB_FAIL;
+    {
+        std::lock_guard<std::mutex> lock(dpStoreMutex_);
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore is nullptr!");
+            return DP_INVALID_PARAMS;
+        }
+        std::string profileKeyPrefix = ProfileUtils::GenerateServiceProfileKey(deviceId, serviceName);
+        if (deviceProfileStore_->DeleteByPrefix(profileKeyPrefix) != DP_SUCCESS) {
+            HILOGE("DeleteServiceProfile fail!");
+            return DP_DEL_KV_DB_FAIL;
+        }
     }
     ProfileCache::GetInstance().DeleteServiceProfile(deviceId, serviceName);
     return DP_SUCCESS;
@@ -297,15 +317,17 @@ int32_t DeviceProfileManager::DeleteCharacteristicProfile(const std::string& dev
     }
     HILOGI("DeleteCharacteristicProfile, deviceId: %s, serviceName: %s, charKey: %s!",
         ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
-    std::lock_guard<std::mutex> lock(dpStoreMutex_);
-    if (deviceProfileStore_ == nullptr) {
-        HILOGE("deviceProfileStore is nullptr!");
-        return DP_INVALID_PARAMS;
-    }
-    std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, characteristicKey);
-    if (deviceProfileStore_->DeleteByPrefix(profileKeyPrefix) != DP_SUCCESS) {
-        HILOGE("DeleteCharacteristicProfile fail!");
-        return DP_DEL_KV_DB_FAIL;
+    {
+        std::lock_guard<std::mutex> lock(dpStoreMutex_);
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore is nullptr!");
+            return DP_INVALID_PARAMS;
+        }
+        std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, characteristicKey);
+        if (deviceProfileStore_->DeleteByPrefix(profileKeyPrefix) != DP_SUCCESS) {
+            HILOGE("DeleteCharacteristicProfile fail!");
+            return DP_DEL_KV_DB_FAIL;
+        }
     }
     ProfileCache::GetInstance().DeleteCharProfile(deviceId, serviceName, characteristicKey);
     return DP_SUCCESS;
@@ -357,13 +379,13 @@ int32_t DeviceProfileManager::GetAllServiceProfile(std::vector<ServiceProfile>& 
         }
     }
     std::map<std::string, std::map<std::string, std::string>> profileEntries;
-    for (const auto& item: values) {
+    for (const auto& item : values) {
         std::string dbKey = item.first;
         std::string dbValue = item.second;
         std::string profileKey = ProfileUtils::GetProfileKey(dbKey);
         profileEntries[profileKey].emplace(dbKey, dbValue);
     }
-    for (const auto &item: profileEntries) {
+    for (const auto &item : profileEntries) {
         ServiceProfile serviceProfile;
         ProfileUtils::EntriesToServiceProfile(item.second, serviceProfile);
         serviceProfiles.push_back(serviceProfile);
@@ -387,13 +409,13 @@ int32_t DeviceProfileManager::GetAllCharacteristicProfile(std::vector<Characteri
         }
     }
     std::map<std::string, std::map<std::string, std::string>> profileEntries;
-    for (auto item: values) {
+    for (auto item : values) {
         std::string dbKey = item.first;
         std::string dbValue = item.second;
         std::string profileKey = ProfileUtils::GetProfileKey(dbKey);
         profileEntries[profileKey].emplace(dbKey, dbValue);
     }
-    for (const auto& item: profileEntries) {
+    for (const auto& item : profileEntries) {
         CharacteristicProfile charProfile;
         ProfileUtils::EntriesToCharProfile(item.second, charProfile);
         charProfiles.push_back(charProfile);

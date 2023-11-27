@@ -29,7 +29,7 @@ public:
     ~RdbAdapter();
     int32_t Init() override;
     int32_t UnInit() override;
-    int Put(int64_t& outRowId, const std::string& table, const ValuesBucket& Values) override;
+    int32_t Put(int64_t& outRowId, const std::string& table, const ValuesBucket& Values) override;
     int32_t Delete(int32_t& deleteRows, const std::string& table, const std::string& whereClause,
         const std::vector<ValueObject>& bindArgs = {}) override;
     int32_t Update(int32_t& changedRows, const std::string& table, const ValuesBucket& values,

@@ -216,8 +216,7 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::map<std::string, std::s
     for (uint32_t i = 0; i < size; i++) {
         std::string item = "";
         READ_HELPER_RET(parcel, String, item, false);
-        std::string::size_type position;
-        position = item.find(SEPARATOR);
+        std::string::size_type position = item.find(SEPARATOR);
         if (position == item.npos) {
             HILOGE("Not found the separator!");
             continue;
@@ -258,7 +257,7 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::unordered_set<ProfileCh
         return false;
     }
     for (uint32_t i = 0; i < size; i++) {
-        int32_t num = parcel.ReadUint32();
+        uint32_t num = parcel.ReadUint32();
         if (num <= ProfileChangeType::PROFILE_CHANGE_TYPE_MIN || num >= ProfileChangeType::PROFILE_CHANGE_TYPE_MAX) {
             HILOGE("The value is invalid!");
             return false;

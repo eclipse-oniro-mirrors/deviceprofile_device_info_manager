@@ -64,18 +64,26 @@ int32_t PermissionManager::UnInit()
 
 int32_t PermissionManager::LoadPermissionCfg(const std::string& filePath)
 {
-    std::ifstream ifs(filePath.c_str());
-    if (!ifs.good()) {
+    char path[PATH_MAX + 1] = {0x00};
+    if (filePath.length() == 0 || filePath.length() > PATH_MAX || realpath(filePath.c_str(), path) == nullptr) {
+        HILOGE("File canonicalization failed");
+        return DP_PARSE_PERMISSION_JSON_FAIL;
+    }
+    std::ifstream ifs(path);
+    if (!ifs.is_open()) {
         HILOGE("load json file failed");
         return DP_PARSE_PERMISSION_JSON_FAIL;
     }
     nlohmann::json permissionJson = nlohmann::json::parse(ifs, nullptr, false);
     if (permissionJson.is_discarded()) {
         HILOGE("Permission json parse failed!");
+        ifs.close();
         return DP_PARSE_PERMISSION_JSON_FAIL;
     }
-    HILOGI("permission json %{public}s load success!", permissionJson.dump().c_str());
-    return ParsePermissionJson(permissionJson);
+    int32_t parseResult = ParsePermissionJson(permissionJson);
+    HILOGI("permission json load result %d!", parseResult);
+    ifs.close();
+    return parseResult;
 }
 
 

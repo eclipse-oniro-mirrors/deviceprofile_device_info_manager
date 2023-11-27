@@ -48,7 +48,7 @@ int64_t StorageInfoCollector::GetTotalSize()
 {
     int64_t totalSize = 0;
     struct statvfs diskInfo;
-    int ret = statvfs(PATH_DATA, &diskInfo);
+    int32_t ret = statvfs(PATH_DATA, &diskInfo);
     if (ret != 0) {
         HILOGE("GetTotalSize failed");
         return totalSize;
