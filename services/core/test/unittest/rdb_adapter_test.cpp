@@ -47,7 +47,7 @@ namespace {
             "    status       INTEGER\n"
             ");";
     std::shared_ptr<RdbAdapter> store = nullptr;
-    std::mutex rdbAdapterTestMtx;
+    std::mutex g_rdbAdapterTestMtx;
 }
 
 class RdbAdapterTest : public testing::Test {
@@ -58,44 +58,43 @@ public:
     void TearDown();
 };
 
-void RdbAdapterTest::SetUpTestCase(void) 
+void RdbAdapterTest::SetUpTestCase(void)
 {
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     store = std::make_shared<RdbAdapter>();
 }
 
-void RdbAdapterTest::TearDownTestCase(void) 
+void RdbAdapterTest::TearDownTestCase(void)
 {
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     store->Init();
     store->CreateTable("DROP TABLE IF EXISTS trust_device_table");
     store->UnInit();
 }
 
-void RdbAdapterTest::SetUp() 
+void RdbAdapterTest::SetUp()
 {
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     store->Init();
     store->CreateTable("DROP TABLE IF EXISTS trust_device_table");
 }
 
-void RdbAdapterTest::TearDown() 
+void RdbAdapterTest::TearDown()
 {
-
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     store->UnInit();
 }
 
 
 /**
- * @tc.name: 
+ * @tc.name:
  * @tc.desc: GetRDBPtr success
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(RdbAdapterTest, GetRDBPtr001, TestSize.Level1)
 {
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     store->UnInit();
     int32_t errCode = store->GetRDBPtr();
     EXPECT_EQ(errCode, DP_SUCCESS);
@@ -103,67 +102,67 @@ HWTEST_F(RdbAdapterTest, GetRDBPtr001, TestSize.Level1)
 
 
 /**
- * @tc.name: 
+ * @tc.name:
  * @tc.desc: Init success
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(RdbAdapterTest, Init001, TestSize.Level1)
 {
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     store->UnInit();
     int32_t errCode = store->Init();
     EXPECT_EQ(errCode, DP_SUCCESS);
 }
 
 /**
- * @tc.name: 
+ * @tc.name:
  * @tc.desc: UnInit success
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(RdbAdapterTest, UnInit001, TestSize.Level1)
 {
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     int32_t errCode = store->UnInit();
     EXPECT_EQ(errCode, DP_SUCCESS);
 }
 
 /**
- * @tc.name: 
+ * @tc.name:
  * @tc.desc: CreateTable success
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(RdbAdapterTest, CreateTable001, TestSize.Level1)
 {
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     int32_t errCode = store->CreateTable(SUCCESS_CREATE_TABLE_SQL);
     EXPECT_EQ(errCode, DP_SUCCESS);
 }
 
 /**
- * @tc.name: 
+ * @tc.name:
  * @tc.desc: CreateTable failed
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(RdbAdapterTest, CreateTable002, TestSize.Level1)
 {
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     int32_t errCode = store->CreateTable(UN_SUCCESS_CREATE_TABLE_SQL);
     EXPECT_EQ(errCode, DP_RDBADAPTER_CREATE_TABLE_FAIL);
 }
 
 /**
- * @tc.name: 
+ * @tc.name:
  * @tc.desc: Put Success
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(RdbAdapterTest, Put001, TestSize.Level1)
 {
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     store->CreateTable(SUCCESS_CREATE_TABLE_SQL);
     int64_t outRowId = 0;
     std::string table = "trust_device_table";
@@ -179,14 +178,14 @@ HWTEST_F(RdbAdapterTest, Put001, TestSize.Level1)
 }
 
 /**
- * @tc.name: 
+ * @tc.name:
  * @tc.desc: Put table does not exist failed
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(RdbAdapterTest, Put002, TestSize.Level1)
 {
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     store->CreateTable(SUCCESS_CREATE_TABLE_SQL);
     int64_t outRowId = 0;
     std::string table = "trust_xxxdevice_table";
@@ -201,14 +200,14 @@ HWTEST_F(RdbAdapterTest, Put002, TestSize.Level1)
 }
 
 /**
- * @tc.name: 
+ * @tc.name:
  * @tc.desc: Put failed
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(RdbAdapterTest, Put003, TestSize.Level1)
 {
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     store->CreateTable(SUCCESS_CREATE_TABLE_SQL);
     int64_t outRowId1 = 0;
     int64_t outRowId2 = 0;
@@ -234,14 +233,14 @@ HWTEST_F(RdbAdapterTest, Put003, TestSize.Level1)
 }
 
 /**
- * @tc.name: 
+ * @tc.name:
  * @tc.desc: Delete success
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(RdbAdapterTest, Delete001, TestSize.Level1)
 {
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     store->CreateTable(SUCCESS_CREATE_TABLE_SQL);
     int64_t outRowId = 0;
     std::string table = "trust_device_table";
@@ -264,14 +263,14 @@ HWTEST_F(RdbAdapterTest, Delete001, TestSize.Level1)
 }
 
 /**
- * @tc.name: 
+ * @tc.name:
  * @tc.desc: Delete table does not exist failed
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(RdbAdapterTest, Delete002, TestSize.Level1)
 {
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     store->CreateTable(SUCCESS_CREATE_TABLE_SQL);
     int64_t outRowId = 0;
     std::string table = "trust_device_table";
@@ -294,14 +293,14 @@ HWTEST_F(RdbAdapterTest, Delete002, TestSize.Level1)
 }
 
 /**
- * @tc.name: 
+ * @tc.name:
  * @tc.desc: Delete failed
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(RdbAdapterTest, Delete003, TestSize.Level1)
 {
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     store->CreateTable(SUCCESS_CREATE_TABLE_SQL);
     int64_t outRowId = 0;
     std::string table = "trust_device_table";
@@ -324,14 +323,14 @@ HWTEST_F(RdbAdapterTest, Delete003, TestSize.Level1)
 }
 
 /**
- * @tc.name: 
+ * @tc.name:
  * @tc.desc: Update success
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(RdbAdapterTest, Update001, TestSize.Level1)
 {
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     store->CreateTable(SUCCESS_CREATE_TABLE_SQL);
     int64_t outRowId = 0;
     std::string table = "trust_device_table";
@@ -373,14 +372,14 @@ HWTEST_F(RdbAdapterTest, Update001, TestSize.Level1)
 }
 
 /**
- * @tc.name: 
+ * @tc.name:
  * @tc.desc: Update table does not exist failed
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
-HWTEST_F(RdbAdapterTest,Update002, TestSize.Level1)
+HWTEST_F(RdbAdapterTest, Update002, TestSize.Level1)
 {
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     store->CreateTable(SUCCESS_CREATE_TABLE_SQL);
     int64_t outRowId = 0;
     std::string table = "trust_device_table";
@@ -410,14 +409,14 @@ HWTEST_F(RdbAdapterTest,Update002, TestSize.Level1)
 }
 
 /**
- * @tc.name: 
+ * @tc.name:
  * @tc.desc: Update failed
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(RdbAdapterTest, Update003, TestSize.Level1)
 {
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     store->CreateTable(SUCCESS_CREATE_TABLE_SQL);
     int64_t outRowId = 0;
     std::string table = "trust_device_table";
@@ -447,14 +446,14 @@ HWTEST_F(RdbAdapterTest, Update003, TestSize.Level1)
 }
 
 /**
- * @tc.name: 
+ * @tc.name:
  * @tc.desc: Get success
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(RdbAdapterTest, Get001, TestSize.Level1)
 {
-    std::lock_guard<std::mutex> lock(rdbAdapterTestMtx);
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     store->CreateTable(SUCCESS_CREATE_TABLE_SQL);
     int64_t outRowId = 0;
     std::string table = "trust_device_table";
