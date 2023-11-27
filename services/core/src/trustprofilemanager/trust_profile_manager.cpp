@@ -957,7 +957,7 @@ int32_t TrustProfileManager::SetAccesserId(AccessControlProfile& profile)
         ValueObject(accesser.GetAccesserDeviceId()), ValueObject(accesser.GetAccesserUserId()),
         ValueObject(accesser.GetAccesserAccountId()), ValueObject(accesser.GetAccesserTokenId()),
         ValueObject(accesser.GetAccesserBundleName()), ValueObject(accesser.GetAccesserHapSignature()),
-        ValueObject(accesser.GetAccesserBindLevel())});
+        static_cast<int32_t>(ValueObject(accesser.GetAccesserBindLevel()))});
     if (resultSet == nullptr) {
         HILOGE("SetAccesserId::resultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
@@ -1003,7 +1003,7 @@ int32_t TrustProfileManager::SetAccesseeId(AccessControlProfile& profile)
         ValueObject(accessee.GetAccesseeDeviceId()), ValueObject(accessee.GetAccesseeUserId()),
         ValueObject(accessee.GetAccesseeAccountId()), ValueObject(accessee.GetAccesseeTokenId()),
         ValueObject(accessee.GetAccesseeBundleName()), ValueObject(accessee.GetAccesseeHapSignature()),
-        ValueObject(accessee.GetAccesseeBindLevel())});
+        static_cast<int32_t>(ValueObject(accessee.GetAccesseeBindLevel()))});
     if (resultSet == nullptr) {
         HILOGE("SetAccesserId::resultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
