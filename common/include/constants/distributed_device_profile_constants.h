@@ -145,6 +145,26 @@ constexpr int32_t RDB_VERSION = 1;
 constexpr int32_t RDB_INIT_MAX_TIMES = 30;
 constexpr int32_t RDB_INIT_INTERVAL_TIME = 100000;
 /* TrustProfile Manager */
+const std::string DEVICEID_EQUAL_CONDITION = "deviceId = ?";
+const std::string ACCESSCONTROLID_EQUAL_CONDITION = "accessControlId = ?";
+const std::string ACCESSERID_EQUAL_CONDITION = "accesserId = ? ";
+const std::string ACCESSEEID_EQUAL_CONDITION = "accesseeId = ? ";
+constexpr int32_t ROWCNT_INIT = -1;
+constexpr int32_t RET_INIT = -1;
+constexpr int32_t ROWCOUNT_INIT = -1;
+constexpr int32_t CHANGEROWCNT_INIT = -1;
+constexpr int32_t COLUMNINDEX_INIT = -1;
+constexpr int32_t STATUS_INIT = 0;
+constexpr int32_t BINDTYPE_INIT = -1;
+constexpr int32_t BINDLEVEL_INIT = -1;
+constexpr int32_t DELETEROWS_INIT = -1;
+constexpr int32_t DELETE_ACCESSER_CONDITION = 1;
+constexpr int32_t DELETE_ACCESSEE_CONDITION = 1;
+constexpr int32_t DELETE_TRUST_CONDITION = 0;
+constexpr int64_t ROWID_INIT = -1;
+constexpr int64_t ACCESSERID_INIT = -1;
+constexpr int64_t ACCESSEEID_INIT = -1;
+constexpr int64_t ACCESSCONTROLID_INIT = -1;
 const std::string CREATE_TURST_DEVICE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS trust_device_table\
 (\
     deviceId        TEXT PRIMARY KEY,\
@@ -260,10 +280,18 @@ const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERUSERID_ACCE
     "SELECT * FROM accesser_table WHERE accesserId = ? and accesserUserId = ? and accesserBundleName = ?";
 const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEUSEEID_ACCESSEEBUNDLENAME =
     "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeUserId = ? and accesseeBundleName = ?";
+const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERUSERID_ACCESSERACCOUNTID =
+    "SELECT * FROM accesser_table WHERE accesserId = ? and accesserUserId = ? and accesserAccountId = ?";
+const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEUSEEID_ACCESSEEACCOUNTID =
+    "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeUserId = ? and accesseeAccountId = ?";
 const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERUSERID =
     "SELECT * FROM accesser_table WHERE accesserId = ? and accesserUserId = ? ";
 const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEUSERID =
     "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeUserId = ? ";
+const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERTOKENID =
+    "SELECT * FROM accesser_table WHERE accesserId = ? and accesserTokenId = ? ";
+const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEDEVICEID =
+    "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeDeviceId = ? ";
 const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERBUNDLENAME =
     "SELECT * FROM accesser_table WHERE accesserId = ? and accesserBundleName = ? ";
 const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEBUNDLENAME =

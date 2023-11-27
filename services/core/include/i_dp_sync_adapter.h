@@ -30,8 +30,9 @@ public:
     virtual ~IDPSyncAdapter() = default;
     virtual int32_t Initialize() = 0;
     virtual int32_t Release() = 0;
+    virtual int32_t DetectRemoteDPVersion(const std::string& peerDevId) = 0;
     virtual int32_t SyncProfile(const std::list<std::string>& deviceIdList,
-        const sptr<ISyncCompletedCallback>& syncCb) = 0;
+        const sptr<IRemoteObject>& syncCompletedCallback) = 0;
 };
 using CreateDPSyncAdapterFuncPtr = IDPSyncAdapter *(*)(void);
 } // namespace DeviceProfile

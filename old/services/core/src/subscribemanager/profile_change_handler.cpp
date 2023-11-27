@@ -25,6 +25,7 @@
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
 #include "device_profile_utils.h"
+#include "dp_radar_helper.h"
 #include "profile_change_notification.h"
 
 namespace OHOS {
@@ -155,6 +156,14 @@ void ProfileChangeHandler::NotifyProfileChanged(const ProfileChangeNotification&
     HILOGD("called");
     std::lock_guard<std::mutex> autoLock(notifierLock_);
     HILOGI("subscribers size = %{public}zu", profileEventSubscribeInfos_.size());
+    struct RadarInfo info = {
+        .funcName = "NotifyProfileChanged",
+        .stageRes = static_cast<int32_t>(StageRes::STAGE_SUCC),
+        .hostName = kvNAME,
+    };
+    if (!DpRadarHelper::GetInstance().ReportNotifyDataChange(info)) {
+        HILOGE("ReportNotifyDataChange failed");
+    }
     for (const auto& [notifier, subscribeInfo] : profileEventSubscribeInfos_) {
         sptr<IProfileEventNotifier> profileEventNotifier = iface_cast<IProfileEventNotifier>(notifier);
         if (profileEventNotifier == nullptr) {
