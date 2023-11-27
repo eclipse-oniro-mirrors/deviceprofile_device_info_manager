@@ -23,7 +23,6 @@
 #include "accesser.h"
 #include "accessee.h"
 
-
 namespace OHOS {
 namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(TrustProfileManager);

@@ -109,8 +109,8 @@ const std::string SYNC_DEVICE_PROFILE = "SyncDeviceProfile";
 /* Common constants */
 constexpr int32_t MIN_STRING_LEN = 0;
 constexpr int32_t MAX_STRING_LEN = 4096;
-constexpr int64_t MIN_STORAGE = 0;
-constexpr int64_t MAX_STORAGE = 5368709120;
+constexpr int64_t MIN_STORAGE_KB = 0;
+constexpr int64_t MAX_STORAGE_KB = 5368709120;
 constexpr int32_t MIN_OS_API_LEVEL = 0;
 constexpr int32_t MAX_OS_API_LEVEL = 10000;
 constexpr int32_t MIN_OS_TYPE = 0;
