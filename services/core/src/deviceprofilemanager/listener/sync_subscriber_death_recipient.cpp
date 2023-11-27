@@ -47,7 +47,7 @@ void SyncSubscriberDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remot
         HILOGE("diedRemote is nullptr!");
         return;
     }
-    ProfileCache::GetInstance().RemoveSyncListener();
+    ProfileCache::GetInstance().RemoveSyncListener(diedRemote);
 }
 } // namespace DeviceProfile
 } // namespace OHOS
