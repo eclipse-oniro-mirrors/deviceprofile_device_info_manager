@@ -432,12 +432,13 @@ int32_t ProfileCache::RemoveSyncListener(sptr<IRemoteObject> syncListener)
             HILOGE("syncListener is not exist!");
             return DP_NOT_FOUND_FAIL;
         }
-        DHLOGI("RemoveSyncListener remote procName = %{public}s", iter->first.c_str());
+        HILOGI("RemoveSyncListener remote procName = %{public}s", iter->first.c_str());
         if (iter->second != nullptr) {
             iter->second->RemoveDeathRecipient(syncListenerDeathRecipient_);
         }
         syncListenerMap_.erase(iter);
     }
+    return DP_SUCCESS;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

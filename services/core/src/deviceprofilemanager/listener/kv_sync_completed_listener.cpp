@@ -75,7 +75,7 @@ void KvSyncCompletedListener::SyncCompleted(const std::map<std::string, Distribu
 void KvSyncCompletedListener::NotifySyncCompleted(const SyncResults& syncResults)
 {
     int64_t beginTime = GetTickCount();
-    std::map<std::u16string, sptr<IRemoteObject>> syncListeners;
+    std::map<std::string, sptr<IRemoteObject>> syncListeners;
     ProfileCache::GetInstance().GetSyncListeners(syncListeners);
     for (const auto& [_, syncListenerStub] : syncListeners) {
         sptr<ISyncCompletedCallback> syncListenerProxy = iface_cast<ISyncCompletedCallback>(syncListenerStub);

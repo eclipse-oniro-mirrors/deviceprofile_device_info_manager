@@ -437,7 +437,7 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const SyncOptions& syncOptions,
             return DP_SYNC_DEVICE_FAIL;
         }
     }
-    HILOGI("SyncDeviceProfile success, caller: %s!", ProfileUtils::toString(callerDescriptor).c_str());
+    HILOGI("SyncDeviceProfile success, caller: %s!", callerDescriptor.c_str());
     return DP_SUCCESS;
 }
 
