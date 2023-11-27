@@ -26,7 +26,6 @@
 #include "result_set.h"
 #include "rdb_open_callback.h"
 
-
 using namespace testing::ext;
 using namespace OHOS::DistributedDeviceProfile;
 using namespace OHOS::NativeRdb;
@@ -49,7 +48,6 @@ namespace {
             ");";
     std::shared_ptr<RdbAdapter> store = nullptr;
     std::mutex rdbAdapterTestMtx;
-    
 }
 
 class RdbAdapterTest : public testing::Test {
@@ -471,9 +469,3 @@ HWTEST_F(RdbAdapterTest, Get001, TestSize.Level1)
     std::shared_ptr<ResultSet> resultSet = store->Get("SELECT * FROM trust_device_table where deviceId = '111aaa'");
     EXPECT_NE(resultSet, nullptr);
 }
-
-
-
-
-
-
