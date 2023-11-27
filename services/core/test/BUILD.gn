@@ -19,49 +19,49 @@ import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
 module_output_path = "device_info_manager/deviceprofiletest"
 
 device_profile_configs = [
-  "${device_profile_service}:device_info_manager_config",
+    "${device_profile_service}:device_info_manager_config",
 ]
 
 device_profile_deps =[
-  "${device_profile_service}:distributed_device_profile_svr",
-  "${device_profile_common}:distributed_device_profile_common",
-  "//third_party/googletest:gtest_main",
+    "${device_profile_service}:distributed_device_profile_svr",
+    "${device_profile_common}:distributed_device_profile_common",
+    "//third_party/googletest:gtest_main",
 ]
 
 device_profile_external_deps = [
-  "access_token:libaccesstoken_sdk",
-  "c_utils:utils",
-  "device_auth:deviceauth_sdk",
-  "device_manager:devicemanagersdk",
-  "dmsfwk:common_sdk",
-  "eventhandler:libeventhandler",
-  "hilog:libhilog",
-  "hisysevent:libhisysevent",
-  "hitrace:hitrace_meter",
-  "init:libbegetutil",
-  "ipc:ipc_core",
-  "kv_store:distributeddata_inner",
-  "safwk:system_ability_fwk",
-  "samgr:samgr_proxy",
-  "syscap_codec:syscap_interface_shared",
-  "relational_store:native_rdb",
+    "access_token:libaccesstoken_sdk",
+    "c_utils:utils",
+    "device_auth:deviceauth_sdk",
+    "device_manager:devicemanagersdk",
+    "dmsfwk:common_sdk",
+    "eventhandler:libeventhandler",
+    "hilog:libhilog",
+    "hisysevent:libhisysevent",
+    "hitrace:hitrace_meter",
+    "init:libbegetutil",
+    "ipc:ipc_core",
+    "kv_store:distributeddata_inner",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "syscap_codec:syscap_interface_shared",
+    "relational_store:native_rdb",
 ]
 
 ohos_unittest("rdb_adapter_new_test") {
-  module_out_path = module_output_path
-  sources = [
-    "unittest/rdb_adapter_test.cpp",
-  ]
-  configs = device_profile_configs
-  deps = device_profile_deps
-  external_deps = device_profile_external_deps
-  part_name = "device_info_manager"
-  subsystem_name = "deviceprofile"
+    module_out_path = module_output_path
+    sources = [
+        "unittest/rdb_adapter_test.cpp",
+    ]
+    configs = device_profile_configs
+    deps = device_profile_deps
+    external_deps = device_profile_external_deps
+    part_name = "device_info_manager"
+    subsystem_name = "deviceprofile"
 }
-  
+
 group("unittest") {
-  testonly = true
-  deps = [
-    ":rdb_adapter_new_test",
-  ]
+    testonly = true
+    deps = [
+        ":rdb_adapter_new_test",
+    ]
 }
