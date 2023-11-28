@@ -77,17 +77,17 @@ void ProfileStorageTest::SetUpTestCase()
     std::string baseDir = "/data/service/el1/public/database/test";
     mkdir(baseDir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     Options options = {
-            .createIfMissing = true,
-            .encrypt = false,
-            .autoSync = false,
-            .securityLevel = DistributedKv::SecurityLevel::S1,
-            .kvStoreType = KvStoreType::SINGLE_VERSION,
-            .area = 1,
-            .baseDir = baseDir
+        .createIfMissing = true,
+        .encrypt = false,
+        .autoSync = false,
+        .securityLevel = DistributedKv::SecurityLevel::S1,
+        .kvStoreType = KvStoreType::SINGLE_VERSION,
+        .area = 1,
+        .baseDir = baseDir
     };
     // clean the IMMEDIATE_SYNC_ON_CHANGE
     SyncPolicy syncPolicy {
-            .type = PolicyType::IMMEDIATE_SYNC_ON_ONLINE
+        .type = PolicyType::IMMEDIATE_SYNC_ON_ONLINE
     };
     options.policies.emplace_back(syncPolicy);
     deviceProfileStorage = std::make_shared<DeviceProfileStorage>(APP_ID, STORE_ID);
