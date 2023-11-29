@@ -23,6 +23,7 @@ device_profile_configs =
 
 device_profile_deps = [
   "${device_profile_common}:distributed_device_profile_common",
+  "${device_profile_innerkits}:distributed_device_profile_sdk",
   "${device_profile_service}:distributed_device_profile_svr",
   "//third_party/googletest:gtest_main",
 ]
@@ -56,6 +57,16 @@ ohos_unittest("rdb_adapter_new_test") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("TrustProfileManagerTest") {
+  module_out_path = module_output_path
+  sources = [ "unittest/trust_profile_manager_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 ohos_unittest("distributed_device_profile_client_kv_new_test") {
   module_out_path = module_output_path
   sources = [ "unittest/distributed_device_profile_client_kv_test.cpp" ]
@@ -69,7 +80,9 @@ ohos_unittest("distributed_device_profile_client_kv_new_test") {
 group("unittest") {
   testonly = true
   deps = [
-  ":rdb_adapter_new_test",
-  ":distributed_device_profile_client_kv_new_test",
+    ":TrustProfileManagerTest",
+    ":rdb_adapter_new_test",
+    ":distributed_device_profile_client_kv_new_test",
+
   ]
 }

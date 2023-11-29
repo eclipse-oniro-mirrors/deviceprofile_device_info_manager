@@ -51,6 +51,8 @@ namespace {
     const std::string DOMAIN_NAME = std::string(HiSysEvent::Domain::DEVICE_PROFILE);
     const std::string APP_ID = "distributed_device_profile_service";
     const std::string STORE_ID = "online_sync_storage_test";
+    static std::shared_ptr<DeviceProfileStorage> deviceProfileStorage = nullptr;
+    static std::shared_ptr<DistributedKv::SingleKvStore> kvStorePtr_ = nullptr;
 }
 using namespace testing;
 using namespace testing::ext;
@@ -62,20 +64,23 @@ public:
     static void TearDownTestCase();
     void SetUp();
     void TearDown();
-
-public:
-    std::shared_ptr<DeviceProfileStorage> deviceProfileStorage;
-    std::shared_ptr<DistributedKv::SingleKvStore> kvStorePtr_;
 };
 
 ProfileStorageTest::ProfileStorageTest()
 {
+    DTEST_LOG << "constructor" << std::endl;
+}
+
+void ProfileStorageTest::SetUpTestCase()
+{
+    DTEST_LOG << "SetUpTestCase" << std::endl;
     std::string baseDir = "/data/service/el1/public/database/test";
     mkdir(baseDir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     Options options = {
         .createIfMissing = true,
         .encrypt = false,
         .autoSync = false,
+        .securityLevel = DistributedKv::SecurityLevel::S1,
         .kvStoreType = KvStoreType::SINGLE_VERSION,
         .area = 1,
         .baseDir = baseDir
@@ -89,12 +94,6 @@ ProfileStorageTest::ProfileStorageTest()
     if (deviceProfileStorage != nullptr) {
         deviceProfileStorage->SetOptions(options);
     }
-}
-
-void ProfileStorageTest::SetUpTestCase()
-{
-    DTEST_LOG << "SetUpTestCase" << std::endl;
-    DistributedDeviceProfileClient::GetInstance().DeleteDeviceProfile("111111");
 }
 
 void ProfileStorageTest::TearDownTestCase()

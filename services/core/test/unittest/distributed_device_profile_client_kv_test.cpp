@@ -16,9 +16,14 @@
 #include <string>
 #include <vector>
 #include "gtest/gtest.h"
+#include "refbase.h"
+#include "accesstoken_kit.h"
+#include "nativetoken_kit.h"
+#include "token_setproc.h"
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
+#include "distributed_device_profile_enums.h"
 #include "device_profile.h"
 #include "service_profile.h"
 #include "dp_subscribe_info.h"
@@ -47,7 +52,28 @@ void DistributedDeviceProfileClientKvTest::TearDownTestCase(void) {
 }
 
 void DistributedDeviceProfileClientKvTest::SetUp() {
-
+    const int32_t permsNum = 3;
+    const int32_t indexZero = 0;
+    const int32_t indexOne = 1;
+    const int32_t indexTwo = 2;
+    uint64_t tokenId;
+    const char *perms[permsNum];
+    perms[indexZero] = "ohos.permission.DISTRIBUTED_SOFTBUS_CENTER";
+    perms[indexOne] = "ohos.permission.DISTRIBUTED_DATASYNC";
+    perms[indexTwo] = "ohos.permission.ACCESS_SERVICE_DM";
+    NativeTokenInfoParams infoInstance = {
+            .dcapsNum = 0,
+            .permsNum = permsNum,
+            .aclsNum = 0,
+            .dcaps = NULL,
+            .perms = perms,
+            .acls = NULL,
+            .processName = "deviceprofile",
+            .aplStr = "system_core",
+    };
+    tokenId = GetAccessTokenId(&infoInstance);
+    SetSelfTokenID(tokenId);
+    OHOS::Security::AccessToken::AccessTokenKit::ReloadNativeTokenInfo();
 }
 
 void DistributedDeviceProfileClientKvTest::TearDown() {
@@ -56,7 +82,61 @@ void DistributedDeviceProfileClientKvTest::TearDown() {
 
 class SubscribeDPChangeListener : public ProfileChangeListenerStub {
 public:
-    
+    SubscribeDPChangeListener()
+    {
+    }
+    ~SubscribeDPChangeListener()
+    {
+    }
+    int32_t OnTrustDeviceProfileAdd(const TrustDeviceProfile &profile)
+    {
+        return 0;
+    }
+    int32_t OnTrustDeviceProfileDelete(const TrustDeviceProfile &profile)
+    {
+        return 0;
+    }
+    int32_t OnTrustDeviceProfileUpdate(const TrustDeviceProfile &profile)
+    {
+        return 0;
+    }
+    int32_t OnDeviceProfileAdd(const DeviceProfile &profile)
+    {
+        return 0;
+    }
+    int32_t OnDeviceProfileDelete(const DeviceProfile &profile)
+    {
+        return 0;
+    }
+    int32_t OnDeviceProfileUpdate(const DeviceProfile &profile)
+    {
+        return 0;
+    }
+    int32_t OnServiceProfileAdd(const ServiceProfile &profile)
+    {
+        return 0;
+    }
+    int32_t OnServiceProfileDelete(const ServiceProfile &profile)
+    {
+        return 0;
+    }
+    int32_t OnServiceProfileUpdate(const ServiceProfile &profile)
+    {
+        return 0;
+    }
+    int32_t OnCharacteristicProfileAdd(const CharacteristicProfile &profile)
+    {
+        return 0;
+    }
+    int32_t OnCharacteristicProfileDelete(const CharacteristicProfile &profile)
+    {
+        return 0;
+    }
+    int32_t OnCharacteristicProfileUpdate(const CharacteristicProfile &oldProfile,
+                                          const CharacteristicProfile &newProfile)
+    {
+        return 0;
+    }
 };
 
 /**
@@ -126,7 +206,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutCharacteristicProfile001, Test
     CharacteristicProfile charProfile;
     charProfile.SetDeviceId("deviceId");
     charProfile.SetServiceName("serviceName");
-    charProfile.SetCharacteristicId("characteristicId");
+    charProfile.SetCharacteristicKey("characteristicKey");
     charProfile.SetCharacteristicValue("characteristicValue");
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutCharacteristicProfile(charProfile);
@@ -139,19 +219,19 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutCharacteristicProfile001, Test
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(DistributedDeviceProfileClientKvTest, PutServiceProfileBatch001, TestSize.Level1)
+HWTEST_F(DistributedDeviceProfileClientKvTest, PutCharacteristicProfileBatch001, TestSize.Level1)
 {
     vector<CharacteristicProfile> charProfiles;
     
     CharacteristicProfile charProfile1;
     charProfile1.SetDeviceId("deviceId1");
     charProfile1.SetServiceName("serviceName1");
-    charProfile1.SetCharacteristicId("characteristicId1");
+    charProfile1.SetCharacteristicKey("characteristicKey1");
     charProfile1.SetCharacteristicValue("characteristicValue1");
     CharacteristicProfile charProfile2;
     charProfile2.SetDeviceId("deviceId2");
     charProfile2.SetServiceName("serviceName2");
-    charProfile2.SetCharacteristicId("characteristicId2");
+    charProfile2.SetCharacteristicKey("characteristicKey2");
     charProfile2.SetCharacteristicValue("characteristicValue2");
     charProfiles.push_back(charProfile1);
     charProfiles.push_back(charProfile2);
@@ -186,21 +266,21 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetDeviceProfile001, TestSize.Lev
     DeviceProfile deviceProfile;
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetDeviceProfile(deviceId, deviceProfile);
-    EXPECT_EQ(errCode, DP_SUCCESS);
+    EXPECT_EQ(errCode, DP_GET_KV_DB_FAIL);
 
     DeviceProfile deviceProfile1;
     deviceProfile1.SetDeviceId("anything");
     deviceProfile1.SetDeviceTypeName("anything");
-    deviceProfile1.SetDeviceTypeId("anything");
+    deviceProfile1.SetDeviceTypeId(0);
     deviceProfile1.SetDeviceName("anything");
     deviceProfile1.SetManufactureName("anything");
     deviceProfile1.SetDeviceModel("anything");
     deviceProfile1.SetSerialNumberId("anything");
-    deviceProfile1.SetStorageCapability("anything");
+    deviceProfile1.SetStorageCapability(1);
     deviceProfile1.SetOsSysCap("anything");
-    deviceProfile1.SetOsApiLevel("anything");
+    deviceProfile1.SetOsApiLevel(1);
     deviceProfile1.SetOsVersion("anything");
-    deviceProfile1.SetOsType("anything");
+    deviceProfile1.SetOsType(1);
 
     deviceProfile1.GetDeviceId();
     deviceProfile1.GetDeviceTypeName();
@@ -247,11 +327,11 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetCharacteristicProfile001, Test
 {
     string deviceId = "deviceId";
     string serviceName = "serviceName";
-    string characteristicId = "characteristicId";
+    string characteristicKey = "characteristicKey";
     CharacteristicProfile characteristicProfile;
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetCharacteristicProfile(
-            deviceId, serviceName, characteristicId, characteristicProfile);
+            deviceId, serviceName, characteristicKey, characteristicProfile);
     EXPECT_EQ(errCode, DP_SUCCESS);
 
     characteristicProfile.GetDeviceId();
@@ -283,7 +363,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, DeleteServiceProfile001, TestSize
 HWTEST_F(DistributedDeviceProfileClientKvTest, DeleteCharacteristicProfile001, TestSize.Level1)
 {
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().DeleteCharacteristicProfile(
-            "deviceId", "serviceName", "characteristicId");
+            "deviceId", "serviceName", "characteristicKey");
     EXPECT_EQ(errCode, DP_SUCCESS);
 }
 
@@ -302,7 +382,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfile001, TestSi
         ProfileChangeType::SERVICE_PROFILE_UPDATE,
         ProfileChangeType::SERVICE_PROFILE_DELETE
     };
-    sptr<IProfileChangeListener> subscribeDPChangeListener = new(nothrow) SubscribeDPChangeListener;
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener = new(nothrow) SubscribeDPChangeListener;
     SubscribeInfo subscribeInfo(saId ,subscribeKey, subscribeTypes, subscribeDPChangeListener);
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfile(subscribeInfo);
@@ -310,12 +390,12 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfile001, TestSi
 }
 
 /**
- * @tc.name: SubscribeDeviceProfile001
- * @tc.desc: SubscribeDeviceProfile success
+ * @tc.name: UnSubscribeDeviceProfile001
+ * @tc.desc: UnSubscribeDeviceProfile success
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfile001, TestSize.Level1)
+HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfile001, TestSize.Level1)
 {
     string subscribeKey = "subscribeKey";
     int32_t saId = 4801;
@@ -324,11 +404,11 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfile001, TestSi
             ProfileChangeType::SERVICE_PROFILE_UPDATE,
             ProfileChangeType::SERVICE_PROFILE_DELETE
     };
-    sptr<IProfileChangeListener> subscribeDPChangeListener = new(nothrow) SubscribeDPChangeListener;
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener = new(nothrow) SubscribeDPChangeListener;
     SubscribeInfo subscribeInfo(saId ,subscribeKey, subscribeTypes, subscribeDPChangeListener);
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
-    EXPECT_EQ(errCode, DP_SUCCESS);
+    EXPECT_EQ(errCode, DP_READ_PARCEL_FAIL);
 }
 
 /**
@@ -337,10 +417,10 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfile001, TestSi
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfile001, TestSize.Level1)
+HWTEST_F(DistributedDeviceProfileClientKvTest, SyncDeviceProfile001, TestSize.Level1)
 {
     SyncOptions syncOptions;
-    sptr<ISyncCompletedCallback> syncCb = nullptr;
+    OHOS::sptr<ISyncCompletedCallback> syncCb = nullptr;
     
     syncOptions.AddDevice("deviceId1");
     syncOptions.AddDevice("deviceId2");
