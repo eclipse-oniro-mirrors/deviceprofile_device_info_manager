@@ -44,14 +44,13 @@ public:
 };
 
 void DistributedDeviceProfileClientKvTest::SetUpTestCase(void) {
-
 }
 
 void DistributedDeviceProfileClientKvTest::TearDownTestCase(void) {
-
 }
 
-void DistributedDeviceProfileClientKvTest::SetUp() {
+void DistributedDeviceProfileClientKvTest::SetUp() 
+{
     const int32_t permsNum = 3;
     const int32_t indexZero = 0;
     const int32_t indexOne = 1;
@@ -62,14 +61,14 @@ void DistributedDeviceProfileClientKvTest::SetUp() {
     perms[indexOne] = "ohos.permission.DISTRIBUTED_DATASYNC";
     perms[indexTwo] = "ohos.permission.ACCESS_SERVICE_DM";
     NativeTokenInfoParams infoInstance = {
-            .dcapsNum = 0,
-            .permsNum = permsNum,
-            .aclsNum = 0,
-            .dcaps = NULL,
-            .perms = perms,
-            .acls = NULL,
-            .processName = "deviceprofile",
-            .aplStr = "system_core",
+        .dcapsNum = 0,
+        .permsNum = permsNum,
+        .aclsNum = 0,
+        .dcaps = NULL,
+        .perms = perms,
+        .acls = NULL,
+        .processName = "deviceprofile",
+        .aplStr = "system_core",
     };
     tokenId = GetAccessTokenId(&infoInstance);
     SetSelfTokenID(tokenId);
@@ -77,7 +76,6 @@ void DistributedDeviceProfileClientKvTest::SetUp() {
 }
 
 void DistributedDeviceProfileClientKvTest::TearDown() {
-
 }
 
 class SubscribeDPChangeListener : public ProfileChangeListenerStub {
@@ -308,7 +306,8 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetServiceProfile001, TestSize.Le
     string serviceName = "serviceName";
     ServiceProfile serviceProfile;
     
-    int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetServiceProfile(deviceId, serviceName, serviceProfile);
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetServiceProfile(
+        deviceId, serviceName, serviceProfile);
     EXPECT_EQ(errCode, DP_SUCCESS);
     
     serviceProfile.GetDeviceId();
@@ -383,7 +382,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfile001, TestSi
         ProfileChangeType::SERVICE_PROFILE_DELETE
     };
     OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener = new(nothrow) SubscribeDPChangeListener;
-    SubscribeInfo subscribeInfo(saId ,subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfile(subscribeInfo);
     EXPECT_EQ(errCode, DP_SUCCESS);
@@ -405,7 +404,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfile001, Test
             ProfileChangeType::SERVICE_PROFILE_DELETE
     };
     OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener = new(nothrow) SubscribeDPChangeListener;
-    SubscribeInfo subscribeInfo(saId ,subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
     EXPECT_EQ(errCode, DP_READ_PARCEL_FAIL);
