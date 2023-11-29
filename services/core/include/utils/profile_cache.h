@@ -53,10 +53,11 @@ public:
     bool IsServiceProfileExist(const ServiceProfile& serviceProfile);
     bool IsCharProfileExist(const CharacteristicProfile& charProfile);
     int32_t RefreshProfileCache();
-    int32_t AddSyncListener(const std::u16string& descriptor, sptr<IRemoteObject> syncListener);
-    int32_t GetSyncListeners(std::map<std::u16string, sptr<IRemoteObject>>& syncListeners);
-    int32_t RemoveSyncListeners(std::map<std::u16string, sptr<IRemoteObject>> syncListeners);
-    int32_t RemoveSyncListener(const std::u16string& descriptor);
+    int32_t AddSyncListener(const std::string& caller, sptr<IRemoteObject> syncListener);
+    int32_t GetSyncListeners(std::map<std::string, sptr<IRemoteObject>>& syncListeners);
+    int32_t RemoveSyncListeners(std::map<std::string, sptr<IRemoteObject>> syncListeners);
+    int32_t RemoveSyncListener(const std::string& caller);
+    int32_t RemoveSyncListener(sptr<IRemoteObject> syncListener);
 
 private:
     int32_t RefreshDeviceProfileCache(const std::vector<DeviceProfile>& deviceProfiles);
@@ -74,8 +75,8 @@ private:
     // The key is profileKey, the value is CharacteristicProfile
     std::unordered_map<std::string, CharacteristicProfile> charProfileMap_;
     std::mutex syncListenerMutex_;
-    // The key is descriptor, the value is syncCallback
-    std::map<std::u16string, sptr<IRemoteObject>> syncListenerMap_;
+    // The key is procName, the value is syncCallback
+    std::map<std::string, sptr<IRemoteObject>> syncListenerMap_;
     sptr<IRemoteObject::DeathRecipient> syncListenerDeathRecipient_ = nullptr;
 };
 } // namespace DeviceProfile

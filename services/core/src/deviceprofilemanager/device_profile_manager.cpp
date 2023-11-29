@@ -27,6 +27,7 @@
 #include "profile_cache.h"
 #include "dp_detect_utils.h"
 #include "device_profile_manager.h"
+#include "permission_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -444,7 +445,7 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const SyncOptions &syncOptions,
             openHarmonyDevices.push_back(deviceId);
         }
     }
-    std::u16string callerDescriptor = syncCompletedCallback->GetObjectDescriptor();
+    std::string callerDescriptor = PermissionManager::GetInstance().GetCallerProcName();
     ProfileCache::GetInstance().AddSyncListener(callerDescriptor, syncCompletedCallback);
     {
         std::lock_guard<std::mutex> lock(dpStoreMutex_);
@@ -454,7 +455,7 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const SyncOptions &syncOptions,
             return DP_SYNC_DEVICE_FAIL;
         }
     }
-    HILOGI("SyncDeviceProfile success, caller: %s!", ProfileUtils::toString(callerDescriptor).c_str());
+    HILOGI("SyncDeviceProfile success, caller: %s!", callerDescriptor.c_str());
     return DP_SUCCESS;
 }
 

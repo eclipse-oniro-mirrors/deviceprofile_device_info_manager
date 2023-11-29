@@ -34,12 +34,12 @@ public:
     int32_t Init();
     int32_t UnInit();
     bool IsCallerTrust(const std::string& interfaceName);
+    std::string GetCallerProcName();
 
 private:
     bool CheckInterfacePermission(const std::string& interfaceName);
     int32_t LoadPermissionCfg(const std::string& filePath);
     int32_t ParsePermissionJson(const nlohmann::json& permissionJson);
-    std::string GetCallerProcName();
 
 private:
     std::mutex permissionMutex_;
