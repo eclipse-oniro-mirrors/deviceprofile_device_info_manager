@@ -96,7 +96,7 @@ public:
     {
         return 0;
     }
-    int32_t OnTrustDeviceProfileUpdate(const TrustDeviceProfile &profile)
+    int32_t OnTrustDeviceProfileUpdate(const TrustDeviceProfile &oldProfile, const TrustDeviceProfile &newProfile)
     {
         return 0;
     }
@@ -108,7 +108,7 @@ public:
     {
         return 0;
     }
-    int32_t OnDeviceProfileUpdate(const DeviceProfile &profile)
+    int32_t OnDeviceProfileUpdate(const DeviceProfile &oldProfile, const DeviceProfile &newProfile)
     {
         return 0;
     }
@@ -120,7 +120,7 @@ public:
     {
         return 0;
     }
-    int32_t OnServiceProfileUpdate(const ServiceProfile &profile)
+    int32_t OnServiceProfileUpdate(const ServiceProfile &oldProfile, const ServiceProfile &newProfile)
     {
         return 0;
     }
