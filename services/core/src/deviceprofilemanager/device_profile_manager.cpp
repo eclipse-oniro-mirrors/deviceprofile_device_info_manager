@@ -445,6 +445,9 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const SyncOptions &syncOptions,
             openHarmonyDevices.push_back(deviceId);
         }
     }
+    if (openHarmonyDevices.empty()) {
+        return DP_SUCCESS;
+    }
     std::string callerDescriptor = PermissionManager::GetInstance().GetCallerProcName();
     ProfileCache::GetInstance().AddSyncListener(callerDescriptor, syncCompletedCallback);
     {
