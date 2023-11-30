@@ -49,7 +49,7 @@ void DistributedDeviceProfileClientKvTest::SetUpTestCase(void) {
 void DistributedDeviceProfileClientKvTest::TearDownTestCase(void) {
 }
 
-void DistributedDeviceProfileClientKvTest::SetUp() 
+void DistributedDeviceProfileClientKvTest::SetUp()
 {
     const int32_t permsNum = 3;
     const int32_t indexZero = 0;
