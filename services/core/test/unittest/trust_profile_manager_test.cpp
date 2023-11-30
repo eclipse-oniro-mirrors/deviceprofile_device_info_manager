@@ -44,8 +44,7 @@ public:
     void TearDown();
     int ResultSize(std::shared_ptr<ResultSet>& resultSet);
 
-    class SubscribeDPChangeListener : public ProfileChangeListenerStub 
-    {
+    class SubscribeDPChangeListener : public ProfileChangeListenerStub {
     public:
         SubscribeDPChangeListener()
         {
