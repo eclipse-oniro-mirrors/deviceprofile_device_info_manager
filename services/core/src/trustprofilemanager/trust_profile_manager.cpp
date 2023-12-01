@@ -244,7 +244,7 @@ int32_t TrustProfileManager::GetTrustDeviceProfile(const std::string& deviceId, 
     int32_t rowCount = ROWCOUNT_INIT;
     resultSet->GetRowCount(rowCount);
     if (rowCount == 0) {
-        HILOGE("GetTrustDeviceProfile::accessControlId not find");
+        HILOGE("GetTrustDeviceProfile::deviceId not find");
         return DP_NOT_FIND_DATA;
     }
     int32_t ret = resultSet->GoToFirstRow();
@@ -268,7 +268,7 @@ int32_t TrustProfileManager::GetAllTrustDeviceProfile(std::vector<TrustDevicePro
     int32_t rowCount = ROWCOUNT_INIT;
     resultSet->GetRowCount(rowCount);
     if (rowCount == 0) {
-        HILOGE("GetAllTrustDeviceProfile::accessControlId not find");
+        HILOGE("GetAllTrustDeviceProfile::trustDevice no data");
         return DP_NOT_FIND_DATA;
     }
     while (resultSet->GoToNextRow() == DP_SUCCESS) {
@@ -327,13 +327,13 @@ int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId, const std::
         GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_TRUSTDEVICEID_AND_STATUS,
         std::vector<ValueObject>{ ValueObject(trustDeviceId), ValueObject(status) });
     if (resultSet == nullptr) {
-        HILOGE("GetAccessControlProfile::bindType not find");
+        HILOGE("GetAccessControlProfile::resultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     int32_t rowCount = ROWCOUNT_INIT;
     resultSet->GetRowCount(rowCount);
     if (rowCount == 0) {
-        HILOGE("GetAccessControlProfile::accessControlId not find");
+        HILOGE("GetAccessControlProfile::parmas not find");
         return DP_NOT_FIND_DATA;
     }
     int32_t ret = this->GetAclProfileByUserIdAndBundleName(resultSet, userId, bundleName, profile);
@@ -1057,7 +1057,7 @@ int32_t TrustProfileManager::UpdateAccesserProfile(int64_t accesserId, const Acc
             return DP_GET_RDBSTORE_FAIL;
         }
         int32_t ret = rdbStore_->
-			Update(changeRowCnt, ACCESSER_TABLE, values, ACCESSERID_EQUAL_CONDITION,
+		    Update(changeRowCnt, ACCESSER_TABLE, values, ACCESSERID_EQUAL_CONDITION,
             std::vector<ValueObject> {ValueObject(accesserId)});
         if (ret != DP_SUCCESS) {
             HILOGE("UpdateAccesserProfile::accesser_table update failed");
@@ -1083,7 +1083,7 @@ int32_t TrustProfileManager::UpdateAccesseeProfile(int64_t accesseeId, const Acc
             return DP_GET_RDBSTORE_FAIL;
         }
         int32_t ret = rdbStore_->
-			Update(changeRowCnt, ACCESSEE_TABLE, values, ACCESSEEID_EQUAL_CONDITION,
+		    Update(changeRowCnt, ACCESSEE_TABLE, values, ACCESSEEID_EQUAL_CONDITION,
             std::vector<ValueObject>{ ValueObject(accesseeId) });
         if (ret != DP_SUCCESS) {
             HILOGE("UpdateAccesseeProfile::accessee_table update failed");

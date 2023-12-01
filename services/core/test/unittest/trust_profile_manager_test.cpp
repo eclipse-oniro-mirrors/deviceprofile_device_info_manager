@@ -26,7 +26,7 @@
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_errors.h"
 #include "rdb_open_callback.h"
-#include "distributed_device_profile_client.h"
+
 
 using namespace testing::ext;
 using namespace OHOS::NativeRdb;
@@ -34,7 +34,6 @@ using namespace OHOS::DistributedDeviceProfile;
 using namespace std;
 namespace {
     const std::string TAG = "TrustProfileManagerTest";
-    const uint32_t TEST_SA_ID = 4801;
 }
 class TrustProfileManagerTest : public testing::Test {
 public:
@@ -43,87 +42,20 @@ public:
     void SetUp();
     void TearDown();
     int ResultSize(std::shared_ptr<ResultSet>& resultSet);
-
-    class SubscribeDPChangeListener : public ProfileChangeListenerStub 
-    {
-    public:
-        SubscribeDPChangeListener()
-        {
-            cout << "SubscribeDPChangeListener constructor" << endl;
-        }
-        ~SubscribeDPChangeListener()
-        {
-            cout << "SubscribeDPChangeListener destructor" << endl;
-        }
-        int32_t OnTrustDeviceProfileAdd(const TrustDeviceProfile& profile)
-        {
-            cout << "OnTrustDeviceProfileAdd" << profile.dump() <<endl;
-            return 0;
-        }
-        int32_t OnTrustDeviceProfileDelete(const TrustDeviceProfile& profile)
-        {
-            cout << "OnTrustDeviceProfileDelete" << profile.dump() <<endl;
-            return 0;
-        }
-        int32_t OnTrustDeviceProfileUpdate(const TrustDeviceProfile& oldProfile, const TrustDeviceProfile& newProfile)
-        {
-            cout << "OnTrustDeviceProfileUpdate: oldProfile " << oldProfile.dump() <<endl;
-            cout << "OnTrustDeviceProfileUpdate: newProfile " << newProfile.dump() <<endl;
-            return 0;
-        }
-        int32_t OnDeviceProfileAdd(const DeviceProfile& profile)
-        {
-            return 0;
-        }
-        int32_t OnDeviceProfileDelete(const DeviceProfile& profile)
-        {
-            return 0;
-        }
-        int32_t OnDeviceProfileUpdate(const DeviceProfile& oldProfile, const DeviceProfile& newProfile)
-        {
-            return 0;
-        }
-        int32_t OnServiceProfileAdd(const ServiceProfile& profile)
-        {
-            return 0;
-        }
-        int32_t OnServiceProfileDelete(const ServiceProfile& profile)
-        {
-            return 0;
-        }
-        int32_t OnServiceProfileUpdate(const ServiceProfile& oldProfile, const ServiceProfile& newProfile)
-        {
-            return 0;
-        }
-        int32_t OnCharacteristicProfileAdd(const CharacteristicProfile& profile)
-        {
-            return 0;
-        }
-        int32_t OnCharacteristicProfileDelete(const CharacteristicProfile& profile)
-        {
-            return 0;
-        }
-        int32_t OnCharacteristicProfileUpdate(const CharacteristicProfile& oldProfile,
-            const CharacteristicProfile& newProfile)
-        {
-            return 0;
-        }
-    };
 };
 
 void TrustProfileManagerTest::SetUpTestCase()
 {
-    uint32_t saId = TEST_SA_ID;
-    std::string subscribekey = "trust_device_profile";
-    std::unordered_set<ProfileChangeType> subscribeTypes = {ProfileChangeType::TRUST_DEVICE_PROFILE_ADD,
-        ProfileChangeType::TRUST_DEVICE_PROFILE_UPDATE, ProfileChangeType::TRUST_DEVICE_PROFILE_DELETE};
-    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener = new(std::nothrow) SubscribeDPChangeListener;
-    SubscribeInfo subscribeInfo(saId, subscribekey, subscribeTypes, subscribeDPChangeListener);
-    DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfile(subscribeInfo);
+    int32_t ret = OHOS::DistributedDeviceProfile::
+        TrustProfileManager::GetInstance().Init();
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 void TrustProfileManagerTest::TearDownTestCase()
 {
+    int32_t ret = OHOS::DistributedDeviceProfile::
+        TrustProfileManager::GetInstance().UnInit();
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 void TrustProfileManagerTest::SetUp()
@@ -184,9 +116,9 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_001, TestSize.Level1)
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
 
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -229,9 +161,9 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_011, TestSize.Level1)
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
 
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -274,9 +206,9 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_002, TestSize.Level1)
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
 
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -319,9 +251,9 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_022, TestSize.Level1)
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
 
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -364,9 +296,9 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_003, TestSize.Level1)
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
 
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -409,9 +341,9 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_033, TestSize.Level1)
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
 
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -454,9 +386,9 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_004, TestSize.Level1)
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
 
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -499,9 +431,9 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_044, TestSize.Level1)
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
 
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -544,9 +476,9 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_005, TestSize.Level1)
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
 
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -559,7 +491,7 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_001, TestSize.Level1)
     std::vector<AccessControlProfile> profile;
     std::map<std::string, std::string> parms;
     parms.insert({{"userId", "22"}, {"bundleName", "bb1"}, {"bindType", "1"}, {"status", "0"}});
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     for (size_t i = 0; i < profile.size(); i++) {
         std::cout << profile[i].dump() <<std::endl;
@@ -579,7 +511,7 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_001, TestSize.Level1)
         ProfileUtils::EntriesToAccessee(value, accessee);
         value.Clear();
     }
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -592,14 +524,14 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_002, TestSize.Level1)
     std::vector<AccessControlProfile> profile;
     std::map<std::string, std::string> parms;
     parms.insert({{"userId", "555"}, {"bundleName", "b1"}, {"trustDeviceId", "123456"}, {"status", "0"}});
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     for (size_t i = 0; i < profile.size(); i++) {
         std::cout << profile[i].dump() <<std::endl;
         std::cout << profile[i].GetAccesser().dump() <<std::endl;
         std::cout << profile[i].GetAccessee().dump() <<std::endl;
     }
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -612,14 +544,14 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_003, TestSize.Level1)
     std::vector<AccessControlProfile> profile;
     std::map<std::string, std::string> parms;
     parms.insert({{"bundleName", "bb3"}, {"trustDeviceId", "6666"}, {"status", "1"}});
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     for (size_t i = 0; i < profile.size(); i++) {
         std::cout << profile[i].dump() <<std::endl;
         std::cout << profile[i].GetAccesser().dump() <<std::endl;
         std::cout << profile[i].GetAccessee().dump() <<std::endl;
     }
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -632,14 +564,14 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_004, TestSize.Level1)
     std::vector<AccessControlProfile> profile;
     std::map<std::string, std::string> parms;
     parms.insert({{"bundleName", "bb4"}, {"bindType", "4"}, {"status", "0"}});
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     for (size_t i = 0; i < profile.size(); i++) {
         std::cout << profile[i].dump() <<std::endl;
         std::cout << profile[i].GetAccesser().dump() <<std::endl;
         std::cout << profile[i].GetAccessee().dump() <<std::endl;
     }
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -652,14 +584,14 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_005, TestSize.Level1)
     std::vector<AccessControlProfile> profile;
     std::map<std::string, std::string> parms;
     parms.insert({{"userId", "77"}, {"accountId", "a44"}});
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     for (size_t i = 0; i < profile.size(); i++) {
         std::cout << profile[i].dump() <<std::endl;
         std::cout << profile[i].GetAccesser().dump() <<std::endl;
         std::cout << profile[i].GetAccessee().dump() <<std::endl;
     }
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -672,14 +604,14 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_006, TestSize.Level1)
     std::vector<AccessControlProfile> profile;
     std::map<std::string, std::string> parms;
     parms.insert({{"accesserTokenId", "777"}, {"accesseeDeviceId", "acee4"}});
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     for (size_t i = 0; i < profile.size(); i++) {
         std::cout << profile[i].dump() <<std::endl;
         std::cout << profile[i].GetAccesser().dump() <<std::endl;
         std::cout << profile[i].GetAccessee().dump() <<std::endl;
     }
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -727,9 +659,9 @@ HWTEST_F(TrustProfileManagerTest, UpdateAccessControlProfile_001, TestSize.Level
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
 
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().UpdateAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -777,9 +709,9 @@ HWTEST_F(TrustProfileManagerTest, UpdateAccessControlProfile_002, TestSize.Level
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
 
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().UpdateAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -827,9 +759,9 @@ HWTEST_F(TrustProfileManagerTest, UpdateAccessControlProfile_003, TestSize.Level
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
 
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().UpdateAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -839,9 +771,9 @@ HWTEST_F(TrustProfileManagerTest, UpdateAccessControlProfile_003, TestSize.Level
  */
 HWTEST_F(TrustProfileManagerTest, DeleteAccessControlProfile_001, TestSize.Level1)
 {
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().DeleteAccessControlProfile(9);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -851,9 +783,9 @@ HWTEST_F(TrustProfileManagerTest, DeleteAccessControlProfile_001, TestSize.Level
  */
 HWTEST_F(TrustProfileManagerTest, DeleteAccessControlProfile_002, TestSize.Level1)
 {
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().DeleteAccessControlProfile(8);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -863,9 +795,9 @@ HWTEST_F(TrustProfileManagerTest, DeleteAccessControlProfile_002, TestSize.Level
  */
 HWTEST_F(TrustProfileManagerTest, DeleteAccessControlProfile_003, TestSize.Level1)
 {
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().DeleteAccessControlProfile(5);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -875,9 +807,9 @@ HWTEST_F(TrustProfileManagerTest, DeleteAccessControlProfile_003, TestSize.Level
  */
 HWTEST_F(TrustProfileManagerTest, DeleteAccessControlProfile_004, TestSize.Level1)
 {
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().DeleteAccessControlProfile(6);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -887,9 +819,9 @@ HWTEST_F(TrustProfileManagerTest, DeleteAccessControlProfile_004, TestSize.Level
  */
 HWTEST_F(TrustProfileManagerTest, DeleteAccessControlProfile_005, TestSize.Level1)
 {
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().DeleteAccessControlProfile(7);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -900,14 +832,14 @@ HWTEST_F(TrustProfileManagerTest, DeleteAccessControlProfile_005, TestSize.Level
 HWTEST_F(TrustProfileManagerTest, GetAllAccessControlProfile_001, TestSize.Level1)
 {
     std::vector<AccessControlProfile> profile;
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAllAccessControlProfile(profile);
     for (size_t i = 0; i < profile.size(); i++) {
         std::cout << profile[i].dump() <<std::endl;
         std::cout << profile[i].GetAccesser().dump() <<std::endl;
         std::cout << profile[i].GetAccessee().dump() <<std::endl;
     }
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -918,12 +850,12 @@ HWTEST_F(TrustProfileManagerTest, GetAllAccessControlProfile_001, TestSize.Level
 HWTEST_F(TrustProfileManagerTest, GetAllTrustDeviceProfile_001, TestSize.Level1)
 {
     std::vector<TrustDeviceProfile> profile;
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAllTrustDeviceProfile(profile);
     for (size_t i = 0; i < profile.size(); i++) {
         std::cout << profile[i].dump() <<std::endl;
     }
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -934,12 +866,12 @@ HWTEST_F(TrustProfileManagerTest, GetAllTrustDeviceProfile_001, TestSize.Level1)
 HWTEST_F(TrustProfileManagerTest, GetTrustDeviceProfile_001, TestSize.Level1)
 {
     TrustDeviceProfile profile;
-    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetTrustDeviceProfile("123456", profile);
     ValuesBucket value;
     ProfileUtils::TrustDeviceProfileToEntries(profile, value);
     std::cout << profile.dump() <<std::endl;
     ProfileUtils::EntriesToTrustDeviceProfile(value, profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
