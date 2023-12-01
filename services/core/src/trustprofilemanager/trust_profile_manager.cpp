@@ -268,7 +268,7 @@ int32_t TrustProfileManager::GetAllTrustDeviceProfile(std::vector<TrustDevicePro
     int32_t rowCount = ROWCOUNT_INIT;
     resultSet->GetRowCount(rowCount);
     if (rowCount == 0) {
-        HILOGE("GetAllTrustDeviceProfile::accessControlProfile no data");
+        HILOGE("GetAllTrustDeviceProfile::trustDevice no data");
         return DP_NOT_FIND_DATA;
     }
     while (resultSet->GoToNextRow() == DP_SUCCESS) {
