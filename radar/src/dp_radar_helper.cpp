@@ -136,7 +136,8 @@ bool DpRadarHelper::ReportSaCheckAuth(struct RadarInfo info)
             "FUNC", info.funcName,
             "BIZ_SCENCE", static_cast<int32_t>(BizScene::DP_GET_SA),
             "BIZ_STAGE", static_cast<int32_t>(GetSaStage::DP_SA_CHACK_AUTH),
-            "STAGE_RES", info.stageRes);
+            "STAGE_RES", info.stageRes,
+            "BIZ_STATE", info.bizState);
     } else {
         res = HiSysEventWrite(
             OHOS::HiviewDFX::HiSysEvent::Domain::DEVICE_PROFILE,
@@ -169,7 +170,7 @@ bool DpRadarHelper::ReportGetData(struct RadarInfo info)
             "BIZ_SCENCE", static_cast<int32_t>(BizScene::DP_GET_DATA),
             "BIZ_STAGE", static_cast<int32_t>(GetDataStage::DP_GET_DATA),
             "STAGE_RES", info.stageRes,
-            "BIZ_STATE", static_cast<int32_t>(BizState::BIZ_STATE_START),
+            "BIZ_STATE", static_cast<int32_t>(BizState::BIZ_STATE_END),
             "HOST_PKG", info.hostName,
             "TO_CALL_PKG", info.toCallPkg,
             "LOCAL_UDID", GetAnonyUdid(info.localUdid));
@@ -187,7 +188,7 @@ bool DpRadarHelper::ReportGetData(struct RadarInfo info)
             "LOCAL_UDID", GetAnonyUdid(info.localUdid),
             "HOST_PKG", info.hostName,
             "TO_CALL_PKG", info.toCallPkg,
-            "ERROR_CODE", GetErrorCode(info.errCode, static_cast<int32_t>(Module::DISTRIBUTED_KV)));
+            "ERROR_CODE", info.errCode);
     }
     if (res != ERR_OK) {
         return false;
@@ -208,7 +209,7 @@ bool DpRadarHelper::ReportAddData(struct RadarInfo info)
             "BIZ_SCENCE", static_cast<int32_t>(BizScene::DP_ADD_DATA),
             "BIZ_STAGE", static_cast<int32_t>(AddDataStage::DP_ADD_DATA),
             "STAGE_RES", info.stageRes,
-            "BIZ_STATE", static_cast<int32_t>(BizState::BIZ_STATE_START),
+            "BIZ_STATE", static_cast<int32_t>(BizState::BIZ_STATE_END),
             "LOCAL_UDID", GetAnonyUdid(info.localUdid),
             "HOST_PKG", info.hostName,
             "TO_CALL_PKG", info.toCallPkg);
@@ -226,7 +227,7 @@ bool DpRadarHelper::ReportAddData(struct RadarInfo info)
             "LOCAL_UDID", GetAnonyUdid(info.localUdid),
             "HOST_PKG", info.hostName,
             "TO_CALL_PKG", info.toCallPkg,
-            "ERROR_CODE", GetErrorCode(info.errCode, static_cast<int32_t>(Module::DISTRIBUTED_KV)));
+            "ERROR_CODE", info.errCode);
     }
     if (res != ERR_OK) {
         return false;
@@ -247,7 +248,7 @@ bool DpRadarHelper::ReportDeleteData(struct RadarInfo info)
             "BIZ_SCENCE", static_cast<int32_t>(BizScene::DP_DELET_DATA),
             "BIZ_STAGE", static_cast<int32_t>(static_cast<int32_t>(DelDataStage::DP_DELET_DATA)),
             "STAGE_RES", info.stageRes,
-            "BIZ_STATE", static_cast<int32_t>(BizState::BIZ_STATE_START),
+            "BIZ_STATE", static_cast<int32_t>(BizState::BIZ_STATE_END),
             "HOST_PKG", info.hostName,
             "TO_CALL_PKG", info.toCallPkg,
             "LOCAL_UDID", GetAnonyUdid(info.localUdid));
@@ -265,7 +266,7 @@ bool DpRadarHelper::ReportDeleteData(struct RadarInfo info)
             "LOCAL_UDID", GetAnonyUdid(info.localUdid),
             "HOST_PKG", info.hostName,
             "TO_CALL_PKG", info.toCallPkg,
-            "ERROR_CODE", GetErrorCode(info.errCode, static_cast<int32_t>(Module::DISTRIBUTED_KV)));
+            "ERROR_CODE", info.errCode);
     }
     if (res != ERR_OK) {
         return false;
@@ -283,7 +284,7 @@ bool DpRadarHelper::ReportSubscribeData(struct RadarInfo info)
             HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
             "ORG_PKG", ORGPKGNAME,
             "FUNC", "SubscribeProfileEvents",
-            "BIZ_SCENCE", static_cast<int32_t>(DelDataStage::DP_DELET_DATA),
+            "BIZ_SCENCE", static_cast<int32_t>(BizScene::DP_SUBSCRIBE_DATA),
             "BIZ_STAGE", static_cast<int32_t>(SubscribeDataStage::DP_SUBSCRIBE_DATA),
             "STAGE_RES", info.stageRes,
             "BIZ_STATE", static_cast<int32_t>(BizState::BIZ_STATE_START),
@@ -394,7 +395,7 @@ bool DpRadarHelper::ReportSyncData(struct RadarInfo info)
             "HOST_PKG", info.hostName,
             "PEER_UDID", GetAnonyUdid(info.peerUdid),
             "TO_CALL_PKG", kvNAME,
-            "ERROR_CODE", GetErrorCode(info.errCode, static_cast<int32_t>(Module::DISTRIBUTED_KV)));
+            "ERROR_CODE", info.errCode);
     }
     if (res != ERR_OK) {
         return false;
