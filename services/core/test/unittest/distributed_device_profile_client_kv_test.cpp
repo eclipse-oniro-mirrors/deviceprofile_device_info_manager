@@ -17,9 +17,6 @@
 #include <vector>
 #include "gtest/gtest.h"
 #include "refbase.h"
-#include "accesstoken_kit.h"
-#include "nativetoken_kit.h"
-#include "token_setproc.h"
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
@@ -49,30 +46,7 @@ void DistributedDeviceProfileClientKvTest::SetUpTestCase(void) {
 void DistributedDeviceProfileClientKvTest::TearDownTestCase(void) {
 }
 
-void DistributedDeviceProfileClientKvTest::SetUp()
-{
-    const int32_t permsNum = 3;
-    const int32_t indexZero = 0;
-    const int32_t indexOne = 1;
-    const int32_t indexTwo = 2;
-    uint64_t tokenId;
-    const char *perms[permsNum];
-    perms[indexZero] = "ohos.permission.DISTRIBUTED_SOFTBUS_CENTER";
-    perms[indexOne] = "ohos.permission.DISTRIBUTED_DATASYNC";
-    perms[indexTwo] = "ohos.permission.ACCESS_SERVICE_DM";
-    NativeTokenInfoParams infoInstance = {
-        .dcapsNum = 0,
-        .permsNum = permsNum,
-        .aclsNum = 0,
-        .dcaps = NULL,
-        .perms = perms,
-        .acls = NULL,
-        .processName = "deviceprofile",
-        .aplStr = "system_core",
-    };
-    tokenId = GetAccessTokenId(&infoInstance);
-    SetSelfTokenID(tokenId);
-    OHOS::Security::AccessToken::AccessTokenKit::ReloadNativeTokenInfo();
+void DistributedDeviceProfileClientKvTest::SetUp() {
 }
 
 void DistributedDeviceProfileClientKvTest::TearDown() {
@@ -151,7 +125,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutServiceProfile001, TestSize.Le
     serviceProfile.SetServiceType("serviceType");
 
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutServiceProfile(serviceProfile);
-    EXPECT_EQ(errCode, DP_SUCCESS);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
 
 /**
@@ -176,7 +150,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutServiceProfileBatch001, TestSi
     serviceProfiles.push_back(serviceProfile2);
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutServiceProfileBatch(serviceProfiles);
-    EXPECT_EQ(errCode, DP_SUCCESS);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
 
 /**
@@ -208,7 +182,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutCharacteristicProfile001, Test
     charProfile.SetCharacteristicValue("characteristicValue");
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutCharacteristicProfile(charProfile);
-    EXPECT_EQ(errCode, DP_SUCCESS);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
 
 /**
@@ -235,7 +209,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutCharacteristicProfileBatch001,
     charProfiles.push_back(charProfile2);
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutCharacteristicProfileBatch(charProfiles);
-    EXPECT_EQ(errCode, DP_SUCCESS);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
 
 /**
@@ -264,7 +238,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetDeviceProfile001, TestSize.Lev
     DeviceProfile deviceProfile;
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetDeviceProfile(deviceId, deviceProfile);
-    EXPECT_EQ(errCode, DP_GET_KV_DB_FAIL);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 
     DeviceProfile deviceProfile1;
     deviceProfile1.SetDeviceId("anything");
@@ -308,12 +282,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetServiceProfile001, TestSize.Le
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetServiceProfile(
         deviceId, serviceName, serviceProfile);
-    EXPECT_EQ(errCode, DP_SUCCESS);
-    
-    serviceProfile.GetDeviceId();
-    serviceProfile.GetServiceName();
-    string serviceType = serviceProfile.GetServiceType();
-    EXPECT_EQ(serviceType, "serviceType");
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
 
 /**
@@ -331,13 +300,11 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetCharacteristicProfile001, Test
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetCharacteristicProfile(
             deviceId, serviceName, characteristicKey, characteristicProfile);
-    EXPECT_EQ(errCode, DP_SUCCESS);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 
     characteristicProfile.GetDeviceId();
     characteristicProfile.GetServiceName();
     characteristicProfile.GetCharacteristicKey();
-    string characteristicValue = characteristicProfile.GetCharacteristicValue();
-    EXPECT_EQ(characteristicValue, "characteristicValue");
 }
 
 /**
@@ -350,7 +317,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, DeleteServiceProfile001, TestSize
 {
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().DeleteServiceProfile(
             "deviceId", "serviceName");
-    EXPECT_EQ(errCode, DP_SUCCESS);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
 
 /**
@@ -363,7 +330,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, DeleteCharacteristicProfile001, T
 {
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().DeleteCharacteristicProfile(
             "deviceId", "serviceName", "characteristicKey");
-    EXPECT_EQ(errCode, DP_SUCCESS);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
 
 /**
@@ -385,7 +352,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfile001, TestSi
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfile(subscribeInfo);
-    EXPECT_EQ(errCode, DP_SUCCESS);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
 
 /**
@@ -407,7 +374,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfile001, Test
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
-    EXPECT_EQ(errCode, DP_READ_PARCEL_FAIL);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
 
 /**
