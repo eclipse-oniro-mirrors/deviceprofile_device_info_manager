@@ -41,6 +41,10 @@ KvDeathRecipient::~KvDeathRecipient()
     HILOGI("destruct!");
     {
         std::lock_guard<std::mutex> lock(reInitMutex_);
+        if (reInitHandler_ == nullptr) {
+            HILOGE("reInitHandler is nullptr!");
+            return;
+        }
         reInitHandler_->RemoveTask(REINIT_TASK);
         reInitHandler_ = nullptr;
     }

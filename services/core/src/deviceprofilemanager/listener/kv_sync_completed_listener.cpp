@@ -47,6 +47,10 @@ KvSyncCompletedListener::~KvSyncCompletedListener()
     HILOGI("destruct!");
     {
         std::lock_guard<std::mutex> lock(reInitMutex_);
+        if (onSyncHandler_ == nullptr) {
+            HILOGE("onSyncHandler is nullptr!");
+            return;
+        }
         onSyncHandler_->RemoveTask(ON_SYNC_TASK_ID);
         onSyncHandler_ = nullptr;
     }
