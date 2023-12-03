@@ -51,7 +51,6 @@ int32_t DeviceProfileManager::Init()
         initResult = deviceProfileStore_->Init();
     }
     HILOGI("Init finish, res: %d", initResult);
-    LoadDpSyncAdapter();
     return initResult;
 }
 
@@ -525,18 +524,25 @@ void DeviceProfileManager::UnloadDpSyncAdapter()
 
 int32_t DeviceProfileManager::RunloadedFunction(std::string deviceId, sptr<IRemoteObject> syncCompletedCallback)
 {
-    std::lock_guard<std::mutex> lock(dpSyncMutex_);
-    if (isAdapterSoLoaded_ && dpSyncAdapter_->DetectRemoteDPVersion(deviceId) == DP_SUCCESS) {
-        const std::list<std::string> deviceIdList = { deviceId };
-        int32_t errCode = dpSyncAdapter_->SyncProfile(deviceIdList, syncCompletedCallback);
-        if (errCode != DP_SUCCESS) {
-            HILOGI("sync profile failed");
-        }
-        return DP_SUCCESS;
-    } else {
-        HILOGI("dp service adapter load failed");
+    if (!LoadDpSyncAdapter()) {
+        HILOGE("dp service adapter load failed.");
         return DP_LOAD_SYNC_ADAPTER_FAILED;
     }
+    if (dpSyncAdapter_->Initialize()!= DP_SUCCESS) {
+        HILOGE("dp service adapter initialize failed.");
+        return DP_LOAD_SYNC_ADAPTER_FAILED;
+    }
+    if (dpSyncAdapter_->DetectRemoteDPVersion(deviceId) != DP_SUCCESS) {
+        HILOGE("dp service adapter detect remote version failed.");
+        return DP_LOAD_SYNC_ADAPTER_FAILED;
+    }
+    const std::list<std::string> deviceIdList = { deviceId };
+    if (dpSyncAdapter_->SyncProfile(deviceIdList, syncCompletedCallback) != DP_SUCCESS) {
+        HILOGE("dp service adapter sync profile failed.");
+        return DP_LOAD_SYNC_ADAPTER_FAILED;
+    }
+    HILOGD("dp service adapter sync profile success.");
+    return DP_SUCCESS;
 }
 
 } // namespace DeviceProfile
