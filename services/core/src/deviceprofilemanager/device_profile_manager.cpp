@@ -528,7 +528,7 @@ int32_t DeviceProfileManager::RunloadedFunction(std::string deviceId, sptr<IRemo
         HILOGE("dp service adapter load failed.");
         return DP_LOAD_SYNC_ADAPTER_FAILED;
     }
-    if (dpSyncAdapter_->Initialize()!= DP_SUCCESS) {
+    if (dpSyncAdapter_->Initialize() != DP_SUCCESS) {
         HILOGE("dp service adapter initialize failed.");
         return DP_LOAD_SYNC_ADAPTER_FAILED;
     }
