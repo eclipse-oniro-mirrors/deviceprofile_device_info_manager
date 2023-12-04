@@ -55,11 +55,13 @@ void DeviceProfileManagerTest::SetUpTestCase(void) {
 void DeviceProfileManagerTest::TearDownTestCase(void) {
 }
 
-void DeviceProfileManagerTest::SetUp() {
+void DeviceProfileManagerTest::SetUp()
+{
     DeviceProfileManager::GetInstance().Init();
 }
 
-void DeviceProfileManagerTest::TearDown() {
+void DeviceProfileManagerTest::TearDown()
+{
     DeviceProfileManager::GetInstance().UnInit();
 }
 
@@ -75,7 +77,7 @@ public:
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(DeviceProfileManagerTest, Init001, TestSize.Level1) 
+HWTEST_F(DeviceProfileManagerTest, Init001, TestSize.Level1)
 {
     DeviceProfileManager::GetInstance().UnInit();
     int32_t ret = DeviceProfileManager::GetInstance().Init();
