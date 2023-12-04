@@ -395,4 +395,3 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SyncDeviceProfile001, TestSize.Le
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().SyncDeviceProfile(syncOptions, syncCb);
     EXPECT_EQ(errCode, DP_SYNC_DEVICE_FAIL);
 }
-

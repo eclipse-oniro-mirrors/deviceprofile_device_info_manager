@@ -1113,11 +1113,4 @@ HWTEST_F(DeviceProfileManagerTest, SyncDeviceProfile002, TestSize.Level1)
     EXPECT_EQ(errCode, DP_INVALID_PARAMS);
 }
 
-
 #endif //__CXX_TEST_H__
-
-
-
- 
-
-
