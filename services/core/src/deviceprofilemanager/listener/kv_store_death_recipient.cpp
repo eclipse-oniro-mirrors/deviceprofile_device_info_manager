@@ -30,16 +30,24 @@ namespace {
 KvDeathRecipient::KvDeathRecipient()
 {
     HILOGI("construct!");
-    std::lock_guard<std::mutex> lock(reInitMutex_);
-    reInitHandler_ = EventHandlerFactory::GetInstance().CreateEventHandler(KV_DEATH_HANDLER);
+    {
+        std::lock_guard<std::mutex> lock(reInitMutex_);
+        reInitHandler_ = EventHandlerFactory::GetInstance().CreateEventHandler(KV_DEATH_HANDLER);
+    }
 }
 
 KvDeathRecipient::~KvDeathRecipient()
 {
     HILOGI("destruct!");
-    std::lock_guard<std::mutex> lock(reInitMutex_);
-    reInitHandler_->RemoveTask(REINIT_TASK);
-    reInitHandler_ = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(reInitMutex_);
+        if (reInitHandler_ == nullptr) {
+            HILOGE("reInitHandler is nullptr!");
+            return;
+        }
+        reInitHandler_->RemoveTask(REINIT_TASK);
+        reInitHandler_ = nullptr;
+    }
 }
 
 void KvDeathRecipient::OnRemoteDied()

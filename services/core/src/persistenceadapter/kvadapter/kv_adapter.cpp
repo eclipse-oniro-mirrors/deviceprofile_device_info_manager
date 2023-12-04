@@ -268,9 +268,7 @@ int32_t KVAdapter::DeleteKvStorePtr()
     HILOGI("Delete KvStore Ptr!");
     {
         std::lock_guard<std::mutex> lock(kvAdapterMutex_);
-        if (kvStorePtr_ != nullptr) {
-            kvStorePtr_ = nullptr;
-        }
+        kvStorePtr_ = nullptr;
     }
     return DP_SUCCESS;
 }
@@ -344,9 +342,7 @@ int32_t KVAdapter::DeleteDataChangeListener()
     HILOGI("Delete DataChangeListener!");
     {
         std::lock_guard<std::mutex> lock(kvAdapterMutex_);
-        if (dataChangeListener_ != nullptr) {
-            dataChangeListener_ = nullptr;
-        }
+        dataChangeListener_ = nullptr;
     }
     return DP_SUCCESS;
 }
@@ -392,9 +388,7 @@ int32_t KVAdapter::DeleteSyncCompletedListener()
     HILOGI("Delete SyncCompletedListener!");
     {
         std::lock_guard<std::mutex> lock(kvAdapterMutex_);
-        if (syncCompletedListener_ != nullptr) {
-            syncCompletedListener_ = nullptr;
-        }
+        syncCompletedListener_ = nullptr;
     }
     return DP_SUCCESS;
 }
@@ -425,9 +419,7 @@ int32_t KVAdapter::DeleteDeathListener()
     HILOGI("Delete DeathListener!");
     {
         std::lock_guard<std::mutex> lock(kvAdapterMutex_);
-        if (deathRecipient_ != nullptr) {
-            deathRecipient_ = nullptr;
-        }
+        deathRecipient_ = nullptr;
     }
     return DP_SUCCESS;
 }

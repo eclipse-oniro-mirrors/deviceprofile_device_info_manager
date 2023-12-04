@@ -36,16 +36,24 @@ namespace {
 KvSyncCompletedListener::KvSyncCompletedListener()
 {
     HILOGI("construct!");
-    std::mutex reInitMutex_;
-    onSyncHandler_ = EventHandlerFactory::GetInstance().CreateEventHandler(ON_SYNC_HANDLER);
+    {
+        std::lock_guard<std::mutex> lock(reInitMutex_);
+        onSyncHandler_ = EventHandlerFactory::GetInstance().CreateEventHandler(ON_SYNC_HANDLER);
+    }
 }
 
 KvSyncCompletedListener::~KvSyncCompletedListener()
 {
     HILOGI("destruct!");
-    std::mutex reInitMutex_;
-    onSyncHandler_->RemoveTask(ON_SYNC_TASK_ID);
-    onSyncHandler_ = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(reInitMutex_);
+        if (onSyncHandler_ == nullptr) {
+            HILOGE("onSyncHandler is nullptr!");
+            return;
+        }
+        onSyncHandler_->RemoveTask(ON_SYNC_TASK_ID);
+        onSyncHandler_ = nullptr;
+    }
 }
 
 void KvSyncCompletedListener::SyncCompleted(const std::map<std::string, DistributedKv::Status>& results)
@@ -62,20 +70,23 @@ void KvSyncCompletedListener::SyncCompleted(const std::map<std::string, Distribu
     auto notifyTask = [this, syncResults = std::move(syncResults)]() {
         NotifySyncCompleted(syncResults);
     };
-    if (onSyncHandler_ == nullptr) {
-        HILOGE("Create EventHandler is nullptr, handlerName: %s!", ON_SYNC_HANDLER.c_str());
-        return;
-    }
-    if (!onSyncHandler_->PostTask(notifyTask, ON_SYNC_TASK_ID, 0)) {
-        HILOGE("Post task fail!");
-        return;
+    {
+        std::lock_guard<std::mutex> lock(reInitMutex_);
+        if (onSyncHandler_ == nullptr) {
+            HILOGE("Create EventHandler is nullptr, handlerName: %s!", ON_SYNC_HANDLER.c_str());
+            return;
+        }
+        if (!onSyncHandler_->PostTask(notifyTask, ON_SYNC_TASK_ID, 0)) {
+            HILOGE("Post task fail!");
+            return;
+        }
     }
 }
 
 void KvSyncCompletedListener::NotifySyncCompleted(const SyncResults& syncResults)
 {
     int64_t beginTime = GetTickCount();
-    std::map<std::u16string, sptr<IRemoteObject>> syncListeners;
+    std::map<std::string, sptr<IRemoteObject>> syncListeners;
     ProfileCache::GetInstance().GetSyncListeners(syncListeners);
     for (const auto& [_, syncListenerStub] : syncListeners) {
         sptr<ISyncCompletedCallback> syncListenerProxy = iface_cast<ISyncCompletedCallback>(syncListenerStub);

@@ -14,6 +14,7 @@
  */
 
 #include <cinttypes>
+#include <algorithm>
 #include "datetime_ex.h"
 
 #include "profile_cache.h"
@@ -344,9 +345,9 @@ int32_t ProfileCache::RefreshCharProfileCache(const std::vector<CharacteristicPr
     return DP_SUCCESS;
 }
 
-int32_t ProfileCache::AddSyncListener(const std::u16string& descriptor, sptr<IRemoteObject> syncListener)
+int32_t ProfileCache::AddSyncListener(const std::string& caller, sptr<IRemoteObject> syncListener)
 {
-    if (descriptor.empty() || descriptor.size() > MAX_STRING_LEN || syncListener == nullptr) {
+    if (caller.empty() || caller.size() > MAX_STRING_LEN || syncListener == nullptr) {
         HILOGE("params is invalid!");
         return DP_INVALID_PARAMS;
     }
@@ -356,14 +357,14 @@ int32_t ProfileCache::AddSyncListener(const std::u16string& descriptor, sptr<IRe
             HILOGE("syncListenerMap is exceed max listenerSize!");
             return DP_EXCEED_MAX_SIZE_FAIL;
         }
-        HILOGI("AddSyncListener descriptor %s!", ProfileUtils::toString(descriptor).c_str());
+        HILOGI("AddSyncListener caller %s!", caller.c_str());
         syncListener->AddDeathRecipient(syncListenerDeathRecipient_);
-        syncListenerMap_[descriptor] = syncListener;
+        syncListenerMap_[caller] = syncListener;
     }
     return DP_SUCCESS;
 }
 
-int32_t ProfileCache::GetSyncListeners(std::map<std::u16string, sptr<IRemoteObject>>& syncListeners)
+int32_t ProfileCache::GetSyncListeners(std::map<std::string, sptr<IRemoteObject>>& syncListeners)
 {
     HILOGI("call!");
     {
@@ -375,7 +376,7 @@ int32_t ProfileCache::GetSyncListeners(std::map<std::u16string, sptr<IRemoteObje
     return DP_SUCCESS;
 }
 
-int32_t ProfileCache::RemoveSyncListeners(std::map<std::u16string, sptr<IRemoteObject>> syncListeners)
+int32_t ProfileCache::RemoveSyncListeners(std::map<std::string, sptr<IRemoteObject>> syncListeners)
 {
     HILOGI("call!");
     {
@@ -386,7 +387,7 @@ int32_t ProfileCache::RemoveSyncListeners(std::map<std::u16string, sptr<IRemoteO
                 if (iter->second != nullptr) {
                     iter->second->RemoveDeathRecipient(syncListenerDeathRecipient_);
                 }
-                HILOGI("RemoveSyncListener descriptor %s!", ProfileUtils::toString(iter->first).c_str());
+                HILOGI("RemoveSyncListener caller %s!", iter->first.c_str());
                 iter = syncListenerMap_.erase(iter);
             } else {
                 iter++;
@@ -396,21 +397,46 @@ int32_t ProfileCache::RemoveSyncListeners(std::map<std::u16string, sptr<IRemoteO
     return DP_SUCCESS;
 }
 
-int32_t ProfileCache::RemoveSyncListener(const std::u16string& descriptor)
+int32_t ProfileCache::RemoveSyncListener(const std::string& caller)
 {
-    if (descriptor.empty() || descriptor.size() > MAX_STRING_LEN) {
+    if (caller.empty() || caller.size() > MAX_STRING_LEN) {
         HILOGE("descriptor is invalid!");
         return DP_INVALID_PARAMS;
     }
     {
         std::lock_guard<std::mutex> lock(syncListenerMutex_);
-        if (syncListenerMap_.count(descriptor) == 0) {
+        if (syncListenerMap_.count(caller) == 0) {
             HILOGE("Can not find this listener!");
             return DP_NOT_FOUND_FAIL;
         }
-        HILOGI("RemoveSyncListener descriptor %s!", ProfileUtils::toString(descriptor).c_str());
-        syncListenerMap_[descriptor]->RemoveDeathRecipient(syncListenerDeathRecipient_);
-        syncListenerMap_.erase(descriptor);
+        HILOGI("RemoveSyncListener caller %s!", caller.c_str());
+        syncListenerMap_[caller]->RemoveDeathRecipient(syncListenerDeathRecipient_);
+        syncListenerMap_.erase(caller);
+    }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileCache::RemoveSyncListener(sptr<IRemoteObject> syncListener)
+{
+    if (syncListener == nullptr) {
+        HILOGE("syncListener is nullptr!");
+        return DP_INVALID_PARAMS;
+    }
+    {
+        std::lock_guard<std::mutex> lock(syncListenerMutex_);
+        auto iter = std::find_if(syncListenerMap_.begin(), syncListenerMap_.end(), [=](
+            const std::pair<std::string, sptr<IRemoteObject>>& item)->bool {
+            return item.second == syncListener;
+        });
+        if (iter == syncListenerMap_.end()) {
+            HILOGE("syncListener is not exist!");
+            return DP_NOT_FOUND_FAIL;
+        }
+        HILOGI("RemoveSyncListener remote procName = %{public}s", iter->first.c_str());
+        if (iter->second != nullptr) {
+            iter->second->RemoveDeathRecipient(syncListenerDeathRecipient_);
+        }
+        syncListenerMap_.erase(iter);
     }
     return DP_SUCCESS;
 }

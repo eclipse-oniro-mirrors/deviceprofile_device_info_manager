@@ -195,10 +195,9 @@ bool ProfileUtils::IsKeyValid(const std::string& key)
     if (key.length() == 0 || key.length() > MAX_STRING_LEN) {
         return false;
     }
-    for (auto item : key) {
-        if (item == '#') {
-            return false;
-        }
+    size_t found = key.find(SEPARATOR);
+    if (found != std::string::npos) {
+        return false;
     }
     return true;
 }

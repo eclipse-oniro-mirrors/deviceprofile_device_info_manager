@@ -99,8 +99,7 @@ int32_t DistributedDeviceProfileService::PutDeviceProfile(const ServiceCharacter
         .funcName = "PutDeviceProfile",
         .stageRes = ret ?
             static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL),
-        .bizState = ret ?
-            static_cast<int32_t>(BizState::BIZ_STATE_START) : static_cast<int32_t>(BizState::BIZ_STATE_END),
+        .bizState = static_cast<int32_t>(BizState::BIZ_STATE_END),
         .errCode = ERR_DP_PERMISSION_DENIED,
     };
     if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(info)) {
@@ -128,8 +127,7 @@ int32_t DistributedDeviceProfileService::GetDeviceProfile(const std::string& udi
         .funcName = "GetDeviceProfile",
         .stageRes = ret ?
             static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL),
-        .bizState = ret ?
-            static_cast<int32_t>(BizState::BIZ_STATE_START) : static_cast<int32_t>(BizState::BIZ_STATE_END),
+        .bizState = static_cast<int32_t>(BizState::BIZ_STATE_END),
         .errCode = ERR_DP_PERMISSION_DENIED,
     };
     if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(info)) {
@@ -149,8 +147,7 @@ int32_t DistributedDeviceProfileService::DeleteDeviceProfile(const std::string& 
         .funcName = "DeleteDeviceProfile",
         .stageRes = ret ?
             static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL),
-        .bizState = ret ?
-            static_cast<int32_t>(BizState::BIZ_STATE_START) : static_cast<int32_t>(BizState::BIZ_STATE_END),
+        .bizState = static_cast<int32_t>(BizState::BIZ_STATE_END),
         .errCode = ERR_DP_PERMISSION_DENIED,
     };
     if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(info)) {
@@ -167,6 +164,14 @@ int32_t DistributedDeviceProfileService::SubscribeProfileEvents(const std::list<
     std::list<ProfileEvent>& failedEvents)
 {
     HITRACE_METER_NAME(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_SUB_TRACE);
+    struct RadarInfo info = {
+        .funcName = "SubscribeProfileEvents",
+        .stageRes = static_cast<int32_t>(StageRes::STAGE_SUCC),
+        .bizState = static_cast<int32_t>(BizState::BIZ_STATE_END),
+    };
+    if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(info)) {
+        HILOGE("ReportSaCheckAuth failed");
+    }
     return SubscribeManager::GetInstance().SubscribeProfileEvents(subscribeInfos,
         profileEventNotifier, failedEvents);
 }
@@ -175,6 +180,14 @@ int32_t DistributedDeviceProfileService::UnsubscribeProfileEvents(const std::lis
     const sptr<IRemoteObject>& profileEventNotifier,
     std::list<ProfileEvent>& failedEvents)
 {
+    struct RadarInfo info = {
+        .funcName = "UnsubscribeProfileEvents",
+        .stageRes = static_cast<int32_t>(StageRes::STAGE_SUCC),
+        .bizState = static_cast<int32_t>(BizState::BIZ_STATE_END),
+    };
+    if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(info)) {
+        HILOGE("ReportSaCheckAuth failed");
+    }
     return SubscribeManager::GetInstance().UnsubscribeProfileEvents(profileEvents,
         profileEventNotifier, failedEvents);
 }
@@ -187,8 +200,7 @@ int32_t DistributedDeviceProfileService::SyncDeviceProfile(const SyncOptions& sy
         .funcName = "SyncDeviceProfile",
         .stageRes = ret ?
             static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL),
-        .bizState = ret ?
-            static_cast<int32_t>(BizState::BIZ_STATE_START) : static_cast<int32_t>(BizState::BIZ_STATE_END),
+        .bizState = static_cast<int32_t>(BizState::BIZ_STATE_END),
         .errCode = ERR_DP_PERMISSION_DENIED,
     };
     if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(info)) {

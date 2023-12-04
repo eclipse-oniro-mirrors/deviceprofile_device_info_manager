@@ -180,7 +180,7 @@ int32_t DeviceProfileStorageManager::PutDeviceProfile(const ServiceCharacteristi
         .toCallPkg = kvNAME,
         .hostName = DpRadarHelper::GetInstance().GetHostNameByServiceId(serviceId),
         .localUdid = localUdid_,
-        .errCode = errCode,
+        .errCode = ERR_DP_ADD_DATA_FAILED,
     };
     if (!DpRadarHelper::GetInstance().ReportAddData(info)) {
         HILOGE("ReportAddData failed");
@@ -228,7 +228,7 @@ int32_t DeviceProfileStorageManager::GetDeviceProfile(const std::string& udid,
         .toCallPkg = kvNAME,
         .hostName = DpRadarHelper::GetInstance().GetHostNameByServiceId(serviceId),
         .localUdid = localUdid_,
-        .errCode = result,
+        .errCode = ERR_DP_GET_DATA_FAILED,
     };
     if (!DpRadarHelper::GetInstance().ReportGetData(info)) {
         HILOGE("ReportGetData failed");
@@ -302,7 +302,7 @@ int32_t DeviceProfileStorageManager::DeleteDeviceProfile(const std::string& serv
         errCode = onlineSyncTbl_->PutDeviceProfile(servicesKey, servicesValue);
         info.stageRes = (errCode == ERR_OK) ?
             static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL);
-        info.errCode = errCode;
+        info.errCode = ERR_DP_DELETE_DATA_FAILED;
         if (errCode != ERR_OK) {
             HILOGW("update services failed, errorCode = %{public}d", errCode);
         }
@@ -392,7 +392,7 @@ int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOp
             .bizState = (result == ERR_OK) ?
                 static_cast<int32_t>(BizState::BIZ_STATE_START) : static_cast<int32_t>(BizState::BIZ_STATE_END),
             .peerUdid = DpRadarHelper::GetInstance().GetStringUdidList(devicesList),
-            .errCode = result,
+            .errCode = ERR_DP_SYNC_DATA_FAILED,
         };
         if (!DpRadarHelper::GetInstance().ReportSyncData(info)) {
             HILOGE("ReportSyncData failed");
