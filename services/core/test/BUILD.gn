@@ -79,6 +79,16 @@ ohos_unittest("distributed_device_profile_client_kv_new_test") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("device_profile_manager_new_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/device_profile_manager_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 ohos_unittest("ClientRdbTest") {
   module_out_path = module_output_path
   sources = [ "unittest/distributed_device_profile_client_rdb_test.cpp" ]
@@ -94,6 +104,7 @@ group("unittest") {
   deps = [
     ":ClientRdbTest",
     ":TrustProfileManagerTest",
+    ":device_profile_manager_new_test",
     ":distributed_device_profile_client_kv_new_test",
     ":rdb_adapter_new_test",
   ]
