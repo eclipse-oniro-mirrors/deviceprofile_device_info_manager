@@ -136,9 +136,9 @@ group("unittest") {
     ":TrustProfileManagerTest",
     ":device_profile_manager_new_test",
     ":distributed_device_profile_client_kv_new_test",
-    ":rdb_adapter_new_test",
     ":dp_dumper_new_test",
     ":dp_profile_service_new_test",
     ":profile_cache_new_test",
+    ":rdb_adapter_new_test",
   ]
 }

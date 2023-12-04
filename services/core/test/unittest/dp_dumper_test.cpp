@@ -41,47 +41,45 @@ void DpDumperTest::SetUp() {
 void DpDumperTest::TearDown() {
 }
 
-HWTEST_F(DpDumperTest, Dump_001, TestSize
-.Level1) {
-std::vector<std::string> args;
-std::string result;
-auto dumper = std::make_shared<DeviceProfileDumper>();
-bool ret = dumper->Dump(args, result);
-EXPECT_EQ(false, ret);
-}
-
-HWTEST_F(DpDumperTest, Dump_002, TestSize
-.Level1) {
-setuid(1212);
-std::string result;
-std::vector<std::string> args;
-auto dumper = std::make_shared<DeviceProfileDumper>();
-bool ret = dumper->Dump(args, result);
-EXPECT_EQ(true, ret);
-}
-
-HWTEST_F(DpDumperTest, Dump_003, TestSize
-.Level1)
+HWTEST_F(DpDumperTest, Dump_001, TestSize.Level1)
 {
-setuid(1212);
-std::string result;
-std::vector<std::string> args;
-args.emplace_back("-h");
-auto dumper = std::make_shared<DeviceProfileDumper>();
-bool ret = dumper->Dump(args, result);
-EXPECT_EQ(true, ret);
+    std::vector<std::string> args;
+    std::string result;
+    auto dumper = std::make_shared<DeviceProfileDumper>();
+    bool ret = dumper->Dump(args, result);
+    EXPECT_EQ(false, ret);
 }
 
-HWTEST_F(DpDumperTest, Dump_004, TestSize
-.Level1)
+HWTEST_F(DpDumperTest, Dump_002, TestSize.Level1)
 {
-setuid(1212);
-std::string result;
-std::vector<std::string> args;
-args.emplace_back("-g");
-auto dumper = std::make_shared<DeviceProfileDumper>();
-bool ret = dumper->Dump(args, result);
-EXPECT_EQ(false, ret);
+    setuid(1212);
+    std::string result;
+    std::vector<std::string> args;
+    auto dumper = std::make_shared<DeviceProfileDumper>();
+    bool ret = dumper->Dump(args, result);
+    EXPECT_EQ(true, ret);
+}
+
+HWTEST_F(DpDumperTest, Dump_003, TestSize.Level1)
+{
+    setuid(1212);
+    std::string result;
+    std::vector<std::string> args;
+    args.emplace_back("-h");
+    auto dumper = std::make_shared<DeviceProfileDumper>();
+    bool ret = dumper->Dump(args, result);
+    EXPECT_EQ(true, ret);
+}
+
+HWTEST_F(DpDumperTest, Dump_004, TestSize.Level1)
+{
+    setuid(1212);
+    std::string result;
+    std::vector<std::string> args;
+    args.emplace_back("-g");
+    auto dumper = std::make_shared<DeviceProfileDumper>();
+    bool ret = dumper->Dump(args, result);
+    EXPECT_EQ(false, ret);
 }
 }
 }
