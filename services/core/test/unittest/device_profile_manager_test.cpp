@@ -13,12 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef __CXX_TEST_H__
-#define __CXX_TEST_H__
-
 #define private   public
 #define protected public
-
 #include <string>
 #include <vector>
 #include <new>
@@ -36,6 +32,8 @@
 #include "sync_completed_callback_stub.h"
 #include "device_profile_manager.h"
 #include "kv_adapter.h"
+#undef private
+#undef protected
 
 using namespace testing::ext;
 using namespace OHOS::DistributedDeviceProfile;
@@ -1114,5 +1112,3 @@ HWTEST_F(DeviceProfileManagerTest, SyncDeviceProfile002, TestSize.Level1)
     int32_t errCode = DeviceProfileManager::GetInstance().SyncDeviceProfile(syncOptions, syncCb);
     EXPECT_EQ(errCode, DP_INVALID_PARAMS);
 }
-
-#endif //__CXX_TEST_H__
