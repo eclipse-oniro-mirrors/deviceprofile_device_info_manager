@@ -13,11 +13,14 @@
  * limitations under the License.
  */
 
-#include <gtest/gtest.h>
-
+#define private   public
+#define protected public
+#include "gtest/gtest.h"
 #include "profile_cache.h"
 #include "profile_utils.h"
 #include "device_profile_manager.h"
+#undef private
+#undef protected
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -82,7 +85,9 @@ HWTEST_F(ProfileCacheTest, AddServiceProfile_001, TestSize.Level2)
     serviceProfile.SetDeviceId(devId);
     ret = ProfileCache::GetInstance().AddServiceProfile(serviceProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
+    devId = "dp_devId";
+    serviceProfile.SetDeviceId(devId);
     for (int i = 1; i < MAX_DEVICE_SIZE + 1; ++i) {
         ProfileCache::GetInstance().serviceProfileMap_[std::to_string(i)] = serviceProfile;
     }
@@ -125,7 +130,11 @@ HWTEST_F(ProfileCacheTest, AddCharProfile_001, TestSize.Level2)
     charProfile.SetDeviceId(devId);
     ret = ProfileCache::GetInstance().AddCharProfile(charProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
+    serName = "dp_serName";
+    charProfile.SetServiceName(serName);
+    charKey = "dp_charKey";
+    charProfile.SetCharacteristicKey(charKey);
     for (int i = 1; i < MAX_DEVICE_SIZE + 1; ++i) {
         ProfileCache::GetInstance().charProfileMap_[std::to_string(i)] = charProfile;
     }
@@ -168,7 +177,8 @@ HWTEST_F(ProfileCacheTest, GetServiceProfile_001, TestSize.Level2)
     devId = "";
     ret = ProfileCache::GetInstance().GetServiceProfile(devId, serName, serviceProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
+    devId = "dp_devId";
     ProfileCache::GetInstance().serviceProfileMap_.clear();
     ret = ProfileCache::GetInstance().GetServiceProfile(devId, serName, serviceProfile);
     EXPECT_EQ(DP_NOT_FOUND_FAIL, ret);
@@ -206,7 +216,8 @@ HWTEST_F(ProfileCacheTest, GetCharacteristicProfile_001, TestSize.Level2)
     devId = "dp_devId";
     ret = ProfileCache::GetInstance().GetCharacteristicProfile(devId, serName, charKey, charProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
+    serName = "dp_serName";
     ProfileCache::GetInstance().charProfileMap_.clear();
     ret = ProfileCache::GetInstance().GetCharacteristicProfile(devId, serName, charKey, charProfile);
     EXPECT_EQ(DP_NOT_FOUND_FAIL, ret);
@@ -280,16 +291,28 @@ HWTEST_F(ProfileCacheTest, IsDeviceProfileExist_001, TestSize.Level2)
 {
     DeviceProfile deviceProfile;
     bool ret = ProfileCache::GetInstance().IsDeviceProfileExist(deviceProfile);
-    EXPECT_EQ(DP_INVALID_PARAMS, ret);
+    EXPECT_EQ(false, ret);
     
     std::string devId = "dp_devId";
     deviceProfile.SetDeviceId(devId);
     ret = ProfileCache::GetInstance().IsDeviceProfileExist(deviceProfile);
     EXPECT_EQ(false, ret);
-    
-    std::string deviceProfileKey = ProfileUtils::GenerateDeviceProfileKey(devId);
-    ProfileCache::GetInstance().deviceProfileMap_[deviceProfileKey] = deviceProfile;
-    ret = ProfileCache::GetInstance().IsDeviceProfileExist(deviceProfile);
+
+    DeviceProfile deviceProfile1;
+    deviceProfile1.SetDeviceId("anything1");
+    deviceProfile1.SetDeviceTypeName("anything");
+    deviceProfile1.SetDeviceTypeId(0);
+    deviceProfile1.SetDeviceName("anything");
+    deviceProfile1.SetManufactureName("anything");
+    deviceProfile1.SetDeviceModel("anything");
+    deviceProfile1.SetSerialNumberId("anything");
+    deviceProfile1.SetStorageCapability(1);
+    deviceProfile1.SetOsSysCap("anything");
+    deviceProfile1.SetOsApiLevel(1);
+    deviceProfile1.SetOsVersion("anything");
+    deviceProfile1.SetOsType(1);
+    ProfileCache::GetInstance().AddDeviceProfile(deviceProfile1);
+    ret = ProfileCache::GetInstance().IsDeviceProfileExist(deviceProfile1);
     EXPECT_EQ(true, ret);
 }
 
@@ -297,7 +320,7 @@ HWTEST_F(ProfileCacheTest, IsServiceProfileExist_001, TestSize.Level2)
 {
     ServiceProfile serviceProfile;
     bool ret = ProfileCache::GetInstance().IsServiceProfileExist(serviceProfile);
-    EXPECT_EQ(DP_INVALID_PARAMS, ret);
+    EXPECT_EQ(false, ret);
     
     std::string devId = "dp_devId";
     serviceProfile.SetDeviceId(devId);
@@ -315,10 +338,13 @@ HWTEST_F(ProfileCacheTest, IsServiceProfileExist_001, TestSize.Level2)
     serviceProfile.SetDeviceId(devId);
     ret = ProfileCache::GetInstance().IsServiceProfileExist(serviceProfile);
     EXPECT_EQ(false, ret);
-    
-    std::string serviceProfileKey = ProfileUtils::GenerateDeviceProfileKey(devId);
-    ProfileCache::GetInstance().serviceProfileMap_[serviceProfileKey] = serviceProfile;
-    ret = ProfileCache::GetInstance().IsServiceProfileExist(serviceProfile);
+
+    ServiceProfile serviceProfile1;
+    serviceProfile1.SetDeviceId("deviceId1");
+    serviceProfile1.SetServiceName("serviceName1");
+    serviceProfile1.SetServiceType("serviceType1");
+    ProfileCache::GetInstance().AddServiceProfile(serviceProfile1);
+    ret = ProfileCache::GetInstance().IsServiceProfileExist(serviceProfile1);
     EXPECT_EQ(true, ret);
 }
 
@@ -326,7 +352,7 @@ HWTEST_F(ProfileCacheTest, IsCharProfileExist_001, TestSize.Level2)
 {
     CharacteristicProfile charProfile;
     bool ret = ProfileCache::GetInstance().IsCharProfileExist(charProfile);
-    EXPECT_EQ(DP_INVALID_PARAMS, ret);
+    EXPECT_EQ(false, ret);
     
     std::string devId = "dp_devId";
     charProfile.SetDeviceId(devId);
@@ -354,10 +380,14 @@ HWTEST_F(ProfileCacheTest, IsCharProfileExist_001, TestSize.Level2)
     charProfile.SetDeviceId(devId);
     ret = ProfileCache::GetInstance().IsCharProfileExist(charProfile);
     EXPECT_EQ(false, ret);
-    
-    std::string charProfileKey = ProfileUtils::GenerateDeviceProfileKey(devId);
-    ProfileCache::GetInstance().charProfileMap_[charProfileKey] = charProfile;
-    ret = ProfileCache::GetInstance().IsCharProfileExist(charProfile);
+
+    CharacteristicProfile charProfile1;
+    charProfile1.SetDeviceId("deviceId1");
+    charProfile1.SetServiceName("serviceName1");
+    charProfile1.SetCharacteristicKey("characteristicKey1");
+    charProfile1.SetCharacteristicValue("characteristicValue1");
+    ProfileCache::GetInstance().AddCharProfile(charProfile1);
+    ret = ProfileCache::GetInstance().IsCharProfileExist(charProfile1);
     EXPECT_EQ(true, ret);
 }
 

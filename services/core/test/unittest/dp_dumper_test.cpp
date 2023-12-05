@@ -13,8 +13,12 @@
  * limitations under the License.
  */
 
-#include <gtest/gtest.h>
+#define private   public
+#define protected public
+#include "gtest/gtest.h"
 #include "device_profile_dumper.h"
+#undef private
+#undef protected
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
