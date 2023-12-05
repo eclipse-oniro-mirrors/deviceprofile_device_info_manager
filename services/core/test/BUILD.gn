@@ -121,7 +121,7 @@ ohos_unittest("PermissionManagerTest") {
 
 ohos_unittest("DPDetectUtilsTest") {
   module_out_path = module_output_path
-  sources = [ "unittest/dp_dectet_utils_test.cpp" ]
+  sources = [ "unittest/dp_detect_utils_test.cpp" ]
   configs = device_profile_configs
   deps = device_profile_deps
   external_deps = device_profile_external_deps
