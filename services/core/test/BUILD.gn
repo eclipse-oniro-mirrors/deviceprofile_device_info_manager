@@ -139,6 +139,56 @@ ohos_unittest("IpcUtilsTest") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("content_sensor_manager_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/content_sensor_manager_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("kv_data_change_listener_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/kv_data_change_listener_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("kv_store_death_recipient_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/kv_store_death_recipient_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("kv_sync_completed_listener_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/kv_sync_completed_listener_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("sync_subscriber_death_recipient_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/sync_subscriber_death_recipient_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 group("unittest") {
   testonly = true
   deps = [
@@ -148,8 +198,13 @@ group("unittest") {
     ":IpcUtilsTest",
     ":PermissionManagerTest",
     ":TrustProfileManagerTest",
+    ":content_sensor_manager_test",
     ":device_profile_manager_new_test",
     ":distributed_device_profile_client_kv_new_test",
+    ":kv_data_change_listener_test",
+    ":kv_store_death_recipient_test",
+    ":kv_sync_completed_listener_test",
     ":rdb_adapter_new_test",
+    ":sync_subscriber_death_recipient_test",
   ]
 }
