@@ -142,6 +142,10 @@ ohos_unittest("IpcUtilsTest") {
 group("unittest") {
   testonly = true
   deps = [
+    ":IpcUtilsTest",
+    ":DPDetectUtilsTest",
+    ":PermissionManagerTest",
+    ":DPSubscribeInfoTest",
     ":ClientRdbTest",
     ":DPDetectUtilsTest",
     ":DPSubscribeInfoTest",
