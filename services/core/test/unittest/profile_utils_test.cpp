@@ -39,19 +39,15 @@ public:
 };
 
 void ProfileUtilsTest::SetUpTestCase(void) {
-
 }
 
 void ProfileUtilsTest::TearDownTestCase(void) {
-
 }
 
 void ProfileUtilsTest::SetUp() {
-
 }
 
 void ProfileUtilsTest::TearDown() {
-
 }
 
 /**
