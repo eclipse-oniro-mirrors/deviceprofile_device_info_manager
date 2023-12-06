@@ -70,7 +70,6 @@ bool AuthorityManager::LoadAuthorityCfg(const std::string& filePath)
         HILOGE("parse failed");
         return false;
     }
-    HILOGD("authority json %{public}s", authJson_.dump().c_str());
     return true;
 }
 

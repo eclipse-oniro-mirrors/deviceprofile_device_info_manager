@@ -25,7 +25,6 @@
 #include "distributed_device_profile_log.h"
 #include "profile_utils.h"
 #include "profile_cache.h"
-#include "dp_detect_utils.h"
 #include "device_profile_manager.h"
 #include "permission_manager.h"
 

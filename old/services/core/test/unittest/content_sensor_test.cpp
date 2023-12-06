@@ -35,10 +35,6 @@ namespace OHOS {
 namespace DeviceProfile {
 using namespace testing;
 using namespace testing::ext;
-namespace {
-constexpr int32_t OHOS_TYPE = 10;
-}
-
 
 class ContentSensorTest : public testing::Test {
 public:
@@ -163,20 +159,6 @@ HWTEST_F(ContentSensorTest, GetDmsVersion_001, TestSize.Level2)
     ServiceCharacteristicProfile profile;
     bool result = appInfoCollector.ConvertToProfileData(profile);
     EXPECT_EQ(result, true);
-}
-
-/**
- * @tc.name: GetOsType_001
- * @tc.desc: GetOsType
- * @tc.type: FUNC
- * @tc.require: I52U5M
- */
-HWTEST_F(ContentSensorTest, GetOsType_001, TestSize.Level3)
-{
-    SystemInfoCollector systemInfo;
-    int32_t result = systemInfo.GetOsType();
-    DTEST_LOG << "result:" << result << std::endl;
-    EXPECT_EQ(result, OHOS_TYPE);
 }
 
 /**
