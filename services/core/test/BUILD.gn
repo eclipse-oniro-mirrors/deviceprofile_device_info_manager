@@ -119,16 +119,6 @@ ohos_unittest("PermissionManagerTest") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("DPDetectUtilsTest") {
-  module_out_path = module_output_path
-  sources = [ "unittest/dp_detect_utils_test.cpp" ]
-  configs = device_profile_configs
-  deps = device_profile_deps
-  external_deps = device_profile_external_deps
-  part_name = "device_info_manager"
-  subsystem_name = "deviceprofile"
-}
-
 ohos_unittest("IpcUtilsTest") {
   module_out_path = module_output_path
   sources = [ "unittest/ipc_utils_test.cpp" ]
@@ -193,7 +183,6 @@ group("unittest") {
   testonly = true
   deps = [
     ":ClientRdbTest",
-    ":DPDetectUtilsTest",
     ":DPSubscribeInfoTest",
     ":IpcUtilsTest",
     ":PermissionManagerTest",
