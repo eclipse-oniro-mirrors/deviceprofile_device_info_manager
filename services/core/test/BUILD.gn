@@ -179,6 +179,16 @@ ohos_unittest("sync_subscriber_death_recipient_test") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("dp_content_sensor_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/dp_content_sensor_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 group("unittest") {
   testonly = true
   deps = [
@@ -190,6 +200,7 @@ group("unittest") {
     ":content_sensor_manager_test",
     ":device_profile_manager_new_test",
     ":distributed_device_profile_client_kv_new_test",
+    ":dp_content_sensor_test",
     ":kv_data_change_listener_test",
     ":kv_store_death_recipient_test",
     ":kv_sync_completed_listener_test",
