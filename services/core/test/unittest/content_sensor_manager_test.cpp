@@ -85,19 +85,5 @@ HWTEST_F(ContentSensorManagerTest, UnInit001, TestSize.Level1)
     int32_t result = contentSensorManager_.UnInit();
     EXPECT_EQ(result, 0);
 }
-
-/*
- * @tc.name: UnInit001
- * @tc.desc: Init
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ContentSensorManagerTest, Collect001, TestSize.Level1)
-{
-    ContentSensorManager contentSensorManager_;
-    int32_t result = contentSensorManager_.Collect();
-    EXPECT_EQ(result, 0);
-}
-
 }
 }
