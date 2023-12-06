@@ -129,6 +129,16 @@ ohos_unittest("profile_cache_new_test") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("profile_utils_new_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/profile_utils_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 group("unittest") {
   testonly = true
   deps = [
@@ -140,5 +150,6 @@ group("unittest") {
 #    ":dp_profile_service_new_test",
     ":profile_cache_new_test",
     ":rdb_adapter_new_test",
+    ":profile_utils_new_test",
   ]
 }

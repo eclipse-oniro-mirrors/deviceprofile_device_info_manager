@@ -62,6 +62,7 @@ ohos_shared_library("distributed_device_profile_common") {
     "relational_store:native_rdb",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
+    "relational_store:native_rdb",
   ]
 
   part_name = "device_info_manager"
