@@ -47,7 +47,7 @@ void EventHandlerFactoryTest::TearDown() {
  * @tc.name: CreateEventHandler001
  * @tc.desc: CreateEventHandler succeed and failed, handlerName is invalid.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(EventHandlerFactoryTest, CreateEventHandler001, TestSize.Level1)
 {

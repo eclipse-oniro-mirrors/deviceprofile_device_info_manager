@@ -54,12 +54,12 @@ void ProfileUtilsTest::TearDown() {
  * @tc.name: GetAnonyString001
  * @tc.desc: GetAnonyString failed, length < 3.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetAnonyString001, TestSize.Level1)
 {
-    string len_2 = "ab";
-    string res = ProfileUtils::GetAnonyString(len_2);
+    string len2 = "ab";
+    string res = ProfileUtils::GetAnonyString(len2);
     EXPECT_EQ("******", res);
 }
 
@@ -67,12 +67,12 @@ HWTEST_F(ProfileUtilsTest, GetAnonyString001, TestSize.Level1)
  * @tc.name: GetAnonyString002
  * @tc.desc: GetAnonyString succeed, 3 <= length <= 20.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetAnonyString002, TestSize.Level1)
 {
-    string len_5 = "abcde";
-    string res = ProfileUtils::GetAnonyString(len_5);
+    string len5 = "abcde";
+    string res = ProfileUtils::GetAnonyString(len5);
     EXPECT_EQ("a******e", res);
 }
 
@@ -80,7 +80,7 @@ HWTEST_F(ProfileUtilsTest, GetAnonyString002, TestSize.Level1)
  * @tc.name: GetAnonyString003
  * @tc.desc: GetAnonyString succeed, length > 20.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetAnonyString003, TestSize.Level1)
 {
@@ -93,7 +93,7 @@ HWTEST_F(ProfileUtilsTest, GetAnonyString003, TestSize.Level1)
  * @tc.name: GetOnlineDevices001
  * @tc.desc: GetOnlineDevices succeed.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetOnlineDevices001, TestSize.Level1)
 {
@@ -105,7 +105,7 @@ HWTEST_F(ProfileUtilsTest, GetOnlineDevices001, TestSize.Level1)
  * @tc.name: FilterOnlineDevices001
  * @tc.desc: FilterOnlineDevices failed, deviceList.size() == 0.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, FilterOnlineDevices001, TestSize.Level1)
 {
@@ -118,7 +118,7 @@ HWTEST_F(ProfileUtilsTest, FilterOnlineDevices001, TestSize.Level1)
  * @tc.name: GetProfileType001
  * @tc.desc: GetProfileType succeed.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetProfileType001, TestSize.Level1)
 {
@@ -147,7 +147,7 @@ HWTEST_F(ProfileUtilsTest, GetProfileType001, TestSize.Level1)
  * @tc.name: StartsWith001
  * @tc.desc: StartsWith succeed.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, StartsWith001, TestSize.Level1)
 {
@@ -161,7 +161,7 @@ HWTEST_F(ProfileUtilsTest, StartsWith001, TestSize.Level1)
  * @tc.name: IsKeyValid001
  * @tc.desc: IsKeyValid.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, IsKeyValid001, TestSize.Level1)
 {
@@ -182,7 +182,7 @@ HWTEST_F(ProfileUtilsTest, IsKeyValid001, TestSize.Level1)
  * @tc.name: GenerateDeviceProfileKey001
  * @tc.desc: GenerateDeviceProfileKey.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GenerateDeviceProfileKey001, TestSize.Level1)
 {
@@ -195,7 +195,7 @@ HWTEST_F(ProfileUtilsTest, GenerateDeviceProfileKey001, TestSize.Level1)
  * @tc.name: GenerateServiceProfileKey001
  * @tc.desc: GenerateServiceProfileKey.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GenerateServiceProfileKey001, TestSize.Level1)
 {
@@ -209,7 +209,7 @@ HWTEST_F(ProfileUtilsTest, GenerateServiceProfileKey001, TestSize.Level1)
  * @tc.name: GenerateCharProfileKey001
  * @tc.desc: GenerateCharProfileKey.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GenerateCharProfileKey001, TestSize.Level1)
 {
@@ -224,7 +224,7 @@ HWTEST_F(ProfileUtilsTest, GenerateCharProfileKey001, TestSize.Level1)
  * @tc.name: TrustDeviceProfileTranslateEntries001
  * @tc.desc: TrustDeviceProfileToEntries and EntriesToTrustDeviceProfile.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, TrustDeviceProfileTranslateEntries001, TestSize.Level1)
 {
@@ -253,7 +253,7 @@ HWTEST_F(ProfileUtilsTest, TrustDeviceProfileTranslateEntries001, TestSize.Level
  * @tc.name: AccessControlProfileTranslateEntries001
  * @tc.desc: AccessControlProfileToEntries and EntriesToAccessControlProfile.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, AccessControlProfileTranslateEntries001, TestSize.Level1)
 {
@@ -309,7 +309,7 @@ HWTEST_F(ProfileUtilsTest, AccessControlProfileTranslateEntries001, TestSize.Lev
  * @tc.name: AccesserTranslateEntries001
  * @tc.desc: AccesserToEntries and EntriesToAccesser.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, AccesserTranslateEntries001, TestSize.Level1)
 {
@@ -365,7 +365,7 @@ HWTEST_F(ProfileUtilsTest, AccesserTranslateEntries001, TestSize.Level1)
  * @tc.name: AccesseeTranslateEntries001
  * @tc.desc: AccesseeToEntries and EntriesToAccessee.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, AccesseeTranslateEntries001, TestSize.Level1)
 {
@@ -421,7 +421,7 @@ HWTEST_F(ProfileUtilsTest, AccesseeTranslateEntries001, TestSize.Level1)
  * @tc.name: DeviceProfileTranslateEntries001
  * @tc.desc: DeviceProfileToEntries and EntriesToDeviceProfile.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, DeviceProfileTranslateEntries001, TestSize.Level1)
 {
@@ -453,7 +453,7 @@ HWTEST_F(ProfileUtilsTest, DeviceProfileTranslateEntries001, TestSize.Level1)
  * @tc.name: ServiceProfileTranslateEntries001
  * @tc.desc: ServiceProfileToEntries and EntriesToServiceProfile.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, ServiceProfileTranslateEntries001, TestSize.Level1)
 {
@@ -476,7 +476,7 @@ HWTEST_F(ProfileUtilsTest, ServiceProfileTranslateEntries001, TestSize.Level1)
  * @tc.name: CharacteristicProfileTranslateEntries001
  * @tc.desc: CharacteristicProfileToEntries and EntriesToCharProfile.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, CharacteristicProfileTranslateEntries001, TestSize.Level1)
 {
@@ -500,7 +500,7 @@ HWTEST_F(ProfileUtilsTest, CharacteristicProfileTranslateEntries001, TestSize.Le
  * @tc.name: EntriesToDeviceProfile001
  * @tc.desc: EntriesToDeviceProfile failed, Entries size is invalid.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, EntriesToDeviceProfile001, TestSize.Level1)
 {
@@ -514,7 +514,7 @@ HWTEST_F(ProfileUtilsTest, EntriesToDeviceProfile001, TestSize.Level1)
  * @tc.name: EntriesToServiceProfile001
  * @tc.desc: EntriesToServiceProfile failed, Entries size is invalid.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, EntriesToServiceProfile001, TestSize.Level1)
 {
@@ -528,7 +528,7 @@ HWTEST_F(ProfileUtilsTest, EntriesToServiceProfile001, TestSize.Level1)
  * @tc.name: EntriesToCharProfile001
  * @tc.desc: EntriesToCharProfile failed, Entries size is invalid.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, EntriesToCharProfile001, TestSize.Level1)
 {
@@ -542,7 +542,7 @@ HWTEST_F(ProfileUtilsTest, EntriesToCharProfile001, TestSize.Level1)
  * @tc.name: SplitString001
  * @tc.desc: SplitString failed, str == "".
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, SplitString001, TestSize.Level1)
 {
@@ -557,7 +557,7 @@ HWTEST_F(ProfileUtilsTest, SplitString001, TestSize.Level1)
  * @tc.name: SplitString002
  * @tc.desc: SplitString succeed.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, SplitString002, TestSize.Level1)
 {
@@ -573,7 +573,7 @@ HWTEST_F(ProfileUtilsTest, SplitString002, TestSize.Level1)
  * @tc.name: GenerateDBKey001
  * @tc.desc: GenerateDBKey succeed.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GenerateDBKey001, TestSize.Level1)
 {
@@ -587,7 +587,7 @@ HWTEST_F(ProfileUtilsTest, GenerateDBKey001, TestSize.Level1)
  * @tc.name: GetProfileKey001
  * @tc.desc: GetProfileKey succeed.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetProfileKey001, TestSize.Level1)
 {
@@ -600,7 +600,7 @@ HWTEST_F(ProfileUtilsTest, GetProfileKey001, TestSize.Level1)
  * @tc.name: GetProfileKey002
  * @tc.desc: GetProfileKey failed , dbKey.length() == 0.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetProfileKey002, TestSize.Level1)
 {
@@ -613,7 +613,7 @@ HWTEST_F(ProfileUtilsTest, GetProfileKey002, TestSize.Level1)
  * @tc.name: GetProfileProperty001
  * @tc.desc: GetProfileProperty succeed.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetProfileProperty001, TestSize.Level1)
 {
@@ -626,7 +626,7 @@ HWTEST_F(ProfileUtilsTest, GetProfileProperty001, TestSize.Level1)
  * @tc.name: GetProfileProperty002
  * @tc.desc: GetProfileProperty failed , dbKey.length() == 0.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetProfileProperty002, TestSize.Level1)
 {
@@ -639,7 +639,7 @@ HWTEST_F(ProfileUtilsTest, GetProfileProperty002, TestSize.Level1)
  * @tc.name: GetDeviceIdByDBKey001
  * @tc.desc: GetDeviceIdByDBKey succeed.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetDeviceIdByDBKey001, TestSize.Level1)
 {
@@ -652,7 +652,7 @@ HWTEST_F(ProfileUtilsTest, GetDeviceIdByDBKey001, TestSize.Level1)
  * @tc.name: GetDeviceIdByDBKey002
  * @tc.desc: GetDeviceIdByDBKey failed , dbKey.length() == 0.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetDeviceIdByDBKey002, TestSize.Level1)
 {
@@ -665,7 +665,7 @@ HWTEST_F(ProfileUtilsTest, GetDeviceIdByDBKey002, TestSize.Level1)
  * @tc.name: GetDeviceIdByDBKey003
  * @tc.desc: GetDeviceIdByDBKey failed , res.size() < 1.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetDeviceIdByDBKey003, TestSize.Level1)
 {
@@ -678,7 +678,7 @@ HWTEST_F(ProfileUtilsTest, GetDeviceIdByDBKey003, TestSize.Level1)
  * @tc.name: GetServiceNameByDBKey001
  * @tc.desc: GetServiceNameByDBKey succeed.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetServiceNameByDBKey001, TestSize.Level1)
 {
@@ -691,7 +691,7 @@ HWTEST_F(ProfileUtilsTest, GetServiceNameByDBKey001, TestSize.Level1)
  * @tc.name: GetServiceNameByDBKey002
  * @tc.desc: GetServiceNameByDBKey failed , dbKey.length() == 0.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetServiceNameByDBKey002, TestSize.Level1)
 {
@@ -704,7 +704,7 @@ HWTEST_F(ProfileUtilsTest, GetServiceNameByDBKey002, TestSize.Level1)
  * @tc.name: GetCharKeyByDBKey001
  * @tc.desc: GetCharKeyByDBKey succeed.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetCharKeyByDBKey001, TestSize.Level1)
 {
@@ -717,7 +717,7 @@ HWTEST_F(ProfileUtilsTest, GetCharKeyByDBKey001, TestSize.Level1)
  * @tc.name: GetCharKeyByDBKey002
  * @tc.desc: GetCharKeyByDBKey failed , dbKey.length() == 0.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetCharKeyByDBKey002, TestSize.Level1)
 {
@@ -730,7 +730,7 @@ HWTEST_F(ProfileUtilsTest, GetCharKeyByDBKey002, TestSize.Level1)
  * @tc.name: GetCharKeyByDBKey003
  * @tc.desc: GetCharKeyByDBKey failed , res.size() < 3.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetCharKeyByDBKey003, TestSize.Level1)
 {
@@ -743,7 +743,7 @@ HWTEST_F(ProfileUtilsTest, GetCharKeyByDBKey003, TestSize.Level1)
  * @tc.name: toString001
  * @tc.desc: toString succeed.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, toString001, TestSize.Level1)
 {
@@ -756,7 +756,7 @@ HWTEST_F(ProfileUtilsTest, toString001, TestSize.Level1)
  * @tc.name: IsPropertyValid001
  * @tc.desc: IsPropertyValid failed, propertyMap.size() == 0.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, IsPropertyValid001, TestSize.Level1)
 {
@@ -785,7 +785,7 @@ HWTEST_F(ProfileUtilsTest, IsPropertyValid001, TestSize.Level1)
  * @tc.name: GetIntValue001
  * @tc.desc: GetIntValue failed, ValuesBucket is empty.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetIntValue001, TestSize.Level1)
 {
@@ -800,7 +800,7 @@ HWTEST_F(ProfileUtilsTest, GetIntValue001, TestSize.Level1)
  * @tc.name: GetStringValue001
  * @tc.desc: GetStringValue failed, ValuesBucket is empty.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetStringValue001, TestSize.Level1)
 {
@@ -815,7 +815,7 @@ HWTEST_F(ProfileUtilsTest, GetStringValue001, TestSize.Level1)
  * @tc.name: GetLongValue001
  * @tc.desc: GetLongValue failed, ValuesBucket is empty.
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, GetLongValue001, TestSize.Level1)
 {
@@ -825,9 +825,3 @@ HWTEST_F(ProfileUtilsTest, GetLongValue001, TestSize.Level1)
     bool res = ProfileUtils::GetLongValue(values, property, value);
     EXPECT_EQ(false, res);
 }
-
-
-
-
-
-
