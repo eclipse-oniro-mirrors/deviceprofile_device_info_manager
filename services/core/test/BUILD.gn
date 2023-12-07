@@ -99,6 +99,66 @@ ohos_unittest("ClientRdbTest") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("dp_dumper_new_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/dp_dumper_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("profile_cache_new_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/profile_cache_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("profile_utils_new_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/profile_utils_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("kv_adapter_new_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/kv_adapter_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("event_handler_factory_new_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/event_handler_factory_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("sync_options_new_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/sync_options_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 ohos_unittest("DPSubscribeInfoTest") {
   module_out_path = module_output_path
   sources = [ "unittest/dp_subscribe_info_test.cpp" ]
@@ -190,10 +250,16 @@ group("unittest") {
     ":content_sensor_manager_test",
     ":device_profile_manager_new_test",
     ":distributed_device_profile_client_kv_new_test",
+    ":dp_dumper_new_test",
+    ":event_handler_factory_new_test",
+    ":kv_adapter_new_test",
     ":kv_data_change_listener_test",
     ":kv_store_death_recipient_test",
     ":kv_sync_completed_listener_test",
+    ":profile_cache_new_test",
+    ":profile_utils_new_test",
     ":rdb_adapter_new_test",
+    ":sync_options_new_test",
     ":sync_subscriber_death_recipient_test",
   ]
 }

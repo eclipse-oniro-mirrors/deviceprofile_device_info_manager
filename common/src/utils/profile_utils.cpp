@@ -20,6 +20,7 @@
 #include "profile_utils.h"
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_errors.h"
+#include "rdb_errno.h"
 #include "device_manager.h"
 #include "nlohmann/json.hpp"
 
@@ -314,16 +315,16 @@ int32_t ProfileUtils::EntriesToTrustDeviceProfile(const ValuesBucket& values, Tr
     ValueObject valueObject;
     std::string strValue = "";
     int32_t intValue = 0;
-    if (values.GetObject(DEVICE_ID, valueObject) && valueObject.GetString(strValue)) {
+    if (values.GetObject(DEVICE_ID, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
         profile.SetDeviceId(strValue);
     }
-    if (values.GetObject(DEVICE_ID_HASH, valueObject) && valueObject.GetString(strValue)) {
+    if (values.GetObject(DEVICE_ID_HASH, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
         profile.SetDeviceIdHash(strValue);
     }
-    if (values.GetObject(DEVICE_TYPE_ID, valueObject) && valueObject.GetInt(intValue)) {
+    if (values.GetObject(DEVICE_TYPE_ID, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
         profile.SetDeviceIdType(intValue);
     }
-    if (values.GetObject(STATUS, valueObject) && valueObject.GetInt(intValue)) {
+    if (values.GetObject(STATUS, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
         profile.SetStatus(intValue);
     }
     return DP_SUCCESS;
@@ -382,25 +383,25 @@ int32_t ProfileUtils::EntriesToAccesser(const ValuesBucket& values, Accesser& ac
     std::string strValue = "";
     int32_t intValue = 0;
     int64_t int64Value = 0;
-    if (values.GetObject(ACCESSER_ID, valueObject) && valueObject.GetLong(int64Value)) {
+    if (values.GetObject(ACCESSER_ID, valueObject) && valueObject.GetLong(int64Value) == NativeRdb::E_OK) {
         accesser.SetAccesserId(int64Value);
     }
-    if (values.GetObject(ACCESSER_DEVICE_ID, valueObject) && valueObject.GetString(strValue)) {
+    if (values.GetObject(ACCESSER_DEVICE_ID, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
         accesser.SetAccesserDeviceId(strValue);
     }
-    if (values.GetObject(ACCESSER_USER_ID, valueObject) && valueObject.GetInt(intValue)) {
+    if (values.GetObject(ACCESSER_USER_ID, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
         accesser.SetAccesserUserId(intValue);
     }
-    if (values.GetObject(ACCESSER_ACCOUNT_ID, valueObject) && valueObject.GetString(strValue)) {
+    if (values.GetObject(ACCESSER_ACCOUNT_ID, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
         accesser.SetAccesserAccountId(strValue);
     }
-    if (values.GetObject(ACCESSER_TOKEN_ID, valueObject) && valueObject.GetLong(int64Value)) {
+    if (values.GetObject(ACCESSER_TOKEN_ID, valueObject) && valueObject.GetLong(int64Value) == NativeRdb::E_OK) {
         accesser.SetAccesserTokenId(int64Value);
     }
-    if (values.GetObject(ACCESSER_BUNDLE_NAME, valueObject) && valueObject.GetString(strValue)) {
+    if (values.GetObject(ACCESSER_BUNDLE_NAME, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
         accesser.SetAccesserBundleName(strValue);
     }
-    if (values.GetObject(ACCESSER_BIND_LEVEL, valueObject) && valueObject.GetInt(intValue)) {
+    if (values.GetObject(ACCESSER_BIND_LEVEL, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
         accesser.SetAccesserBindLevel(intValue);
     }
     return DP_SUCCESS;
@@ -412,25 +413,25 @@ int32_t ProfileUtils::EntriesToAccessee(const ValuesBucket& values, Accessee& ac
     std::string strValue = "";
     int32_t intValue = 0;
     int64_t int64Value = 0;
-    if (values.GetObject(ACCESSEE_ID, valueObject) && valueObject.GetLong(int64Value)) {
+    if (values.GetObject(ACCESSEE_ID, valueObject) && valueObject.GetLong(int64Value) == NativeRdb::E_OK) {
         accessee.SetAccesseeId(int64Value);
     }
-    if (values.GetObject(ACCESSER_DEVICE_ID, valueObject) && valueObject.GetString(strValue)) {
+    if (values.GetObject(ACCESSEE_DEVICE_ID, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
         accessee.SetAccesseeDeviceId(strValue);
     }
-    if (values.GetObject(ACCESSER_USER_ID, valueObject) && valueObject.GetInt(intValue)) {
+    if (values.GetObject(ACCESSEE_USER_ID, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
         accessee.SetAccesseeUserId(intValue);
     }
-    if (values.GetObject(ACCESSER_ACCOUNT_ID, valueObject) && valueObject.GetString(strValue)) {
+    if (values.GetObject(ACCESSEE_ACCOUNT_ID, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
         accessee.SetAccesseeAccountId(strValue);
     }
-    if (values.GetObject(ACCESSER_TOKEN_ID, valueObject) && valueObject.GetLong(int64Value)) {
+    if (values.GetObject(ACCESSEE_TOKEN_ID, valueObject) && valueObject.GetLong(int64Value) == NativeRdb::E_OK) {
         accessee.SetAccesseeTokenId(int64Value);
     }
-    if (values.GetObject(ACCESSER_BUNDLE_NAME, valueObject) && valueObject.GetString(strValue)) {
+    if (values.GetObject(ACCESSEE_BUNDLE_NAME, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
         accessee.SetAccesseeBundleName(strValue);
     }
-    if (values.GetObject(ACCESSER_BIND_LEVEL, valueObject) && valueObject.GetInt(intValue)) {
+    if (values.GetObject(ACCESSEE_BIND_LEVEL, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
         accessee.SetAccesseeBindLevel(intValue);
     }
     return DP_SUCCESS;
@@ -604,7 +605,7 @@ bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& pro
 bool ProfileUtils::GetIntValue(const ValuesBucket& values, const std::string& property, int32_t& value)
 {
     ValueObject valueObject;
-    if (values.GetObject(property, valueObject) && valueObject.GetInt(value)) {
+    if (values.GetObject(property, valueObject) && valueObject.GetInt(value) == NativeRdb::E_OK) {
         return true;
     }
     return false;
@@ -613,7 +614,7 @@ bool ProfileUtils::GetIntValue(const ValuesBucket& values, const std::string& pr
 bool ProfileUtils::GetStringValue(const ValuesBucket& values, const std::string& property, std::string& value)
 {
     ValueObject valueObject;
-    if (values.GetObject(property, valueObject) && valueObject.GetString(value)) {
+    if (values.GetObject(property, valueObject) && valueObject.GetString(value) == NativeRdb::E_OK) {
         return true;
     }
     return false;
@@ -622,7 +623,7 @@ bool ProfileUtils::GetStringValue(const ValuesBucket& values, const std::string&
 bool ProfileUtils::GetLongValue(const ValuesBucket& values, const std::string& property, int64_t& value)
 {
     ValueObject valueObject;
-    if (values.GetObject(property, valueObject) && valueObject.GetLong(value)) {
+    if (values.GetObject(property, valueObject) && valueObject.GetLong(value) == NativeRdb::E_OK) {
         return true;
     }
     return false;
