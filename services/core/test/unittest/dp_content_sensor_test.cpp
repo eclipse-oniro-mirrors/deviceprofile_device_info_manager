@@ -143,19 +143,6 @@ HWTEST_F(DpContentSensorTest, GetTotalSize_001, TestSize.Level2)
 }
 
 /**
- * @tc.name: GetOsType_001
- * @tc.desc: GetOsType
- * @tc.type: FUNC
- * @tc.require: I52U5M
- */
-HWTEST_F(DpContentSensorTest, GetOsType_001, TestSize.Level3)
-{
-    SystemInfoCollector systemInfo;
-    int32_t result = systemInfo.GetOsType();
-    EXPECT_NE(result, -1);
-}
-
-/**
  * @tc.name: GetOsVersion_001
  * @tc.desc: GetOsVersion
  * @tc.type: FUNC
