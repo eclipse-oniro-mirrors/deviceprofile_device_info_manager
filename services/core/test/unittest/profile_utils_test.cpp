@@ -84,8 +84,8 @@ HWTEST_F(ProfileUtilsTest, GetAnonyString002, TestSize.Level1)
  */
 HWTEST_F(ProfileUtilsTest, GetAnonyString003, TestSize.Level1)
 {
-    string len_22 = "abcdefghijklmnopqrstuv";
-    string res = ProfileUtils::GetAnonyString(len_22);
+    string len22 = "abcdefghijklmnopqrstuv";
+    string res = ProfileUtils::GetAnonyString(len22);
     EXPECT_EQ("abcd******stuv", res);
 }
 
