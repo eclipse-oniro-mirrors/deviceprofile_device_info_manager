@@ -46,7 +46,8 @@
     "CollaborationFwk": {
         "servicesAuthority": {
           "specific": {
-            "collaborationFwk": 3
+            "collaborationFwk": 3,
+            "infoCollection": 3
           }
         },
         "interfacesAuthority": {

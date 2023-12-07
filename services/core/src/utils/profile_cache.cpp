@@ -208,7 +208,7 @@ bool ProfileCache::IsDeviceProfileExist(const DeviceProfile& deviceProfile)
 {
     if (!ProfileUtils::IsKeyValid(deviceProfile.GetDeviceId())) {
         HILOGE("Params is invalid!");
-        return DP_INVALID_PARAMS;
+        return false;
     }
     std::string deviceProfileKey = ProfileUtils::GenerateDeviceProfileKey(deviceProfile.GetDeviceId());
     {
@@ -231,7 +231,7 @@ bool ProfileCache::IsServiceProfileExist(const ServiceProfile& serviceProfile)
     if (!ProfileUtils::IsKeyValid(serviceProfile.GetDeviceId()) ||
         !ProfileUtils::IsKeyValid(serviceProfile.GetServiceName())) {
         HILOGE("Params is invalid!");
-        return DP_INVALID_PARAMS;
+        return false;
     }
     std::string serviceProfileKey = ProfileUtils::GenerateServiceProfileKey(serviceProfile.GetDeviceId(),
         serviceProfile.GetServiceName());
@@ -256,7 +256,7 @@ bool ProfileCache::IsCharProfileExist(const CharacteristicProfile& charProfile)
         !ProfileUtils::IsKeyValid(charProfile.GetServiceName()) ||
         !ProfileUtils::IsKeyValid(charProfile.GetCharacteristicKey())) {
         HILOGE("Params is invalid!");
-        return DP_INVALID_PARAMS;
+        return false;
     }
     std::string charProfileKey = ProfileUtils::GenerateCharProfileKey(charProfile.GetDeviceId(),
         charProfile.GetServiceName(), charProfile.GetCharacteristicKey());
