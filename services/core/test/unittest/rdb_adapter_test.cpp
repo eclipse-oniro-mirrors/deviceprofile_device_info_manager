@@ -160,7 +160,7 @@ HWTEST_F(RdbAdapterTest, CreateTable002, TestSize.Level1)
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(RdbAdapterTest, CreateTable002, TestSize.Level1)
+HWTEST_F(RdbAdapterTest, CreateTable003, TestSize.Level1)
 {
     std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     store->UnInit();
@@ -533,9 +533,30 @@ HWTEST_F(RdbAdapterTest, Update004, TestSize.Level1)
     value1.PutInt("deviceIdType", 3);
     value1.PutString("deviceIdHash", std::string("abcdef"));
     value1.PutInt("status", 1);
+    store->Put(outRowId, table, value1);
+    ValuesBucket value2;
+    value2.Clear();
+    value2.PutString("deviceId", std::string("222bbb"));
+    value2.PutInt("deviceIdType", 3);
+    value2.PutString("deviceIdHash", std::string("abcdef"));
+    value2.PutInt("status", 1);
+    store->Put(outRowId, table, value2);
+    
+    ValuesBucket newValues;
+    newValues.Clear();
+    newValues.PutString("deviceId", std::string("111aaa"));
+    newValues.PutInt("deviceIdType", 3);
+    newValues.PutString("deviceIdHash", std::string("222bbb"));
+    newValues.PutInt("status", 2);
+    
+    int32_t changedRows = 0;
+    std::string whereClause = "deviceId = ?";
+    ValueObject valueObject(std::string("111aaa"));
+    const std::vector<ValueObject>& bindArgs = {valueObject};
+    
     store->UnInit();
-    int32_t ret = store->Update(outRowId, table, value1);
-    EXPECT_EQ(ret, DP_RDB_DB_PTR_NULL);
+    int32_t updateErrCode = store->Update(changedRows, table, newValues, whereClause, bindArgs);
+    EXPECT_EQ(updateErrCode, DP_RDB_DB_PTR_NULL);
     store->Init();
 }
 
