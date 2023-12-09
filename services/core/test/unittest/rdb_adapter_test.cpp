@@ -249,7 +249,7 @@ HWTEST_F(RdbAdapterTest, Put003, TestSize.Level1)
 
 /**
  * @tc.name: Put004
- * @tc.desc: Put failed, 
+ * @tc.desc: Put failed, RDBStore_ is null.
  * @tc.type: FUNC
  * @tc.require:
  */
