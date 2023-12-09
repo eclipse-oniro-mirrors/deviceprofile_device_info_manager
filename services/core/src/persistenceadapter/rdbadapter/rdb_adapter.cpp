@@ -63,6 +63,7 @@ int32_t RdbAdapter::Init()
 
 int32_t RdbAdapter::UnInit()
 {
+    HILOGI("rdbAdapter unInit ");
     {
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
         store_ = nullptr;
@@ -72,6 +73,10 @@ int32_t RdbAdapter::UnInit()
 
 int32_t RdbAdapter::Put(int64_t& outRowId, const std::string& table, const ValuesBucket& values)
 {
+    if (store_ == nullptr) {
+        return DP_RDB_DB_PTR_NULL;
+        HILOGI("RDBStore_ is null");
+    }
     if (TABLES.find(table) == TABLES.end()) {
         HILOGI("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
@@ -89,6 +94,10 @@ int32_t RdbAdapter::Put(int64_t& outRowId, const std::string& table, const Value
 int32_t RdbAdapter::Delete(int32_t& deleteRows, const std::string& table, const std::string& whereClause,
     const std::vector<ValueObject>& bindArgs)
 {
+    if (store_ == nullptr) {
+        return DP_RDB_DB_PTR_NULL;
+        HILOGI("RDBStore_ is null");
+    }
     if (TABLES.find(table) == TABLES.end()) {
         HILOGI("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
@@ -106,6 +115,10 @@ int32_t RdbAdapter::Delete(int32_t& deleteRows, const std::string& table, const 
 int32_t RdbAdapter::Update(int32_t& changedRows, const std::string& table, const ValuesBucket& values,
     const std::string& whereClause, const std::vector<ValueObject>& bindArgs)
 {
+    if (store_ == nullptr) {
+        return DP_RDB_DB_PTR_NULL;
+        HILOGI("RDBStore_ is null");
+    }
     if (TABLES.find(table) == TABLES.end()) {
         HILOGI("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
@@ -149,6 +162,10 @@ int32_t RdbAdapter::GetRDBPtr()
 
 int32_t RdbAdapter::CreateTable(const std::string& sql)
 {
+    if (store_ == nullptr) {
+        return DP_RDB_DB_PTR_NULL;
+        HILOGI("RDBStore_ is null");
+    }
     {
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
         if (store_->ExecuteSql(sql) != E_OK) {

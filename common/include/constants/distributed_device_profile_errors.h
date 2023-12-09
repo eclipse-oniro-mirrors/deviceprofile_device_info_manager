@@ -124,6 +124,7 @@ constexpr int32_t DP_CREATE_SESSION_FAILED = 98566246;
 constexpr int32_t DP_RUN_LOADED_FUNCTION_FAILED = 98566247;
 constexpr int32_t DP_LOAD_SYNC_ADAPTER_FAILED = 98566248;
 constexpr int32_t DP_UPDATE_ACL_NOT_ALLOW = 98566249;
+constexpr int32_t DP_RDB_DB_PTR_NULL = 98566250;
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_ERRORS_H
