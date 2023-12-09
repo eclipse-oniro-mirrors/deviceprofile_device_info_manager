@@ -1,7 +1,7 @@
 {
     "PutAccessControlProfile": ["device_manager", "softbus_server"],
     "UpdateAccessControlProfile": ["device_manager", "softbus_server"],
-    "GetAccessControlProfile": ["device_manager", "softbus_server"],
+    "GetAccessControlProfile": ["device_manager", "softbus_server", "iShare"],
     "DeleteAccessControlProfile": ["device_manager", "softbus_server"],
     "GetTrustDeviceProfile": ["device_manager", "softbus_server"],
     "GetAllTrustDeviceProfile": ["device_manager", "softbus_server"],
