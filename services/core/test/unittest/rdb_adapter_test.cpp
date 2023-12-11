@@ -155,6 +155,21 @@ HWTEST_F(RdbAdapterTest, CreateTable002, TestSize.Level1)
 }
 
 /**
+ * @tc.name: CreateTable003
+ * @tc.desc: CreateTable failed, RDBStore_ is null.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(RdbAdapterTest, CreateTable003, TestSize.Level1)
+{
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
+    store->UnInit();
+    int32_t errCode = store->CreateTable(SUCCESS_CREATE_TABLE_SQL);
+    EXPECT_EQ(errCode, DP_RDB_DB_PTR_NULL);
+    store->Init();
+}
+
+/**
  * @tc.name:
  * @tc.desc: Put Success
  * @tc.type: FUNC
@@ -230,6 +245,30 @@ HWTEST_F(RdbAdapterTest, Put003, TestSize.Level1)
     int32_t putErrCode2 = store->Put(outRowId2, table, value2);
     EXPECT_EQ(putErrCode2, DP_RDBADAPTER_PUT_FAIL);
     EXPECT_EQ(outRowId2, 0);
+}
+
+/**
+ * @tc.name: Put004
+ * @tc.desc: Put failed, RDBStore_ is null.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(RdbAdapterTest, Put004, TestSize.Level1)
+{
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
+    store->CreateTable(SUCCESS_CREATE_TABLE_SQL);
+    int64_t outRowId = 0;
+    std::string table = "trust_device_table";
+    ValuesBucket values;
+    values.Clear();
+    values.PutString("deviceId", std::string("111aaa"));
+    values.PutInt("deviceIdType", 3);
+    values.PutString("deviceIdHash", std::string("222bbb"));
+    values.PutInt("status", 1);
+    store->UnInit();
+    int32_t putErrCode = store->Put(outRowId, table, values);
+    EXPECT_EQ(putErrCode, DP_RDB_DB_PTR_NULL);
+    store->Init();
 }
 
 /**
@@ -320,6 +359,37 @@ HWTEST_F(RdbAdapterTest, Delete003, TestSize.Level1)
     
     int32_t deleteErrCode = store->Delete(deleteRows, deleteTable, whereClause, bindArgs);
     EXPECT_EQ(deleteErrCode, DP_RDBADAPTER_DELETE_FAIL);
+}
+
+/**
+ * @tc.name: Delete004
+ * @tc.desc: Delete failed, RDBStore_ is null.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(RdbAdapterTest, Delete004, TestSize.Level1)
+{
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
+    store->CreateTable(SUCCESS_CREATE_TABLE_SQL);
+    int64_t outRowId = 0;
+    std::string table = "trust_device_table";
+    ValuesBucket values;
+    values.Clear();
+    values.PutString("deviceId", std::string("111aaa"));
+    values.PutInt("deviceIdType", 3);
+    values.PutString("deviceIdHash", std::string("222bbb"));
+    values.PutInt("status", 1);
+    store->Put(outRowId, table, values);
+    
+    int32_t deleteRows = 0;
+    std::string whereClause = "deviceId = ?";
+    ValueObject valueObject(std::string("111aaa"));
+    const std::vector<ValueObject>& bindArgs = {valueObject};
+    
+    store->UnInit();
+    int32_t deleteErrCode = store->Delete(deleteRows, table, whereClause, bindArgs);
+    EXPECT_EQ(deleteErrCode, DP_RDB_DB_PTR_NULL);
+    store->Init();
 }
 
 /**
@@ -446,6 +516,51 @@ HWTEST_F(RdbAdapterTest, Update003, TestSize.Level1)
 }
 
 /**
+ * @tc.name: Update004
+ * @tc.desc: Update failed, RDBStore_ is null.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(RdbAdapterTest, Update004, TestSize.Level1)
+{
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
+    store->CreateTable(SUCCESS_CREATE_TABLE_SQL);
+    int64_t outRowId = 0;
+    std::string table = "trust_device_table";
+    ValuesBucket value1;
+    value1.Clear();
+    value1.PutString("deviceId", std::string("111aaa"));
+    value1.PutInt("deviceIdType", 3);
+    value1.PutString("deviceIdHash", std::string("abcdef"));
+    value1.PutInt("status", 1);
+    store->Put(outRowId, table, value1);
+    ValuesBucket value2;
+    value2.Clear();
+    value2.PutString("deviceId", std::string("222bbb"));
+    value2.PutInt("deviceIdType", 3);
+    value2.PutString("deviceIdHash", std::string("abcdef"));
+    value2.PutInt("status", 1);
+    store->Put(outRowId, table, value2);
+    
+    ValuesBucket newValues;
+    newValues.Clear();
+    newValues.PutString("deviceId", std::string("111aaa"));
+    newValues.PutInt("deviceIdType", 3);
+    newValues.PutString("deviceIdHash", std::string("222bbb"));
+    newValues.PutInt("status", 2);
+    
+    int32_t changedRows = 0;
+    std::string whereClause = "deviceId = ?";
+    ValueObject valueObject(std::string("111aaa"));
+    const std::vector<ValueObject>& bindArgs = {valueObject};
+    
+    store->UnInit();
+    int32_t updateErrCode = store->Update(changedRows, table, newValues, whereClause, bindArgs);
+    EXPECT_EQ(updateErrCode, DP_RDB_DB_PTR_NULL);
+    store->Init();
+}
+
+/**
  * @tc.name:
  * @tc.desc: Get success
  * @tc.type: FUNC
@@ -467,4 +582,30 @@ HWTEST_F(RdbAdapterTest, Get001, TestSize.Level1)
 
     std::shared_ptr<ResultSet> resultSet = store->Get("SELECT * FROM trust_device_table where deviceId = '111aaa'");
     EXPECT_NE(resultSet, nullptr);
+}
+
+/**
+ * @tc.name: Get002
+ * @tc.desc: Get failed, RDBStore_ is null.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(RdbAdapterTest, Get002, TestSize.Level1)
+{
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
+    store->CreateTable(SUCCESS_CREATE_TABLE_SQL);
+    int64_t outRowId = 0;
+    std::string table = "trust_device_table";
+    ValuesBucket value1;
+    value1.Clear();
+    value1.PutString("deviceId", std::string("111aaa"));
+    value1.PutInt("deviceIdType", 3);
+    value1.PutString("deviceIdHash", std::string("abcdef"));
+    value1.PutInt("status", 1);
+    store->Put(outRowId, table, value1);
+    
+    store->UnInit();
+    std::shared_ptr<ResultSet> resultSet = store->Get("SELECT * FROM trust_device_table where deviceId = '111aaa'");
+    EXPECT_EQ(resultSet, nullptr);
+    store->Init();
 }

@@ -63,6 +63,7 @@ int32_t RdbAdapter::Init()
 
 int32_t RdbAdapter::UnInit()
 {
+    HILOGI("rdbAdapter unInit ");
     {
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
         store_ = nullptr;
@@ -78,6 +79,10 @@ int32_t RdbAdapter::Put(int64_t& outRowId, const std::string& table, const Value
     }
     {
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
+        if (store_ == nullptr) {
+            HILOGI("RDBStore_ is null");
+            return DP_RDB_DB_PTR_NULL;
+        }
         if (store_->Insert(outRowId, table, values) != E_OK) {
             HILOGI("rdbAdapter put failed");
             return DP_RDBADAPTER_PUT_FAIL;
@@ -95,6 +100,10 @@ int32_t RdbAdapter::Delete(int32_t& deleteRows, const std::string& table, const 
     }
     {
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
+        if (store_ == nullptr) {
+            HILOGI("RDBStore_ is null");
+            return DP_RDB_DB_PTR_NULL;
+        }
         if (store_->Delete(deleteRows, table, whereClause, bindArgs) != E_OK) {
             HILOGI("rdbAdapter delete failed");
             return DP_RDBADAPTER_DELETE_FAIL;
@@ -112,6 +121,10 @@ int32_t RdbAdapter::Update(int32_t& changedRows, const std::string& table, const
     }
     {
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
+        if (store_ == nullptr) {
+            HILOGI("RDBStore_ is null");
+            return DP_RDB_DB_PTR_NULL;
+        }
         if (store_->Update(changedRows, table, values, whereClause, bindArgs) != E_OK) {
             HILOGI("rdbAdapter update failed");
             return DP_RDBADAPTER_UPDATE_FAIL;
@@ -125,6 +138,10 @@ std::shared_ptr<ResultSet> RdbAdapter::Get(const std::string& sql, const std::ve
     std::shared_ptr<ResultSet> resultSet = nullptr;
     {
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
+        if (store_ == nullptr) {
+            HILOGI("RDBStore_ is null");
+            return nullptr;
+        }
         resultSet = store_->QueryByStep(sql, args);
     }
     return resultSet;
@@ -151,6 +168,10 @@ int32_t RdbAdapter::CreateTable(const std::string& sql)
 {
     {
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
+        if (store_ == nullptr) {
+            HILOGI("RDBStore_ is null");
+            return DP_RDB_DB_PTR_NULL;
+        }
         if (store_->ExecuteSql(sql) != E_OK) {
             HILOGI("rdbAdapter create table failed");
             return DP_RDBADAPTER_CREATE_TABLE_FAIL;

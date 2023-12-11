@@ -666,8 +666,8 @@ HWTEST_F(DeviceProfileManagerTest, GetServiceProfile001, TestSize.Level1)
     EXPECT_EQ(ret, DP_SUCCESS);
 
     string outDeviceId = outServiceProfile.GetDeviceId();
-    string outServiceName = outServiceProfile.GetServiceName();
-    string outServiceType = outServiceProfile.GetServiceType();
+    outServiceProfile.GetServiceName();
+    outServiceProfile.GetServiceType();
     EXPECT_EQ(outDeviceId, "deviceId5");
 }
 

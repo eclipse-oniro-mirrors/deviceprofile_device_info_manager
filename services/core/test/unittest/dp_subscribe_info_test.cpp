@@ -155,8 +155,6 @@ HWTEST_F(DPSubscribeInfoTest, Set_001, TestSize.Level1)
 {
     uint32_t saId = 4801;
     std::string subscribekey = "trust_device_profile";
-    std::unordered_set<ProfileChangeType> subscribeTypes = {ProfileChangeType::TRUST_DEVICE_PROFILE_ADD,
-        ProfileChangeType::TRUST_DEVICE_PROFILE_UPDATE, ProfileChangeType::TRUST_DEVICE_PROFILE_DELETE};
     OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener = nullptr;
     SubscribeInfo subscribeInfo;
     subscribeInfo.SetSaId(saId);
