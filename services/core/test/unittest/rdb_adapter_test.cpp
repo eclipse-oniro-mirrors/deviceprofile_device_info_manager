@@ -583,3 +583,29 @@ HWTEST_F(RdbAdapterTest, Get001, TestSize.Level1)
     std::shared_ptr<ResultSet> resultSet = store->Get("SELECT * FROM trust_device_table where deviceId = '111aaa'");
     EXPECT_NE(resultSet, nullptr);
 }
+
+/**
+ * @tc.name: Get002
+ * @tc.desc: Get failed, RDBStore_ is null.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(RdbAdapterTest, Get002, TestSize.Level1)
+{
+    std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
+    store->CreateTable(SUCCESS_CREATE_TABLE_SQL);
+    int64_t outRowId = 0;
+    std::string table = "trust_device_table";
+    ValuesBucket value1;
+    value1.Clear();
+    value1.PutString("deviceId", std::string("111aaa"));
+    value1.PutInt("deviceIdType", 3);
+    value1.PutString("deviceIdHash", std::string("abcdef"));
+    value1.PutInt("status", 1);
+    store->Put(outRowId, table, value1);
+    
+    store->UnInit();
+    std::shared_ptr<ResultSet> resultSet = store->Get("SELECT * FROM trust_device_table where deviceId = '111aaa'");
+    EXPECT_EQ(resultSet, nullptr);
+    store->Init();
+}
