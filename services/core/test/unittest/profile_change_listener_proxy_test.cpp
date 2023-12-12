@@ -33,9 +33,9 @@ using namespace OHOS::NativeRdb;
 using namespace OHOS::DistributedDeviceProfile;
 using namespace std;
 namespace {
-    const std::string TAG = "ProfileListenerProxyTest";
+    const std::string TAG = "ProfileChangeListenerProxyTest";
 }
-class ProfileListenerProxyTest : public testing::Test {
+class ProfileChangeListenerProxyTest : public testing::Test {
 public:
     static void SetUpTestCase();
     static void TearDownTestCase();
@@ -43,28 +43,28 @@ public:
     void TearDown();
 };
 
-void ProfileListenerProxyTest::SetUpTestCase()
+void ProfileChangeListenerProxyTest::SetUpTestCase()
 {
 }
 
-void ProfileListenerProxyTest::TearDownTestCase()
+void ProfileChangeListenerProxyTest::TearDownTestCase()
 {
 }
 
-void ProfileListenerProxyTest::SetUp()
+void ProfileChangeListenerProxyTest::SetUp()
 {
 }
 
-void ProfileListenerProxyTest::TearDown()
+void ProfileChangeListenerProxyTest::TearDown()
 {
 }
 
 /*
  * @tc.name: OnTrustDeviceProfile_001
- * @tc.desc: Normal testCase of ProfileListenerProxyTest for CRUD
+ * @tc.desc: Normal testCase of ProfileChangeListenerProxyTest for CRUD
  * @tc.type: FUNC
  */
-HWTEST_F(ProfileListenerProxyTest, OnTrustDeviceProfile_001, TestSize.Level1)
+HWTEST_F(ProfileChangeListenerProxyTest, OnTrustDeviceProfile_001, TestSize.Level1)
 {
     TrustDeviceProfile oldProfile;
     TrustDeviceProfile newProfile;
@@ -79,10 +79,10 @@ HWTEST_F(ProfileListenerProxyTest, OnTrustDeviceProfile_001, TestSize.Level1)
 
 /*
  * @tc.name: OnDeviceProfile_001
- * @tc.desc: Normal testCase of ProfileListenerProxyTest for CRUD
+ * @tc.desc: Normal testCase of ProfileChangeListenerProxyTest for CRUD
  * @tc.type: FUNC
  */
-HWTEST_F(ProfileListenerProxyTest, OnDeviceProfile_001, TestSize.Level1)
+HWTEST_F(ProfileChangeListenerProxyTest, OnDeviceProfile_001, TestSize.Level1)
 {
     DeviceProfile oldProfile;
     DeviceProfile newProfile;
@@ -97,10 +97,10 @@ HWTEST_F(ProfileListenerProxyTest, OnDeviceProfile_001, TestSize.Level1)
 
 /*
  * @tc.name: OnServiceProfile_001
- * @tc.desc: Normal testCase of ProfileListenerProxyTest for CRUD
+ * @tc.desc: Normal testCase of ProfileChangeListenerProxyTest for CRUD
  * @tc.type: FUNC
  */
-HWTEST_F(ProfileListenerProxyTest, OnServiceProfile_001, TestSize.Level1)
+HWTEST_F(ProfileChangeListenerProxyTest, OnServiceProfile_001, TestSize.Level1)
 {
     ServiceProfile oldProfile;
     ServiceProfile newProfile;
@@ -115,10 +115,10 @@ HWTEST_F(ProfileListenerProxyTest, OnServiceProfile_001, TestSize.Level1)
 
 /*
  * @tc.name: OnCharacteristicProfile_001
- * @tc.desc: Normal testCase of ProfileListenerProxyTest for CRUD
+ * @tc.desc: Normal testCase of ProfileChangeListenerProxyTest for CRUD
  * @tc.type: FUNC
  */
-HWTEST_F(ProfileListenerProxyTest, OnCharacteristicProfile_001, TestSize.Level1)
+HWTEST_F(ProfileChangeListenerProxyTest, OnCharacteristicProfile_001, TestSize.Level1)
 {
     CharacteristicProfile oldProfile;
     CharacteristicProfile newProfile;
