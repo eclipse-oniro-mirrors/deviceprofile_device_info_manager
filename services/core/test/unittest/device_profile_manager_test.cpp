@@ -1112,3 +1112,102 @@ HWTEST_F(DeviceProfileManagerTest, SyncDeviceProfile002, TestSize.Level1)
     int32_t errCode = DeviceProfileManager::GetInstance().SyncDeviceProfile(syncOptions, syncCb);
     EXPECT_EQ(errCode, DP_INVALID_PARAMS);
 }
+
+/**
+ * @tc.name: DeviceProfileMarshalling001
+ * @tc.desc: DeviceProfile Marshalling and UnMarshalling succeed.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, DeviceProfileMarshalling001, TestSize.Level1)
+{
+    OHOS::MessageParcel data;
+    DeviceProfile deviceProfile;
+    deviceProfile.SetDeviceId("anything");
+    deviceProfile.SetDeviceTypeName("anything");
+    deviceProfile.SetDeviceTypeId(0);
+    deviceProfile.SetDeviceName("anything");
+    deviceProfile.SetManufactureName("anything");
+    deviceProfile.SetDeviceModel("anything");
+    deviceProfile.SetSerialNumberId("anything");
+    deviceProfile.SetStorageCapability(1);
+    deviceProfile.SetOsSysCap("anything");
+    deviceProfile.SetOsApiLevel(1);
+    deviceProfile.SetOsVersion("anything");
+    deviceProfile.SetOsType(1);
+    
+    bool res1 = deviceProfile.Marshalling(data);
+    EXPECT_EQ(true, res1);
+    
+    bool res2 = deviceProfile.UnMarshalling(data);
+    EXPECT_EQ(true, res2);
+}
+
+/**
+ * @tc.name: DeviceProfileOperator001
+ * @tc.desc: DeviceProfileOperator true.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, DeviceProfileOperator001, TestSize.Level1)
+{
+    DeviceProfile deviceProfile1;
+    deviceProfile1.SetDeviceId("anything1");
+    deviceProfile1.SetDeviceTypeName("anything1");
+    deviceProfile1.SetDeviceTypeId(0);
+    deviceProfile1.SetDeviceName("anything1");
+    deviceProfile1.SetManufactureName("anything1");
+    deviceProfile1.SetDeviceModel("anything1");
+    deviceProfile1.SetSerialNumberId("anything1");
+    deviceProfile1.SetStorageCapability(1);
+    deviceProfile1.SetOsSysCap("anything1");
+    deviceProfile1.SetOsApiLevel(1);
+    deviceProfile1.SetOsVersion("anything1");
+    deviceProfile1.SetOsType(1);
+    
+    DeviceProfile deviceProfile2;
+    deviceProfile2.SetDeviceId("anything2");
+    deviceProfile2.SetDeviceTypeName("anything2");
+    deviceProfile2.SetDeviceTypeId(0);
+    deviceProfile2.SetDeviceName("anything2");
+    deviceProfile2.SetManufactureName("anything2");
+    deviceProfile2.SetDeviceModel("anything2");
+    deviceProfile2.SetSerialNumberId("anything2");
+    deviceProfile2.SetStorageCapability(1);
+    deviceProfile2.SetOsSysCap("anything2");
+    deviceProfile2.SetOsApiLevel(1);
+    deviceProfile2.SetOsVersion("anything2");
+    deviceProfile2.SetOsType(1);
+    
+    bool res = deviceProfile1 != deviceProfile2;
+    EXPECT_EQ(true, res);
+}
+
+/**
+ * @tc.name: DeviceProfileDump001
+ * @tc.desc: DeviceProfileDump succeed.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, DeviceProfileDump001, TestSize.Level1)
+{
+    DeviceProfile deviceProfile;
+    deviceProfile.SetDeviceId("anything");
+    deviceProfile.SetDeviceTypeName("anything");
+    deviceProfile.SetDeviceTypeId(0);
+    deviceProfile.SetDeviceName("anything");
+    deviceProfile.SetManufactureName("anything");
+    deviceProfile.SetDeviceModel("anything");
+    deviceProfile.SetSerialNumberId("anything");
+    deviceProfile.SetStorageCapability(1);
+    deviceProfile.SetOsSysCap("anything");
+    deviceProfile.SetOsApiLevel(1);
+    deviceProfile.SetOsVersion("anything");
+    deviceProfile.SetOsType(1);
+    
+    string strJson = deviceProfile.dump();
+    char fistChar = strJson.front();
+    char lastChar = strJson.back();
+    EXPECT_EQ('{', fistChar);
+    EXPECT_EQ('}', lastChar);
+}

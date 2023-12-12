@@ -244,7 +244,7 @@ HWTEST_F(ProfileUtilsTest, TrustDeviceProfileTranslateEntries001, TestSize.Level
     EXPECT_EQ("deviceId", strValue);
 
     TrustDeviceProfile outProfile;
-    int32_t res2 = res2 = ProfileUtils::EntriesToTrustDeviceProfile(values, outProfile);
+    int32_t res2 = ProfileUtils::EntriesToTrustDeviceProfile(values, outProfile);
     EXPECT_EQ(DP_SUCCESS, res2);
     EXPECT_EQ("deviceId", outProfile.GetDeviceId());
 }
