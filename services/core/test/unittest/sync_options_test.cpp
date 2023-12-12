@@ -76,6 +76,48 @@ HWTEST_F(SyncOptionsTest, AddGetDevice001, TestSize.Level1)
  */
 HWTEST_F(SyncOptionsTest, SetGetSyncMode001, TestSize.Level1)
 {
-    syncPtr->SetSyncMode(SyncMode::PULL);
-    EXPECT_EQ(SyncMode::PULL, syncPtr->GetSyncMode());
+    syncPtr->SetSyncMode(SyncMode::PUSH);
+    SyncMode mode = syncPtr->GetSyncMode();
+    EXPECT_EQ(SyncMode::PUSH, mode);
+}
+
+/**
+ * @tc.name: Marshalling001
+ * @tc.desc: Marshalling and UnMarshalling succeed.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SyncOptionsTest, Marshalling001, TestSize.Level1)
+{
+    syncPtr->AddDevice("device3");
+    syncPtr->AddDevice("device4");
+    syncPtr->AddDevice("device5");
+    syncPtr->SetSyncMode(SyncMode::PUSH);
+    OHOS::MessageParcel data;
+    
+    bool res1 = syncPtr->Marshalling(data);
+    EXPECT_EQ(true, res1);
+    
+    bool res2 = syncPtr->UnMarshalling(data);
+    EXPECT_EQ(true, res2);
+}
+
+/**
+ * @tc.name: Dump001
+ * @tc.desc: Dump succeed.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SyncOptionsTest, Dump001, TestSize.Level1)
+{
+    syncPtr->AddDevice("device6");
+    syncPtr->AddDevice("device7");
+    syncPtr->AddDevice("device8");
+    syncPtr->SetSyncMode(SyncMode::PUSH);
+
+    string strJson = syncPtr->dump();
+    char fistChar = strJson.front();
+    char lastChar = strJson.back();
+    EXPECT_EQ('{', fistChar);
+    EXPECT_EQ('}', lastChar);
 }
