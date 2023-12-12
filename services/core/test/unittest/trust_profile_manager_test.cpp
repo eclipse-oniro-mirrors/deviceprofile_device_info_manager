@@ -77,6 +77,37 @@ int TrustProfileManagerTest::ResultSize(std::shared_ptr<ResultSet> &resultSet)
 }
 
 /*
+ * @tc.name: GetAllTrustDeviceProfile_002
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, GetAllTrustDeviceProfile_002, TestSize.Level1)
+{
+    std::vector<TrustDeviceProfile> profile;
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAllTrustDeviceProfile(profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: GetAllAccessControlProfile_002
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, GetAllAccessControlProfile_002, TestSize.Level1)
+{
+    std::vector<AccessControlProfile> profile;
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAllAccessControlProfile(profile);
+    for (size_t i = 0; i < profile.size(); i++) {
+        std::cout << profile[i].dump() <<std::endl;
+        std::cout << profile[i].GetAccesser().dump() <<std::endl;
+        std::cout << profile[i].GetAccessee().dump() <<std::endl;
+    }
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
  * @tc.name: PutAccessControlProfile_001
  * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
  * @tc.type: FUNC
@@ -615,6 +646,94 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_006, TestSize.Level1)
 }
 
 /*
+ * @tc.name: GetAccessControlProfile_007
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_007, TestSize.Level1)
+{
+    std::vector<AccessControlProfile> profile;
+    std::map<std::string, std::string> parms;
+    parms.insert({{"userId", "33"}, {"bundleName", "b22"}, {"trustDeviceId", "123456"}, {"status", "0"}});
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    for (size_t i = 0; i < profile.size(); i++) {
+        std::cout << profile[i].dump() <<std::endl;
+        std::cout << profile[i].GetAccesser().dump() <<std::endl;
+        std::cout << profile[i].GetAccessee().dump() <<std::endl;
+    }
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: GetAccessControlProfile_008
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_008, TestSize.Level1)
+{
+    std::vector<AccessControlProfile> profile;
+    std::map<std::string, std::string> parms;
+    parms.insert({{"userId", "77"}, {"bundleName", "b4"}, {"trustDeviceId", "9999"}, {"status", "1"}});
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    for (size_t i = 0; i < profile.size(); i++) {
+        std::cout << profile[i].dump() <<std::endl;
+        std::cout << profile[i].GetAccesser().dump() <<std::endl;
+        std::cout << profile[i].GetAccessee().dump() <<std::endl;
+    }
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: GetAccessControlProfile_009
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_009, TestSize.Level1)
+{
+    std::vector<AccessControlProfile> profile;
+    std::map<std::string, std::string> parms;
+    parms.insert({{"bundleName", "b4"}, {"bindType", "4"}, {"status", "0"}});
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    for (size_t i = 0; i < profile.size(); i++) {
+        std::cout << profile[i].dump() <<std::endl;
+        std::cout << profile[i].GetAccesser().dump() <<std::endl;
+        std::cout << profile[i].GetAccessee().dump() <<std::endl;
+    }
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: GetAccessControlProfile_010
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_010, TestSize.Level1)
+{
+    std::vector<AccessControlProfile> profile;
+    std::map<std::string, std::string> parms;
+    parms.insert({{"bundleName", "b4"}, {"bindType", "88"}, {"status", "8"}});
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"bundleName", "b4"}, {"trustDeviceId", "88888"}, {"status", "0"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"accesserTokenId", "55555"}, {"accesseeDeviceId", "11111"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+}
+
+/*
  * @tc.name: UpdateAccessControlProfile_001
  * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
  * @tc.type: FUNC
@@ -875,3 +994,15 @@ HWTEST_F(TrustProfileManagerTest, GetTrustDeviceProfile_001, TestSize.Level1)
     EXPECT_EQ(ret, DP_SUCCESS);
 }
 
+/*
+ * @tc.name: GetTrustDeviceProfile_002
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, GetTrustDeviceProfile_002, TestSize.Level1)
+{
+    TrustDeviceProfile profile;
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetTrustDeviceProfile("8888", profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+}

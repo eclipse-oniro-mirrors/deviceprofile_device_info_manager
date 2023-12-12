@@ -132,15 +132,15 @@ void DPSubscribeInfoTest::TearDown()
 HWTEST_F(DPSubscribeInfoTest, Get_001, TestSize.Level1)
 {
     uint32_t saId = 4801;
-    std::string subscribekey = "trust_device_profile";
+    std::string subscribeKey = "trust_device_profile";
     std::unordered_set<ProfileChangeType> subscribeTypes = {ProfileChangeType::TRUST_DEVICE_PROFILE_ADD,
         ProfileChangeType::TRUST_DEVICE_PROFILE_UPDATE, ProfileChangeType::TRUST_DEVICE_PROFILE_DELETE};
     OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
 	    new(std::nothrow) DPSubscribeInfoTest::SubscribeDPChangeListener;
-    SubscribeInfo subscribeInfo(saId, subscribekey, subscribeTypes, subscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
     saId = subscribeInfo.GetSaId();
-    std::string subscribekey_ = subscribeInfo.GetSubscribeKey();
-    std::unordered_set<ProfileChangeType> subscribeTypes_ = subscribeInfo.GetProfileChangeTypes();
+    subscribeKey = subscribeInfo.GetSubscribeKey();
+    subscribeTypes = subscribeInfo.GetProfileChangeTypes();
     subscribeInfo.GetListener();
     int32_t ret = DP_SUCCESS;
     EXPECT_EQ(ret, DP_SUCCESS);
@@ -174,7 +174,7 @@ HWTEST_F(DPSubscribeInfoTest, Set_002, TestSize.Level1)
 {
     SubscribeInfo subscribeInfo;
     std::string deviceId = "";
-    std::string deviceAttribute ="";
+    std::string deviceAttribute = "";
     subscribeInfo.SetSubscribeKey(deviceId, deviceAttribute);
     std::string serviceName = "";
     std::string serviceAttribute = "";
@@ -208,8 +208,25 @@ HWTEST_F(DPSubscribeInfoTest, AddProfileChangeType_001, TestSize.Level1)
 HWTEST_F(DPSubscribeInfoTest, Marshalling_001, TestSize.Level1)
 {
     SubscribeInfo subscribeInfo;
+    SubscribeInfo subscribeInfo_2;
+    SubscribeCompare cmp;
+    cmp(subscribeInfo, subscribeInfo_2);
+    SubscribeHash hash;
+    hash(subscribeInfo_2);
     subscribeInfo.SetListener(nullptr);
     OHOS::MessageParcel parcel;
+    TrustDeviceProfile profile;
+    AccessControlProfile aclProfile;
+    Accesser accesser;
+    Accessee accessee;
+    accesser.Marshalling(parcel);
+    accesser.UnMarshalling(parcel);
+    accessee.Marshalling(parcel);
+    accessee.UnMarshalling(parcel);
+    aclProfile.Marshalling(parcel);
+    aclProfile.UnMarshalling(parcel);
+    profile.Marshalling(parcel);
+    profile.UnMarshalling(parcel);
     bool ret = subscribeInfo.Marshalling(parcel);
     EXPECT_EQ(ret, false);
     ret = subscribeInfo.UnMarshalling(parcel);

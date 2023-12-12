@@ -249,6 +249,16 @@ ohos_unittest("dp_content_sensor_test") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("ProfileListenerProxyTest") {
+  module_out_path = module_output_path
+  sources = [ "unittest/profile_change_listener_proxy_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 group("unittest") {
   testonly = true
   deps = [
@@ -256,6 +266,7 @@ group("unittest") {
     ":DPSubscribeInfoTest",
     ":IpcUtilsTest",
     ":PermissionManagerTest",
+    ":ProfileListenerProxyTest",
     ":TrustProfileManagerTest",
     ":content_sensor_manager_test",
     ":device_profile_manager_new_test",
