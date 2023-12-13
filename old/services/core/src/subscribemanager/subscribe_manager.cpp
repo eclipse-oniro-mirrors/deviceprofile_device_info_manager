@@ -32,7 +32,7 @@ namespace DeviceProfile {
 namespace {
 const std::string TAG = "SubscribeManager";
 
-constexpr int32_t MAX_SUBSCRIBS_PER_UID = 5;
+constexpr int32_t MAX_SUBSCRIBS_PER_UID = 20;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(SubscribeManager);
