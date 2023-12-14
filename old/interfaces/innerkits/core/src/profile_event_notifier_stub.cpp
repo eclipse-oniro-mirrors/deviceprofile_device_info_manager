@@ -67,7 +67,7 @@ int32_t ProfileEventNotifierStub::OnRemoteRequest(uint32_t code, MessageParcel& 
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
-int32_t ProfileEventNotifierStub::OnSyncCompletedInner(MessageParcel& data,
+__attribute__((no_sanitize("cfi"))) int32_t ProfileEventNotifierStub::OnSyncCompletedInner(MessageParcel& data,
     [[maybe_unused]] MessageParcel& reply)
 {
     int32_t size = data.ReadInt32();
