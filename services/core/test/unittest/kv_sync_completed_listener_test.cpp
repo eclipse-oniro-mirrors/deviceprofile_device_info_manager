@@ -61,16 +61,16 @@ void KvSyncCompletedListenerTest::TearDown()
 }
 
 /*
- * @tc.name: SyncCompleted001
- * @tc.desc: SyncCompleted
+ * @tc.name: ~KvSyncCompletedListener001
+ * @tc.desc: ~KvSyncCompletedListener
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(KvSyncCompletedListenerTest, SyncCompleted001, TestSize.Level1)
+HWTEST_F(KvSyncCompletedListenerTest, KvSyncCompletedListener001, TestSize.Level1)
 {
-    const std::map<std::string, DistributedKv::Status> results;
+    const std::string KV_DEATH_HANDLER = "kv_store_death_handler";
     KvSyncCompletedListener KvSyncCompletedListener_;
-    KvSyncCompletedListener_.SyncCompleted(results);
+    KvSyncCompletedListener_.onSyncHandler_ = EventHandlerFactory::GetInstance().CreateEventHandler(ON_SYNC_HANDLER);
 }
 
 /*
