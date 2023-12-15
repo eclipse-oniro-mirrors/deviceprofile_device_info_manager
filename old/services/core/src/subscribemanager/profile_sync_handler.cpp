@@ -62,13 +62,16 @@ void ProfileSyncHandler::NotifySyncCompleted(const SyncResult& syncResults)
     }
     {
         std::lock_guard<std::mutex> autoLock(notifierLock_);
-        for (const auto& [notifier, _] : profileEventSubscribeInfos_) {
-            sptr<IProfileEventNotifier> profileEventNotifier = iface_cast<IProfileEventNotifier>(notifier);
+        auto iter = profileEventSubscribeInfos_.begin();
+        while (iter != profileEventSubscribeInfos_.end()) {
+            sptr<IProfileEventNotifier> profileEventNotifier = iface_cast<IProfileEventNotifier>(iter->first);
             if (profileEventNotifier == nullptr) {
                 HILOGE("cast to IProfileEventNotifier failed");
-                continue;
+                iter++;
+            } else {
+                profileEventNotifier->OnSyncCompleted(syncResults);
+                profileEventSubscribeInfos_.erase(iter++);
             }
-            profileEventNotifier->OnSyncCompleted(syncResults);
         }
     }
     DeviceProfileStorageManager::GetInstance().NotifySyncCompleted();

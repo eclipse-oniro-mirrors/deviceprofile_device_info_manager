@@ -59,12 +59,6 @@ int32_t SubscribeManager::SubscribeProfileEvents(const std::list<SubscribeInfo>&
         return ERR_DP_INVALID_PARAMS;
     }
 
-    int32_t callingUid = IPCSkeleton::GetCallingUid();
-    if (!CheckSubsOfUid(callingUid)) {
-        HILOGE("uid %{public}d subscribed too many times", callingUid);
-        return ERR_DP_SUBSCRIBE_LIMIT_EXCEEDED;
-    }
-
     std::lock_guard<std::mutex> autoLock(handlerLock_);
     ProfileEvents subProfileEvents;
     std::shared_ptr<ProfileEventHandler> handler;
