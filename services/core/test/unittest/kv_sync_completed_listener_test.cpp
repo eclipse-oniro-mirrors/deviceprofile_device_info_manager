@@ -21,6 +21,7 @@
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_errors.h"
+#include "listener/kv_sync_completed_listener.h"
 #define private public
 #define protected public
 
