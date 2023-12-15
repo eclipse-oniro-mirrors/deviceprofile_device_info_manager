@@ -1182,7 +1182,7 @@ HWTEST_F(ProfileUtilsTest, EntriesToTrustDeviceProfile001, TestSize.Level1)
 
     values.Delete(DEVICE_TYPE_ID);
     values.PutNull(DEVICE_TYPE_ID);
-    ProfileUtils::EntriesToTrustDeviceProfile(values, profile); 
+    ProfileUtils::EntriesToTrustDeviceProfile(values, profile);
     values.Delete(DEVICE_TYPE_ID);
     ProfileUtils::EntriesToTrustDeviceProfile(values, profile);
 
