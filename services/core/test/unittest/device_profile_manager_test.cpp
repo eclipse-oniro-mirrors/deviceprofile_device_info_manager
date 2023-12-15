@@ -1211,3 +1211,29 @@ HWTEST_F(DeviceProfileManagerTest, DeviceProfileDump001, TestSize.Level1)
     EXPECT_EQ('{', fistChar);
     EXPECT_EQ('}', lastChar);
 }
+
+/**
+ * @tc.name: ServiceProfileConstructor001
+ * @tc.desc: ServiceProfileConstructor succeed.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, ServiceProfileConstructor001, TestSize.Level1)
+{
+    ServiceProfile serviceProfile = ServiceProfile("deviceId", "serviceName", "serviceType");
+    EXPECT_EQ("deviceId", serviceProfile.GetDeviceId());
+}
+
+/**
+ * @tc.name: LoadDpSyncAdapter001
+ * @tc.desc: LoadDpSyncAdapter first branch.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, LoadDpSyncAdapter001, TestSize.Level1)
+{
+    DeviceProfileManager::GetInstance().isAdapterSoLoaded_ = true;
+    bool ret = DeviceProfileManager::GetInstance().LoadDpSyncAdapter();
+    EXPECT_EQ(true, ret);
+    DeviceProfileManager::GetInstance().Init();
+}

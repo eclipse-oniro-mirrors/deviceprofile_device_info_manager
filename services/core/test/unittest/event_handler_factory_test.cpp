@@ -54,4 +54,11 @@ HWTEST_F(EventHandlerFactoryTest, CreateEventHandler001, TestSize.Level1)
     EventHandlerFactory::GetInstance().CreateEventHandler(UNLOAD_DP_SA_HANDLER);
     auto eventHandler = EventHandlerFactory::GetInstance().CreateEventHandler("");
     EXPECT_EQ(nullptr, eventHandler);
+    
+    string name = "";
+    for (int32_t i = 0; i < MAX_STRING_LEN + 5; i++) {
+        name += 'a';
+    }
+    eventHandler = EventHandlerFactory::GetInstance().CreateEventHandler(name);
+    EXPECT_EQ(nullptr, eventHandler);
 }

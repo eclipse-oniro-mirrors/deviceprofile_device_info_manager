@@ -19,6 +19,8 @@
 #include "profile_cache.h"
 #include "profile_utils.h"
 #include "device_profile_manager.h"
+#include "i_sync_completed_callback.h"
+#include "sync_completed_callback_stub.h"
 #undef private
 #undef protected
 
@@ -26,6 +28,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 using namespace testing;
 using namespace testing::ext;
+using namespace std;
 
 class ProfileCacheTest : public testing::Test {
 public:
@@ -46,6 +49,12 @@ void ProfileCacheTest::SetUp() {
 
 void ProfileCacheTest::TearDown() {
 }
+
+class SyncCallback : public SyncCompletedCallbackStub {
+public:
+    void OnSyncCompleted(const map<string, SyncStatus>& syncResults) {
+    }
+};
 
 HWTEST_F(ProfileCacheTest, AddDeviceProfile_001, TestSize.Level2)
 {
@@ -438,5 +447,154 @@ HWTEST_F(ProfileCacheTest, RefreshCharProfileCache_001, TestSize.Level2)
     ret = ProfileCache::GetInstance().RefreshCharProfileCache(characteristicProfiles);
     EXPECT_EQ(DP_SUCCESS, ret);
 }
+
+/**
+ * @tc.name: AddSyncListener001
+ * @tc.desc: AddSyncListener all.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, AddSyncListener001, TestSize.Level1)
+{
+    ProfileCache::GetInstance().UnInit();
+    ProfileCache::GetInstance().Init();
+    string caller = "caller";
+    OHOS::sptr<OHOS::IRemoteObject> syncListener = new(nothrow) SyncCallback();
+    
+    int32_t ret1 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
+    EXPECT_EQ(DP_SUCCESS, ret1);
+    
+    for (int32_t i = 0; i < MAX_LISTENER_SIZE + 5; i++) {
+        string caller = "caller" + std::to_string(i);
+        OHOS::sptr<OHOS::IRemoteObject> syncListener1 = new(nothrow) SyncCallback();
+        ProfileCache::GetInstance().syncListenerMap_[caller] = syncListener1;
+    }
+    int32_t ret2 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
+    EXPECT_EQ(DP_EXCEED_MAX_SIZE_FAIL, ret2);
+
+    syncListener = nullptr;
+    int32_t ret3 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret3);
+
+    for (int32_t i = 0; i < MAX_STRING_LEN + 5; i++) {
+        caller += 'a';
+    }
+    int32_t ret4 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret4);
+    
+    caller = "";
+    int32_t ret5 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret5);
+    
+    ProfileCache::GetInstance().UnInit();
+    ProfileCache::GetInstance().Init();
 }
+
+/**
+ * @tc.name: RemoveSyncListeners001
+ * @tc.desc: RemoveSyncListeners all.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, RemoveSyncListeners001, TestSize.Level1)
+{
+    ProfileCache::GetInstance().UnInit();
+    ProfileCache::GetInstance().Init();
+    ProfileCache::GetInstance().syncListenerMap_.clear();
+
+    string caller = "caller";
+    OHOS::sptr<OHOS::IRemoteObject> syncListener = new(nothrow) SyncCallback();
+    
+    int32_t ret1 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
+    EXPECT_EQ(DP_SUCCESS, ret1);
+
+    map<string, sptr<IRemoteObject>> syncListeners;
+    syncListeners[caller] = syncListener;
+    int32_t ret2 = ProfileCache::GetInstance().RemoveSyncListeners(syncListeners);
+    EXPECT_EQ(DP_SUCCESS, ret2);
+
+    ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
+    auto iter = ProfileCache::GetInstance().syncListenerMap_.begin();
+    iter->second = nullptr;
+    ProfileCache::GetInstance().RemoveSyncListeners(syncListeners);
+    bool ret3 = ProfileCache::GetInstance().syncListenerMap_.count(caller);
+    EXPECT_EQ(false, ret3);
+
+    ProfileCache::GetInstance().UnInit();
+    ProfileCache::GetInstance().Init();
 }
+
+/**
+ * @tc.name: RemoveSyncListener001
+ * @tc.desc: RemoveSyncListener overload1.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, RemoveSyncListener001, TestSize.Level1)
+{
+    ProfileCache::GetInstance().UnInit();
+    ProfileCache::GetInstance().Init();
+    ProfileCache::GetInstance().syncListenerMap_.clear();
+
+    string caller = "caller";
+    OHOS::sptr<OHOS::IRemoteObject> syncListener = new(nothrow) SyncCallback();
+    
+    int32_t ret1 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
+    EXPECT_EQ(DP_SUCCESS, ret1);
+
+    int32_t ret2 = ProfileCache::GetInstance().RemoveSyncListener(caller);
+    EXPECT_EQ(DP_SUCCESS, ret2);
+
+    int32_t ret3 = ProfileCache::GetInstance().RemoveSyncListener(caller);
+    EXPECT_EQ(DP_NOT_FOUND_FAIL, ret3);
+    
+    for (int32_t i = 0; i < MAX_STRING_LEN + 5; i++) {
+        caller += 'a';
+    }
+    int32_t ret4 = ProfileCache::GetInstance().RemoveSyncListener(caller);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret4);
+    
+    caller = "";
+    int32_t ret5 = ProfileCache::GetInstance().RemoveSyncListener(caller);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret5);
+
+    ProfileCache::GetInstance().UnInit();
+    ProfileCache::GetInstance().Init();
+}
+
+/**
+ * @tc.name: RemoveSyncListener002
+ * @tc.desc: RemoveSyncListener overload2.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, RemoveSyncListener002, TestSize.Level1)
+{
+    ProfileCache::GetInstance().UnInit();
+    ProfileCache::GetInstance().Init();
+    ProfileCache::GetInstance().syncListenerMap_.clear();
+
+    string caller = "caller";
+    OHOS::sptr<OHOS::IRemoteObject> syncListener = new(nothrow) SyncCallback();
+    
+    int32_t ret1 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
+    EXPECT_EQ(DP_SUCCESS, ret1);
+
+    int32_t ret2 = ProfileCache::GetInstance().RemoveSyncListener(syncListener);
+    EXPECT_EQ(DP_SUCCESS, ret2);
+
+    int32_t ret4 = ProfileCache::GetInstance().RemoveSyncListener(syncListener);
+    EXPECT_EQ(DP_NOT_FOUND_FAIL, ret4);
+
+    syncListener = nullptr;
+    int32_t ret5 = ProfileCache::GetInstance().RemoveSyncListener(syncListener);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret5);
+
+    ProfileCache::GetInstance().UnInit();
+    ProfileCache::GetInstance().Init();
+}
+    
+
+} // namespace DistributedDeviceProfile
+} // namespace OHOS
+
