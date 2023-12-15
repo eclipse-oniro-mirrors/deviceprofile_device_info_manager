@@ -57,6 +57,34 @@ void DpContentSensorTest::TearDown()
 {
 }
 
+class CollectorListener : public Collector {
+public:
+    CollectorListener()
+    {
+    }
+    ~CollectorListener()
+    {
+    }
+    bool ConvertToProfile(DeviceProfile& deviceProfile) override
+    {
+        return true;
+    }
+};
+
+/**
+ * @tc.name: Collect_001
+ * @tc.desc: Collect
+ * @tc.type: FUNC
+ */
+HWTEST_F(DpContentSensorTest, Collect_001, TestSize.Level2)
+{
+    CollectorListener collector;
+    DeviceProfile profile;
+    profile.SetDeviceId("test");
+    profile.SetDeviceName("test");
+    collector.Collect(profile);
+}
+
 /**
  * @tc.name: GetDeviceName_001
  * @tc.desc: get device name
