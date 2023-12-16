@@ -290,6 +290,8 @@ const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEUSERID =
     "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeUserId = ? ";
 const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERTOKENID =
     "SELECT * FROM accesser_table WHERE accesserId = ? and accesserTokenId = ? ";
+const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEETOKENID =
+    "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeTokenId = ? ";
 const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEDEVICEID =
     "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeDeviceId = ? ";
 const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERBUNDLENAME =
