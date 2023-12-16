@@ -19,6 +19,7 @@
 #include <vector>
 #include "gtest/gtest.h"
 #include "refbase.h"
+#include "rdb_errno.h"
 #include "profile_utils.h"
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
@@ -28,6 +29,7 @@
 
 using namespace testing::ext;
 using namespace OHOS::DistributedDeviceProfile;
+using namespace OHOS::NativeRdb;
 using namespace std;
 
 class ProfileUtilsTest : public testing::Test {
@@ -115,6 +117,22 @@ HWTEST_F(ProfileUtilsTest, FilterOnlineDevices001, TestSize.Level1)
 }
 
 /**
+ * @tc.name: FilterOnlineDevices002
+ * @tc.desc: FilterOnlineDevices failed, deviceList.size() > 1000.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, FilterOnlineDevices002, TestSize.Level1)
+{
+    vector<string> deviceList;
+    for (int32_t i = 0; i < 1005; i++) {
+    deviceList.emplace_back("deviceId");
+    }
+    vector<string> res = ProfileUtils::FilterOnlineDevices(deviceList);
+    EXPECT_EQ(0, res.size());
+}
+
+/**
  * @tc.name: GetProfileType001
  * @tc.desc: GetProfileType succeed.
  * @tc.type: FUNC
@@ -124,6 +142,13 @@ HWTEST_F(ProfileUtilsTest, GetProfileType001, TestSize.Level1)
 {
     string minkey = "";
     ProfileType res = ProfileUtils::GetProfileType(minkey);
+    EXPECT_EQ(ProfileType::PROFILE_TYPE_MIN, res);
+
+    string maxKey = "";
+    for (int32_t i = 0; i < 5000; i++) {
+        maxKey += 'a';
+    }
+    res = ProfileUtils::GetProfileType(maxKey);
     EXPECT_EQ(ProfileType::PROFILE_TYPE_MIN, res);
     
     string devKey = "dev111";
@@ -170,6 +195,13 @@ HWTEST_F(ProfileUtilsTest, IsKeyValid001, TestSize.Level1)
     EXPECT_EQ(true, res);
     
     key = "";
+    res = ProfileUtils::IsKeyValid(key);
+    EXPECT_EQ(false, res);
+
+    key = "";
+    for (int32_t i = 0; i < 5000; i++) {
+        key += 'a';
+    }
     res = ProfileUtils::IsKeyValid(key);
     EXPECT_EQ(false, res);
 
@@ -428,7 +460,7 @@ HWTEST_F(ProfileUtilsTest, DeviceProfileTranslateEntries001, TestSize.Level1)
     DeviceProfile deviceProfile;
     deviceProfile.SetDeviceId("anything");
     deviceProfile.SetDeviceTypeName("anything");
-    deviceProfile.SetDeviceTypeId(0);
+    deviceProfile.SetDeviceTypeId(3);
     deviceProfile.SetDeviceName("anything");
     deviceProfile.SetManufactureName("anything");
     deviceProfile.SetDeviceModel("anything");
@@ -610,6 +642,22 @@ HWTEST_F(ProfileUtilsTest, GetProfileKey002, TestSize.Level1)
 }
 
 /**
+ * @tc.name: GetProfileKey003
+ * @tc.desc: GetProfileKey failed , dbKey.length() > 4096.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, GetProfileKey003, TestSize.Level1)
+{
+    string dbKey = "";
+    for (int32_t i = 0; i < 5000; i++) {
+        dbKey += 'a';
+    }
+    string res = ProfileUtils::GetProfileKey(dbKey);
+    EXPECT_EQ(0, res.length());
+}
+
+/**
  * @tc.name: GetProfileProperty001
  * @tc.desc: GetProfileProperty succeed.
  * @tc.type: FUNC
@@ -631,6 +679,22 @@ HWTEST_F(ProfileUtilsTest, GetProfileProperty001, TestSize.Level1)
 HWTEST_F(ProfileUtilsTest, GetProfileProperty002, TestSize.Level1)
 {
     string dbKey = "";
+    string res = ProfileUtils::GetProfileProperty(dbKey);
+    EXPECT_EQ(0, res.length());
+}
+
+/**
+ * @tc.name: GetProfileProperty003
+ * @tc.desc: GetProfileProperty failed , dbKey.length() > 4096.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, GetProfileProperty003, TestSize.Level1)
+{
+    string dbKey = "";
+    for (int32_t i = 0; i < 5000; i++) {
+        dbKey += 'a';
+    }
     string res = ProfileUtils::GetProfileProperty(dbKey);
     EXPECT_EQ(0, res.length());
 }
@@ -675,6 +739,22 @@ HWTEST_F(ProfileUtilsTest, GetDeviceIdByDBKey003, TestSize.Level1)
 }
 
 /**
+ * @tc.name: GetDeviceIdByDBKey004
+ * @tc.desc: GetDeviceIdByDBKey failed , dbKey.length() > 4096.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, GetDeviceIdByDBKey004, TestSize.Level1)
+{
+    string dbKey = "";
+    for (int32_t i = 0; i < 5000; i++) {
+        dbKey += 'a';
+    }
+    string res = ProfileUtils::GetDeviceIdByDBKey(dbKey);
+    EXPECT_EQ(0, res.length());
+}
+
+/**
  * @tc.name: GetServiceNameByDBKey001
  * @tc.desc: GetServiceNameByDBKey succeed.
  * @tc.type: FUNC
@@ -696,6 +776,35 @@ HWTEST_F(ProfileUtilsTest, GetServiceNameByDBKey001, TestSize.Level1)
 HWTEST_F(ProfileUtilsTest, GetServiceNameByDBKey002, TestSize.Level1)
 {
     string dbKey = "";
+    string res = ProfileUtils::GetServiceNameByDBKey(dbKey);
+    EXPECT_EQ(0, res.length());
+}
+
+/**
+ * @tc.name: GetServiceNameByDBKey003
+ * @tc.desc: GetServiceNameByDBKey failed , dbKey.length() > 4096.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, GetServiceNameByDBKey003, TestSize.Level1)
+{
+    string dbKey = "";
+        for (int32_t i = 0; i < 5000; i++) {
+    dbKey += 'a';
+    }
+    string res = ProfileUtils::GetServiceNameByDBKey(dbKey);
+    EXPECT_EQ(0, res.length());
+}
+
+/**
+ * @tc.name: GetServiceNameByDBKey004
+ * @tc.desc: GetDeviceIdByDBKey failed , res.size() < 2.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, GetServiceNameByDBKey004, TestSize.Level1)
+{
+    string dbKey = "ser";
     string res = ProfileUtils::GetServiceNameByDBKey(dbKey);
     EXPECT_EQ(0, res.length());
 }
@@ -735,6 +844,22 @@ HWTEST_F(ProfileUtilsTest, GetCharKeyByDBKey002, TestSize.Level1)
 HWTEST_F(ProfileUtilsTest, GetCharKeyByDBKey003, TestSize.Level1)
 {
     string dbKey = "char#";
+    string res = ProfileUtils::GetCharKeyByDBKey(dbKey);
+    EXPECT_EQ(0, res.length());
+}
+
+/**
+ * @tc.name: GetCharKeyByDBKey004
+ * @tc.desc: GetCharKeyByDBKey failed , dbKey.length() > 4096.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, GetCharKeyByDBKey004, TestSize.Level1)
+{
+    string dbKey = "";
+        for (int32_t i = 0; i < 5000; i++) {
+    dbKey += 'a';
+    }
     string res = ProfileUtils::GetCharKeyByDBKey(dbKey);
     EXPECT_EQ(0, res.length());
 }
@@ -782,6 +907,129 @@ HWTEST_F(ProfileUtilsTest, IsPropertyValid001, TestSize.Level1)
 }
 
 /**
+ * @tc.name: IsPropertyValid002
+ * @tc.desc: IsPropertyValid overload 1.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, IsPropertyValid002, TestSize.Level1)
+{
+    map<string, string> propertyMap;
+    string property = "property";
+    string value = "value";
+    propertyMap[property] = value;
+    int32_t maxValue = 10;
+    bool res1 = ProfileUtils::IsPropertyValid(propertyMap, property, maxValue);
+    EXPECT_EQ(true, res1);
+    
+    maxValue = 0;
+    bool res2 = ProfileUtils::IsPropertyValid(propertyMap, property, maxValue);
+    EXPECT_EQ(false, res2);
+    
+    value = "";
+    propertyMap[property] = value;
+    bool res3 = ProfileUtils::IsPropertyValid(propertyMap, property, maxValue);
+    EXPECT_EQ(false, res3);
+    
+    propertyMap.erase(property);
+    bool res4 = ProfileUtils::IsPropertyValid(propertyMap, property, maxValue);
+    EXPECT_EQ(false, res4);
+}
+
+/**
+ * @tc.name: IsPropertyValid003
+ * @tc.desc: IsPropertyValid overload 2.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, IsPropertyValid003, TestSize.Level1)
+{
+    map<string, string> propertyMap;
+    string property = "property";
+    string value = "5";
+    propertyMap[property] = value;
+    int32_t maxValue = 10;
+    int32_t minValue = 0;
+    bool res1 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(true, res1);
+    
+    maxValue = 0;
+    bool res2 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(false, res2);
+    
+    value = "0";
+    propertyMap[property] = value;
+    bool res3 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(false, res3);
+    
+    propertyMap.erase(property);
+    bool res4 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(false, res4);
+}
+
+/**
+ * @tc.name: IsPropertyValid004
+ * @tc.desc: IsPropertyValid overload 3.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, IsPropertyValid004, TestSize.Level1)
+{
+    map<string, string> propertyMap;
+    string property = "property";
+    string value = "5";
+    propertyMap[property] = value;
+    uint32_t maxValue = 10;
+    uint32_t minValue = 0;
+    bool res1 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(true, res1);
+    
+    maxValue = 0;
+    bool res2 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(false, res2);
+    
+    value = "0";
+    propertyMap[property] = value;
+    bool res3 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(false, res3);
+    
+    propertyMap.erase(property);
+    bool res4 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(false, res4);
+}
+
+/**
+ * @tc.name: IsPropertyValid005
+ * @tc.desc: IsPropertyValid overload 4.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, IsPropertyValid005, TestSize.Level1)
+{
+    map<string, string> propertyMap;
+    string property = "property";
+    string value = "5";
+    propertyMap[property] = value;
+    int64_t maxValue = 10;
+    int64_t minValue = 0;
+    bool res1 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(true, res1);
+    
+    maxValue = 0;
+    bool res2 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(false, res2);
+    
+    value = "0";
+    propertyMap[property] = value;
+    bool res3 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(false, res3);
+    
+    propertyMap.erase(property);
+    bool res4 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(false, res4);
+}
+
+/**
  * @tc.name: GetIntValue001
  * @tc.desc: GetIntValue failed, ValuesBucket is empty.
  * @tc.type: FUNC
@@ -794,6 +1042,33 @@ HWTEST_F(ProfileUtilsTest, GetIntValue001, TestSize.Level1)
     int32_t value = 0;
     bool res = ProfileUtils::GetIntValue(values, property, value);
     EXPECT_EQ(false, res);
+}
+
+/**
+ * @tc.name: GetIntValue002
+ * @tc.desc: GetIntValue all.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, GetIntValue002, TestSize.Level1)
+{
+    ValuesBucket values;
+    int32_t intValue = 1;
+    string property = "property";
+    values.PutInt(property, intValue);
+    int32_t outValue = 0;
+    bool res1 = ProfileUtils::GetIntValue(values, property, outValue);
+    EXPECT_EQ(true, res1);
+    
+    string strValue = "strValue";
+    values.Clear();
+    values.PutString(property, strValue);
+    bool res2 = ProfileUtils::GetIntValue(values, property, outValue);
+    EXPECT_EQ(false, res2);
+    
+    values.Clear();
+    bool res3 = ProfileUtils::GetIntValue(values, property, outValue);
+    EXPECT_EQ(false, res3);
 }
 
 /**
@@ -812,6 +1087,32 @@ HWTEST_F(ProfileUtilsTest, GetStringValue001, TestSize.Level1)
 }
 
 /**
+ * @tc.name: GetStringValue002
+ * @tc.desc: GetStringValue all.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, GetStringValue002, TestSize.Level1)
+{
+    ValuesBucket values;
+    string strValue = "strValue";
+    string property = "property";
+    values.PutString(property, strValue);
+    string outValue = "";
+    bool res1 = ProfileUtils::GetStringValue(values, property, outValue);
+    EXPECT_EQ(true, res1);
+    
+    values.Clear();
+    values.PutNull(property);
+    bool res2 = ProfileUtils::GetStringValue(values, property, outValue);
+    EXPECT_EQ(false, res2);
+    
+    values.Clear();
+    bool res3 = ProfileUtils::GetStringValue(values, property, outValue);
+    EXPECT_EQ(false, res3);
+}
+
+/**
  * @tc.name: GetLongValue001
  * @tc.desc: GetLongValue failed, ValuesBucket is empty.
  * @tc.type: FUNC
@@ -824,4 +1125,296 @@ HWTEST_F(ProfileUtilsTest, GetLongValue001, TestSize.Level1)
     int64_t value = 0;
     bool res = ProfileUtils::GetLongValue(values, property, value);
     EXPECT_EQ(false, res);
+}
+
+/**
+ * @tc.name: GetLongValue002
+ * @tc.desc: GetLongValue all.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, GetLongValue002, TestSize.Level1)
+{
+    ValuesBucket values;
+    int64_t longValue = 1;
+    string strValue = "strValue";
+    string property = "property";
+    values.PutLong(property, longValue);
+    int64_t outValue = 0;
+    bool res1 = ProfileUtils::GetLongValue(values, property, outValue);
+    EXPECT_EQ(true, res1);
+    
+    values.Clear();
+    values.PutString(property, strValue);
+    bool res2 = ProfileUtils::GetLongValue(values, property, outValue);
+    EXPECT_EQ(false, res2);
+    
+    values.Clear();
+    bool res3 = ProfileUtils::GetLongValue(values, property, outValue);
+    EXPECT_EQ(false, res3);
+}
+
+/**
+ * @tc.name: EntriesToTrustDeviceProfile001
+ * @tc.desc: EntriesToTrustDeviceProfile all.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, EntriesToTrustDeviceProfile001, TestSize.Level1)
+{
+    ValuesBucket values;
+    TrustDeviceProfile profile;
+    int32_t intValue = 1;
+    string strValue = "strValue";
+    
+    values.PutString(DEVICE_ID, strValue);
+    values.PutString(DEVICE_ID_HASH, strValue);
+    values.PutInt(DEVICE_TYPE_ID, intValue);
+    values.PutInt(STATUS, intValue);
+    int32_t ret1 = ProfileUtils::EntriesToTrustDeviceProfile(values, profile);
+    EXPECT_EQ(DP_SUCCESS, ret1);
+
+    values.Delete(STATUS);
+    values.PutNull(STATUS);
+    ProfileUtils::EntriesToTrustDeviceProfile(values, profile);
+    values.Delete(STATUS);
+    ProfileUtils::EntriesToTrustDeviceProfile(values, profile);
+
+    values.Delete(DEVICE_TYPE_ID);
+    values.PutNull(DEVICE_TYPE_ID);
+    ProfileUtils::EntriesToTrustDeviceProfile(values, profile);
+    values.Delete(DEVICE_TYPE_ID);
+    ProfileUtils::EntriesToTrustDeviceProfile(values, profile);
+
+    values.Delete(DEVICE_ID_HASH);
+    values.PutNull(DEVICE_ID_HASH);
+    ProfileUtils::EntriesToTrustDeviceProfile(values, profile);
+    values.Delete(DEVICE_ID_HASH);
+    ProfileUtils::EntriesToTrustDeviceProfile(values, profile);
+
+    values.Delete(DEVICE_ID);
+    values.PutNull(DEVICE_ID);
+    ProfileUtils::EntriesToTrustDeviceProfile(values, profile);
+    values.Delete(DEVICE_ID);
+    ProfileUtils::EntriesToTrustDeviceProfile(values, profile);
+}
+
+/**
+ * @tc.name: EntriesToAccessControlProfile001
+ * @tc.desc: EntriesToAccessControlProfile all failed.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, EntriesToAccessControlProfile001, TestSize.Level1)
+{
+    ValuesBucket values;
+    AccessControlProfile profile;
+    ProfileUtils::EntriesToAccessControlProfile(values, profile);
+    string strValue = "";
+    bool ret = ProfileUtils::GetStringValue(values, SESSION_KEY, strValue);
+    EXPECT_EQ(false, ret);
+}
+
+/**
+ * @tc.name: EntriesToAccesser001
+ * @tc.desc: EntriesToAccesser all .
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, EntriesToAccesser001, TestSize.Level1)
+{
+    ValuesBucket values;
+    ValueObject valueObject;
+    Accesser profile;
+    int32_t intValue = 1;
+    int64_t longValue = 1;
+    string strValue = "strValue";
+    
+    values.PutLong(ACCESSER_ID, longValue);
+    values.PutString(ACCESSER_DEVICE_ID, strValue);
+    values.PutInt(ACCESSER_USER_ID, intValue);
+    values.PutString(ACCESSER_ACCOUNT_ID, strValue);
+    values.PutLong(ACCESSER_TOKEN_ID, longValue);
+    values.PutString(ACCESSER_BUNDLE_NAME, strValue);
+    values.PutInt(ACCESSER_BIND_LEVEL, intValue);
+
+    ProfileUtils::EntriesToAccesser(values, profile);
+    EXPECT_EQ("strValue", profile.GetAccesserBundleName());
+    
+    values.Clear();
+    values.PutNull(ACCESSER_ID);
+    values.PutNull(ACCESSER_DEVICE_ID);
+    values.PutNull(ACCESSER_USER_ID);
+    values.PutNull(ACCESSER_ACCOUNT_ID);
+    values.PutNull(ACCESSER_TOKEN_ID);
+    values.PutNull(ACCESSER_BUNDLE_NAME);
+    values.PutNull(ACCESSER_BIND_LEVEL);
+    EXPECT_EQ(true, values.GetObject(ACCESSER_ACCOUNT_ID, valueObject));
+    EXPECT_EQ(false, valueObject.GetString(strValue) == E_OK);
+    ProfileUtils::EntriesToAccesser(values, profile);
+
+    values.Clear();
+    EXPECT_EQ(false, values.GetObject(ACCESSER_ACCOUNT_ID, valueObject));
+    ProfileUtils::EntriesToAccesser(values, profile);
+}
+
+/**
+ * @tc.name: EntriesToAccessee001
+ * @tc.desc: EntriesToAccessee all .
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, EntriesToAccessee001, TestSize.Level1)
+{
+    ValuesBucket values;
+    ValueObject valueObject;
+    Accessee profile;
+    int32_t intValue = 1;
+    int64_t longValue = 1;
+    string strValue = "strValue";
+    
+    values.PutLong(ACCESSEE_ID, longValue);
+    values.PutString(ACCESSEE_DEVICE_ID, strValue);
+    values.PutInt(ACCESSEE_USER_ID, intValue);
+    values.PutString(ACCESSEE_ACCOUNT_ID, strValue);
+    values.PutLong(ACCESSEE_TOKEN_ID, longValue);
+    values.PutString(ACCESSEE_BUNDLE_NAME, strValue);
+    values.PutInt(ACCESSEE_BIND_LEVEL, intValue);
+    
+    ProfileUtils::EntriesToAccessee(values, profile);
+    EXPECT_EQ("strValue", profile.GetAccesseeBundleName());
+
+    values.Clear();
+    values.PutNull(ACCESSEE_ID);
+    values.PutNull(ACCESSEE_DEVICE_ID);
+    values.PutNull(ACCESSEE_USER_ID);
+    values.PutNull(ACCESSEE_ACCOUNT_ID);
+    values.PutNull(ACCESSEE_TOKEN_ID);
+    values.PutNull(ACCESSEE_BUNDLE_NAME);
+    values.PutNull(ACCESSEE_BIND_LEVEL);
+    EXPECT_EQ(true, values.GetObject(ACCESSEE_ACCOUNT_ID, valueObject));
+    EXPECT_EQ(false, valueObject.GetString(strValue) == E_OK);
+    ProfileUtils::EntriesToAccessee(values, profile);
+    
+    values.Clear();
+    EXPECT_EQ(false, values.GetObject(ACCESSEE_ACCOUNT_ID, valueObject));
+    ProfileUtils::EntriesToAccessee(values, profile);
+}
+
+/**
+ * @tc.name: EntriesToDeviceProfile002
+ * @tc.desc: EntriesToDeviceProfile failed all.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, EntriesToDeviceProfile002, TestSize.Level1)
+{
+    DeviceProfile profile;
+    map<string, string> values;
+    values["key"] = "value";
+    auto propertiesMap = ProfileUtils::GetProfilePropertiesMap(values);
+    bool ret1 = ProfileUtils::IsPropertyValid(propertiesMap, DEVICE_NAME, MAX_STRING_LEN);
+    EXPECT_EQ(false, ret1);
+    ProfileUtils::EntriesToDeviceProfile(values, profile);
+
+    for (int32_t i = 0; i < MAX_DB_RECORD_SIZE + 5; i++) {
+        values[to_string(i)] = "value";
+    }
+    int32_t ret2 = ProfileUtils::EntriesToDeviceProfile(values, profile);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret2);
+}
+
+/**
+ * @tc.name: EntriesToServiceProfile002
+ * @tc.desc: EntriesToServiceProfile all.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, EntriesToServiceProfile002, TestSize.Level1)
+{
+    map<string, string> values;
+    ServiceProfile profile;
+    string strValye = "";
+    values[SERVICE_NAME] = "serviceName";
+    values[SERVICE_TYPE] = "serviceType";
+
+    int32_t ret1 = ProfileUtils::EntriesToServiceProfile(values, profile);
+    EXPECT_EQ(DP_SUCCESS, ret1);
+    EXPECT_EQ("serviceName", profile.GetServiceName());
+
+    for (int32_t i = 0; i < MAX_STRING_LEN + 5; i++) {
+        strValye += "a";
+    }
+    values[SERVICE_NAME] = strValye;
+    values[SERVICE_TYPE] = strValye;
+    auto propertiesMap = ProfileUtils::GetProfilePropertiesMap(values);
+    EXPECT_EQ(true, propertiesMap.count(SERVICE_TYPE) != 0);
+    EXPECT_EQ(true, 0 < propertiesMap[SERVICE_TYPE].length());
+    EXPECT_EQ(false, propertiesMap[SERVICE_TYPE].length() < MAX_STRING_LEN);
+    ProfileUtils::EntriesToServiceProfile(values, profile);
+
+    values[SERVICE_NAME] = "";
+    values[SERVICE_TYPE] = "";
+    propertiesMap = ProfileUtils::GetProfilePropertiesMap(values);
+    EXPECT_EQ(true, propertiesMap.count(SERVICE_TYPE) != 0);
+    EXPECT_EQ(false, 0 < propertiesMap[SERVICE_TYPE].length());
+    ProfileUtils::EntriesToServiceProfile(values, profile);
+    
+    values.erase(SERVICE_NAME);
+    values.erase(SERVICE_TYPE);
+    propertiesMap = ProfileUtils::GetProfilePropertiesMap(values);
+    EXPECT_EQ(false, propertiesMap.count(SERVICE_TYPE) != 0);
+    ProfileUtils::EntriesToServiceProfile(values, profile);
+
+    for (int32_t i = 0; i < MAX_DB_RECORD_SIZE + 5; i++) {
+        values[to_string(i)] = "value";
+    }
+    int32_t ret2 = ProfileUtils::EntriesToServiceProfile(values, profile);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret2);
+}
+
+/**
+ * @tc.name: EntriesToCharProfile002
+ * @tc.desc: EntriesToCharProfile all.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, EntriesToCharProfile002, TestSize.Level1)
+{
+    map<string, string> values;
+    CharacteristicProfile profile;
+    string strValye = "";
+    values[CHARACTERISTIC_KEY] = "characteristicKey";
+    values[CHARACTERISTIC_VALUE] = "characteristicValue";
+    
+    int32_t ret1 = ProfileUtils::EntriesToCharProfile(values, profile);
+    EXPECT_EQ(DP_SUCCESS, ret1);
+    EXPECT_EQ("characteristicKey", profile.GetCharacteristicKey());
+
+    for (int32_t i = 0; i < MAX_STRING_LEN + 5; i++) {
+        strValye += "a";
+    }
+    values[CHARACTERISTIC_KEY] = strValye;
+    values[CHARACTERISTIC_VALUE] = strValye;
+    EXPECT_EQ(true, values.count(CHARACTERISTIC_KEY) != 0);
+    EXPECT_EQ(true, 0 < values[CHARACTERISTIC_KEY].length());
+    EXPECT_EQ(false, values[CHARACTERISTIC_KEY].length() < MAX_STRING_LEN);
+    ProfileUtils::EntriesToCharProfile(values, profile);
+
+    values[CHARACTERISTIC_KEY] = "";
+    values[CHARACTERISTIC_VALUE] = "";
+    EXPECT_EQ(true, values.count(CHARACTERISTIC_KEY) != 0);
+    EXPECT_EQ(false, 0 < values[CHARACTERISTIC_KEY].length());
+    ProfileUtils::EntriesToCharProfile(values, profile);
+
+    values.erase(CHARACTERISTIC_KEY);
+    values.erase(CHARACTERISTIC_VALUE);
+    EXPECT_EQ(false, values.count(CHARACTERISTIC_KEY) != 0);
+    ProfileUtils::EntriesToCharProfile(values, profile);
+
+    for (int32_t i = 0; i < MAX_DB_RECORD_SIZE + 5; i++) {
+        values[to_string(i)] = "value";
+    }
+    int32_t ret2 = ProfileUtils::EntriesToCharProfile(values, profile);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret2);
 }

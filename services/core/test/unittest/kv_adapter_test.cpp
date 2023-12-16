@@ -129,6 +129,35 @@ HWTEST_F(KVAdapterTest, Put003, TestSize.Level1)
 }
 
 /**
+ * @tc.name: Put004
+ * @tc.desc: Put first if.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, Put004, TestSize.Level1)
+{
+    string key = "key";
+    string value = "value";
+    EXPECT_EQ(DP_SUCCESS, kvStore->Put(key, value));
+
+    for (int32_t i = 0; i < MAX_STRING_LEN + 5; i++) {
+        value += 'a';
+    }
+    EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Put(key, value));
+    
+    value = "";
+    EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Put(key, value));
+
+    for (int32_t i = 0; i < MAX_STRING_LEN + 5; i++) {
+        key += 'a';
+    }
+    EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Put(key, value));
+    
+    key = "";
+    EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Put(key, value));
+}
+
+/**
  * @tc.name: PutBatch001
  * @tc.desc: PutBatch succeed.
  * @tc.type: FUNC
@@ -151,6 +180,11 @@ HWTEST_F(KVAdapterTest, PutBatch001, TestSize.Level1)
 HWTEST_F(KVAdapterTest, PutBatch002, TestSize.Level1)
 {
     map<string, string> values;
+    EXPECT_EQ(DP_INVALID_PARAMS, kvStore->PutBatch(values));
+    
+    for (int32_t i = 0; i< MAX_PROFILE_SIZE + 5; i++) {
+        values[to_string(i)] = "value";
+    }
     EXPECT_EQ(DP_INVALID_PARAMS, kvStore->PutBatch(values));
 }
 
@@ -314,17 +348,29 @@ HWTEST_F(KVAdapterTest, Sync002, TestSize.Level1)
 {
     vector<string> deviceList;
     EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Sync(deviceList, SyncMode::PUSH));
+    
+    for (int32_t i = 0; i < MAX_DEVICE_SIZE + 5; i++) {
+        deviceList.emplace_back("deviceId");
+    }
+    EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Sync(deviceList, SyncMode::PUSH));
 }
 
 /**
  * @tc.name: Sync003
- * @tc.desc: Sync failed, syncMode is invalid.
+ * @tc.desc: syncMode all.
  * @tc.type: FUNC
  * @tc.require:
  */
 HWTEST_F(KVAdapterTest, Sync003, TestSize.Level1)
 {
     vector<string> deviceList;
-    deviceList.push_back("deviceId");
-    EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Sync(deviceList, SyncMode::MIN));
+    deviceList.emplace_back("deviceId");
+    SyncMode mode = SyncMode::PUSH;
+    kvStore->Sync(deviceList, mode);
+    
+    mode = SyncMode::MAX;
+    EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Sync(deviceList, mode));
+    
+    mode = SyncMode::MIN;
+    EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Sync(deviceList, mode));
 }

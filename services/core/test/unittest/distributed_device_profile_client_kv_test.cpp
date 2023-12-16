@@ -15,6 +15,8 @@
 
 #include <string>
 #include <vector>
+#define private   public
+#define protected public
 #include "gtest/gtest.h"
 #include "refbase.h"
 #include "distributed_device_profile_constants.h"
@@ -27,6 +29,8 @@
 #include "i_sync_completed_callback.h"
 #include "characteristic_profile.h"
 #include "distributed_device_profile_client.h"
+#undef private
+#undef protected
 
 using namespace testing::ext;
 using namespace OHOS::DistributedDeviceProfile;
@@ -394,4 +398,17 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SyncDeviceProfile001, TestSize.Le
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().SyncDeviceProfile(syncOptions, syncCb);
     EXPECT_EQ(errCode, DP_SYNC_DEVICE_FAIL);
+}
+
+/**
+ * @tc.name: OnServiceDied001
+ * @tc.desc: OnServiceDied
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, OnServiceDied001, TestSize.Level1)
+{
+    OHOS::sptr<OHOS::IRemoteObject> remote = nullptr;
+    DistributedDeviceProfileClient::GetInstance().OnServiceDied(remote);
+    EXPECT_EQ(nullptr, DistributedDeviceProfileClient::GetInstance().dpProxy_);
 }
