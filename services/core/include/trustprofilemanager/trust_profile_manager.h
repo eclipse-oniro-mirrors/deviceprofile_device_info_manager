@@ -65,16 +65,16 @@ private:
         const std::string& trustDeviceId, int32_t status, std::vector<AccessControlProfile>& profile);
     int32_t GetAccessControlProfile(int32_t userId, const std::string& accountId,
         std::vector<AccessControlProfile>& profile);
-    int32_t GetAccessControlProfileByTokenId(int32_t accesserTokenId, const std::string& accesseeDeviceId,
-        std::vector<AccessControlProfile>& profile);
+    int32_t GetAccessControlProfileByTokenId(int64_t tokenId, const std::string& trustDeviceId,
+        int32_t status, std::vector<AccessControlProfile>& profile);
     int32_t ConvertToTrustDeviceProfile(const AccessControlProfile& accessControlProfile,
         TrustDeviceProfile& trustDeviceProfile);
     int32_t GetAclProfileByUserIdAndBundleName(std::shared_ptr<ResultSet> resultSet,
         int32_t userId, const std::string& bundleName, std::vector<AccessControlProfile>& profile);
     int32_t GetAclProfileByUserIdAndAccountId(std::shared_ptr<ResultSet> resultSet,
         int32_t userId, const std::string& accountId, std::vector<AccessControlProfile>& profile);
-    int32_t GetAclProfileByTokenIdAndDeviceId(std::shared_ptr<ResultSet> resultSet,
-        int32_t accesserTokenId, const std::string& accesseeDeviceId, std::vector<AccessControlProfile>& profile);
+    int32_t GetAclProfileByTokenId(std::shared_ptr<ResultSet> resultSet,
+        int64_t tokenId, std::vector<AccessControlProfile>& profile);
     int32_t GetAclProfileByBundleName(std::shared_ptr<ResultSet> resultSet,
         const std::string& bundleName, std::vector<AccessControlProfile>& profile);
     int32_t ConvertToAccessControlProfiles(std::shared_ptr<ResultSet> resultSet,
@@ -108,6 +108,8 @@ private:
         std::vector<AccessControlProfile>& profile);
     int32_t GetAccessControlProfiles(std::shared_ptr<ResultSet> resultSet, int64_t accesserId,
         int64_t accesseeId, const std::string& bundleName, std::vector<AccessControlProfile>& profile);
+    int32_t GetAccessControlProfilesByTokenId(std::shared_ptr<ResultSet> resultSet, int64_t accesserId,
+        int64_t accesseeId, int64_t tokenId, std::vector<AccessControlProfile>& profile);
     int32_t DeleteAccesserCheck(int64_t accesserId);
     int32_t DeleteAccesseeCheck(int64_t accesseeId);
     int32_t DeleteTrustDeviceCheck(const AccessControlProfile& profile);

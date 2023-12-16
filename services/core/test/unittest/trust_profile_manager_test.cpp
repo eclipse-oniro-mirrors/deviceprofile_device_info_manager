@@ -20,13 +20,16 @@
 #include <vector>
 #include <iostream>
 
+#define private   public
+#define protected public
 #include "profile_utils.h"
 #include "trust_profile_manager.h"
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_errors.h"
 #include "rdb_open_callback.h"
-
+#undef private
+#undef protected
 
 using namespace testing::ext;
 using namespace OHOS::NativeRdb;
@@ -54,6 +57,10 @@ void TrustProfileManagerTest::SetUpTestCase()
 void TrustProfileManagerTest::TearDownTestCase()
 {
     int32_t ret = OHOS::DistributedDeviceProfile::
+        TrustProfileManager::GetInstance().Init();
+    EXPECT_EQ(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::
         TrustProfileManager::GetInstance().UnInit();
     EXPECT_EQ(ret, DP_SUCCESS);
 }
@@ -543,6 +550,18 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_001, TestSize.Level1)
         value.Clear();
     }
     EXPECT_EQ(ret, DP_SUCCESS);
+
+    parms.clear();
+    profile.clear();
+    parms.insert({{"userId", "11"}, {"bundleName", "b1"}, {"bindType", "1"}, {"status", "0"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    for (size_t i = 0; i < profile.size(); i++) {
+        std::cout << profile[i].dump() <<std::endl;
+        std::cout << profile[i].GetAccesser().dump() <<std::endl;
+        std::cout << profile[i].GetAccessee().dump() <<std::endl;
+    }
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -563,6 +582,18 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_002, TestSize.Level1)
         std::cout << profile[i].GetAccessee().dump() <<std::endl;
     }
     EXPECT_EQ(ret, DP_SUCCESS);
+
+    parms.clear();
+    profile.clear();
+    parms.insert({{"userId", "33"}, {"bundleName", "b1"}, {"trustDeviceId", "123456"}, {"status", "0"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    for (size_t i = 0; i < profile.size(); i++) {
+        std::cout << profile[i].dump() <<std::endl;
+        std::cout << profile[i].GetAccesser().dump() <<std::endl;
+        std::cout << profile[i].GetAccessee().dump() <<std::endl;
+    }
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -576,6 +607,18 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_003, TestSize.Level1)
     std::map<std::string, std::string> parms;
     parms.insert({{"bundleName", "bb3"}, {"trustDeviceId", "6666"}, {"status", "1"}});
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    for (size_t i = 0; i < profile.size(); i++) {
+        std::cout << profile[i].dump() <<std::endl;
+        std::cout << profile[i].GetAccesser().dump() <<std::endl;
+        std::cout << profile[i].GetAccessee().dump() <<std::endl;
+    }
+    EXPECT_EQ(ret, DP_SUCCESS);
+
+    parms.clear();
+    profile.clear();
+    parms.insert({{"bundleName", "b3"}, {"trustDeviceId", "6666"}, {"status", "1"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     for (size_t i = 0; i < profile.size(); i++) {
         std::cout << profile[i].dump() <<std::endl;
@@ -634,8 +677,20 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_006, TestSize.Level1)
 {
     std::vector<AccessControlProfile> profile;
     std::map<std::string, std::string> parms;
-    parms.insert({{"accesserTokenId", "777"}, {"accesseeDeviceId", "acee4"}});
+    parms.insert({{"tokenId", "777"}, {"trustDeviceId", "9999"}, {"status", "1"}});
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    for (size_t i = 0; i < profile.size(); i++) {
+        std::cout << profile[i].dump() <<std::endl;
+        std::cout << profile[i].GetAccesser().dump() <<std::endl;
+        std::cout << profile[i].GetAccessee().dump() <<std::endl;
+    }
+    EXPECT_EQ(ret, DP_SUCCESS);
+
+    parms.clear();
+    profile.clear();
+    parms.insert({{"tokenId", "888"}, {"trustDeviceId", "9999"}, {"status", "1"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     for (size_t i = 0; i < profile.size(); i++) {
         std::cout << profile[i].dump() <<std::endl;
@@ -683,6 +738,18 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_008, TestSize.Level1)
         std::cout << profile[i].GetAccessee().dump() <<std::endl;
     }
     EXPECT_EQ(ret, DP_SUCCESS);
+
+    parms.clear();
+    profile.clear();
+    parms.insert({{"userId", "44"}, {"bundleName", "b4"}, {"trustDeviceId", "123456"}, {"status", "1"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    for (size_t i = 0; i < profile.size(); i++) {
+        std::cout << profile[i].dump() <<std::endl;
+        std::cout << profile[i].GetAccesser().dump() <<std::endl;
+        std::cout << profile[i].GetAccessee().dump() <<std::endl;
+    }
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -714,8 +781,20 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_010, TestSize.Level1)
 {
     std::vector<AccessControlProfile> profile;
     std::map<std::string, std::string> parms;
-    parms.insert({{"bundleName", "b4"}, {"bindType", "88"}, {"status", "8"}});
+    parms.insert({{"bundleName", "888"}, {"bindType", "4"}, {"status", "1"}});
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"bundleName", "b4"}, {"bindType", "88"}, {"status", "8"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"bundleName", "888"}, {"trustDeviceId", "9999"}, {"status", "1"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     EXPECT_NE(ret, DP_SUCCESS);
 
@@ -724,9 +803,48 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_010, TestSize.Level1)
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: GetAccessControlProfile_011
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_011, TestSize.Level1)
+{
+    std::vector<AccessControlProfile> profile;
+    std::map<std::string, std::string> parms;
+    parms.insert({{"tokenId", "55555"}, {"trustDeviceId", "11111"}, {"status", "1"}});
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
 
     parms.clear();
-    parms.insert({{"accesserTokenId", "55555"}, {"accesseeDeviceId", "11111"}});
+    parms.insert({{"tokenId", "55555"}, {"trustDeviceId", "9999"}, {"status", "1"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"userId", "001"}, {"bundleName", "b1"}, {"trustDeviceId", "9999"}, {"status", "1"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"userId", "001"}, {"bundleName", "b1"}, {"trustDeviceId", "99999"}, {"status", "1"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"userId", "001"}, {"bundleName", "b1"}, {"bindType", "99999"}, {"status", "1"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"userId", "001"}, {"bundleName", "b1"}, {"bindType", "4"}, {"status", "1"}});
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     EXPECT_NE(ret, DP_SUCCESS);
@@ -1003,5 +1121,207 @@ HWTEST_F(TrustProfileManagerTest, GetTrustDeviceProfile_002, TestSize.Level1)
     TrustDeviceProfile profile;
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetTrustDeviceProfile("8888", profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: RdbStoreIsNullptr_001
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, RdbStoreIsNullptr_001, TestSize.Level1)
+{
+    OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().rdbStore_ = nullptr;
+    
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().UnInit();
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().CreateTable();
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().CreateUniqueIndex();
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    TrustDeviceProfile profile;
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetTrustDeviceProfile("8888", profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().PutTrustDeviceProfile(profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().UpdateTrustDeviceProfile(profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().DeleteTrustDeviceProfile("123");
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    std::vector<TrustDeviceProfile> profiles;
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAllTrustDeviceProfile(profiles);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: RdbStoreIsNullptr_002
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, RdbStoreIsNullptr_002, TestSize.Level1)
+{
+    OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().rdbStore_ = nullptr;
+
+    AccessControlProfile profile;
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().PutAccessControlProfile(profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().UpdateAccessControlProfile(profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().DeleteAccessControlProfile(1);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    std::vector<AccessControlProfile> profiles;
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAllAccessControlProfile(profiles);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().PutAccesserProfile(profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().PutAccesseeProfile(profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().SetAccessControlId(profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().SetAccesserId(profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().SetAccesseeId(profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().UpdateAccesserProfile(1, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().UpdateAccesseeProfile(1, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: RdbStoreIsNullptr_003
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, RdbStoreIsNullptr_003, TestSize.Level1)
+{
+    OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().rdbStore_ = nullptr;
+
+    std::vector<AccessControlProfile> profiles;
+    std::map<std::string, std::string> parms;
+    parms.insert({{"userId", "001"}, {"bundleName", "b1"}, {"trustDeviceId", "9999"}, {"status", "1"}});
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profiles);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    profiles.clear();
+    parms.insert({{"userId", "11"}, {"bundleName", "b1"}, {"bindType", "1"}, {"status", "0"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profiles);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    profiles.clear();
+    parms.insert({{"bundleName", "b4"}, {"bindType", "1"}, {"status", "0"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profiles);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    profiles.clear();
+    parms.insert({{"tokenId", "55555"}, {"trustDeviceId", "9999"}, {"status", "1"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profiles);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    profiles.clear();
+    parms.insert({{"bundleName", "b4"}, {"trustDeviceId", "9999"}, {"status", "1"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profiles);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    profiles.clear();
+    parms.insert({{"userId", "77"}, {"accountId", "a44"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profiles);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: RdbStoreIsNullptr_004
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, RdbStoreIsNullptr_004, TestSize.Level1)
+{
+    OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().rdbStore_ = nullptr;
+
+    AccessControlProfile profile;
+    int32_t status = 0;
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetResultStatus("123", status);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    std::vector<AccessControlProfile> profiles;
+    std::shared_ptr<ResultSet> resultSet;
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfiles(resultSet, 1, 1, 1, "1", profiles);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfiles(resultSet, 1, 1, 1, profiles);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfilesByTokenId(resultSet, 1, 1, 1, profiles);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().DeleteAccesserCheck(1);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().DeleteAccesseeCheck(1);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().UpdateAclCheck(profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().DeleteTrustDeviceCheck(profile);
     EXPECT_NE(ret, DP_SUCCESS);
 }
