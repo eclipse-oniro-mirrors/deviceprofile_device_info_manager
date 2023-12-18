@@ -261,9 +261,7 @@ void DistributedDeviceProfileService::OnStart(const SystemAbilityOnDemandReason&
     }
 
     HILOGI("start reason %{public}s", startReason.GetName().c_str());
-    if (startReason.GetName() == BOOT_COMPLETED_EVENT) {
-        ContentSensorManager::GetInstance().Init();
-    }
+    ContentSensorManager::GetInstance().Init();
     DelayUnloadTask();
     if (!Publish(this)) {
         HILOGE("publish SA failed");
