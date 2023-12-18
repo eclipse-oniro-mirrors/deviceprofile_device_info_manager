@@ -21,6 +21,7 @@
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_errors.h"
+#include "event_handler_factory.h"
 #define private public
 #define protected public
 
@@ -58,6 +59,19 @@ void KvSyncCompletedListenerTest::SetUp()
 
 void KvSyncCompletedListenerTest::TearDown()
 {
+}
+
+/*
+ * @tc.name: ~KvSyncCompletedListener001
+ * @tc.desc: ~KvSyncCompletedListener
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KvSyncCompletedListenerTest, KvSyncCompletedListener001, TestSize.Level1)
+{
+    const std::string kvDeathHandler = "kv_store_death_handler";
+    KvSyncCompletedListener KvSyncCompletedListener_;
+    KvSyncCompletedListener_.onSyncHandler_ = EventHandlerFactory::GetInstance().CreateEventHandler(kvDeathHandler);
 }
 
 /*

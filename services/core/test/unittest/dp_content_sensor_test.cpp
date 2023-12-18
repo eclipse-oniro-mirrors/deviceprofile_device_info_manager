@@ -19,6 +19,7 @@
 
 #define private public
 #define protected public
+#include "collector.h"
 #include "distributed_device_profile_client.h"
 #include "device_info_collector.h"
 #include "storage_info_collector.h"
@@ -54,6 +55,34 @@ void DpContentSensorTest::SetUp()
 
 void DpContentSensorTest::TearDown()
 {
+}
+
+class CollectorListener : public Collector {
+public:
+    CollectorListener()
+    {
+    }
+    ~CollectorListener()
+    {
+    }
+    bool ConvertToProfile(DeviceProfile& deviceProfile) override
+    {
+        return true;
+    }
+};
+
+/**
+ * @tc.name: Collect_001
+ * @tc.desc: Collect
+ * @tc.type: FUNC
+ */
+HWTEST_F(DpContentSensorTest, Collect_001, TestSize.Level2)
+{
+    CollectorListener collector;
+    DeviceProfile profile;
+    profile.SetDeviceId("test");
+    profile.SetDeviceName("test");
+    collector.Collect(profile);
 }
 
 /**
