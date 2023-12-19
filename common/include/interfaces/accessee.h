@@ -25,16 +25,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 class Accessee : public DpParcel {
 public:
-    Accessee()
-        : accesseeId_(0),
-        accesseeDeviceId_(""),
-        accesseeUserId_(-1),
-        accesseeAccountId_(""),
-        accesseeTokenId_(-1),
-        accesseeBundleName_(""),
-        accesseeHapSignature_(""),
-        accesseeBindLevel_(static_cast<uint32_t>(BindLevel::MIN))
-    {}
+    Accessee();
     ~Accessee() = default;
 
 public:
