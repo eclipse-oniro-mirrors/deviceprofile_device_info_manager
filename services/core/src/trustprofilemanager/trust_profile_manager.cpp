@@ -416,6 +416,42 @@ int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId,
     return DP_SUCCESS;
 }
 
+int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId, std::vector<AccessControlProfile> &profile)
+{
+    std::shared_ptr<ResultSet> resultSet =
+        GetResultSet(SELECT_ACCESS_CONTROL_TABLE, std::vector<ValueObject> {});
+    if (resultSet == nullptr) {
+        HILOGE("GetAccessControlProfile::resultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    int32_t rowCount = ROWCOUNT_INIT;
+    resultSet->GetRowCount(rowCount);
+    if (rowCount == 0) {
+        HILOGE("GetAccessControlProfile::access_control_table no data");
+        return DP_NOT_FIND_DATA;
+    }
+    while (resultSet->GoToNextRow() == DP_SUCCESS) {
+        int32_t columnIndex = COLUMNINDEX_INIT;
+        int64_t accesserId = ACCESSERID_INIT;
+        resultSet->GetColumnIndex(ACCESSER_ID, columnIndex);
+        resultSet->GetLong(columnIndex, accesserId);
+        int64_t accesseeId = ACCESSEEID_INIT;
+        resultSet->GetColumnIndex(ACCESSEE_ID, columnIndex);
+        resultSet->GetLong(columnIndex, accesseeId);
+        int32_t ret = GetAccessControlProfiles(resultSet, accesserId, accesseeId, userId, profile);
+        if (ret != DP_SUCCESS) {
+            HILOGE("GetAccessControlProfile::GetAccessControlProfile faild");
+            return ret;
+        }
+    }
+    if (profile.empty()) {
+        HILOGE("GetAccessControlProfile::by userId accountId not find data");
+        return DP_NOT_FIND_DATA;
+    }
+    resultSet->Close();
+    return DP_SUCCESS;
+}
+
 int32_t TrustProfileManager::GetAllAccessControlProfile(std::vector<AccessControlProfile>& profile)
 {
     std::shared_ptr<ResultSet> resultSet =
@@ -520,42 +556,45 @@ int32_t TrustProfileManager::GetAccessControlProfile(const std::string& bundleNa
 int32_t TrustProfileManager::GetAccessControlProfile(const std::map<std::string, std::string>& params,
     std::vector<AccessControlProfile>& profile)
 {
-    if (params.find("userId") != params.end() && params.find("bundleName") != params.end()
-            && params.find("bindType") != params.end() && params.find("status") != params.end()) {
-        int32_t ret = this->GetAccessControlProfile(std::atoi(params.find("userId")->second.c_str()),
-            params.find("bundleName")->second, std::atoi(params.find("bindType")->second.c_str()),
-            std::atoi(params.find("status")->second.c_str()), profile);
-        return ret;
+    if (params.find(TRUST_DEVICE_ID) != params.end() && params.find(STATUS) != params.end()) {
+        if (params.find(USERID) != params.end() && params.find(BUNDLENAME) != params.end()) {
+            int32_t ret = this->GetAccessControlProfile(std::atoi(params.at(USERID).c_str()),
+                params.at(BUNDLENAME), params.at(TRUST_DEVICE_ID),
+                std::atoi(params.at(STATUS).c_str()), profile);
+            return ret;
+        }
+        if (params.find(BUNDLENAME) != params.end()) {
+            int32_t ret = this->GetAccessControlProfile(params.at(BUNDLENAME),
+                params.at(TRUST_DEVICE_ID), std::atoi(params.at(STATUS).c_str()), profile);
+            return ret;
+        }
+        if (params.find(TOKENID) != params.end()) {
+            int32_t ret = this->GetAccessControlProfileByTokenId(std::atoi(params.at(TOKENID).c_str()),
+                params.at(TRUST_DEVICE_ID), std::atoi(params.at(STATUS).c_str()), profile);
+            return ret;
+        }
     }
-    if (params.find("userId") != params.end() && params.find("bundleName") != params.end()
-            && params.find("trustDeviceId") != params.end() && params.find("status") != params.end()) {
-        int32_t ret = this->GetAccessControlProfile(std::atoi(params.find("userId")->second.c_str()),
-            params.find("bundleName")->second, params.find("trustDeviceId")->second,
-            std::atoi(params.find("status")->second.c_str()), profile);
-        return ret;
+    if (params.find(BIND_TYPE) != params.end() && params.find(STATUS) != params.end()) {
+        if (params.find(USERID) != params.end() && params.find(BUNDLENAME) != params.end()) {
+            int32_t ret = this->GetAccessControlProfile(std::atoi(params.at(USERID).c_str()),
+                params.at(BUNDLENAME), std::atoi(params.at(BIND_TYPE).c_str()),
+                std::atoi(params.at(STATUS).c_str()), profile);
+            return ret;
+        }
+        if (params.find(BUNDLENAME) != params.end()) {
+            int32_t ret = this->GetAccessControlProfile(params.at(BUNDLENAME),
+                std::atoi(params.at(BIND_TYPE).c_str()),
+                std::atoi(params.at(STATUS).c_str()), profile);
+            return ret;
+        }
     }
-    if (params.find("bundleName") != params.end() && params.find("trustDeviceId") != params.end()
-        && params.find("status") != params.end()) {
-        int32_t ret = this->GetAccessControlProfile(params.find("bundleName")->second,
-            params.find("trustDeviceId")->second, std::atoi(params.find("status")->second.c_str()), profile);
-        return ret;
-    }
-    if (params.find("bundleName") != params.end() && params.find("bindType") != params.end()
-        && params.find("status") != params.end()) {
-        int32_t ret = this->GetAccessControlProfile(params.find("bundleName")->second,
-            std::atoi(params.find("bindType")->second.c_str()),
-            std::atoi(params.find("status")->second.c_str()), profile);
-        return ret;
-    }
-    if (params.find("userId") != params.end() && params.find("accountId") != params.end()) {
-        int32_t ret = this->GetAccessControlProfile(std::atoi(params.find("userId")->second.c_str()),
-            params.find("accountId")->second, profile);
-        return ret;
-    }
-    if (params.find("tokenId") != params.end() && params.find("trustDeviceId") != params.end()
-        && params.find("status") != params.end()) {
-        int32_t ret = this->GetAccessControlProfileByTokenId(std::atoi(params.find("tokenId")->second.c_str()),
-            params.find("trustDeviceId")->second, std::atoi(params.find("status")->second.c_str()), profile);
+    if (params.find(USERID) != params.end()) {
+        if (params.find(ACCOUNTID) != params.end()) {
+            int32_t ret = this->GetAccessControlProfile(std::atoi(params.at(USERID).c_str()),
+                params.at(ACCOUNTID), profile);
+            return ret;
+        }
+        int32_t ret = this->GetAccessControlProfile(std::atoi(params.at(USERID).c_str()), profile);
         return ret;
     }
     HILOGE("params is error");

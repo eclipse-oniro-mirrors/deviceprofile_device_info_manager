@@ -65,6 +65,7 @@ private:
         const std::string& trustDeviceId, int32_t status, std::vector<AccessControlProfile>& profile);
     int32_t GetAccessControlProfile(int32_t userId, const std::string& accountId,
         std::vector<AccessControlProfile>& profile);
+    int32_t GetAccessControlProfile(int32_t userId, std::vector<AccessControlProfile>& profile);
     int32_t GetAccessControlProfileByTokenId(int64_t tokenId, const std::string& trustDeviceId,
         int32_t status, std::vector<AccessControlProfile>& profile);
     int32_t ConvertToTrustDeviceProfile(const AccessControlProfile& accessControlProfile,

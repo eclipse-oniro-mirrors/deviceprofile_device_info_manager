@@ -666,6 +666,32 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_005, TestSize.Level1)
         std::cout << profile[i].GetAccessee().dump() <<std::endl;
     }
     EXPECT_EQ(ret, DP_SUCCESS);
+
+    parms.clear();
+    profile.clear();
+    parms.insert({{"userId", "88"}, {"accountId", "a44"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+
+    parms.clear();
+    profile.clear();
+    parms.insert({{"userId", "88"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+
+    parms.clear();
+    profile.clear();
+    parms.insert({{"userId", "77"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    for (size_t i = 0; i < profile.size(); i++) {
+        std::cout << profile[i].dump() <<std::endl;
+        std::cout << profile[i].GetAccesser().dump() <<std::endl;
+        std::cout << profile[i].GetAccessee().dump() <<std::endl;
+    }
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -800,6 +826,18 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_010, TestSize.Level1)
 
     parms.clear();
     parms.insert({{"bundleName", "b4"}, {"trustDeviceId", "88888"}, {"status", "0"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"userId", "88888"}, {"accountId", "a44"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"userId", "88888"}});
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     EXPECT_NE(ret, DP_SUCCESS);
@@ -1302,6 +1340,13 @@ HWTEST_F(TrustProfileManagerTest, RdbStoreIsNullptr_003, TestSize.Level1)
     parms.clear();
     profiles.clear();
     parms.insert({{"userId", "77"}, {"accountId", "a44"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profiles);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    profiles.clear();
+    parms.insert({{"userId", "77"}});
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profiles);
     EXPECT_NE(ret, DP_SUCCESS);
