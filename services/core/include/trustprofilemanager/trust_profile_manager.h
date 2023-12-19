@@ -124,4 +124,4 @@ private:
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 
-#endif //OHOS_DP_TRUST_PROFILE_MANAGER_H
+#endif // OHOS_DP_TRUST_PROFILE_MANAGER_H
