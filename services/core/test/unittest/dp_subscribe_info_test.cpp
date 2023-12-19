@@ -125,7 +125,7 @@ void DPSubscribeInfoTest::TearDown()
 }
 
 /*
- * @tc.name: GetAccessControlProfile_003
+ * @tc.name: Get_001
  * @tc.desc: Normal testCase of DPSubscribeInfoTest for CRUD
  * @tc.type: FUNC
  */
@@ -231,4 +231,56 @@ HWTEST_F(DPSubscribeInfoTest, Marshalling_001, TestSize.Level1)
     EXPECT_EQ(ret, false);
     ret = subscribeInfo.UnMarshalling(parcel);
     EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: Stub_001
+ * @tc.desc: Normal testCase of DPSubscribeInfoTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(DPSubscribeInfoTest, Stub_001, TestSize.Level1)
+{
+    uint32_t saId = 4801;
+    std::string subscribeKey = "trust_device_profile";
+    std::unordered_set<ProfileChangeType> subscribeTypes = {ProfileChangeType::TRUST_DEVICE_PROFILE_ADD,
+        ProfileChangeType::TRUST_DEVICE_PROFILE_UPDATE, ProfileChangeType::TRUST_DEVICE_PROFILE_DELETE};
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+	    new(std::nothrow) DPSubscribeInfoTest::SubscribeDPChangeListener;
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    OHOS::sptr<IProfileChangeListener> proxy = OHOS::iface_cast<IProfileChangeListener>(subscribeInfo.GetListener());
+    TrustDeviceProfile oldTrustProfile;
+    TrustDeviceProfile newTrustProfile;
+    int32_t ret = proxy->OnTrustDeviceProfileAdd(oldTrustProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->OnTrustDeviceProfileDelete(oldTrustProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->OnTrustDeviceProfileUpdate(oldTrustProfile, newTrustProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+
+    DeviceProfile oldDeviceProfile;
+    DeviceProfile newDeviceProfile;
+    ret = proxy->OnDeviceProfileAdd(oldDeviceProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->OnDeviceProfileDelete(oldDeviceProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->OnDeviceProfileUpdate(oldDeviceProfile, newDeviceProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+
+    ServiceProfile oldServiceProfile;
+    ServiceProfile newServiceProfile;
+    ret = proxy->OnServiceProfileAdd(oldServiceProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->OnServiceProfileDelete(oldServiceProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->OnServiceProfileUpdate(oldServiceProfile, newServiceProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+
+    CharacteristicProfile oldChaProfile;
+    CharacteristicProfile newChaProfile;
+    ret = proxy->OnCharacteristicProfileAdd(oldChaProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->OnCharacteristicProfileDelete(oldChaProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->OnCharacteristicProfileUpdate(oldChaProfile, newChaProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }

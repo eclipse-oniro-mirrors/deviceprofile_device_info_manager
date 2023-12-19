@@ -60,6 +60,22 @@ void TrustProfileManagerTest::TearDownTestCase()
         TrustProfileManager::GetInstance().Init();
     EXPECT_EQ(ret, DP_SUCCESS);
 
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().DeleteAccessControlProfile(4);
+    EXPECT_EQ(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().DeleteAccessControlProfile(3);
+    EXPECT_EQ(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().DeleteAccessControlProfile(2);
+    EXPECT_EQ(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().DeleteAccessControlProfile(1);
+    EXPECT_EQ(ret, DP_SUCCESS);
+
     ret = OHOS::DistributedDeviceProfile::
         TrustProfileManager::GetInstance().UnInit();
     EXPECT_EQ(ret, DP_SUCCESS);
@@ -1058,6 +1074,18 @@ HWTEST_F(TrustProfileManagerTest, DeleteAccessControlProfile_005, TestSize.Level
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().DeleteAccessControlProfile(7);
     EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: DeleteAccessControlProfile_006
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, DeleteAccessControlProfile_006, TestSize.Level1)
+{
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().DeleteAccessControlProfile(10);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /*
