@@ -36,7 +36,7 @@ using namespace std::chrono_literals;
 
 namespace {
 const std::string TAG = "DeviceProfileStorage";
-constexpr int32_t RETRY_TIMES_GET_KVSTORE = 500;
+constexpr int32_t RETRY_TIMES_GET_KVSTORE = 30;
 }
 
 DeviceProfileStorage::DeviceProfileStorage(const std::string& appId, const std::string& storeId)
@@ -133,7 +133,7 @@ bool DeviceProfileStorage::TryGetKvStore()
             return true;
         }
         HILOGD("retry get kvstore...");
-        std::this_thread::sleep_for(10ms);
+        std::this_thread::sleep_for(500ms);
         retryTimes++;
     }
     if (kvStorePtr_ == nullptr) {

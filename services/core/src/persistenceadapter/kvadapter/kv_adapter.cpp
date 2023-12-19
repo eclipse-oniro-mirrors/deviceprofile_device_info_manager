@@ -29,7 +29,7 @@ namespace DistributedDeviceProfile {
 using namespace OHOS::DistributedKv;
 namespace {
     constexpr int32_t MAX_INIT_RETRY_TIMES = 30;
-    constexpr int32_t INIT_RETRY_SLEEP_INTERVAL = 50 * 1000; // 50ms
+    constexpr int32_t INIT_RETRY_SLEEP_INTERVAL = 500 * 1000; // 500ms
     const std::string DATABASE_DIR = "/data/service/el1/public/database/distributed_device_profile_service";
     const std::string TAG = "KVAdapter";
 }
@@ -241,7 +241,7 @@ DistributedKv::Status KVAdapter::GetKvStorePtr()
         .createIfMissing = true,
         .encrypt = false,
         .autoSync = true,
-        .securityLevel = DistributedKv::SecurityLevel::S0,
+        .securityLevel = DistributedKv::SecurityLevel::S1,
         .area = 1,
         .kvStoreType = KvStoreType::SINGLE_VERSION,
         .baseDir = DATABASE_DIR

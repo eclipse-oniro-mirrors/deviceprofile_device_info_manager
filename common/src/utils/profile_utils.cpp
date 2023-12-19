@@ -518,12 +518,12 @@ int32_t ProfileUtils::EntriesToCharProfile(std::map<std::string, std::string> va
     profile.SetDeviceId(GetDeviceIdByDBKey(iter->first));
     profile.SetServiceName(GetServiceNameByDBKey(iter->first));
     auto propertiesMap = GetProfilePropertiesMap(values);
-    if (values.count(CHARACTERISTIC_KEY) != 0 && 0 < values[CHARACTERISTIC_KEY].length() &&
-        values[CHARACTERISTIC_KEY].length() < MAX_STRING_LEN) {
+    if (propertiesMap.count(CHARACTERISTIC_KEY) != 0 && 0 < propertiesMap[CHARACTERISTIC_KEY].length() &&
+        propertiesMap[CHARACTERISTIC_KEY].length() < MAX_STRING_LEN) {
         profile.SetCharacteristicKey(propertiesMap[CHARACTERISTIC_KEY]);
     }
-    if (values.count(CHARACTERISTIC_VALUE) != 0 && 0 < values[CHARACTERISTIC_VALUE].length() &&
-        values[CHARACTERISTIC_VALUE].length() < MAX_STRING_LEN) {
+    if (propertiesMap.count(CHARACTERISTIC_VALUE) != 0 && 0 < propertiesMap[CHARACTERISTIC_VALUE].length() &&
+        propertiesMap[CHARACTERISTIC_VALUE].length() < MAX_STRING_LEN) {
         profile.SetCharacteristicValue(propertiesMap[CHARACTERISTIC_VALUE]);
     }
     return DP_SUCCESS;
