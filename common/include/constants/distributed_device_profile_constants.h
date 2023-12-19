@@ -145,6 +145,10 @@ constexpr int32_t RDB_VERSION = 1;
 constexpr int32_t RDB_INIT_MAX_TIMES = 30;
 constexpr int32_t RDB_INIT_INTERVAL_TIME = 100000;
 /* TrustProfile Manager */
+const std::string USERID = "userId";
+const std::string BUNDLENAME = "bundleName";
+const std::string TOKENID = "tokenId";
+const std::string ACCOUNTID = "accountId";
 const std::string DEVICEID_EQUAL_CONDITION = "deviceId = ?";
 const std::string ACCESSCONTROLID_EQUAL_CONDITION = "accessControlId = ?";
 const std::string ACCESSERID_EQUAL_CONDITION = "accesserId = ? ";

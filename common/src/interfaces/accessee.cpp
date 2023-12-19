@@ -24,6 +24,18 @@ namespace DistributedDeviceProfile {
 namespace {
     const std::string TAG = "Accessee";
 }
+Accessee::Accessee()
+    : accesseeId_(0),
+    accesseeDeviceId_(""),
+    accesseeUserId_(-1),
+    accesseeAccountId_(""),
+    accesseeTokenId_(-1),
+    accesseeBundleName_(""),
+    accesseeHapSignature_(""),
+    accesseeBindLevel_(static_cast<uint32_t>(BindLevel::MIN))
+{
+}
+
 int64_t Accessee::GetAccesseeId()
 {
     return accesseeId_;

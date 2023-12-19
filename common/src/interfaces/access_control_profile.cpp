@@ -26,6 +26,25 @@ namespace DistributedDeviceProfile {
 namespace {
     const std::string TAG = "AccessControlProfile";
 }
+AccessControlProfile::AccessControlProfile()
+    : accessControlId_(0),
+    accesserId_(0),
+    accesseeId_(0),
+    sessionKey_(""),
+    bindType_(static_cast<uint32_t>(BindType::MIN)),
+    authenticationType_(static_cast<uint32_t>(AuthenticationType::MIN)),
+    bindLevel_(static_cast<uint32_t>(BindLevel::MIN)),
+    status_(static_cast<int32_t>(Status::MIN)),
+    validPeriod_(-1),
+    lastAuthTime_(-1),
+    trustDeviceId_(""),
+    deviceIdType_((uint32_t)DeviceIdType::MIN),
+    deviceIdHash_(""),
+    accesser_({}),
+    accessee_({})
+{
+}
+
 int64_t AccessControlProfile::GetAccessControlId() const
 {
     return accessControlId_;
