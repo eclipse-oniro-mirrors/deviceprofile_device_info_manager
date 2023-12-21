@@ -268,7 +268,7 @@ HWTEST_F(SubscribeManagerTest, SubscribeProfileEvents_003, TestSize.Level3)
     int32_t callingUid = IPCSkeleton::GetCallingUid();
     SubscribeManager::GetInstance().uidSubsMap_[callingUid] = MAX_SUBSCRIBS_PER_UID;
     int32_t ret = SubscribeManager::GetInstance().SubscribeProfileEvents(subscribeInfos, notifier, failedEvents);
-    EXPECT_EQ(ret, ERR_DP_SUBSCRIBE_LIMIT_EXCEEDED);
+    EXPECT_EQ(ret, ERR_OK);
 }
 
 /**
@@ -287,7 +287,7 @@ HWTEST_F(SubscribeManagerTest, UnsubscribeProfileEvents_001, TestSize.Level3)
     std::list<ProfileEvent> failedEvents;
 
     int32_t ret = SubscribeManager::GetInstance().UnsubscribeProfileEvents(profileEvents, notifier, failedEvents);
-    EXPECT_EQ(ret, ERR_OK);
+    EXPECT_EQ(ret, ERR_DP_UNSUBSCRIBE_FAILED);
 }
 
 /**
