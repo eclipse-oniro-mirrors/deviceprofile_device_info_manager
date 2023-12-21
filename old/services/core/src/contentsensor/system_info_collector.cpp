@@ -19,6 +19,8 @@
 #include "nlohmann/json.hpp"
 #include "parameter.h"
 #include "securec.h"
+#include "content_sensor_manager_utils.h"
+#include "distributed_device_profile_constants.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -27,7 +29,6 @@ const std::string TAG = "SystemInfoCollector";
 
 const std::string SERVICE_ID = "system";
 const std::string SERVICE_TYPE = "system";
-const std::string EMPTY_PARAM = "";
 const std::string SYSTEM_OS_TYPE = "type";
 const std::string DEVICE_OHOS_VERSION = "harmonyVersion";
 const std::string DEVICE_API_LEVEL = "harmonyApiLevel";
@@ -50,25 +51,22 @@ bool SystemInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& pro
 
 int32_t SystemInfoCollector::GetOsType()
 {
-    const char* osFullName = GetOSFullName();
-    if (strncmp(osFullName, DEVICE_OHOS_NAME.c_str(), strlen(DEVICE_OHOS_NAME.c_str())) == 0) {
-        free((char*)osFullName);
-        return OHOS_TYPE;
+    std::string osFullName = DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainOsFullName();
+    if (osFullName.empty() || osFullName.size() >= DistributedDeviceProfile::MAX_STRING_LEN) {
+        HILOGI("osFullName size is invalid!");
+        return OHOS_TYPE_UNKNOWN;
     }
-    free((char*)osFullName);
-    HILOGE("get failed");
-    return OHOS_TYPE_UNKNOWN;
+    size_t found = osFullName.find(DEVICE_OHOS_NAME);
+    if (found != std::string::npos) {
+        HILOGI("osFullName is invalid!");
+        return OHOS_TYPE_UNKNOWN;
+    }
+    return OHOS_TYPE;
 }
+
 std::string SystemInfoCollector::GetOsVersion()
 {
-    const char* version = GetDisplayVersion();
-    if (version == nullptr) {
-        HILOGE("get failed");
-        return EMPTY_PARAM;
-    }
-    std::string osVersion = version;
-    free((char*)version);
-    return osVersion;
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainDisplayVersion();
 }
 } // namespace DeviceProfile
 } // namespace OHOS
