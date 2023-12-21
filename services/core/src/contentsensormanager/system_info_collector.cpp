@@ -48,7 +48,7 @@ int32_t SystemInfoCollector::GetOsType()
         return OHOS_TYPE_UNKNOWN;
     }
     size_t found = osFullName.find(DEVICE_OHOS_NAME);
-    if (found != std::string::npos) {
+    if (found == std::string::npos) {
         HILOGI("osFullName is invalid!");
         return OHOS_TYPE_UNKNOWN;
     }
