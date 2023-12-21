@@ -110,8 +110,7 @@ int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile&
             return DP_GET_RDBSTORE_FAIL;
         }
         int64_t rowId = ROWID_INIT;
-        int32_t ret = rdbStore_ ->Put(rowId, ACCESS_CONTROL_TABLE, values);
-        if (ret != DP_SUCCESS) {
+        if (rdbStore_->Put(rowId, ACCESS_CONTROL_TABLE, values) != DP_SUCCESS) {
             HILOGE("PutAccessControlProfile::access_control_table insert failed");
             return DP_PUT_ACL_PROFILE_FAIL;
         }
@@ -133,18 +132,16 @@ int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile&
         return DP_SUCCESS;
     }
     int32_t status = STATUS_INIT;
-    int32_t ret = this->GetResultStatus(trustDeviceId, status);
-    if (ret != DP_SUCCESS) {
+    if (this->GetResultStatus(trustDeviceId, status) != DP_SUCCESS) {
         HILOGE("UpdateAccessControlProfile::GetResultStatus failed");
         return DP_GET_RESULTSET_FAIL;
     }
     trustProfile.SetStatus(status);
-    ret = this->UpdateTrustDeviceProfile(trustProfile);
-    resultSet->Close();
-    if (ret != DP_SUCCESS) {
+    if (this->UpdateTrustDeviceProfile(trustProfile) != DP_SUCCESS) {
         HILOGE("PutAccessControlProfile::UpdateTrustDeviceProfile failed");
         return DP_UPDATE_TRUST_DEVICE_PROFILE_FAIL;
     }
+    resultSet->Close();
     return DP_SUCCESS;
 }
 
