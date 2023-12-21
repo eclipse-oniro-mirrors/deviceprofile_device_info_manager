@@ -20,6 +20,7 @@
 #include "parameter.h"
 #include "securec.h"
 #include "content_sensor_manager_utils.h"
+#include "distributed_device_profile_constants.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -51,6 +52,16 @@ bool SystemInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& pro
 
 int32_t SystemInfoCollector::GetOsType()
 {
+    std::string osFullName = DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().GetOsFullName();
+    if (osFullName.empty() || osFullName.size() >= DistributedDeviceProfile::MAX_STRING_LEN) {
+        HILOGI("osFullName size is invalid!");
+        return OHOS_TYPE_UNKNOWN;
+    }
+    size_t found = osFullName.find(DEVICE_OHOS_NAME);
+    if (found != std::string::npos) {
+        HILOGI("osFullName is invalid!");
+        return OHOS_TYPE_UNKNOWN;
+    }
     return OHOS_TYPE;
 }
 

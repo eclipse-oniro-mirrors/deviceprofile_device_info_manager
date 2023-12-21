@@ -18,6 +18,9 @@
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
+namespace {
+    constexpr int32_t DEVICE_UUID_LENGTH = 65;
+}
 IMPLEMENT_SINGLE_INSTANCE(ContentSensorManagerUtils);
 std::string ContentSensorManagerUtils::GetProductModel()
 {
