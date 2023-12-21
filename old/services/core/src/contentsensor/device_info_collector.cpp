@@ -18,6 +18,7 @@
 #include "device_profile_log.h"
 #include "nlohmann/json.hpp"
 #include "parameter.h"
+#include "content_sensor_manager_utils.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -53,71 +54,32 @@ bool DeviceInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& pro
 
 std::string DeviceInfoCollector::GetDeviceModel()
 {
-    // The pointer is const in the interface. So no longer free char* productModelTempl.
-    const char* productModelTempl = GetProductModel();
-    if (productModelTempl == nullptr) {
-        HILOGE("get failed");
-        return EMPTY_PARAM;
-    }
-    std::string deviceModel = productModelTempl;
-    return deviceModel;
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().GetProductModel();
 }
 
 std::string DeviceInfoCollector::GetDevType()
 {
-    // The pointer is const in the interface. So no longer free char* deviceTypeTempl.
-    const char* deviceTypeTempl = GetDeviceType();
-    if (deviceTypeTempl == nullptr) {
-        HILOGE("get failed");
-        return EMPTY_PARAM;
-    }
-    std::string deviceType = deviceTypeTempl;
-    return deviceType;
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().GetDeviceType();
 }
 
 std::string DeviceInfoCollector::GetDeviceManufacturer()
 {
-    // The pointer is const in the interface. So no longer free char* manuFactureTempl.
-    const char* manuFactureTempl = GetManufacture();
-    if (manuFactureTempl == nullptr) {
-        HILOGE("get failed");
-        return EMPTY_PARAM;
-    }
-    std::string manuFacture = manuFactureTempl;
-    return manuFacture;
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().GetManufacture();
 }
 
 std::string DeviceInfoCollector::GetDeviceSerial()
 {
-    // The pointer is const in the interface. So no longer free char* serialTempl.
-    const char* serialTempl = GetSerial();
-    if (serialTempl == nullptr) {
-        HILOGE("get failed");
-        return EMPTY_PARAM;
-    }
-    std::string deviceSerial = serialTempl;
-    return deviceSerial;
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().GetSerial();
 }
 
 std::string DeviceInfoCollector::GetDeviceName()
 {
-    // The pointer is const in the interface. So no longer free char* marketNameTempl.
-    const char* marketNameTempl = GetMarketName();
-    if (marketNameTempl == nullptr) {
-        return GetDeviceModel();
-    }
-    std::string devName = marketNameTempl;
-    if (!devName.empty()) {
-        return devName;
-    }
-    return GetDeviceModel();
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().GetMarketName();
 }
 
 std::string DeviceInfoCollector::GetDeviceUdid()
 {
-    char localDeviceId[DEVICE_UUID_LENGTH] = {0};
-    GetDevUdid(localDeviceId, DEVICE_UUID_LENGTH);
-    return localDeviceId;
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().GetLocalUdid();
 }
 } // namespace DeviceProfile
 } // namespace OHOS

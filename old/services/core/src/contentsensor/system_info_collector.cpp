@@ -19,6 +19,7 @@
 #include "nlohmann/json.hpp"
 #include "parameter.h"
 #include "securec.h"
+#include "content_sensor_manager_utils.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -50,25 +51,12 @@ bool SystemInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& pro
 
 int32_t SystemInfoCollector::GetOsType()
 {
-    const char* osFullName = GetOSFullName();
-    if (strncmp(osFullName, DEVICE_OHOS_NAME.c_str(), strlen(DEVICE_OHOS_NAME.c_str())) == 0) {
-        free((char*)osFullName);
-        return OHOS_TYPE;
-    }
-    free((char*)osFullName);
-    HILOGE("get failed");
-    return OHOS_TYPE_UNKNOWN;
+    return OHOS_TYPE;
 }
+
 std::string SystemInfoCollector::GetOsVersion()
 {
-    const char* version = GetDisplayVersion();
-    if (version == nullptr) {
-        HILOGE("get failed");
-        return EMPTY_PARAM;
-    }
-    std::string osVersion = version;
-    free((char*)version);
-    return osVersion;
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().GetDisplayVersion();
 }
 } // namespace DeviceProfile
 } // namespace OHOS

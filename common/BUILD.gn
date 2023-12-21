@@ -44,6 +44,7 @@ ohos_shared_library("distributed_device_profile_common") {
     "src/interfaces/trust_device_profile.cpp",
     "src/utils/ipc_utils.cpp",
     "src/utils/profile_utils.cpp",
+    "src/utils/content_sensor_manager_utils.cpp"
   ]
 
   public_configs = [ ":distributed_device_profile_common_config" ]
