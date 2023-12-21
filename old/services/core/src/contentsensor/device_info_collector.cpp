@@ -18,6 +18,7 @@
 #include "device_profile_log.h"
 #include "nlohmann/json.hpp"
 #include "parameter.h"
+#include "content_sensor_manager_utils.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -26,14 +27,12 @@ const std::string TAG = "DeviceInfoCollector";
 
 const std::string SERVICE_ID = "device";
 const std::string SERVICE_TYPE = "device";
-const std::string EMPTY_PARAM = "";
 const std::string DEVICE_NAME = "deviceName";
 const std::string DEVICE_MODEL = "model";
 const std::string DEVICE_UDID = "udid";
 const std::string DEVICE_TYPE = "devType";
 const std::string DEVICE_MANU = "manu";
 const std::string DEVICE_SN = "sn";
-constexpr int32_t DEVICE_UUID_LENGTH = 65;
 }
 
 bool DeviceInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& profile)
@@ -53,71 +52,32 @@ bool DeviceInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& pro
 
 std::string DeviceInfoCollector::GetDeviceModel()
 {
-    // The pointer is const in the interface. So no longer free char* productModelTempl.
-    const char* productModelTempl = GetProductModel();
-    if (productModelTempl == nullptr) {
-        HILOGE("get failed");
-        return EMPTY_PARAM;
-    }
-    std::string deviceModel = productModelTempl;
-    return deviceModel;
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainProductModel();
 }
 
 std::string DeviceInfoCollector::GetDevType()
 {
-    // The pointer is const in the interface. So no longer free char* deviceTypeTempl.
-    const char* deviceTypeTempl = GetDeviceType();
-    if (deviceTypeTempl == nullptr) {
-        HILOGE("get failed");
-        return EMPTY_PARAM;
-    }
-    std::string deviceType = deviceTypeTempl;
-    return deviceType;
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainDeviceType();
 }
 
 std::string DeviceInfoCollector::GetDeviceManufacturer()
 {
-    // The pointer is const in the interface. So no longer free char* manuFactureTempl.
-    const char* manuFactureTempl = GetManufacture();
-    if (manuFactureTempl == nullptr) {
-        HILOGE("get failed");
-        return EMPTY_PARAM;
-    }
-    std::string manuFacture = manuFactureTempl;
-    return manuFacture;
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainManufacture();
 }
 
 std::string DeviceInfoCollector::GetDeviceSerial()
 {
-    // The pointer is const in the interface. So no longer free char* serialTempl.
-    const char* serialTempl = GetSerial();
-    if (serialTempl == nullptr) {
-        HILOGE("get failed");
-        return EMPTY_PARAM;
-    }
-    std::string deviceSerial = serialTempl;
-    return deviceSerial;
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainSerial();
 }
 
 std::string DeviceInfoCollector::GetDeviceName()
 {
-    // The pointer is const in the interface. So no longer free char* marketNameTempl.
-    const char* marketNameTempl = GetMarketName();
-    if (marketNameTempl == nullptr) {
-        return GetDeviceModel();
-    }
-    std::string devName = marketNameTempl;
-    if (!devName.empty()) {
-        return devName;
-    }
-    return GetDeviceModel();
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainMarketName();
 }
 
 std::string DeviceInfoCollector::GetDeviceUdid()
 {
-    char localDeviceId[DEVICE_UUID_LENGTH] = {0};
-    GetDevUdid(localDeviceId, DEVICE_UUID_LENGTH);
-    return localDeviceId;
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
 }
 } // namespace DeviceProfile
 } // namespace OHOS
