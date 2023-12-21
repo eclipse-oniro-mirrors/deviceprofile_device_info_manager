@@ -27,14 +27,12 @@ const std::string TAG = "DeviceInfoCollector";
 
 const std::string SERVICE_ID = "device";
 const std::string SERVICE_TYPE = "device";
-const std::string EMPTY_PARAM = "";
 const std::string DEVICE_NAME = "deviceName";
 const std::string DEVICE_MODEL = "model";
 const std::string DEVICE_UDID = "udid";
 const std::string DEVICE_TYPE = "devType";
 const std::string DEVICE_MANU = "manu";
 const std::string DEVICE_SN = "sn";
-constexpr int32_t DEVICE_UUID_LENGTH = 65;
 }
 
 bool DeviceInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& profile)
@@ -54,32 +52,32 @@ bool DeviceInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& pro
 
 std::string DeviceInfoCollector::GetDeviceModel()
 {
-    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().GetProductModel();
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainProductModel();
 }
 
 std::string DeviceInfoCollector::GetDevType()
 {
-    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().GetDeviceType();
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainDeviceType();
 }
 
 std::string DeviceInfoCollector::GetDeviceManufacturer()
 {
-    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().GetManufacture();
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainManufacture();
 }
 
 std::string DeviceInfoCollector::GetDeviceSerial()
 {
-    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().GetSerial();
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainSerial();
 }
 
 std::string DeviceInfoCollector::GetDeviceName()
 {
-    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().GetMarketName();
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainMarketName();
 }
 
 std::string DeviceInfoCollector::GetDeviceUdid()
 {
-    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().GetLocalUdid();
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
 }
 } // namespace DeviceProfile
 } // namespace OHOS

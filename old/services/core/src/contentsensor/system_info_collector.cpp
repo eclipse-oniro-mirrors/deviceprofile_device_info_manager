@@ -29,7 +29,6 @@ const std::string TAG = "SystemInfoCollector";
 
 const std::string SERVICE_ID = "system";
 const std::string SERVICE_TYPE = "system";
-const std::string EMPTY_PARAM = "";
 const std::string SYSTEM_OS_TYPE = "type";
 const std::string DEVICE_OHOS_VERSION = "harmonyVersion";
 const std::string DEVICE_API_LEVEL = "harmonyApiLevel";
@@ -52,7 +51,7 @@ bool SystemInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& pro
 
 int32_t SystemInfoCollector::GetOsType()
 {
-    std::string osFullName = DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().GetOsFullName();
+    std::string osFullName = DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainOsFullName();
     if (osFullName.empty() || osFullName.size() >= DistributedDeviceProfile::MAX_STRING_LEN) {
         HILOGI("osFullName size is invalid!");
         return OHOS_TYPE_UNKNOWN;
@@ -67,7 +66,7 @@ int32_t SystemInfoCollector::GetOsType()
 
 std::string SystemInfoCollector::GetOsVersion()
 {
-    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().GetDisplayVersion();
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainDisplayVersion();
 }
 } // namespace DeviceProfile
 } // namespace OHOS

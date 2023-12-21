@@ -25,14 +25,14 @@ namespace DistributedDeviceProfile {
 class ContentSensorManagerUtils {
 DECLARE_SINGLE_INSTANCE(ContentSensorManagerUtils);
 public:
-    std::string GetProductModel();
-    std::string GetDeviceType();
-    std::string GetManufacture();
-    std::string GetSerial();
-    std::string GetMarketName();
-    std::string GetOsFullName();
-    std::string GetDisplayVersion();
-    std::string GetLocalUdid();
+    std::string ObtainProductModel();
+    std::string ObtainDeviceType();
+    std::string ObtainManufacture();
+    std::string ObtainSerial();
+    std::string ObtainMarketName();
+    std::string ObtainOsFullName();
+    std::string ObtainDisplayVersion();
+    std::string ObtainLocalUdid();
 
 private:
     std::string deviceModel_ = "";

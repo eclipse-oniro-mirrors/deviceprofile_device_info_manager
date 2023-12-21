@@ -15,14 +15,16 @@
 
 #include "content_sensor_manager_utils.h"
 #include "parameter.h"
+#include "distributed_device_profile_log.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
+    const std::string TAG = "ContentSensorManagerUtils";
     constexpr int32_t DEVICE_UUID_LENGTH = 65;
 }
 IMPLEMENT_SINGLE_INSTANCE(ContentSensorManagerUtils);
-std::string ContentSensorManagerUtils::GetProductModel()
+std::string ContentSensorManagerUtils::ObtainProductModel()
 {
     HILOGE("called!");
     std::lock_guard<std::mutex> lock(csMutex_);
@@ -30,7 +32,7 @@ std::string ContentSensorManagerUtils::GetProductModel()
         return deviceModel_;
     }
     const char* productModelTemp = GetProductModel();
-    if (productModelTempl == nullptr) {
+    if (productModelTemp == nullptr) {
         HILOGE("get productModel failed!");
         return "";
     }
@@ -39,7 +41,7 @@ std::string ContentSensorManagerUtils::GetProductModel()
     return deviceModel_;
 }
 
-std::string ContentSensorManagerUtils::GetDeviceType()
+std::string ContentSensorManagerUtils::ObtainDeviceType()
 {
     HILOGE("called!");
     std::lock_guard<std::mutex> lock(csMutex_);
@@ -56,7 +58,7 @@ std::string ContentSensorManagerUtils::GetDeviceType()
     return deviceType_;
 }
 
-std::string ContentSensorManagerUtils::GetManufacture()
+std::string ContentSensorManagerUtils::ObtainManufacture()
 {
     HILOGE("called!");
     std::lock_guard<std::mutex> lock(csMutex_);
@@ -73,7 +75,7 @@ std::string ContentSensorManagerUtils::GetManufacture()
     return manufacture_;
 }
 
-std::string ContentSensorManagerUtils::GetSerial()
+std::string ContentSensorManagerUtils::ObtainSerial()
 {
     HILOGE("called!");
     std::lock_guard<std::mutex> lock(csMutex_);
@@ -90,7 +92,7 @@ std::string ContentSensorManagerUtils::GetSerial()
     return serial_;
 }
 
-std::string ContentSensorManagerUtils::GetMarketName()
+std::string ContentSensorManagerUtils::ObtainMarketName()
 {
     HILOGE("called!");
     std::lock_guard<std::mutex> lock(csMutex_);
@@ -107,7 +109,7 @@ std::string ContentSensorManagerUtils::GetMarketName()
     return marketName_;
 }
 
-std::string ContentSensorManagerUtils::GetOsFullName()
+std::string ContentSensorManagerUtils::ObtainOsFullName()
 {
     HILOGE("called!");
     std::lock_guard<std::mutex> lock(csMutex_);
@@ -124,7 +126,7 @@ std::string ContentSensorManagerUtils::GetOsFullName()
     return osFullName_;
 }
 
-std::string ContentSensorManagerUtils::GetDisplayVersion()
+std::string ContentSensorManagerUtils::ObtainDisplayVersion()
 {
     HILOGE("called!");
     std::lock_guard<std::mutex> lock(csMutex_);
@@ -141,7 +143,7 @@ std::string ContentSensorManagerUtils::GetDisplayVersion()
     return displayVersion_;
 }
 
-std::string ContentSensorManagerUtils::GetLocalUdid()
+std::string ContentSensorManagerUtils::ObtainLocalUdid()
 {
     HILOGE("called!");
     std::lock_guard<std::mutex> lock(csMutex_);
@@ -150,12 +152,7 @@ std::string ContentSensorManagerUtils::GetLocalUdid()
     }
     char localUdidTemp[DEVICE_UUID_LENGTH] = {0};
     GetDevUdid(localUdidTemp, DEVICE_UUID_LENGTH);
-    if (localUdidTemp == nullptr) {
-        HILOGE("get localUdid failed!");
-        return "";
-    }
     localUdid_ = localUdidTemp;
-    free((char*)localUdidTemp);
     return localUdid_;
 }
 } // namespace DistributedDeviceProfile
