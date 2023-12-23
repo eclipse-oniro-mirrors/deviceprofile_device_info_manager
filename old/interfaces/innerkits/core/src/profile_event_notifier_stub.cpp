@@ -86,7 +86,7 @@ __attribute__((no_sanitize("cfi"))) int32_t ProfileEventNotifierStub::OnSyncComp
     return ERR_OK;
 }
 
-int32_t ProfileEventNotifierStub::OnProfileChangedInner(MessageParcel& data,
+__attribute__((no_sanitize("cfi"))) int32_t ProfileEventNotifierStub::OnProfileChangedInner(MessageParcel& data,
     [[maybe_unused]] MessageParcel& reply)
 {
     ProfileChangeNotification changeNotification;
