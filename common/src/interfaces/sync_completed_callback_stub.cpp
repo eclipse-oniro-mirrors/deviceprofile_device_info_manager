@@ -63,11 +63,7 @@ int32_t SyncCompletedCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel&
 int32_t SyncCompletedCallbackStub::OnSyncCompletedInner(MessageParcel& data, MessageParcel& reply)
 {
     int32_t size = data.ReadInt32();
-    if (size <= 0) {
-        HILOGW("Size %{public}d", size);
-        return DP_INVALID_PARAMS;
-    }
-    if (size > MAX_PARCEL_READINT_SIZE) {
+    if (size <= 0 || size > MAX_SYNC_RESULTS_SIZE) {
         HILOGW("Size %{public}d", size);
         return DP_INVALID_PARAMS;
     }
