@@ -32,6 +32,7 @@ namespace OHOS {
 namespace DeviceProfile {
 namespace {
 const std::string TAG = "ProfileEventNotifierStub";
+constexpr int32_t MAX_SYNC_RESULTS_SIZE = 50;
 }
 
 const ProfileEventNotifierStub::HandlersMap ProfileEventNotifierStub::handlersMap_ =
@@ -71,7 +72,7 @@ __attribute__((no_sanitize("cfi"))) int32_t ProfileEventNotifierStub::OnSyncComp
     [[maybe_unused]] MessageParcel& reply)
 {
     int32_t size = data.ReadInt32();
-    if (size <= 0) {
+    if (size <= 0 || size > MAX_SYNC_RESULTS_SIZE) {
         HILOGW("size %{public}d", size);
         return ERR_DP_INVALID_PARAMS;
     }
