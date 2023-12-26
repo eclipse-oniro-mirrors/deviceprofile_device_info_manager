@@ -127,6 +127,7 @@ constexpr int32_t MAX_DB_RECORD_SIZE = 10000;
 constexpr int32_t MAX_SUBSCRIBE_CHANGE_SIZE = 3;
 constexpr int32_t MAX_INTERFACE_SIZE = 20;
 constexpr int32_t MAX_SUBSCRIBE_INFO_SIZE = 500;
+constexpr int32_t MAX_SYNC_RESULTS_SIZE = 50;
 const std::string SEPARATOR = "#";
 const std::string DEV_PREFIX = "dev";
 const std::string SVR_PREFIX = "svr";

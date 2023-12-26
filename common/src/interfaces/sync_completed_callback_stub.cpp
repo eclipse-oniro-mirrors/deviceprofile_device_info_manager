@@ -21,6 +21,7 @@
 
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
+#include "distributed_device_profile_constants.h"
 #include "ipc_object_stub.h"
 #include "message_parcel.h"
 #include "macro_utils.h"
@@ -62,7 +63,7 @@ int32_t SyncCompletedCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel&
 int32_t SyncCompletedCallbackStub::OnSyncCompletedInner(MessageParcel& data, MessageParcel& reply)
 {
     int32_t size = data.ReadInt32();
-    if (size <= 0) {
+    if (size <= 0 || size > MAX_SYNC_RESULTS_SIZE) {
         HILOGW("Size %{public}d", size);
         return DP_INVALID_PARAMS;
     }
@@ -72,7 +73,6 @@ int32_t SyncCompletedCallbackStub::OnSyncCompletedInner(MessageParcel& data, Mes
         syncResults.emplace(data.ReadString(), static_cast<SyncStatus>(data.ReadInt32()));
     }
     // send code handle cache
-//    ProfileCache::GetInstance().RefreshProfileCache();
     OnSyncCompleted(syncResults);
     return DP_SUCCESS;
 }
