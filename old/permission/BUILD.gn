@@ -12,7 +12,7 @@
 # limitations under the License.
 
 import("//build/ohos.gni")
- 
+
 ohos_prebuilt_etc("authority_json") {
   install_enable = true
   source = "authority.json"
