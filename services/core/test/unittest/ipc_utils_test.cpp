@@ -25,9 +25,9 @@
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_errors.h"
 
-
+namespace OHOS {
+namespace DistributedDeviceProfile {
 using namespace testing::ext;
-using namespace OHOS::DistributedDeviceProfile;
 using namespace std;
 namespace {
     const std::string TAG = "IpcUtilsTest";
@@ -202,3 +202,5 @@ HWTEST_F(IpcUtilsTest, Marshalling_007, TestSize.Level1)
     ret = IpcUtils::UnMarshalling(parcel, changeTypes);
     EXPECT_EQ(ret, true);
 }
+} // namespace DistributedDeviceProfile
+} // namespace OHOS

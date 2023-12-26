@@ -31,9 +31,10 @@
 #undef private
 #undef protected
 
+namespace OHOS {
+namespace DistributedDeviceProfile {
 using namespace testing::ext;
 using namespace OHOS::NativeRdb;
-using namespace OHOS::DistributedDeviceProfile;
 using namespace std;
 namespace {
     const std::string TAG = "TrustProfileManagerTest";
@@ -1398,3 +1399,5 @@ HWTEST_F(TrustProfileManagerTest, RdbStoreIsNullptr_004, TestSize.Level1)
         GetInstance().DeleteTrustDeviceCheck(profile);
     EXPECT_NE(ret, DP_SUCCESS);
 }
+} // namespace DistributedDeviceProfile
+} // namespace OHOS

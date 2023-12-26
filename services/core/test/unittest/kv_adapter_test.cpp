@@ -31,8 +31,9 @@
 #undef private
 #undef protected
 
+namespace OHOS {
+namespace DistributedDeviceProfile {
 using namespace testing::ext;
-using namespace OHOS::DistributedDeviceProfile;
 using namespace std;
 
 namespace {
@@ -374,3 +375,5 @@ HWTEST_F(KVAdapterTest, Sync003, TestSize.Level1)
     mode = SyncMode::MIN;
     EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Sync(deviceList, mode));
 }
+} // namespace DistributedDeviceProfile
+} // namespace OHOS

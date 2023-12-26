@@ -32,8 +32,9 @@
 #undef private
 #undef protected
 
+namespace OHOS {
+namespace DistributedDeviceProfile {
 using namespace testing::ext;
-using namespace OHOS::DistributedDeviceProfile;
 using namespace std;
 
 class DistributedDeviceProfileClientKvTest : public testing::Test {
@@ -412,3 +413,5 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, OnServiceDied001, TestSize.Level1
     DistributedDeviceProfileClient::GetInstance().OnServiceDied(remote);
     EXPECT_EQ(nullptr, DistributedDeviceProfileClient::GetInstance().dpProxy_);
 }
+} // namespace DistributedDeviceProfile
+} // namespace OHOS

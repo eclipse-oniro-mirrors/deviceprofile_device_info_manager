@@ -48,7 +48,8 @@
           "specific": {
             "collaborationFwk": 3,
             "infoCollection": 3,
-            "serviceNameCollection": 3
+            "serviceNameCollection": 3,
+            "deviceStatus": 1
           }
         },
         "interfacesAuthority": {
