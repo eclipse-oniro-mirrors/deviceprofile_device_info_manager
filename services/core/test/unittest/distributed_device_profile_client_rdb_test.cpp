@@ -28,9 +28,10 @@
 #include "rdb_open_callback.h"
 #include "distributed_device_profile_client.h"
 
+namespace OHOS {
+namespace DistributedDeviceProfile {
 using namespace testing::ext;
 using namespace OHOS::NativeRdb;
-using namespace OHOS::DistributedDeviceProfile;
 using namespace std;
 namespace {
     const std::string TAG = "DistributedDeviceProfileClientRdbTest";
@@ -277,4 +278,5 @@ HWTEST_F(DistributedDeviceProfileClientRdbTest, GetTrustDeviceProfile_001, TestS
     ProfileUtils::EntriesToTrustDeviceProfile(value, profile);
     EXPECT_EQ(ret, DP_PERMISSION_DENIED);
 }
-
+} // namespace DistributedDeviceProfile
+} // namespace OHOS

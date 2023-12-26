@@ -31,7 +31,6 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 using namespace testing::ext;
-// using namespace OHOS::DistributedDeviceProfile;
 using namespace std;
 namespace {
     const std::string TAG = "DeviceProfileLoadCallbackTest";
@@ -84,5 +83,5 @@ HWTEST_F(DeviceProfileLoadCallbackTest, OnLoadSystemAbilityFail_001, TestSize.Le
     DeviceProfileLoadCallback callBack;
     callBack.OnLoadSystemAbilityFail(systemAbilityId);
 }
-}
-}
+} // namespace DistributedDeviceProfile
+} // namespace OHOS

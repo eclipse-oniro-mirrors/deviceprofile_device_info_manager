@@ -27,10 +27,10 @@
 #include "distributed_device_profile_errors.h"
 #include "rdb_open_callback.h"
 
-
+namespace OHOS {
+namespace DistributedDeviceProfile {
 using namespace testing::ext;
 using namespace OHOS::NativeRdb;
-using namespace OHOS::DistributedDeviceProfile;
 using namespace std;
 namespace {
     const std::string TAG = "ProfileChangeListenerProxyTest";
@@ -130,3 +130,5 @@ HWTEST_F(ProfileChangeListenerProxyTest, OnCharacteristicProfile_001, TestSize.L
     ret = proxy.OnCharacteristicProfileDelete(oldProfile);
     EXPECT_NE(ret, DP_SUCCESS);
 }
+} // namespace DistributedDeviceProfile
+} // namespace OHOS

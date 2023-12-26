@@ -19,8 +19,9 @@
 #include "event_handler_factory.h"
 #include "distributed_device_profile_constants.h"
 
+namespace OHOS {
+namespace DistributedDeviceProfile {
 using namespace testing::ext;
-using namespace OHOS::DistributedDeviceProfile;
 using namespace std;
 
 class EventHandlerFactoryTest : public testing::Test {
@@ -62,3 +63,5 @@ HWTEST_F(EventHandlerFactoryTest, CreateEventHandler001, TestSize.Level1)
     eventHandler = EventHandlerFactory::GetInstance().CreateEventHandler(name);
     EXPECT_EQ(nullptr, eventHandler);
 }
+} // namespace DistributedDeviceProfile
+} // namespace OHOS

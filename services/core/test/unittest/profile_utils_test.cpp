@@ -27,8 +27,9 @@
 #undef private
 #undef protected
 
+namespace OHOS {
+namespace DistributedDeviceProfile {
 using namespace testing::ext;
-using namespace OHOS::DistributedDeviceProfile;
 using namespace OHOS::NativeRdb;
 using namespace std;
 
@@ -1418,3 +1419,5 @@ HWTEST_F(ProfileUtilsTest, EntriesToCharProfile002, TestSize.Level1)
     int32_t ret2 = ProfileUtils::EntriesToCharProfile(values, profile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret2);
 }
+} // namespace DistributedDeviceProfile
+} // namespace OHOS

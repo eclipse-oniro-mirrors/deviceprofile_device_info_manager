@@ -35,8 +35,9 @@
 #undef private
 #undef protected
 
+namespace OHOS {
+namespace DistributedDeviceProfile {
 using namespace testing::ext;
-using namespace OHOS::DistributedDeviceProfile;
 using namespace std;
 
 class DeviceProfileManagerTest : public testing::Test {
@@ -1237,3 +1238,5 @@ HWTEST_F(DeviceProfileManagerTest, LoadDpSyncAdapter001, TestSize.Level1)
     EXPECT_EQ(true, ret);
     DeviceProfileManager::GetInstance().Init();
 }
+} // namespace DistributedDeviceProfile
+} // namespace OHOS

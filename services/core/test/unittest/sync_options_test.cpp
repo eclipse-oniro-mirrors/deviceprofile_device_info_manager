@@ -26,8 +26,9 @@
 #undef private
 #undef protected
 
+namespace OHOS {
+namespace DistributedDeviceProfile {
 using namespace testing::ext;
-using namespace OHOS::DistributedDeviceProfile;
 using namespace std;
 
 namespace {
@@ -121,3 +122,5 @@ HWTEST_F(SyncOptionsTest, Dump001, TestSize.Level1)
     EXPECT_EQ('{', fistChar);
     EXPECT_EQ('}', lastChar);
 }
+} // namespace DistributedDeviceProfile
+} // namespace OHOS

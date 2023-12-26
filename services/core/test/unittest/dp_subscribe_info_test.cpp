@@ -28,9 +28,9 @@
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_client.h"
 
-
+namespace OHOS {
+namespace DistributedDeviceProfile {
 using namespace testing::ext;
-using namespace OHOS::DistributedDeviceProfile;
 using namespace std;
 namespace {
     const std::string TAG = "DPSubscribeInfoTest";
@@ -284,3 +284,5 @@ HWTEST_F(DPSubscribeInfoTest, Stub_001, TestSize.Level1)
     ret = proxy->OnCharacteristicProfileUpdate(oldChaProfile, newChaProfile);
     EXPECT_EQ(ret, DP_SUCCESS);
 }
+} // namespace DistributedDeviceProfile
+} // namespace OHOS

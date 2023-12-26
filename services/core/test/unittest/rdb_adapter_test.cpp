@@ -26,8 +26,9 @@
 #include "result_set.h"
 #include "rdb_open_callback.h"
 
+namespace OHOS {
+namespace DistributedDeviceProfile {
 using namespace testing::ext;
-using namespace OHOS::DistributedDeviceProfile;
 using namespace OHOS::NativeRdb;
 
 namespace {
@@ -609,3 +610,5 @@ HWTEST_F(RdbAdapterTest, Get002, TestSize.Level1)
     EXPECT_EQ(resultSet, nullptr);
     store->Init();
 }
+} // namespace DistributedDeviceProfile
+} // namespace OHOS

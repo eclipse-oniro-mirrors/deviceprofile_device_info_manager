@@ -8,7 +8,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIN  D, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -31,9 +31,10 @@
 #undef private
 #undef protected
 
+namespace OHOS {
+namespace DistributedDeviceProfile {
 using namespace testing::ext;
 using namespace OHOS::NativeRdb;
-using namespace OHOS::DistributedDeviceProfile;
 using namespace std;
 namespace {
     const std::string TAG = "TrustProfileManagerTest";
@@ -1398,3 +1399,5 @@ HWTEST_F(TrustProfileManagerTest, RdbStoreIsNullptr_004, TestSize.Level1)
         GetInstance().DeleteTrustDeviceCheck(profile);
     EXPECT_NE(ret, DP_SUCCESS);
 }
+} // namespace DistributedDeviceProfile
+} // namespace OHOS
