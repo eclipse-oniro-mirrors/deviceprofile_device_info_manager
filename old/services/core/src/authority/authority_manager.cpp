@@ -178,7 +178,7 @@ bool AuthorityManager::ValidateService(const nlohmann::json& authValJson, bool r
 bool AuthorityManager::CheckInterfaceAuthority(const std::string& ifaceName)
 {
     std::string procName = GetCallingProcName();
-    if (!authJson_.contains(procName)) {
+    if (!authJson_.contains(procName) && !authJson_[procName].contains(INTERFACES)) {
         HILOGE("can't find entry for proc:%{public}s", procName.c_str());
         return false;
     }
@@ -214,7 +214,7 @@ bool AuthorityManager::CheckServicesAuthority(AuthValue authVal,
     }
 
     std::string procName = GetCallingProcName();
-    if (!authJson_.contains(procName)) {
+    if (!authJson_.contains(procName) && !authJson_[procName].contains(SERVICES)) {
         HILOGE("can't find entry for proc:%{public}s", procName.c_str());
         return false;
     }
