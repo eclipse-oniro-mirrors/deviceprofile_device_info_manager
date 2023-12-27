@@ -753,7 +753,7 @@ int32_t TrustProfileManager::GetAclProfileByUserIdAndBundleName(std::shared_ptr<
         int32_t bindLevel = BINDLEVEL_INIT;
         resultSet->GetColumnIndex(BIND_LEVEL, columnIndex);
         resultSet->GetInt(columnIndex, bindLevel);
-        if (bindType == static_cast<int32_t>(BindType::SAME_ACCOUNT) &&
+        if (bindType == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
             bindLevel == static_cast<int32_t>(BindLevel::DEVICE)) {
             int32_t ret = this->GetAccessControlProfiles(resultSet, accesserId, accesseeId, userId, profile);
             if (ret != DP_SUCCESS) {
@@ -840,7 +840,7 @@ int32_t TrustProfileManager::GetAclProfileByTokenId(std::shared_ptr<ResultSet> r
         int32_t bindLevel = BINDLEVEL_INIT;
         resultSet->GetColumnIndex(BIND_LEVEL, columnIndex);
         resultSet->GetInt(columnIndex, bindLevel);
-        if (bindType == static_cast<int32_t> (BindType::SAME_ACCOUNT) &&
+        if (bindType == static_cast<int32_t> (BindType::SAME_ACCOUNT) ||
             bindLevel == static_cast<int32_t> (BindLevel::DEVICE)) {
             int32_t ret = this->GetAccessControlProfile(resultSet, accesserId, accesseeId, profile);
             if (ret != DP_SUCCESS) {
@@ -875,7 +875,7 @@ int32_t TrustProfileManager::GetAclProfileByBundleName(std::shared_ptr<ResultSet
         int32_t bindLevel = BINDLEVEL_INIT;
         resultSet->GetColumnIndex(BIND_LEVEL, columnIndex);
         resultSet->GetInt(columnIndex, bindLevel);
-        if (bindType == static_cast<int32_t> (BindType::SAME_ACCOUNT) &&
+        if (bindType == static_cast<int32_t> (BindType::SAME_ACCOUNT) ||
             bindLevel == static_cast<int32_t> (BindLevel::DEVICE)) {
             int32_t ret = this->GetAccessControlProfile(resultSet, accesserId, accesseeId, profile);
             if (ret != DP_SUCCESS) {
