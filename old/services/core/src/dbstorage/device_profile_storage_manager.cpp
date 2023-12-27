@@ -151,7 +151,7 @@ int32_t DeviceProfileStorageManager::PutDeviceProfile(const ServiceCharacteristi
     keys.emplace_back(GenerateKey(localUdid_, serviceId, KeyType::SERVICE));
     values.emplace_back(profile.GetCharacteristicProfileJson());
     std::unique_lock<std::mutex> autoLock(serviceLock_);
-    if (servicesJson_[serviceId] == nullptr) {
+    if (servicesJson_.contains(serviceId) && servicesJson_[serviceId] == nullptr) {
         nlohmann::json j;
         j[SERVICE_TYPE] = profile.GetServiceType();
         servicesJson_[serviceId] = j;
@@ -243,8 +243,12 @@ void DeviceProfileStorageManager::SetServiceType(const std::string& udid,
 {
     std::unique_lock<std::mutex> autoLock(serviceLock_);
     if (udid.empty()) {
+        if (!servicesJson_.contains(serviceId)) {
+            HILOGE("ServicesJson not contains serviceId!");
+            return;
+        }
         auto jsonData = servicesJson_[serviceId];
-        if (jsonData != nullptr) {
+        if (jsonData != nullptr && jsonData.contains(SERVICE_TYPE)) {
             profile.SetServiceType(jsonData[SERVICE_TYPE]);
         }
         return;
