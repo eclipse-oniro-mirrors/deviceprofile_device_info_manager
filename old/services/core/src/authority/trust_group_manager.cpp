@@ -114,6 +114,10 @@ bool TrustGroupManager::CheckGroupsInfo(const char* returnGroups, uint32_t group
         return false;
     }
 
+    if (!jsonObject.is_array()) {
+        HILOGE("jsonObject is not array!");
+        return false;
+    }
     std::vector<GroupInfo> groupInfos = jsonObject.get<std::vector<GroupInfo>>();
     for (const auto& groupInfo : groupInfos) {
         // check group visibility is whether public or not
