@@ -266,8 +266,12 @@ void DeviceProfileStorageManager::SetServiceType(const std::string& udid,
         HILOGE("parse error");
         return;
     }
+    if (!jsonData.contains(serviceId)) {
+        HILOGE("jsonData don't has serviceId attribute!");
+        return;
+    }
     auto typeData = jsonData[serviceId];
-    if (typeData != nullptr && typeData[SERVICE_TYPE] != nullptr) {
+    if (typeData != nullptr && typeData.contains(SERVICE_TYPE) && typeData[SERVICE_TYPE] != nullptr) {
         profile.SetServiceType(typeData[SERVICE_TYPE]);
     }
 }
@@ -281,7 +285,7 @@ int32_t DeviceProfileStorageManager::DeleteDeviceProfile(const std::string& serv
     }
 
     std::unique_lock<std::mutex> autoLock(serviceLock_);
-    if (servicesJson_[serviceId] == nullptr) {
+    if (servicesJson_.contains(serviceId) && servicesJson_[serviceId] == nullptr) {
         HILOGW("can't find service %{public}s", serviceId.c_str());
         return ERR_DP_INVALID_PARAMS;
     }
