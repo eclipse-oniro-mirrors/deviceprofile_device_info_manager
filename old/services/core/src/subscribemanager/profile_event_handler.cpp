@@ -40,11 +40,23 @@ int32_t ProfileEventHandler::Subscribe(const SubscribeInfo& subscribeInfo,
     std::lock_guard<std::mutex> autoLock(notifierLock_);
     auto iter = profileEventSubscribeInfos_.find(profileEventNotifier);
     if (iter == profileEventSubscribeInfos_.end()) {
+        HILOGE("add extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
         profileEventSubscribeInfos_.emplace(profileEventNotifier, std::move(subscribeInfo));
+        HILOGE("add end");
+        for (const auto& entry : profileEventSubscribeInfos_) {
+            const SubscribeInfo& subscribeInfo = entry.second;
+            HILOGE("extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
+        }
     } else {
         // just overwrite when the follow-ups subscribe with the same notifier
         HILOGW("overwrite last subscribed info");
+        HILOGE("update extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
         iter->second = std::move(subscribeInfo);
+        HILOGE("update end");
+        for (const auto& entry : profileEventSubscribeInfos_) {
+            const SubscribeInfo& subscribeInfo = entry.second;
+            HILOGE("extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
+        }
     }
 
     if (!isRegistered_) {
@@ -66,7 +78,13 @@ int32_t ProfileEventHandler::Unsubscribe(const sptr<IRemoteObject>& profileEvent
         HILOGW("not subscribe yet");
         return ERR_DP_NOT_SUBSCRIBED;
     }
+    HILOGE("remove extraInfo = %{public}s", iter->second.extraInfo.dump().c_str());
     profileEventSubscribeInfos_.erase(iter);
+    HILOGE("remove end");
+    for (const auto& entry : profileEventSubscribeInfos_) {
+        const SubscribeInfo& subscribeInfo = entry.second;
+        HILOGE("extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
+    }
     if (profileEventSubscribeInfos_.empty()) {
         int32_t errCode = Unregister();
         if (errCode != ERR_OK) {
