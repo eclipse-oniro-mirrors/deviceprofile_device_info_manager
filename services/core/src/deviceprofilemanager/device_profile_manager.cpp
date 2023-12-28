@@ -74,11 +74,12 @@ int32_t DeviceProfileManager::ReInit()
 
 int32_t DeviceProfileManager::PutDeviceProfile(const DeviceProfile& deviceProfile)
 {
-    if (!ProfileUtils::IsKeyValid(deviceProfile.GetDeviceId())) {
+    std::string localUdid = ProfileUtils::GetLocalUdidFromDM();
+    if (!ProfileUtils::IsKeyValid(localUdid)) {
         HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;
     }
-    HILOGI("PutDeviceProfile, deviceId: %s!", ProfileUtils::GetAnonyString(deviceProfile.GetDeviceId()).c_str());
+    HILOGI("PutDeviceProfile, deviceId: %s!", ProfileUtils::GetAnonyString(localUdid).c_str());
     if (ProfileCache::GetInstance().IsDeviceProfileExist(deviceProfile)) {
         HILOGI("the profile is exist!");
         return DP_CACHE_EXIST;
