@@ -151,7 +151,7 @@ int32_t DeviceProfileStorageManager::PutDeviceProfile(const ServiceCharacteristi
     keys.emplace_back(GenerateKey(localUdid_, serviceId, KeyType::SERVICE));
     values.emplace_back(profile.GetCharacteristicProfileJson());
     std::unique_lock<std::mutex> autoLock(serviceLock_);
-    if (servicesJson_[serviceId] == nullptr) {
+    if (servicesJson_.contains(serviceId) && servicesJson_[serviceId] == nullptr) {
         nlohmann::json j;
         j[SERVICE_TYPE] = profile.GetServiceType();
         servicesJson_[serviceId] = j;
@@ -243,8 +243,12 @@ void DeviceProfileStorageManager::SetServiceType(const std::string& udid,
 {
     std::unique_lock<std::mutex> autoLock(serviceLock_);
     if (udid.empty()) {
+        if (!servicesJson_.contains(serviceId)) {
+            HILOGE("ServicesJson not contains serviceId!");
+            return;
+        }
         auto jsonData = servicesJson_[serviceId];
-        if (jsonData != nullptr) {
+        if (jsonData != nullptr && jsonData.contains(SERVICE_TYPE)) {
             profile.SetServiceType(jsonData[SERVICE_TYPE]);
         }
         return;
@@ -262,8 +266,12 @@ void DeviceProfileStorageManager::SetServiceType(const std::string& udid,
         HILOGE("parse error");
         return;
     }
+    if (!jsonData.contains(serviceId)) {
+        HILOGE("jsonData don't has serviceId attribute!");
+        return;
+    }
     auto typeData = jsonData[serviceId];
-    if (typeData != nullptr && typeData[SERVICE_TYPE] != nullptr) {
+    if (typeData != nullptr && typeData.contains(SERVICE_TYPE) && typeData[SERVICE_TYPE] != nullptr) {
         profile.SetServiceType(typeData[SERVICE_TYPE]);
     }
 }
@@ -277,7 +285,7 @@ int32_t DeviceProfileStorageManager::DeleteDeviceProfile(const std::string& serv
     }
 
     std::unique_lock<std::mutex> autoLock(serviceLock_);
-    if (servicesJson_[serviceId] == nullptr) {
+    if (servicesJson_.contains(serviceId) && servicesJson_[serviceId] == nullptr) {
         HILOGW("can't find service %{public}s", serviceId.c_str());
         return ERR_DP_INVALID_PARAMS;
     }
