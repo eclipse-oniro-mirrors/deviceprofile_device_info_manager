@@ -31,7 +31,7 @@ const std::string TAG = "DeviceInfoCollector";
 bool DeviceInfoCollector::ConvertToProfile(DeviceProfile& deviceProfile)
 {
     HILOGI("called!");
-    deviceProfile.SetDeviceId(GetLocalUdidFromDM());
+    deviceProfile.SetDeviceId(ProfileUtils::GetLocalUdidFromDM());
     deviceProfile.SetDeviceName(GetDeviceName());
     deviceProfile.SetDeviceModel(GetDeviceModel());
     deviceProfile.SetDeviceTypeName(GetDevType());
