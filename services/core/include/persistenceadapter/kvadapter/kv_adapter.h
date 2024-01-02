@@ -63,7 +63,6 @@ private:
     DistributedKv::AppId appId_;
     DistributedKv::StoreId storeId_;
     DistributedKv::DistributedKvDataManager kvDataMgr_;
-    DistributedKv::Options options_;
     std::shared_ptr<DistributedKv::SingleKvStore> kvStorePtr_ = nullptr;
     std::shared_ptr<DistributedKv::KvStoreObserver> dataChangeListener_ = nullptr;
     std::shared_ptr<DistributedKv::KvStoreSyncCallback> syncCompletedListener_ = nullptr;

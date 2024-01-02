@@ -68,9 +68,7 @@ int32_t KVAdapter::Init()
             return DP_SUCCESS;
         }
         HILOGI("CheckKvStore, left times: %d", tryTimes);
-        if (options_.securityLevel == DistributedKv::SecurityLevel::S1) {
-            DeleteKvStore();
-        }
+        DeleteKvStore();
         usleep(INIT_RETRY_SLEEP_INTERVAL);
         tryTimes--;
     }
@@ -240,7 +238,7 @@ int32_t KVAdapter::DeleteByPrefix(const std::string& keyPrefix)
 DistributedKv::Status KVAdapter::GetKvStorePtr()
 {
     HILOGI("called");
-    options_ = {
+    DistributedKv::Options options = {
         .createIfMissing = true,
         .encrypt = false,
         .autoSync = true,
