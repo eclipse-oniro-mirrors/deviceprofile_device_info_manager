@@ -527,7 +527,6 @@ int32_t DeviceProfileManager::RunloadedFunction(std::string deviceId, sptr<IRemo
         HILOGE("dp service adapter load failed.");
         return DP_LOAD_SYNC_ADAPTER_FAILED;
     }
-    std::lock_guard<std::mutex> lock(isAdapterLoadLock_);
     if (dpSyncAdapter_->Initialize() != DP_SUCCESS) {
         HILOGE("dp service adapter initialize failed.");
         return DP_LOAD_SYNC_ADAPTER_FAILED;
