@@ -71,6 +71,16 @@ std::vector<std::string> ProfileUtils::GetOnlineDevices()
     return targetDevices;
 }
 
+std::string ProfileUtils::GetLocalUdidFromDM()
+{
+    std::string udid = "";
+    if (DeviceManager::GetInstance().GetLocalDeviceId(PKG_NAME, udid) != DP_SUCCESS) {
+        HILOGE("Get local udid fail from DM!");
+        return "";
+    }
+    return udid;
+}
+
 std::vector<std::string> ProfileUtils::FilterOnlineDevices(const std::vector<std::string>& deviceList)
 {
     if (deviceList.size() == 0 || deviceList.size() > MAX_DEVICE_SIZE) {

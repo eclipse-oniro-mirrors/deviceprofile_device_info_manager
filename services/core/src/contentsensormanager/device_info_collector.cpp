@@ -20,6 +20,7 @@
 #include "nlohmann/json.hpp"
 #include "parameter.h"
 #include "content_sensor_manager_utils.h"
+#include "profile_utils.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -30,7 +31,7 @@ const std::string TAG = "DeviceInfoCollector";
 bool DeviceInfoCollector::ConvertToProfile(DeviceProfile& deviceProfile)
 {
     HILOGI("called!");
-    deviceProfile.SetDeviceId(GetDeviceUdid());
+    deviceProfile.SetDeviceId(ProfileUtils::GetLocalUdidFromDM());
     deviceProfile.SetDeviceName(GetDeviceName());
     deviceProfile.SetDeviceModel(GetDeviceModel());
     deviceProfile.SetDeviceTypeName(GetDevType());
