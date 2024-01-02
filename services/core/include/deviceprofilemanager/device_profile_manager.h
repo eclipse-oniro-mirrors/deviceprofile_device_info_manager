@@ -61,7 +61,7 @@ private:
     void UnloadDpSyncAdapter();
     int32_t RunloadedFunction(std::string deviceId, sptr<IRemoteObject> syncCompletedCallback);
     bool isAdapterSoLoaded_ = false;
-    std::mutex isAdapterLoadLock_;
+    std::mutex dpAdapterMutex_;
     std::mutex dpStoreMutex_;
     std::mutex dpSyncMutex_;
     std::shared_ptr<IKVAdapter> deviceProfileStore_ = nullptr;
