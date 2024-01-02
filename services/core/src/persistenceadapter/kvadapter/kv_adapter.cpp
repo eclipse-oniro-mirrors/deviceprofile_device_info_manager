@@ -242,7 +242,7 @@ DistributedKv::Status KVAdapter::GetKvStorePtr()
         .createIfMissing = true,
         .encrypt = false,
         .autoSync = true,
-        .securityLevel = DistributedKv::SecurityLevel::S1,
+        .securityLevel = DistributedKv::SecurityLevel::S0,
         .area = 1,
         .kvStoreType = KvStoreType::SINGLE_VERSION,
         .baseDir = DATABASE_DIR
@@ -429,7 +429,7 @@ int32_t KVAdapter::DeleteKvStore()
     HILOGI("Delete KvStore!");
     {
         std::lock_guard<std::mutex> lock(kvAdapterMutex_);
-        kvDataMgr_.DeleteKvStore(appId_.appId, storeId_.storeId, DATABASE_DIR);
+        kvDataMgr_.DeleteKvStore(appId_, storeId_, DATABASE_DIR);
     }
     return DP_SUCCESS;
 }
