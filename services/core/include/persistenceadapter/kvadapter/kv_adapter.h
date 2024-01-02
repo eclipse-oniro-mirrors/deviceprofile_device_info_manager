@@ -44,6 +44,7 @@ public:
     int32_t Get(const std::string& key, std::string& value) override;
     int32_t GetByPrefix(const std::string& keyPrefix, std::map<std::string, std::string>& values) override;
     int32_t Sync(const std::vector<std::string>& deviceList, SyncMode syncMode) override;
+    int32_t DeleteKvStore();
 
 private:
     DistributedKv::Status GetKvStorePtr();
@@ -62,6 +63,7 @@ private:
     DistributedKv::AppId appId_;
     DistributedKv::StoreId storeId_;
     DistributedKv::DistributedKvDataManager kvDataMgr_;
+    DistributedKv::Options options_;
     std::shared_ptr<DistributedKv::SingleKvStore> kvStorePtr_ = nullptr;
     std::shared_ptr<DistributedKv::KvStoreObserver> dataChangeListener_ = nullptr;
     std::shared_ptr<DistributedKv::KvStoreSyncCallback> syncCompletedListener_ = nullptr;
