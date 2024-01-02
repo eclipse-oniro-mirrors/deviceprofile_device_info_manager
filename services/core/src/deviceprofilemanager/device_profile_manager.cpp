@@ -463,7 +463,7 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const SyncOptions &syncOptions,
 bool DeviceProfileManager::LoadDpSyncAdapter()
 {
     HILOGI("DeviceProfileManager::LoadDpSyncAdapter start.");
-    std::lock_guard<std::mutex> lock(dpAdapterMutex_);
+    std::lock_guard<std::mutex> lock(isAdapterLoadLock_);
     if (isAdapterSoLoaded_ && (dpSyncAdapter_ != nullptr)) {
         return true;
     }
@@ -501,7 +501,7 @@ bool DeviceProfileManager::LoadDpSyncAdapter()
 void DeviceProfileManager::UnloadDpSyncAdapter()
 {
     HILOGI("DeviceProfileManager::UnloadDpSyncAdapter start.");
-    std::lock_guard<std::mutex> lock(dpAdapterMutex_);
+    std::lock_guard<std::mutex> lock(isAdapterLoadLock_);
     if (dpSyncAdapter_ != nullptr) {
         dpSyncAdapter_->Release();
     }
@@ -527,7 +527,7 @@ int32_t DeviceProfileManager::RunloadedFunction(std::string deviceId, sptr<IRemo
         HILOGE("dp service adapter load failed.");
         return DP_LOAD_SYNC_ADAPTER_FAILED;
     }
-    std::lock_guard<std::mutex> lock(dpAdapterMutex_);
+    std::lock_guard<std::mutex> lock(isAdapterLoadLock_);
     if (dpSyncAdapter_->Initialize() != DP_SUCCESS) {
         HILOGE("dp service adapter initialize failed.");
         return DP_LOAD_SYNC_ADAPTER_FAILED;
