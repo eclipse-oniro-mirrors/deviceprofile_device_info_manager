@@ -67,8 +67,10 @@ int32_t KVAdapter::Init()
             RegisterDeathListener();
             return DP_SUCCESS;
         }
-        HILOGI("CheckKvStore, left times: %d", tryTimes);
-        DeleteKvStore();
+        HILOGI("CheckKvStore, left times: %{public}d, status: %{public}d", tryTimes, status);
+        if (status == DistributedKv::Status::SECURITY_LEVEL_ERROR) {
+            DeleteKvStore();
+        }
         usleep(INIT_RETRY_SLEEP_INTERVAL);
         tryTimes--;
     }
