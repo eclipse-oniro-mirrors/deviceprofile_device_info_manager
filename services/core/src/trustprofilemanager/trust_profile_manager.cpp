@@ -121,7 +121,7 @@ int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile&
         HILOGE("PutAccessControlProfile::PutAclCheck failed");
         return ret;
     }
-    if(DistributedHardware::DeviceManager::GetInstance().DpAclAdd(accessControlProfile.GetAccessControlId(),
+    if (DistributedHardware::DeviceManager::GetInstance().DpAclAdd(accessControlProfile.GetAccessControlId(),
         accessControlProfile.GetTrustDeviceId(), accessControlProfile.GetBindType()) != DP_SUCCESS) {
         HILOGE("PutAccessControlProfile::Notify accessControlProfile Add failed");
         return DP_NOTIFY_ACCESS_CONTROL_FAIL;
