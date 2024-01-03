@@ -18,6 +18,7 @@
 #include "distributed_device_profile_log.h"
 #include "rdb_adapter.h"
 #include "profile_utils.h"
+#include "device_manager.h"
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "accesser.h"
@@ -115,33 +116,16 @@ int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile&
             return DP_PUT_ACL_PROFILE_FAIL;
         }
     }
-    TrustDeviceProfile trustProfile;
-    this->ConvertToTrustDeviceProfile(profile, trustProfile);
-    std::string trustDeviceId = accessControlProfile.GetTrustDeviceId();
-    std::shared_ptr<ResultSet> resultSet =
-        GetResultSet(SELECT_TRUST_DEVICE_TABLE_WHERE_DEVICEID,
-        std::vector<ValueObject>{ ValueObject(trustDeviceId) });
-    if (resultSet == nullptr) {
-        HILOGE("PutAccessControlProfile::get resultSet failed");
-        return DP_GET_RESULTSET_FAIL;
+    int32_t ret = this->PutAclCheck(accessControlProfile);
+    if (ret != DP_SUCCESS) {
+        HILOGE("PutAccessControlProfile::PutAclCheck failed");
+        return ret;
     }
-    int32_t rowCount = ROWCOUNT_INIT;
-    resultSet->GetRowCount(rowCount);
-    if (rowCount == 0) {
-        this->PutTrustDeviceProfile(trustProfile);
-        return DP_SUCCESS;
+    if(DistributedHardware::DeviceManager::GetInstance().DpAclAdd(accessControlProfile.GetAccessControlId(),
+        accessControlProfile.GetTrustDeviceId(), accessControlProfile.GetBindType()) != DP_SUCCESS) {
+        HILOGE("PutAccessControlProfile::Notify accessControlProfile Add failed");
+        return DP_NOTIFY_ACCESS_CONTROL_FAIL;
     }
-    int32_t status = STATUS_INIT;
-    if (this->GetResultStatus(trustDeviceId, status) != DP_SUCCESS) {
-        HILOGE("UpdateAccessControlProfile::GetResultStatus failed");
-        return DP_GET_RESULTSET_FAIL;
-    }
-    trustProfile.SetStatus(status);
-    if (this->UpdateTrustDeviceProfile(trustProfile) != DP_SUCCESS) {
-        HILOGE("PutAccessControlProfile::UpdateTrustDeviceProfile failed");
-        return DP_UPDATE_TRUST_DEVICE_PROFILE_FAIL;
-    }
-    resultSet->Close();
     return DP_SUCCESS;
 }
 
@@ -1615,6 +1599,38 @@ int32_t TrustProfileManager::UpdateAclCheck(const AccessControlProfile& profile)
         HILOGE("UpdateAclCheck:Can't Update not allowed attribute");
         return DP_UPDATE_ACL_NOT_ALLOW;
     }
+    return DP_SUCCESS;
+}
+
+int32_t TrustProfileManager::PutAclCheck(const AccessControlProfile& profile)
+{
+    TrustDeviceProfile trustProfile;
+    this->ConvertToTrustDeviceProfile(profile, trustProfile);
+    std::string trustDeviceId = profile.GetTrustDeviceId();
+    std::shared_ptr<ResultSet> resultSet =
+        GetResultSet(SELECT_TRUST_DEVICE_TABLE_WHERE_DEVICEID,
+        std::vector<ValueObject>{ ValueObject(trustDeviceId) });
+    if (resultSet == nullptr) {
+        HILOGE("PutAccessControlProfile::get resultSet failed");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    int32_t rowCount = ROWCOUNT_INIT;
+    resultSet->GetRowCount(rowCount);
+    if (rowCount == 0) {
+        this->PutTrustDeviceProfile(trustProfile);
+        return DP_SUCCESS;
+    }
+    int32_t status = STATUS_INIT;
+    if (this->GetResultStatus(trustDeviceId, status) != DP_SUCCESS) {
+        HILOGE("UpdateAccessControlProfile::GetResultStatus failed");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    trustProfile.SetStatus(status);
+    if (this->UpdateTrustDeviceProfile(trustProfile) != DP_SUCCESS) {
+        HILOGE("PutAccessControlProfile::UpdateTrustDeviceProfile failed");
+        return DP_UPDATE_TRUST_DEVICE_PROFILE_FAIL;
+    }
+    resultSet->Close();
     return DP_SUCCESS;
 }
 
