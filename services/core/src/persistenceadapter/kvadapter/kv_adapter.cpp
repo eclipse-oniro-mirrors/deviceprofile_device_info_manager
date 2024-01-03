@@ -242,7 +242,7 @@ DistributedKv::Status KVAdapter::GetKvStorePtr()
         .createIfMissing = true,
         .encrypt = false,
         .autoSync = true,
-        .securityLevel = DistributedKv::SecurityLevel::S0,
+        .securityLevel = DistributedKv::SecurityLevel::S1,
         .area = 1,
         .kvStoreType = KvStoreType::SINGLE_VERSION,
         .baseDir = DATABASE_DIR
