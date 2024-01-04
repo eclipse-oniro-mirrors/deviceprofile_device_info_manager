@@ -115,6 +115,7 @@ private:
     int32_t DeleteAccesseeCheck(int64_t accesseeId);
     int32_t DeleteTrustDeviceCheck(const AccessControlProfile& profile);
     int32_t UpdateAclCheck(const AccessControlProfile& profile);
+    int32_t PutAclCheck(const AccessControlProfile& profile);
 
 private:
     std::shared_ptr<IRdbAdapter> rdbStore_;

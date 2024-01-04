@@ -98,6 +98,7 @@ int32_t PermissionManager::ParsePermissionJson(const nlohmann::json& permissionJ
         SET_PERMISSION_MAP(permissionMap_, permissionJson, PUT_ACCESS_CONTROL_PROFILE);
         SET_PERMISSION_MAP(permissionMap_, permissionJson, UPDATE_ACCESS_CONTROL_PROFILE);
         SET_PERMISSION_MAP(permissionMap_, permissionJson, GET_ACCESS_CONTROL_PROFILE);
+        SET_PERMISSION_MAP(permissionMap_, permissionJson, GET_ALL_ACCESS_CONTROL_PROFILE);
         SET_PERMISSION_MAP(permissionMap_, permissionJson, DELETE_ACCESS_CONTROL_PROFILE);
         SET_PERMISSION_MAP(permissionMap_, permissionJson, GET_TRUST_DEVICE_PROFILE);
         SET_PERMISSION_MAP(permissionMap_, permissionJson, GET_ALL_TRUST_DEVICE_PROFILE);

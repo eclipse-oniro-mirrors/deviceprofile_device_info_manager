@@ -285,7 +285,6 @@ int32_t DistributedDeviceProfileProxy::SubscribeDeviceProfile(const SubscribeInf
         HILOGE("dp ipc write parcel fail");
         return DP_WRITE_PARCEL_FAIL;
     }
-    subscribeInfo.Marshalling(data);
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE), data, reply);
     return DP_SUCCESS;
