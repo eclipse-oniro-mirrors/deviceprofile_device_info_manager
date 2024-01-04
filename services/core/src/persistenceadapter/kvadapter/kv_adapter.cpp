@@ -431,6 +431,7 @@ int32_t KVAdapter::DeleteKvStore()
     HILOGI("Delete KvStore!");
     {
         std::lock_guard<std::mutex> lock(kvAdapterMutex_);
+        kvDataMgr_.CloseKvStore(appId_, storeId_);
         kvDataMgr_.DeleteKvStore(appId_, storeId_, DATABASE_DIR);
     }
     return DP_SUCCESS;
