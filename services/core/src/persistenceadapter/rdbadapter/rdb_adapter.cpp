@@ -57,7 +57,7 @@ int32_t RdbAdapter::Init()
         usleep(RDB_INIT_INTERVAL_TIME);
         retryTimes--;
     }
-    HILOGI("rdbAdapter init failed");
+    HILOGE("rdbAdapter init failed");
     return DP_RDBADAPTER_INIT_FAIL;
 }
 
@@ -74,20 +74,23 @@ int32_t RdbAdapter::UnInit()
 int32_t RdbAdapter::Put(int64_t& outRowId, const std::string& table, const ValuesBucket& values)
 {
     if (TABLES.find(table) == TABLES.end()) {
-        HILOGI("table does not exist");
+        HILOGE("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
     }
+    int32_t status;
     {
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
         if (store_ == nullptr) {
-            HILOGI("RDBStore_ is null");
+            HILOGE("RDBStore_ is null");
             return DP_RDB_DB_PTR_NULL;
         }
-        if (store_->Insert(outRowId, table, values) != E_OK) {
-            HILOGI("rdbAdapter put failed");
-            return DP_RDBADAPTER_PUT_FAIL;
-        };
+        status = Insert(outRowId, table, values);
     }
+    if (status != E_OK) {
+        HILOGE("rdbAdapter put failed, ret:%{public}d", status);
+        return DP_RDBADAPTER_PUT_FAIL;
+    };
+    
     return DP_SUCCESS;
 }
 
@@ -95,20 +98,23 @@ int32_t RdbAdapter::Delete(int32_t& deleteRows, const std::string& table, const 
     const std::vector<ValueObject>& bindArgs)
 {
     if (TABLES.find(table) == TABLES.end()) {
-        HILOGI("table does not exist");
+        HILOGE("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
     }
+    int32_t status;
     {
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
         if (store_ == nullptr) {
-            HILOGI("RDBStore_ is null");
+            HILOGE("RDBStore_ is null");
             return DP_RDB_DB_PTR_NULL;
         }
-        if (store_->Delete(deleteRows, table, whereClause, bindArgs) != E_OK) {
-            HILOGI("rdbAdapter delete failed");
-            return DP_RDBADAPTER_DELETE_FAIL;
-        };
-    }
+        status = Delete(deleteRows, table, whereClause, bindArgs);
+    }    
+    if (status != E_OK) {
+        HILOGE("rdbAdapter delete failed, ret:%{public}d", status);
+        return DP_RDBADAPTER_DELETE_FAIL;
+    };
+    
     return DP_SUCCESS;
 }
 
@@ -116,20 +122,23 @@ int32_t RdbAdapter::Update(int32_t& changedRows, const std::string& table, const
     const std::string& whereClause, const std::vector<ValueObject>& bindArgs)
 {
     if (TABLES.find(table) == TABLES.end()) {
-        HILOGI("table does not exist");
+        HILOGE("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
     }
+    int32_t status;
     {
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
         if (store_ == nullptr) {
-            HILOGI("RDBStore_ is null");
+            HILOGE("RDBStore_ is null");
             return DP_RDB_DB_PTR_NULL;
         }
-        if (store_->Update(changedRows, table, values, whereClause, bindArgs) != E_OK) {
-            HILOGI("rdbAdapter update failed");
-            return DP_RDBADAPTER_UPDATE_FAIL;
-        };
+        status = Update(changedRows, table, values, whereClause, bindArgs);
     }
+    if (status != E_OK) {
+        HILOGE("rdbAdapter update failed, ret:%{public}d", status);
+        return DP_RDBADAPTER_UPDATE_FAIL;
+    };
+    
     return DP_SUCCESS;
 }
 
@@ -139,7 +148,7 @@ std::shared_ptr<ResultSet> RdbAdapter::Get(const std::string& sql, const std::ve
     {
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
         if (store_ == nullptr) {
-            HILOGI("RDBStore_ is null");
+            HILOGE("RDBStore_ is null");
             return nullptr;
         }
         resultSet = store_->QueryByStep(sql, args);
@@ -152,13 +161,13 @@ int32_t RdbAdapter::GetRDBPtr()
     int32_t version = RDB_VERSION;
     OpenCallback helper;
     RdbStoreConfig config(RDB_PATH + DATABASE_NAME);
-    int32_t errCode = E_OK;
+    int32_t status;
     {
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
-        store_ = RdbHelper::GetRdbStore(config, version, helper, errCode);
+        store_ = RdbHelper::GetRdbStore(config, version, helper, status);
     }
-    if (errCode != E_OK) {
-        HILOGI("rdbAdapter getRDBPtr failed");
+    if (status != E_OK) {
+        HILOGE("rdbAdapter getRDBPtr failed, ret:%{public}d", status);
         return DP_GET_RDBSTORE_FAIL;
     }
     return DP_SUCCESS;
@@ -169,11 +178,13 @@ int32_t RdbAdapter::CreateTable(const std::string& sql)
     {
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
         if (store_ == nullptr) {
-            HILOGI("RDBStore_ is null");
+            HILOGE("RDBStore_ is null");
             return DP_RDB_DB_PTR_NULL;
         }
-        if (store_->ExecuteSql(sql) != E_OK) {
-            HILOGI("rdbAdapter create table failed");
+        int32_t status;
+        status = store_->ExecuteSql(sql);
+        if (status != E_OK) {
+            HILOGE("rdbAdapter create table failed, ret:%{public}d", status);
             return DP_RDBADAPTER_CREATE_TABLE_FAIL;
         }
     }

@@ -70,7 +70,13 @@ void ProfileSyncHandler::NotifySyncCompleted(const SyncResult& syncResults)
                 iter++;
             } else {
                 profileEventNotifier->OnSyncCompleted(syncResults);
+                HILOGI("sync remove extraInfo = %{public}s", iter->second.extraInfo.dump().c_str());
                 profileEventSubscribeInfos_.erase(iter++);
+                HILOGI("sync remove end");
+                for (const auto& entry : profileEventSubscribeInfos_) {
+                    const SubscribeInfo& subscribeInfo = entry.second;
+                    HILOGI("extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
+                }
             }
         }
     }
