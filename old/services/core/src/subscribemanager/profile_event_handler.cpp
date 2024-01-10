@@ -42,7 +42,7 @@ int32_t ProfileEventHandler::Subscribe(const SubscribeInfo& subscribeInfo,
     if (iter == profileEventSubscribeInfos_.end()) {
         HILOGI("add extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
         profileEventSubscribeInfos_.emplace(profileEventNotifier, std::move(subscribeInfo));
-        HILOGI("profileEventSubscribeInfos_ size = %{public}lu", profileEventSubscribeInfos_.size());
+        HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
         for (const auto& entry : profileEventSubscribeInfos_) {
             const SubscribeInfo& subscribeInfo = entry.second;
             HILOGI("extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
@@ -52,7 +52,7 @@ int32_t ProfileEventHandler::Subscribe(const SubscribeInfo& subscribeInfo,
         HILOGW("overwrite last subscribed info");
         HILOGI("update extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
         iter->second = std::move(subscribeInfo);
-        HILOGI("profileEventSubscribeInfos_ size = %{public}lu", profileEventSubscribeInfos_.size());
+        HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
         for (const auto& entry : profileEventSubscribeInfos_) {
             const SubscribeInfo& subscribeInfo = entry.second;
             HILOGI("extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
@@ -80,7 +80,7 @@ int32_t ProfileEventHandler::Unsubscribe(const sptr<IRemoteObject>& profileEvent
     }
     HILOGI("remove extraInfo = %{public}s", iter->second.extraInfo.dump().c_str());
     profileEventSubscribeInfos_.erase(iter);
-    HILOGI("profileEventSubscribeInfos_ size = %{public}lu", profileEventSubscribeInfos_.size());
+    HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
     for (const auto& entry : profileEventSubscribeInfos_) {
         const SubscribeInfo& subscribeInfo = entry.second;
         HILOGI("extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
