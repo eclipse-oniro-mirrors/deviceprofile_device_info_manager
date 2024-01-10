@@ -67,7 +67,10 @@ int32_t KVAdapter::Init()
             RegisterDeathListener();
             return DP_SUCCESS;
         }
-        HILOGI("CheckKvStore, left times: %d", tryTimes);
+        HILOGI("CheckKvStore, left times: %{public}d, status: %{public}d", tryTimes, status);
+        if (status == DistributedKv::Status::SECURITY_LEVEL_ERROR) {
+            DeleteKvStore();
+        }
         usleep(INIT_RETRY_SLEEP_INTERVAL);
         tryTimes--;
     }
@@ -241,7 +244,7 @@ DistributedKv::Status KVAdapter::GetKvStorePtr()
         .createIfMissing = true,
         .encrypt = false,
         .autoSync = true,
-        .securityLevel = DistributedKv::SecurityLevel::S0,
+        .securityLevel = DistributedKv::SecurityLevel::S1,
         .area = 1,
         .kvStoreType = KvStoreType::SINGLE_VERSION,
         .baseDir = DATABASE_DIR
@@ -400,7 +403,6 @@ int32_t KVAdapter::RegisterDeathListener()
         std::lock_guard<std::mutex> lock(kvAdapterMutex_);
         kvDataMgr_.RegisterKvStoreServiceDeathRecipient(deathRecipient_);
     }
-
     return DP_SUCCESS;
 }
 
@@ -420,6 +422,17 @@ int32_t KVAdapter::DeleteDeathListener()
     {
         std::lock_guard<std::mutex> lock(kvAdapterMutex_);
         deathRecipient_ = nullptr;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t KVAdapter::DeleteKvStore()
+{
+    HILOGI("Delete KvStore!");
+    {
+        std::lock_guard<std::mutex> lock(kvAdapterMutex_);
+        kvDataMgr_.CloseKvStore(appId_, storeId_);
+        kvDataMgr_.DeleteKvStore(appId_, storeId_, DATABASE_DIR);
     }
     return DP_SUCCESS;
 }
