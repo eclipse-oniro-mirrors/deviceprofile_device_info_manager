@@ -31,6 +31,16 @@ const std::string DEVICE_OHOS_NAME = "OpenHarmony";
 constexpr int32_t OHOS_TYPE_UNKNOWN = -1;
 constexpr int32_t OHOS_TYPE = 10;
 const char* OHOS_API_VERSION = "const.ohos.apiversion";
+const char* OHOS_BOOT_SN = "ohos.boot.sn";
+const char* OHOS_FULL_NAME = "const.ohos.fullname";
+const char* VERSION_SDK = "ro.build.version.sdk";
+constexpr int32_t OHOS_TYPE_UNKNOWN = -1;
+constexpr int32_t OH_OS_TYPE = 10;
+constexpr int32_t HO_OS_TYPE = 11;
+constexpr uint32_t API_VERSION_LEN = 10;
+constexpr uint32_t SN_LEN = 32;
+constexpr uint32_t FULL_NAME_LEN = 128;
+constexpr uint32_t VERSION_SDK_LEN = 10;
 }
 
 bool SystemInfoCollector::ConvertToProfile(DeviceProfile& profile)
@@ -43,17 +53,26 @@ bool SystemInfoCollector::ConvertToProfile(DeviceProfile& profile)
 
 int32_t SystemInfoCollector::GetOsType()
 {
-    std::string osFullName = DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainOsFullName();
-    if (osFullName.empty() || osFullName.size() >= MAX_STRING_LEN) {
-        HILOGI("osFullName size is invalid!");
-        return OHOS_TYPE_UNKNOWN;
+    char apiVersion[API_VERSION_LEN + 1] = {0};
+    GetParameter(OHOS_API_VERSION, "undefined", apiVersion, API_VERSION_LEN);
+    char bootSN[SN_LEN + 1] = {0};
+    GetParameter(OHOS_BOOT_SN, "undefined", bootSN, SN_LEN);
+    char osFullName[FULL_NAME_LEN + 1] = {0};
+    GetParameter(OHOS_FULL_NAME, "undefined", osFullName, FULL_NAME_LEN);
+    if (strcmp(apiVersion, "undefined") != 0 || strcmp(bootSN, "undefined") != 0 ||
+        strcmp(osFullName, "undefined") != 0) {
+        HILOGI("apiVersion: %{public}s bootSN: %{public}s osFullName: %{public}s", apiVersion,
+            DeviceProfileUtils::AnonymizeDeviceId(std::string(bootSN)).c_str(), osFullName);
+        return OH_OS_TYPE;
     }
-    size_t found = osFullName.find(DEVICE_OHOS_NAME);
-    if (found == std::string::npos) {
-        HILOGI("osFullName is invalid!");
-        return OHOS_TYPE_UNKNOWN;
+    char versionSDK[VERSION_SDK_LEN + 1] = {0};
+    GetParameter(VERSION_SDK, "undefined", versionSDK, VERSION_SDK_LEN);
+    if (strcmp(versionSDK, "undefined") != 0) {
+        HILOGI("versionSDK: %{public}s", versionSDK);
+        return HO_OS_TYPE;
     }
-    return OHOS_TYPE;
+    HILOGE("GetOsType fail!");
+    return OHOS_TYPE_UNKNOWN;
 }
 
 std::string SystemInfoCollector::GetOsVersion()
