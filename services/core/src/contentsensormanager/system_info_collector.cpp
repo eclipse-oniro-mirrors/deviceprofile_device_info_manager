@@ -30,6 +30,7 @@ const std::string TAG = "SystemInfoCollector";
 const std::string DEVICE_OHOS_NAME = "OpenHarmony";
 constexpr int32_t OHOS_TYPE_UNKNOWN = -1;
 constexpr int32_t OHOS_TYPE = 10;
+const char* OHOS_API_VERSION = "const.ohos.apiversion";
 }
 
 bool SystemInfoCollector::ConvertToProfile(DeviceProfile& profile)
