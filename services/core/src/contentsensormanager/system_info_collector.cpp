@@ -22,7 +22,7 @@
 #include "securec.h"
 #include "content_sensor_manager_utils.h"
 #include "distributed_device_profile_constants.h"
-#include "device_profile_utils.h"
+#include "profile_utils.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -63,7 +63,7 @@ int32_t SystemInfoCollector::GetOsType()
     if (strcmp(apiVersion, UNDEFINED_VALUE) != 0 || strcmp(bootSN, UNDEFINED_VALUE) != 0 ||
         strcmp(osFullName, UNDEFINED_VALUE) != 0) {
         HILOGI("apiVersion: %{public}s bootSN: %{public}s osFullName: %{public}s", apiVersion,
-            DeviceProfileUtils::AnonymizeDeviceId(std::string(bootSN)).c_str(), osFullName);
+            ProfileUtils::GetAnonyString(std::string(bootSN)).c_str(), osFullName);
         return OH_OS_TYPE;
     }
     char versionSDK[VERSION_SDK_LEN + 1] = {0};
