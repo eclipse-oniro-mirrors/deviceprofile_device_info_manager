@@ -34,6 +34,7 @@ const char* OHOS_API_VERSION = "const.ohos.apiversion";
 const char* OHOS_BOOT_SN = "ohos.boot.sn";
 const char* OHOS_FULL_NAME = "const.ohos.fullname";
 const char* VERSION_SDK = "ro.build.version.sdk";
+const char* UNDEFINED_VALUE = "undefined";
 constexpr int32_t OHOS_TYPE_UNKNOWN = -1;
 constexpr int32_t OH_OS_TYPE = 10;
 constexpr int32_t HO_OS_TYPE = 11;
@@ -54,20 +55,20 @@ bool SystemInfoCollector::ConvertToProfile(DeviceProfile& profile)
 int32_t SystemInfoCollector::GetOsType()
 {
     char apiVersion[API_VERSION_LEN + 1] = {0};
-    GetParameter(OHOS_API_VERSION, "undefined", apiVersion, API_VERSION_LEN);
+    GetParameter(OHOS_API_VERSION, UNDEFINED_VALUE, apiVersion, API_VERSION_LEN);
     char bootSN[SN_LEN + 1] = {0};
-    GetParameter(OHOS_BOOT_SN, "undefined", bootSN, SN_LEN);
+    GetParameter(OHOS_BOOT_SN, UNDEFINED_VALUE, bootSN, SN_LEN);
     char osFullName[FULL_NAME_LEN + 1] = {0};
-    GetParameter(OHOS_FULL_NAME, "undefined", osFullName, FULL_NAME_LEN);
-    if (strcmp(apiVersion, "undefined") != 0 || strcmp(bootSN, "undefined") != 0 ||
-        strcmp(osFullName, "undefined") != 0) {
+    GetParameter(OHOS_FULL_NAME, UNDEFINED_VALUE, osFullName, FULL_NAME_LEN);
+    if (strcmp(apiVersion, UNDEFINED_VALUE) != 0 || strcmp(bootSN, UNDEFINED_VALUE) != 0 ||
+        strcmp(osFullName, UNDEFINED_VALUE) != 0) {
         HILOGI("apiVersion: %{public}s bootSN: %{public}s osFullName: %{public}s", apiVersion,
             DeviceProfileUtils::AnonymizeDeviceId(std::string(bootSN)).c_str(), osFullName);
         return OH_OS_TYPE;
     }
     char versionSDK[VERSION_SDK_LEN + 1] = {0};
-    GetParameter(VERSION_SDK, "undefined", versionSDK, VERSION_SDK_LEN);
-    if (strcmp(versionSDK, "undefined") != 0) {
+    GetParameter(VERSION_SDK, UNDEFINED_VALUE, versionSDK, VERSION_SDK_LEN);
+    if (strcmp(versionSDK, UNDEFINED_VALUE) != 0) {
         HILOGI("versionSDK: %{public}s", versionSDK);
         return HO_OS_TYPE;
     }
