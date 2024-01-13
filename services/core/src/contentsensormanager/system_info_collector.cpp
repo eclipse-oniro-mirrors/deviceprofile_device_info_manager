@@ -28,8 +28,6 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
 const std::string TAG = "SystemInfoCollector";
-const std::string DEVICE_OHOS_NAME = "OpenHarmony";
-constexpr int32_t OHOS_TYPE = 10;
 const char* OHOS_API_VERSION = "const.ohos.apiversion";
 const char* OHOS_BOOT_SN = "ohos.boot.sn";
 const char* OHOS_FULL_NAME = "const.ohos.fullname";
