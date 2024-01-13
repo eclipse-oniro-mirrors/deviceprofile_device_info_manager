@@ -22,6 +22,7 @@
 #include "securec.h"
 #include "content_sensor_manager_utils.h"
 #include "distributed_device_profile_constants.h"
+#include "device_profile_utils.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
