@@ -72,10 +72,12 @@ int32_t OnlineSyncTable::RegisterSyncCallback(const std::shared_ptr<KvStoreSyncC
 {
     HILOGI("called");
     if (syncCb == nullptr) {
+        HILOGI("syncCb is nullptr!");
         return ERR_DP_INVALID_PARAMS;
     }
     std::lock_guard<std::mutex> autoLock(tableLock_);
     syncCallback_ = syncCb;
+    HILOGI("RegisterSyncCallback success!");
     return ERR_OK;
 }
 

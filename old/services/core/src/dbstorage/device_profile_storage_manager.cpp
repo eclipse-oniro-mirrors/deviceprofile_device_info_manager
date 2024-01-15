@@ -573,9 +573,11 @@ int32_t DeviceProfileStorageManager::RegisterSyncCallback(const std::shared_ptr<
 {
     std::lock_guard<std::mutex> autoLock(callbackLock_);
     kvStoreSyncCallback_ = sycnCb;
-    if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_SUCCEED) {
+    if (onlineSyncTbl_ != nullptr) {
+        HILOGI("RegisterSyncCallback start!");
         return onlineSyncTbl_->RegisterSyncCallback(sycnCb);
     }
+    HILOGI("RegisterSyncCallback end!");
     return ERR_OK;
 }
 
