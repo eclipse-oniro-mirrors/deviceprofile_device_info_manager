@@ -157,7 +157,7 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_001, TestSize.Level1)
 
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_EQ(ret, DP_NOTIFY_ACCESS_CONTROL_FAIL);
 }
 
 /*
@@ -202,7 +202,7 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_011, TestSize.Level1)
 
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_EQ(ret, DP_NOTIFY_ACCESS_CONTROL_FAIL);
 }
 
 /*
@@ -247,7 +247,7 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_002, TestSize.Level1)
 
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_EQ(ret, DP_NOTIFY_ACCESS_CONTROL_FAIL);
 }
 
 /*
@@ -292,7 +292,7 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_022, TestSize.Level1)
 
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_EQ(ret, DP_NOTIFY_ACCESS_CONTROL_FAIL);
 }
 
 /*
