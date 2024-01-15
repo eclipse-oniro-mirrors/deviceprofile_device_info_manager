@@ -19,6 +19,7 @@ import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
 module_output_path = "device_info_manager/deviceprofiletest"
 
 device_profile_deps = [
+  "${device_profile_path}/radar:deviceprofileradar",
   "${old_device_profile_innerkits}/core:distributed_device_profile_client",
   "${old_device_profile_service}/core:distributed_device_profile",
   "//third_party/googletest:gtest_main",
@@ -27,6 +28,10 @@ device_profile_deps = [
 device_profile_external_deps = [ "hisysevent:libhisysevent" ]
 
 ohos_unittest("dp_radar_helper_test") {
+  cflags = [
+    "-Dprivate=public",
+    "-Dprotected=public",
+  ]
   module_out_path = module_output_path
   include_dirs = [ "${device_profile_path}/radar/include" ]
   sources = [ "dp_radar_helper_test.cpp" ]

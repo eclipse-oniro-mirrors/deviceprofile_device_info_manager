@@ -26,7 +26,7 @@
 
 namespace OHOS {
 namespace DeviceProfile {
-const std::string ORGPKGNAME = "ohos.distributedhardware.deviceprofile";
+const std::string ORGPKGNAME = "deviceprofile";
 const std::string SAMAGRNAME = "SA";
 const std::string kvNAME = "distrubitedKv";
 const std::string DP_DATA_OPERATE_BEHAVIOR = "DP_DATA_OPERATE_BEHAVIOR";
