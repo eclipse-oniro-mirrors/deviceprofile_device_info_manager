@@ -72,10 +72,12 @@ int32_t OnlineSyncTable::RegisterSyncCallback(const std::shared_ptr<KvStoreSyncC
 {
     HILOGI("called");
     if (syncCb == nullptr) {
+        HILOGE("syncCb is nullptr!");
         return ERR_DP_INVALID_PARAMS;
     }
     std::lock_guard<std::mutex> autoLock(tableLock_);
     syncCallback_ = syncCb;
+    HILOGI("RegisterSyncCallback success!");
     return ERR_OK;
 }
 
@@ -151,11 +153,13 @@ void OnlineSyncTable::SyncCompleted(const std::map<std::string, Status>& results
 
 void OnlineSyncTable::NotifySyncCompleted(const std::map<std::string, Status>& results)
 {
+    HILOGI("called!");
     std::lock_guard<std::mutex> autoLock(tableLock_);
     if (syncCallback_ != nullptr) {
         HILOGI("notify sync callback");
         syncCallback_->SyncCompleted(results);
     }
+    HILOGI("NotifySyncCompleted end!");
 }
 } // namespace DeviceProfile
 } // namespace OHOS

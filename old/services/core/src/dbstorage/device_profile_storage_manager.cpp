@@ -62,6 +62,7 @@ IMPLEMENT_SINGLE_INSTANCE(DeviceProfileStorageManager);
 
 bool DeviceProfileStorageManager::Init()
 {
+    std::lock_guard<std::mutex> lock(initLock_);
     if (!inited_) {
         if (!SyncCoordinator::GetInstance().Init()) {
             HILOGE("SyncCoordinator init failed");
@@ -82,21 +83,18 @@ bool DeviceProfileStorageManager::Init()
         inited_ = true;
     }
 
-    auto waitTask = [this]() {
-        if (!WaitKvDataService()) {
-            std::lock_guard<std::mutex> autoLock(serviceLock_);
-            profileItems_.clear();
-            kvDataServiceFailed_ = true;
-            return;
-        }
-        auto callback = std::bind(&DeviceProfileStorageManager::OnKvStoreInitDone, this);
-        onlineSyncTbl_->RegisterKvStoreInitCallback(callback);
-        onlineSyncTbl_->Init();
-    };
-    if (!storageHandler_->PostTask(waitTask)) {
-        HILOGE("post task failed");
-        return false;
+    bool isKvServiceLoad = WaitKvDataService();
+    if (!isKvServiceLoad) {
+        HILOGE("WaitKvDataService fail!");
+        std::lock_guard<std::mutex> autoLock(serviceLock_);
+        profileItems_.clear();
+        kvDataServiceFailed_ = true;
     }
+    HILOGI("WaitKvDataService success!");
+    auto callback = std::bind(&DeviceProfileStorageManager::OnKvStoreInitDone, this);
+    onlineSyncTbl_->RegisterKvStoreInitCallback(callback);
+    onlineSyncTbl_->Init();
+
     HILOGI("init succeeded");
     return true;
 }
@@ -120,7 +118,7 @@ bool DeviceProfileStorageManager::WaitKvDataService()
             }
         }
         HILOGD("waiting for service...");
-        std::this_thread::sleep_for(1s);
+        std::this_thread::sleep_for(std::chrono::microseconds(50));
         if (--retryTimes <= 0) {
             HILOGE("waiting service timeout(30)s");
             return false;
@@ -161,7 +159,7 @@ int32_t DeviceProfileStorageManager::PutDeviceProfile(const ServiceCharacteristi
     }
 
     int32_t errCode = ERR_OK;
-    if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_SUCCEED) {
+    if (onlineSyncTbl_ != nullptr && onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_SUCCEED) {
         autoLock.unlock();
         if (keys.size() > 1) {
             errCode = onlineSyncTbl_->PutDeviceProfileBatch(keys, values);
@@ -293,7 +291,7 @@ int32_t DeviceProfileStorageManager::DeleteDeviceProfile(const std::string& serv
         .hostName = DpRadarHelper::GetInstance().GetHostNameByServiceId(serviceId),
         .localUdid = localUdid_,
     };
-    if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_SUCCEED) {
+    if (onlineSyncTbl_ != nullptr && onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_SUCCEED) {
         errCode = onlineSyncTbl_->DeleteDeviceProfile(serviceKey);
         if (errCode != ERR_OK) {
             servicesJson_[serviceId] = std::move(original);
@@ -556,7 +554,7 @@ int32_t DeviceProfileStorageManager::SubscribeKvStore(const std::shared_ptr<KvSt
 {
     std::lock_guard<std::mutex> autoLock(callbackLock_);
     kvStoreObserver_ = observer;
-    if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_SUCCEED) {
+    if (onlineSyncTbl_ != nullptr && onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_SUCCEED) {
         return onlineSyncTbl_->SubscribeKvStore(observer);
     }
     return ERR_OK;
@@ -573,7 +571,7 @@ int32_t DeviceProfileStorageManager::RegisterSyncCallback(const std::shared_ptr<
 {
     std::lock_guard<std::mutex> autoLock(callbackLock_);
     kvStoreSyncCallback_ = sycnCb;
-    if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_SUCCEED) {
+    if (onlineSyncTbl_ != nullptr && onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_SUCCEED) {
         return onlineSyncTbl_->RegisterSyncCallback(sycnCb);
     }
     return ERR_OK;
