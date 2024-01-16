@@ -409,20 +409,18 @@ void DistributedDeviceProfileClient::DeviceProfileDeathRecipient::OnRemoteDied(c
 
 void DistributedDeviceProfileClient::SubscribeDeviceProfileSA()
 {
-    {
-        std::lock_guard<std::mutex> lock(serviceLock_);
-        if (saListenerCallback_ == nullptr) {
-            saListenerCallback_ = new (std::nothrow) SystemAbilityListener();
-        }
-    }
     auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     if (samgrProxy == nullptr) {
         HILOGE("get samgr failed");
         return;
     }
+    int32_t ret = DP_SUCCESS;
     {
         std::lock_guard<std::mutex> lock(serviceLock_);
-        int32_t ret = samgrProxy->SubscribeSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, saListenerCallback_);
+        if (saListenerCallback_ == nullptr) {
+            saListenerCallback_ = new (std::nothrow) SystemAbilityListener();
+        }
+        ret = samgrProxy->SubscribeSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, saListenerCallback_);
     }
     if (ret != DP_SUCCESS) {
         HILOGE("subscribe dp sa failed! ret %{public}d.", ret);
