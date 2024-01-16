@@ -418,7 +418,7 @@ void DistributedDeviceProfileClient::SubscribeDeviceProfileSA()
     {
         std::lock_guard<std::mutex> lock(serviceLock_);
         if (saListenerCallback_ == nullptr) {
-            saListenerCallback_ = new (std::nothrow) SystemAbilityListener();
+            saListenerCallback_(new (std::nothrow) SystemAbilityListener());
         }
         ret = samgrProxy->SubscribeSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, saListenerCallback_);
     }
@@ -438,12 +438,13 @@ void DistributedDeviceProfileClient::StartThreadSendSubscribeInfos()
 void DistributedDeviceProfileClient::SystemAbilityListener::OnRemoveSystemAbility(int32_t systemAbilityId,
     const std::string &deviceId)
 {
-    HILOGI("subscribe dp sa failed");
+    HILOGI("dp sa removed");
 }
 
 void DistributedDeviceProfileClient::SystemAbilityListener::OnAddSystemAbility(int32_t systemAbilityId,
     const std::string &deviceId)
 {
+    HILOGI("dp sa started, start thread for send subscribeInfos");
     DistributedDeviceProfileClient::GetInstance().StartThreadSendSubscribeInfos();
 }
 } // namespace DeviceProfile
