@@ -54,6 +54,7 @@ const std::string DP_DEVICE_DELETE_TRACE = "DP_DEVICE_DELETE";
 const std::string DP_DEVICE_SYNC_TRACE = "DP_DEVICE_SYNC";
 constexpr int32_t RETRY_TIMES_WAIT_KV_DATA = 50;
 constexpr int32_t FIX_TASK_ID = 0;
+constexpr int32_t DELAY_TIME_MS = 100;
 constexpr int32_t INDENT = -1;
 const char INDENT_CHAR = ' ';
 }
@@ -118,7 +119,7 @@ bool DeviceProfileStorageManager::WaitKvDataService()
             }
         }
         HILOGD("waiting for service...");
-        std::this_thread::sleep_for(std::chrono::microseconds(100));
+        std::this_thread::sleep_for(std::chrono::microseconds(DELAY_TIME_MS));
         if (--retryTimes <= 0) {
             HILOGE("waiting service timeout(30)s");
             return false;
