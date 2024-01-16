@@ -420,7 +420,10 @@ void DistributedDeviceProfileClient::SubscribeDeviceProfileSA()
         HILOGE("get samgr failed");
         return;
     }
-    int32_t ret = samgrProxy->SubscribeSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, saListenerCallback_);
+    {
+        std::lock_guard<std::mutex> lock(serviceLock_);
+        int32_t ret = samgrProxy->SubscribeSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, saListenerCallback_);
+    }
     if (ret != DP_SUCCESS) {
         HILOGE("subscribe dp sa failed! ret %{public}d.", ret);
         return;
@@ -436,7 +439,9 @@ void DistributedDeviceProfileClient::StartThreadSendSubscribeInfos()
 
 void DistributedDeviceProfileClient::SystemAbilityListener::OnRemoveSystemAbility(int32_t systemAbilityId,
     const std::string &deviceId)
-{}
+{
+    HILOGI("subscribe dp sa failed");
+}
 
 void DistributedDeviceProfileClient::SystemAbilityListener::OnAddSystemAbility(int32_t systemAbilityId,
     const std::string &deviceId)
