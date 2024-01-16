@@ -81,6 +81,7 @@ private:
 private:
     std::mutex serviceLock_;
     std::mutex callbackLock_;
+    std::mutex initLock_;
     nlohmann::json servicesJson_;
     std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_;
     std::shared_ptr<AppExecFwk::EventHandler> storageHandler_;
