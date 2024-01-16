@@ -33,6 +33,7 @@
 #include "dp_subscribe_info.h"
 #include "distributed_device_profile_constants.h"
 #include "sync_completed_callback_stub.h"
+#include "system_ability_status_change_stub.h"
 #include "profile_change_listener_stub.h"
 
 namespace OHOS {
@@ -68,12 +69,20 @@ public:
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
     void LoadSystemAbilityFail();
 
+public:
+    class SystemAbilityListener : public SystemAbilityStatusChangeStub {
+    public:
+        void OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
+        void OnRemoveSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
+    };
+
 private:
     void SendSubscribeInfosToService();
     sptr<IDistributedDeviceProfile> LoadDeviceProfileService();
     sptr<IDistributedDeviceProfile> GetDeviceProfileService();
     void OnServiceDied(const sptr<IRemoteObject>& remote);
 	void SubscribeDeviceProfileSA();
+    void StartThreadSendSubscribeInfos();
 
     class DeviceProfileDeathRecipient : public IRemoteObject::DeathRecipient {
     public:
@@ -84,6 +93,7 @@ private:
     sptr<IDistributedDeviceProfile> dpProxy_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> dpDeathRecipient_ = nullptr;
     std::map<std::string, SubscribeInfo> subscribeInfos_;
+    sptr<SystemAbilityListener> saListenerCallback_ = nullptr;
 };
 } // namespace DeviceProfile
 } // namespace OHOS
