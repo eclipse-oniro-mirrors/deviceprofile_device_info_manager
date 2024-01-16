@@ -308,6 +308,7 @@ int32_t DistributedDeviceProfileClient::SubscribeDeviceProfile(const SubscribeIn
     }
     {
         std::lock_guard<std::mutex> lock(serviceLock_);
+        HILOGI("subscribeInfos_.size is %{public}zu", subscribeInfos_.size());
         if (subscribeInfos_.size() > MAX_LISTENER_SIZE) {
             HILOGE("ProfileChangeListeners size is invalid!");
             return DP_EXCEED_MAX_SIZE_FAIL;
@@ -315,6 +316,7 @@ int32_t DistributedDeviceProfileClient::SubscribeDeviceProfile(const SubscribeIn
         std::string subscribeTag =
             subscribeInfo.GetSubscribeKey() + SEPARATOR + std::to_string(subscribeInfo.GetSaId());
         subscribeInfos_[subscribeTag] = subscribeInfo;
+        HILOGI("subscribeInfos_.size is %{public}zu", subscribeInfos_.size());
     }
     return dpService->SubscribeDeviceProfile(subscribeInfo);
 }
