@@ -418,7 +418,7 @@ void DistributedDeviceProfileClient::SubscribeDeviceProfileSA()
     {
         std::lock_guard<std::mutex> lock(serviceLock_);
         if (saListenerCallback_ == nullptr) {
-            saListenerCallback_(new (std::nothrow) SystemAbilityListener());
+            saListenerCallback_ = sptr<SystemAbilityListener>(new SystemAbilityListener());
         }
         ret = samgrProxy->SubscribeSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, saListenerCallback_);
     }
