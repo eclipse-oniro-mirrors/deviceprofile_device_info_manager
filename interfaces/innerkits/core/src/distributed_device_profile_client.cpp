@@ -93,8 +93,6 @@ void DistributedDeviceProfileClient::LoadSystemAbilitySuccess(const sptr<IRemote
         dpProxy_ = iface_cast<IDistributedDeviceProfile>(remoteObject);
         proxyConVar_.notify_one();
     }
-    HILOGI("Send SubscribeInfos cache in proxy to service!");
-    std::thread(&DistributedDeviceProfileClient::SendSubscribeInfosToService, this).detach();
 }
 
 void DistributedDeviceProfileClient::LoadSystemAbilityFail()

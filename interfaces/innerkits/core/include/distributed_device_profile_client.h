@@ -73,6 +73,7 @@ private:
     sptr<IDistributedDeviceProfile> LoadDeviceProfileService();
     sptr<IDistributedDeviceProfile> GetDeviceProfileService();
     void OnServiceDied(const sptr<IRemoteObject>& remote);
+	void SubscribeDeviceProfileSA();
 
     class DeviceProfileDeathRecipient : public IRemoteObject::DeathRecipient {
     public:
