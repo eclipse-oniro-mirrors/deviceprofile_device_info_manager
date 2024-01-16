@@ -122,7 +122,7 @@ int32_t DeviceProfileStorage::UnRegisterSyncCallback()
 
 StorageInitStatus DeviceProfileStorage::GetInitStatus()
 {
-    HILOGI("GetInitStatus %{public}d", initStatus_.load());
+    HILOGI("GetInitStatus %{public}d", static_cast<int32_t>(initStatus_.load()));
     return initStatus_;
 }
 
