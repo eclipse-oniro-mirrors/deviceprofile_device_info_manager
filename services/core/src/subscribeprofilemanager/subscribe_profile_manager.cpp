@@ -359,8 +359,8 @@ std::unordered_set<SubscribeInfo, SubscribeHash, SubscribeCompare> SubscribeProf
             HILOGE("This dbKey is not subscribed, dbKey: %{public}s", dbKey.c_str());
             return {};
         }
+        return subscribeInfoMap_[dbKey];
     }
-    return subscribeInfoMap_[dbKey];
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
