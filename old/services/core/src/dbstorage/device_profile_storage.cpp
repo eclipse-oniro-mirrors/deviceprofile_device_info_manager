@@ -70,10 +70,12 @@ void DeviceProfileStorage::Init()
     HILOGI("TryGetKvStore %{public}s, spend %{public}" PRId64 " ms",
         result ? "succeeded" : "failed", end - begin);
     // must call callback before set init status
-    if (kvStoreInitCallback_ != nullptr) {
+    if (result && kvStoreInitCallback_ != nullptr) {
         kvStoreInitCallback_();
     }
-    initStatus_ = StorageInitStatus::INIT_SUCCEED;
+    if (result) {
+        initStatus_ = StorageInitStatus::INIT_SUCCEED;
+    }
 }
 
 int32_t DeviceProfileStorage::SubscribeKvStore(const std::shared_ptr<KvStoreObserver>& observer)
@@ -122,6 +124,7 @@ int32_t DeviceProfileStorage::UnRegisterSyncCallback()
 
 StorageInitStatus DeviceProfileStorage::GetInitStatus()
 {
+    HILOGI("GetInitStatus %{public}d", static_cast<int32_t>(initStatus_.load()));
     return initStatus_;
 }
 

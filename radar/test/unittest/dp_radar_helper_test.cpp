@@ -14,7 +14,6 @@
  */
 
 #include "dp_radar_helper_test.h"
-
 #include "dp_radar_helper.h"
 
 namespace OHOS {
@@ -204,6 +203,17 @@ HWTEST_F(DpRadarHelperTest, ReportSyncDataCb_001, testing::ext::TestSize.Level0)
     info.stageRes = static_cast<int32_t>(StageRes::STAGE_SUCC);
     bool res = DpRadarHelper::GetInstance().ReportSyncDataCb(info);
     EXPECT_EQ(res, true);
+}
+
+HWTEST_F(DpRadarHelperTest, GetAnonyUdid_001, testing::ext::TestSize.Level0)
+{
+    std::string udid = "";
+    std::string res = DpRadarHelper::GetInstance().GetAnonyUdid(udid);
+    EXPECT_EQ(res, "");
+
+    udid = "1234567890abcdef";
+    res = DpRadarHelper::GetInstance().GetAnonyUdid(udid);
+    EXPECT_EQ(res, "12345**bcdef");
 }
 } // namespace DeviceProfile
 } // namespace OHOS

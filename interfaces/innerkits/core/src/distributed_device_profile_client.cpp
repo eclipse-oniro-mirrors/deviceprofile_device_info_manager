@@ -93,8 +93,6 @@ void DistributedDeviceProfileClient::LoadSystemAbilitySuccess(const sptr<IRemote
         dpProxy_ = iface_cast<IDistributedDeviceProfile>(remoteObject);
         proxyConVar_.notify_one();
     }
-    HILOGI("Send SubscribeInfos cache in proxy to service!");
-    std::thread(&DistributedDeviceProfileClient::SendSubscribeInfosToService, this).detach();
 }
 
 void DistributedDeviceProfileClient::LoadSystemAbilityFail()
@@ -302,13 +300,15 @@ int32_t DistributedDeviceProfileClient::DeleteCharacteristicProfile(const std::s
 
 int32_t DistributedDeviceProfileClient::SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)
 {
-    auto dpService = LoadDeviceProfileService();
+    SubscribeDeviceProfileSA();
+    auto dpService = GetDeviceProfileService();
     if (dpService == nullptr) {
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
     {
         std::lock_guard<std::mutex> lock(serviceLock_);
+        HILOGI("subscribeInfos_.size is %{public}zu", subscribeInfos_.size());
         if (subscribeInfos_.size() > MAX_LISTENER_SIZE) {
             HILOGE("ProfileChangeListeners size is invalid!");
             return DP_EXCEED_MAX_SIZE_FAIL;
@@ -316,13 +316,15 @@ int32_t DistributedDeviceProfileClient::SubscribeDeviceProfile(const SubscribeIn
         std::string subscribeTag =
             subscribeInfo.GetSubscribeKey() + SEPARATOR + std::to_string(subscribeInfo.GetSaId());
         subscribeInfos_[subscribeTag] = subscribeInfo;
+        HILOGI("subscribeInfos_.size is %{public}zu", subscribeInfos_.size());
     }
     return dpService->SubscribeDeviceProfile(subscribeInfo);
 }
 
 int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)
 {
-    auto dpService = LoadDeviceProfileService();
+    SubscribeDeviceProfileSA();
+    auto dpService = GetDeviceProfileService();
     if (dpService == nullptr) {
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
@@ -330,6 +332,7 @@ int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfile(const Subscribe
     {
         std::lock_guard<std::mutex> lock(serviceLock_);
         subscribeInfos_.erase(subscribeInfo.GetSubscribeKey() + SEPARATOR + std::to_string(subscribeInfo.GetSaId()));
+        HILOGI("subscribeInfos_.size is %{public}zu", subscribeInfos_.size());
     }
     return dpService->UnSubscribeDeviceProfile(subscribeInfo);
 }
@@ -402,6 +405,47 @@ void DistributedDeviceProfileClient::OnServiceDied(const sptr<IRemoteObject>& re
 void DistributedDeviceProfileClient::DeviceProfileDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
 {
     DistributedDeviceProfileClient::GetInstance().OnServiceDied(remote.promote());
+}
+
+void DistributedDeviceProfileClient::SubscribeDeviceProfileSA()
+{
+    auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    if (samgrProxy == nullptr) {
+        HILOGE("get samgr failed");
+        return;
+    }
+    int32_t ret = DP_SUCCESS;
+    {
+        std::lock_guard<std::mutex> lock(serviceLock_);
+        if (saListenerCallback_ == nullptr) {
+            saListenerCallback_ = sptr<SystemAbilityListener>(new SystemAbilityListener());
+        }
+        ret = samgrProxy->SubscribeSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, saListenerCallback_);
+    }
+    if (ret != DP_SUCCESS) {
+        HILOGE("subscribe dp sa failed! ret %{public}d.", ret);
+        return;
+    }
+    HILOGI("subscribe dp sa success");
+}
+
+void DistributedDeviceProfileClient::StartThreadSendSubscribeInfos()
+{
+    HILOGI("Send SubscribeInfos cache in proxy to service!");
+    std::thread(&DistributedDeviceProfileClient::SendSubscribeInfosToService, this).detach();
+}
+
+void DistributedDeviceProfileClient::SystemAbilityListener::OnRemoveSystemAbility(int32_t systemAbilityId,
+    const std::string &deviceId)
+{
+    HILOGI("dp sa removed");
+}
+
+void DistributedDeviceProfileClient::SystemAbilityListener::OnAddSystemAbility(int32_t systemAbilityId,
+    const std::string &deviceId)
+{
+    HILOGI("dp sa started, start thread for send subscribeInfos");
+    DistributedDeviceProfileClient::GetInstance().StartThreadSendSubscribeInfos();
 }
 } // namespace DeviceProfile
 } // namespace OHOS
