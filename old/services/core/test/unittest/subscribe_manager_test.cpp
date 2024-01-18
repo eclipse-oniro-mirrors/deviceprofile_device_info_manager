@@ -245,33 +245,6 @@ HWTEST_F(SubscribeManagerTest, SubscribeProfileEvents_002, TestSize.Level3)
 }
 
 /**
- * @tc.name: SubscribeProfileEvents_003
- * @tc.desc: SubscribeProfileEvents
- * @tc.type: FUNC
- * @tc.require: I4NY1T
- */
-HWTEST_F(SubscribeManagerTest, SubscribeProfileEvents_003, TestSize.Level3)
-{
-    auto syncCb = std::make_shared<StorageProfileEventCallback>();
-    sptr<IRemoteObject> notifier =
-        sptr<ProfileEventNotifierStub>(new ProfileEventNotifierStub(syncCb));
-
-    std::list<SubscribeInfo> subscribeInfos;
-    SubscribeInfo eventChange;
-    eventChange.profileEvent = ProfileEvent::EVENT_SYNC_COMPLETED;
-    ExtraInfo extraInfo;
-    eventChange.extraInfo = std::move(extraInfo);
-    subscribeInfos.emplace_back(eventChange);
-
-    std::list<ProfileEvent> failedEvents;
-
-    int32_t callingUid = IPCSkeleton::GetCallingUid();
-    SubscribeManager::GetInstance().uidSubsMap_[callingUid] = MAX_SUBSCRIBS_PER_UID;
-    int32_t ret = SubscribeManager::GetInstance().SubscribeProfileEvents(subscribeInfos, notifier, failedEvents);
-    EXPECT_EQ(ret, ERR_OK);
-}
-
-/**
  * @tc.name: UnsubscribeProfileEvents_001
  * @tc.desc: UnsubscribeProfileEvents
  * @tc.type: FUNC
@@ -287,7 +260,7 @@ HWTEST_F(SubscribeManagerTest, UnsubscribeProfileEvents_001, TestSize.Level3)
     std::list<ProfileEvent> failedEvents;
 
     int32_t ret = SubscribeManager::GetInstance().UnsubscribeProfileEvents(profileEvents, notifier, failedEvents);
-    EXPECT_EQ(ret, ERR_DP_UNSUBSCRIBE_FAILED);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /**

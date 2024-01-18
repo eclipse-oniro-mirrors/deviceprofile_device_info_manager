@@ -143,7 +143,7 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_001, TestSize.Level1)
     AccessControlProfile profile;
     profile.SetTrustDeviceId("123456");
     profile.SetSessionKey("key1");
-    profile.SetBindType(1);
+    profile.SetBindType(256);
     profile.SetAuthenticationType(1);
     profile.SetDeviceIdType(1);
     profile.SetDeviceIdHash("abcd");
@@ -157,7 +157,7 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_001, TestSize.Level1)
 
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_NOTIFY_ACCESS_CONTROL_FAIL);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -188,7 +188,7 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_011, TestSize.Level1)
     AccessControlProfile profile;
     profile.SetTrustDeviceId("123456");
     profile.SetSessionKey("key1");
-    profile.SetBindType(1);
+    profile.SetBindType(256);
     profile.SetAuthenticationType(1);
     profile.SetDeviceIdType(1);
     profile.SetDeviceIdHash("abcd");
@@ -202,7 +202,7 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_011, TestSize.Level1)
 
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_NOTIFY_ACCESS_CONTROL_FAIL);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -233,7 +233,7 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_002, TestSize.Level1)
     AccessControlProfile profile;
     profile.SetTrustDeviceId("123456");
     profile.SetSessionKey("key1");
-    profile.SetBindType(1);
+    profile.SetBindType(256);
     profile.SetAuthenticationType(1);
     profile.SetDeviceIdType(1);
     profile.SetDeviceIdHash("abcd");
@@ -247,7 +247,7 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_002, TestSize.Level1)
 
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_NOTIFY_ACCESS_CONTROL_FAIL);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -278,7 +278,7 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_022, TestSize.Level1)
     AccessControlProfile profile;
     profile.SetTrustDeviceId("123456");
     profile.SetSessionKey("key1");
-    profile.SetBindType(1);
+    profile.SetBindType(256);
     profile.SetAuthenticationType(1);
     profile.SetDeviceIdType(1);
     profile.SetDeviceIdHash("abcd");
@@ -292,7 +292,7 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_022, TestSize.Level1)
 
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_NOTIFY_ACCESS_CONTROL_FAIL);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -529,7 +529,7 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_001, TestSize.Level1)
 {
     std::vector<AccessControlProfile> profile;
     std::map<std::string, std::string> parms;
-    parms.insert({{"userId", "22"}, {"bundleName", "bb1"}, {"bindType", "1"}, {"status", "0"}});
+    parms.insert({{"userId", "22"}, {"bundleName", "bb1"}, {"bindType", "256"}, {"status", "0"}});
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     for (size_t i = 0; i < profile.size(); i++) {
@@ -554,7 +554,7 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_001, TestSize.Level1)
 
     parms.clear();
     profile.clear();
-    parms.insert({{"userId", "11"}, {"bundleName", "b1"}, {"bindType", "1"}, {"status", "0"}});
+    parms.insert({{"userId", "11"}, {"bundleName", "b1"}, {"bindType", "256"}, {"status", "0"}});
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     for (size_t i = 0; i < profile.size(); i++) {
