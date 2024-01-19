@@ -59,9 +59,7 @@ void DeviceProfileManagerTest::SetUp()
     DeviceProfileManager::GetInstance().Init();
 }
 
-void DeviceProfileManagerTest::TearDown()
-{
-    DeviceProfileManager::GetInstance().UnInit();
+void DeviceProfileManagerTest::TearDown() {
 }
 
 class SyncCallback : public SyncCompletedCallbackStub {
