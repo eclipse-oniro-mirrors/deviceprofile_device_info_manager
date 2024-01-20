@@ -194,9 +194,16 @@ int32_t DeviceProfileStorage::PutDeviceProfile(const std::string& key, const std
         return ERR_DP_INVALID_PARAMS;
     }
 
-    Key k(key);
-    Value v(value);
-    Status status  = kvStorePtr_->Put(k, v);
+    Key kvKey(key);
+    Value oldV;
+    if (kvStorePtr_->Get(kvKey, oldV) == Status::SUCCESS && oldV.ToString() == value) {
+        HILOGD("The key-value pair already exists. key=%{public}s,value=%{public}s",
+            DeviceProfileUtils::AnonymizeDeviceId(key).c_str(), DeviceProfileUtils::AnonymizeDeviceId(value).c_str());
+        return ERR_OK;
+    }
+
+    Value kvValue(value);
+    Status status  = kvStorePtr_->Put(kvKey, kvValue);
     if (status != Status::SUCCESS) {
         HILOGE("put failed, error = %{public}d", status);
     }
@@ -221,12 +228,25 @@ int32_t DeviceProfileStorage::PutDeviceProfileBatch(const std::vector<std::strin
     }
 
     std::vector<Entry> entries;
-    entries.reserve(keySize);
+    Value oldV;
+    Key kvKey;
     for (uint32_t i = 0; i < keySize; i++) {
+        kvKey = keys[i];
+        if (kvStorePtr_->Get(kvKey, oldV) == Status::SUCCESS && oldV.ToString() == values[i]) {
+            HILOGD("The key-value pair already exists. key=%{public}s,value=%{public}s",
+                DeviceProfileUtils::AnonymizeDeviceId(keys[i]).c_str(),
+                DeviceProfileUtils::AnonymizeDeviceId(values[i]).c_str());
+            continue;
+        }
+
         Entry entry;
-        entry.key = keys[i];
+        entry.key = kvKey;
         entry.value = values[i];
         entries.emplace_back(entry);
+    }
+    if (entries.empty()) {
+        HILOGD("All key-value pair already exists.");
+        return ERR_OK;
     }
 
     Status status = kvStorePtr_->PutBatch(entries);

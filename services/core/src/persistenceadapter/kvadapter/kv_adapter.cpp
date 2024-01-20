@@ -103,7 +103,16 @@ int32_t KVAdapter::Put(const std::string& key, const std::string& value)
             HILOGE("kvDBPtr is null!");
             return DP_KV_DB_PTR_NULL;
         }
+
         DistributedKv::Key kvKey(key);
+        DistributedKv::Value oldV;
+        if (kvStorePtr_->Get(kvKey, oldV) == DistributedKv::Status::SUCCESS && oldV.ToString() == value) {
+            HILOGD("The key-value pair already exists. key=%{public}s,value=%{public}s",
+                ProfileUtils::GetAnonyString(key).c_str(),
+                ProfileUtils::GetAnonyString(value).c_str());
+            return DP_SUCCESS;
+        }
+
         DistributedKv::Value kvValue(value);
         status = kvStorePtr_->Put(kvKey, kvValue);
     }
@@ -128,11 +137,25 @@ int32_t KVAdapter::PutBatch(const std::map<std::string, std::string>& values)
             return DP_KV_DB_PTR_NULL;
         }
         std::vector<DistributedKv::Entry> entries;
+        DistributedKv::Value oldV;
+        DistributedKv::Key kvKey;
         for (auto item : values) {
+            kvKey = item.first;
+            if (kvStorePtr_->Get(kvKey, oldV) == DistributedKv::Status::SUCCESS && oldV.ToString() == item.second) {
+                HILOGD("The key-value pair already exists. key=%{public}s,value=%{public}s",
+                    ProfileUtils::GetAnonyString(item.first).c_str(),
+                    ProfileUtils::GetAnonyString(item.second).c_str());
+                continue;
+            }
+
             Entry entry;
-            entry.key = item.first;
+            entry.key = kvKey;
             entry.value = item.second;
             entries.emplace_back(entry);
+        }
+        if (entries.empty()) {
+            HILOGD("All key-value pair already exists.");
+            return DP_SUCCESS;
         }
         status = kvStorePtr_->PutBatch(entries);
     }
@@ -249,15 +272,10 @@ DistributedKv::Status KVAdapter::GetKvStorePtr()
         .kvStoreType = KvStoreType::SINGLE_VERSION,
         .baseDir = DATABASE_DIR
     };
-    options.policies = {};
     SyncPolicy syncPolicyOnline {
         .type = PolicyType::IMMEDIATE_SYNC_ON_ONLINE
     };
-    SyncPolicy syncPolicyOnReady {
-        .type = PolicyType::IMMEDIATE_SYNC_ON_READY
-    };
     options.policies.emplace_back(syncPolicyOnline);
-    options.policies.emplace_back(syncPolicyOnReady);
     DistributedKv::Status status;
     {
         std::lock_guard<std::mutex> lock(kvAdapterMutex_);
