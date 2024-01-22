@@ -37,7 +37,7 @@ ProfileEventHandlerFactory::ProfileEventHandlerFactory()
 
 std::shared_ptr<ProfileEventHandler> ProfileEventHandlerFactory::GetHandler(ProfileEvent profileEvent)
 {
-    HILOGI("get handler for event = %{public}u", profileEvent);
+    HILOGI("get handler for event = %{public}u", static_cast<uint32_t>(profileEvent));
     auto iter = handlersMap_.find(profileEvent);
     if (iter != handlersMap_.end()) {
         auto handler = iter->second;

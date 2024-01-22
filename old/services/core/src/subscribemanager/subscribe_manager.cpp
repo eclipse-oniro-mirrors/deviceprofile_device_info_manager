@@ -108,7 +108,7 @@ int32_t SubscribeManager::UnsubscribeProfileEvents(const std::list<ProfileEvent>
     for (auto profileEvent : profileEvents) {
         auto iter = handlersMap_.find(profileEvent);
         if (iter == handlersMap_.end()) {
-            HILOGW("not find event:%{public}u", profileEvent);
+            HILOGW("not find event:%{public}u", static_cast<uint32_t>(profileEvent));
             continue;
         }
         auto handler = iter->second;

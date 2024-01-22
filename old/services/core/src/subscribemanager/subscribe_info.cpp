@@ -45,7 +45,7 @@ bool SubscribeInfo::Unmarshalling(Parcel& parcel)
 {
     profileEvent = static_cast<ProfileEvent>(parcel.ReadUint32());
     if (profileEvent >= EVENT_PROFILE_END || profileEvent == EVENT_UNKNOWN) {
-        HILOGE("invalid profile event, %{public}u", profileEvent);
+        HILOGE("invalid profile event, %{public}u", static_cast<uint32_t>(profileEvent));
         return false;
     }
     std::string value = parcel.ReadString();

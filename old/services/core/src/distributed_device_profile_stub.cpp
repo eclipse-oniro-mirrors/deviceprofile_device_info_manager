@@ -172,7 +172,7 @@ int32_t DistributedDeviceProfileStub::SubscribeProfileEventInner(MessageParcel& 
         if (!subscribeInfo.Unmarshalling(data)) {
             return ERR_NULL_OBJECT;
         }
-        HILOGD("profile event = %{public}u", subscribeInfo.profileEvent);
+        HILOGD("profile event = %{public}u", static_cast<uint32_t>(subscribeInfo.profileEvent));
         subscribeInfos.emplace_back(std::move(subscribeInfo));
     }
     sptr<IRemoteObject> eventNotifier = data.ReadRemoteObject();
