@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,33 +13,23 @@
  * limitations under the License.
  */
 
-#include "collector.h"
+#ifndef OHOS_DEVICE_PROFILE_PASTEBOARD_INFO_COLLECTOR_H
+#define OHOS_DEVICE_PROFILE_PASTEBOARD_INFO_COLLECTOR_H
 
 #include <string>
 
+#include "content_collector.h"
+#include "service_characteristic_profile.h"
+
 namespace OHOS {
-namespace DistributedDeviceProfile {
-namespace {
-const std::string TAG = "ContentCollector";
-}
+namespace DeviceProfile {
+class PasteboardInfoCollector : public ContentCollector {
+public:
+    bool ConvertToProfileData(ServiceCharacteristicProfile& profile) override;
 
-void Collector::Collect(const DeviceProfile& deviceProfile)
-{
-}
-
-bool Collector::ConvertToProfile(DeviceProfile& deviceProfile)
-{
-    return true;
-}
-
-bool Collector::ConvertToProfile(std::vector<ServiceProfile>& svrProfileList)
-{
-    return true;
-}
-
-bool Collector::ConvertToProfile(std::vector<CharacteristicProfile>& charProfileList)
-{
-    return true;
-}
+private:
+    bool GetSurportDistributedPasteboard();
+};
 } // namespace DeviceProfile
 } // namespace OHOS
+#endif // OHOS_DEVICE_PROFILE_PASTEBOARD_INFO_COLLECTOR_H

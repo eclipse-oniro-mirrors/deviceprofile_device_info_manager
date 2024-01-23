@@ -32,7 +32,7 @@ namespace DeviceProfile {
 namespace {
 const std::string TAG = "SubscribeManager";
 
-constexpr int32_t MAX_SUBSCRIBS_PER_UID = 5;
+constexpr int32_t MAX_SUBSCRIBS_PER_UID = 100;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(SubscribeManager);
@@ -59,6 +59,8 @@ int32_t SubscribeManager::SubscribeProfileEvents(const std::list<SubscribeInfo>&
         return ERR_DP_INVALID_PARAMS;
     }
 
+    int32_t callingUid = IPCSkeleton::GetCallingUid();
+    HILOGI("uid %{public}d subscribe", callingUid);
     std::lock_guard<std::mutex> autoLock(handlerLock_);
     ProfileEvents subProfileEvents;
     std::shared_ptr<ProfileEventHandler> handler;

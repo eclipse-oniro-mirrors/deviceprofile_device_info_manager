@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,33 +13,21 @@
  * limitations under the License.
  */
 
-#include "collector.h"
+#ifndef OHOS_DP_PROFILE_DMS_INFO_TASK_H
+#define OHOS_DP_PROFILE_DMS_INFO_TASK_H
 
 #include <string>
+#include "collector.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
-namespace {
-const std::string TAG = "ContentCollector";
-}
-
-void Collector::Collect(const DeviceProfile& deviceProfile)
-{
-}
-
-bool Collector::ConvertToProfile(DeviceProfile& deviceProfile)
-{
-    return true;
-}
-
-bool Collector::ConvertToProfile(std::vector<ServiceProfile>& svrProfileList)
-{
-    return true;
-}
-
-bool Collector::ConvertToProfile(std::vector<CharacteristicProfile>& charProfileList)
-{
-    return true;
-}
+class DmsInfoCollector : public Collector {
+public:
+    bool ConvertToProfile(std::vector<ServiceProfile>& svrProfileList) override;
+    bool ConvertToProfile(std::vector<CharacteristicProfile>& charProfileList) override;
+private:
+    std::string GetDeviceUdid();
+};
 } // namespace DeviceProfile
 } // namespace OHOS
+#endif // OHOS_DP_PROFILE_DMS_INFO_TASK_H
