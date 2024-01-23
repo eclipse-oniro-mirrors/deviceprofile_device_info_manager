@@ -319,8 +319,6 @@ std::vector<std::string> DeviceProfileStorage::CheckTrustDeviceList(const std::v
         return trustDevices;
     }
     std::vector<std::string> onlineDevices = GetOnlineDevices();
-    HILOGI("online size is %{public}zu", onlineDevices.size());
-    HILOGI("sync size is %{public}zu", deviceIdList.size());
     for (const auto& deviceId : deviceIdList) {
         auto iter = find(onlineDevices.begin(), onlineDevices.end(), deviceId);
         if (iter != onlineDevices.end()) {
