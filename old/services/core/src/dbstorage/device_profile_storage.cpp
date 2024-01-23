@@ -254,9 +254,6 @@ int32_t DeviceProfileStorage::SyncDeviceProfile(const std::vector<std::string>& 
     SyncMode syncMode)
 {
     HILOGI("called");
-    if (!CheckTrustGroup(deviceIdList)) {
-        return ERR_DP_UNTRUSTED_GROUP;
-    }
 
     std::unique_lock<std::shared_mutex> writeLock(storageLock_);
     if (kvStorePtr_ == nullptr) {

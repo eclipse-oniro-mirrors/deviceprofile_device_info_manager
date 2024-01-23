@@ -66,6 +66,7 @@ private:
     void DeleteKvStore();
     void SubscribeDeviceProfileKvStore();
     bool CheckTrustGroup(const std::vector<std::string>& deviceIdList);
+    bool CheckTrust(const std::vector<std::string>& deviceIdList);
 
 private:
     DistributedKv::Options options_;
