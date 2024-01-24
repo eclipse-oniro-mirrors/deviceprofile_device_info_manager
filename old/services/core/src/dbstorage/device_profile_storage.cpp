@@ -334,7 +334,8 @@ std::vector<std::string> DeviceProfileStorage::GetOnlineDevices()
 {
     std::vector<std::string> targetDevices;
     std::vector<DistributedHardware::DmDeviceInfo> allOnlineDeviceInfos;
-    int32_t result = DistributedHardware::DeviceManager::GetInstance().GetTrustedDeviceList(PKG_NAME, "", allOnlineDeviceInfos);
+    int32_t result =
+        DistributedHardware::DeviceManager::GetInstance().GetTrustedDeviceList(PKG_NAME, "", allOnlineDeviceInfos);
     if (result != Status::SUCCESS || allOnlineDeviceInfos.empty()) {
         HILOGE("GetTrustedDeviceList Failed!");
         return {};
