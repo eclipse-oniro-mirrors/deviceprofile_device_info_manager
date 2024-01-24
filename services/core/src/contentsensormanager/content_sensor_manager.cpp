@@ -16,11 +16,13 @@
 #include "content_sensor_manager.h"
 
 #include <list>
+#include <vector>
 #include <string>
 #include <memory>
 #include <thread>
 #include "device_info_collector.h"
 #include "distributed_device_profile_log.h"
+#include "dms_info_collector.h"
 #include "storage_info_collector.h"
 #include "syscap_info_collector.h"
 #include "system_info_collector.h"
@@ -64,13 +66,26 @@ int32_t ContentSensorManager::Collect()
         taskList.push_back(std::make_shared<SystemInfoCollector>());
         taskList.push_back(std::make_shared<SyscapInfoCollector>());
         taskList.push_back(std::make_shared<StorageInfoCollector>());
+        taskList.push_back(std::make_shared<DmsInfoCollector>());
         DeviceProfile deviceProfile;
+        std::vector<ServiceProfile> svrProfileList;
+        std::vector<CharacteristicProfile> charProfileList;
         for (const auto& task : taskList) {
-            if (!task->ConvertToProfile(deviceProfile)) {
-                continue;
-            }
+            task->ConvertToProfile(deviceProfile);
+            task->ConvertToProfile(svrProfileList);
+            task->ConvertToProfile(charProfileList);
         }
         DeviceProfileManager::GetInstance().PutDeviceProfile(deviceProfile);
+        if (!svrProfileList.empty()) {
+            DeviceProfileManager::GetInstance().PutServiceProfileBatch(svrProfileList);
+        } else {
+            HILOGI("svrProfileList is empty");
+        }
+        if (!charProfileList.empty()) {
+            DeviceProfileManager::GetInstance().PutCharacteristicProfileBatch(charProfileList);
+        } else {
+            HILOGI("charProfileList is empty");
+        }
     };
     std::thread(csTask).join();
     return DP_SUCCESS;

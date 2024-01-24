@@ -25,6 +25,7 @@
 #include "distributed_device_profile_client.h"
 #include "content_sensor_manager.h"
 #include "device_info_collector.h"
+#include "pasteboard_info_collector.h"
 #include "storage_info_collector.h"
 #include "syscap_info_collector.h"
 #include "system_info_collector.h"
@@ -158,6 +159,20 @@ HWTEST_F(ContentSensorTest, GetDmsVersion_001, TestSize.Level2)
     AppInfoCollector appInfoCollector;
     ServiceCharacteristicProfile profile;
     bool result = appInfoCollector.ConvertToProfileData(profile);
+    EXPECT_EQ(result, true);
+}
+
+/**
+ * @tc.name: GetPasteboardInfo_001
+ * @tc.desc: get pasteboard info
+ * @tc.type: FUNC
+ * @tc.require: I5RWKZ
+ */
+HWTEST_F(ContentSensorTest, GetPasteboardInfo_001, TestSize.Level2)
+{
+    PasteboardInfoCollector pasteboardInfoCollector;
+    ServiceCharacteristicProfile profile;
+    bool result = pasteboardInfoCollector.ConvertToProfileData(profile);
     EXPECT_EQ(result, true);
 }
 

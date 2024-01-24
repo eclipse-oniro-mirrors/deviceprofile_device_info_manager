@@ -22,7 +22,7 @@
 namespace OHOS {
 namespace DeviceProfile {
 namespace {
-const std::string TAG = "DeviceInfoCollector";
+const std::string TAG = "AppInfoCollector";
 
 const std::string SERVICE_ID = "appInfo";
 const std::string SERVICE_TYPE = "appInfo";

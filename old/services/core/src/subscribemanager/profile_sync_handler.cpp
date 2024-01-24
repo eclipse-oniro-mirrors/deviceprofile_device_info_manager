@@ -62,6 +62,7 @@ void ProfileSyncHandler::NotifySyncCompleted(const SyncResult& syncResults)
     }
     {
         std::lock_guard<std::mutex> autoLock(notifierLock_);
+        HILOGI("profileEventSubscribeInfos size %{public}zu", profileEventSubscribeInfos_.size());
         auto iter = profileEventSubscribeInfos_.begin();
         while (iter != profileEventSubscribeInfos_.end()) {
             sptr<IProfileEventNotifier> profileEventNotifier = iface_cast<IProfileEventNotifier>(iter->first);

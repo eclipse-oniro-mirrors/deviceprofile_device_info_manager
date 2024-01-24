@@ -70,6 +70,7 @@ ohos_shared_library("distributed_device_profile") {
     "src/contentsensor/content_collector.cpp",
     "src/contentsensor/content_sensor_manager.cpp",
     "src/contentsensor/device_info_collector.cpp",
+    "src/contentsensor/pasteboard_info_collector.cpp",
     "src/contentsensor/storage_info_collector.cpp",
     "src/contentsensor/syscap_info_collector.cpp",
     "src/contentsensor/system_info_collector.cpp",

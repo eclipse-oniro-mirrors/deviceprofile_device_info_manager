@@ -15,8 +15,10 @@
 
 #ifndef OHOS_DP_PROFILE_CONTENT_COLLECTOR_H
 #define OHOS_DP_PROFILE_CONTENT_COLLECTOR_H
-
+#include <vector>
+#include "characteristic_profile.h"
 #include "device_profile.h"
+#include "service_profile.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -24,7 +26,9 @@ class Collector {
 public:
     Collector() = default;
     virtual ~Collector() = default;
-    virtual bool ConvertToProfile(DeviceProfile& deviceProfile) = 0;
+    virtual bool ConvertToProfile(DeviceProfile& deviceProfile);
+    virtual bool ConvertToProfile(std::vector<ServiceProfile>& svrProfileList);
+    virtual bool ConvertToProfile(std::vector<CharacteristicProfile>& charProfileList);
 
     void Collect(const DeviceProfile& deviceProfile);
 };

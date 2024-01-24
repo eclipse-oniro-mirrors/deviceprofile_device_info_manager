@@ -20,7 +20,6 @@
 #include "nlohmann/json.hpp"
 #include "parameter.h"
 #include "content_sensor_manager_utils.h"
-#include "profile_utils.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
