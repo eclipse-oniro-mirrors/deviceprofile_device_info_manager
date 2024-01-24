@@ -1340,6 +1340,6 @@ HWTEST_F(DeviceProfileManagerTest, RunloadedFunction001, TestSize.Level1)
     ret = DeviceProfileManager::GetInstance().RunloadedFunction(deviceId, syncCb);
     EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
 }
-}
+
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
