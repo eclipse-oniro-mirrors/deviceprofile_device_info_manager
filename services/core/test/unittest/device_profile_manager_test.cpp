@@ -920,7 +920,7 @@ HWTEST_F(DeviceProfileManagerTest, DeleteCharacteristicProfile001, TestSize.Leve
 HWTEST_F(DeviceProfileManagerTest, DeleteCharacteristicProfile002, TestSize.Level1)
 {
     string deviceId = "";
-    string serviceName = "serviceName"; 
+    string serviceName = "serviceName";
     string characteristicKey = "characteristicKey";
     int32_t ret = DeviceProfileManager::GetInstance().DeleteCharacteristicProfile(deviceId, serviceName,
         characteristicKey);
@@ -1325,7 +1325,7 @@ HWTEST_F(DeviceProfileManagerTest, GetInKvDB001, TestSize.Level1)
 
 /**
  * @tc.name: RunloadedFunction001
- * @tc.desc: RunloadedFunction001.
+ * @tc.desc: RunloadedFunction001
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1335,14 +1335,11 @@ HWTEST_F(DeviceProfileManagerTest, RunloadedFunction001, TestSize.Level1)
     string deviceId = "DeviceId";
     int32_t ret = DeviceProfileManager::GetInstance().RunloadedFunction(deviceId, syncCb);
     EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
-    
+
     DeviceProfileManager::GetInstance().isAdapterSoLoaded_ = true;
     ret = DeviceProfileManager::GetInstance().RunloadedFunction(deviceId, syncCb);
     EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
 }
 }
-
-
-
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

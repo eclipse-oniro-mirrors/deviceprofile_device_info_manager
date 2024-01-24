@@ -15,6 +15,8 @@
 
 #include <gtest/gtest.h>
 
+#define private   public
+#define protected public
 #include "distributed_device_profile_service_new.h"
 #include "system_ability_definition.h"
 #include "profile_cache.h"
@@ -25,6 +27,8 @@
 #include "subscribe_profile_manager.h"
 #include "event_handler_factory.h"
 #include "distributed_device_profile_constants.h"
+#undef private
+#undef protected
 
 
 namespace OHOS {
