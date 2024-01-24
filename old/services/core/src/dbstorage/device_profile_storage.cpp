@@ -342,6 +342,7 @@ std::vector<std::string> DeviceProfileStorage::GetOnlineDevices()
     for (const auto& dmDeviceInfo : allOnlineDeviceInfos) {
         targetDevices.push_back(dmDeviceInfo.networkId);
     }
+    HILOGI("online device size is %{public}zu", targetDevices.size());
     return targetDevices;
 }
 } // namespace DeviceProfile
