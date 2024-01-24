@@ -258,6 +258,7 @@ int32_t DeviceProfileStorage::SyncDeviceProfile(const std::vector<std::string>& 
     HILOGI("called");
     std::vector<std::string> trustDeviceList = CheckTrustDeviceList(deviceIdList);
     if (trustDeviceList.empty()) {
+        HILOGE("trust device list is empty");
         return ERR_DP_UNTRUSTED_GROUP;
     }
 
