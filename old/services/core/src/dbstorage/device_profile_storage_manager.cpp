@@ -140,6 +140,10 @@ std::string DeviceProfileStorageManager::GenerateKey(const std::string& udid,
 int32_t DeviceProfileStorageManager::PutDeviceProfile(const ServiceCharacteristicProfile& profile)
 {
     HITRACE_METER_NAME(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_PUT_TRACE);
+    if (onlineSyncTbl_ == nullptr) {
+        HILOGE("onlineSyncTbl is nullptr!");
+        return ERR_DP_INIT_DB_FAILED;
+    }
     if (kvDataServiceFailed_ || onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
         HILOGE("kvstore init failed");
         return ERR_DP_INIT_DB_FAILED;
@@ -192,6 +196,10 @@ int32_t DeviceProfileStorageManager::GetDeviceProfile(const std::string& udid,
     const std::string& serviceId, ServiceCharacteristicProfile& profile)
 {
     HITRACE_METER_NAME(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_GET_TRACE);
+    if (onlineSyncTbl_ == nullptr) {
+        HILOGE("onlineSyncTbl is nullptr!");
+        return ERR_DP_INIT_DB_FAILED;
+    }
     if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
         HILOGE("kvstore init failed");
         return ERR_DP_INIT_DB_FAILED;
