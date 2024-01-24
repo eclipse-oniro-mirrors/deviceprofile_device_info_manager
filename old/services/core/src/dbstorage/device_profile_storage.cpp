@@ -17,6 +17,7 @@
 
 #include <cinttypes>
 #include <thread>
+#include <unistd.h>
 
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
@@ -36,6 +37,7 @@ using namespace std::chrono_literals;
 
 namespace {
 const std::string TAG = "DeviceProfileStorage";
+const std::string PKG_NAME = "DBinderBus_" + std::to_string(getpid());
 constexpr int32_t RETRY_TIMES_GET_KVSTORE = 30;
 }
 
@@ -274,7 +276,9 @@ int32_t DeviceProfileStorage::SyncDeviceProfile(const std::vector<std::string>& 
     SyncMode syncMode)
 {
     HILOGI("called");
-    if (!CheckTrustGroup(deviceIdList)) {
+    std::vector<std::string> trustDeviceList = CheckTrustDeviceList(deviceIdList);
+    if (trustDeviceList.empty()) {
+        HILOGE("trust device list is empty");
         return ERR_DP_UNTRUSTED_GROUP;
     }
 
@@ -283,7 +287,7 @@ int32_t DeviceProfileStorage::SyncDeviceProfile(const std::vector<std::string>& 
         return ERR_DP_INVALID_PARAMS;
     }
 
-    Status status = kvStorePtr_->Sync(deviceIdList, static_cast<DistributedKv::SyncMode>(syncMode));
+    Status status = kvStorePtr_->Sync(trustDeviceList, static_cast<DistributedKv::SyncMode>(syncMode));
     if (status != Status::SUCCESS) {
         HILOGE("sync failed, error = %{public}d", status);
     }
@@ -326,6 +330,41 @@ bool DeviceProfileStorage::CheckTrustGroup(const std::vector<std::string>& devic
         }
     }
     return true;
+}
+
+std::vector<std::string> DeviceProfileStorage::CheckTrustDeviceList(const std::vector<std::string> &deviceIdList)
+{
+    std::vector<std::string> trustDevices;
+    if (deviceIdList.empty()) {
+        HILOGE("device list is empty");
+        return trustDevices;
+    }
+    std::vector<std::string> onlineDevices = GetOnlineDevices();
+    for (const auto& deviceId : deviceIdList) {
+        auto iter = find(onlineDevices.begin(), onlineDevices.end(), deviceId);
+        if (iter != onlineDevices.end()) {
+            HILOGI("%{public}s add to trust devices", DeviceProfileUtils::AnonymizeDeviceId(deviceId).c_str());
+            trustDevices.push_back(deviceId);
+        }
+    }
+    return trustDevices;
+}
+
+std::vector<std::string> DeviceProfileStorage::GetOnlineDevices()
+{
+    std::vector<std::string> targetDevices;
+    std::vector<DistributedHardware::DmDeviceInfo> allOnlineDeviceInfos;
+    int32_t result =
+        DistributedHardware::DeviceManager::GetInstance().GetTrustedDeviceList(PKG_NAME, "", allOnlineDeviceInfos);
+    if (result != Status::SUCCESS || allOnlineDeviceInfos.empty()) {
+        HILOGE("GetTrustedDeviceList Failed!");
+        return {};
+    }
+    for (const auto& dmDeviceInfo : allOnlineDeviceInfos) {
+        targetDevices.push_back(dmDeviceInfo.networkId);
+    }
+    HILOGI("online device size is %{public}zu", targetDevices.size());
+    return targetDevices;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

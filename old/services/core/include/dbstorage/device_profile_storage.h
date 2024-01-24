@@ -66,6 +66,8 @@ private:
     void DeleteKvStore();
     void SubscribeDeviceProfileKvStore();
     bool CheckTrustGroup(const std::vector<std::string>& deviceIdList);
+    std::vector<std::string> CheckTrustDeviceList(const std::vector<std::string> &deviceIdList);
+    std::vector<std::string> GetOnlineDevices();
 
 private:
     DistributedKv::Options options_;
