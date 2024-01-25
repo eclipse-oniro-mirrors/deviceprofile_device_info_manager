@@ -121,8 +121,8 @@ HWTEST_F(DpProfileServiceTest, GetAccessControlProfile_001, TestSize.Level1)
 {
     std::map<std::string, std::string> queryParams;
     std::vector<AccessControlProfile> accessControlProfiles;
-    int32_t ret =
-            DistributedDeviceProfileServiceNew::GetInstance().GetAccessControlProfile(queryParams, accessControlProfiles);
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetAccessControlProfile(queryParams,
+        accessControlProfiles);
     EXPECT_EQ(DP_PERMISSION_DENIED, ret);
 }
 
