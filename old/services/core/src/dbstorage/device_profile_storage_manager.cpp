@@ -160,8 +160,7 @@ int32_t DeviceProfileStorageManager::PutDeviceProfile(const ServiceCharacteristi
         j[SERVICE_TYPE] = profile.GetServiceType();
         servicesJson_[serviceId] = j;
         keys.emplace_back(GenerateKey(localUdid_, SERVICES, KeyType::SERVICE_LIST));
-        values.emplace_back(servicesJson_.dump(INDENT, INDENT_CHAR, false,
-            nlohmann::json::error_handler_t::ignore));
+        values.emplace_back(servicesJson_.dump(INDENT, INDENT_CHAR, false, nlohmann::json::error_handler_t::ignore));
     }
 
     int32_t errCode = ERR_OK;
