@@ -33,6 +33,8 @@ const char *DISTRIBUTED_PASTEBOARD_ENABLED_KEY = "persist.pasteboard.distributed
 const std::string ENABLED_STATUS = "true";
 const char* UNDEFINED_VALUE = "undefined";
 constexpr int CONFIG_LEN = 10;
+constexpr uint32_t NOT_SUPPORT = 0;
+constexpr uint32_t SUPPORT = 1;
 }
 
 bool PasteboardInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile& profile)
@@ -41,19 +43,19 @@ bool PasteboardInfoCollector::ConvertToProfileData(ServiceCharacteristicProfile&
     profile.SetServiceId(SERVICE_ID);
     profile.SetServiceType(SERVICE_TYPE);
     nlohmann::json jsonData;
-    jsonData[SUPPORT_DISTRIBUTED_PASTEBOARD] = GetSurportDistributedPasteboard();
+    jsonData[SUPPORT_DISTRIBUTED_PASTEBOARD] = GetSupportDistributedPasteboard();
     jsonData[PASTEBOARD_VERSION] = FIRST_VERSION;
     profile.SetCharacteristicProfileJson(jsonData.dump());
     return true;
 }
 
-bool PasteboardInfoCollector::GetSurportDistributedPasteboard()
+uint32_t PasteboardInfoCollector::GetSupportDistributedPasteboard()
 {
     char value[CONFIG_LEN] = { 0 };
     GetParameter(DISTRIBUTED_PASTEBOARD_ENABLED_KEY, UNDEFINED_VALUE, value, CONFIG_LEN);
     HILOGI("GetParameter, value = %{public}s.", value);
     std::string enabledStatus(value);
-    return enabledStatus == ENABLED_STATUS;
+    return enabledStatus == ENABLED_STATUS ? SUPPORT : NOT_SUPPORT;
 }
 } // namespace DeviceProfile
 } // OHOS
