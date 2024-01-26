@@ -32,6 +32,7 @@
 #include "sync_completed_callback_stub.h"
 #include "device_profile_manager.h"
 #include "kv_adapter.h"
+#include "profile_cache.h"
 #undef private
 #undef protected
 
@@ -683,6 +684,11 @@ HWTEST_F(DeviceProfileManagerTest, GetServiceProfile002, TestSize.Level1)
     ServiceProfile outServiceProfile;
     int32_t ret = DeviceProfileManager::GetInstance().GetServiceProfile(deviceId, serviceName, outServiceProfile);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
+    
+    deviceId = "deviceId";
+    serviceName = "";
+    ret = DeviceProfileManager::GetInstance().GetServiceProfile(deviceId, serviceName, outServiceProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
 /**
@@ -764,6 +770,13 @@ HWTEST_F(DeviceProfileManagerTest, GetCharacteristicProfile002, TestSize.Level1)
     int32_t ret = DeviceProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
         characteristicKey, outCharProfile);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
+    
+    deviceId = "deviceId";
+    serviceName = "serviceName";
+    characteristicKey = "";
+    ret = DeviceProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
+        characteristicKey, outCharProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
 /**
@@ -836,6 +849,11 @@ HWTEST_F(DeviceProfileManagerTest, DeleteServiceProfile002, TestSize.Level1)
     string serviceName = "serviceName";
     int32_t ret = DeviceProfileManager::GetInstance().DeleteServiceProfile(deviceId, serviceName);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
+    
+    deviceId = "deviceId";
+    serviceName = "";
+    ret = DeviceProfileManager::GetInstance().DeleteServiceProfile(deviceId, serviceName);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
 /**
@@ -905,6 +923,13 @@ HWTEST_F(DeviceProfileManagerTest, DeleteCharacteristicProfile002, TestSize.Leve
     string serviceName = "serviceName";
     string characteristicKey = "characteristicKey";
     int32_t ret = DeviceProfileManager::GetInstance().DeleteCharacteristicProfile(deviceId, serviceName,
+        characteristicKey);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+    
+    deviceId = "deviceId";
+    serviceName = "serviceName";
+    characteristicKey = "";
+    ret = DeviceProfileManager::GetInstance().DeleteCharacteristicProfile(deviceId, serviceName,
         characteristicKey);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
@@ -1236,5 +1261,85 @@ HWTEST_F(DeviceProfileManagerTest, LoadDpSyncAdapter001, TestSize.Level1)
     EXPECT_EQ(true, ret);
     DeviceProfileManager::GetInstance().Init();
 }
+
+/**
+ * @tc.name: GetInKvDB001
+ * @tc.desc: GetDeviceProfile,GetServiceProfile, GetCharacteristicProfile succeed, in KV DB.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, GetInKvDB001, TestSize.Level1)
+{
+    DeviceProfile deviceProfile2;
+    deviceProfile2.SetDeviceId("GetInKvDB001_DeviceId");
+    deviceProfile2.SetDeviceTypeName("GetInKvDB001_DeviceTypeName");
+    deviceProfile2.SetDeviceTypeId(0);
+    deviceProfile2.SetDeviceName("GetInKvDB001_DeviceName");
+    deviceProfile2.SetManufactureName("GetInKvDB001_ManufactureName");
+    deviceProfile2.SetDeviceModel("GetInKvDB001_DeviceModel");
+    deviceProfile2.SetSerialNumberId("GetInKvDB001_SerialNumberId");
+    deviceProfile2.SetStorageCapability(1);
+    deviceProfile2.SetOsSysCap("GetInKvDB001_OsSysCap");
+    deviceProfile2.SetOsApiLevel(1);
+    deviceProfile2.SetOsVersion("GetInKvDB001_OsVersion");
+    deviceProfile2.SetOsType(1);
+    DeviceProfileManager::GetInstance().PutDeviceProfile(deviceProfile2);
+
+    ServiceProfile serviceProfile5;
+    serviceProfile5.SetDeviceId("GetInKvDB001_DeviceId");
+    serviceProfile5.SetServiceName("GetInKvDB001_ServiceName");
+    serviceProfile5.SetServiceType("GetInKvDB001_ServiceType");
+    DeviceProfileManager::GetInstance().PutServiceProfile(serviceProfile5);
+    
+    CharacteristicProfile charProfile5;
+    charProfile5.SetDeviceId("GetInKvDB001_DeviceId");
+    charProfile5.SetServiceName("GetInKvDB001_ServiceName");
+    charProfile5.SetCharacteristicKey("GetInKvDB001_CharacteristicKey");
+    charProfile5.SetCharacteristicValue("GetInKvDB001_CharacteristicValue");
+    DeviceProfileManager::GetInstance().PutCharacteristicProfile(charProfile5);
+    
+    ProfileCache::GetInstance().DeleteDeviceProfile("GetInKvDB001_DeviceId");
+    ProfileCache::GetInstance().DeleteServiceProfile("GetInKvDB001_DeviceId", "GetInKvDB001_ServiceName");
+    ProfileCache::GetInstance().DeleteCharProfile("GetInKvDB001_DeviceId", "GetInKvDB001_ServiceName",
+                                                            "GetInKvDB001_CharacteristicKey");
+    
+    string deviceId1 = "GetInKvDB001_DeviceId";
+    DeviceProfile outDeviceProfile;
+    int32_t ret1 = DeviceProfileManager::GetInstance().GetDeviceProfile(deviceId1, outDeviceProfile);
+    EXPECT_EQ(ret1, DP_SUCCESS);
+    
+    string deviceId2 = "GetInKvDB001_DeviceId";
+    string serviceName2 = "GetInKvDB001_ServiceName";
+    ServiceProfile outServiceProfile;
+    int32_t ret2 = DeviceProfileManager::GetInstance().GetServiceProfile(deviceId2, serviceName2, outServiceProfile);
+    EXPECT_EQ(ret2, DP_SUCCESS);
+    
+    string deviceId3 = "GetInKvDB001_DeviceId";
+    string serviceName3 = "GetInKvDB001_ServiceName";
+    string characteristicKey3 = "GetInKvDB001_CharacteristicKey";
+    CharacteristicProfile outCharProfile;
+    int32_t ret3 = DeviceProfileManager::GetInstance().GetCharacteristicProfile(deviceId3, serviceName3,
+                                                                               characteristicKey3, outCharProfile);
+    EXPECT_EQ(ret3, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: RunloadedFunction001
+ * @tc.desc: RunloadedFunction001
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, RunloadedFunction001, TestSize.Level1)
+{
+    OHOS::sptr<OHOS::IRemoteObject> syncCb = new(nothrow) SyncCallback();
+    string deviceId = "DeviceId";
+    int32_t ret = DeviceProfileManager::GetInstance().RunloadedFunction(deviceId, syncCb);
+    EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
+
+    DeviceProfileManager::GetInstance().isAdapterSoLoaded_ = true;
+    ret = DeviceProfileManager::GetInstance().RunloadedFunction(deviceId, syncCb);
+    EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
+}
+
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
