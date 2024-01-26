@@ -1364,5 +1364,55 @@ HWTEST_F(ProfileStorageTest, SetServiceType_005, TestSize.Level3)
     DeviceProfileStorageManager::GetInstance().RegisterCallbacks();
     EXPECT_EQ(0, result);
 }
+
+/**
+ * @tc.name: PutDeviceProfile_010
+ * @tc.desc: put device profile nullptr
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, PutDeviceProfile_010, TestSize.Level3)
+{
+    ServiceCharacteristicProfile profile;
+    DeviceProfileStorageManager::GetInstance().onlineSyncTbl_->initStatus_ = StorageInitStatus::INIT_SUCCEED;
+    int32_t ret = DeviceProfileStorageManager::GetInstance().PutDeviceProfile(profile);
+    EXPECT_EQ(ret, ERR_OK);
+    DeviceProfileStorageManager::GetInstance().kvDataServiceFailed_ = true;
+    ret = DeviceProfileStorageManager::GetInstance().PutDeviceProfile(profile);
+    EXPECT_NE(ret, ERR_OK);
+    DeviceProfileStorageManager::GetInstance().onlineSyncTbl_->initStatus_ = StorageInitStatus::INIT_FAILED;
+    ret = DeviceProfileStorageManager::GetInstance().PutDeviceProfile(profile);
+    EXPECT_NE(ret, ERR_OK);
+    ret = DeviceProfileStorageManager::GetInstance().RemoveUnBoundDeviceProfile("111");
+    EXPECT_NE(ret, ERR_OK);
+    ret = DeviceProfileStorageManager::GetInstance().RemoveRemoteDeviceProfile();
+    EXPECT_NE(ret, ERR_OK);
+    std::shared_ptr<DistributedKv::KvStoreObserver> kvStoreObserver_ =
+        std::make_shared<DistributedKv::KvStoreObserver>();
+    ret = DeviceProfileStorageManager::GetInstance().SubscribeKvStore(kvStoreObserver_);
+    EXPECT_EQ(ret, ERR_OK);
+    DeviceProfileStorageManager::GetInstance().RegisterCallbacks();
+    DeviceProfileStorageManager::GetInstance().onlineSyncTbl_->initStatus_ = StorageInitStatus::INIT_SUCCEED;
+    ret = DeviceProfileStorageManager::GetInstance().RemoveUnBoundDeviceProfile("111");
+    EXPECT_NE(ret, ERR_OK);
+    ret = DeviceProfileStorageManager::GetInstance().RemoveRemoteDeviceProfile();
+    EXPECT_EQ(ret, ERR_OK);
+}
+
+/**
+ * @tc.name: DeviceProfileStorage_001
+ * @tc.desc: onlineSyncTbl_ nullptr
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, DeviceProfileStorage_001, TestSize.Level3)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<DeviceProfileStorage>(APP_ID, STORE_ID);
+    onlineSyncTbl_->kvStoreInitCallback_ = nullptr;
+    onlineSyncTbl_->Init();
+    onlineSyncTbl_->kvStorePtr_ = nullptr;
+    bool ret = onlineSyncTbl_->TryGetKvStore();
+    EXPECT_EQ(ret, false);
+}
 }
 }
