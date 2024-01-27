@@ -116,6 +116,112 @@ HWTEST_F(TrustProfileManagerTest, GetAllAccessControlProfile_002, TestSize.Level
 }
 
 /*
+ * @tc.name: GetAccessControlProfile_013
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_013, TestSize.Level1)
+{
+    std::vector<AccessControlProfile> profile;
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(1, "111", profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(1, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    std::map<std::string, std::string> parms;
+    parms.insert({{"trustDeviceId", "9999"}, {"status", "1"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"bundleName", "b1"}, {"bindtype", "9999"}, {"status", "1"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"accountId", "b1"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    int32_t status;
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetResultStatus("1111", status);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    shared_ptr<ResultSet> resultRet = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetResultSet("122", { ValueObject(1) });
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(resultRet, 1, 1,  profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().DeleteAccessControlProfileCheck(resultRet);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(resultRet, 1, 1,  profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: GetAccessControlProfile_013
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, Convert_001, TestSize.Level1)
+{
+    shared_ptr<ResultSet> resultRet = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetResultSet("122", { ValueObject(1) });
+    TrustDeviceProfile trustProfile;
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().ConvertToTrustDeviceProfile(resultRet, trustProfile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    Accessee accessee;
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().ConvertToAccessee(resultRet, accessee);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    Accesser accesser;
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().ConvertToAccesser(resultRet, accesser);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    AccessControlProfile profile;
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().ConvertToAccessControlProfile(resultRet, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    profile.SetAccessControlId(666);
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().UpdateAclCheck(profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    profile.SetTrustDeviceId("4546456");
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().UpdateAclCheck(profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: DeleteTrustDeviceProfile_001
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, DeleteTrustDeviceProfile_001, TestSize.Level1)
+{
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().DeleteTrustDeviceProfile("12215656");
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
  * @tc.name: PutAccessControlProfile_001
  * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
  * @tc.type: FUNC
@@ -150,7 +256,7 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_001, TestSize.Level1)
     profile.SetStatus(0);
     profile.SetValidPeriod(1);
     profile.SetLastAuthTime(5);
-    profile.SetBindLevel(0);
+    profile.SetBindLevel(1);
 
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
@@ -158,6 +264,37 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_001, TestSize.Level1)
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
     EXPECT_EQ(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().PutAccessControlProfile(profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: PutTrustDeviceProfile_001
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, PutTrustDeviceProfile_001, TestSize.Level1)
+{
+    AccessControlProfile profile;
+    profile.SetTrustDeviceId("123456");
+    profile.SetSessionKey("key1");
+    profile.SetBindType(256);
+    profile.SetAuthenticationType(1);
+    profile.SetDeviceIdType(1);
+    profile.SetDeviceIdHash("abcd");
+    profile.SetStatus(0);
+    profile.SetValidPeriod(1);
+    profile.SetLastAuthTime(5);
+    profile.SetBindLevel(1);
+
+    TrustDeviceProfile trustProfile;
+    OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().ConvertToTrustDeviceProfile(profile, trustProfile);
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().PutTrustDeviceProfile(trustProfile);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /*
@@ -890,6 +1027,59 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_011, TestSize.Level1)
 }
 
 /*
+ * @tc.name: GetAccessControlProfile_012
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_012, TestSize.Level1)
+{
+    string invalid;
+    std::vector<ValueObject> val;
+    for (int i = 0; i < 4100; ++i) {
+        val.push_back(ValueObject(1));
+        invalid += "1";
+    }
+    std::vector<AccessControlProfile> profile;
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(invalid, "99999", 1, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile("b1", invalid, 1, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(invalid, 4, 1, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(1, invalid, 4, 1, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(1, invalid, "99999", 1, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(1, "b1", invalid, 1, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfileByTokenId(1, invalid, 1, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(1, invalid, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    OHOS::DistributedDeviceProfile::TrustProfileManager::GetInstance().
+        GetResultSet(invalid, std::vector<ValueObject> {});
+
+    OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetResultSet("111", val);
+}
+
+/*
  * @tc.name: UpdateAccessControlProfile_001
  * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
  * @tc.type: FUNC
@@ -937,6 +1127,21 @@ HWTEST_F(TrustProfileManagerTest, UpdateAccessControlProfile_001, TestSize.Level
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().UpdateAccessControlProfile(profile);
     EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: UpdateTrustDeviceProfile_001
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, UpdateTrustDeviceProfile_001, TestSize.Level1)
+{
+    TrustDeviceProfile profile;
+    profile.SetDeviceId("56465456465");
+
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().UpdateTrustDeviceProfile(profile);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /*
