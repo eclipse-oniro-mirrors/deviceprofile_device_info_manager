@@ -17,7 +17,6 @@
 #define OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_ENUMS_H
 
 #include <unordered_map>
-#include "distributed_device_profile_constants.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
