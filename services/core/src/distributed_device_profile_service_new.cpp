@@ -18,22 +18,24 @@
 #include "file_ex.h"
 #include "string_ex.h"
 
-#include "content_sensor_manager.h"
-#include "device_profile_dumper.h"
 #include "if_system_ability_manager.h"
 #include "ipc_object_proxy.h"
 #include "ipc_skeleton.h"
 #include "iservice_registry.h"
 #include "sa_profiles.h"
 #include "system_ability_definition.h"
-#include "profile_cache.h"
-#include "distributed_device_profile_errors.h"
-#include "trust_profile_manager.h"
+
+#include "content_sensor_manager.h"
+#include "device_profile_dumper.h"
 #include "device_profile_manager.h"
-#include "permission_manager.h"
-#include "subscribe_profile_manager.h"
-#include "event_handler_factory.h"
 #include "distributed_device_profile_constants.h"
+#include "distributed_device_profile_errors.h"
+#include "dm_adapter.h"
+#include "event_handler_factory.h"
+#include "permission_manager.h"
+#include "profile_cache.h"
+#include "subscribe_profile_manager.h"
+#include "trust_profile_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -89,6 +91,10 @@ int32_t DistributedDeviceProfileServiceNew::Init()
         HILOGE("ContentSensorManager init failed");
         return DP_CONTENT_SENSOR_MANAGER_INIT_FAIL;
     }
+    if (DMAdapter::GetInstance().Init() != DP_SUCCESS) {
+        HILOGE("DMAdapter init failed");
+        return DP_DM_ADAPTER_INIT_FAIL;
+    }
     HILOGI("init succeeded");
     return DP_SUCCESS;
 }
@@ -118,6 +124,10 @@ int32_t DistributedDeviceProfileServiceNew::UnInit()
     if (ContentSensorManager::GetInstance().UnInit() != DP_SUCCESS) {
         HILOGE("ContentSensorManager init failed");
         return DP_CONTENT_SENSOR_MANAGER_INIT_FAIL;
+    }
+    if (DMAdapter::GetInstance().UnInit() != DP_SUCCESS) {
+        HILOGE("DMAdapter uninit failed");
+        return DP_DM_ADAPTER_INIT_FAIL;
     }
     if (EventHandlerFactory::GetInstance().UnInit() != DP_SUCCESS) {
         HILOGE("EventHandlerFactory init failed");

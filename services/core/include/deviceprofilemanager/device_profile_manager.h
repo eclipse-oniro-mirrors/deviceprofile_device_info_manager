@@ -55,6 +55,7 @@ public:
     int32_t GetAllServiceProfile(std::vector<ServiceProfile>& serviceProfiles);
     int32_t GetAllCharacteristicProfile(std::vector<CharacteristicProfile>& charProfiles);
     int32_t SyncDeviceProfile(const SyncOptions& syncOptions, sptr<IRemoteObject> syncCompletedCallback);
+    int32_t DeviceOnlineAutoSync(const std::string& peerNetworkId);
 
 private:
     bool LoadDpSyncAdapter();
