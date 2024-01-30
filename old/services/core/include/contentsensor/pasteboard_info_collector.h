@@ -28,7 +28,7 @@ public:
     bool ConvertToProfileData(ServiceCharacteristicProfile& profile) override;
 
 private:
-    bool GetSurportDistributedPasteboard();
+    uint32_t GetSupportDistributedPasteboard();
 };
 } // namespace DeviceProfile
 } // namespace OHOS
