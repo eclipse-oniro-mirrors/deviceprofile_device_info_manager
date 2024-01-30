@@ -120,7 +120,7 @@ bool DeviceProfileStorageManager::WaitKvDataService()
             }
         }
         HILOGD("waiting for service...");
-        std::this_thread::sleep_for(std::chrono::microseconds(DELAY_TIME_MS));
+        std::this_thread::sleep_for(std::chrono::milliseconds(DELAY_TIME_MS));
         if (--retryTimes <= 0) {
             HILOGE("waiting service timeout(60)s");
             return false;
