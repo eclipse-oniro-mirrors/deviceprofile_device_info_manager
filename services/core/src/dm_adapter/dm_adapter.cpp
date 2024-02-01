@@ -90,10 +90,19 @@ int32_t DMAdapter::ReInit()
 void DMAdapter::AutoSync(const DistributedHardware::DmDeviceInfo &deviceInfo)
 {
     HILOGI("call! networdId=%{public}s", ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
-    auto autoSyncTask = [&deviceInfo]() {
+    if (deviceInfo.extraData.empty()) {
+        HILOGE("extraData is empty!");
+        return;
+    }
+    auto autoSyncTask = [deviceInfo]() {
         HILOGI("extraData=%{public}s", deviceInfo.extraData.c_str());
         auto extraData = nlohmann::json::parse(deviceInfo.extraData);
-        if (extraData[DistributedHardware::PARAM_KEY_OS_TYPE] != DEFAULT_OS_TYPE) {
+        int32_t osType = DEFAULT_OS_TYPE;
+        if (extraData.contains(DistributedHardware::PARAM_KEY_OS_TYPE)
+            && extraData[DistributedHardware::PARAM_KEY_OS_TYPE].is_number_integer()) {
+            osType = extraData[DistributedHardware::PARAM_KEY_OS_TYPE].get<int32_t>();
+        }
+        if (osType != DEFAULT_OS_TYPE) {
             int32_t errCode = DeviceProfileManager::GetInstance().DeviceOnlineAutoSync(deviceInfo.networkId);
             HILOGI("DeviceOnlineAutoSync errCode=%{public}d, networdId=%{public}s", errCode,
                 ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
