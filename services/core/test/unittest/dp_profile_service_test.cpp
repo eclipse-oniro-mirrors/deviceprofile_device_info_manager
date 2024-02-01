@@ -241,7 +241,7 @@ HWTEST_F(DpProfileServiceTest, UnSubscribeDeviceProfile_001, TestSize.Level1)
 
 HWTEST_F(DpProfileServiceTest, SyncDeviceProfile_001, TestSize.Level1)
 {
-    SyncOptions syncOptions;
+    DistributedDeviceProfile::DpSyncOptions syncOptions;
     sptr<IRemoteObject> syncCallback = nullptr;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().SyncDeviceProfile(syncOptions, syncCallback);
     EXPECT_EQ(DP_PERMISSION_DENIED, ret);

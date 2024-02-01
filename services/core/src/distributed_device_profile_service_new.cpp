@@ -91,10 +91,6 @@ int32_t DistributedDeviceProfileServiceNew::Init()
         HILOGE("ContentSensorManager init failed");
         return DP_CONTENT_SENSOR_MANAGER_INIT_FAIL;
     }
-    if (DMAdapter::GetInstance().Init() != DP_SUCCESS) {
-        HILOGE("DMAdapter init failed");
-        return DP_DM_ADAPTER_INIT_FAIL;
-    }
     HILOGI("init succeeded");
     return DP_SUCCESS;
 }
@@ -124,10 +120,6 @@ int32_t DistributedDeviceProfileServiceNew::UnInit()
     if (ContentSensorManager::GetInstance().UnInit() != DP_SUCCESS) {
         HILOGE("ContentSensorManager init failed");
         return DP_CONTENT_SENSOR_MANAGER_INIT_FAIL;
-    }
-    if (DMAdapter::GetInstance().UnInit() != DP_SUCCESS) {
-        HILOGE("DMAdapter uninit failed");
-        return DP_DM_ADAPTER_INIT_FAIL;
     }
     if (EventHandlerFactory::GetInstance().UnInit() != DP_SUCCESS) {
         HILOGE("EventHandlerFactory init failed");
@@ -336,8 +328,8 @@ int32_t DistributedDeviceProfileServiceNew::UnSubscribeDeviceProfile(const Subsc
     return SubscribeProfileManager::GetInstance().UnSubscribeDeviceProfile(subscriberInfo);
 }
 
-int32_t DistributedDeviceProfileServiceNew::SyncDeviceProfile(const SyncOptions& syncOptions,
-    sptr<IRemoteObject> syncCompletedCallback)
+int32_t DistributedDeviceProfileServiceNew::SyncDeviceProfile(
+    const DistributedDeviceProfile::DpSyncOptions& syncOptions, sptr<IRemoteObject> syncCompletedCallback)
 {
     if (!PermissionManager::GetInstance().IsCallerTrust(SYNC_DEVICE_PROFILE)) {
         HILOGE("this caller is permission denied!");

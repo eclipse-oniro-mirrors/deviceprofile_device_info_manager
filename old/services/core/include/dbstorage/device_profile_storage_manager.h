@@ -21,7 +21,7 @@
 
 #include "device_profile_storage.h"
 #include "event_handler.h"
-#include "kvstore_death_recipient.h"
+#include "kvstore_death_recipient_dp.h"
 #include "online_sync_table.h"
 #include "service_characteristic_profile.h"
 #include "single_instance.h"
@@ -85,7 +85,7 @@ private:
     nlohmann::json servicesJson_;
     std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_;
     std::shared_ptr<AppExecFwk::EventHandler> storageHandler_;
-    sptr<IRemoteObject::DeathRecipient> kvStoreDeathRecipient_;
+    sptr<IRemoteObject::DeathRecipient> kvStoreDeathRecipientDp_;
     std::string localUdid_;
     std::map<std::string, std::string> profileItems_;
     std::atomic<bool> kvDataServiceFailed_ {false};

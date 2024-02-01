@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "kvstore_death_recipient.h"
+#include "kvstore_death_recipient_dp.h"
 
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
@@ -21,10 +21,10 @@
 namespace OHOS {
 namespace DeviceProfile {
 namespace {
-const std::string TAG = "KvStoreDeathRecipient";
+const std::string TAG = "KvStoreDeathRecipientDp";
 }
 
-void KvStoreDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
+void KvStoreDeathRecipientDp::OnRemoteDied(const wptr<IRemoteObject>& remote)
 {
     HILOGI("called");
     DeviceProfileStorageManager::GetInstance().Init();

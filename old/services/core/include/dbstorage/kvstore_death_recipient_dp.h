@@ -20,7 +20,7 @@
 
 namespace OHOS {
 namespace DeviceProfile {
-class KvStoreDeathRecipient : public IRemoteObject::DeathRecipient {
+class KvStoreDeathRecipientDp : public IRemoteObject::DeathRecipient {
 public:
     void OnRemoteDied(const wptr<IRemoteObject>& remote) override;
 };
