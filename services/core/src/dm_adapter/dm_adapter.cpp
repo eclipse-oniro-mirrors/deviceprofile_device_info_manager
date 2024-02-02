@@ -29,6 +29,7 @@ namespace {
     const std::string TAG = "DMAdapter";
     const std::string AUTO_SYNC_TASK = "autoSyncTask";
     const int32_t DEFAULT_OS_TYPE = 10;
+    const std::string PKGNAME = "DMAdapter";
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DMAdapter);
@@ -52,7 +53,7 @@ int32_t DMAdapter::Init()
             deviceStateCallback_ = std::make_shared<DpDeviceStateCallback>();
         }
         errCode = DistributedHardware::DeviceManager::GetInstance()
-            .RegisterDevStateCallback(PKG_NAME, "", deviceStateCallback_);
+            .RegisterDevStateCallback(PKGNAME, "", deviceStateCallback_);
     }
     HILOGI("RegisterDevStateCallback errCode = %{public}d", errCode);
     return errCode;
@@ -72,7 +73,7 @@ int32_t DMAdapter::UnInit()
     {
         std::lock_guard<std::mutex> autoLock(deviceStateCallbackMutex_);
         if (deviceStateCallback_ != nullptr) {
-            errCode = DistributedHardware::DeviceManager::GetInstance().UnRegisterDevStateCallback(PKG_NAME);
+            errCode = DistributedHardware::DeviceManager::GetInstance().UnRegisterDevStateCallback(PKGNAME);
             deviceStateCallback_ = nullptr;
         }
     }

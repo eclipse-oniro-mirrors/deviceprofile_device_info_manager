@@ -390,7 +390,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfile001, Test
  */
 HWTEST_F(DistributedDeviceProfileClientKvTest, SyncDeviceProfile001, TestSize.Level1)
 {
-    SyncOptions syncOptions;
+    DistributedDeviceProfile::DpSyncOptions syncOptions;
     OHOS::sptr<ISyncCompletedCallback> syncCb = nullptr;
     
     syncOptions.AddDevice("deviceId1");

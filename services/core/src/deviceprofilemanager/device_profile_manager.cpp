@@ -422,7 +422,7 @@ int32_t DeviceProfileManager::GetAllCharacteristicProfile(std::vector<Characteri
     return DP_SUCCESS;
 }
 
-int32_t DeviceProfileManager::SyncDeviceProfile(const SyncOptions &syncOptions,
+int32_t DeviceProfileManager::SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions &syncOptions,
     sptr<IRemoteObject> syncCompletedCallback)
 {
     HILOGI("call!");

@@ -25,10 +25,10 @@
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
-class SyncOptions : public DpParcel {
+class DpSyncOptions : public DpParcel {
 public:
-    SyncOptions() = default;
-    ~SyncOptions() = default;
+    DpSyncOptions() = default;
+    ~DpSyncOptions() = default;
 
     std::vector<std::string> GetDeviceList() const;
     SyncMode GetSyncMode() const;

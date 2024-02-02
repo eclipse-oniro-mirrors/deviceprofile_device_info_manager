@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "sync_options.h"
+#include "dp_sync_options.h"
 #include "macro_utils.h"
 #include "distributed_device_profile_constants.h"
 #include "nlohmann/json.hpp"
@@ -22,30 +22,30 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "SyncOptions";
+    const std::string TAG = "DpSyncOptions";
 }
 
-std::vector<std::string> SyncOptions::GetDeviceList() const
+std::vector<std::string> DpSyncOptions::GetDeviceList() const
 {
     return syncDeviceIds_;
 }
 
-void SyncOptions::AddDevice(const std::string& deviceId)
+void DpSyncOptions::AddDevice(const std::string& deviceId)
 {
     syncDeviceIds_.emplace_back(deviceId);
 }
 
-SyncMode SyncOptions::GetSyncMode() const
+SyncMode DpSyncOptions::GetSyncMode() const
 {
     return syncMode_;
 }
 
-void SyncOptions::SetSyncMode(SyncMode mode)
+void DpSyncOptions::SetSyncMode(SyncMode mode)
 {
     syncMode_ = mode;
 }
 
-bool SyncOptions::Marshalling(MessageParcel& parcel) const
+bool DpSyncOptions::Marshalling(MessageParcel& parcel) const
 {
     WRITE_HELPER_RET(parcel, Int32, static_cast<int32_t>(syncMode_), false);
     WRITE_HELPER_RET(parcel, Int32, static_cast<int32_t>(syncDeviceIds_.size()), false);
@@ -55,7 +55,7 @@ bool SyncOptions::Marshalling(MessageParcel& parcel) const
     return true;
 }
 
-bool SyncOptions::UnMarshalling(MessageParcel& parcel)
+bool DpSyncOptions::UnMarshalling(MessageParcel& parcel)
 {
     int32_t mode = 0;
     READ_HELPER_RET(parcel, Int32, mode, false);
@@ -73,7 +73,7 @@ bool SyncOptions::UnMarshalling(MessageParcel& parcel)
     return true;
 }
 
-std::string SyncOptions::dump() const
+std::string DpSyncOptions::dump() const
 {
     nlohmann::json json;
     json[SYNC_MODE] = static_cast<int32_t>(syncMode_);

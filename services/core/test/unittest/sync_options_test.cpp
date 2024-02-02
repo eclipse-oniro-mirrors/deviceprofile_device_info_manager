@@ -19,10 +19,10 @@
 #include <vector>
 #include <memory>
 #include "gtest/gtest.h"
-#include "sync_options.h"
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_enums.h"
+#include "dp_sync_options.h"
 #undef private
 #undef protected
 
@@ -32,7 +32,8 @@ using namespace testing::ext;
 using namespace std;
 
 namespace {
-    shared_ptr<SyncOptions> syncPtr = make_shared<SyncOptions>();
+    shared_ptr<DistributedDeviceProfile::DpSyncOptions> syncPtr =
+        make_shared<DistributedDeviceProfile::DpSyncOptions>();
 }
 
 class SyncOptionsTest : public testing::Test {

@@ -23,8 +23,10 @@
 #include "parameter.h"
 
 #include "device_profile_log.h"
+#include "device_profile_manager.h"
 #include "device_profile_utils.h"
 #include "distributed_device_profile_service.h"
+#include "dm_constants.h"
 #include "ipc_object_proxy.h"
 #include "ipc_skeleton.h"
 #include "iservice_registry.h"
@@ -43,6 +45,7 @@ constexpr uint8_t MAX_DEVICE_TYPE = 3;
 constexpr int32_t DEVICE_ID_SIZE = 65;
 constexpr int32_t MAX_TIMES_CONNECT_DEVICEMANAGER = 10;
 const std::string PKG_NAME = "DBinderBus_" + std::to_string(getpid());
+const int32_t DEFAULT_OS_TYPE = 10;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DpDeviceManager);
@@ -95,6 +98,7 @@ void DpDeviceManager::DpDeviceStateCallback::OnDeviceOnline(const DmDeviceInfo &
         deviceInfo.deviceName, deviceInfo.networkId, deviceInfo.deviceTypeId);
     DpDeviceManager::GetInstance().OnNodeOnline(dpDeviceInfo);
     DistributedDeviceProfileService::GetInstance().DeviceOnline();
+    DpDeviceManager::GetInstance().AutoSync(deviceInfo);
 }
 
 void DpDeviceManager::DpDeviceStateCallback::OnDeviceOffline(const DmDeviceInfo &deviceInfo)
@@ -385,6 +389,35 @@ void DpDeviceManager::GetDeviceList(std::list<std::shared_ptr<DeviceInfo>>& devi
     for (const auto& [_, deviceInfo] : remoteDeviceInfoMap_) {
         deviceList.emplace_back(deviceInfo);
     }
+}
+
+void DpDeviceManager::AutoSync(const DistributedHardware::DmDeviceInfo &deviceInfo)
+{
+    HILOGI("call! networdId=%{public}s", DeviceProfileUtils::AnonymizeDeviceId(deviceInfo.networkId).c_str());
+    if (deviceInfo.extraData.empty()) {
+        HILOGE("extraData is empty!");
+        return;
+    }
+    auto autoSyncTask = [deviceInfo]() {
+        HILOGI("extraData=%{public}s", deviceInfo.extraData.c_str());
+        auto extraData = nlohmann::json::parse(deviceInfo.extraData, nullptr, false);
+        if (extraData.is_discarded()) {
+            HILOGE("extraData parse failed");
+            return;
+        }
+        int32_t osType = DEFAULT_OS_TYPE;
+        if (extraData.contains(DistributedHardware::PARAM_KEY_OS_TYPE)
+            && extraData[DistributedHardware::PARAM_KEY_OS_TYPE].is_number_integer()) {
+            osType = extraData[DistributedHardware::PARAM_KEY_OS_TYPE].get<int32_t>();
+        }
+        if (osType != DEFAULT_OS_TYPE) {
+            int32_t errCode = DistributedDeviceProfile::DeviceProfileManager::GetInstance()
+                .DeviceOnlineAutoSync(deviceInfo.networkId);
+            HILOGI("DeviceOnlineAutoSync errCode=%{public}d, networdId=%{public}s", errCode,
+                DeviceProfileUtils::AnonymizeDeviceId(deviceInfo.networkId).c_str());
+        }
+    };
+    std::thread(autoSyncTask).detach();
 }
 } // namespace DeviceProfile
 } // namespace OHOS

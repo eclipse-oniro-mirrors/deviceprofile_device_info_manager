@@ -337,7 +337,7 @@ int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfile(const Subscribe
     return dpService->UnSubscribeDeviceProfile(subscribeInfo);
 }
 
-int32_t DistributedDeviceProfileClient::SyncDeviceProfile(const SyncOptions& syncOptions,
+int32_t DistributedDeviceProfileClient::SyncDeviceProfile(const DpSyncOptions& syncOptions,
     sptr<ISyncCompletedCallback> syncCb)
 {
     auto dpService = GetDeviceProfileService();
