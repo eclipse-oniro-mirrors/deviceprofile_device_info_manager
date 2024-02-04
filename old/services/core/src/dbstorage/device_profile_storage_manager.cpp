@@ -75,7 +75,7 @@ bool DeviceProfileStorageManager::Init()
             return false;
         }
         onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
-        kvStoreDeathRecipient_ = sptr<IRemoteObject::DeathRecipient>(new KvStoreDeathRecipient());
+        kvStoreDeathRecipientDp_ = sptr<IRemoteObject::DeathRecipient>(new KvStoreDeathRecipientDp());
         auto runner = AppExecFwk::EventRunner::Create("dpstorage");
         storageHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
         if (storageHandler_ == nullptr) {
@@ -115,7 +115,7 @@ bool DeviceProfileStorageManager::WaitKvDataService()
             IPCObjectProxy* proxy = reinterpret_cast<IPCObjectProxy*>(kvDataSvr.GetRefPtr());
             if (proxy != nullptr && !proxy->IsObjectDead()) {
                 HILOGI("get service succeed");
-                proxy->AddDeathRecipient(kvStoreDeathRecipient_);
+                proxy->AddDeathRecipient(kvStoreDeathRecipientDp_);
                 return true;
             }
         }

@@ -20,7 +20,7 @@
 #include "device_profile.h"
 #include "service_profile.h"
 #include "characteristic_profile.h"
-#include "sync_options.h"
+#include "dp_sync_options.h"
 #include "iremote_object.h"
 #include "i_sync_completed_callback.h"
 #include "ikv_adapter.h"
@@ -54,7 +54,9 @@ public:
     int32_t GetAllDeviceProfile(std::vector<DeviceProfile>& deviceProfiles);
     int32_t GetAllServiceProfile(std::vector<ServiceProfile>& serviceProfiles);
     int32_t GetAllCharacteristicProfile(std::vector<CharacteristicProfile>& charProfiles);
-    int32_t SyncDeviceProfile(const SyncOptions& syncOptions, sptr<IRemoteObject> syncCompletedCallback);
+    int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
+        sptr<IRemoteObject> syncCompletedCallback);
+    int32_t DeviceOnlineAutoSync(const std::string& peerNetworkId);
 
 private:
     bool LoadDpSyncAdapter();

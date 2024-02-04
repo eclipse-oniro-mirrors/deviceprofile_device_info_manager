@@ -25,7 +25,7 @@
 #include "service_profile.h"
 #include "characteristic_profile.h"
 #include "dp_subscribe_info.h"
-#include "sync_options.h"
+#include "dp_sync_options.h"
 #include "i_sync_completed_callback.h"
 
 namespace OHOS {
@@ -57,7 +57,8 @@ public:
         const std::string& characteristicId) = 0;
     virtual int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) = 0;
     virtual int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) = 0;
-    virtual int32_t SyncDeviceProfile(const SyncOptions& syncOptions, sptr<IRemoteObject> syncCompletedCallback) = 0;
+    virtual int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
+        sptr<IRemoteObject> syncCompletedCallback) = 0;
     virtual int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) = 0;
 };
 } // namespace DistributedDeviceProfile

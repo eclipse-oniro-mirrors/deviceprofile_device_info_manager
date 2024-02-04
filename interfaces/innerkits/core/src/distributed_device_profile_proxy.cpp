@@ -305,7 +305,7 @@ int32_t DistributedDeviceProfileProxy::UnSubscribeDeviceProfile(const SubscribeI
     return DP_SUCCESS;
 }
 
-int32_t DistributedDeviceProfileProxy::SyncDeviceProfile(const SyncOptions& syncOptions,
+int32_t DistributedDeviceProfileProxy::SyncDeviceProfile(const DpSyncOptions& syncOptions,
     const sptr<IRemoteObject> syncCompletedCallback)
 {
     sptr<IRemoteObject> remote = nullptr;

@@ -399,7 +399,7 @@ int32_t DistributedDeviceProfileStubNew::UnSubscribeDeviceProfileInner(MessagePa
 
 int32_t DistributedDeviceProfileStubNew::SyncDeviceProfileInner(MessageParcel& data, MessageParcel& reply)
 {
-    SyncOptions syncOptions;
+    DistributedDeviceProfile::DpSyncOptions syncOptions;
     if (!syncOptions.UnMarshalling(data)) {
         HILOGE("read parcel fail!");
         return DP_READ_PARCEL_FAIL;

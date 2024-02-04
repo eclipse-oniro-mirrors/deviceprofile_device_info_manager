@@ -1107,7 +1107,7 @@ HWTEST_F(DeviceProfileManagerTest, GetAllCharacteristicProfile003, TestSize.Leve
  */
 HWTEST_F(DeviceProfileManagerTest, SyncDeviceProfile001, TestSize.Level1)
 {
-    SyncOptions syncOptions;
+    DistributedDeviceProfile::DpSyncOptions syncOptions;
     OHOS::sptr<OHOS::IRemoteObject> syncCb = nullptr;
     
     syncOptions.AddDevice("deviceId1");
@@ -1126,7 +1126,7 @@ HWTEST_F(DeviceProfileManagerTest, SyncDeviceProfile001, TestSize.Level1)
  */
 HWTEST_F(DeviceProfileManagerTest, SyncDeviceProfile002, TestSize.Level1)
 {
-    SyncOptions syncOptions;
+    DistributedDeviceProfile::DpSyncOptions syncOptions;
     OHOS::sptr<OHOS::IRemoteObject> syncCb = new(nothrow) SyncCallback();
     
     syncOptions.AddDevice("deviceId1");

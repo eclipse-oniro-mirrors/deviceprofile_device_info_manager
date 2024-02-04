@@ -330,6 +330,7 @@ const std::string TRUST_DEVICE_UPDATE = "TrustDeviceUpdate";
 const std::string UNLOAD_DP_SA_HANDLER = "unload_dp_sa_handler";
 const std::string KV_DEATH_HANDLER = "kv_store_death_handler";
 const std::string ON_SYNC_HANDLER = "kv_sync_completed_handler";
+const std::string AUTO_SYNC_HANDLER = "auto_sync_handler";
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_CONSTANTS_H
