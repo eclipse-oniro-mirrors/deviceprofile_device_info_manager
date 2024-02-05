@@ -96,7 +96,7 @@ void DMAdapter::AutoSync(const DistributedHardware::DmDeviceInfo &deviceInfo)
         return;
     }
     auto autoSyncTask = [deviceInfo]() {
-        HILOGI("extraData=%{public}s", deviceInfo.extraData.c_str());
+        HILOGI("extraData=%{public}s", ProfileUtils::GetAnonyString(deviceInfo.extraData).c_str());
         auto extraData = nlohmann::json::parse(deviceInfo.extraData);
         int32_t osType = DEFAULT_OS_TYPE;
         if (extraData.contains(DistributedHardware::PARAM_KEY_OS_TYPE)

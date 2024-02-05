@@ -399,7 +399,7 @@ void DpDeviceManager::AutoSync(const DistributedHardware::DmDeviceInfo &deviceIn
         return;
     }
     auto autoSyncTask = [deviceInfo]() {
-        HILOGI("extraData=%{public}s", deviceInfo.extraData.c_str());
+        HILOGI("extraData=%{public}s", DeviceProfileUtils::AnonymizeDeviceId(deviceInfo.extraData).c_str());
         auto extraData = nlohmann::json::parse(deviceInfo.extraData, nullptr, false);
         if (extraData.is_discarded()) {
             HILOGE("extraData parse failed");
