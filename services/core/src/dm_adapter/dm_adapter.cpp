@@ -96,13 +96,17 @@ void DMAdapter::AutoSync(const DistributedHardware::DmDeviceInfo &deviceInfo)
         return;
     }
     auto autoSyncTask = [deviceInfo]() {
-        HILOGI("extraData=%{public}s", ProfileUtils::GetAnonyString(deviceInfo.extraData).c_str());
-        auto extraData = nlohmann::json::parse(deviceInfo.extraData);
+        auto extraData = nlohmann::json::parse(deviceInfo.extraData, nullptr, false);
+        if (extraData.is_discarded()) {
+            HILOGE("extraData parse failed");
+            return;
+        }
         int32_t osType = DEFAULT_OS_TYPE;
         if (extraData.contains(DistributedHardware::PARAM_KEY_OS_TYPE)
             && extraData[DistributedHardware::PARAM_KEY_OS_TYPE].is_number_integer()) {
             osType = extraData[DistributedHardware::PARAM_KEY_OS_TYPE].get<int32_t>();
         }
+        HILOGI("osType=%{public}d", osType);
         if (osType != DEFAULT_OS_TYPE) {
             int32_t errCode = DeviceProfileManager::GetInstance().DeviceOnlineAutoSync(deviceInfo.networkId);
             HILOGI("DeviceOnlineAutoSync errCode=%{public}d, networdId=%{public}s", errCode,

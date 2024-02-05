@@ -399,7 +399,6 @@ void DpDeviceManager::AutoSync(const DistributedHardware::DmDeviceInfo &deviceIn
         return;
     }
     auto autoSyncTask = [deviceInfo]() {
-        HILOGI("extraData=%{public}s", DeviceProfileUtils::AnonymizeDeviceId(deviceInfo.extraData).c_str());
         auto extraData = nlohmann::json::parse(deviceInfo.extraData, nullptr, false);
         if (extraData.is_discarded()) {
             HILOGE("extraData parse failed");
@@ -410,6 +409,7 @@ void DpDeviceManager::AutoSync(const DistributedHardware::DmDeviceInfo &deviceIn
             && extraData[DistributedHardware::PARAM_KEY_OS_TYPE].is_number_integer()) {
             osType = extraData[DistributedHardware::PARAM_KEY_OS_TYPE].get<int32_t>();
         }
+        HILOGI("osType=%{public}d", osType);
         if (osType != DEFAULT_OS_TYPE) {
             int32_t errCode = DistributedDeviceProfile::DeviceProfileManager::GetInstance()
                 .DeviceOnlineAutoSync(deviceInfo.networkId);
