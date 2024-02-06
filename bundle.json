@@ -98,6 +98,7 @@
                 "characteristic_profile.h",
                 "device_profile.h",
                 "dp_subscribe_info.h",
+                "dp_sync_options.h",
                 "i_distributed_device_profile.h",
                 "i_profile_change_listener.h",
                 "i_sync_completed_callback.h",
@@ -106,7 +107,6 @@
                 "service_profile.h",
                 "sync_completed_callback_proxy.h",
                 "sync_completed_callback_stub.h",
-                "sync_options.h",
                 "trust_device_profile.h"
               ],
               "header_base": "//foundation/deviceprofile/device_info_manager/common/include/interfaces"

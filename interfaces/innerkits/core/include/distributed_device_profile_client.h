@@ -64,7 +64,7 @@ public:
         const std::string& characteristicKey);
     int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo);
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo);
-    int32_t SyncDeviceProfile(const SyncOptions& syncOptions, sptr<ISyncCompletedCallback> syncCb);
+    int32_t SyncDeviceProfile(const DpSyncOptions& syncOptions, sptr<ISyncCompletedCallback> syncCb);
 
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
     void LoadSystemAbilityFail();
