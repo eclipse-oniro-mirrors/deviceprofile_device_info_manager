@@ -20,6 +20,7 @@
 #include <string>
 #include <memory>
 #include <thread>
+#include "collaboration_info_collector.h"
 #include "device_info_collector.h"
 #include "distributed_device_profile_log.h"
 #include "dms_info_collector.h"
@@ -67,6 +68,7 @@ int32_t ContentSensorManager::Collect()
         taskList.push_back(std::make_shared<SyscapInfoCollector>());
         taskList.push_back(std::make_shared<StorageInfoCollector>());
         taskList.push_back(std::make_shared<DmsInfoCollector>());
+        taskList.push_back(std::make_shared<CollaborationInfoCollector>());
         DeviceProfile deviceProfile;
         std::vector<ServiceProfile> svrProfileList;
         std::vector<CharacteristicProfile> charProfileList;

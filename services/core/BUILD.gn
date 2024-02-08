@@ -41,6 +41,7 @@ config("device_info_manager_config") {
 ohos_shared_library("distributed_device_profile_svr") {
   install_enable = true
   sources = [
+    "src/contentsensormanager/collaboration_info_collector.cpp",
     "src/contentsensormanager/collector.cpp",
     "src/contentsensormanager/content_sensor_manager.cpp",
     "src/contentsensormanager/device_info_collector.cpp",
