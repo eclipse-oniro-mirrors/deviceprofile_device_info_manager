@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -67,6 +67,10 @@ int32_t DistributedDeviceProfileServiceNew::Init()
         HILOGE("EventHandlerFactory init failed");
         return DP_CACHE_INIT_FAIL;
     }
+    if (PermissionManager::GetInstance().Init() != DP_SUCCESS) {
+        HILOGE("DpDeviceManager init failed");
+        return DP_DEVICE_MANAGER_INIT_FAIL;
+    }
     if (TrustProfileManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("TrustProfileManager init failed");
         return DP_TRUST_PROFILE_MANAGER_INIT_FAIL;
@@ -78,10 +82,6 @@ int32_t DistributedDeviceProfileServiceNew::Init()
     if (ProfileCache::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("ProfileCache init failed");
         return DP_CACHE_INIT_FAIL;
-    }
-    if (PermissionManager::GetInstance().Init() != DP_SUCCESS) {
-        HILOGE("DpDeviceManager init failed");
-        return DP_DEVICE_MANAGER_INIT_FAIL;
     }
     if (SubscribeProfileManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("SubscribeProfileManager init failed");

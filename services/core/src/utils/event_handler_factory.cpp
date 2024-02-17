@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,7 +29,7 @@ namespace {
 
 int32_t EventHandlerFactory::Init()
 {
-    HILOGI("Init");
+    HILOGI("call!");
     auto unloadRunner = AppExecFwk::EventRunner::Create(UNLOAD_DP_SA_HANDLER);
     eventHandlerMap_[UNLOAD_DP_SA_HANDLER] = std::make_shared<AppExecFwk::EventHandler>(unloadRunner);
     auto kvDeathRunner = AppExecFwk::EventRunner::Create(KV_DEATH_HANDLER);

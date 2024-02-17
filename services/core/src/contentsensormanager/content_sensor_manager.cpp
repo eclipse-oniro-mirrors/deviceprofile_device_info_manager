@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -44,6 +44,7 @@ IMPLEMENT_SINGLE_INSTANCE(ContentSensorManager);
 
 int32_t ContentSensorManager::Init()
 {
+    HILOGI("call!");
     auto runner = AppExecFwk::EventRunner::Create("csCollector");
     csCollectorHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
     if (csCollectorHandler_ == nullptr) {
