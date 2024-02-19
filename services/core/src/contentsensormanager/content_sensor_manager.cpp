@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,6 +24,7 @@
 #include "device_info_collector.h"
 #include "distributed_device_profile_log.h"
 #include "dms_info_collector.h"
+#include "pasteboard_info_collector.h"
 #include "storage_info_collector.h"
 #include "syscap_info_collector.h"
 #include "system_info_collector.h"
@@ -69,6 +70,7 @@ int32_t ContentSensorManager::Collect()
         taskList.push_back(std::make_shared<StorageInfoCollector>());
         taskList.push_back(std::make_shared<DmsInfoCollector>());
         taskList.push_back(std::make_shared<CollaborationInfoCollector>());
+        taskList.push_back(std::make_shared<PasteboardInfoCollector>());
         DeviceProfile deviceProfile;
         std::vector<ServiceProfile> svrProfileList;
         std::vector<CharacteristicProfile> charProfileList;
