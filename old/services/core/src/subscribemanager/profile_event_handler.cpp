@@ -17,6 +17,7 @@
 
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
+#include "device_profile_utils.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -40,22 +41,48 @@ int32_t ProfileEventHandler::Subscribe(const SubscribeInfo& subscribeInfo,
     std::lock_guard<std::mutex> autoLock(notifierLock_);
     auto iter = profileEventSubscribeInfos_.find(profileEventNotifier);
     if (iter == profileEventSubscribeInfos_.end()) {
-        HILOGI("add extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
+        if (subscribeInfo.extraInfo.contains("deviceId") && subscribeInfo.extraInfo.contains("serviceIds")) {
+            HILOGI("add subscribeInfo: deviceId = %{public}s, serviceIds = %{public}s",
+                DeviceProfileUtils::AnonymizeDeviceId(subscribeInfo.extraInfo["deviceId"].get<std::string>()).c_str(),
+                subscribeInfo.extraInfo["serviceIds"].dump().c_str());
+        } else {
+            HILOGI("add subscribeInfo without deviceId and serviceIds");
+        }
         profileEventSubscribeInfos_.emplace(profileEventNotifier, std::move(subscribeInfo));
         HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
         for (const auto& entry : profileEventSubscribeInfos_) {
             const SubscribeInfo& subscribeInfo = entry.second;
-            HILOGI("extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
+            if (subscribeInfo.extraInfo.contains("deviceId") && subscribeInfo.extraInfo.contains("serviceIds")) {
+                HILOGI("subscribeInfo: deviceId = %{public}s, serviceIds = %{public}s",
+                    DeviceProfileUtils::AnonymizeDeviceId(
+                        subscribeInfo.extraInfo["deviceId"].get<std::string>()).c_str(),
+                    subscribeInfo.extraInfo["serviceIds"].dump().c_str());
+            } else {
+                HILOGI("subscribeInfo without deviceId and serviceIds");
+            }
         }
     } else {
         // just overwrite when the follow-ups subscribe with the same notifier
         HILOGW("overwrite last subscribed info");
-        HILOGI("update extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
+        if (subscribeInfo.extraInfo.contains("deviceId") && subscribeInfo.extraInfo.contains("serviceIds")) {
+            HILOGI("update subscribeInfo: deviceId = %{public}s, serviceIds = %{public}s",
+                DeviceProfileUtils::AnonymizeDeviceId(subscribeInfo.extraInfo["deviceId"].get<std::string>()).c_str(),
+                subscribeInfo.extraInfo["serviceIds"].dump().c_str());
+        } else {
+            HILOGI("update subscribeInfo without deviceId and serviceIds");
+        }
         iter->second = std::move(subscribeInfo);
         HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
         for (const auto& entry : profileEventSubscribeInfos_) {
             const SubscribeInfo& subscribeInfo = entry.second;
-            HILOGI("extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
+            if (subscribeInfo.extraInfo.contains("deviceId") && subscribeInfo.extraInfo.contains("serviceIds")) {
+                HILOGI("subscribeInfo: deviceId = %{public}s, serviceIds = %{public}s",
+                    DeviceProfileUtils::AnonymizeDeviceId(
+                        subscribeInfo.extraInfo["deviceId"].get<std::string>()).c_str(),
+                    subscribeInfo.extraInfo["serviceIds"].dump().c_str());
+            } else {
+                HILOGI("subscribeInfo without deviceId and serviceIds");
+            }
         }
     }
 
@@ -78,12 +105,24 @@ int32_t ProfileEventHandler::Unsubscribe(const sptr<IRemoteObject>& profileEvent
         HILOGW("not subscribe yet");
         return ERR_DP_NOT_SUBSCRIBED;
     }
-    HILOGI("remove extraInfo = %{public}s", iter->second.extraInfo.dump().c_str());
+    if (iter->second.extraInfo.contains("deviceId") && iter->second.extraInfo.contains("serviceIds")) {
+        HILOGI("remove subscribeInfo: deviceId = %{public}s, serviceIds = %{public}s",
+            DeviceProfileUtils::AnonymizeDeviceId(iter->second.extraInfo["deviceId"].get<std::string>()).c_str(),
+                iter->second.extraInfo["serviceIds"].dump().c_str());
+    } else {
+        HILOGI("remove subscribeInfo without deviceId and serviceIds");
+    }
     profileEventSubscribeInfos_.erase(iter);
     HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
     for (const auto& entry : profileEventSubscribeInfos_) {
         const SubscribeInfo& subscribeInfo = entry.second;
-        HILOGI("extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
+        if (subscribeInfo.extraInfo.contains("deviceId") && subscribeInfo.extraInfo.contains("serviceIds")) {
+            HILOGI("subscribeInfo: deviceId = %{public}s, serviceIds = %{public}s",
+                DeviceProfileUtils::AnonymizeDeviceId(subscribeInfo.extraInfo["deviceId"].get<std::string>()).c_str(),
+                subscribeInfo.extraInfo["serviceIds"].dump().c_str());
+        } else {
+            HILOGI("subscribeInfo without deviceId and serviceIds");
+        }
     }
     if (profileEventSubscribeInfos_.empty()) {
         int32_t errCode = Unregister();

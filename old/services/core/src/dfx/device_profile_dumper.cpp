@@ -17,6 +17,7 @@
 
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
+#include "device_profile_utils.h"
 #include "ipc_skeleton.h"
 
 namespace OHOS {
@@ -72,7 +73,7 @@ void DeviceProfileDumper::IllegalInput(std::string& result)
 bool DeviceProfileDumper::CanDump()
 {
     auto callingUid = IPCSkeleton::GetCallingUid();
-    HILOGI("calling uid = %u", callingUid);
+    HILOGI("calling uid = %s", DeviceProfileUtils::AnonymizeString(std::to_string(callingUid)).c_str());
     if (callingUid != UID_HIDUMPER) {
         return false;
     }

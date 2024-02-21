@@ -29,6 +29,7 @@ public:
     static bool WriteProfileEvents(const std::list<ProfileEvent>& profileEvents, Parcel& parcel);
     static bool ReadProfileEvents(Parcel& parcel, std::list<ProfileEvent>& profileEvents);
     static std::string AnonymizeDeviceId(const std::string& deviceId);
+    static std::string AnonymizeString(const std::string& value);
 };
 } // namespace DeviceProfile
 } // namespace OHOS
