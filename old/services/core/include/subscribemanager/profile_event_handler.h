@@ -51,6 +51,7 @@ public:
         const sptr<IRemoteObject>& profileEventNotifier);
     int32_t Unsubscribe(const sptr<IRemoteObject>& profileEventNotifier);
     void OnSubscriberDied(const sptr<IRemoteObject>& profileEventNotifier);
+    void PrintfSubscribeInfo(const SubscribeInfo& subscribeInfo);
 
 protected:
     std::atomic<bool> isRegistered_ {false};
@@ -59,8 +60,6 @@ protected:
     std::string handlerName_;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_;
     
-    void PrintfSubscribeInfo(const SubscribeInfo& subscribeInfo);
-
 private:
     virtual int32_t Register() = 0;
     virtual int32_t Unregister() = 0;

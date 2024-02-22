@@ -387,7 +387,7 @@ int32_t ProfileCache::RemoveSyncListeners(std::map<std::string, sptr<IRemoteObje
                 if (iter->second != nullptr) {
                     iter->second->RemoveDeathRecipient(syncListenerDeathRecipient_);
                 }
-                HILOGI("RemoveSyncListener caller %s!", ProfileUtils::GetAnonyString(iter->first.c_str()));
+                HILOGI("RemoveSyncListener caller %s!", ProfileUtils::GetAnonyString(iter->first).c_str());
                 iter = syncListenerMap_.erase(iter);
             } else {
                 iter++;

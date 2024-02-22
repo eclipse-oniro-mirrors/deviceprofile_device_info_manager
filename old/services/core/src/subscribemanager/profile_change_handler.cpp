@@ -146,7 +146,7 @@ void ProfileChangeHandler::ConvertEntry(const std::vector<Entry>& entries,
         service2Index.emplace(trimmedKey, profileEntries.size());
         profileEntries.emplace_back(std::move(trimmedKey), entry.value.ToString(), changeType);
         HILOGD("value = %{public}s, state = %{public}u",
-            DeviceProfileUtils::AnonymizeString(entry.value.ToString().c_str()), static_cast<uint8_t>(changeType));
+            DeviceProfileUtils::AnonymizeString(entry.value.ToString()).c_str(), static_cast<uint8_t>(changeType));
     }
 }
 

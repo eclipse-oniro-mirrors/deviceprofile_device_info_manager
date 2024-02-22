@@ -149,7 +149,7 @@ bool AuthorityManager::ValidateServicesHelper(nlohmann::json& servicesJson)
 {
     for (auto& [key, value] : servicesJson.items()) {
         if (!ValidateService(value, false)) {
-            HILOGW("service:%{public}s is invalid, deleted", DeviceProfileUtils::AnonymizeString(key.c_str()));
+            HILOGW("service:%{public}s is invalid, deleted", DeviceProfileUtils::AnonymizeString(key).c_str());
             return false;
         }
     }

@@ -52,7 +52,7 @@ bool SubscribeInfo::Unmarshalling(Parcel& parcel)
     std::string value = parcel.ReadString();
     extraInfo = ExtraInfo::parse(value, nullptr, false);
     if (extraInfo.is_discarded()) {
-        HILOGE("parse extra info failed, %{public}s", DeviceProfileUtils::AnonymizeString(value.c_str()));
+        HILOGE("parse extra info failed, %{public}s", DeviceProfileUtils::AnonymizeString(value).c_str());
         return false;
     }
     return true;
