@@ -73,9 +73,6 @@ void ProfileSyncHandler::NotifySyncCompleted(const SyncResult& syncResults)
                 profileEventNotifier->OnSyncCompleted(syncResults);
                 profileEventSubscribeInfos_.erase(iter++);
                 HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
-                for (const auto& entry : profileEventSubscribeInfos_) {
-                    const SubscribeInfo& subscribeInfo = entry.second;
-                }
             }
         }
     }
