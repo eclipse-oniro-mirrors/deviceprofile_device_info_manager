@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,7 +16,6 @@
 #include "device_profile_dumper.h"
 
 #include "distributed_device_profile_log.h"
-#include "profile_utils.h"
 #include "ipc_skeleton.h"
 
 namespace OHOS {
@@ -72,7 +71,7 @@ void DeviceProfileDumper::IllegalInput(std::string& result)
 bool DeviceProfileDumper::CanDump()
 {
     auto callingUid = IPCSkeleton::GetCallingUid();
-    HILOGI("calling uid = %s", ProfileUtils::GetAnonyString(std::to_string(callingUid)).c_str());
+    HILOGI("calling uid = %u", callingUid);
     if (callingUid != UID_HIDUMPER) {
         return false;
     }
