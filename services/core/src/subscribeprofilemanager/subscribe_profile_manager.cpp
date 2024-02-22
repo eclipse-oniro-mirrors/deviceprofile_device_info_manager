@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License")
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -109,7 +109,7 @@ int32_t SubscribeProfileManager::NotifyTrustDeviceProfileDelete(const TrustDevic
 int32_t SubscribeProfileManager::SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)
 {
     HILOGE("SubscribeDeviceProfile, saId: %{public}d!, subscribeKey: %{public}s", subscribeInfo.GetSaId(),
-           subscribeInfo.GetSubscribeKey().c_str());
+        ProfileUtils::GetAnonyString(subscribeInfo.GetSubscribeKey().c_str()));
     {
         std::lock_guard<std::mutex> lock(subscribeMutex_);
         if (subscribeInfoMap_.size() > MAX_LISTENER_SIZE) {
@@ -137,7 +137,7 @@ int32_t SubscribeProfileManager::SubscribeDeviceProfile(std::map<std::string, Su
 int32_t SubscribeProfileManager::UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)
 {
     HILOGE("UnSubscribeDeviceProfile, saId: %{public}d!, subscribeKey: %{public}s", subscribeInfo.GetSaId(),
-           subscribeInfo.GetSubscribeKey().c_str());
+        ProfileUtils::GetAnonyString(subscribeInfo.GetSubscribeKey().c_str()));
     {
         std::lock_guard<std::mutex> lock(subscribeMutex_);
         subscribeInfoMap_[subscribeInfo.GetSubscribeKey()].erase(subscribeInfo);
@@ -356,7 +356,8 @@ std::unordered_set<SubscribeInfo, SubscribeHash, SubscribeCompare> SubscribeProf
     {
         std::lock_guard<std::mutex> lock(subscribeMutex_);
         if (subscribeInfoMap_.find(dbKey) == subscribeInfoMap_.end()) {
-            HILOGE("This dbKey is not subscribed, dbKey: %{public}s", dbKey.c_str());
+            HILOGE("This dbKey is not subscribed, dbKey: %{public}s",
+                ProfileUtils::GetAnonyString(dbKey.c_str()));
             return {};
         }
         return subscribeInfoMap_[dbKey];

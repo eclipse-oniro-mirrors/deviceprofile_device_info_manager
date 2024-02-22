@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -146,7 +146,7 @@ void ProfileChangeHandler::ConvertEntry(const std::vector<Entry>& entries,
         service2Index.emplace(trimmedKey, profileEntries.size());
         profileEntries.emplace_back(std::move(trimmedKey), entry.value.ToString(), changeType);
         HILOGD("value = %{public}s, state = %{public}u",
-            entry.value.ToString().c_str(), static_cast<uint8_t>(changeType));
+            DeviceProfileUtils::AnonymizeString(entry.value.ToString().c_str()), static_cast<uint8_t>(changeType));
     }
 }
 

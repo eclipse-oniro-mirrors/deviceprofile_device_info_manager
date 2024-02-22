@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,6 +23,7 @@
 #include "securec.h"
 
 #include "device_profile_log.h"
+#include "device_profile_utils.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -148,7 +149,7 @@ bool AuthorityManager::ValidateServicesHelper(nlohmann::json& servicesJson)
 {
     for (auto& [key, value] : servicesJson.items()) {
         if (!ValidateService(value, false)) {
-            HILOGW("service:%{public}s is invalid, deleted", key.c_str());
+            HILOGW("service:%{public}s is invalid, deleted", DeviceProfileUtils::AnonymizeString(key.c_str()));
             return false;
         }
     }
