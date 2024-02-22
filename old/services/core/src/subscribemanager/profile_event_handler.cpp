@@ -57,8 +57,7 @@ int32_t ProfileEventHandler::Subscribe(const SubscribeInfo& subscribeInfo,
         iter->second = std::move(subscribeInfo);
         HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
         for (const auto& entry : profileEventSubscribeInfos_) {
-            const SubscribeInfo& subscribeInfo = entry.second;
-            PrintfSubscribeInfo(subscribeInfo);
+            PrintfSubscribeInfo(entry.second);
         }
     }
 
