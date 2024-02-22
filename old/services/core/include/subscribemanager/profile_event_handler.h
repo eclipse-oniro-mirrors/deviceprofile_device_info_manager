@@ -62,6 +62,7 @@ protected:
 private:
     virtual int32_t Register() = 0;
     virtual int32_t Unregister() = 0;
+    void PrintfSubscribeInfo(const SubscribeInfo& subscribeInfo);
 };
 }  // namespace DeviceProfile
 }  // namespace OHOS

@@ -71,27 +71,10 @@ void ProfileSyncHandler::NotifySyncCompleted(const SyncResult& syncResults)
                 iter++;
             } else {
                 profileEventNotifier->OnSyncCompleted(syncResults);
-                if (iter->second.extraInfo.contains("deviceId") && iter->second.extraInfo.contains("serviceIds")) {
-                    HILOGI("sync remove subscribeInfo: deviceId = %{public}s, serviceIds = %{public}s",
-                        DeviceProfileUtils::AnonymizeDeviceId(
-                            iter->second.extraInfo["deviceId"].get<std::string>()).c_str(),
-                        iter->second.extraInfo["serviceIds"].dump().c_str());
-                } else {
-                    HILOGI("sync remove subscribeInfo without deviceId and serviceIds");
-                }
                 profileEventSubscribeInfos_.erase(iter++);
                 HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
                 for (const auto& entry : profileEventSubscribeInfos_) {
                     const SubscribeInfo& subscribeInfo = entry.second;
-                    if (subscribeInfo.extraInfo.contains("deviceId") &&
-                        subscribeInfo.extraInfo.contains("serviceIds")) {
-                        HILOGI("subscribeInfo: deviceId = %{public}s, serviceIds = %{public}s",
-                            DeviceProfileUtils::AnonymizeDeviceId(
-                                subscribeInfo.extraInfo["deviceId"].get<std::string>()).c_str(),
-                            subscribeInfo.extraInfo["serviceIds"].dump().c_str());
-                    } else {
-                        HILOGI("subscribeInfo without deviceId and serviceIds");
-                    }
                 }
             }
         }
