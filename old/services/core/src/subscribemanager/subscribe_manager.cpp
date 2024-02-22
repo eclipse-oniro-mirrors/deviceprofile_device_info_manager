@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2021 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,7 +26,6 @@
 #include "profile_event_handler_factory.h"
 #include "subscribe_info_checker.h"
 #include "subscriber_death_recipient.h"
-#include "device_profile_utils.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -61,7 +60,7 @@ int32_t SubscribeManager::SubscribeProfileEvents(const std::list<SubscribeInfo>&
     }
 
     int32_t callingUid = IPCSkeleton::GetCallingUid();
-    HILOGI("uid %{public}s subscribe", DeviceProfileUtils::AnonymizeString(std::to_string(callingUid)).c_str());
+    HILOGI("uid %{public}d subscribe", callingUid);
     std::lock_guard<std::mutex> autoLock(handlerLock_);
     ProfileEvents subProfileEvents;
     std::shared_ptr<ProfileEventHandler> handler;
@@ -188,8 +187,7 @@ void SubscribeManager::IncSubsOfUidLocked(int32_t uid)
     } else {
         uidSubsMap_[uid] = 1;
     }
-    HILOGI("uid %{public}s has %{public}u subscription(s)",
-        DeviceProfileUtils::AnonymizeString(std::to_string(uid)).c_str(), uidSubsMap_[uid]);
+    HILOGI("uid %{public}d has %{public}u subscription(s)", uid, uidSubsMap_[uid]);
 }
 
 void SubscribeManager::DecSubsOfUidLocked(int32_t uid)
@@ -200,8 +198,7 @@ void SubscribeManager::DecSubsOfUidLocked(int32_t uid)
         if (--numSubs == 0) {
             uidSubsMap_.erase(iter);
         }
-        HILOGI("uid %{public}s subscription(s) is %{public}u",
-            DeviceProfileUtils::AnonymizeString(std::to_string(uid)).c_str(), numSubs);
+        HILOGI("uid %{public}d subscription(s) is %{public}u", uid, numSubs);
     }
 }
 
