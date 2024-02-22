@@ -86,8 +86,7 @@ int32_t ProfileEventHandler::Unsubscribe(const sptr<IRemoteObject>& profileEvent
     profileEventSubscribeInfos_.erase(iter);
     HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
     for (const auto& entry : profileEventSubscribeInfos_) {
-        const SubscribeInfo& subscribeInfo = entry.second;
-        PrintfSubscribeInfo(subscribeInfo);
+        PrintfSubscribeInfo(entry.second);
     }
     if (profileEventSubscribeInfos_.empty()) {
         int32_t errCode = Unregister();
@@ -111,7 +110,8 @@ bool ProfileEventHandler::IsRegistered() const
     return isRegistered_;
 }
 
-void ProfileEventHandler::PrintfSubscribeInfo(const SubscribeInfo& subscribeInfo) {
+void ProfileEventHandler::PrintfSubscribeInfo(const SubscribeInfo& subscribeInfo)
+{
     if (subscribeInfo.extraInfo.contains("deviceId") && subscribeInfo.extraInfo.contains("serviceIds")) {
         HILOGI("subscribeInfo: deviceId = %{public}s, serviceIds = %{public}s",
                DeviceProfileUtils::AnonymizeDeviceId(subscribeInfo.extraInfo["deviceId"].get<std::string>()).c_str(),
