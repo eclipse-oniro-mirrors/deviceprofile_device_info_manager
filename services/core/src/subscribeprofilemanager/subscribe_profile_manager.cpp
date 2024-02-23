@@ -356,8 +356,7 @@ std::unordered_set<SubscribeInfo, SubscribeHash, SubscribeCompare> SubscribeProf
     {
         std::lock_guard<std::mutex> lock(subscribeMutex_);
         if (subscribeInfoMap_.find(dbKey) == subscribeInfoMap_.end()) {
-            HILOGE("This dbKey is not subscribed, dbKey: %{public}s",
-                ProfileUtils::GetAnonyString(dbKey).c_str());
+            HILOGE("This dbKey is not subscribed, dbKey: %{public}s", ProfileUtils::GetAnonyString(dbKey).c_str());
             return {};
         }
         return subscribeInfoMap_[dbKey];
