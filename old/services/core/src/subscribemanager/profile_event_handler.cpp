@@ -111,21 +111,12 @@ bool ProfileEventHandler::IsRegistered() const
 
 void ProfileEventHandler::PrintfSubscribeInfo(const SubscribeInfo& subscribeInfo)
 {
-    if (!subscribeInfo.extraInfo.contains("deviceId")) {
-        HILOGI("subscribeInfo without deviceId");
-        return;
+    if (subscribeInfo.extraInfo.contains("deviceId") && subscribeInfo.extraInfo["deviceId"].is_string()) {
+        HILOGI("deviceId = %{public}s",
+            DeviceProfileUtils::AnonymizeDeviceId(subscribeInfo.extraInfo["deviceId"].get<std::string>()).c_str());
+    } else {
+        HILOGI("deviceId is invalid");
     }
-    if (!subscribeInfo.extraInfo.contains("serviceIds")) {
-        HILOGI("subscribeInfo without serviceIds");
-        return;
-    }
-    if (!subscribeInfo.extraInfo["deviceId"].is_string()) {
-        HILOGI("deviceId is not string");
-        return;
-    }
-    HILOGI("subscribeInfo: deviceId = %{public}s, serviceIds = %{public}s",
-        DeviceProfileUtils::AnonymizeDeviceId(subscribeInfo.extraInfo["deviceId"].get<std::string>()).c_str(),
-        subscribeInfo.extraInfo["serviceIds"].dump().c_str());
 }
 } // namespace DeviceProfile
 } // namespace OHOS

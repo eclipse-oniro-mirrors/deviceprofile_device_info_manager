@@ -59,7 +59,7 @@ protected:
     std::map<sptr<IRemoteObject>, SubscribeInfo> profileEventSubscribeInfos_;
     std::string handlerName_;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_;
-    
+
 private:
     virtual int32_t Register() = 0;
     virtual int32_t Unregister() = 0;
