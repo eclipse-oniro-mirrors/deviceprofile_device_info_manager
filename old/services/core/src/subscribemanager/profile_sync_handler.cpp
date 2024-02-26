@@ -77,7 +77,7 @@ void ProfileSyncHandler::NotifySyncCompleted(const SyncResult& syncResults)
                 HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
                 for (const auto& entry : profileEventSubscribeInfos_) {
                     HILOGI("subscribeInfo: deviceId = %{public}s",
-                        ProfileEventHandler::PrintfSubscribeInfo(entry.second).c_str();
+                        ProfileEventHandler::PrintfSubscribeInfo(entry.second).c_str());
                 }
             }
         }

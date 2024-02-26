@@ -46,7 +46,7 @@ int32_t ProfileEventHandler::Subscribe(const SubscribeInfo& subscribeInfo,
         HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
         for (const auto& entry : profileEventSubscribeInfos_) {
             const SubscribeInfo& subscribeInfo = entry.second;
-            HILOGI("subscribeInfo: deviceId = %{public}s", PrintfSubscribeInfo(subscribeInfo).c_str();
+            HILOGI("subscribeInfo: deviceId = %{public}s", PrintfSubscribeInfo(subscribeInfo).c_str());
         }
     } else {
         // just overwrite when the follow-ups subscribe with the same notifier
@@ -55,7 +55,7 @@ int32_t ProfileEventHandler::Subscribe(const SubscribeInfo& subscribeInfo,
         iter->second = std::move(subscribeInfo);
         HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
         for (const auto& entry : profileEventSubscribeInfos_) {
-            HILOGI("subscribeInfo: deviceId = %{public}s", PrintfSubscribeInfo(subscribeInfo).c_str();
+            HILOGI("subscribeInfo: deviceId = %{public}s", PrintfSubscribeInfo(subscribeInfo).c_str());
         }
     }
 
@@ -82,7 +82,7 @@ int32_t ProfileEventHandler::Unsubscribe(const sptr<IRemoteObject>& profileEvent
     profileEventSubscribeInfos_.erase(iter);
     HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
     for (const auto& entry : profileEventSubscribeInfos_) {
-        HILOGI("subscribeInfo: deviceId = %{public}s", PrintfSubscribeInfo(entry.second).c_str();
+        HILOGI("subscribeInfo: deviceId = %{public}s", PrintfSubscribeInfo(entry.second).c_str());
     }
     if (profileEventSubscribeInfos_.empty()) {
         int32_t errCode = Unregister();
