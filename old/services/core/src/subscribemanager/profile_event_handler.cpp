@@ -109,7 +109,7 @@ bool ProfileEventHandler::IsRegistered() const
 std::string ProfileEventHandler::PrintfSubscribeInfo(const SubscribeInfo& subscribeInfo)
 {
     if (subscribeInfo.extraInfo.contains("deviceId") && subscribeInfo.extraInfo["deviceId"].is_string()) {
-        return subscribeInfo.extraInfo["deviceId"].get<std::string>();
+        return DeviceProfileUtils::AnonymizeDeviceId(subscribeInfo.extraInfo["deviceId"].get<std::string>());
     } else {
         return "";
     }
