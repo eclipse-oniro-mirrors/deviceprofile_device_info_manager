@@ -41,23 +41,21 @@ int32_t ProfileEventHandler::Subscribe(const SubscribeInfo& subscribeInfo,
     std::lock_guard<std::mutex> autoLock(notifierLock_);
     auto iter = profileEventSubscribeInfos_.find(profileEventNotifier);
     if (iter == profileEventSubscribeInfos_.end()) {
-        HILOGI("add subscribeInfo");
-        PrintfSubscribeInfo(subscribeInfo);
+        HILOGI("add subscribeInfo, deviceId = %{public}s", PrintfSubscribeInfo(subscribeInfo).c_str());
         profileEventSubscribeInfos_.emplace(profileEventNotifier, std::move(subscribeInfo));
         HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
         for (const auto& entry : profileEventSubscribeInfos_) {
             const SubscribeInfo& subscribeInfo = entry.second;
-            PrintfSubscribeInfo(subscribeInfo);
+            HILOGI("subscribeInfo: deviceId = %{public}s", PrintfSubscribeInfo(subscribeInfo).c_str();
         }
     } else {
         // just overwrite when the follow-ups subscribe with the same notifier
         HILOGW("overwrite last subscribed info");
-        HILOGI("update subscribeInfo");
-        PrintfSubscribeInfo(subscribeInfo);
+        HILOGI("update subscribeInfo, deviceId = %{public}s", PrintfSubscribeInfo(subscribeInfo).c_str());
         iter->second = std::move(subscribeInfo);
         HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
         for (const auto& entry : profileEventSubscribeInfos_) {
-            PrintfSubscribeInfo(entry.second);
+            HILOGI("subscribeInfo: deviceId = %{public}s", PrintfSubscribeInfo(subscribeInfo).c_str();
         }
     }
 
@@ -80,12 +78,11 @@ int32_t ProfileEventHandler::Unsubscribe(const sptr<IRemoteObject>& profileEvent
         HILOGW("not subscribe yet");
         return ERR_DP_NOT_SUBSCRIBED;
     }
-    HILOGI("remove subscribeInfo");
-    PrintfSubscribeInfo(iter->second);
+    HILOGI("remove subscribeInfo, deviceId = %{public}s", PrintfSubscribeInfo(iter->second).c_str());
     profileEventSubscribeInfos_.erase(iter);
     HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
     for (const auto& entry : profileEventSubscribeInfos_) {
-        PrintfSubscribeInfo(entry.second);
+        HILOGI("subscribeInfo: deviceId = %{public}s", PrintfSubscribeInfo(entry.second).c_str();
     }
     if (profileEventSubscribeInfos_.empty()) {
         int32_t errCode = Unregister();
@@ -109,13 +106,12 @@ bool ProfileEventHandler::IsRegistered() const
     return isRegistered_;
 }
 
-void ProfileEventHandler::PrintfSubscribeInfo(const SubscribeInfo& subscribeInfo)
+std::string ProfileEventHandler::PrintfSubscribeInfo(const SubscribeInfo& subscribeInfo)
 {
     if (subscribeInfo.extraInfo.contains("deviceId") && subscribeInfo.extraInfo["deviceId"].is_string()) {
-        HILOGI("deviceId = %{public}s",
-            DeviceProfileUtils::AnonymizeDeviceId(subscribeInfo.extraInfo["deviceId"].get<std::string>()).c_str());
+        return subscribeInfo.extraInfo["deviceId"].get<std::string>();
     } else {
-        HILOGI("deviceId is invalid");
+        return "";
     }
 }
 } // namespace DeviceProfile

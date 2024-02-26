@@ -51,7 +51,7 @@ public:
         const sptr<IRemoteObject>& profileEventNotifier);
     int32_t Unsubscribe(const sptr<IRemoteObject>& profileEventNotifier);
     void OnSubscriberDied(const sptr<IRemoteObject>& profileEventNotifier);
-    void PrintfSubscribeInfo(const SubscribeInfo& subscribeInfo);
+    std::string PrintfSubscribeInfo(const SubscribeInfo& subscribeInfo);
 
 protected:
     std::atomic<bool> isRegistered_ {false};
