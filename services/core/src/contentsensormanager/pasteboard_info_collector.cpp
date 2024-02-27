@@ -55,9 +55,26 @@ bool PasteboardInfoCollector::ConvertToProfile(std::vector<CharacteristicProfile
     charProfile.SetServiceName(SERVICE_ID);
     charProfile.SetCharacteristicKey(CHARACTER_ID);
 
-    cJSON *jsonData = cJSON_CreateObject();
-    cJSON_AddNumberToObject(jsonData, CHARACTER_ID, GetSupportDistributedPasteboard());
-    cJSON_AddNumberToObject(jsonData, VERSION_ID, FIRST_VERSION);
+    cJSON* jsonData = cJSON_CreateObject();
+    if (!cJSON_IsObject(jsonData)) {
+        HILOGE("Create cJSON failed!");
+        cJSON_Delete(jsonData);
+        return false;
+    }
+    uint32_t supportDistributedPasteboard = GetSupportDistributedPasteboard();
+    cJSON* item = cJSON_AddNumberToObject(jsonData, CHARACTER_ID, supportDistributedPasteboard);
+    if (!cJSON_IsNumber(item)) {
+        HILOGE("Add CHARACTER_ID to cJSON failed! supportDistributedPasteboard=%{public}u",
+            supportDistributedPasteboard);
+        cJSON_Delete(jsonData);
+        return false;
+    }
+    item = cJSON_AddNumberToObject(jsonData, VERSION_ID, FIRST_VERSION);
+    if (!cJSON_IsNumber(item)) {
+        HILOGE("Add VERSION_ID to cJSON failed!");
+        cJSON_Delete(jsonData);
+        return false;
+    }
     charProfile.SetCharacteristicValue(cJSON_PrintUnformatted(jsonData));
     cJSON_Delete(jsonData);
     charProfileList.push_back(charProfile);
