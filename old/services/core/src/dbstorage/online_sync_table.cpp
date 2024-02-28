@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -150,8 +150,8 @@ void OnlineSyncTable::NotifySyncCompleted(const std::map<std::string, Status>& r
 {
     HILOGI("called, syncResult size %{public}zu!", results.size());
     for (const auto& item : results) {
-        HILOGI("SyncResult networkId %{public}s result %{public}d", item.first.c_str(),
-            static_cast<int32_t>(item.second));
+        HILOGI("SyncResult networkId %{public}s result %{public}d",
+            DeviceProfileUtils::AnonymizeDeviceId(item.first).c_str(), static_cast<int32_t>(item.second));
     }
     std::lock_guard<std::mutex> autoLock(tableLock_);
     if (syncCallback_ != nullptr) {

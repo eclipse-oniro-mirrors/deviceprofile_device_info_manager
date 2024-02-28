@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "device_profile_log.h"
+#include "device_profile_utils.h"
 #include "parcel.h"
 #include "parcel_helper.h"
 #include "profile_event.h"
@@ -51,7 +52,7 @@ bool SubscribeInfo::Unmarshalling(Parcel& parcel)
     std::string value = parcel.ReadString();
     extraInfo = ExtraInfo::parse(value, nullptr, false);
     if (extraInfo.is_discarded()) {
-        HILOGE("parse extra info failed, %{public}s", value.c_str());
+        HILOGE("parse extra info failed, %{public}s", DeviceProfileUtils::AnonymizeString(value).c_str());
         return false;
     }
     return true;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,6 +17,7 @@
 
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
+#include "device_profile_utils.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -40,22 +41,21 @@ int32_t ProfileEventHandler::Subscribe(const SubscribeInfo& subscribeInfo,
     std::lock_guard<std::mutex> autoLock(notifierLock_);
     auto iter = profileEventSubscribeInfos_.find(profileEventNotifier);
     if (iter == profileEventSubscribeInfos_.end()) {
-        HILOGI("add extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
+        HILOGI("add subscribeInfo, deviceId = %{public}s", AnonymizeSubscribeInfo(subscribeInfo).c_str());
         profileEventSubscribeInfos_.emplace(profileEventNotifier, std::move(subscribeInfo));
         HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
         for (const auto& entry : profileEventSubscribeInfos_) {
             const SubscribeInfo& subscribeInfo = entry.second;
-            HILOGI("extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
+            HILOGI("subscribeInfo: deviceId = %{public}s", AnonymizeSubscribeInfo(subscribeInfo).c_str());
         }
     } else {
         // just overwrite when the follow-ups subscribe with the same notifier
         HILOGW("overwrite last subscribed info");
-        HILOGI("update extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
+        HILOGI("update subscribeInfo, deviceId = %{public}s", AnonymizeSubscribeInfo(subscribeInfo).c_str());
         iter->second = std::move(subscribeInfo);
         HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
         for (const auto& entry : profileEventSubscribeInfos_) {
-            const SubscribeInfo& subscribeInfo = entry.second;
-            HILOGI("extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
+            HILOGI("subscribeInfo: deviceId = %{public}s", AnonymizeSubscribeInfo(entry.second).c_str());
         }
     }
 
@@ -78,12 +78,11 @@ int32_t ProfileEventHandler::Unsubscribe(const sptr<IRemoteObject>& profileEvent
         HILOGW("not subscribe yet");
         return ERR_DP_NOT_SUBSCRIBED;
     }
-    HILOGI("remove extraInfo = %{public}s", iter->second.extraInfo.dump().c_str());
+    HILOGI("remove subscribeInfo, deviceId = %{public}s", AnonymizeSubscribeInfo(iter->second).c_str());
     profileEventSubscribeInfos_.erase(iter);
     HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
     for (const auto& entry : profileEventSubscribeInfos_) {
-        const SubscribeInfo& subscribeInfo = entry.second;
-        HILOGI("extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
+        HILOGI("subscribeInfo: deviceId = %{public}s", AnonymizeSubscribeInfo(entry.second).c_str());
     }
     if (profileEventSubscribeInfos_.empty()) {
         int32_t errCode = Unregister();
@@ -105,6 +104,14 @@ void ProfileEventHandler::OnSubscriberDied(const sptr<IRemoteObject>& profileEve
 bool ProfileEventHandler::IsRegistered() const
 {
     return isRegistered_;
+}
+
+std::string ProfileEventHandler::AnonymizeSubscribeInfo(const SubscribeInfo& subscribeInfo)
+{
+    if (!subscribeInfo.extraInfo.contains("deviceId") || !subscribeInfo.extraInfo["deviceId"].is_string()) {
+        return "";
+    }
+    return DeviceProfileUtils::AnonymizeDeviceId(subscribeInfo.extraInfo["deviceId"].get<std::string>());
 }
 } // namespace DeviceProfile
 } // namespace OHOS

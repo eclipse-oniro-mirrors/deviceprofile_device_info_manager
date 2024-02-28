@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -71,12 +71,13 @@ void ProfileSyncHandler::NotifySyncCompleted(const SyncResult& syncResults)
                 iter++;
             } else {
                 profileEventNotifier->OnSyncCompleted(syncResults);
-                HILOGI("sync remove extraInfo = %{public}s", iter->second.extraInfo.dump().c_str());
+                HILOGI("sync remove, deviceId = %{public}s",
+                    ProfileEventHandler::AnonymizeSubscribeInfo(iter->second).c_str());
                 profileEventSubscribeInfos_.erase(iter++);
                 HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
                 for (const auto& entry : profileEventSubscribeInfos_) {
-                    const SubscribeInfo& subscribeInfo = entry.second;
-                    HILOGI("extraInfo = %{public}s", subscribeInfo.extraInfo.dump().c_str());
+                    HILOGI("subscribeInfo: deviceId = %{public}s",
+                        ProfileEventHandler::AnonymizeSubscribeInfo(entry.second).c_str());
                 }
             }
         }
