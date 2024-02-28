@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -142,7 +142,6 @@ bool DeviceProfile::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, String, deviceName_, false);
     WRITE_HELPER_RET(parcel, String, manufactureName_, false);
     WRITE_HELPER_RET(parcel, String, deviceModel_, false);
-    WRITE_HELPER_RET(parcel, String, serialNumberId_, false);
     WRITE_HELPER_RET(parcel, Int64, storageCapability_, false);
     WRITE_HELPER_RET(parcel, String, osSysCap_, false);
     WRITE_HELPER_RET(parcel, Int32, osApiLevel_, false);
@@ -159,7 +158,6 @@ bool DeviceProfile::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, String, deviceName_, false);
     READ_HELPER_RET(parcel, String, manufactureName_, false);
     READ_HELPER_RET(parcel, String, deviceModel_, false);
-    READ_HELPER_RET(parcel, String, serialNumberId_, false);
     READ_HELPER_RET(parcel, Int64, storageCapability_, false);
     READ_HELPER_RET(parcel, String, osSysCap_, false);
     READ_HELPER_RET(parcel, Int32, osApiLevel_, false);
@@ -173,9 +171,8 @@ bool DeviceProfile::operator!=(const DeviceProfile& deviceProfile) const
     bool isNotEqual = (deviceId_ != deviceProfile.GetDeviceId() || deviceTypeName_ != deviceProfile.GetDeviceTypeName()
         || deviceTypeId_ != deviceProfile.GetDeviceTypeId() || deviceName_ != deviceProfile.GetDeviceName() ||
         manufactureName_ != deviceProfile.GetManufactureName() || deviceModel_ != deviceProfile.GetDeviceModel() ||
-        serialNumberId_ != deviceProfile.GetSerialNumberId() || storageCapability_ !=
-        deviceProfile.GetStorageCapability() || osSysCap_ != deviceProfile.GetOsSysCap() || osApiLevel_ !=
-        deviceProfile.GetOsApiLevel() || osVersion_ != deviceProfile.GetOsVersion() || osType_ !=
+        storageCapability_ != deviceProfile.GetStorageCapability() || osSysCap_ != deviceProfile.GetOsSysCap() ||
+        osApiLevel_ != deviceProfile.GetOsApiLevel() || osVersion_ != deviceProfile.GetOsVersion() || osType_ !=
         deviceProfile.GetOsType());
     if (isNotEqual) {
         return true;
@@ -193,7 +190,6 @@ std::string DeviceProfile::dump() const
     json[DEVICE_NAME] = deviceName_;
     json[MANUFACTURE_NAME] = manufactureName_;
     json[DEVICE_MODEL] = deviceModel_;
-    json[SERIAL_NUMBER_ID] = serialNumberId_;
     json[STORAGE_CAPACITY] = storageCapability_;
     json[OS_SYS_CAPACITY] = osSysCap_;
     json[OS_API_LEVEL] = osApiLevel_;
