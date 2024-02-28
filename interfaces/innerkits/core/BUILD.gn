@@ -23,7 +23,7 @@ config("distributed_device_profile_sdk_config") {
     "${device_profile_common}/include/constants",
     "${device_profile_common}/include/interfaces",
     "${device_profile_common}/include/utils",
-    "//third_party/json/include",
+    "${third_party_json}/include",
   ]
 }
 

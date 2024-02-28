@@ -21,7 +21,7 @@ config("distributed_device_profile_common_config") {
     "include/interfaces",
     "include/constants",
     "include/utils",
-    "//third_party/json/include",
+    "${third_party_json}/include",
   ]
 }
 
