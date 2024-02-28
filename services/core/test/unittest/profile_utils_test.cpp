@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#define private   public
+#define private   publi
 #define protected public
 #include <string>
 #include <vector>

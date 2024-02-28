@@ -84,16 +84,6 @@ void DeviceProfile::SetDeviceModel(const std::string &deviceModel)
     deviceModel_ = deviceModel;
 }
 
-std::string DeviceProfile::GetSerialNumberId() const
-{
-    return serialNumberId_;
-}
-
-void DeviceProfile::SetSerialNumberId(const std::string &serialNumberId)
-{
-    serialNumberId_ = serialNumberId;
-}
-
 int64_t DeviceProfile::GetStorageCapability() const
 {
     return storageCapability_;

@@ -35,7 +35,6 @@ const std::string DEVICE_TYPE_NAME = "deviceTypeName";
 const std::string DEVICE_NAME = "deviceIdName";
 const std::string MANUFACTURE_NAME = "manufactureName";
 const std::string DEVICE_MODEL = "deviceModel";
-const std::string SERIAL_NUMBER_ID = "serialNumberId";
 const std::string STORAGE_CAPACITY = "storageCapacity";
 const std::string OS_SYS_CAPACITY = "osSysCapacity";
 const std::string OS_API_LEVEL = "osApiLevel";
