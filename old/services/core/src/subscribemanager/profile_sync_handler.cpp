@@ -72,12 +72,12 @@ void ProfileSyncHandler::NotifySyncCompleted(const SyncResult& syncResults)
             } else {
                 profileEventNotifier->OnSyncCompleted(syncResults);
                 HILOGI("sync remove, deviceId = %{public}s",
-                    ProfileEventHandler::PrintfSubscribeInfo(iter->second).c_str());
+                    ProfileEventHandler::AnonymizeSubscribeInfo(iter->second).c_str());
                 profileEventSubscribeInfos_.erase(iter++);
                 HILOGI("profileEventSubscribeInfos_ size = %{public}zu", profileEventSubscribeInfos_.size());
                 for (const auto& entry : profileEventSubscribeInfos_) {
                     HILOGI("subscribeInfo: deviceId = %{public}s",
-                        ProfileEventHandler::PrintfSubscribeInfo(entry.second).c_str());
+                        ProfileEventHandler::AnonymizeSubscribeInfo(entry.second).c_str());
                 }
             }
         }
