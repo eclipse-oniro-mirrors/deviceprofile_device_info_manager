@@ -35,7 +35,6 @@ bool DeviceInfoCollector::ConvertToProfile(DeviceProfile& deviceProfile)
     deviceProfile.SetDeviceModel(GetDeviceModel());
     deviceProfile.SetDeviceTypeName(GetDevType());
     deviceProfile.SetManufactureName(GetDeviceManufacturer());
-    deviceProfile.SetSerialNumberId(GetDeviceSerial());
     return true;
 }
 
