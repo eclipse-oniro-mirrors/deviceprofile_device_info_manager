@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023  Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -293,7 +293,6 @@ int32_t ProfileUtils::DeviceProfileToEntries(const DeviceProfile& profile, std::
     values[GenerateDBKey(deviceProfileKey, DEVICE_NAME)] = profile.GetDeviceName();
     values[GenerateDBKey(deviceProfileKey, MANUFACTURE_NAME)] = profile.GetManufactureName();
     values[GenerateDBKey(deviceProfileKey, DEVICE_MODEL)] = profile.GetDeviceModel();
-    values[GenerateDBKey(deviceProfileKey, SERIAL_NUMBER_ID)] = profile.GetSerialNumberId();
     values[GenerateDBKey(deviceProfileKey, STORAGE_CAPACITY)] = std::to_string(profile.GetStorageCapability());
     values[GenerateDBKey(deviceProfileKey, OS_SYS_CAPACITY)] = profile.GetOsSysCap();
     values[GenerateDBKey(deviceProfileKey, OS_API_LEVEL)] = std::to_string(profile.GetOsApiLevel());
@@ -473,9 +472,6 @@ int32_t ProfileUtils::EntriesToDeviceProfile(std::map<std::string, std::string> 
     }
     if (IsPropertyValid(propertiesMap, DEVICE_MODEL, MAX_STRING_LEN)) {
         profile.SetDeviceModel(propertiesMap[DEVICE_MODEL]);
-    }
-    if (IsPropertyValid(propertiesMap, SERIAL_NUMBER_ID, MAX_STRING_LEN)) {
-        profile.SetSerialNumberId(propertiesMap[SERIAL_NUMBER_ID]);
     }
     if (IsPropertyValid(propertiesMap, STORAGE_CAPACITY, MIN_STORAGE_KB, MAX_STORAGE_KB)) {
         int64_t storageCapability = std::atoi(propertiesMap[STORAGE_CAPACITY].c_str());
