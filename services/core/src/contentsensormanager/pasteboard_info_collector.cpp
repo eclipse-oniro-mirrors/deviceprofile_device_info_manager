@@ -83,7 +83,7 @@ bool PasteboardInfoCollector::ConvertToProfile(std::vector<CharacteristicProfile
 
 uint32_t PasteboardInfoCollector::GetSupportDistributedPasteboard()
 {
-    char value[CONFIG_LEN] = { 0 };
+    char value[CONFIG_LEN + 1] = { 0 };
     GetParameter(DISTRIBUTED_PASTEBOARD_ENABLED_KEY, UNDEFINED_VALUE, value, CONFIG_LEN);
     HILOGI("GetParameter, value = %{public}s.", value);
     std::string enabledStatus(value);
