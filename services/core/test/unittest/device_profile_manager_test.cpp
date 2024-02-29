@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -122,7 +122,6 @@ HWTEST_F(DeviceProfileManagerTest, PutDeviceProfile001, TestSize.Level1)
     deviceProfile.SetDeviceName("anything");
     deviceProfile.SetManufactureName("anything");
     deviceProfile.SetDeviceModel("anything");
-    deviceProfile.SetSerialNumberId("anything");
     deviceProfile.SetStorageCapability(1);
     deviceProfile.SetOsSysCap("anything");
     deviceProfile.SetOsApiLevel(1);
@@ -148,7 +147,6 @@ HWTEST_F(DeviceProfileManagerTest, PutDeviceProfile002, TestSize.Level1)
     deviceProfile.SetDeviceName("anything");
     deviceProfile.SetManufactureName("anything");
     deviceProfile.SetDeviceModel("anything");
-    deviceProfile.SetSerialNumberId("anything");
     deviceProfile.SetStorageCapability(1);
     deviceProfile.SetOsSysCap("anything");
     deviceProfile.SetOsApiLevel(1);
@@ -174,7 +172,6 @@ HWTEST_F(DeviceProfileManagerTest, PutDeviceProfile003, TestSize.Level1)
     deviceProfile1.SetDeviceName("anything");
     deviceProfile1.SetManufactureName("anything");
     deviceProfile1.SetDeviceModel("anything");
-    deviceProfile1.SetSerialNumberId("anything");
     deviceProfile1.SetStorageCapability(1);
     deviceProfile1.SetOsSysCap("anything");
     deviceProfile1.SetOsApiLevel(1);
@@ -188,7 +185,6 @@ HWTEST_F(DeviceProfileManagerTest, PutDeviceProfile003, TestSize.Level1)
     deviceProfile2.SetDeviceName("anything");
     deviceProfile2.SetManufactureName("anything");
     deviceProfile2.SetDeviceModel("anything");
-    deviceProfile2.SetSerialNumberId("anything");
     deviceProfile2.SetStorageCapability(1);
     deviceProfile2.SetOsSysCap("anything");
     deviceProfile2.SetOsApiLevel(1);
@@ -215,7 +211,6 @@ HWTEST_F(DeviceProfileManagerTest, PutDeviceProfile004, TestSize.Level1)
     deviceProfile10.SetDeviceName("anything");
     deviceProfile10.SetManufactureName("anything");
     deviceProfile10.SetDeviceModel("anything");
-    deviceProfile10.SetSerialNumberId("anything");
     deviceProfile10.SetStorageCapability(1);
     deviceProfile10.SetOsSysCap("anything");
     deviceProfile10.SetOsApiLevel(1);
@@ -243,7 +238,6 @@ HWTEST_F(DeviceProfileManagerTest, PutDeviceProfile005, TestSize.Level1)
     deviceProfile11.SetDeviceName("anything");
     deviceProfile11.SetManufactureName("anything");
     deviceProfile11.SetDeviceModel("anything");
-    deviceProfile11.SetSerialNumberId("anything");
     deviceProfile11.SetStorageCapability(1);
     deviceProfile11.SetOsSysCap("anything");
     deviceProfile11.SetOsApiLevel(1);
@@ -571,7 +565,6 @@ HWTEST_F(DeviceProfileManagerTest, GetDeviceProfile001, TestSize.Level1)
     deviceProfile2.SetDeviceName("anything");
     deviceProfile2.SetManufactureName("anything");
     deviceProfile2.SetDeviceModel("anything");
-    deviceProfile2.SetSerialNumberId("anything");
     deviceProfile2.SetStorageCapability(1);
     deviceProfile2.SetOsSysCap("anything");
     deviceProfile2.SetOsApiLevel(1);
@@ -590,7 +583,6 @@ HWTEST_F(DeviceProfileManagerTest, GetDeviceProfile001, TestSize.Level1)
     outDeviceProfile.GetDeviceName();
     outDeviceProfile.GetManufactureName();
     outDeviceProfile.GetDeviceModel();
-    outDeviceProfile.GetSerialNumberId();
     outDeviceProfile.GetStorageCapability();
     outDeviceProfile.GetOsSysCap();
     outDeviceProfile.GetOsApiLevel();
@@ -1153,7 +1145,6 @@ HWTEST_F(DeviceProfileManagerTest, DeviceProfileMarshalling001, TestSize.Level1)
     deviceProfile.SetDeviceName("anything");
     deviceProfile.SetManufactureName("anything");
     deviceProfile.SetDeviceModel("anything");
-    deviceProfile.SetSerialNumberId("anything");
     deviceProfile.SetStorageCapability(1);
     deviceProfile.SetOsSysCap("anything");
     deviceProfile.SetOsApiLevel(1);
@@ -1182,7 +1173,6 @@ HWTEST_F(DeviceProfileManagerTest, DeviceProfileOperator001, TestSize.Level1)
     deviceProfile1.SetDeviceName("anything1");
     deviceProfile1.SetManufactureName("anything1");
     deviceProfile1.SetDeviceModel("anything1");
-    deviceProfile1.SetSerialNumberId("anything1");
     deviceProfile1.SetStorageCapability(1);
     deviceProfile1.SetOsSysCap("anything1");
     deviceProfile1.SetOsApiLevel(1);
@@ -1196,7 +1186,6 @@ HWTEST_F(DeviceProfileManagerTest, DeviceProfileOperator001, TestSize.Level1)
     deviceProfile2.SetDeviceName("anything2");
     deviceProfile2.SetManufactureName("anything2");
     deviceProfile2.SetDeviceModel("anything2");
-    deviceProfile2.SetSerialNumberId("anything2");
     deviceProfile2.SetStorageCapability(1);
     deviceProfile2.SetOsSysCap("anything2");
     deviceProfile2.SetOsApiLevel(1);
@@ -1222,7 +1211,6 @@ HWTEST_F(DeviceProfileManagerTest, DeviceProfileDump001, TestSize.Level1)
     deviceProfile.SetDeviceName("anything");
     deviceProfile.SetManufactureName("anything");
     deviceProfile.SetDeviceModel("anything");
-    deviceProfile.SetSerialNumberId("anything");
     deviceProfile.SetStorageCapability(1);
     deviceProfile.SetOsSysCap("anything");
     deviceProfile.SetOsApiLevel(1);
@@ -1277,7 +1265,6 @@ HWTEST_F(DeviceProfileManagerTest, GetInKvDB001, TestSize.Level1)
     deviceProfile2.SetDeviceName("GetInKvDB001_DeviceName");
     deviceProfile2.SetManufactureName("GetInKvDB001_ManufactureName");
     deviceProfile2.SetDeviceModel("GetInKvDB001_DeviceModel");
-    deviceProfile2.SetSerialNumberId("GetInKvDB001_SerialNumberId");
     deviceProfile2.SetStorageCapability(1);
     deviceProfile2.SetOsSysCap("GetInKvDB001_OsSysCap");
     deviceProfile2.SetOsApiLevel(1);

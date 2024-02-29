@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -252,7 +252,6 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetDeviceProfile001, TestSize.Lev
     deviceProfile1.SetDeviceName("anything");
     deviceProfile1.SetManufactureName("anything");
     deviceProfile1.SetDeviceModel("anything");
-    deviceProfile1.SetSerialNumberId("anything");
     deviceProfile1.SetStorageCapability(1);
     deviceProfile1.SetOsSysCap("anything");
     deviceProfile1.SetOsApiLevel(1);
@@ -265,7 +264,6 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetDeviceProfile001, TestSize.Lev
     deviceProfile1.GetDeviceName();
     deviceProfile1.GetManufactureName();
     deviceProfile1.GetDeviceModel();
-    deviceProfile1.GetSerialNumberId();
     deviceProfile1.GetStorageCapability();
     deviceProfile1.GetOsSysCap();
     deviceProfile1.GetOsApiLevel();

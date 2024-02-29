@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -35,7 +35,6 @@ const std::string DEVICE_TYPE_NAME = "deviceTypeName";
 const std::string DEVICE_NAME = "deviceIdName";
 const std::string MANUFACTURE_NAME = "manufactureName";
 const std::string DEVICE_MODEL = "deviceModel";
-const std::string SERIAL_NUMBER_ID = "serialNumberId";
 const std::string STORAGE_CAPACITY = "storageCapacity";
 const std::string OS_SYS_CAPACITY = "osSysCapacity";
 const std::string OS_API_LEVEL = "osApiLevel";

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,7 +31,6 @@ public:
         deviceName_(""),
         manufactureName_(""),
         deviceModel_(""),
-        serialNumberId_(""),
         storageCapability_(0),
         osSysCap_(""),
         osApiLevel_(0),
@@ -52,8 +51,6 @@ public:
     void SetManufactureName(std::string manufactureName);
     std::string GetDeviceModel() const;
     void SetDeviceModel(const std::string& deviceModel);
-    std::string GetSerialNumberId() const;
-    void SetSerialNumberId(const std::string& serialNumberId);
     int64_t GetStorageCapability() const;
     void SetStorageCapability(int64_t storageCapability);
     std::string GetOsSysCap() const;
@@ -76,7 +73,6 @@ private:
     std::string deviceName_;
     std::string manufactureName_;
     std::string deviceModel_;
-    std::string serialNumberId_;
     int64_t storageCapability_;
     std::string osSysCap_;
     int32_t osApiLevel_;
