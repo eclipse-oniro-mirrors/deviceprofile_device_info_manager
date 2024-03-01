@@ -32,7 +32,7 @@ namespace {
     const std::string TAG = "SyncCompletedCallbackStub";
 }
 
-SyncCompletedCallbackStub::SyncCompletedCallbackStub()
+SyncCompletedCallbackStub::SyncCompletedCallbackStub() : IRemoteStub(true)
 {
     HILOGI("constructor!");
 }

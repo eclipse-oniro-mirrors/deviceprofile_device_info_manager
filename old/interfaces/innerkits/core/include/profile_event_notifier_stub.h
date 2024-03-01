@@ -31,7 +31,7 @@ namespace DeviceProfile {
 class ProfileEventNotifierStub : public IRemoteStub<IProfileEventNotifier> {
 public:
     explicit ProfileEventNotifierStub(const std::shared_ptr<IProfileEventCallback>& profileEventCb)
-        : profileEventCb_(profileEventCb) {}
+        : IRemoteStub(true), profileEventCb_(profileEventCb) {}
     ~ProfileEventNotifierStub() = default;
 
     virtual int32_t OnRemoteRequest(uint32_t code, MessageParcel& data,
