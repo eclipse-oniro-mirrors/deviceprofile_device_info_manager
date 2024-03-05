@@ -36,7 +36,7 @@ const std::string TAG = "DistributedDeviceProfileStub";
 constexpr uint32_t MAX_EVENT_LEN = 1000000;
 }
 
-DistributedDeviceProfileStub::DistributedDeviceProfileStub() : IRemoteStub(true)
+DistributedDeviceProfileStub::DistributedDeviceProfileStub()
 {
     funcsMap_[static_cast<uint32_t>(IDeviceProfileInterfaceCode::PUT_DEVICE_PROFILE)] =
         &DistributedDeviceProfileStub::PutDeviceProfileInner;

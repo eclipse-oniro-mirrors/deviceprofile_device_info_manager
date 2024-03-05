@@ -29,7 +29,7 @@ namespace DistributedDeviceProfile {
 namespace {
     const std::string TAG = "ProfileChangeListenerStub";
 }
-ProfileChangeListenerStub::ProfileChangeListenerStub() : IRemoteStub(true)
+ProfileChangeListenerStub::ProfileChangeListenerStub()
 {
     HILOGI("construct!");
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_ADD)] =
