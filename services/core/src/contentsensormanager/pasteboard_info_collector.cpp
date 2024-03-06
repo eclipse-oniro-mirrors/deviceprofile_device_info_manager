@@ -75,8 +75,16 @@ bool PasteboardInfoCollector::ConvertToProfile(std::vector<CharacteristicProfile
         cJSON_Delete(jsonData);
         return false;
     }
-    charProfile.SetCharacteristicValue(cJSON_PrintUnformatted(jsonData));
+    char* jsonChars = cJSON_PrintUnformatted(jsonData);
+    if (jsonChars == NULL) {
+        cJSON_Delete(jsonData);
+        HILOGE("cJSON formatted to string failed!");
+        return false;
+    }
+    std::string jsonStr = jsonChars;
+    charProfile.SetCharacteristicValue(jsonStr);
     cJSON_Delete(jsonData);
+    free(jsonChars);
     charProfileList.push_back(charProfile);
     return true;
 }
