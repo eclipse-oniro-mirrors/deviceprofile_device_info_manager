@@ -1,4 +1,4 @@
-# Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+# Copyright (c) 2021-2024 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -46,6 +46,7 @@ ohos_shared_library("distributed_device_profile_svr") {
     "src/contentsensormanager/content_sensor_manager.cpp",
     "src/contentsensormanager/device_info_collector.cpp",
     "src/contentsensormanager/dms_info_collector.cpp",
+    "src/contentsensormanager/pasteboard_info_collector.cpp",
     "src/contentsensormanager/storage_info_collector.cpp",
     "src/contentsensormanager/syscap_info_collector.cpp",
     "src/contentsensormanager/system_info_collector.cpp",
@@ -67,7 +68,10 @@ ohos_shared_library("distributed_device_profile_svr") {
     "src/utils/profile_cache.cpp",
   ]
 
-  deps = [ "${device_profile_common}:distributed_device_profile_common" ]
+  deps = [
+    "${device_profile_common}:distributed_device_profile_common",
+    "${third_party_cjson}:cjson",
+  ]
 
   configs = [ ":device_info_manager_config" ]
 

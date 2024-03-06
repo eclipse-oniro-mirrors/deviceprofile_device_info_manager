@@ -40,7 +40,8 @@
           "relational_store"
         ],
         "third_party": [
-          "json"
+          "json",
+          "cJSON"
         ]
       },
       "build": {

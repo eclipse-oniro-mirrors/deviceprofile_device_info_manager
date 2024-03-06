@@ -24,6 +24,7 @@
 #include "device_info_collector.h"
 #include "distributed_device_profile_log.h"
 #include "dms_info_collector.h"
+#include "pasteboard_info_collector.h"
 #include "storage_info_collector.h"
 #include "syscap_info_collector.h"
 #include "system_info_collector.h"
@@ -70,6 +71,7 @@ int32_t ContentSensorManager::Collect()
         taskList.push_back(std::make_shared<StorageInfoCollector>());
         taskList.push_back(std::make_shared<DmsInfoCollector>());
         taskList.push_back(std::make_shared<CollaborationInfoCollector>());
+        taskList.push_back(std::make_shared<PasteboardInfoCollector>());
         DeviceProfile deviceProfile;
         std::vector<ServiceProfile> svrProfileList;
         std::vector<CharacteristicProfile> charProfileList;
