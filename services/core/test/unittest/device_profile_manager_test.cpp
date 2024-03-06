@@ -1244,16 +1244,10 @@ HWTEST_F(DeviceProfileManagerTest, ServiceProfileConstructor001, TestSize.Level1
  */
 HWTEST_F(DeviceProfileManagerTest, LoadDpSyncAdapter001, TestSize.Level1)
 {
-    char path[PATH_MAX + 1] = {0x00};
-    std::string soName = "/system/lib/libdeviceprofileadapter.z.so";
-    bool ret = false;
-    if ((soName.length() == 0) || (soName.length() > PATH_MAX) || (realpath(soName.c_str(), path) == nullptr)) {
-        ret = true;
-    } else {
-        DeviceProfileManager::GetInstance().isAdapterSoLoaded_ = true;
-        ret = DeviceProfileManager::GetInstance().LoadDpSyncAdapter();
-    }
+    DeviceProfileManager::GetInstance().isAdapterSoLoaded_ = true;
+    bool ret = DeviceProfileManager::GetInstance().LoadDpSyncAdapter();
     EXPECT_EQ(true, ret);
+    DeviceProfileManager::GetInstance().Init();
 }
 
 /**

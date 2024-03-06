@@ -29,7 +29,7 @@ namespace {
 const std::string TAG = "DistributedDeviceProfileStubNew";
 }
 
-DistributedDeviceProfileStubNew::DistributedDeviceProfileStubNew() : IRemoteStub(true)
+DistributedDeviceProfileStubNew::DistributedDeviceProfileStubNew()
 {
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::PUT_ACL_PROFILE)] =
         &DistributedDeviceProfileStubNew::PutAccessControlProfileInner;
