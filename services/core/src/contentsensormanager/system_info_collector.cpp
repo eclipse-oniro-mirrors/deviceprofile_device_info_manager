@@ -46,7 +46,6 @@ bool SystemInfoCollector::ConvertToProfile(DeviceProfile& profile)
 {
     profile.SetOsType(GetOsType());
     profile.SetOsVersion(GetOsVersion());
-    profile.SetOsApiLevel(GetSdkApiVersion());
     return true;
 }
 

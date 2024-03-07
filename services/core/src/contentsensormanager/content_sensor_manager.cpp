@@ -21,17 +21,16 @@
 #include <memory>
 #include <thread>
 #include "collaboration_info_collector.h"
-#include "device_info_collector.h"
 #include "distributed_device_profile_log.h"
 #include "dms_info_collector.h"
 #include "pasteboard_info_collector.h"
-#include "storage_info_collector.h"
 #include "syscap_info_collector.h"
 #include "system_info_collector.h"
 #include "distributed_device_profile_errors.h"
 #include "device_profile.h"
 #include "event_handler.h"
 #include "collector.h"
+#include "content_sensor_manager_utils.h"
 #include "device_profile_manager.h"
 
 namespace OHOS {
@@ -80,6 +79,7 @@ int32_t ContentSensorManager::Collect()
             task->ConvertToProfile(svrProfileList);
             task->ConvertToProfile(charProfileList);
         }
+        deviceProfile.SetDeviceId(ContentSensorManagerUtils::GetInstance().ObtianLocalUdid());
         DeviceProfileManager::GetInstance().PutDeviceProfile(deviceProfile);
         if (!svrProfileList.empty()) {
             DeviceProfileManager::GetInstance().PutServiceProfileBatch(svrProfileList);

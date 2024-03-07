@@ -287,15 +287,7 @@ int32_t ProfileUtils::AccesseeToEntries(const AccessControlProfile& aclProfile, 
 int32_t ProfileUtils::DeviceProfileToEntries(const DeviceProfile& profile, std::map<std::string, std::string>& values)
 {
     std::string deviceProfileKey = GenerateDeviceProfileKey(profile.GetDeviceId());
-    values[GenerateDBKey(deviceProfileKey, DEVICE_ID)] = profile.GetDeviceId();
-    values[GenerateDBKey(deviceProfileKey, DEVICE_TYPE_ID)] = std::to_string(profile.GetDeviceTypeId());
-    values[GenerateDBKey(deviceProfileKey, DEVICE_TYPE_NAME)] = profile.GetDeviceTypeName();
-    values[GenerateDBKey(deviceProfileKey, DEVICE_NAME)] = profile.GetDeviceName();
-    values[GenerateDBKey(deviceProfileKey, MANUFACTURE_NAME)] = profile.GetManufactureName();
-    values[GenerateDBKey(deviceProfileKey, DEVICE_MODEL)] = profile.GetDeviceModel();
-    values[GenerateDBKey(deviceProfileKey, STORAGE_CAPACITY)] = std::to_string(profile.GetStorageCapability());
     values[GenerateDBKey(deviceProfileKey, OS_SYS_CAPACITY)] = profile.GetOsSysCap();
-    values[GenerateDBKey(deviceProfileKey, OS_API_LEVEL)] = std::to_string(profile.GetOsApiLevel());
     values[GenerateDBKey(deviceProfileKey, OS_VERSION)] = profile.GetOsVersion();
     values[GenerateDBKey(deviceProfileKey, OS_TYPE)] = std::to_string(profile.GetOsType());
     return DP_SUCCESS;
@@ -453,36 +445,8 @@ int32_t ProfileUtils::EntriesToDeviceProfile(std::map<std::string, std::string> 
         return DP_INVALID_PARAMS;
     }
     auto propertiesMap = GetProfilePropertiesMap(values);
-    if (IsPropertyValid(propertiesMap, DEVICE_ID, MAX_STRING_LEN)) {
-        profile.SetDeviceId(propertiesMap[DEVICE_ID]);
-    }
-    if (IsPropertyValid(propertiesMap, DEVICE_TYPE_ID, static_cast<uint32_t>(DeviceIdType::MIN),
-        static_cast<uint32_t>(DeviceIdType::MAX))) {
-        uint32_t deviceTypeId = std::atoi(propertiesMap[DEVICE_TYPE_ID].c_str());
-        profile.SetDeviceTypeId(deviceTypeId);
-    }
-    if (IsPropertyValid(propertiesMap, DEVICE_TYPE_NAME, MAX_STRING_LEN)) {
-        profile.SetDeviceTypeName(propertiesMap[DEVICE_TYPE_NAME]);
-    }
-    if (IsPropertyValid(propertiesMap, DEVICE_NAME, MAX_STRING_LEN)) {
-        profile.SetDeviceName(propertiesMap[DEVICE_NAME]);
-    }
-    if (IsPropertyValid(propertiesMap, MANUFACTURE_NAME, MAX_STRING_LEN)) {
-        profile.SetManufactureName(propertiesMap[MANUFACTURE_NAME]);
-    }
-    if (IsPropertyValid(propertiesMap, DEVICE_MODEL, MAX_STRING_LEN)) {
-        profile.SetDeviceModel(propertiesMap[DEVICE_MODEL]);
-    }
-    if (IsPropertyValid(propertiesMap, STORAGE_CAPACITY, MIN_STORAGE_KB, MAX_STORAGE_KB)) {
-        int64_t storageCapability = std::atoi(propertiesMap[STORAGE_CAPACITY].c_str());
-        profile.SetStorageCapability(storageCapability);
-    }
     if (IsPropertyValid(propertiesMap, OS_SYS_CAPACITY, MAX_STRING_LEN)) {
         profile.SetOsSysCap(propertiesMap[OS_SYS_CAPACITY]);
-    }
-    if (IsPropertyValid(propertiesMap, OS_API_LEVEL, MIN_OS_API_LEVEL, MAX_OS_API_LEVEL)) {
-        int32_t osApiLevel = std::atoi(propertiesMap[OS_API_LEVEL].c_str());
-        profile.SetOsApiLevel(osApiLevel);
     }
     if (IsPropertyValid(propertiesMap, OS_VERSION, MAX_STRING_LEN)) {
         profile.SetOsVersion(propertiesMap[OS_VERSION]);
