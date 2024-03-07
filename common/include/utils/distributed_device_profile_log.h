@@ -20,11 +20,6 @@
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
-static constexpr OHOS::HiviewDFX::HiLogLabel DP_LOG_LABEL = {
-    LOG_CORE,
-    0xD004400,
-    "Distributed_Device_Profile"
-};
 
 #ifdef HILOGF
 #undef HILOGF
