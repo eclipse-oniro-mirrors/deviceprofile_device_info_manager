@@ -14,9 +14,9 @@
  */
 
 #include "device_profile.h"
-#include "macro_utils.h"
+#include "cJSON.h"
 #include "distributed_device_profile_constants.h"
-#include "nlohmann/json.hpp"
+#include "macro_utils.h"
 #include "profile_utils.h"
 
 namespace OHOS {
@@ -183,19 +183,32 @@ bool DeviceProfile::operator!=(const DeviceProfile& deviceProfile) const
 
 std::string DeviceProfile::dump() const
 {
-    nlohmann::json json;
-    json[DEVICE_ID] = ProfileUtils::GetAnonyString(deviceId_);
-    json[DEVICE_TYPE_NAME] = deviceTypeName_;
-    json[DEVICE_TYPE_ID] = deviceTypeId_;
-    json[DEVICE_NAME] = deviceName_;
-    json[MANUFACTURE_NAME] = manufactureName_;
-    json[DEVICE_MODEL] = deviceModel_;
-    json[STORAGE_CAPACITY] = storageCapability_;
-    json[OS_SYS_CAPACITY] = osSysCap_;
-    json[OS_API_LEVEL] = osApiLevel_;
-    json[OS_VERSION] = osVersion_;
-    json[OS_TYPE] = osType_;
-    return json.dump();
+    cJSON* json = cJSON_CreateObject();
+    if(!cJSON_IsObject(json)) {
+        cJSON_Delete(json);
+        return EMPTY_STRING;
+    }
+    cJSON_AddStringToObject(json, DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(deviceId_).c_str());
+    cJSON_AddStringToObject(json, DEVICE_TYPE_NAME.c_str(), deviceTypeName_.c_str());
+    cJSON_AddNumberToObject(json, DEVICE_TYPE_ID.c_str(), deviceTypeId_);
+    cJSON_AddStringToObject(json, DEVICE_NAME.c_str(), deviceName_.c_str());
+    cJSON_AddStringToObject(json, MANUFACTURE_NAME.c_str(), manufactureName_.c_str());
+    cJSON_AddStringToObject(json, DEVICE_MODEL.c_str(), deviceModel_.c_str());
+    cJSON_AddNumberToObject(json, STORAGE_CAPACITY.c_str(), storageCapability_);
+    cJSON_AddStringToObject(json, OS_SYS_CAPACITY.c_str(), osSysCap_.c_str());
+    cJSON_AddNumberToObject(json, OS_API_LEVEL.c_str(), osApiLevel_);
+    cJSON_AddStringToObject(json, OS_VERSION.c_str(), osVersion_.c_str());
+    cJSON_AddNumberToObject(json, OS_TYPE.c_str(), osType_);
+    char* jsonChars = cJSON_PrintUnformatted(json);
+    if (jsonChars == NULL) {
+        cJSON_Delete(json);
+        HILOGE("cJSON formatted to string failed!");
+        return EMPTY_STRING;
+    }
+    std::string jsonStr = jsonChars;
+    cJSON_Delete(json);
+    free(jsonChars);
+    return jsonStr;
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

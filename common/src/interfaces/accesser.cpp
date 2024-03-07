@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,9 +14,9 @@
  */
 
 #include "accesser.h"
-#include "macro_utils.h"
-#include "nlohmann/json.hpp"
+#include "cJSON.h"
 #include "distributed_device_profile_constants.h"
+#include "macro_utils.h"
 #include "profile_utils.h"
 
 namespace OHOS {
@@ -144,16 +144,29 @@ bool Accesser::UnMarshalling(MessageParcel& parcel)
 
 std::string Accesser::dump() const
 {
-    nlohmann::json json;
-    json[ACCESSER_ID] = accesserId_;
-    json[ACCESSER_DEVICE_ID] = ProfileUtils::GetAnonyString(accesserDeviceId_);
-    json[ACCESSER_USER_ID] = accesserUserId_;
-    json[ACCESSER_ACCOUNT_ID] = accesserAccountId_;
-    json[ACCESSER_TOKEN_ID] = accesserTokenId_;
-    json[ACCESSER_BUNDLE_NAME] = accesserBundleName_;
-    json[ACCESSER_HAP_SIGNATURE] = accesserHapSignature_;
-    json[ACCESSER_BIND_LEVEL] = accesserBindLevel_;
-    return json.dump();
+    cJSON* json = cJSON_CreateObject();
+    if(!cJSON_IsObject(json)) {
+        cJSON_Delete(json);
+        return EMPTY_STRING;
+    }
+    cJSON_AddNumberToObject(json, ACCESSER_ID.c_str(), accesserId_);
+    cJSON_AddStringToObject(json, ACCESSER_DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(accesserDeviceId_).c_str());
+    cJSON_AddNumberToObject(json, ACCESSER_USER_ID.c_str(), accesserUserId_);
+    cJSON_AddStringToObject(json, ACCESSER_ACCOUNT_ID.c_str(), accesserAccountId_.c_str());
+    cJSON_AddNumberToObject(json, ACCESSER_TOKEN_ID.c_str(), accesserTokenId_);
+    cJSON_AddStringToObject(json, ACCESSER_BUNDLE_NAME.c_str(), accesserBundleName_.c_str());
+    cJSON_AddStringToObject(json, ACCESSER_HAP_SIGNATURE.c_str(), accesserHapSignature_.c_str());
+    cJSON_AddNumberToObject(json, ACCESSER_BIND_LEVEL.c_str(), accesserBindLevel_);
+    char* jsonChars = cJSON_PrintUnformatted(json);
+    if (jsonChars == NULL) {
+        cJSON_Delete(json);
+        HILOGE("cJSON formatted to string failed!");
+        return EMPTY_STRING;
+    }
+    std::string jsonStr = jsonChars;
+    cJSON_Delete(json);
+    free(jsonChars);
+    return jsonStr;
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

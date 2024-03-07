@@ -23,7 +23,6 @@
 #include "file_ex.h"
 #include "ipc_skeleton.h"
 #include "securec.h"
-#include "nlohmann/json.hpp"
 
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_constants.h"
@@ -75,22 +74,26 @@ int32_t PermissionManager::LoadPermissionCfg(const std::string& filePath)
         HILOGE("load json file failed");
         return DP_PARSE_PERMISSION_JSON_FAIL;
     }
-    nlohmann::json permissionJson = nlohmann::json::parse(ifs, nullptr, false);
-    if (permissionJson.is_discarded()) {
+    std::string fileContent(std::istreambuf_iterator<char>{ifs}, std::istreambuf_iterator<char>{});
+    ifs.close();
+
+    cJSON* permissionJson = cJSON_Parse(fileContent.c_str());
+    if (!cJSON_IsObject(permissionJson)) {
         HILOGE("Permission json parse failed!");
-        ifs.close();
+        cJSON_Delete(permissionJson);
         return DP_PARSE_PERMISSION_JSON_FAIL;
     }
     int32_t parseResult = ParsePermissionJson(permissionJson);
     HILOGI("permission json load result %d!", parseResult);
-    ifs.close();
+    cJSON_Delete(permissionJson);
     return parseResult;
 }
 
 
-int32_t PermissionManager::ParsePermissionJson(const nlohmann::json& permissionJson)
+int32_t PermissionManager::ParsePermissionJson(const cJSON* permissionJson)
 {
-    if (permissionJson.size() == 0 || permissionJson.size() > MAX_INTERFACE_SIZE) {
+    int size = cJSON_GetArraySize(permissionJson);
+    if (size == 0 || size > MAX_INTERFACE_SIZE) {
         HILOGE("Permission json size is invalid!");
         return DP_PARSE_PERMISSION_JSON_FAIL;
     }
@@ -116,7 +119,13 @@ int32_t PermissionManager::ParsePermissionJson(const nlohmann::json& permissionJ
         SET_PERMISSION_MAP(permissionMap_, permissionJson, UNSUBSCRIBE_DEVICE_PROFILE);
         SET_PERMISSION_MAP(permissionMap_, permissionJson, SYNC_DEVICE_PROFILE);
     }
-    HILOGI("permission json %{public}s parse success!", permissionJson.dump().c_str());
+    char* jsonChars = cJSON_PrintUnformatted(permissionJson);
+    if (jsonChars == NULL) {
+        HILOGW("cJSON formatted to string failed!");
+    } else {
+        HILOGI("permission json %{public}s parse success!", jsonChars);
+        free(jsonChars);
+    }
     return DP_SUCCESS;
 }
 

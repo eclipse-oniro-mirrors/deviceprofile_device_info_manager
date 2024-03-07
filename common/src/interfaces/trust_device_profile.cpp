@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,9 +14,9 @@
  */
 
 #include "trust_device_profile.h"
-#include "macro_utils.h"
+#include "cJSON.h"
 #include "distributed_device_profile_constants.h"
-#include "nlohmann/json.hpp"
+#include "macro_utils.h"
 #include "profile_utils.h"
 
 namespace OHOS {
@@ -84,12 +84,25 @@ bool TrustDeviceProfile::UnMarshalling(MessageParcel& parcel)
 
 std::string TrustDeviceProfile::dump() const
 {
-    nlohmann::json json;
-    json[DEVICE_ID] = ProfileUtils::GetAnonyString(deviceId_);
-    json[DEVICE_ID_TYPE] = deviceIdType_;
-    json[DEVICE_ID_HASH] = deviceIdHash_;
-    json[STATUS] = status_;
-    return json.dump();
+    cJSON* json = cJSON_CreateObject();
+    if(!cJSON_IsObject(json)) {
+        cJSON_Delete(json);
+        return EMPTY_STRING;
+    }
+    cJSON_AddStringToObject(json, DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(deviceId_).c_str());
+    cJSON_AddNumberToObject(json, DEVICE_ID_TYPE.c_str(), deviceIdType_);
+    cJSON_AddStringToObject(json, DEVICE_ID_HASH.c_str(), deviceIdHash_.c_str());
+    cJSON_AddNumberToObject(json, STATUS.c_str(), status_);
+    char* jsonChars = cJSON_PrintUnformatted(json);
+    if (jsonChars == NULL) {
+        cJSON_Delete(json);
+        HILOGE("cJSON formatted to string failed!");
+        return EMPTY_STRING;
+    }
+    std::string jsonStr = jsonChars;
+    cJSON_Delete(json);
+    free(jsonChars);
+    return jsonStr;
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

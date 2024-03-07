@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,13 +15,13 @@
 
 #include "system_info_collector.h"
 
-#include "device_profile.h"
-#include "distributed_device_profile_log.h"
-#include "nlohmann/json.hpp"
 #include "parameter.h"
 #include "securec.h"
+
 #include "content_sensor_manager_utils.h"
+#include "device_profile.h"
 #include "distributed_device_profile_constants.h"
+#include "distributed_device_profile_log.h"
 #include "profile_utils.h"
 
 namespace OHOS {

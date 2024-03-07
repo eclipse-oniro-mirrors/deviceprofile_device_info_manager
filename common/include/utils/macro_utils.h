@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -116,12 +116,21 @@ namespace DistributedDeviceProfile {
 
 #define SET_PERMISSION_MAP(permissionMap, permissionJson, interfaceName) \
     do { \
-        if (!permissionJson.contains(interfaceName) || !permissionJson[interfaceName].is_array() || \
-            permissionJson[interfaceName].empty() || permissionJson[interfaceName].size() > MAX_INTERFACE_SIZE) { \
+        cJSON* item = cJSON_GetObjectItem(permissionJson, interfaceName.c_str()); \
+        int32_t itemSize = static_cast<int32_t>(cJSON_GetArraySize(item)); \
+        if (!cJSON_IsArray(item) || itemSize == 0 || itemSize > MAX_INTERFACE_SIZE) { \
             HILOGE("PermissionJson not contains the key, %s!", interfaceName.c_str()); \
             return DP_PARSE_PERMISSION_JSON_FAIL; \
         } \
-        permissionMap[interfaceName] = permissionJson[interfaceName].get<std::unordered_set<std::string>>(); \
+        std::unordered_set<std::string> interfaceNameSets; \
+        item = item->child; \
+        while (item != NULL) { \
+            if (cJSON_IsString(item)) { \
+                interfaceNameSets.emplace(item->valuestring); \
+            } \
+            item = item->next; \
+        } \
+        permissionMap[interfaceName] = interfaceNameSets; \
     } while (0)
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

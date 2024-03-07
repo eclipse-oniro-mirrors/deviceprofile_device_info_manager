@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,9 +14,9 @@
  */
 
 #include "characteristic_profile.h"
-#include "macro_utils.h"
+#include "cJSON.h"
 #include "distributed_device_profile_constants.h"
-#include "nlohmann/json.hpp"
+#include "macro_utils.h"
 #include "profile_utils.h"
 
 namespace OHOS {
@@ -96,12 +96,25 @@ bool CharacteristicProfile::operator!=(const CharacteristicProfile& charProfile)
 
 std::string CharacteristicProfile::dump() const
 {
-    nlohmann::json json;
-    json[DEVICE_ID] = ProfileUtils::GetAnonyString(deviceId_);
-    json[SERVICE_NAME] = serviceName_;
-    json[CHARACTERISTIC_KEY] = characteristicKey_;
-    json[CHARACTERISTIC_VALUE] = characteristicValue_;
-    return json.dump();
+    cJSON* json = cJSON_CreateObject();
+    if(!cJSON_IsObject(json)) {
+        cJSON_Delete(json);
+        return EMPTY_STRING;
+    }
+    cJSON_AddStringToObject(json, DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(deviceId_).c_str());
+    cJSON_AddStringToObject(json, SERVICE_NAME.c_str(), serviceName_.c_str());
+    cJSON_AddStringToObject(json, CHARACTERISTIC_KEY.c_str(), characteristicKey_.c_str());
+    cJSON_AddStringToObject(json, CHARACTERISTIC_VALUE.c_str(), characteristicValue_.c_str());
+    char* jsonChars = cJSON_PrintUnformatted(json);
+    if (jsonChars == NULL) {
+        cJSON_Delete(json);
+        HILOGE("cJSON formatted to string failed!");
+        return EMPTY_STRING;
+    }
+    std::string jsonStr = jsonChars;
+    cJSON_Delete(json);
+    free(jsonChars);
+    return jsonStr;
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

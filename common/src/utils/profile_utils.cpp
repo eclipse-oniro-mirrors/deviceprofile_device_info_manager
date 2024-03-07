@@ -22,7 +22,6 @@
 #include "distributed_device_profile_errors.h"
 #include "rdb_errno.h"
 #include "device_manager.h"
-#include "nlohmann/json.hpp"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -579,7 +578,7 @@ bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& pro
 }
 
 bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
-   int32_t minValue, int32_t maxValue)
+    int32_t minValue, int32_t maxValue)
 {
     if (propertyMap.count(property) != 0 && minValue < std::atoi(propertyMap.at(property).c_str()) &&
         std::atoi(propertyMap.at(property).c_str()) < maxValue) {
@@ -589,7 +588,7 @@ bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& pro
 }
 
 bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
-   uint32_t minValue, uint32_t maxValue)
+    uint32_t minValue, uint32_t maxValue)
 {
     if (propertyMap.count(property) != 0 && static_cast<int32_t>(minValue) < std::atoi(propertyMap.at(property).c_str())
         && std::atoi(propertyMap.at(property).c_str()) < static_cast<int32_t>(maxValue)) {
@@ -599,7 +598,7 @@ bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& pro
 }
 
 bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
-   int64_t minValue, int64_t maxValue)
+    int64_t minValue, int64_t maxValue)
 {
     if (propertyMap.count(property) != 0 && minValue < std::atoi(propertyMap.at(property).c_str()) &&
         std::atoi(propertyMap.at(property).c_str()) < maxValue) {

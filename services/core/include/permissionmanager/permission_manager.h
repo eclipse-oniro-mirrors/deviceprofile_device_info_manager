@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,14 +16,12 @@
 #ifndef OHOS_DP_PERMISSION_MANAGER_H
 #define OHOS_DP_PERMISSION_MANAGER_H
 
+#include <mutex>
 #include <string>
 #include <unordered_set>
 #include <unordered_map>
-#include <mutex>
-
+#include "cJSON.h"
 #include "single_instance.h"
-
-#include "nlohmann/json.hpp"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -39,7 +37,7 @@ public:
 private:
     bool CheckInterfacePermission(const std::string& interfaceName);
     int32_t LoadPermissionCfg(const std::string& filePath);
-    int32_t ParsePermissionJson(const nlohmann::json& permissionJson);
+    int32_t ParsePermissionJson(const cJSON* permissionJson);
 
 private:
     std::mutex permissionMutex_;

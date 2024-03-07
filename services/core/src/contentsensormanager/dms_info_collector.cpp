@@ -14,11 +14,11 @@
  */
 
 #include "dms_info_collector.h"
+#include "cJSON.h"
+#include "dms_constant.h"
 #include "content_sensor_manager_utils.h"
 #include "distributed_device_profile_log.h"
 #include "profile_utils.h"
-#include "dms_constant.h"
-#include "nlohmann/json.hpp"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -44,10 +44,36 @@ bool DmsInfoCollector::ConvertToProfile(std::vector<CharacteristicProfile>& char
     charProfile.SetDeviceId(GetDeviceUdid());
     charProfile.SetServiceName(DistributedSchedule::Constants::DMS_SERVICE_ID);
     charProfile.SetCharacteristicKey(DistributedSchedule::Constants::DMS_CHAR_ID);
-    nlohmann::json jsonData;
-    jsonData[DistributedSchedule::Constants::PACKAGE_NAMES] = DistributedSchedule::Constants::DMS_NAME;
-    jsonData[DistributedSchedule::Constants::VERSIONS] = DistributedSchedule::Constants::DMS_VERSION;
-    charProfile.SetCharacteristicValue(jsonData.dump());
+    cJSON* jsonData = cJSON_CreateObject();
+    if(!cJSON_IsObject(jsonData)) {
+        cJSON_Delete(jsonData);
+        HILOGE("Create cJSON failed!");
+        return false;
+    }
+    cJSON* item = cJSON_AddStringToObject(jsonData, DistributedSchedule::Constants::PACKAGE_NAMES, 
+        DistributedSchedule::Constants::DMS_NAME);
+    if (!cJSON_IsString(item)) {
+        HILOGE("Add PACKAGE_NAMES to cJSON failed!");
+        cJSON_Delete(jsonData);
+        return false;
+    }
+    item = cJSON_AddStringToObject(jsonData, DistributedSchedule::Constants::VERSIONS, 
+        DistributedSchedule::Constants::DMS_VERSION);
+    if (!cJSON_IsString(item)) {
+        HILOGE("Add VERSIONS to cJSON failed!");
+        cJSON_Delete(jsonData);
+        return false;
+    }
+    char* jsonChars = cJSON_PrintUnformatted(jsonData);
+    if (jsonChars == NULL) {
+        cJSON_Delete(jsonData);
+        HILOGE("cJSON formatted to string failed!");
+        return false;
+    }
+    std::string jsonStr = jsonChars;
+    charProfile.SetCharacteristicValue(jsonStr);
+    cJSON_Delete(jsonData);
+    free(jsonChars);
     charProfileList.push_back(charProfile);
     return true;
 }
