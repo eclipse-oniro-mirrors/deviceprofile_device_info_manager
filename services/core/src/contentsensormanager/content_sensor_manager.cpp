@@ -64,10 +64,8 @@ int32_t ContentSensorManager::Collect()
     auto csTask = []() {
         HILOGI("ContentSensorManager Collect");
         std::list<std::shared_ptr<Collector>> taskList;
-        taskList.push_back(std::make_shared<DeviceInfoCollector>());
         taskList.push_back(std::make_shared<SystemInfoCollector>());
         taskList.push_back(std::make_shared<SyscapInfoCollector>());
-        taskList.push_back(std::make_shared<StorageInfoCollector>());
         taskList.push_back(std::make_shared<DmsInfoCollector>());
         taskList.push_back(std::make_shared<CollaborationInfoCollector>());
         taskList.push_back(std::make_shared<PasteboardInfoCollector>());
@@ -79,7 +77,7 @@ int32_t ContentSensorManager::Collect()
             task->ConvertToProfile(svrProfileList);
             task->ConvertToProfile(charProfileList);
         }
-        deviceProfile.SetDeviceId(ContentSensorManagerUtils::GetInstance().ObtianLocalUdid());
+        deviceProfile.SetDeviceId(ContentSensorManagerUtils::GetInstance().ObtainLocalUdid());
         DeviceProfileManager::GetInstance().PutDeviceProfile(deviceProfile);
         if (!svrProfileList.empty()) {
             DeviceProfileManager::GetInstance().PutServiceProfileBatch(svrProfileList);
