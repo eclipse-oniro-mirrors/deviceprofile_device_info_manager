@@ -113,25 +113,6 @@ namespace DistributedDeviceProfile {
             return ERR_FLATTEN_OBJECT; \
         } \
     } while (0)
-
-#define SET_PERMISSION_MAP(permissionMap, permissionJson, interfaceName) \
-    do { \
-        cJSON* item = cJSON_GetObjectItem(permissionJson, interfaceName.c_str()); \
-        int32_t itemSize = static_cast<int32_t>(cJSON_GetArraySize(item)); \
-        if (!cJSON_IsArray(item) || itemSize == 0 || itemSize > MAX_INTERFACE_SIZE) { \
-            HILOGE("PermissionJson not contains the key, %s!", interfaceName.c_str()); \
-            return DP_PARSE_PERMISSION_JSON_FAIL; \
-        } \
-        std::unordered_set<std::string> interfaceNameSets; \
-        item = item->child; \
-        while (item != NULL) { \
-            if (cJSON_IsString(item)) { \
-                interfaceNameSets.emplace(item->valuestring); \
-            } \
-            item = item->next; \
-        } \
-        permissionMap[interfaceName] = interfaceNameSets; \
-    } while (0)
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_DEVICE_PROFILE_PARCEL_HELPER_H

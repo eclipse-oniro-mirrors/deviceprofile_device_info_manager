@@ -45,19 +45,19 @@ bool DmsInfoCollector::ConvertToProfile(std::vector<CharacteristicProfile>& char
     charProfile.SetServiceName(DistributedSchedule::Constants::DMS_SERVICE_ID);
     charProfile.SetCharacteristicKey(DistributedSchedule::Constants::DMS_CHAR_ID);
     cJSON* jsonData = cJSON_CreateObject();
-    if(!cJSON_IsObject(jsonData)) {
+    if (!cJSON_IsObject(jsonData)) {
         cJSON_Delete(jsonData);
         HILOGE("Create cJSON failed!");
         return false;
     }
-    cJSON* item = cJSON_AddStringToObject(jsonData, DistributedSchedule::Constants::PACKAGE_NAMES, 
+    cJSON* item = cJSON_AddStringToObject(jsonData, DistributedSchedule::Constants::PACKAGE_NAMES,
         DistributedSchedule::Constants::DMS_NAME);
     if (!cJSON_IsString(item)) {
         HILOGE("Add PACKAGE_NAMES to cJSON failed!");
         cJSON_Delete(jsonData);
         return false;
     }
-    item = cJSON_AddStringToObject(jsonData, DistributedSchedule::Constants::VERSIONS, 
+    item = cJSON_AddStringToObject(jsonData, DistributedSchedule::Constants::VERSIONS,
         DistributedSchedule::Constants::DMS_VERSION);
     if (!cJSON_IsString(item)) {
         HILOGE("Add VERSIONS to cJSON failed!");

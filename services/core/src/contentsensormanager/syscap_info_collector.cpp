@@ -15,8 +15,10 @@
 
 #include "syscap_info_collector.h"
 
+#include "cJSON.h"
 #include "parameters.h"
 #include "syscap_interface.h"
+
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 
@@ -34,80 +36,86 @@ namespace {
 
 bool SyscapInfoCollector::ConvertToProfile(DeviceProfile &profile)
 {
-    cJSON* jsonData = cJSON_CreateObject();
-    if(!cJSON_IsObject(jsonData)) {
-        cJSON_Delete(jsonData);
-        HILOGE("Create cJSON failed!");
+    char osBuffer[PCID_MAIN_BYTES];
+    if (!EncodeOsSyscap(osBuffer, PCID_MAIN_BYTES)) {
+        HILOGE("EncodeOsSyscap failed");
         return false;
     }
-    if(!GetOsSyscap(jsonData)) {
-        cJSON_Delete(jsonData);
-        HILOGE("GetOsSyscap failed");
-        return false;
+
+    std::vector<int32_t> osSyscapData;
+    for (int32_t i = 0; i < PCID_MAIN_BYTES/INT_BYTES_LEN; i++) {
+        int32_t value = *((int32_t *)osBuffer + i);
+        osSyscapData.push_back(value);
     }
 
     char* privateBuffer = nullptr;
     int32_t privateBufferLen;
     if (!EncodePrivateSyscap(&privateBuffer, &privateBufferLen)) {
         HILOGE("EncodePrivateSyscap failed");
-        cJSON_Delete(jsonData);
         return false;
     }
     if (privateBufferLen + PCID_MAIN_BYTES > MAX_DATALEN) {
         free(privateBuffer);
         HILOGI("syscap data length too long");
-        cJSON_Delete(jsonData);
         return false;
     }
-    cJSON* item = cJSON_AddStringToObject(jsonData, CHARACTER_PRIVATE_SYSCAP.c_str(), privateBuffer);
-    if(!cJSON_IsString(item)) {
-        free(privateBuffer);
-        HILOGE("Add CHARACTER_PRIVATE_SYSCAP to cJSON failed!");
-        cJSON_Delete(jsonData);
+    std::string jsonStr;
+    if (!GenJsonStr(osSyscapData, privateBuffer, jsonStr)) {
         return false;
     }
     free(privateBuffer);
-    char* jsonChars = cJSON_PrintUnformatted(jsonData);
-    if (jsonChars == NULL) {
-        cJSON_Delete(jsonData);
-        HILOGE("cJSON formatted to string failed!");
-        return false;
-    }
-    std::string jsonStr = jsonChars;
     profile.SetOsSysCap(jsonStr);
-    cJSON_Delete(jsonData);
-    free(jsonChars);
     return true;
 }
 
-bool SyscapInfoCollector::GetOsSyscap(cJSON* jsonData) {
-    char osBuffer[PCID_MAIN_BYTES];
-    if (!EncodeOsSyscap(osBuffer, PCID_MAIN_BYTES)) {
-        HILOGE("EncodeOsSyscap failed");
+bool SyscapInfoCollector::GenJsonStr(const std::vector<int32_t>& osSyscapData, const char* const privateBuffer,
+    std::string& jsonStr)
+{
+    cJSON* jsonData = cJSON_CreateObject();
+    if (!cJSON_IsObject(jsonData)) {
+        HILOGE("Create cJSON failed!");
+        cJSON_Delete(jsonData);
         return false;
     }
+
     cJSON* osSyscapJsonData = cJSON_CreateArray();
-    if(!cJSON_IsArray(osSyscapJsonData)) {
+    if (!cJSON_IsArray(osSyscapJsonData)) {
         cJSON_Delete(osSyscapJsonData);
+        cJSON_Delete(jsonData);
         HILOGE("Create JSON_ARRAY failed!");
         return false;
     }
-    int32_t size = PCID_MAIN_BYTES/INT_BYTES_LEN;
-    for (int32_t i = 0; i < size; i++) {
-        int32_t value = *((int32_t *)osBuffer + i);
+    for (const auto& value : osSyscapData) {
         cJSON_AddItemToArray(osSyscapJsonData, cJSON_CreateNumber(value));
     }
-    int32_t jsonArraySize = static_cast<int32_t>(cJSON_GetArraySize(osSyscapJsonData)); 
-    if(jsonArraySize != size) {
+    int32_t size = static_cast<int32_t>(osSyscapData.size());
+    int32_t jsonArraySize = static_cast<int32_t>(cJSON_GetArraySize(osSyscapJsonData));
+    if (jsonArraySize != size) {
         cJSON_Delete(osSyscapJsonData);
         HILOGE("size not equal!size=%{public}d, jsonArraySize=%{public}d", size, jsonArraySize);
         return false;
     }
-    if(!cJSON_AddItemToObject(jsonData, CHARACTER_OS_SYSCAP.c_str(), osSyscapJsonData)) {
+    if (!cJSON_AddItemToObject(jsonData, CHARACTER_OS_SYSCAP.c_str(), osSyscapJsonData)) {
         cJSON_Delete(osSyscapJsonData);
         HILOGE("Add json array to Object failed!");
         return false;
     }
+
+    cJSON* item = cJSON_AddStringToObject(jsonData, CHARACTER_PRIVATE_SYSCAP.c_str(), privateBuffer);
+    if (!cJSON_IsString(item)) {
+        HILOGE("Add CHARACTER_PRIVATE_SYSCAP to cJSON failed!");
+        cJSON_Delete(jsonData);
+        return false;
+    }
+
+    char* jsonChars = cJSON_PrintUnformatted(jsonData);
+    if (jsonChars == NULL) {
+        HILOGE("cJSON formatted to string failed!");
+        cJSON_Delete(jsonData);
+        return false;
+    }
+    jsonStr = jsonChars;
+    free(jsonChars);
     return true;
 }
 } // namespace DeviceProfile

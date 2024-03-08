@@ -184,7 +184,7 @@ bool DeviceProfile::operator!=(const DeviceProfile& deviceProfile) const
 std::string DeviceProfile::dump() const
 {
     cJSON* json = cJSON_CreateObject();
-    if(!cJSON_IsObject(json)) {
+    if (!cJSON_IsObject(json)) {
         cJSON_Delete(json);
         return EMPTY_STRING;
     }

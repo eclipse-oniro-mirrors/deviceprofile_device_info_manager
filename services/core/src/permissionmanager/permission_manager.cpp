@@ -89,7 +89,6 @@ int32_t PermissionManager::LoadPermissionCfg(const std::string& filePath)
     return parseResult;
 }
 
-
 int32_t PermissionManager::ParsePermissionJson(const cJSON* permissionJson)
 {
     int size = cJSON_GetArraySize(permissionJson);
@@ -97,28 +96,25 @@ int32_t PermissionManager::ParsePermissionJson(const cJSON* permissionJson)
         HILOGE("Permission json size is invalid!");
         return DP_PARSE_PERMISSION_JSON_FAIL;
     }
-    {
-        std::lock_guard<std::mutex> lockGuard(permissionMutex_);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, PUT_ACCESS_CONTROL_PROFILE);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, UPDATE_ACCESS_CONTROL_PROFILE);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, GET_ACCESS_CONTROL_PROFILE);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, GET_ALL_ACCESS_CONTROL_PROFILE);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, DELETE_ACCESS_CONTROL_PROFILE);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, GET_TRUST_DEVICE_PROFILE);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, GET_ALL_TRUST_DEVICE_PROFILE);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, PUT_SERVICE_PROFILE);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, PUT_SERVICE_PROFILE_BATCH);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, PUT_CHARACTERISTIC_PROFILE);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, PUT_CHARACTERISTIC_PROFILE_BATCH);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, GET_DEVICE_PROFILE);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, GET_SERVICE_PROFILE);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, GET_CHARACTERISTIC_PROFILE);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, DELETE_SERVICE_PROFILE);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, DELETE_CHARACTERISTIC_PROFILE);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, SUBSCRIBE_DEVICE_PROFILE);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, UNSUBSCRIBE_DEVICE_PROFILE);
-        SET_PERMISSION_MAP(permissionMap_, permissionJson, SYNC_DEVICE_PROFILE);
-    }
+    SetPermissionMap(permissionJson, PUT_ACCESS_CONTROL_PROFILE);
+    SetPermissionMap(permissionJson, UPDATE_ACCESS_CONTROL_PROFILE);
+    SetPermissionMap(permissionJson, GET_ACCESS_CONTROL_PROFILE);
+    SetPermissionMap(permissionJson, GET_ALL_ACCESS_CONTROL_PROFILE);
+    SetPermissionMap(permissionJson, DELETE_ACCESS_CONTROL_PROFILE);
+    SetPermissionMap(permissionJson, GET_TRUST_DEVICE_PROFILE);
+    SetPermissionMap(permissionJson, GET_ALL_TRUST_DEVICE_PROFILE);
+    SetPermissionMap(permissionJson, PUT_SERVICE_PROFILE);
+    SetPermissionMap(permissionJson, PUT_SERVICE_PROFILE_BATCH);
+    SetPermissionMap(permissionJson, PUT_CHARACTERISTIC_PROFILE);
+    SetPermissionMap(permissionJson, PUT_CHARACTERISTIC_PROFILE_BATCH);
+    SetPermissionMap(permissionJson, GET_DEVICE_PROFILE);
+    SetPermissionMap(permissionJson, GET_SERVICE_PROFILE);
+    SetPermissionMap(permissionJson, GET_CHARACTERISTIC_PROFILE);
+    SetPermissionMap(permissionJson, DELETE_SERVICE_PROFILE);
+    SetPermissionMap(permissionJson, DELETE_CHARACTERISTIC_PROFILE);
+    SetPermissionMap(permissionJson, SUBSCRIBE_DEVICE_PROFILE);
+    SetPermissionMap(permissionJson, UNSUBSCRIBE_DEVICE_PROFILE);
+    SetPermissionMap(permissionJson, SYNC_DEVICE_PROFILE);
     char* jsonChars = cJSON_PrintUnformatted(permissionJson);
     if (jsonChars == NULL) {
         HILOGW("cJSON formatted to string failed!");
@@ -176,6 +172,28 @@ std::string PermissionManager::GetCallerProcName()
         HILOGI("procName:%{public}s", procName.c_str());
     }
     return procName;
+}
+
+void PermissionManager::SetPermissionMap(const cJSON* permissionJson, const std::string& interfaceName)
+{
+    cJSON* item = cJSON_GetObjectItem(permissionJson, interfaceName.c_str());
+    int32_t itemSize = static_cast<int32_t>(cJSON_GetArraySize(item));
+    if (!cJSON_IsArray(item) || itemSize == 0 || itemSize > MAX_INTERFACE_SIZE) {
+        HILOGE("PermissionJson not contains the key, %s!", interfaceName.c_str());
+        return;
+    }
+    std::unordered_set<std::string> interfaceNameSets;
+    item = item->child;
+    while (item != NULL) {
+        if (cJSON_IsString(item)) {
+            interfaceNameSets.emplace(item->valuestring);
+        }
+        item = item->next;
+    }
+    {
+        std::lock_guard<std::mutex> lockGuard(permissionMutex_);
+        permissionMap_[interfaceName] = interfaceNameSets;
+    }
 }
 } // namespace DeviceProfile
 } // namespace OHOS

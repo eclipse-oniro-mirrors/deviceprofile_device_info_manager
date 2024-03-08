@@ -75,13 +75,13 @@ bool DpSyncOptions::UnMarshalling(MessageParcel& parcel)
 std::string DpSyncOptions::dump() const
 {
     cJSON* json = cJSON_CreateObject();
-    if(!cJSON_IsObject(json)) {
+    if (!cJSON_IsObject(json)) {
         cJSON_Delete(json);
         return EMPTY_STRING;
     }
     cJSON_AddNumberToObject(json, SYNC_MODE.c_str(), static_cast<int64_t>(syncMode_));
     cJSON* jsonArr = cJSON_CreateArray();
-     if(!cJSON_IsArray(jsonArr)) {
+    if (!cJSON_IsArray(jsonArr)) {
         cJSON_Delete(jsonArr);
     } else {
         for (const auto& deviceId : syncDeviceIds_) {

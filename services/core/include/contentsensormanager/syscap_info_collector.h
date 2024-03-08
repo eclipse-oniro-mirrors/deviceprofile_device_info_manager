@@ -17,7 +17,6 @@
 #define OHOS_DP_PROFILE_SYSCAP_INFO_COLLECTOR_H
 
 #include <string>
-#include "cJSON.h"
 #include "collector.h"
 #include "device_profile.h"
 
@@ -27,7 +26,8 @@ class SyscapInfoCollector : public Collector {
 public:
     bool ConvertToProfile(DeviceProfile& profile) override;
 private:
-    bool GetOsSyscap(cJSON* jsonData);
+    bool GenJsonStr(const std::vector<int32_t>& osSyscapData, const char* const privateBuffer,
+        std::string& jsonStr);
 };
 } // namespace DeviceProfile
 } // namespace OHOS

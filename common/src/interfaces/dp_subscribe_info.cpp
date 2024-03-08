@@ -150,14 +150,14 @@ bool SubscribeInfo::UnMarshalling(MessageParcel& parcel)
 std::string SubscribeInfo::dump() const
 {
     cJSON* json = cJSON_CreateObject();
-    if(!cJSON_IsObject(json)) {
+    if (!cJSON_IsObject(json)) {
         cJSON_Delete(json);
         return EMPTY_STRING;
     }
     cJSON_AddNumberToObject(json, SA_ID.c_str(), saId_);
     cJSON_AddStringToObject(json, SUBSCRIBE_KEY.c_str(), subscribeKey_.c_str());
     cJSON* jsonArr = cJSON_CreateArray();
-    if(!cJSON_IsArray(jsonArr)) {
+    if (!cJSON_IsArray(jsonArr)) {
         cJSON_Delete(jsonArr);
     } else {
         for (const auto &subChangeType : subscribeChangeTypes_) {

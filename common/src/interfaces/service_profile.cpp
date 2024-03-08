@@ -100,7 +100,7 @@ bool ServiceProfile::operator!=(const ServiceProfile& serviceProfile) const
 std::string ServiceProfile::dump() const
 {
     cJSON* json = cJSON_CreateObject();
-    if(!cJSON_IsObject(json)) {
+    if (!cJSON_IsObject(json)) {
         cJSON_Delete(json);
         return EMPTY_STRING;
     }

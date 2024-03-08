@@ -38,6 +38,7 @@ private:
     bool CheckInterfacePermission(const std::string& interfaceName);
     int32_t LoadPermissionCfg(const std::string& filePath);
     int32_t ParsePermissionJson(const cJSON* permissionJson);
+    void SetPermissionMap(const cJSON* permissionJson, const std::string& interfaceName);
 
 private:
     std::mutex permissionMutex_;

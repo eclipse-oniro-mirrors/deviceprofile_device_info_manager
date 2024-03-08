@@ -97,7 +97,7 @@ bool CharacteristicProfile::operator!=(const CharacteristicProfile& charProfile)
 std::string CharacteristicProfile::dump() const
 {
     cJSON* json = cJSON_CreateObject();
-    if(!cJSON_IsObject(json)) {
+    if (!cJSON_IsObject(json)) {
         cJSON_Delete(json);
         return EMPTY_STRING;
     }

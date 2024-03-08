@@ -15,6 +15,7 @@
 
 #include "dm_adapter.h"
 #include "cJSON.h"
+#include "dm_constants.h"
 #include "device_profile_manager.h"
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
@@ -102,7 +103,7 @@ void DMAdapter::AutoSync(const DistributedHardware::DmDeviceInfo &deviceInfo)
             return;
         }
         int32_t osType = DEFAULT_OS_TYPE;
-        cJSON* osTypeJson = cJSON_GetObjectItem(extraData, "OS_TYPE");
+        cJSON* osTypeJson = cJSON_GetObjectItem(extraData, DistributedHardware::PARAM_KEY_OS_TYPE);
         if (cJSON_IsNumber(osTypeJson)) {
             osType = static_cast<int32_t>(osTypeJson->valueint);
         }
