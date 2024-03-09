@@ -272,10 +272,6 @@ void DistributedDeviceProfileService::OnStart(const SystemAbilityOnDemandReason&
 int32_t DistributedDeviceProfileService::OnIdle(const SystemAbilityOnDemandReason& idleReason)
 {
     HILOGI("idle reason %{public}d", idleReason.GetId());
-    if (idleReason.GetId() == OnDemandReasonId::DEVICE_ONLINE) {
-        int32_t errCode = DeviceProfileStorageManager::GetInstance().RemoveRemoteDeviceProfile();
-        HILOGI("remove remote device profile, result = %{public}d", errCode);
-    }
     return UNLOAD_IMMEDIATELY;
 }
 
