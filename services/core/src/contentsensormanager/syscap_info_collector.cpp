@@ -15,7 +15,6 @@
 
 #include "syscap_info_collector.h"
 
-#include "cJSON.h"
 #include "parameters.h"
 #include "syscap_interface.h"
 
@@ -47,6 +46,16 @@ bool SyscapInfoCollector::ConvertToProfile(DeviceProfile &profile)
         int32_t value = *((int32_t *)osBuffer + i);
         osSyscapData.push_back(value);
     }
+    cJSON* jsonData = cJSON_CreateObject();
+    if (!cJSON_IsObject(jsonData)) {
+        HILOGE("Create cJSON failed!");
+        cJSON_Delete(jsonData);
+        return false;
+    }
+    if (!AddOsSyscapToJson(jsonData, osSyscapData)) {
+        cJSON_Delete(jsonData);
+        return false;
+    }
 
     char* privateBuffer = nullptr;
     int32_t privateBufferLen;
@@ -59,29 +68,27 @@ bool SyscapInfoCollector::ConvertToProfile(DeviceProfile &profile)
         HILOGI("syscap data length too long");
         return false;
     }
-    std::string jsonStr;
-    if (!GenJsonStr(osSyscapData, privateBuffer, jsonStr)) {
+    if (!AddPrivateSyscapToJson(jsonData, privateBuffer)) {
+        free(privateBuffer);
+        cJSON_Delete(jsonData);
         return false;
     }
     free(privateBuffer);
+    std::string jsonStr;
+    if (!GenJsonStr(jsonData, jsonStr)) {
+        cJSON_Delete(jsonData);
+        return false;
+    }
+    cJSON_Delete(jsonData);
     profile.SetOsSysCap(jsonStr);
     return true;
 }
 
-bool SyscapInfoCollector::GenJsonStr(const std::vector<int32_t>& osSyscapData, const char* const privateBuffer,
-    std::string& jsonStr)
+bool SyscapInfoCollector::AddOsSyscapToJson(cJSON* const jsonData, const std::vector<int32_t>& osSyscapData)
 {
-    cJSON* jsonData = cJSON_CreateObject();
-    if (!cJSON_IsObject(jsonData)) {
-        HILOGE("Create cJSON failed!");
-        cJSON_Delete(jsonData);
-        return false;
-    }
-
     cJSON* osSyscapJsonData = cJSON_CreateArray();
     if (!cJSON_IsArray(osSyscapJsonData)) {
         cJSON_Delete(osSyscapJsonData);
-        cJSON_Delete(jsonData);
         HILOGE("Create JSON_ARRAY failed!");
         return false;
     }
@@ -100,18 +107,24 @@ bool SyscapInfoCollector::GenJsonStr(const std::vector<int32_t>& osSyscapData, c
         HILOGE("Add json array to Object failed!");
         return false;
     }
+    return true;
+}
 
+bool SyscapInfoCollector::AddPrivateSyscapToJson(cJSON* const jsonData, const char* const privateBuffer)
+{
     cJSON* item = cJSON_AddStringToObject(jsonData, CHARACTER_PRIVATE_SYSCAP.c_str(), privateBuffer);
     if (!cJSON_IsString(item)) {
         HILOGE("Add CHARACTER_PRIVATE_SYSCAP to cJSON failed!");
-        cJSON_Delete(jsonData);
         return false;
     }
+    return true;
+}
 
+bool SyscapInfoCollector::GenJsonStr(const cJSON* const jsonData, std::string& jsonStr)
+{
     char* jsonChars = cJSON_PrintUnformatted(jsonData);
     if (jsonChars == NULL) {
         HILOGE("cJSON formatted to string failed!");
-        cJSON_Delete(jsonData);
         return false;
     }
     jsonStr = jsonChars;

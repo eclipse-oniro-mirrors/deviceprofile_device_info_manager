@@ -89,7 +89,7 @@ int32_t PermissionManager::LoadPermissionCfg(const std::string& filePath)
     return parseResult;
 }
 
-int32_t PermissionManager::ParsePermissionJson(const cJSON* permissionJson)
+int32_t PermissionManager::ParsePermissionJson(const cJSON* const permissionJson)
 {
     int size = cJSON_GetArraySize(permissionJson);
     if (size == 0 || size > MAX_INTERFACE_SIZE) {
@@ -174,7 +174,7 @@ std::string PermissionManager::GetCallerProcName()
     return procName;
 }
 
-void PermissionManager::SetPermissionMap(const cJSON* permissionJson, const std::string& interfaceName)
+void PermissionManager::SetPermissionMap(const cJSON* const permissionJson, const std::string& interfaceName)
 {
     cJSON* item = cJSON_GetObjectItem(permissionJson, interfaceName.c_str());
     int32_t itemSize = static_cast<int32_t>(cJSON_GetArraySize(item));
