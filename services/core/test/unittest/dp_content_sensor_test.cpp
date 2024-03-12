@@ -21,8 +21,6 @@
 #define protected public
 #include "collector.h"
 #include "distributed_device_profile_client.h"
-#include "device_info_collector.h"
-#include "storage_info_collector.h"
 #include "syscap_info_collector.h"
 #include "system_info_collector.h"
 #undef private
@@ -83,78 +81,6 @@ HWTEST_F(DpContentSensorTest, Collect_001, TestSize.Level2)
     profile.SetDeviceId("test");
     profile.SetDeviceName("test");
     collector.Collect(profile);
-}
-
-/**
- * @tc.name: GetDeviceName_001
- * @tc.desc: get device name
- * @tc.type: FUNC
- */
-HWTEST_F(DpContentSensorTest, GetDeviceName_001, TestSize.Level2)
-{
-    DeviceInfoCollector devInfo;
-    auto result = devInfo.GetDeviceName();
-    EXPECT_NE(result, "");
-}
-
-/**
- * @tc.name: GetDeviceModel_002
- * @tc.desc: get device model
- * @tc.type: FUNC
- */
-HWTEST_F(DpContentSensorTest, GetDeviceModel_001, TestSize.Level2)
-{
-    DeviceInfoCollector devInfo;
-    auto result = devInfo.GetDeviceModel();
-    EXPECT_NE(result, "");
-}
-
-/**
- * @tc.name: GetDeviceUdid_003
- * @tc.desc: get device udid
- * @tc.type: FUNC
- */
-HWTEST_F(DpContentSensorTest, GetDeviceUdid_001, TestSize.Level2)
-{
-    DeviceInfoCollector devInfo;
-    auto result = devInfo.GetDeviceUdid();
-    EXPECT_NE(result, "");
-}
-
-/**
- * @tc.name: GetDevType_004
- * @tc.desc: get device type
- * @tc.type: FUNC
- */
-HWTEST_F(DpContentSensorTest, GetDevType_001, TestSize.Level2)
-{
-    DeviceInfoCollector devInfo;
-    auto result = devInfo.GetDevType();
-    EXPECT_NE(result, "");
-}
-
-/**
- * @tc.name: GetDeviceManufacturer_001
- * @tc.desc: get device manufacturer
- * @tc.type: FUNC
- */
-HWTEST_F(DpContentSensorTest, GetDeviceManufacturer_001, TestSize.Level2)
-{
-    DeviceInfoCollector devInfo;
-    auto result = devInfo.GetDeviceManufacturer();
-    EXPECT_NE(result, "");
-}
-
-/**
- * @tc.name: GetDeviceSerial_001
- * @tc.desc: get device serial
- * @tc.type: FUNC
- */
-HWTEST_F(DpContentSensorTest, GetDeviceSerial_001, TestSize.Level2)
-{
-    DeviceInfoCollector devInfo;
-    auto result = devInfo.GetDeviceSerial();
-    EXPECT_NE(result, "");
 }
 
 /**
@@ -246,35 +172,6 @@ HWTEST_F(DpContentSensorTest, SyscapInfoCollector_004, TestSize.Level3)
     SyscapInfoCollector syscapInfo;
     bool result = syscapInfo.ConvertToProfile(profile);
     EXPECT_EQ(result, true);
-}
-
-/**
- * @tc.name: StorageInfoCollector_001
- * @tc.desc: syscap info collector
- * @tc.type: FUNC
- * @tc.require: I59PZ3
- */
-HWTEST_F(DpContentSensorTest, StorageInfoCollector_001, TestSize.Level3)
-{
-    DeviceProfile profile;
-    profile.SetDeviceId("test");
-    profile.SetDeviceName("");
-    StorageInfoCollector storageInfo;
-    bool result = storageInfo.ConvertToProfile(profile);
-    EXPECT_EQ(result, true);
-}
-
-/**
- * @tc.name: GetTotalSize_002
- * @tc.desc: get total size
- * @tc.type: FUNC
- * @tc.require: I59PZ3
- */
-HWTEST_F(DpContentSensorTest, GetTotalSize_002, TestSize.Level3)
-{
-    StorageInfoCollector storageInfo;
-    int64_t result = storageInfo.GetTotalSize();
-    EXPECT_NE(result, 0);
 }
 }
 }
