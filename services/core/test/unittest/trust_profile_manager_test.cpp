@@ -1585,7 +1585,11 @@ HWTEST_F(TrustProfileManagerTest, RdbStoreIsNullptr_004, TestSize.Level1)
     EXPECT_NE(ret, DP_SUCCESS);
 
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().GetAccessControlProfilesByTokenId(resultSet, 1, 1, 1, profiles);
+        GetInstance().GetAccessControlProfilesByTokenId(resultSet, 1, 1, "1", 1, profiles);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfilesByDeviceId(resultSet, 1, 1, "1", profiles);
     EXPECT_NE(ret, DP_SUCCESS);
 
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
