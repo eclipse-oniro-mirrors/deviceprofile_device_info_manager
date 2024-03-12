@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -112,16 +112,6 @@ namespace DistributedDeviceProfile {
             HILOGE("Write interface token failed!"); \
             return ERR_FLATTEN_OBJECT; \
         } \
-    } while (0)
-
-#define SET_PERMISSION_MAP(permissionMap, permissionJson, interfaceName) \
-    do { \
-        if (!permissionJson.contains(interfaceName) || !permissionJson[interfaceName].is_array() || \
-            permissionJson[interfaceName].empty() || permissionJson[interfaceName].size() > MAX_INTERFACE_SIZE) { \
-            HILOGE("PermissionJson not contains the key, %s!", interfaceName.c_str()); \
-            return DP_PARSE_PERMISSION_JSON_FAIL; \
-        } \
-        permissionMap[interfaceName] = permissionJson[interfaceName].get<std::unordered_set<std::string>>(); \
     } while (0)
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

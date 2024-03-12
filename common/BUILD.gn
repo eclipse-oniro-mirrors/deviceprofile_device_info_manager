@@ -1,4 +1,4 @@
-# Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+# Copyright (c) 2021-2024 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -21,7 +21,6 @@ config("distributed_device_profile_common_config") {
     "include/interfaces",
     "include/constants",
     "include/utils",
-    "${third_party_json}/include",
   ]
 }
 
@@ -46,6 +45,8 @@ ohos_shared_library("distributed_device_profile_common") {
     "src/utils/ipc_utils.cpp",
     "src/utils/profile_utils.cpp",
   ]
+
+  deps = [ "${third_party_cjson}:cjson" ]
 
   public_configs = [ ":distributed_device_profile_common_config" ]
 

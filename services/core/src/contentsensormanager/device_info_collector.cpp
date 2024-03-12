@@ -15,11 +15,10 @@
 
 #include "device_info_collector.h"
 
+#include "content_sensor_manager_utils.h"
 #include "device_profile.h"
 #include "distributed_device_profile_log.h"
-#include "nlohmann/json.hpp"
 #include "parameter.h"
-#include "content_sensor_manager_utils.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {

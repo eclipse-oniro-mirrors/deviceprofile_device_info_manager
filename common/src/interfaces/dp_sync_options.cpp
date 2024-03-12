@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,9 +14,8 @@
  */
 
 #include "dp_sync_options.h"
+#include "cJSON.h"
 #include "macro_utils.h"
-#include "distributed_device_profile_constants.h"
-#include "nlohmann/json.hpp"
 #include "profile_utils.h"
 
 namespace OHOS {
@@ -75,14 +74,31 @@ bool DpSyncOptions::UnMarshalling(MessageParcel& parcel)
 
 std::string DpSyncOptions::dump() const
 {
-    nlohmann::json json;
-    json[SYNC_MODE] = static_cast<int32_t>(syncMode_);
-    std::vector<std::string> syncDeviceList;
-    for (const std::string& deviceId : syncDeviceIds_) {
-        syncDeviceList.push_back(deviceId);
+    cJSON* json = cJSON_CreateObject();
+    if (!cJSON_IsObject(json)) {
+        cJSON_Delete(json);
+        return EMPTY_STRING;
     }
-    json[SYNC_DEVICE_IDS] = syncDeviceList;
-    return json.dump();
+    cJSON_AddNumberToObject(json, SYNC_MODE.c_str(), static_cast<int64_t>(syncMode_));
+    cJSON* jsonArr = cJSON_CreateArray();
+    if (!cJSON_IsArray(jsonArr)) {
+        cJSON_Delete(jsonArr);
+    } else {
+        for (const auto& deviceId : syncDeviceIds_) {
+            cJSON_AddItemToArray(jsonArr, cJSON_CreateString(deviceId.c_str()));
+        }
+        cJSON_AddItemToObject(json, SYNC_DEVICE_IDS.c_str(), jsonArr);
+    }
+    char* jsonChars = cJSON_PrintUnformatted(json);
+    if (jsonChars == NULL) {
+        cJSON_Delete(json);
+        HILOGE("cJSON formatted to string failed!");
+        return EMPTY_STRING;
+    }
+    std::string jsonStr = jsonChars;
+    cJSON_Delete(json);
+    free(jsonChars);
+    return jsonStr;
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

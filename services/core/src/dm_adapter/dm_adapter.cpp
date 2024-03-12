@@ -14,14 +14,13 @@
  */
 
 #include "dm_adapter.h"
+#include "cJSON.h"
 #include "device_profile_manager.h"
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 #include "event_handler_factory.h"
 #include "profile_utils.h"
-#include "dm_constants.h"
-#include "nlohmann/json.hpp"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -29,6 +28,7 @@ namespace {
     const std::string TAG = "DMAdapter";
     const std::string AUTO_SYNC_TASK = "autoSyncTask";
     const int32_t DEFAULT_OS_TYPE = 10;
+    constexpr const char* OS_TYPE_KEY = "OS_TYPE";
     const std::string PKGNAME = "DMAdapter";
 }
 
@@ -96,16 +96,18 @@ void DMAdapter::AutoSync(const DistributedHardware::DmDeviceInfo &deviceInfo)
         return;
     }
     auto autoSyncTask = [deviceInfo]() {
-        auto extraData = nlohmann::json::parse(deviceInfo.extraData, nullptr, false);
-        if (extraData.is_discarded()) {
+        cJSON* extraData = cJSON_Parse(deviceInfo.extraData.c_str());
+        if (!cJSON_IsObject(extraData)) {
             HILOGE("extraData parse failed");
+            cJSON_Delete(extraData);
             return;
         }
         int32_t osType = DEFAULT_OS_TYPE;
-        if (extraData.contains(DistributedHardware::PARAM_KEY_OS_TYPE)
-            && extraData[DistributedHardware::PARAM_KEY_OS_TYPE].is_number_integer()) {
-            osType = extraData[DistributedHardware::PARAM_KEY_OS_TYPE].get<int32_t>();
+        cJSON* osTypeJson = cJSON_GetObjectItem(extraData, OS_TYPE_KEY);
+        if (cJSON_IsNumber(osTypeJson)) {
+            osType = static_cast<int32_t>(osTypeJson->valueint);
         }
+        cJSON_Delete(extraData);
         HILOGI("osType=%{public}d", osType);
         if (osType != DEFAULT_OS_TYPE) {
             int32_t errCode = DeviceProfileManager::GetInstance().DeviceOnlineAutoSync(deviceInfo.networkId);

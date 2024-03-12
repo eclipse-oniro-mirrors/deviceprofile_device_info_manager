@@ -18,7 +18,6 @@
 #include "device_profile_manager.h"
 #include "distributed_device_profile_log.h"
 #include "profile_utils.h"
-#include "nlohmann/json.hpp"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {

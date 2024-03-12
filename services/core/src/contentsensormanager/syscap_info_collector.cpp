@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,11 +15,11 @@
 
 #include "syscap_info_collector.h"
 
-#include "distributed_device_profile_errors.h"
-#include "distributed_device_profile_log.h"
-#include "nlohmann/json.hpp"
 #include "parameters.h"
 #include "syscap_interface.h"
+
+#include "distributed_device_profile_errors.h"
+#include "distributed_device_profile_log.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -46,10 +46,16 @@ bool SyscapInfoCollector::ConvertToProfile(DeviceProfile &profile)
         int32_t value = *((int32_t *)osBuffer + i);
         osSyscapData.push_back(value);
     }
-
-    nlohmann::json jsonData;
-    nlohmann::json osSyscapJsonData(osSyscapData);
-    jsonData[CHARACTER_OS_SYSCAP] = osSyscapJsonData;
+    cJSON* jsonData = cJSON_CreateObject();
+    if (!cJSON_IsObject(jsonData)) {
+        HILOGE("Create cJSON failed!");
+        cJSON_Delete(jsonData);
+        return false;
+    }
+    if (!AddOsSyscapToJson(jsonData, osSyscapData)) {
+        cJSON_Delete(jsonData);
+        return false;
+    }
 
     char* privateBuffer = nullptr;
     int32_t privateBufferLen;
@@ -62,9 +68,67 @@ bool SyscapInfoCollector::ConvertToProfile(DeviceProfile &profile)
         HILOGI("syscap data length too long");
         return false;
     }
-    jsonData[CHARACTER_PRIVATE_SYSCAP] = privateBuffer;
+    if (!AddPrivateSyscapToJson(jsonData, privateBuffer)) {
+        free(privateBuffer);
+        cJSON_Delete(jsonData);
+        return false;
+    }
     free(privateBuffer);
-    profile.SetOsSysCap(jsonData.dump());
+    std::string jsonStr;
+    if (!GenJsonStr(jsonData, jsonStr)) {
+        cJSON_Delete(jsonData);
+        return false;
+    }
+    cJSON_Delete(jsonData);
+    profile.SetOsSysCap(jsonStr);
+    return true;
+}
+
+bool SyscapInfoCollector::AddOsSyscapToJson(cJSON* const jsonData, const std::vector<int32_t>& osSyscapData)
+{
+    cJSON* osSyscapJsonData = cJSON_CreateArray();
+    if (!cJSON_IsArray(osSyscapJsonData)) {
+        cJSON_Delete(osSyscapJsonData);
+        HILOGE("Create JSON_ARRAY failed!");
+        return false;
+    }
+    for (const auto& value : osSyscapData) {
+        cJSON_AddItemToArray(osSyscapJsonData, cJSON_CreateNumber(value));
+    }
+    int32_t size = static_cast<int32_t>(osSyscapData.size());
+    int32_t jsonArraySize = static_cast<int32_t>(cJSON_GetArraySize(osSyscapJsonData));
+    if (jsonArraySize != size) {
+        cJSON_Delete(osSyscapJsonData);
+        HILOGE("size not equal!size=%{public}d, jsonArraySize=%{public}d", size, jsonArraySize);
+        return false;
+    }
+    if (!cJSON_AddItemToObject(jsonData, CHARACTER_OS_SYSCAP.c_str(), osSyscapJsonData)) {
+        cJSON_Delete(osSyscapJsonData);
+        HILOGE("Add json array to Object failed!");
+        return false;
+    }
+    return true;
+}
+
+bool SyscapInfoCollector::AddPrivateSyscapToJson(cJSON* const jsonData, const char* const privateBuffer)
+{
+    cJSON* item = cJSON_AddStringToObject(jsonData, CHARACTER_PRIVATE_SYSCAP.c_str(), privateBuffer);
+    if (!cJSON_IsString(item)) {
+        HILOGE("Add CHARACTER_PRIVATE_SYSCAP to cJSON failed!");
+        return false;
+    }
+    return true;
+}
+
+bool SyscapInfoCollector::GenJsonStr(const cJSON* const jsonData, std::string& jsonStr)
+{
+    char* jsonChars = cJSON_PrintUnformatted(jsonData);
+    if (jsonChars == NULL) {
+        HILOGE("cJSON formatted to string failed!");
+        return false;
+    }
+    jsonStr = jsonChars;
+    free(jsonChars);
     return true;
 }
 } // namespace DeviceProfile

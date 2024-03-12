@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,11 +14,11 @@
  */
 
 #include "dp_subscribe_info.h"
-#include "profile_change_listener_stub.h"
-#include "macro_utils.h"
-#include "ipc_utils.h"
+#include "cJSON.h"
 #include "distributed_device_profile_constants.h"
-#include "nlohmann/json.hpp"
+#include "ipc_utils.h"
+#include "macro_utils.h"
+#include "profile_change_listener_stub.h"
 #include "profile_utils.h"
 
 namespace OHOS {
@@ -149,11 +149,32 @@ bool SubscribeInfo::UnMarshalling(MessageParcel& parcel)
 
 std::string SubscribeInfo::dump() const
 {
-    nlohmann::json json;
-    json[SA_ID] = saId_;
-    json[SUBSCRIBE_KEY] = subscribeKey_;
-    json[SUBSCRIBE_CHANGE_TYPES] = subscribeChangeTypes_;
-    return json.dump();
+    cJSON* json = cJSON_CreateObject();
+    if (!cJSON_IsObject(json)) {
+        cJSON_Delete(json);
+        return EMPTY_STRING;
+    }
+    cJSON_AddNumberToObject(json, SA_ID.c_str(), saId_);
+    cJSON_AddStringToObject(json, SUBSCRIBE_KEY.c_str(), subscribeKey_.c_str());
+    cJSON* jsonArr = cJSON_CreateArray();
+    if (!cJSON_IsArray(jsonArr)) {
+        cJSON_Delete(jsonArr);
+    } else {
+        for (const auto &subChangeType : subscribeChangeTypes_) {
+            cJSON_AddItemToArray(jsonArr, cJSON_CreateNumber(static_cast<int32_t>(subChangeType)));
+        }
+        cJSON_AddItemToObject(json, SUBSCRIBE_CHANGE_TYPES.c_str(), jsonArr);
+    }
+    char* jsonChars = cJSON_PrintUnformatted(json);
+    if (jsonChars == NULL) {
+        cJSON_Delete(json);
+        HILOGE("cJSON formatted to string failed!");
+        return EMPTY_STRING;
+    }
+    std::string jsonStr = jsonChars;
+    cJSON_Delete(json);
+    free(jsonChars);
+    return jsonStr;
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

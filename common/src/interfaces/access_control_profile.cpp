@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,9 +16,9 @@
 #include "access_control_profile.h"
 #include <cstdint>
 #include <string>
-#include "macro_utils.h"
-#include "nlohmann/json.hpp"
+#include "cJSON.h"
 #include "distributed_device_profile_constants.h"
+#include "macro_utils.h"
 #include "profile_utils.h"
 
 namespace OHOS {
@@ -239,21 +239,34 @@ bool AccessControlProfile::UnMarshalling(MessageParcel& parcel)
 
 std::string AccessControlProfile::dump() const
 {
-    nlohmann::json json;
-    json[ACCESS_CONTROL_ID] = accessControlId_;
-    json[ACCESSER_ID] = accesserId_;
-    json[ACCESSEE_ID] = accesseeId_;
-    json[SESSION_KEY] = sessionKey_;
-    json[BIND_TYPE] = bindType_;
-    json[AUTHENTICATION_TYPE] = authenticationType_;
-    json[BIND_LEVEL] = bindLevel_;
-    json[STATUS] = status_;
-    json[VALID_PERIOD] = validPeriod_;
-    json[LAST_AUTH_TIME] = lastAuthTime_;
-    json[TRUST_DEVICE_ID] = ProfileUtils::GetAnonyString(trustDeviceId_);
-    json[DEVICE_ID_TYPE] = deviceIdType_;
-    json[DEVICE_ID_HASH] = deviceIdHash_;
-    return json.dump();
+    cJSON* json = cJSON_CreateObject();
+    if (!cJSON_IsObject(json)) {
+        cJSON_Delete(json);
+        return EMPTY_STRING;
+    }
+    cJSON_AddNumberToObject(json, ACCESS_CONTROL_ID.c_str(), accessControlId_);
+    cJSON_AddNumberToObject(json, ACCESSER_ID.c_str(), accesserId_);
+    cJSON_AddNumberToObject(json, ACCESSEE_ID.c_str(), accesseeId_);
+    cJSON_AddStringToObject(json, SESSION_KEY.c_str(), sessionKey_.c_str());
+    cJSON_AddNumberToObject(json, BIND_TYPE.c_str(), bindType_);
+    cJSON_AddNumberToObject(json, AUTHENTICATION_TYPE.c_str(), authenticationType_);
+    cJSON_AddNumberToObject(json, BIND_LEVEL.c_str(), bindLevel_);
+    cJSON_AddNumberToObject(json, STATUS.c_str(), status_);
+    cJSON_AddNumberToObject(json, VALID_PERIOD.c_str(), validPeriod_);
+    cJSON_AddNumberToObject(json, LAST_AUTH_TIME.c_str(), lastAuthTime_);
+    cJSON_AddStringToObject(json, TRUST_DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(trustDeviceId_).c_str());
+    cJSON_AddNumberToObject(json, DEVICE_ID_TYPE.c_str(), deviceIdType_);
+    cJSON_AddStringToObject(json, DEVICE_ID_HASH.c_str(), deviceIdHash_.c_str());
+    char* jsonChars = cJSON_PrintUnformatted(json);
+    if (jsonChars == NULL) {
+        cJSON_Delete(json);
+        HILOGE("cJSON formatted to string failed!");
+        return EMPTY_STRING;
+    }
+    std::string jsonStr = jsonChars;
+    cJSON_Delete(json);
+    free(jsonChars);
+    return jsonStr;
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
