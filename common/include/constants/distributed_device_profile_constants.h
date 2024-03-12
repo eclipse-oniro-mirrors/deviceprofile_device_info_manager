@@ -274,6 +274,8 @@ const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_TRUSTDEVICEID =
     "SELECT * FROM access_control_table WHERE trustDeviceId = ? ";
 const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_TRUSTDEVICEID_AND_STATUS =
     "SELECT * FROM access_control_table WHERE trustDeviceId = ? and status = ?";
+const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_STATUS =
+    "SELECT * FROM access_control_table WHERE status = ?";
 const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID = "SELECT * FROM accessee_table WHERE accesseeId = ? ";
 const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID = "SELECT * FROM accesser_table WHERE accesserId = ? ";
 const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERUSERID_ACCESSERTOKENID =
@@ -292,10 +294,12 @@ const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERUSERID =
     "SELECT * FROM accesser_table WHERE accesserId = ? and accesserUserId = ? ";
 const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEUSERID =
     "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeUserId = ? ";
-const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERTOKENID =
-    "SELECT * FROM accesser_table WHERE accesserId = ? and accesserTokenId = ? ";
-const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEETOKENID =
-    "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeTokenId = ? ";
+const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_DEVICEID_AND_ACCESSERTOKENID =
+    "SELECT * FROM accesser_table WHERE accesserId = ? and accesserDeviceId = ? and accesserTokenId = ? ";
+const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_DEVICEID_AND_ACCESSEETOKENID =
+    "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeDeviceId = ? and accesseeTokenId = ? ";
+const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERDEVICEID =
+    "SELECT * FROM accesser_table WHERE accesserId = ? and accesserDeviceId = ? ";
 const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEDEVICEID =
     "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeDeviceId = ? ";
 const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERBUNDLENAME =

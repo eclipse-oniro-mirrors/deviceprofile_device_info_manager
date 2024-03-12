@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -841,7 +841,7 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_006, TestSize.Level1)
 {
     std::vector<AccessControlProfile> profile;
     std::map<std::string, std::string> parms;
-    parms.insert({{"tokenId", "777"}, {"trustDeviceId", "9999"}, {"status", "1"}});
+    parms.insert({{"tokenId", "777"}, {"trustDeviceId", "acer44"}, {"status", "1"}});
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     for (size_t i = 0; i < profile.size(); i++) {
@@ -853,7 +853,7 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_006, TestSize.Level1)
 
     parms.clear();
     profile.clear();
-    parms.insert({{"tokenId", "888"}, {"trustDeviceId", "9999"}, {"status", "1"}});
+    parms.insert({{"tokenId", "888"}, {"trustDeviceId", "acee4"}, {"status", "1"}});
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     for (size_t i = 0; i < profile.size(); i++) {
