@@ -49,11 +49,13 @@ int32_t TrustProfileManager::Init()
     }
     this->CreateTable();
     this->CreateUniqueIndex();
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
 int32_t TrustProfileManager::UnInit()
 {
+    HILOGI("call!");
     {
         std::lock_guard<std::mutex> lock(rdbMutex_);
         if (rdbStore_ == nullptr) {
@@ -67,11 +69,13 @@ int32_t TrustProfileManager::UnInit()
         }
         rdbStore_ = nullptr;
     }
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
 int32_t TrustProfileManager::PutTrustDeviceProfile(const TrustDeviceProfile& profile)
 {
+    HILOGI("call!");
     ValuesBucket values;
     ProfileUtils::TrustDeviceProfileToEntries(profile, values);
 
@@ -94,11 +98,13 @@ int32_t TrustProfileManager::PutTrustDeviceProfile(const TrustDeviceProfile& pro
         HILOGE("PutTrustDeviceProfile::NotifyTrustDeviceProfileAdd failed");
         return DP_NOTIFY_TRUST_DEVICE_FAIL;
     }
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
 int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile& profile)
 {
+    HILOGI("call!");
     AccessControlProfile accessControlProfile(profile);
     this->SetAccessControlProfileId(accessControlProfile);
     this->PutAccesserProfile(accessControlProfile);
@@ -127,11 +133,13 @@ int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile&
         HILOGE("PutAccessControlProfile::Notify accessControlProfile Add failed");
         return DP_NOTIFY_ACCESS_CONTROL_FAIL;
     }
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
 int32_t TrustProfileManager::UpdateTrustDeviceProfile(const TrustDeviceProfile& profile)
 {
+    HILOGI("call!");
     std::string deviceId = profile.GetDeviceId();
     std::shared_ptr<ResultSet> resultSet =
         GetResultSet(SELECT_TRUST_DEVICE_TABLE_WHERE_DEVICEID,
@@ -171,11 +179,13 @@ int32_t TrustProfileManager::UpdateTrustDeviceProfile(const TrustDeviceProfile& 
     }
     this->UpdateTrustDeviceProfileNotify(oldProfile, profile);
     resultSet->Close();
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
 int32_t TrustProfileManager::UpdateAccessControlProfile(const AccessControlProfile& profile)
 {
+    HILOGI("call!");
     int32_t ret = this->UpdateAclCheck(profile);
     if (ret != DP_SUCCESS) {
         HILOGE("UpdateAccessControlProfile::UpdateAclCheck faild");
@@ -213,11 +223,13 @@ int32_t TrustProfileManager::UpdateAccessControlProfile(const AccessControlProfi
         HILOGE("UpdateAccessControlProfile::UpdateTrustDeviceProfile failed");
         return DP_UPDATE_TRUST_DEVICE_PROFILE_FAIL;
     }
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
 int32_t TrustProfileManager::GetTrustDeviceProfile(const std::string& deviceId, TrustDeviceProfile& profile)
 {
+    HILOGI("call!");
     std::shared_ptr<ResultSet> resultSet = GetResultSet(SELECT_TRUST_DEVICE_TABLE_WHERE_DEVICEID,
         std::vector<ValueObject>{ ValueObject(deviceId) });
     if (resultSet == nullptr) {
@@ -237,11 +249,13 @@ int32_t TrustProfileManager::GetTrustDeviceProfile(const std::string& deviceId, 
     }
     this->ConvertToTrustDeviceProfile(resultSet, profile);
     resultSet->Close();
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
 int32_t TrustProfileManager::GetAllTrustDeviceProfile(std::vector<TrustDeviceProfile>& profile)
 {
+    HILOGI("call!");
     std::shared_ptr<ResultSet> resultSet =
         GetResultSet(SELECT_TRUST_DEVICE_TABLE, std::vector<ValueObject> {});
     if (resultSet == nullptr) {
@@ -263,12 +277,14 @@ int32_t TrustProfileManager::GetAllTrustDeviceProfile(std::vector<TrustDevicePro
     if (profile.empty()) {
         return DP_NOT_FIND_DATA;
     }
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
 int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId, const std::string& bundleName,
     int32_t bindType, int32_t status, std::vector<AccessControlProfile>& profile)
 {
+    HILOGI("call!");
     if (bundleName.size() > MAX_STRING_LEN) {
         HILOGE("GetAccessControlProfile::bundleName is invalid");
         return DP_INVALID_PARAMS;
@@ -296,12 +312,14 @@ int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId, const std::
         return DP_NOT_FIND_DATA;
     }
     resultSet->Close();
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
 int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId, const std::string& bundleName,
     const std::string& trustDeviceId, int32_t status, std::vector<AccessControlProfile>& profile)
 {
+    HILOGI("call!");
     if (bundleName.size() > MAX_STRING_LEN || trustDeviceId.size() > MAX_STRING_LEN) {
         HILOGE("GetAccessControlProfile::bundleName or trustDeviceId is invalid");
         return DP_INVALID_PARAMS;
@@ -329,12 +347,14 @@ int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId, const std::
         return DP_NOT_FIND_DATA;
     }
     resultSet->Close();
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
 int32_t TrustProfileManager::GetAccessControlProfileByTokenId(int64_t tokenId,
     const std::string& trustDeviceId, int32_t status, std::vector<AccessControlProfile>& profile)
 {
+    HILOGI("call!");
     if (trustDeviceId.size() > MAX_STRING_LEN) {
         HILOGE("GetAccessControlProfile::trustDeviceId is invalid");
         return DP_INVALID_PARAMS;
@@ -362,12 +382,14 @@ int32_t TrustProfileManager::GetAccessControlProfileByTokenId(int64_t tokenId,
         return DP_NOT_FIND_DATA;
     }
     resultSet->Close();
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
 int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId,
     const std::string& accountId, std::vector<AccessControlProfile>& profile)
 {
+    HILOGI("call!");
     if (accountId.size() > MAX_STRING_LEN) {
         HILOGE("GetAccessControlProfile::accountId is invalid");
         return DP_INVALID_PARAMS;
@@ -395,11 +417,13 @@ int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId,
         return DP_NOT_FIND_DATA;
     }
     resultSet->Close();
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
 int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId, std::vector<AccessControlProfile> &profile)
 {
+    HILOGI("call!");
     std::shared_ptr<ResultSet> resultSet =
         GetResultSet(SELECT_ACCESS_CONTROL_TABLE, std::vector<ValueObject> {});
     if (resultSet == nullptr) {
@@ -431,11 +455,13 @@ int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId, std::vector
         return DP_NOT_FIND_DATA;
     }
     resultSet->Close();
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
 int32_t TrustProfileManager::GetAllAccessControlProfile(std::vector<AccessControlProfile>& profile)
 {
+    HILOGI("call!");
     std::shared_ptr<ResultSet> resultSet =
         GetResultSet(SELECT_ACCESS_CONTROL_TABLE, std::vector<ValueObject> {});
     if (resultSet == nullptr) {
@@ -466,12 +492,14 @@ int32_t TrustProfileManager::GetAllAccessControlProfile(std::vector<AccessContro
     if (profile.empty()) {
         return DP_NOT_FIND_DATA;
     }
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
 int32_t TrustProfileManager::GetAccessControlProfile(const std::string& bundleName,
     int32_t bindType, int32_t status, std::vector<AccessControlProfile>& profile)
 {
+    HILOGI("call!");
     if (bundleName.size() > MAX_STRING_LEN) {
         HILOGE("GetAccessControlProfile::bundleName is invalid");
         return DP_INVALID_PARAMS;
@@ -499,12 +527,14 @@ int32_t TrustProfileManager::GetAccessControlProfile(const std::string& bundleNa
         return DP_NOT_FIND_DATA;
     }
     resultSet->Close();
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
 int32_t TrustProfileManager::GetAccessControlProfile(const std::string& bundleName,
     const std::string& trustDeviceId, int32_t status, std::vector<AccessControlProfile>& profile)
 {
+    HILOGI("call!");
     if (bundleName.size() > MAX_STRING_LEN || trustDeviceId.size() > MAX_STRING_LEN) {
         HILOGE("GetAccessControlProfile::bundleName or trustDeviceId is invalid");
         return DP_INVALID_PARAMS;
@@ -532,6 +562,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(const std::string& bundleNa
         return DP_NOT_FIND_DATA;
     }
     resultSet->Close();
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
@@ -585,6 +616,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(const std::map<std::string,
 
 int32_t TrustProfileManager::DeleteTrustDeviceProfile(const std::string& deviceId)
 {
+    HILOGI("call!");
     std::shared_ptr<ResultSet> resultSet =
         GetResultSet(SELECT_TRUST_DEVICE_TABLE_WHERE_DEVICEID,
         std::vector<ValueObject>{ ValueObject(deviceId) });
@@ -624,11 +656,13 @@ int32_t TrustProfileManager::DeleteTrustDeviceProfile(const std::string& deviceI
         HILOGE("DeleteTrustDeviceProfile::ProfileDelete failed");
         return DP_NOTIFY_TRUST_DEVICE_FAIL;
     }
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
 int32_t TrustProfileManager::DeleteAccessControlProfile(int64_t accessControlId)
 {
+    HILOGI("call!");
     std::shared_ptr<ResultSet> resultSet =
         GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_ACCESSCONTROLID,
         std::vector<ValueObject>{ ValueObject(accessControlId) });
@@ -648,6 +682,7 @@ int32_t TrustProfileManager::DeleteAccessControlProfile(int64_t accessControlId)
         return ret;
     }
     resultSet->Close();
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
