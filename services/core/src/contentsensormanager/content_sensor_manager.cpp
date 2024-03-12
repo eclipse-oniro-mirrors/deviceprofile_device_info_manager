@@ -21,17 +21,16 @@
 #include <memory>
 #include <thread>
 #include "collaboration_info_collector.h"
-#include "device_info_collector.h"
 #include "distributed_device_profile_log.h"
 #include "dms_info_collector.h"
 #include "pasteboard_info_collector.h"
-#include "storage_info_collector.h"
 #include "syscap_info_collector.h"
 #include "system_info_collector.h"
 #include "distributed_device_profile_errors.h"
 #include "device_profile.h"
 #include "event_handler.h"
 #include "collector.h"
+#include "content_sensor_manager_utils.h"
 #include "device_profile_manager.h"
 
 namespace OHOS {
@@ -65,10 +64,8 @@ int32_t ContentSensorManager::Collect()
     auto csTask = []() {
         HILOGI("ContentSensorManager Collect");
         std::list<std::shared_ptr<Collector>> taskList;
-        taskList.push_back(std::make_shared<DeviceInfoCollector>());
         taskList.push_back(std::make_shared<SystemInfoCollector>());
         taskList.push_back(std::make_shared<SyscapInfoCollector>());
-        taskList.push_back(std::make_shared<StorageInfoCollector>());
         taskList.push_back(std::make_shared<DmsInfoCollector>());
         taskList.push_back(std::make_shared<CollaborationInfoCollector>());
         taskList.push_back(std::make_shared<PasteboardInfoCollector>());
@@ -80,6 +77,7 @@ int32_t ContentSensorManager::Collect()
             task->ConvertToProfile(svrProfileList);
             task->ConvertToProfile(charProfileList);
         }
+        deviceProfile.SetDeviceId(ContentSensorManagerUtils::GetInstance().ObtainLocalUdid());
         DeviceProfileManager::GetInstance().PutDeviceProfile(deviceProfile);
         if (!svrProfileList.empty()) {
             DeviceProfileManager::GetInstance().PutServiceProfileBatch(svrProfileList);
