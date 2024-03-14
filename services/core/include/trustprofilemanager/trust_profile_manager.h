@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -74,7 +74,7 @@ private:
         int32_t userId, const std::string& bundleName, std::vector<AccessControlProfile>& profile);
     int32_t GetAclProfileByUserIdAndAccountId(std::shared_ptr<ResultSet> resultSet,
         int32_t userId, const std::string& accountId, std::vector<AccessControlProfile>& profile);
-    int32_t GetAclProfileByTokenId(std::shared_ptr<ResultSet> resultSet,
+    int32_t GetAclProfileByTokenId(std::shared_ptr<ResultSet> resultSet, const std::string& trustDeviceId,
         int64_t tokenId, std::vector<AccessControlProfile>& profile);
     int32_t GetAclProfileByBundleName(std::shared_ptr<ResultSet> resultSet,
         const std::string& bundleName, std::vector<AccessControlProfile>& profile);
@@ -93,6 +93,8 @@ private:
     int32_t GetResultStatus(const std::string& trustDeviceId, int32_t& trustDeviceStatus);
     int32_t GetAccessControlProfile(std::shared_ptr<ResultSet> resultSet,
         int64_t accesserId, int64_t accesseeId, std::vector<AccessControlProfile>& profile);
+    int32_t GetAccessControlProfilesByDeviceId(std::shared_ptr<ResultSet> resultSet, int64_t accesserId,
+        int64_t accesseeId, const std::string& trustDeviceId, std::vector<AccessControlProfile>& profile);
     int32_t DeleteAccessControlProfileCheck(std::shared_ptr<ResultSet> resultSet);
     int32_t ConvertToTrustDeviceProfile(std::shared_ptr<ResultSet> trustResultSet,
         TrustDeviceProfile& trustDeviceProfile);
@@ -110,7 +112,8 @@ private:
     int32_t GetAccessControlProfiles(std::shared_ptr<ResultSet> resultSet, int64_t accesserId,
         int64_t accesseeId, const std::string& bundleName, std::vector<AccessControlProfile>& profile);
     int32_t GetAccessControlProfilesByTokenId(std::shared_ptr<ResultSet> resultSet, int64_t accesserId,
-        int64_t accesseeId, int64_t tokenId, std::vector<AccessControlProfile>& profile);
+        int64_t accesseeId, const std::string& trustDeviceId, int64_t tokenId,
+        std::vector<AccessControlProfile>& profile);
     int32_t DeleteAccesserCheck(int64_t accesserId);
     int32_t DeleteAccesseeCheck(int64_t accesseeId);
     int32_t DeleteTrustDeviceCheck(const AccessControlProfile& profile);
