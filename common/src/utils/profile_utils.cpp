@@ -535,7 +535,7 @@ bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& pro
     int32_t maxValue)
 {
     if (propertyMap.count(property) != 0 && 0 < propertyMap.at(property).length() &&
-        propertyMap.at(property).length() < maxValue) {
+        (static_cast<int32_t>(propertyMap.at(property).length())) < maxValue) {
         return true;
     }
     return false;
