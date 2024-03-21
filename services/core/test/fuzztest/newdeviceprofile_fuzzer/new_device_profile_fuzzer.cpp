@@ -38,7 +38,8 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
     constexpr size_t THRESHOLD = 10;
-    constexpr uint8_t MAX_CALL_TRANSACTION = 7;
+    constexpr uint8_t MIN_INTERFACE_CODE = 7;
+    constexpr uint8_t MAX_INTERFACE_CODE = 25;
     constexpr int32_t OFFSET = 4;
     int32_t ZERO_BIT = 0;
     int32_t FIRST_BIT = 1;
@@ -48,7 +49,7 @@ namespace {
     int32_t FIRST_MOVE_LEN = 16;
     int32_t SECOND_MOVE_LEN = 8;
     bool flag_ = false;
-    const std::u16string DP_INTERFACE_TOKEN = u"OHOS.DeviceProfile.IDistributedDeviceProfile";
+    const std::u16string DP_INTERFACE_TOKEN = u"OHOS.DistributedDeviceProfile.IDistributedDeviceProfile";
 }
 
 uint32_t Convert2Uint32(const uint8_t* ptr)
@@ -100,7 +101,8 @@ void FuzzDeviceProfile(const uint8_t* rawData, size_t size)
         DistributedDeviceProfileService::GetInstance().Init();
         flag_ = true;
     }
-    DistributedDeviceProfileService::GetInstance().OnRemoteRequest(code % MAX_CALL_TRANSACTION, data, reply, option);
+    code = code % (MAX_INTERFACE_CODE - MIN_INTERFACE_CODE + 1) + MIN_INTERFACE_CODE -1;
+    DistributedDeviceProfileService::GetInstance().OnRemoteRequest(code, data, reply, option);
 }
 }
 }
