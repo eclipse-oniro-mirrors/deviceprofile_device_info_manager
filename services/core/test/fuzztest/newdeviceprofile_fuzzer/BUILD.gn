@@ -21,12 +21,12 @@ module_output_path = fuzz_test_output_path
 
 device_profile_configs = [
   "${device_profile_service}:device_info_manager_config",
-  "${device_profile_test}/resource:coverage_flags",
+#  "${device_profile_test}/resource:coverage_flags",
 ]
 
 device_profile_deps = [
-  "${device_profile_innerkits}:distributed_device_profile_client",
-  "${device_profile_service}:distributed_device_profile",
+  "${device_profile_innerkits}:distributed_device_profile_sdk",
+  "${device_profile_service}:distributed_device_profile_svr",
 ]
 
 ##############################fuzztest##########################################
