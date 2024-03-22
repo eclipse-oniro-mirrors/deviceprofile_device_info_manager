@@ -106,9 +106,21 @@ int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile&
 {
     HILOGI("call!");
     AccessControlProfile accessControlProfile(profile);
-    this->SetAccessControlProfileId(accessControlProfile);
-    this->PutAccesserProfile(accessControlProfile);
-    this->PutAccesseeProfile(accessControlProfile);
+    int32_t ret = this->SetAccessControlProfileId(accessControlProfile);
+    if (ret != DP_SUCCESS) {
+        HILOGE("PutAccessControlProfile::SetAccessControlProfileId failed");
+        return ret;
+    }
+    ret = this->PutAccesserProfile(accessControlProfile);
+    if (ret != DP_SUCCESS) {
+        HILOGE("PutAccessControlProfile::PutAccesserProfile failed");
+        return ret;
+    }
+    ret = this->PutAccesseeProfile(accessControlProfile);
+    if (ret != DP_SUCCESS) {
+        HILOGE("PutAccessControlProfile::PutAccesseeProfile failed");
+        return ret;
+    }
     ValuesBucket values;
     ProfileUtils::AccessControlProfileToEntries(accessControlProfile, values);
     {
@@ -123,7 +135,7 @@ int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile&
             return DP_PUT_ACL_PROFILE_FAIL;
         }
     }
-    int32_t ret = this->PutAclCheck(accessControlProfile);
+    ret = this->PutAclCheck(accessControlProfile);
     if (ret != DP_SUCCESS) {
         HILOGE("PutAccessControlProfile::PutAclCheck failed");
         return ret;
@@ -233,7 +245,7 @@ int32_t TrustProfileManager::GetTrustDeviceProfile(const std::string& deviceId, 
     std::shared_ptr<ResultSet> resultSet = GetResultSet(SELECT_TRUST_DEVICE_TABLE_WHERE_DEVICEID,
         std::vector<ValueObject>{ ValueObject(deviceId) });
     if (resultSet == nullptr) {
-        HILOGE("GetTrustDeviceProfile::get result failed");
+        HILOGE("GetTrustDeviceProfile::resultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     int32_t rowCount = ROWCOUNT_INIT;
@@ -621,7 +633,7 @@ int32_t TrustProfileManager::DeleteTrustDeviceProfile(const std::string& deviceI
         GetResultSet(SELECT_TRUST_DEVICE_TABLE_WHERE_DEVICEID,
         std::vector<ValueObject>{ ValueObject(deviceId) });
     if (resultSet == nullptr) {
-        HILOGE("DeleteTrustDeviceProfile::get result failed");
+        HILOGE("DeleteTrustDeviceProfile::resultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     int32_t rowCount = ROWCOUNT_INIT;
@@ -667,7 +679,7 @@ int32_t TrustProfileManager::DeleteAccessControlProfile(int64_t accessControlId)
         GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_ACCESSCONTROLID,
         std::vector<ValueObject>{ ValueObject(accessControlId) });
     if (resultSet == nullptr) {
-        HILOGE("DeleteAccessControlProfile::get result failed");
+        HILOGE("DeleteAccessControlProfile::resultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     int32_t rowCount = ROWCOUNT_INIT;
@@ -808,7 +820,7 @@ int32_t TrustProfileManager::GetAclProfileByUserIdAndAccountId(std::shared_ptr<R
             GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERUSERID_ACCESSERACCOUNTID,
             std::vector<ValueObject>{ ValueObject(accesserId), ValueObject(userId), ValueObject(accountId) });
         if (accesserResultSet == nullptr) {
-            HILOGE("GetAclProfileByUserIdAndAccountId::get accesserResultSet failed");
+            HILOGE("GetAclProfileByUserIdAndAccountId::accesserResultSet is nullptr");
             return DP_GET_RESULTSET_FAIL;
         }
         int32_t rowCount = ROWCOUNT_INIT;
@@ -828,7 +840,7 @@ int32_t TrustProfileManager::GetAclProfileByUserIdAndAccountId(std::shared_ptr<R
             GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEUSEEID_ACCESSEEACCOUNTID,
             std::vector<ValueObject>{ ValueObject(accesseeId), ValueObject(userId), ValueObject(accountId) });
         if (accesseeResultSet == nullptr) {
-            HILOGE("GetAclProfileByUserIdAndAccountId::get accesseeResultSet failed");
+            HILOGE("GetAclProfileByUserIdAndAccountId::accesseeResultSet is nullptr");
             return DP_GET_RESULTSET_FAIL;
         }
         accesseeResultSet->GetRowCount(rowCount);
@@ -929,20 +941,12 @@ int32_t TrustProfileManager::ConvertToAccessControlProfiles(std::shared_ptr<Resu
     }
     Accesser accesser;
     accesserResultSet->GoToNextRow();
-    if (accesserResultSet == nullptr) {
-        HILOGE("GetAclProfileByUserIdAndAccountId::get accesserResultSet failed");
-        return DP_GET_RESULTSET_FAIL;
-    }
     this->ConvertToAccesser(accesserResultSet, accesser);
     Accessee accessee;
     accesseeResultSet->GoToNextRow();
-    if (accesserResultSet == nullptr) {
-        HILOGE("GetAclProfileByUserIdAndAccountId::get accesserResultSet failed");
-        return DP_GET_RESULTSET_FAIL;
-    }
     this->ConvertToAccessee(accesseeResultSet, accessee);
     if (resultSet == nullptr) {
-        HILOGE("GetAclProfileByUserIdAndAccountId::get resultSet failed");
+        HILOGE("GetAclProfileByUserIdAndAccountId::resultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     AccessControlProfile accessControlProfile;
@@ -1253,7 +1257,7 @@ int32_t TrustProfileManager::GetAccessControlProfilesByDeviceId(
         GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERDEVICEID,
         std::vector<ValueObject>{ ValueObject(accesserId), ValueObject(trustDeviceId) });
     if (accesserResultSet == nullptr) {
-        HILOGE("GetAccessControlProfilesByDeviceId::get result failed");
+        HILOGE("GetAccessControlProfilesByDeviceId::accesserResultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     int32_t rowCount = ROWCOUNT_INIT;
@@ -1263,7 +1267,7 @@ int32_t TrustProfileManager::GetAccessControlProfilesByDeviceId(
             GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID,
             std::vector<ValueObject>{ ValueObject(accesseeId) });
         if (accesseeResultSet == nullptr) {
-            HILOGE("GetAccessControlProfiles::get accesseeResultSet failed");
+            HILOGE("GetAccessControlProfiles::accesseeResultSet is nullptr");
             return DP_GET_RESULTSET_FAIL;
         }
         this->ConvertToAccessControlProfiles(resultSet, accesserResultSet, accesseeResultSet, profile);
@@ -1277,7 +1281,7 @@ int32_t TrustProfileManager::GetAccessControlProfilesByDeviceId(
         GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEDEVICEID,
         std::vector<ValueObject>{ ValueObject(accesseeId), ValueObject(trustDeviceId) });
     if (accesseeResultSet == nullptr) {
-        HILOGE("GetAccessControlProfilesByDeviceId::get accesseeResultSet failed");
+        HILOGE("GetAccessControlProfilesByDeviceId::accesseeResultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     accesseeResultSet->GetRowCount(rowCount);
@@ -1285,7 +1289,7 @@ int32_t TrustProfileManager::GetAccessControlProfilesByDeviceId(
         accesserResultSet = GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERID,
             std::vector<ValueObject>{ ValueObject(accesserId) });
         if (accesserResultSet == nullptr) {
-            HILOGE("GetAccessControlProfiles::get accesserResultSet failed");
+            HILOGE("GetAccessControlProfiles::accesserResultSet is nullptr");
             return DP_GET_RESULTSET_FAIL;
         }
         this->ConvertToAccessControlProfiles(resultSet, accesserResultSet, accesseeResultSet, profile);
@@ -1341,6 +1345,10 @@ int32_t TrustProfileManager::DeleteAccessControlProfileCheck(std::shared_ptr<Res
 int32_t TrustProfileManager::ConvertToTrustDeviceProfile(
     std::shared_ptr<ResultSet> trustResultSet, TrustDeviceProfile& trustDeviceProfile)
 {
+    if (trustResultSet == nullptr) {
+        HILOGE("GetAccessControlProfiles::trustResultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
     RowEntity rowEntity;
     if (trustResultSet->GetRow(rowEntity) != DP_SUCCESS) {
         HILOGE("ConvertToTrustDeviceProfile::get trustResultSet failed");
@@ -1361,6 +1369,10 @@ int32_t TrustProfileManager::ConvertToTrustDeviceProfile(
 int32_t TrustProfileManager::ConvertToAccesser(std::shared_ptr<ResultSet> accesserResultSet,
     Accesser& accesser)
 {
+    if (accesserResultSet == nullptr) {
+        HILOGE("GetAccessControlProfiles::accesserResultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
     RowEntity rowEntity;
     if (accesserResultSet->GetRow(rowEntity) != DP_SUCCESS) {
         HILOGE("ConvertToAccesser::get accesserResultSet failed");
@@ -1389,6 +1401,10 @@ int32_t TrustProfileManager::ConvertToAccesser(std::shared_ptr<ResultSet> access
 int32_t TrustProfileManager::ConvertToAccessee(std::shared_ptr<ResultSet> accesseeResultSet,
     Accessee& accessee)
 {
+    if (accesseeResultSet == nullptr) {
+        HILOGE("GetAccessControlProfiles::accesseeResultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
     RowEntity rowEntity;
     if (accesseeResultSet->GetRow(rowEntity) != DP_SUCCESS) {
         HILOGE("ConvertToAccessee::get accesseeResultSet failed");
@@ -1417,6 +1433,10 @@ int32_t TrustProfileManager::ConvertToAccessee(std::shared_ptr<ResultSet> access
 int32_t TrustProfileManager::ConvertToAccessControlProfile(
     std::shared_ptr<ResultSet> accessControlResultSet, AccessControlProfile& accessControlProfile)
 {
+    if (accessControlResultSet == nullptr) {
+        HILOGE("GetAccessControlProfiles::accessControlResultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
     RowEntity rowEntity;
     if (accessControlResultSet->GetRow(rowEntity) != DP_SUCCESS) {
         HILOGE("ConvertToAccessControlProfile::get accessControlResultSet failed");
@@ -1473,9 +1493,21 @@ std::shared_ptr<ResultSet> TrustProfileManager::GetResultSet(
 
 int32_t TrustProfileManager::SetAccessControlProfileId(AccessControlProfile& accessControlProfile)
 {
-    this->SetAccessControlId(accessControlProfile);
-    this->SetAccesserId(accessControlProfile);
-    this->SetAccesseeId(accessControlProfile);
+    int32_t ret = this->SetAccessControlId(accessControlProfile);
+    if(ret != DP_SUCCESS) {
+        HILOGE("SetAccessControlId::SetAccessControlId failed");
+        return ret;
+    }
+    ret = this->SetAccesserId(accessControlProfile);
+    if(ret != DP_SUCCESS) {
+        HILOGE("SetAccessControlId::SetAccesserId failed");
+        return ret;
+    }
+    ret = this->SetAccesseeId(accessControlProfile);
+    if(ret != DP_SUCCESS) {
+        HILOGE("SetAccessControlId::SetAccesseeId failed");
+        return ret;
+    }
     Accesser accesser(accessControlProfile.GetAccesser());
     accesser.SetAccesserId(accessControlProfile.GetAccesserId());
     accessControlProfile.SetAccesser(accesser);
@@ -1494,7 +1526,7 @@ int32_t TrustProfileManager::GetAccessControlProfiles(std::shared_ptr<ResultSet>
         GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERUSERID_ACCESSERBUNDLENAME,
         std::vector<ValueObject>{ ValueObject(accesserId), ValueObject(userId), ValueObject(bundleName) });
     if (accesserResultSet == nullptr) {
-        HILOGE("GetAccessControlProfiles::get accesserResultSet failed");
+        HILOGE("GetAccessControlProfiles::accesserResultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     int32_t rowCount = ROWCOUNT_INIT;
@@ -1504,7 +1536,7 @@ int32_t TrustProfileManager::GetAccessControlProfiles(std::shared_ptr<ResultSet>
             GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID,
             std::vector<ValueObject>{ ValueObject(accesseeId) });
         if (accesseeResultSet == nullptr) {
-            HILOGE("GetAccessControlProfiles::get accesseeResultSet failed");
+            HILOGE("GetAccessControlProfiles::accesseeResultSet is nullptr");
             return DP_GET_RESULTSET_FAIL;
         }
         this->ConvertToAccessControlProfiles(resultSet, accesserResultSet, accesseeResultSet, profile);
@@ -1518,7 +1550,7 @@ int32_t TrustProfileManager::GetAccessControlProfiles(std::shared_ptr<ResultSet>
         GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEUSEEID_ACCESSEEBUNDLENAME,
         std::vector<ValueObject>{ ValueObject(accesseeId), ValueObject(userId), ValueObject(bundleName) });
     if (accesseeResultSet == nullptr) {
-        HILOGE("GetAccessControlProfiles::get accesseeResultSet failed");
+        HILOGE("GetAccessControlProfiles::accesseeResultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     accesseeResultSet->GetRowCount(rowCount);
@@ -1526,7 +1558,7 @@ int32_t TrustProfileManager::GetAccessControlProfiles(std::shared_ptr<ResultSet>
         accesserResultSet = GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERID,
             std::vector<ValueObject>{ ValueObject(accesserId) });
         if (accesserResultSet == nullptr) {
-            HILOGE("GetAccessControlProfiles::get accesserResultSet failed");
+            HILOGE("GetAccessControlProfiles::accesserResultSet is nullptr");
             return DP_GET_RESULTSET_FAIL;
         }
         this->ConvertToAccessControlProfiles(resultSet, accesserResultSet, accesseeResultSet, profile);
@@ -1543,7 +1575,7 @@ int32_t TrustProfileManager::GetAccessControlProfiles(std::shared_ptr<ResultSet>
         GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERUSERID,
         std::vector<ValueObject>{ ValueObject(accesserId), ValueObject(userId) });
     if (accesserResultSet == nullptr) {
-        HILOGE("GetAccessControlProfiles::get accesserResultSet failed");
+        HILOGE("GetAccessControlProfiles::accesserResultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     int32_t rowCount = ROWCOUNT_INIT;
@@ -1553,7 +1585,7 @@ int32_t TrustProfileManager::GetAccessControlProfiles(std::shared_ptr<ResultSet>
             GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID,
             std::vector<ValueObject>{ ValueObject(accesseeId) });
         if (accesseeResultSet == nullptr) {
-            HILOGE("GetAccessControlProfiles::get accesseeResultSet failed");
+            HILOGE("GetAccessControlProfiles::accesseeResultSet is nullptr");
             return DP_GET_RESULTSET_FAIL;
         }
         this->ConvertToAccessControlProfiles(resultSet, accesserResultSet, accesseeResultSet, profile);
@@ -1567,7 +1599,7 @@ int32_t TrustProfileManager::GetAccessControlProfiles(std::shared_ptr<ResultSet>
         GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEUSERID,
         std::vector<ValueObject>{ ValueObject(accesseeId), ValueObject(userId) });
     if (accesseeResultSet == nullptr) {
-        HILOGE("GetAccessControlProfiles::get accesseeResultSet failed");
+        HILOGE("GetAccessControlProfiles::accesseeResultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     accesseeResultSet->GetRowCount(rowCount);
@@ -1575,7 +1607,7 @@ int32_t TrustProfileManager::GetAccessControlProfiles(std::shared_ptr<ResultSet>
         accesserResultSet = GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERID,
             std::vector<ValueObject>{ ValueObject(accesserId) });
         if (accesserResultSet == nullptr) {
-            HILOGE("GetAccessControlProfiles::get accesserResultSet failed");
+            HILOGE("GetAccessControlProfiles::accesserResultSet is nullptr");
             return DP_GET_RESULTSET_FAIL;
         }
         this->ConvertToAccessControlProfiles(resultSet, accesserResultSet, accesseeResultSet, profile);
@@ -1592,7 +1624,7 @@ int32_t TrustProfileManager::GetAccessControlProfiles(std::shared_ptr<ResultSet>
         GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERBUNDLENAME,
         std::vector<ValueObject>{ ValueObject(accesserId), ValueObject(bundleName) });
     if (accesserResultSet == nullptr) {
-        HILOGE("GetAccessControlProfileOnUserIdAndTokenId::get result failed");
+        HILOGE("GetAccessControlProfileOnUserIdAndTokenId::accesserResultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     int32_t rowCount = ROWCOUNT_INIT;
@@ -1602,7 +1634,7 @@ int32_t TrustProfileManager::GetAccessControlProfiles(std::shared_ptr<ResultSet>
             GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID,
             std::vector<ValueObject>{ ValueObject(accesseeId) });
         if (accesseeResultSet == nullptr) {
-            HILOGE("GetAccessControlProfiles::get accesseeResultSet failed");
+            HILOGE("GetAccessControlProfiles::accesseeResultSet is nullptr");
             return DP_GET_RESULTSET_FAIL;
         }
         this->ConvertToAccessControlProfiles(resultSet, accesserResultSet, accesseeResultSet, profile);
@@ -1616,7 +1648,7 @@ int32_t TrustProfileManager::GetAccessControlProfiles(std::shared_ptr<ResultSet>
         GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEBUNDLENAME,
         std::vector<ValueObject>{ ValueObject(accesseeId), ValueObject(bundleName) });
     if (accesseeResultSet == nullptr) {
-        HILOGE("GetAccessControlProfileOnUserIdAndTokenId::get accesseeResultSet failed");
+        HILOGE("GetAccessControlProfileOnUserIdAndTokenId::accesseeResultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     accesseeResultSet->GetRowCount(rowCount);
@@ -1624,7 +1656,7 @@ int32_t TrustProfileManager::GetAccessControlProfiles(std::shared_ptr<ResultSet>
         accesserResultSet = GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERID,
             std::vector<ValueObject>{ ValueObject(accesserId) });
         if (accesserResultSet == nullptr) {
-            HILOGE("GetAccessControlProfiles::get accesserResultSet failed");
+            HILOGE("GetAccessControlProfiles::accesserResultSet is nullptr");
             return DP_GET_RESULTSET_FAIL;
         }
         this->ConvertToAccessControlProfiles(resultSet, accesserResultSet, accesseeResultSet, profile);
@@ -1642,7 +1674,7 @@ int32_t TrustProfileManager::GetAccessControlProfilesByTokenId(std::shared_ptr<R
         GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_DEVICEID_AND_ACCESSERTOKENID,
         std::vector<ValueObject>{ ValueObject(accesserId), ValueObject(trustDeviceId), ValueObject(tokenId) });
     if (accesserResultSet == nullptr) {
-        HILOGE("GetAccessControlProfiles::get accesserResultSet failed");
+        HILOGE("GetAccessControlProfiles::accesserResultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     int32_t rowCount = ROWCOUNT_INIT;
@@ -1652,7 +1684,7 @@ int32_t TrustProfileManager::GetAccessControlProfilesByTokenId(std::shared_ptr<R
             GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID,
             std::vector<ValueObject>{ ValueObject(accesseeId) });
         if (accesseeResultSet == nullptr) {
-            HILOGE("GetAccessControlProfiles::get accesseeResultSet failed");
+            HILOGE("GetAccessControlProfiles::accesseeResultSet is nullptr");
             return DP_GET_RESULTSET_FAIL;
         }
         this->ConvertToAccessControlProfiles(resultSet, accesserResultSet, accesseeResultSet, profile);
@@ -1666,7 +1698,7 @@ int32_t TrustProfileManager::GetAccessControlProfilesByTokenId(std::shared_ptr<R
         GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_DEVICEID_AND_ACCESSEETOKENID,
         std::vector<ValueObject>{ ValueObject(accesseeId), ValueObject(trustDeviceId), ValueObject(tokenId) });
     if (accesseeResultSet == nullptr) {
-        HILOGE("GetAccessControlProfiles::get accesseeResultSet failed");
+        HILOGE("GetAccessControlProfiles::accesseeResultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     accesseeResultSet->GetRowCount(rowCount);
@@ -1674,7 +1706,7 @@ int32_t TrustProfileManager::GetAccessControlProfilesByTokenId(std::shared_ptr<R
         accesserResultSet = GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERID,
             std::vector<ValueObject>{ ValueObject(accesserId) });
         if (accesserResultSet == nullptr) {
-            HILOGE("GetAccessControlProfiles::get accesserResultSet failed");
+            HILOGE("GetAccessControlProfiles::accesserResultSet is nullptr");
             return DP_GET_RESULTSET_FAIL;
         }
         this->ConvertToAccessControlProfiles(resultSet, accesserResultSet, accesseeResultSet, profile);
@@ -1690,7 +1722,7 @@ int32_t TrustProfileManager::DeleteAccesserCheck(int64_t accesserId)
         GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_ACCESSERID,
         std::vector<ValueObject>{ ValueObject(accesserId) });
     if (resultSet == nullptr) {
-        HILOGE("DeleteAccesseeCheck::accesserId not find");
+        HILOGE("DeleteAccesseeCheck::resultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     int32_t rowCount = ROWCOUNT_INIT;
@@ -1751,7 +1783,7 @@ int32_t TrustProfileManager::PutAclCheck(const AccessControlProfile& profile)
         GetResultSet(SELECT_TRUST_DEVICE_TABLE_WHERE_DEVICEID,
         std::vector<ValueObject>{ ValueObject(trustDeviceId) });
     if (resultSet == nullptr) {
-        HILOGE("PutAccessControlProfile::get resultSet failed");
+        HILOGE("PutAccessControlProfile::resultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     int32_t rowCount = ROWCOUNT_INIT;
@@ -1780,7 +1812,7 @@ int32_t TrustProfileManager::DeleteAccesseeCheck(int64_t accesseeId)
         GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_ACCESSEEID,
         std::vector<ValueObject>{ ValueObject(accesseeId) });
     if (resultSet == nullptr) {
-        HILOGE("DeleteAccesseeCheck::accesseeId not find");
+        HILOGE("DeleteAccesseeCheck::resultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     int32_t rowCount = ROWCOUNT_INIT;
@@ -1809,7 +1841,7 @@ int32_t TrustProfileManager::DeleteTrustDeviceCheck(const AccessControlProfile& 
         GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_TRUSTDEVICEID,
         std::vector<ValueObject>{ ValueObject(profile.GetTrustDeviceId()) });
     if (resultSet == nullptr) {
-        HILOGE("DeleteTrustDeviceCheck::trustDeviceId not find");
+        HILOGE("DeleteTrustDeviceCheck::resultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
     int32_t rowCount = ROWCOUNT_INIT;
