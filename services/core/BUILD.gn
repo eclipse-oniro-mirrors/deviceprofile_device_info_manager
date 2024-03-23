@@ -68,13 +68,13 @@ ohos_shared_library("distributed_device_profile_svr") {
 
   deps = [
     "${device_profile_common}:distributed_device_profile_common",
-    "${third_party_cjson}:cjson",
   ]
 
   configs = [ ":device_info_manager_config" ]
 
   external_deps = [
     "access_token:libaccesstoken_sdk",
+    "cJSON:cjson",
     "c_utils:utils",
     "device_auth:deviceauth_sdk",
     "device_manager:devicemanagersdk",

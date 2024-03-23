@@ -25,7 +25,6 @@ device_profile_deps = [
   "${device_profile_common}:distributed_device_profile_common",
   "${device_profile_innerkits}:distributed_device_profile_sdk",
   "${device_profile_service}:distributed_device_profile_svr",
-  "${third_party_cjson}:cjson",
   "//third_party/googletest:gtest_main",
 ]
 
@@ -33,6 +32,7 @@ device_profile_external_deps = [
   "access_token:libaccesstoken_sdk",
   "access_token:libnativetoken",
   "access_token:libtoken_setproc",
+  "cJSON:cjson",
   "c_utils:utils",
   "device_auth:deviceauth_sdk",
   "device_manager:devicemanagersdk",
