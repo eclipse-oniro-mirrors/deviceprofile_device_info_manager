@@ -118,7 +118,8 @@
           "//foundation/deviceprofile/device_info_manager/radar/test/unittest:dp_radar_helper_test",
           "//foundation/deviceprofile/device_info_manager/old/services/core:unittest",
           "//foundation/deviceprofile/device_info_manager/services/core:unittest",
-          "//foundation/deviceprofile/device_info_manager/old/services/core/test/fuzztest:fuzztest"
+          "//foundation/deviceprofile/device_info_manager/old/services/core/test/fuzztest:fuzztest",
+          "//foundation/deviceprofile/device_info_manager/services/core/test/fuzztest:fuzztest"
         ]
       }
     }
