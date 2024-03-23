@@ -1494,17 +1494,17 @@ std::shared_ptr<ResultSet> TrustProfileManager::GetResultSet(
 int32_t TrustProfileManager::SetAccessControlProfileId(AccessControlProfile& accessControlProfile)
 {
     int32_t ret = this->SetAccessControlId(accessControlProfile);
-    if(ret != DP_SUCCESS) {
+    if (ret != DP_SUCCESS) {
         HILOGE("SetAccessControlId::SetAccessControlId failed");
         return ret;
     }
     ret = this->SetAccesserId(accessControlProfile);
-    if(ret != DP_SUCCESS) {
+    if (ret != DP_SUCCESS) {
         HILOGE("SetAccessControlId::SetAccesserId failed");
         return ret;
     }
     ret = this->SetAccesseeId(accessControlProfile);
-    if(ret != DP_SUCCESS) {
+    if (ret != DP_SUCCESS) {
         HILOGE("SetAccessControlId::SetAccesseeId failed");
         return ret;
     }
