@@ -21,8 +21,8 @@
       "ram": "9000KB",
       "deps": {
         "components": [
-          "cJSON",
           "c_utils",
+	  "cJSON",
           "hisysevent",
           "hilog",
           "ipc",
