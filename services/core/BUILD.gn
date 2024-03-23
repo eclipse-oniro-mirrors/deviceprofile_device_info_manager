@@ -66,9 +66,7 @@ ohos_shared_library("distributed_device_profile_svr") {
     "src/utils/profile_cache.cpp",
   ]
 
-  deps = [
-    "${device_profile_common}:distributed_device_profile_common",
-  ]
+  deps = [ "${device_profile_common}:distributed_device_profile_common" ]
 
   configs = [ ":device_info_manager_config" ]
 
