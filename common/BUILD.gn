@@ -57,12 +57,13 @@ ohos_shared_library("distributed_device_profile_common") {
     "src/utils/profile_utils.cpp",
   ]
 
-  deps = [ "${third_party_cjson}:cjson" ]
+  deps = []
 
   public_configs = [ ":distributed_device_profile_common_config" ]
 
   external_deps = [
     "access_token:libaccesstoken_sdk",
+    "cJSON:cjson",
     "c_utils:utils",
     "device_manager:devicemanagersdk",
     "dmsfwk:common_sdk",

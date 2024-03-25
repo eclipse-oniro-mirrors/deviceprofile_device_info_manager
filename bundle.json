@@ -21,6 +21,7 @@
       "ram": "9000KB",
       "deps": {
         "components": [
+	  "cJSON",
           "c_utils",
           "hisysevent",
           "hilog",
@@ -40,8 +41,7 @@
           "relational_store"
         ],
         "third_party": [
-          "json",
-          "cJSON"
+          "json"
         ]
       },
       "build": {
