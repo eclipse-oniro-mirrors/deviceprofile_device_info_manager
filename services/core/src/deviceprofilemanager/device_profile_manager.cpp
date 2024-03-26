@@ -49,6 +49,7 @@ int32_t DeviceProfileManager::Init()
             std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>());
         initResult = deviceProfileStore_->Init();
     }
+    LoadDpSyncAdapter();
     HILOGI("Init finish, res: %d", initResult);
     return initResult;
 }
