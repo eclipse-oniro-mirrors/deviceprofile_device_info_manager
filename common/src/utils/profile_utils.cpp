@@ -29,6 +29,7 @@ using namespace OHOS::DistributedHardware;
 
 namespace {
     const std::string TAG = "ProfileUtils";
+    
 }
 
 std::string ProfileUtils::GetAnonyString(const std::string& value)
