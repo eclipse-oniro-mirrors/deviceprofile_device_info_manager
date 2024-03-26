@@ -57,6 +57,9 @@ public:
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
         sptr<IRemoteObject> syncCompletedCallback);
     int32_t DeviceOnlineAutoSync(const std::string& peerNetworkId);
+    void OnNodeOnline(const std::string& peerNetworkId);
+    void OnNodeOffline(const std::string& peerNetworkId);
+    bool IsLocalOrOnlineDevice(const std::string &deviceId);
 
 private:
     bool LoadDpSyncAdapter();
@@ -65,8 +68,10 @@ private:
     bool isAdapterSoLoaded_ = false;
     std::mutex isAdapterLoadLock_;
     std::mutex dpStoreMutex_;
+    std::mutex onlineDeviceLock_;
     std::shared_ptr<IKVAdapter> deviceProfileStore_ = nullptr;
     std::shared_ptr<IDPSyncAdapter> dpSyncAdapter_;
+    std::vector<std::string> onlineDeviceList_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS
