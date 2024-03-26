@@ -20,6 +20,7 @@
 #include <vector>
 #include <list>
 
+#include "parameter.h"
 #include "kv_adapter.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
@@ -37,6 +38,7 @@ namespace {
     const std::string STORE_ID = "dp_kv_store";
     const std::string TAG = "DeviceProfileManager";
     const std::string DP_MANAGER_HANDLER = "dp_manager_handler";
+    constexpr int32_t DEVICE_ID_LENGTH = 65;
 }
 
 int32_t DeviceProfileManager::Init()
@@ -196,6 +198,10 @@ int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, Devi
         HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;
     }
+    if (!IsLocalOrOnlineDevice(deviceId)) {
+        HILOGE("the profile is offline or is not a local device.");
+        return DP_INVALID_PARAMS;
+    }
     HILOGI("GetDeviceProfile, deviceId: %s!", ProfileUtils::GetAnonyString(deviceId).c_str());
     if (ProfileCache::GetInstance().GetDeviceProfile(deviceId, deviceProfile) == DP_SUCCESS) {
         HILOGI("GetDeviceProfile in cache!");
@@ -224,6 +230,10 @@ int32_t DeviceProfileManager::GetServiceProfile(const std::string& deviceId, con
 {
     if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsKeyValid(serviceName)) {
         HILOGE("the profile is invalid!");
+        return DP_INVALID_PARAMS;
+    }
+    if (!IsLocalOrOnlineDevice(deviceId)) {
+        HILOGE("the profile is offline or is not a local device.");
         return DP_INVALID_PARAMS;
     }
     HILOGI("PutDeviceProfile, deviceId: %s, serviceName: %s!", ProfileUtils::GetAnonyString(deviceId).c_str(),
@@ -256,6 +266,10 @@ int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& device
     if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsKeyValid(serviceName) ||
         !ProfileUtils::IsKeyValid(characteristicKey)) {
         HILOGE("the profile is invalid!");
+        return DP_INVALID_PARAMS;
+    }
+    if (!IsLocalOrOnlineDevice(deviceId)) {
+        HILOGE("the profile is offline or is not a local device.");
         return DP_INVALID_PARAMS;
     }
     HILOGI("GetCharacteristicProfile, deviceId: %s, serviceName: %s, charKey: %s!",
@@ -560,6 +574,51 @@ int32_t DeviceProfileManager::DeviceOnlineAutoSync(const std::string& peerNetwor
             ProfileUtils::GetAnonyString(peerNetworkId).c_str());
     }
     return errCode;
+}
+
+void DeviceProfileManager::OnNodeOnline(const std::string& peerNetworkId)
+{
+    HILOGI("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
+    std::string udid;
+    if (ProfileUtils::GetUdidByNetworkId(peerNetworkId, udid)) {
+        HILOGI("udid %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
+    }
+    auto it = std::find(onlineDeviceList_.begin(), onlineDeviceList_.end(), udid);
+    if (it == onlineDeviceList_.end()) {
+        std::lock_guard<std::mutex> autoLock(onlineDeviceLock_);
+        onlineDeviceList_.emplace_back(std::move(udid));
+        HILOGI("add %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
+    }
+}
+
+void DeviceProfileManager::OnNodeOffline(const std::string& peerNetworkId)
+{
+    HILOGI("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
+    std::string udid;
+    if (ProfileUtils::GetUdidByNetworkId(peerNetworkId, udid)) {
+        HILOGI("udid %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
+    }
+    auto it = std::find(onlineDeviceList_.begin(), onlineDeviceList_.end(), udid);
+    std::lock_guard<std::mutex> autoLock(onlineDeviceLock_);
+    onlineDeviceList_.erase(it);
+    HILOGI("release %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
+}
+
+bool DeviceProfileManager::IsLocalOrOnlineDevice(const std::string &deviceId)
+{
+    char localDeviceId[DEVICE_ID_LENGTH] = {0};
+    GetDevUdid(localDeviceId, DEVICE_ID_LENGTH);
+    if (deviceId == localDeviceId) {
+        HILOGI("%{public}s is localDevice", ProfileUtils::GetAnonyString(deviceId).c_str());
+        return true;
+    }
+    auto it = std::find(onlineDeviceList_.begin(), onlineDeviceList_.end(), deviceId);
+    if (it != onlineDeviceList_.end()) {
+        HILOGI("%{public}s is online", ProfileUtils::GetAnonyString(deviceId).c_str());
+        return true;
+    }
+    HILOGE("%{public}s is offline or is not a local device.", ProfileUtils::GetAnonyString(deviceId).c_str());
+    return false;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

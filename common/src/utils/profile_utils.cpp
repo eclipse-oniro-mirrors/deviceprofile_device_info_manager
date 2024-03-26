@@ -598,7 +598,7 @@ bool ProfileUtils::GetLongValue(const ValuesBucket& values, const std::string& p
     return false;
 }
 
-bool ProfileUtils::GetUdidByNetworkId(const std::string& networkId, std::string& udid)
+bool ProfileUtils::GetUdidByNetworkId(const std::string &networkId, std::string &udid)
 {
     return ((DeviceManager::GetInstance().GetUdidByNetworkId(
         PKG_NAME, networkId, udid) == 0) ? true : false);
