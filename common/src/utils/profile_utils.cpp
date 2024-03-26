@@ -29,7 +29,6 @@ using namespace OHOS::DistributedHardware;
 
 namespace {
     const std::string TAG = "ProfileUtils";
-    
 }
 
 std::string ProfileUtils::GetAnonyString(const std::string& value)
@@ -597,6 +596,12 @@ bool ProfileUtils::GetLongValue(const ValuesBucket& values, const std::string& p
         return true;
     }
     return false;
+}
+
+bool ProfileUtils::GetUdidByNetworkId(const std::string& networkId, std::string& udid)
+{
+    return ((DeviceManager::GetInstance().GetUdidByNetworkId(
+        PKG_NAME, networkId, udid) == 0) ? true : false);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
