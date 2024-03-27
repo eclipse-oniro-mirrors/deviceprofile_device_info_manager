@@ -24,6 +24,7 @@
 #include "ipc_skeleton.h"
 #include "securec.h"
 
+#include "dp_radar_helper.h"
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
@@ -140,9 +141,13 @@ bool PermissionManager::CheckInterfacePermission(const std::string& interfaceNam
 
 bool PermissionManager::IsCallerTrust(const std::string& interfaceName)
 {
+    int32_t stageRes = static_cast<int32_t>(StageRes::STAGE_FAIL);
     auto tokenID = IPCSkeleton::GetCallingTokenID();
     if (tokenID == INVALID_TOKEN_ID) {
         HILOGW("invalid token id");
+        if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
+            HILOGE("ReportSaCheckAuth failed");
+        }
         return false;
     }
     ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(tokenID);
@@ -150,11 +155,21 @@ bool PermissionManager::IsCallerTrust(const std::string& interfaceName)
     // currently only support native trusted caller
     if (tokenType != ATokenTypeEnum::TOKEN_NATIVE) {
         HILOGE("TokenType is not native");
+        if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
+            HILOGE("ReportSaCheckAuth failed");
+        }
         return false;
     }
     if (!CheckInterfacePermission(interfaceName)) {
         HILOGE("This caller cannot call this interface, interfaceName: %s", interfaceName.c_str());
+        if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
+            HILOGE("ReportSaCheckAuth failed");
+        }
         return false;
+    }
+    stageRes = static_cast<int32_t>(StageRes::STAGE_SUCC);
+    if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
+        HILOGE("ReportSaCheckAuth failed");
     }
     return true;
 }
