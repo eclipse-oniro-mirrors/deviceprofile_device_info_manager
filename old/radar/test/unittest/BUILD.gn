@@ -1,4 +1,4 @@
-# Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+# Copyright (c) 2024 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -19,7 +19,7 @@ import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
 module_output_path = "device_info_manager/deviceprofiletest"
 
 device_profile_deps = [
-  "${device_profile_path}/radar:deviceprofileradar",
+  "${old_device_profile_path}/radar:deviceprofileradar",
   "${old_device_profile_innerkits}/core:distributed_device_profile_client",
   "${old_device_profile_service}/core:distributed_device_profile",
   "//third_party/googletest:gtest_main",
@@ -27,13 +27,13 @@ device_profile_deps = [
 
 device_profile_external_deps = [ "hisysevent:libhisysevent" ]
 
-ohos_unittest("dp_radar_helper_test") {
+ohos_unittest("dp_radar_helper_test_old") {
   cflags = [
     "-Dprivate=public",
     "-Dprotected=public",
   ]
   module_out_path = module_output_path
-  include_dirs = [ "${device_profile_path}/radar/include" ]
+  include_dirs = [ "${old_device_profile_path}/radar/include" ]
   sources = [ "dp_radar_helper_test.cpp" ]
   deps = device_profile_deps
   external_deps = device_profile_external_deps
