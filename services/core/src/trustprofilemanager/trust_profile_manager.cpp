@@ -960,6 +960,25 @@ int32_t TrustProfileManager::ConvertToAccessControlProfiles(std::shared_ptr<Resu
 
 int32_t TrustProfileManager::PutAccesserProfile(const AccessControlProfile& profile)
 {
+    Accesser accesser = profile.GetAccesser();
+    std::shared_ptr<ResultSet> resultSet =
+        GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ALL, std::vector<ValueObject>{
+        ValueObject(accesser.GetAccesserDeviceId()), ValueObject(accesser.GetAccesserUserId()),
+        ValueObject(accesser.GetAccesserAccountId()), ValueObject(accesser.GetAccesserTokenId()),
+        ValueObject(accesser.GetAccesserBundleName()), ValueObject(accesser.GetAccesserHapSignature()),
+        ValueObject(static_cast<int32_t>(accesser.GetAccesserBindLevel()))});
+    if (resultSet == nullptr) {
+        HILOGE("PutAccesserProfile::resultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    int32_t rowCount = ROWCOUNT_INIT;
+    resultSet->GetRowCount(rowCount);
+    if (rowCount != 0) {
+        HILOGI("accesser is exists");
+        resultSet->Close();
+        return DP_SUCCESS;
+    }
+    resultSet->Close();
     ValuesBucket values;
     ProfileUtils::AccesserToEntries(profile, values);
     int64_t rowId = ROWID_INIT;
@@ -980,6 +999,25 @@ int32_t TrustProfileManager::PutAccesserProfile(const AccessControlProfile& prof
 
 int32_t TrustProfileManager::PutAccesseeProfile(const AccessControlProfile& profile)
 {
+    Accessee accessee = profile.GetAccessee();
+    std::shared_ptr<ResultSet> resultSet =
+        GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ALL, std::vector<ValueObject>{
+        ValueObject(accessee.GetAccesseeDeviceId()), ValueObject(accessee.GetAccesseeUserId()),
+        ValueObject(accessee.GetAccesseeAccountId()), ValueObject(accessee.GetAccesseeTokenId()),
+        ValueObject(accessee.GetAccesseeBundleName()), ValueObject(accessee.GetAccesseeHapSignature()),
+        ValueObject(static_cast<int32_t>(accessee.GetAccesseeBindLevel()))});
+    if (resultSet == nullptr) {
+        HILOGE("PutAccesseeProfile::resultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    int32_t rowCount = ROWCOUNT_INIT;
+    resultSet->GetRowCount(rowCount);
+    if (rowCount != 0) {
+        HILOGI("accessee is exists");
+        resultSet->Close();
+        return DP_SUCCESS;
+    }
+    resultSet->Close();
     ValuesBucket values;
     ProfileUtils::AccesseeToEntries(profile, values);
     int64_t rowId = ROWID_INIT;
