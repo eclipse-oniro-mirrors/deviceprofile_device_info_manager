@@ -71,7 +71,7 @@ private:
     std::mutex onlineDeviceLock_;
     std::shared_ptr<IKVAdapter> deviceProfileStore_ = nullptr;
     std::shared_ptr<IDPSyncAdapter> dpSyncAdapter_;
-    std::vector<std::string> onlineDeviceList_;
+    std::unordered_set<std::string> onlineDevUdidSet_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS
