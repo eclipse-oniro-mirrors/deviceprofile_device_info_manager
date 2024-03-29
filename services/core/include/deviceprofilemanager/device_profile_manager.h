@@ -57,14 +57,14 @@ public:
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
         sptr<IRemoteObject> syncCompletedCallback);
     int32_t DeviceOnlineAutoSync(const std::string& peerNetworkId);
-    void OnNodeOnline(const std::string &peerNetworkId);
-    void OnNodeOffline(const std::string &peerNetworkId);
+    void OnNodeOnline(const std::string& peerNetworkId);
+    void OnNodeOffline(const std::string& peerNetworkId);
 
 private:
     bool LoadDpSyncAdapter();
     void UnloadDpSyncAdapter();
     int32_t RunloadedFunction(std::string deviceId, sptr<IRemoteObject> syncCompletedCallback);
-    bool IsLocalOrOnlineDevice(const std::string &deviceId);
+    bool IsLocalOrOnlineDevice(const std::string& deviceId);
     bool isAdapterSoLoaded_ = false;
     std::mutex isAdapterLoadLock_;
     std::mutex dpStoreMutex_;
