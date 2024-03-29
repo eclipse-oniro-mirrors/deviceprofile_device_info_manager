@@ -121,7 +121,7 @@ int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile&
         HILOGE("PutAccessControlProfile::PutAccesseeProfile failed");
         return ret;
     }
-    if (PutAclExists(profile) == DP_DATA_EXISTS) {
+    if (IsAclExists(profile) == DP_DATA_EXISTS) {
         HILOGE("PutAccessControlProfile::acl is exists");
         return DP_SUCCESS;
     }
@@ -1848,7 +1848,7 @@ int32_t TrustProfileManager::PutAclCheck(const AccessControlProfile& profile)
     return DP_SUCCESS;
 }
 
-int32_t TrustProfileManager::PutAclExists(const AccessControlProfile &profile)
+int32_t TrustProfileManager::IsAclExists(const AccessControlProfile &profile)
 {
     std::shared_ptr<ResultSet> resultSet =
         GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_ALL, std::vector<ValueObject>{
