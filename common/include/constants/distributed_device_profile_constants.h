@@ -308,6 +308,10 @@ const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEBUNDLENAME 
     "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeBundleName = ? ";
 const std::string SELECT_ACCESSEE_TABLE = "SELECT * FROM accessee_table ";
 const std::string SELECT_ACCESSER_TABLE = "SELECT * FROM accesser_table ";
+const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_ALL =
+    "SELECT * FROM access_control_table WHERE accesserId = ? and accesseeId = ? and trustDeviceId = ? and \
+    sessionKey = ? and bindType = ? and authenticationType = ? and deviceIdType = ? and deviceIdHash = ? \
+    and status = ? and validPeriod = ? and lastAuthTime = ? and bindLevel = ? ";
 const std::string SELECT_ACCESSER_TABLE_WHERE_ALL =
     "SELECT * FROM accesser_table WHERE accesserDeviceId = ? and accesserUserId = ? and accesserAccountId = ? and \
     accesserTokenId = ? and accesserBundleName = ? and accesserHapSignature = ? and accesserBindLevel = ? ";

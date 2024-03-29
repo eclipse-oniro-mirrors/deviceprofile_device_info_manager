@@ -121,6 +121,10 @@ int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile&
         HILOGE("PutAccessControlProfile::PutAccesseeProfile failed");
         return ret;
     }
+    if (PutAclExists(profile) == DP_DATA_EXISTS) {
+        HILOGE("PutAccessControlProfile::acl is exists");
+        return DP_SUCCESS;
+    }
     ValuesBucket values;
     ProfileUtils::AccessControlProfileToEntries(accessControlProfile, values);
     {
@@ -1839,6 +1843,33 @@ int32_t TrustProfileManager::PutAclCheck(const AccessControlProfile& profile)
     if (this->UpdateTrustDeviceProfile(trustProfile) != DP_SUCCESS) {
         HILOGE("PutAclCheck::UpdateTrustDeviceProfile failed");
         return DP_UPDATE_TRUST_DEVICE_PROFILE_FAIL;
+    }
+    resultSet->Close();
+    return DP_SUCCESS;
+}
+
+int32_t TrustProfileManager::PutAclExists(const AccessControlProfile &profile)
+{
+    std::shared_ptr<ResultSet> resultSet =
+        GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_ALL, std::vector<ValueObject>{
+        ValueObject(profile.GetAccesserId()), ValueObject(profile.GetAccesseeId()),
+        ValueObject(profile.GetTrustDeviceId()), ValueObject(profile.GetSessionKey()),
+        ValueObject(static_cast<int32_t>(profile.GetBindType())),
+        ValueObject(static_cast<int32_t>(profile.GetAuthenticationType())),
+        ValueObject(static_cast<int32_t>(profile.GetDeviceIdType())),
+        ValueObject(profile.GetDeviceIdHash()), ValueObject(profile.GetStatus()),
+        ValueObject(profile.GetValidPeriod()), ValueObject(profile.GetLastAuthTime()),
+        ValueObject(static_cast<int32_t>(profile.GetBindLevel()))});
+    if (resultSet == nullptr) {
+        HILOGE("PutAccesserProfile::resultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    int32_t rowCount = ROWCOUNT_INIT;
+    resultSet->GetRowCount(rowCount);
+    if (rowCount != 0) {
+        HILOGI("accessControlProfile is exists");
+        resultSet->Close();
+        return DP_DATA_EXISTS;
     }
     resultSet->Close();
     return DP_SUCCESS;
