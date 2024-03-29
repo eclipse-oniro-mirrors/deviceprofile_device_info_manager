@@ -82,7 +82,7 @@ public:
     static bool GetIntValue(const ValuesBucket& values, const std::string& property, int32_t& value);
     static bool GetStringValue(const ValuesBucket& values, const std::string& property, std::string& value);
     static bool GetLongValue(const ValuesBucket& values, const std::string& property, int64_t& value);
-    static bool GetUdidByNetworkId(const std::string &networkId, std::string &udid);
+    static bool GetUdidByNetworkId(const std::string& networkId, std::string& udid);
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
