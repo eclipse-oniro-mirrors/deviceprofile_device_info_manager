@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,6 +21,7 @@
 #include <list>
 
 #include "kv_adapter.h"
+#include "content_sensor_manager_utils.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 #include "profile_utils.h"
@@ -197,6 +198,10 @@ int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, Devi
         HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;
     }
+    if (!IsLocalOrOnlineDevice(deviceId)) {
+        HILOGE("the profile is offline or is not a local device.");
+        return DP_INVALID_PARAMS;
+    }
     HILOGI("GetDeviceProfile, deviceId: %s!", ProfileUtils::GetAnonyString(deviceId).c_str());
     if (ProfileCache::GetInstance().GetDeviceProfile(deviceId, deviceProfile) == DP_SUCCESS) {
         HILOGI("GetDeviceProfile in cache!");
@@ -225,6 +230,10 @@ int32_t DeviceProfileManager::GetServiceProfile(const std::string& deviceId, con
 {
     if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsKeyValid(serviceName)) {
         HILOGE("the profile is invalid!");
+        return DP_INVALID_PARAMS;
+    }
+    if (!IsLocalOrOnlineDevice(deviceId)) {
+        HILOGE("the profile is offline or is not a local device.");
         return DP_INVALID_PARAMS;
     }
     HILOGI("PutDeviceProfile, deviceId: %s, serviceName: %s!", ProfileUtils::GetAnonyString(deviceId).c_str(),
@@ -257,6 +266,10 @@ int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& device
     if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsKeyValid(serviceName) ||
         !ProfileUtils::IsKeyValid(characteristicKey)) {
         HILOGE("the profile is invalid!");
+        return DP_INVALID_PARAMS;
+    }
+    if (!IsLocalOrOnlineDevice(deviceId)) {
+        HILOGE("the profile is offline or is not a local device.");
         return DP_INVALID_PARAMS;
     }
     HILOGI("GetCharacteristicProfile, deviceId: %s, serviceName: %s, charKey: %s!",
@@ -561,6 +574,51 @@ int32_t DeviceProfileManager::DeviceOnlineAutoSync(const std::string& peerNetwor
             ProfileUtils::GetAnonyString(peerNetworkId).c_str());
     }
     return errCode;
+}
+
+void DeviceProfileManager::OnNodeOnline(const std::string& peerNetworkId)
+{
+    HILOGI("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
+    std::string udid;
+    if (!ProfileUtils::GetUdidByNetworkId(peerNetworkId, udid)) {
+        HILOGE("get udid by networkId failed");
+        return;
+    }
+    {
+        std::lock_guard<std::mutex> autoLock(onlineDeviceLock_);
+        onlineDevUdidSet_.emplace(udid);
+        HILOGI("add %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
+    }
+}
+
+void DeviceProfileManager::OnNodeOffline(const std::string& peerNetworkId)
+{
+    HILOGI("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
+    std::string udid;
+    if (!ProfileUtils::GetUdidByNetworkId(peerNetworkId, udid)) {
+        HILOGE("get udid by networkId failed");
+        return;
+    }
+    {
+        std::lock_guard<std::mutex> autoLock(onlineDeviceLock_);
+        onlineDevUdidSet_.erase(udid);
+        HILOGI("release %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
+    }
+}
+
+bool DeviceProfileManager::IsLocalOrOnlineDevice(const std::string& deviceId)
+{
+    std::string localDevUdid = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
+    if (deviceId == localDevUdid) {
+        HILOGI("%{public}s is localDevice", ProfileUtils::GetAnonyString(deviceId).c_str());
+        return true;
+    }
+    if (onlineDevUdidSet_.count(deviceId) > 0) {
+        HILOGI("%{public}s is online", ProfileUtils::GetAnonyString(deviceId).c_str());
+        return true;
+    }
+    HILOGE("%{public}s is offline or is not a local device.", ProfileUtils::GetAnonyString(deviceId).c_str());
+    return false;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

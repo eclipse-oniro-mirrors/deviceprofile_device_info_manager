@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -99,6 +99,8 @@ void DpDeviceManager::DpDeviceStateCallback::OnDeviceOnline(const DmDeviceInfo &
     DpDeviceManager::GetInstance().OnNodeOnline(dpDeviceInfo);
     DistributedDeviceProfileService::GetInstance().DeviceOnline();
     DpDeviceManager::GetInstance().AutoSync(deviceInfo);
+    std::string networkId = deviceInfo.networkId;
+    DistributedDeviceProfile::DeviceProfileManager::GetInstance().OnNodeOnline(networkId);
 }
 
 void DpDeviceManager::DpDeviceStateCallback::OnDeviceOffline(const DmDeviceInfo &deviceInfo)
@@ -106,6 +108,7 @@ void DpDeviceManager::DpDeviceStateCallback::OnDeviceOffline(const DmDeviceInfo 
     HILOGI("offline called");
     std::string networkId = deviceInfo.networkId;
     DpDeviceManager::GetInstance().OnNodeOffline(networkId);
+    DistributedDeviceProfile::DeviceProfileManager::GetInstance().OnNodeOffline(networkId);
 }
 
 void DpDeviceManager::DpDeviceStateCallback::OnDeviceChanged(const DmDeviceInfo &deviceInfo)

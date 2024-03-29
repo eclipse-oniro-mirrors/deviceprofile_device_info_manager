@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -82,6 +82,7 @@ public:
     static bool GetIntValue(const ValuesBucket& values, const std::string& property, int32_t& value);
     static bool GetStringValue(const ValuesBucket& values, const std::string& property, std::string& value);
     static bool GetLongValue(const ValuesBucket& values, const std::string& property, int64_t& value);
+    static bool GetUdidByNetworkId(const std::string& networkId, std::string& udid);
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

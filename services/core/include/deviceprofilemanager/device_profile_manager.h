@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -57,16 +57,21 @@ public:
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
         sptr<IRemoteObject> syncCompletedCallback);
     int32_t DeviceOnlineAutoSync(const std::string& peerNetworkId);
+    void OnNodeOnline(const std::string& peerNetworkId);
+    void OnNodeOffline(const std::string& peerNetworkId);
 
 private:
     bool LoadDpSyncAdapter();
     void UnloadDpSyncAdapter();
     int32_t RunloadedFunction(std::string deviceId, sptr<IRemoteObject> syncCompletedCallback);
+    bool IsLocalOrOnlineDevice(const std::string& deviceId);
     bool isAdapterSoLoaded_ = false;
     std::mutex isAdapterLoadLock_;
     std::mutex dpStoreMutex_;
+    std::mutex onlineDeviceLock_;
     std::shared_ptr<IKVAdapter> deviceProfileStore_ = nullptr;
     std::shared_ptr<IDPSyncAdapter> dpSyncAdapter_;
+    std::unordered_set<std::string> onlineDevUdidSet_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS
