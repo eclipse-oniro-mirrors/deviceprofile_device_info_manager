@@ -575,7 +575,7 @@ int32_t DeviceProfileManager::DeviceOnlineAutoSync(const std::string& peerNetwor
     return errCode;
 }
 
-void DeviceProfileManager::OnNodeOnline(const std::string &peerNetworkId)
+void DeviceProfileManager::OnNodeOnline(const std::string& peerNetworkId)
 {
     HILOGI("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
     std::string udid;
@@ -590,7 +590,7 @@ void DeviceProfileManager::OnNodeOnline(const std::string &peerNetworkId)
     }
 }
 
-void DeviceProfileManager::OnNodeOffline(const std::string &peerNetworkId)
+void DeviceProfileManager::OnNodeOffline(const std::string& peerNetworkId)
 {
     HILOGI("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
     std::string udid;
@@ -605,7 +605,7 @@ void DeviceProfileManager::OnNodeOffline(const std::string &peerNetworkId)
     }
 }
 
-bool DeviceProfileManager::IsLocalOrOnlineDevice(const std::string &deviceId)
+bool DeviceProfileManager::IsLocalOrOnlineDevice(const std::string& deviceId)
 {
     std::string localDevUdid = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
     if (deviceId == localDevUdid) {
