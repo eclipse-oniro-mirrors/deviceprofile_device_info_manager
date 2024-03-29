@@ -45,6 +45,7 @@ KvDataChangeListener::~KvDataChangeListener()
 void KvDataChangeListener::OnChange(const DistributedKv::ChangeNotification& changeNotification)
 {
     HILOGI("KvDataChangeListener: DB data OnChange");
+    ProfileCache::GetInstance().RefreshProfileCache();
     if (!changeNotification.GetInsertEntries().empty() &&
         changeNotification.GetInsertEntries().size() <= MAX_DB_RECORD_SIZE) {
         HandleAddChange(changeNotification.GetInsertEntries());
