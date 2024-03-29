@@ -579,8 +579,9 @@ void DeviceProfileManager::OnNodeOnline(const std::string &peerNetworkId)
 {
     HILOGI("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
     std::string udid;
-    if (ProfileUtils::GetUdidByNetworkId(peerNetworkId, udid)) {
-        HILOGI("udid %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
+    if (!ProfileUtils::GetUdidByNetworkId(peerNetworkId, udid)) {
+        HILOGE("get udid by networkId failed");
+        return;
     }
     {
         std::lock_guard<std::mutex> autoLock(onlineDeviceLock_);
@@ -593,8 +594,9 @@ void DeviceProfileManager::OnNodeOffline(const std::string &peerNetworkId)
 {
     HILOGI("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
     std::string udid;
-    if (ProfileUtils::GetUdidByNetworkId(peerNetworkId, udid)) {
-        HILOGI("udid %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
+    if (!ProfileUtils::GetUdidByNetworkId(peerNetworkId, udid)) {
+        HILOGE("get udid by networkId failed");
+        return;
     }
     {
         std::lock_guard<std::mutex> autoLock(onlineDeviceLock_);
