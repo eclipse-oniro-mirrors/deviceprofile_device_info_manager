@@ -127,6 +127,7 @@ constexpr int32_t DP_UPDATE_ACL_NOT_ALLOW = 98566249;
 constexpr int32_t DP_RDB_DB_PTR_NULL = 98566250;
 constexpr int32_t DP_NOTIFY_ACCESS_CONTROL_FAIL = 98566251;
 constexpr int32_t DP_DM_ADAPTER_INIT_FAIL = 98566252;
+constexpr int32_t DP_DATA_EXISTS = 98566253;
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_ERRORS_H
