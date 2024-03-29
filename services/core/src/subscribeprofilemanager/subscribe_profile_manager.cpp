@@ -15,6 +15,7 @@
 
 #include "subscribe_profile_manager.h"
 
+#include "dp_radar_helper.h"
 #include "profile_utils.h"
 #include "profile_cache.h"
 
@@ -53,6 +54,9 @@ int32_t SubscribeProfileManager::NotifyProfileChange(ProfileType profileType, Ch
     if (funcsMap_.find(code) == funcsMap_.end()) {
         HILOGE("Params is invalid!");
         return DP_INVALID_PARAMS;
+    }
+    if (!DpRadarHelper::GetInstance().ReportNotifyProfileChange(code)) {
+        HILOGE("ReportPutAclProfile failed");
     }
     return (this->*(funcsMap_[code]))(dbKey, dbValue);
 }
