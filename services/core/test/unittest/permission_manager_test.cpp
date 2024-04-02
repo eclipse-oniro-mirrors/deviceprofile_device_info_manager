@@ -71,5 +71,16 @@ HWTEST_F(PermissionManagerTest, IsCallerTrust_001, TestSize.Level1)
     bool ret = PermissionManager::GetInstance().IsCallerTrust(PUT_ACCESS_CONTROL_PROFILE);
     EXPECT_EQ(ret, false);
 }
+
+/*
+ * @tc.name: GetCallerProcName_001
+ * @tc.desc: Normal testCase of PermissionManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(PermissionManagerTest, GetCallerProcName_001, TestSize.Level1)
+{
+    std::string ret = PermissionManager::GetInstance().GetCallerProcName();
+    EXPECT_EQ(ret, "");
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

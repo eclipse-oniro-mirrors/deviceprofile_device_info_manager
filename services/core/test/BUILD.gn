@@ -310,6 +310,16 @@ ohos_unittest("dp_profile_service_new_test") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("dp_dm_adapter_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/dm_adapter_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 group("unittest") {
   testonly = true
   deps = [
@@ -325,6 +335,7 @@ group("unittest") {
     ":device_profile_manager_new_test",
     ":distributed_device_profile_client_kv_new_test",
     ":dp_content_sensor_test",
+    ":dp_dm_adapter_test",
     ":dp_dumper_new_test",
     ":dp_profile_service_new_test",
     ":event_handler_factory_new_test",
