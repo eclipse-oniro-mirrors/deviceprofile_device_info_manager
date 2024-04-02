@@ -620,5 +620,7 @@ bool DeviceProfileManager::IsLocalOrOnlineDevice(const std::string& deviceId)
     HILOGE("%{public}s is offline or is not a local device.", ProfileUtils::GetAnonyString(deviceId).c_str());
     return false;
 }
+
+
 } // namespace DeviceProfile
 } // namespace OHOS
