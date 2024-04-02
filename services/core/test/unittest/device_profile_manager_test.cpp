@@ -27,6 +27,7 @@
 #include "distributed_device_profile_enums.h"
 #include "device_profile.h"
 #include "service_profile.h"
+#include "content_sensor_manager_utils.h"
 #include "characteristic_profile.h"
 #include "i_sync_completed_callback.h"
 #include "sync_completed_callback_stub.h"
@@ -1333,6 +1334,109 @@ HWTEST_F(DeviceProfileManagerTest, RunloadedFunction001, TestSize.Level1)
     ret = DeviceProfileManager::GetInstance().RunloadedFunction(deviceId, syncCb);
     EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
 }
+/**
+ * @tc.name: RunloadedFunction002
+ * @tc.desc: RunloadedFunction002
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, RunloadedFunction002, TestSize.Level1)
+{
+    OHOS::sptr<OHOS::IRemoteObject> syncCb = new(nothrow) SyncCallback();
+    string deviceId = ProfileUtils::GetLocalUdidFromDM();
+    int32_t ret = DeviceProfileManager::GetInstance().RunloadedFunction(deviceId, syncCb);
+    EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
 
+    DeviceProfileManager::GetInstance().isAdapterSoLoaded_ = true;
+    ret = DeviceProfileManager::GetInstance().RunloadedFunction(deviceId, syncCb);
+    EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
+}
+
+/**
+ * @tc.name: DeviceOnlineAutoSync001
+ * @tc.desc: DeviceOnlineAutoSync001
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, DeviceOnlineAutoSync001, TestSize.Level1)
+{
+    std::string peerNetworkId = "";
+    int32_t ret = DeviceProfileManager::GetInstance().DeviceOnlineAutoSync(peerNetworkId);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+
+    peerNetworkId = ProfileUtils::GetLocalUdidFromDM();
+    ret = DeviceProfileManager::GetInstance().DeviceOnlineAutoSync(peerNetworkId);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: OnNodeOnline001
+ * @tc.desc: OnNodeOnline001
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, OnNodeOnline001, TestSize.Level1)
+{
+    std::string peerNetworkId = "";
+    DeviceProfileManager::GetInstance().OnNodeOnline(peerNetworkId);
+
+    peerNetworkId = ProfileUtils::GetLocalUdidFromDM();
+    DeviceProfileManager::GetInstance().OnNodeOnline(peerNetworkId);
+}
+
+/**
+ * @tc.name: OnNodeOffline001
+ * @tc.desc: OnNodeOffline001
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, OnNodeOffline001, TestSize.Level1)
+{
+    std::string peerNetworkId = "";
+    DeviceProfileManager::GetInstance().OnNodeOffline(peerNetworkId);
+
+    peerNetworkId = ProfileUtils::GetLocalUdidFromDM();
+    DeviceProfileManager::GetInstance().OnNodeOffline(peerNetworkId);
+}
+
+/**
+ * @tc.name: IsLocalOrOnlineDevice001
+ * @tc.desc: IsLocalOrOnlineDevice001
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, IsLocalOrOnlineDevice001, TestSize.Level1)
+{
+    std::string deviceId = "";
+    bool ret = DeviceProfileManager::GetInstance().IsLocalOrOnlineDevice(deviceId);
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: IsLocalOrOnlineDevice002
+ * @tc.desc: IsLocalOrOnlineDevice002
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, IsLocalOrOnlineDevice002, TestSize.Level1)
+{
+    std::string deviceId = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
+    bool ret = DeviceProfileManager::GetInstance().IsLocalOrOnlineDevice(deviceId);
+    EXPECT_EQ(ret, true);
+}
+
+/**
+ * @tc.name: IsLocalOrOnlineDevice003
+ * @tc.desc: IsLocalOrOnlineDevice003
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, IsLocalOrOnlineDevice0013, TestSize.Level1)
+{
+    std::string deviceId = "deviceId";
+    DeviceProfileManager::GetInstance().onlineDevUdidSet_.insert("deviceId");
+    bool ret = DeviceProfileManager::GetInstance().IsLocalOrOnlineDevice(deviceId);
+    EXPECT_EQ(ret, true);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
