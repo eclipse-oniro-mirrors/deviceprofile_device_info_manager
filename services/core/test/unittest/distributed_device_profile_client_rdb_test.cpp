@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -276,6 +276,18 @@ HWTEST_F(DistributedDeviceProfileClientRdbTest, GetTrustDeviceProfile_001, TestS
     ValuesBucket value;
     ProfileUtils::TrustDeviceProfileToEntries(profile, value);
     ProfileUtils::EntriesToTrustDeviceProfile(value, profile);
+    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+}
+
+HWTEST_F(DistributedDeviceProfileClientRdbTest, OnRemoveSystemAbility_001, TestSize.Level1)
+{
+    TrustDeviceProfile profile;
+    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+        GetInstance().GetTrustDeviceProfile("123456", profile);
+    DistributedDeviceProfileClient::SystemAbilityListener saListeneer;
+    int32_t systemAbilityId = 1;
+    std::string deviceId = "deviceId_test";
+    saListeneer.OnRemoveSystemAbility(systemAbilityId, deviceId);
     EXPECT_EQ(ret, DP_PERMISSION_DENIED);
 }
 } // namespace DistributedDeviceProfile
