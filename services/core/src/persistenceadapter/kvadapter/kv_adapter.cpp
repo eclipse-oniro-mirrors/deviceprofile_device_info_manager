@@ -459,24 +459,29 @@ int32_t KVAdapter::GetByPrefix(const std::string& keyPrefix, std::map<std::strin
     const std::string& udid)
 {
     HILOGI("Get data by key prefix: %{public}s", ProfileUtils::GetAnonyString(keyPrefix).c_str());
-    std::lock_guard<std::mutex> lock(kvAdapterMutex_);
-    if (kvStorePtr_ == nullptr) {
-        HILOGE("kvStoragePtr_ is null");
-        return DP_KV_DB_PTR_NULL;
-    }
-    // if prefix is empty, get all entries.
-    DistributedKv::Key allEntryKeyPrefix(keyPrefix);
+    DistributedKv::Status status;
     std::vector<DistributedKv::Entry> allEntries;
-    DistributedKv::Status status = kvStorePtr_->GetEntries(allEntryKeyPrefix, allEntries);
-    if (status == DistributedKv::Status::NOT_FOUND) {
-        SyncDeviceProfile(udid);
-        return DP_GET_KV_DB_FAIL;
+    {
+        std::lock_guard<std::mutex> lock(kvAdapterMutex_);
+        if (kvStorePtr_ == nullptr) {
+            HILOGE("kvStoragePtr_ is null");
+            return DP_KV_DB_PTR_NULL;
+        }
+        // if prefix is empty, get all entries.
+        DistributedKv::Key allEntryKeyPrefix(keyPrefix);
+        status = kvStorePtr_->GetEntries(allEntryKeyPrefix, allEntries);
+        HILOGI("Get data status: %{public}d", status);
     }
     if (status != DistributedKv::Status::SUCCESS) {
-        HILOGE("Query data by keyPrefix failed, prefix: %s", ProfileUtils::GetAnonyString(keyPrefix).c_str());
+        HILOGE("Query data by keyPrefix failed, prefix: %{public}s", ProfileUtils::GetAnonyString(keyPrefix).c_str());
         return DP_GET_KV_DB_FAIL;
     }
-    if (allEntries.size() == 0 || allEntries.size() > MAX_DB_SIZE) {
+    if (allEntries.size() == 0) {
+        HILOGE("AllEntries is empty!");
+        SyncDeviceProfile(udid);
+        return DP_INVALID_PARAMS;
+    }
+    if (allEntries.size() > MAX_DB_SIZE) {
         HILOGE("AllEntries size is invalid!");
         return DP_INVALID_PARAMS;
     }
