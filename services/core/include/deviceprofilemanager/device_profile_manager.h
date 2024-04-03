@@ -65,7 +65,6 @@ private:
     void UnloadDpSyncAdapter();
     int32_t RunloadedFunction(std::string deviceId, sptr<IRemoteObject> syncCompletedCallback);
     bool IsLocalOrOnlineDevice(const std::string& deviceId);
-    
     bool isAdapterSoLoaded_ = false;
     std::mutex isAdapterLoadLock_;
     std::mutex dpStoreMutex_;

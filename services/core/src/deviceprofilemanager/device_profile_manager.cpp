@@ -11,6 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
  */
 
 #include <mutex>
@@ -620,7 +621,5 @@ bool DeviceProfileManager::IsLocalOrOnlineDevice(const std::string& deviceId)
     HILOGE("%{public}s is offline or is not a local device.", ProfileUtils::GetAnonyString(deviceId).c_str());
     return false;
 }
-
-
 } // namespace DeviceProfile
 } // namespace OHOS
