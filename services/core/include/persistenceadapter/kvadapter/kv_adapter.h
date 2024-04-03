@@ -42,10 +42,10 @@ public:
     int32_t Delete(const std::string& key) override;
     int32_t DeleteByPrefix(const std::string& keyPrefix) override;
     int32_t Get(const std::string& key, std::string& value) override;
-    int32_t Get(const std::string& key, std::string& value, const std::string& udid) override;
+    int32_t Get(const std::string& udid, const std::string& key, std::string& value) override;
     int32_t GetByPrefix(const std::string& keyPrefix, std::map<std::string, std::string>& values) override;
-    int32_t GetByPrefix(const std::string& keyPrefix, std::map<std::string, std::string>& values,
-        const std::string& udid) override;
+    int32_t GetByPrefix(const std::string& udid, const std::string& keyPrefix,
+        std::map<std::string, std::string>& values) override;
     int32_t Sync(const std::vector<std::string>& deviceList, SyncMode syncMode) override;
     int32_t DeleteKvStore();
 
