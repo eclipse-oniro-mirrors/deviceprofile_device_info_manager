@@ -34,10 +34,10 @@ public:
     virtual int32_t Delete(const std::string& key) = 0;
     virtual int32_t DeleteByPrefix(const std::string& keyPrefix) = 0;
     virtual int32_t Get(const std::string& key, std::string& value) = 0;
-    virtual int32_t Get(const std::string& key, std::string& value, const std::string& udid) = 0;
+    virtual int32_t Get(const std::string& udid, const std::string& key, std::string& value) = 0;
     virtual int32_t GetByPrefix(const std::string& keyPrefix, std::map<std::string, std::string>& values) = 0;
-    virtual int32_t GetByPrefix(const std::string& keyPrefix, std::map<std::string, std::string>& values,
-        const std::string& udid) = 0;
+    virtual int32_t GetByPrefix(const std::string& udid, const std::string& keyPrefix,
+        std::map<std::string, std::string>& values) = 0;
     virtual int32_t Sync(const std::vector<std::string>& deviceList, SyncMode syncMode) = 0;
 };
 } // namespace DeviceProfile
