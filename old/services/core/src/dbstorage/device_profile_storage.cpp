@@ -398,6 +398,7 @@ int32_t DeviceProfileStorage::GetDeviceProfile(const std::string& udid, const st
         HILOGE("get failed, %{public}d", status);
         return static_cast<int32_t>(status);
     }
+    value = v.ToString();
     HILOGI("get succeeded");
     return static_cast<int32_t>(status);
 }
