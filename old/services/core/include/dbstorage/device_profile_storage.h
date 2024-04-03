@@ -43,6 +43,7 @@ public:
 
     virtual void Init();
     virtual int32_t GetDeviceProfile(const std::string& key, std::string& value);
+    virtual int32_t GetDeviceProfile(const std::string& key, std::string& value, const std::string& udid);
     virtual int32_t DeleteDeviceProfile(const std::string& key);
     virtual int32_t PutDeviceProfile(const std::string& key, const std::string& value);
     virtual int32_t PutDeviceProfileBatch(const std::vector<std::string>& keys,
