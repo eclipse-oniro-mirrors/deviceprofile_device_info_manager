@@ -367,9 +367,13 @@ std::vector<std::string> DeviceProfileStorage::GetOnlineDevices()
     return targetDevices;
 }
 
-int32_t DeviceProfileStorage::GetDeviceProfile(const std::string& key, std::string& value, const std::string& udid)
+int32_t DeviceProfileStorage::GetDeviceProfile(const std::string& udid, const std::string& key, std::string& value)
 {
     HILOGI("call");
+    if (udid.empty() || key.empty()) {
+        HILOGE("udid or key invalid");
+        return ERR_DP_INVALID_PARAMS;
+    }
     Key k(key);
     Value v;
     Status status;
@@ -382,7 +386,7 @@ int32_t DeviceProfileStorage::GetDeviceProfile(const std::string& key, std::stri
         status = kvStorePtr_->Get(k, v);
         HILOGI("Get data status: %{public}d", status);
     }
-    if (status == Status::NOT_FOUND && !udid.empty()) {
+    if (status == Status::NOT_FOUND) {
         std::vector<std::string> device;
         device.push_back(udid);
         SyncMode syncMode{ SyncMode::PUSH_PULL };
