@@ -227,7 +227,7 @@ int32_t DeviceProfileStorageManager::GetDeviceProfile(const std::string& udid,
         value = profileItems_[key];
     } else {
         autoLock.unlock();
-        result = onlineSyncTbl_->GetDeviceProfile(key, value);
+        result = onlineSyncTbl_->GetDeviceProfile(key, value, udid);
     }
     struct RadarInfo info = {
         .funcName = "GetDeviceProfile",
