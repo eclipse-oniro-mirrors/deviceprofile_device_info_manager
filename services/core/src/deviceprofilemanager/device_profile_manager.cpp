@@ -216,7 +216,7 @@ int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, Devi
         }
         std::string dbKeyPrefix = ProfileUtils::GenerateDeviceProfileKey(deviceId);
         std::map<std::string, std::string> values;
-        if (deviceProfileStore_->GetByPrefix(dbKeyPrefix, values) != DP_SUCCESS) {
+        if (deviceProfileStore_->GetByPrefix(dbKeyPrefix, values, deviceId) != DP_SUCCESS) {
             HILOGE("Get data fail!");
             return DP_GET_KV_DB_FAIL;
         }
@@ -251,7 +251,7 @@ int32_t DeviceProfileManager::GetServiceProfile(const std::string& deviceId, con
         }
         std::string dbKeyPrefix = ProfileUtils::GenerateServiceProfileKey(deviceId, serviceName);
         std::map<std::string, std::string> values;
-        if (deviceProfileStore_->GetByPrefix(dbKeyPrefix, values) != DP_SUCCESS) {
+        if (deviceProfileStore_->GetByPrefix(dbKeyPrefix, values, deviceId) != DP_SUCCESS) {
             HILOGE("Get data fail!");
             return DP_GET_KV_DB_FAIL;
         }
@@ -288,7 +288,7 @@ int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& device
         }
         std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, characteristicKey);
         std::map<std::string, std::string> values;
-        if (deviceProfileStore_->GetByPrefix(profileKeyPrefix, values) != DP_SUCCESS) {
+        if (deviceProfileStore_->GetByPrefix(profileKeyPrefix, values, deviceId) != DP_SUCCESS) {
             HILOGE("Get data fail!");
             return DP_GET_KV_DB_FAIL;
         }
@@ -451,21 +451,21 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const DistributedDeviceProfile::
         HILOGE("Params is invalid!");
         return DP_INVALID_PARAMS;
     }
-    std::vector<std::string> openHarmonyDevices;
+    std::vector<std::string> devices;
     for (auto it = onlineDevices.begin(); it != onlineDevices.end(); it++) {
         std::string deviceId = *it;
         if (RunloadedFunction(deviceId, syncCompletedCallback) != DP_SUCCESS) {
-            openHarmonyDevices.push_back(deviceId);
+            devices.push_back(deviceId);
         }
     }
-    if (openHarmonyDevices.empty()) {
+    if (devices.empty()) {
         return DP_SUCCESS;
     }
     std::string callerDescriptor = PermissionManager::GetInstance().GetCallerProcName();
     ProfileCache::GetInstance().AddSyncListener(callerDescriptor, syncCompletedCallback);
     {
         std::lock_guard<std::mutex> lock(dpStoreMutex_);
-        int32_t syncResult = deviceProfileStore_->Sync(openHarmonyDevices, syncOptions.GetSyncMode());
+        int32_t syncResult = deviceProfileStore_->Sync(devices, syncOptions.GetSyncMode());
         if (syncResult != DP_SUCCESS) {
             HILOGI("SyncDeviceProfile fail, res: %d!", syncResult);
             return DP_SYNC_DEVICE_FAIL;
