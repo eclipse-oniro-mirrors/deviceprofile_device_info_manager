@@ -21,7 +21,7 @@ config("distributed_device_profile_client_config") {
     "include",
     "${old_device_profile_path}/common/include",
     "${old_device_profile_path}/radar/include",
-    "${third_party_json}/include",
+    "//third_party/json/include",
   ]
 }
 
