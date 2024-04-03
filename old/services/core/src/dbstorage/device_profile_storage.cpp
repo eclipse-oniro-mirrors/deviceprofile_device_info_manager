@@ -369,14 +369,19 @@ std::vector<std::string> DeviceProfileStorage::GetOnlineDevices()
 
 int32_t DeviceProfileStorage::GetDeviceProfile(const std::string& key, std::string& value, const std::string& udid)
 {
-    std::shared_lock<std::shared_mutex> readLock(storageLock_);
-    if (kvStorePtr_ == nullptr) {
-        HILOGE("null kvstore");
-        return ERR_DP_INVALID_PARAMS;
-    }
+    HILOGI("call");
     Key k(key);
     Value v;
-    Status status = kvStorePtr_->Get(k, v);
+    Status status;
+    {
+        std::shared_lock<std::shared_mutex> readLock(storageLock_);
+        if (kvStorePtr_ == nullptr) {
+            HILOGE("null kvstore");
+            return ERR_DP_INVALID_PARAMS;
+        }
+        status = kvStorePtr_->Get(k, v);
+        HILOGI("Get data status: %{public}d", status);
+    }
     if (status == Status::NOT_FOUND && !udid.empty()) {
         std::vector<std::string> device;
         device.push_back(udid);
@@ -389,7 +394,6 @@ int32_t DeviceProfileStorage::GetDeviceProfile(const std::string& key, std::stri
         HILOGE("get failed, %{public}d", status);
         return static_cast<int32_t>(status);
     }
-    value = v.ToString();
     HILOGI("get succeeded");
     return static_cast<int32_t>(status);
 }
