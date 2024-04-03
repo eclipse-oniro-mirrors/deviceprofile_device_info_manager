@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -42,7 +42,10 @@ public:
     int32_t Delete(const std::string& key) override;
     int32_t DeleteByPrefix(const std::string& keyPrefix) override;
     int32_t Get(const std::string& key, std::string& value) override;
+    int32_t Get(const std::string& udid, const std::string& key, std::string& value) override;
     int32_t GetByPrefix(const std::string& keyPrefix, std::map<std::string, std::string>& values) override;
+    int32_t GetByPrefix(const std::string& udid, const std::string& keyPrefix,
+        std::map<std::string, std::string>& values) override;
     int32_t Sync(const std::vector<std::string>& deviceList, SyncMode syncMode) override;
     int32_t DeleteKvStore();
 
@@ -58,6 +61,7 @@ private:
     int32_t RegisterDeathListener();
     int32_t UnRegisterDeathListener();
     int32_t DeleteDeathListener();
+    void SyncDeviceProfile(const std::string& udid);
 
 private:
     DistributedKv::AppId appId_;

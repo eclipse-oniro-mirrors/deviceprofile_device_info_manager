@@ -366,5 +366,40 @@ std::vector<std::string> DeviceProfileStorage::GetOnlineDevices()
     HILOGI("online device size is %{public}zu", targetDevices.size());
     return targetDevices;
 }
+
+int32_t DeviceProfileStorage::GetDeviceProfile(const std::string& udid, const std::string& key, std::string& value)
+{
+    HILOGI("call");
+    if (udid.empty() || key.empty()) {
+        HILOGE("udid or key invalid");
+        return ERR_DP_INVALID_PARAMS;
+    }
+    Key k(key);
+    Value v;
+    Status status;
+    {
+        std::shared_lock<std::shared_mutex> readLock(storageLock_);
+        if (kvStorePtr_ == nullptr) {
+            HILOGE("null kvstore");
+            return ERR_DP_INVALID_PARAMS;
+        }
+        status = kvStorePtr_->Get(k, v);
+        HILOGI("Get data status: %{public}d", status);
+    }
+    if (status == Status::NOT_FOUND) {
+        std::vector<std::string> device;
+        device.push_back(udid);
+        SyncMode syncMode{ SyncMode::PUSH_PULL };
+        int32_t res = SyncDeviceProfile(device, syncMode);
+        HILOGI("SyncDeviceProfile res: %{public}d!", res);
+        return static_cast<int32_t>(status);
+    }
+    if (status != Status::SUCCESS) {
+        HILOGE("get failed, %{public}d", status);
+        return static_cast<int32_t>(status);
+    }
+    HILOGI("get succeeded");
+    return static_cast<int32_t>(status);
+}
 } // namespace DeviceProfile
 } // namespace OHOS

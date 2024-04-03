@@ -454,5 +454,91 @@ int32_t KVAdapter::DeleteKvStore()
     }
     return DP_SUCCESS;
 }
+
+int32_t KVAdapter::GetByPrefix(const std::string& udid, const std::string& keyPrefix,
+    std::map<std::string, std::string>& values)
+{
+    if (udid.empty() || keyPrefix.empty()) {
+        HILOGE("udid or keyPrefix is invalid");
+        return DP_INVALID_PARAMS;
+    }
+    HILOGI("Get data by key prefix: %{public}s", ProfileUtils::GetAnonyString(keyPrefix).c_str());
+    DistributedKv::Status status;
+    std::vector<DistributedKv::Entry> allEntries;
+    {
+        std::lock_guard<std::mutex> lock(kvAdapterMutex_);
+        if (kvStorePtr_ == nullptr) {
+            HILOGE("kvStoragePtr_ is null");
+            return DP_KV_DB_PTR_NULL;
+        }
+        // if prefix is empty, get all entries.
+        DistributedKv::Key allEntryKeyPrefix(keyPrefix);
+        status = kvStorePtr_->GetEntries(allEntryKeyPrefix, allEntries);
+        HILOGI("Get data status: %{public}d", status);
+    }
+    // if data does not exist, GetEntries return SUCCESS, allEntries size is 0.
+    if (status != DistributedKv::Status::SUCCESS) {
+        HILOGE("Query data by keyPrefix failed, prefix: %{public}s", ProfileUtils::GetAnonyString(keyPrefix).c_str());
+        return DP_GET_KV_DB_FAIL;
+    }
+    // data to be queried must exist, if not, try to sync.
+    if (allEntries.size() == 0) {
+        HILOGE("AllEntries is empty!");
+        SyncDeviceProfile(udid);
+        return DP_INVALID_PARAMS;
+    }
+    if (allEntries.size() > MAX_DB_SIZE) {
+        HILOGE("AllEntries size is invalid!");
+        return DP_INVALID_PARAMS;
+    }
+    for (const auto& item : allEntries) {
+        values[item.key.ToString()] = item.value.ToString();
+    }
+    return DP_SUCCESS;
+}
+
+int32_t KVAdapter::Get(const std::string& udid, const std::string& key, std::string& value)
+{
+    if (udid.empty() || key.empty()) {
+        HILOGE("udid or key is invalid");
+        return DP_INVALID_PARAMS;
+    }
+    HILOGI("Get data by key: %{public}s", ProfileUtils::GetAnonyString(key).c_str());
+    DistributedKv::Key kvKey(key);
+    DistributedKv::Value kvValue;
+    DistributedKv::Status status;
+    {
+        std::lock_guard<std::mutex> lock(kvAdapterMutex_);
+        if (kvStorePtr_ == nullptr) {
+            HILOGE("kvStoragePtr_ is null");
+            return DP_KV_DB_PTR_NULL;
+        }
+        status = kvStorePtr_->Get(kvKey, kvValue);
+    }
+    if (status == DistributedKv::Status::NOT_FOUND) {
+        SyncDeviceProfile(udid);
+        return DP_GET_KV_DB_FAIL;
+    }
+    if (status != DistributedKv::Status::SUCCESS) {
+        HILOGE("Get data from kv failed, key: %{public}s", ProfileUtils::GetAnonyString(key).c_str());
+        return DP_GET_KV_DB_FAIL;
+    }
+    value = kvValue.ToString();
+    return DP_SUCCESS;
+}
+
+void KVAdapter::SyncDeviceProfile(const std::string& udid)
+{
+    HILOGI("call!");
+    if (udid.empty()) {
+        HILOGE("udid is invalid.");
+        return;
+    }
+    std::vector<std::string> device;
+    device.push_back(udid);
+    SyncMode syncMode{ SyncMode::PUSH_PULL };
+    int32_t syncResult = Sync(device, syncMode);
+    HILOGI("SyncDeviceProfile res: %{public}d!", syncResult);
+}
 } // namespace DeviceProfile
 } // namespace OHOS

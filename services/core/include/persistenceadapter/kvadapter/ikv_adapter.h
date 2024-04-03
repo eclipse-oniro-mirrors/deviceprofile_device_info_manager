@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,7 +34,10 @@ public:
     virtual int32_t Delete(const std::string& key) = 0;
     virtual int32_t DeleteByPrefix(const std::string& keyPrefix) = 0;
     virtual int32_t Get(const std::string& key, std::string& value) = 0;
+    virtual int32_t Get(const std::string& udid, const std::string& key, std::string& value) = 0;
     virtual int32_t GetByPrefix(const std::string& keyPrefix, std::map<std::string, std::string>& values) = 0;
+    virtual int32_t GetByPrefix(const std::string& udid, const std::string& keyPrefix,
+        std::map<std::string, std::string>& values) = 0;
     virtual int32_t Sync(const std::vector<std::string>& deviceList, SyncMode syncMode) = 0;
 };
 } // namespace DeviceProfile
