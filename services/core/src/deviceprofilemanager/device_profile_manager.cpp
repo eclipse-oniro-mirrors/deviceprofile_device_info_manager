@@ -215,7 +215,7 @@ int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, Devi
         }
         std::string dbKeyPrefix = ProfileUtils::GenerateDeviceProfileKey(deviceId);
         std::map<std::string, std::string> values;
-        if (deviceProfileStore_->GetByPrefix(dbKeyPrefix, values, deviceId) != DP_SUCCESS) {
+        if (deviceProfileStore_->GetByPrefix(deviceId, dbKeyPrefix, values) != DP_SUCCESS) {
             HILOGE("Get data fail!");
             return DP_GET_KV_DB_FAIL;
         }
@@ -250,7 +250,7 @@ int32_t DeviceProfileManager::GetServiceProfile(const std::string& deviceId, con
         }
         std::string dbKeyPrefix = ProfileUtils::GenerateServiceProfileKey(deviceId, serviceName);
         std::map<std::string, std::string> values;
-        if (deviceProfileStore_->GetByPrefix(dbKeyPrefix, values, deviceId) != DP_SUCCESS) {
+        if (deviceProfileStore_->GetByPrefix(deviceId, dbKeyPrefix, values) != DP_SUCCESS) {
             HILOGE("Get data fail!");
             return DP_GET_KV_DB_FAIL;
         }
@@ -287,7 +287,7 @@ int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& device
         }
         std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, characteristicKey);
         std::map<std::string, std::string> values;
-        if (deviceProfileStore_->GetByPrefix(profileKeyPrefix, values, deviceId) != DP_SUCCESS) {
+        if (deviceProfileStore_->GetByPrefix(deviceId, profileKeyPrefix, values) != DP_SUCCESS) {
             HILOGE("Get data fail!");
             return DP_GET_KV_DB_FAIL;
         }
