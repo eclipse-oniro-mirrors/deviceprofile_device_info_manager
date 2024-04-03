@@ -455,9 +455,13 @@ int32_t KVAdapter::DeleteKvStore()
     return DP_SUCCESS;
 }
 
-int32_t KVAdapter::GetByPrefix(const std::string& keyPrefix, std::map<std::string, std::string>& values,
-    const std::string& udid)
+int32_t KVAdapter::GetByPrefix(const std::string& udid, const std::string& keyPrefix,
+    std::map<std::string, std::string>& values)
 {
+    if (udid.empty() || keyPrefix.empty()) {
+        HILOGE("udid or keyPrefix is invalid");
+        return DP_INVALID_PARAMS;
+    }
     HILOGI("Get data by key prefix: %{public}s", ProfileUtils::GetAnonyString(keyPrefix).c_str());
     DistributedKv::Status status;
     std::vector<DistributedKv::Entry> allEntries;
@@ -472,10 +476,12 @@ int32_t KVAdapter::GetByPrefix(const std::string& keyPrefix, std::map<std::strin
         status = kvStorePtr_->GetEntries(allEntryKeyPrefix, allEntries);
         HILOGI("Get data status: %{public}d", status);
     }
+    // if data does not exist, GetEntries return SUCCESS, allEntries size is 0.
     if (status != DistributedKv::Status::SUCCESS) {
         HILOGE("Query data by keyPrefix failed, prefix: %{public}s", ProfileUtils::GetAnonyString(keyPrefix).c_str());
         return DP_GET_KV_DB_FAIL;
     }
+    // data to be queried must exist, if not, try to sync.
     if (allEntries.size() == 0) {
         HILOGE("AllEntries is empty!");
         SyncDeviceProfile(udid);
@@ -491,8 +497,12 @@ int32_t KVAdapter::GetByPrefix(const std::string& keyPrefix, std::map<std::strin
     return DP_SUCCESS;
 }
 
-int32_t KVAdapter::Get(const std::string& key, std::string& value, const std::string& udid)
+int32_t KVAdapter::Get(const std::string& udid, const std::string& key, std::string& value)
 {
+    if (udid.empty() || key.empty()) {
+        HILOGE("udid or key is invalid");
+        return DP_INVALID_PARAMS;
+    }
     HILOGI("Get data by key: %{public}s", ProfileUtils::GetAnonyString(key).c_str());
     DistributedKv::Key kvKey(key);
     DistributedKv::Value kvValue;
@@ -526,10 +536,6 @@ void KVAdapter::SyncDeviceProfile(const std::string& udid)
     }
     std::vector<std::string> device;
     device.push_back(udid);
-    if (kvStorePtr_ == nullptr) {
-        HILOGE("deviceProfileStore is nullptr!");
-        return;
-    }
     SyncMode syncMode{ SyncMode::PUSH_PULL };
     int32_t syncResult = Sync(device, syncMode);
     HILOGI("SyncDeviceProfile res: %{public}d!", syncResult);
