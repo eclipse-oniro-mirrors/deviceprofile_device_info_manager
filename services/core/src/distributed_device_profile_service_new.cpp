@@ -312,7 +312,7 @@ int32_t DistributedDeviceProfileServiceNew::DeleteCharacteristicProfile(const st
 
 int32_t DistributedDeviceProfileServiceNew::SubscribeDeviceProfile(const SubscribeInfo& subscriberInfo)
 {
-    if (!PermissionManager::GetInstance().IsCallerTrust(SUBSCRIBE_DEVICE_PROFILE)) {
+    if (!PermissionManager::GetInstance().CheckCallerPermission(SUBSCRIBE_DEVICE_PROFILE)) {
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
@@ -321,7 +321,7 @@ int32_t DistributedDeviceProfileServiceNew::SubscribeDeviceProfile(const Subscri
 
 int32_t DistributedDeviceProfileServiceNew::UnSubscribeDeviceProfile(const SubscribeInfo& subscriberInfo)
 {
-    if (!PermissionManager::GetInstance().IsCallerTrust(UNSUBSCRIBE_DEVICE_PROFILE)) {
+    if (!PermissionManager::GetInstance().CheckCallerPermission(UNSUBSCRIBE_DEVICE_PROFILE)) {
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
