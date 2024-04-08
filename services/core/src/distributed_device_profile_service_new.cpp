@@ -225,7 +225,7 @@ int32_t DistributedDeviceProfileServiceNew::DeleteAccessControlProfile(int32_t a
 
 int32_t DistributedDeviceProfileServiceNew::PutServiceProfile(const ServiceProfile& serviceProfile)
 {
-    if (!PermissionManager::GetInstance().IsCallerTrust(PUT_SERVICE_PROFILE)) {
+    if (!PermissionManager::GetInstance().CheckCallerPermission(PUT_SERVICE_PROFILE)) {
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
@@ -234,7 +234,7 @@ int32_t DistributedDeviceProfileServiceNew::PutServiceProfile(const ServiceProfi
 
 int32_t DistributedDeviceProfileServiceNew::PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles)
 {
-    if (!PermissionManager::GetInstance().IsCallerTrust(PUT_SERVICE_PROFILE_BATCH)) {
+    if (!PermissionManager::GetInstance().CheckCallerPermission(PUT_SERVICE_PROFILE_BATCH)) {
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
@@ -243,7 +243,7 @@ int32_t DistributedDeviceProfileServiceNew::PutServiceProfileBatch(const std::ve
 
 int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfile(const CharacteristicProfile& charProfile)
 {
-    if (!PermissionManager::GetInstance().IsCallerTrust(PUT_CHARACTERISTIC_PROFILE)) {
+    if (!PermissionManager::GetInstance().CheckCallerPermission(PUT_CHARACTERISTIC_PROFILE)) {
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
@@ -253,7 +253,7 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfile(const Chara
 int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfileBatch(
     const std::vector<CharacteristicProfile>& charProfiles)
 {
-    if (!PermissionManager::GetInstance().IsCallerTrust(PUT_CHARACTERISTIC_PROFILE_BATCH)) {
+    if (!PermissionManager::GetInstance().CheckCallerPermission(PUT_CHARACTERISTIC_PROFILE_BATCH)) {
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
@@ -262,7 +262,7 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfileBatch(
 
 int32_t DistributedDeviceProfileServiceNew::GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile)
 {
-    if (!PermissionManager::GetInstance().IsCallerTrust(GET_DEVICE_PROFILE)) {
+    if (!PermissionManager::GetInstance().CheckCallerPermission(GET_DEVICE_PROFILE)) {
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
@@ -272,7 +272,7 @@ int32_t DistributedDeviceProfileServiceNew::GetDeviceProfile(const std::string& 
 int32_t DistributedDeviceProfileServiceNew::GetServiceProfile(const std::string& deviceId,
     const std::string& serviceName, ServiceProfile& serviceProfile)
 {
-    if (!PermissionManager::GetInstance().IsCallerTrust(GET_SERVICE_PROFILE)) {
+    if (!PermissionManager::GetInstance().CheckCallerPermission(GET_SERVICE_PROFILE)) {
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
@@ -282,7 +282,7 @@ int32_t DistributedDeviceProfileServiceNew::GetServiceProfile(const std::string&
 int32_t DistributedDeviceProfileServiceNew::GetCharacteristicProfile(const std::string& deviceId,
     const std::string& serviceName, const std::string& characteristicKey, CharacteristicProfile& charProfile)
 {
-    if (!PermissionManager::GetInstance().IsCallerTrust(GET_CHARACTERISTIC_PROFILE)) {
+    if (!PermissionManager::GetInstance().CheckCallerPermission(GET_CHARACTERISTIC_PROFILE)) {
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
@@ -293,7 +293,7 @@ int32_t DistributedDeviceProfileServiceNew::GetCharacteristicProfile(const std::
 int32_t DistributedDeviceProfileServiceNew::DeleteServiceProfile(const std::string& deviceId,
     const std::string& serviceName)
 {
-    if (!PermissionManager::GetInstance().IsCallerTrust(DELETE_SERVICE_PROFILE)) {
+    if (!PermissionManager::GetInstance().CheckCallerPermission(DELETE_SERVICE_PROFILE)) {
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
@@ -303,7 +303,7 @@ int32_t DistributedDeviceProfileServiceNew::DeleteServiceProfile(const std::stri
 int32_t DistributedDeviceProfileServiceNew::DeleteCharacteristicProfile(const std::string& deviceId,
     const std::string& serviceName, const std::string& characteristicKey)
 {
-    if (!PermissionManager::GetInstance().IsCallerTrust(DELETE_CHARACTERISTIC_PROFILE)) {
+    if (!PermissionManager::GetInstance().CheckCallerPermission(DELETE_CHARACTERISTIC_PROFILE)) {
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
@@ -331,7 +331,7 @@ int32_t DistributedDeviceProfileServiceNew::UnSubscribeDeviceProfile(const Subsc
 int32_t DistributedDeviceProfileServiceNew::SyncDeviceProfile(
     const DistributedDeviceProfile::DpSyncOptions& syncOptions, sptr<IRemoteObject> syncCompletedCallback)
 {
-    if (!PermissionManager::GetInstance().IsCallerTrust(SYNC_DEVICE_PROFILE)) {
+    if (!PermissionManager::GetInstance().CheckCallerSyncPermission(SYNC_DEVICE_PROFILE)) {
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }

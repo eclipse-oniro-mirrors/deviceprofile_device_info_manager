@@ -43,6 +43,8 @@ namespace {
     const std::string SERVICES_SPECIFIC = "specific";
     const std::string SERVICES_PREFIX = "prefix";
     const std::string PERMISSION_JSON_PATH = "/system/etc/deviceprofile/permission.json";
+    const std::string DP_SERVICE_ACCESS_PERMISSION = "ohos.permission.ACCESS_SERVICE_DP";
+    const std::string DP_SERVICE_SYNC_PERMISSION = "ohos.permission.SYNC_PROFILE_DP";
 }
 
 IMPLEMENT_SINGLE_INSTANCE(PermissionManager);
@@ -171,6 +173,85 @@ bool PermissionManager::IsCallerTrust(const std::string& interfaceName)
     if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
         HILOGE("ReportSaCheckAuth failed");
     }
+    return true;
+}
+
+bool PermissionManager::CheckCallerPermission(const std::string &interfaceName)
+{
+    int32_t stageRes = static_cast<int32_t>(StageRes::STAGE_FAIL);
+    auto tokenID = IPCSkeleton::GetCallingTokenID();
+    if (tokenID == INVALID_TOKEN_ID) {
+        HILOGW("invalid token id");
+        if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
+            HILOGE("ReportSaCheckAuth failed");
+        }
+        return false;
+    }
+    ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(tokenID);
+    HILOGD("tokenID:%{public}u, tokenType:%{public}d", tokenID, tokenType);
+    if (tokenType != ATokenTypeEnum::TOKEN_NATIVE) {
+        HILOGE("TokenType is not native");
+        if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
+            HILOGE("ReportSaCheckAuth failed");
+        }
+        return false;
+    }
+    std::string callProcName = GetCallerProcName();
+    int32_t ret = AccessTokenKit::VerifyAccessToken(tokenID, DP_SERVICE_ACCESS_PERMISSION);
+    if (ret != PermissionState::PERMISSION_GRANTED) {
+        HILOGE("CheckCallerPermission failed interface %{public}s callProc %{public}s!",
+            interfaceName.c_str(), callProcName.c_str());
+        if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
+            HILOGE("ReportSaCheckAuth failed");
+        }
+        return false;
+    }
+    stageRes = static_cast<int32_t>(StageRes::STAGE_SUCC);
+    if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
+        HILOGE("ReportSaCheckAuth failed");
+    }
+    HILOGI("CheckCallerPermission success interface %{public}s callProc %{public}s!",
+        interfaceName.c_str(), callProcName.c_str());
+    return true;
+}
+
+bool PermissionManager::CheckCallerSyncPermission(const std::string &interfaceName)
+{
+    int32_t stageRes = static_cast<int32_t>(StageRes::STAGE_FAIL);
+    auto tokenID = IPCSkeleton::GetCallingTokenID();
+    if (tokenID == INVALID_TOKEN_ID) {
+        HILOGW("invalid token id");
+        if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
+            HILOGE("ReportSaCheckAuth failed");
+        }
+        return false;
+    }
+    ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(tokenID);
+    HILOGD("tokenID:%{public}u, tokenType:%{public}d", tokenID, tokenType);
+    // currently only support native trusted caller
+    if (tokenType != ATokenTypeEnum::TOKEN_NATIVE) {
+        HILOGE("TokenType is not native");
+        if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
+            HILOGE("ReportSaCheckAuth failed");
+        }
+        return false;
+    }
+    std::string callProcName = GetCallerProcName();
+    int32_t ret = AccessTokenKit::VerifyAccessToken(tokenID, DP_SERVICE_SYNC_PERMISSION);
+    if (ret != PermissionState::PERMISSION_GRANTED) {
+        HILOGE("CheckCallerSyncPermission failed interface %{public}s callProc %{public}s!",
+            interfaceName.c_str(), callProcName.c_str());
+        if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
+            HILOGE("ReportSaCheckAuth failed");
+        }
+        return false;
+    }
+    stageRes = static_cast<int32_t>(StageRes::STAGE_SUCC);
+    if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
+        HILOGE("ReportSaCheckAuth failed");
+    }
+    HILOGI("CheckCallerSyncPermission success interface %{public}s callProc %{public}s!",
+        interfaceName.c_str(), callProcName.c_str());
     return true;
 }
 
