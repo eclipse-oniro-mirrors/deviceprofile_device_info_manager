@@ -29,6 +29,7 @@
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "macro_utils.h"
+#include "profile_utils.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -153,7 +154,6 @@ bool PermissionManager::IsCallerTrust(const std::string& interfaceName)
         return false;
     }
     ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(tokenID);
-    HILOGD("tokenID:%{public}u, tokenType:%{public}d", tokenID, tokenType);
     // currently only support native trusted caller
     if (tokenType != ATokenTypeEnum::TOKEN_NATIVE) {
         HILOGE("TokenType is not native");
@@ -176,12 +176,8 @@ bool PermissionManager::IsCallerTrust(const std::string& interfaceName)
     return true;
 }
 
-bool PermissionManager::CheckCallerPermission(const std::string &interfaceName)
+bool PermissionManager::CheckCallerPermission()
 {
-    if (interfaceName.empty() || interfaceName.length() > MAX_STRING_LEN) {
-        HILOGE("interfaceName is invalid");
-        return false;
-    }
     int32_t stageRes = static_cast<int32_t>(StageRes::STAGE_FAIL);
     auto tokenID = IPCSkeleton::GetCallingTokenID();
     if (tokenID == INVALID_TOKEN_ID) {
@@ -192,7 +188,6 @@ bool PermissionManager::CheckCallerPermission(const std::string &interfaceName)
         return false;
     }
     ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(tokenID);
-    HILOGD("tokenID:%{public}u, tokenType:%{public}d", tokenID, tokenType);
     if (tokenType != ATokenTypeEnum::TOKEN_NATIVE) {
         HILOGE("TokenType is not native");
         if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
@@ -203,8 +198,7 @@ bool PermissionManager::CheckCallerPermission(const std::string &interfaceName)
     std::string callProcName = GetCallerProcName();
     int32_t ret = AccessTokenKit::VerifyAccessToken(tokenID, DP_SERVICE_ACCESS_PERMISSION);
     if (ret != PermissionState::PERMISSION_GRANTED) {
-        HILOGE("CheckCallerPermission failed interface %{public}s callProc %{public}s!",
-            interfaceName.c_str(), callProcName.c_str());
+        HILOGE("CheckCallerPermission failed callProc %{public}s!", ProfileUtils::GetAnonyString(callProcName).c_str());
         if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
             HILOGE("ReportSaCheckAuth failed");
         }
@@ -214,17 +208,12 @@ bool PermissionManager::CheckCallerPermission(const std::string &interfaceName)
     if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
         HILOGE("ReportSaCheckAuth failed");
     }
-    HILOGI("CheckCallerPermission success interface %{public}s callProc %{public}s!",
-        interfaceName.c_str(), callProcName.c_str());
+    HILOGI("CheckCallerPermission success callProc %{public}s!", ProfileUtils::GetAnonyString(callProcName).c_str());
     return true;
 }
 
-bool PermissionManager::CheckCallerSyncPermission(const std::string &interfaceName)
+bool PermissionManager::CheckCallerSyncPermission()
 {
-    if (interfaceName.empty() || interfaceName.length() > MAX_STRING_LEN) {
-        HILOGE("interfaceName is invalid");
-        return false;
-    }
     int32_t stageRes = static_cast<int32_t>(StageRes::STAGE_FAIL);
     auto tokenID = IPCSkeleton::GetCallingTokenID();
     if (tokenID == INVALID_TOKEN_ID) {
@@ -235,8 +224,6 @@ bool PermissionManager::CheckCallerSyncPermission(const std::string &interfaceNa
         return false;
     }
     ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(tokenID);
-    HILOGD("tokenID:%{public}u, tokenType:%{public}d", tokenID, tokenType);
-    // currently only support native trusted caller
     if (tokenType != ATokenTypeEnum::TOKEN_NATIVE) {
         HILOGE("TokenType is not native");
         if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
@@ -247,8 +234,7 @@ bool PermissionManager::CheckCallerSyncPermission(const std::string &interfaceNa
     std::string callProcName = GetCallerProcName();
     int32_t ret = AccessTokenKit::VerifyAccessToken(tokenID, DP_SERVICE_SYNC_PERMISSION);
     if (ret != PermissionState::PERMISSION_GRANTED) {
-        HILOGE("CheckCallerSyncPermission failed interface %{public}s callProc %{public}s!",
-            interfaceName.c_str(), callProcName.c_str());
+        HILOGE("CheckCallerSyncPermission failed callProc %{public}s!", ProfileUtils::GetAnonyString(callProcName).c_str());
         if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
             HILOGE("ReportSaCheckAuth failed");
         }
@@ -258,8 +244,7 @@ bool PermissionManager::CheckCallerSyncPermission(const std::string &interfaceNa
     if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
         HILOGE("ReportSaCheckAuth failed");
     }
-    HILOGI("CheckCallerSyncPermission success interface %{public}s callProc %{public}s!",
-        interfaceName.c_str(), callProcName.c_str());
+    HILOGI("CheckCallerSyncPermission success callProc %{public}s!", ProfileUtils::GetAnonyString(callProcName).c_str());
     return true;
 }
 

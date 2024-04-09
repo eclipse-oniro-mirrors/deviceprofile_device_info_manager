@@ -90,7 +90,7 @@ HWTEST_F(PermissionManagerTest, GetCallerProcName_001, TestSize.Level1)
  */
 HWTEST_F(PermissionManagerTest, CheckCallerPermission_001, TestSize.Level1)
 {
-    bool ret = PermissionManager::GetInstance().CheckCallerPermission(PUT_CHARACTERISTIC_PROFILE);
+    bool ret = PermissionManager::GetInstance().CheckCallerPermission();
     EXPECT_EQ(ret, false);
 }
 
@@ -101,7 +101,7 @@ HWTEST_F(PermissionManagerTest, CheckCallerPermission_001, TestSize.Level1)
  */
 HWTEST_F(PermissionManagerTest, CheckCallerSyncPermission_001, TestSize.Level1)
 {
-    bool ret = PermissionManager::GetInstance().CheckCallerSyncPermission(PUT_CHARACTERISTIC_PROFILE);
+    bool ret = PermissionManager::GetInstance().CheckCallerSyncPermission();
     EXPECT_EQ(ret, false);
 }
 } // namespace DistributedDeviceProfile
