@@ -178,6 +178,10 @@ bool PermissionManager::IsCallerTrust(const std::string& interfaceName)
 
 bool PermissionManager::CheckCallerPermission(const std::string &interfaceName)
 {
+    if (interfaceName.empty() || interfaceName.length() > MAX_STRING_LEN) {
+        HILOGE("interfaceName is invalid");
+        return false;
+    }
     int32_t stageRes = static_cast<int32_t>(StageRes::STAGE_FAIL);
     auto tokenID = IPCSkeleton::GetCallingTokenID();
     if (tokenID == INVALID_TOKEN_ID) {
@@ -217,6 +221,10 @@ bool PermissionManager::CheckCallerPermission(const std::string &interfaceName)
 
 bool PermissionManager::CheckCallerSyncPermission(const std::string &interfaceName)
 {
+    if (interfaceName.empty() || interfaceName.length() > MAX_STRING_LEN) {
+        HILOGE("interfaceName is invalid");
+        return false;
+    }
     int32_t stageRes = static_cast<int32_t>(StageRes::STAGE_FAIL);
     auto tokenID = IPCSkeleton::GetCallingTokenID();
     if (tokenID == INVALID_TOKEN_ID) {
