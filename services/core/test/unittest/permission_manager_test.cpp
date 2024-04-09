@@ -82,5 +82,27 @@ HWTEST_F(PermissionManagerTest, GetCallerProcName_001, TestSize.Level1)
     std::string ret = PermissionManager::GetInstance().GetCallerProcName();
     EXPECT_EQ(ret, "");
 }
+
+/*
+ * @tc.name: CheckCallerPermission_001
+ * @tc.desc: Normal testCase of PermissionManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(PermissionManagerTest, CheckCallerPermission_001, TestSize.Level1)
+{
+    bool ret = PermissionManager::GetInstance().CheckCallerPermission();
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: CheckCallerSyncPermission_001
+ * @tc.desc: Normal testCase of PermissionManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(PermissionManagerTest, CheckCallerSyncPermission_001, TestSize.Level1)
+{
+    bool ret = PermissionManager::GetInstance().CheckCallerSyncPermission();
+    EXPECT_EQ(ret, false);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

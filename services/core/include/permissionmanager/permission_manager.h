@@ -32,6 +32,8 @@ public:
     int32_t Init();
     int32_t UnInit();
     bool IsCallerTrust(const std::string& interfaceName);
+    bool CheckCallerPermission();
+    bool CheckCallerSyncPermission();
     std::string GetCallerProcName();
 
 private:
