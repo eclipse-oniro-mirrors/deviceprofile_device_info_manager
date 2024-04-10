@@ -14,6 +14,8 @@
 group("common_test") {
   testonly = true
 
-  deps =
-      [ "profilechangelistenerstubunittest:profile_change_listener_stub_test" ]
+  deps = [
+    "deviceprofileunittest:device_profile_test",
+    "profilechangelistenerstubunittest:profile_change_listener_stub_test",
+  ]
 }
