@@ -296,9 +296,10 @@ bool DpRadarHelper::ReportGetAllTrustProfile(int32_t errCode, std::vector<TrustD
     int32_t stageRes = (errCode == DP_SUCCESS) ?
         static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL);
     std::string extraInfo = "";
+    size_t size = trustDeviceProfiles.size() > 0 ? (trustDeviceProfiles.size() - 1) : 0;
     for (size_t i = 0; i < trustDeviceProfiles.size(); i++) {
         extraInfo += trustDeviceProfiles[i].dump();
-        if (i != trustDeviceProfiles.size() - 1) {
+        if (i != size) {
             extraInfo += ",";
         }
     }
@@ -346,9 +347,10 @@ bool DpRadarHelper::ReportGetAclProfile(int32_t errCode, std::vector<AccessContr
     int32_t stageRes = (errCode == DP_SUCCESS) ?
         static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL);
     std::string extraInfo = "";
+    size_t size = accessControlProfiles.size() > 0 ? (accessControlProfiles.size() - 1) : 0;
     for (size_t i = 0; i < accessControlProfiles.size(); i++) {
         extraInfo += accessControlProfiles[i].dump();
-        if (i != accessControlProfiles.size() - 1) {
+        if (i != size) {
             extraInfo += ",";
         }
     }
@@ -396,9 +398,10 @@ bool DpRadarHelper::ReportGetAllAclProfile(int32_t errCode, std::vector<AccessCo
     int32_t stageRes = (errCode == DP_SUCCESS) ?
         static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL);
     std::string extraInfo = "";
+    size_t size = accessControlProfiles.size() > 0 ? (accessControlProfiles.size() - 1) : 0;
     for (size_t i = 0; i < accessControlProfiles.size(); i++) {
         extraInfo += accessControlProfiles[i].dump();
-        if (i != accessControlProfiles.size() - 1) {
+        if (i != size) {
             extraInfo += ",";
         }
     }
@@ -528,9 +531,10 @@ bool DpRadarHelper::ReportPutServiceProfileBatch(int32_t errCode, const std::vec
     int32_t stageRes = (errCode == DP_SUCCESS) ?
         static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL);
     std::string extraInfo = "";
+    size_t size = serviceProfiles.size() > 0 ? (serviceProfiles.size() - 1) : 0;
     for (size_t i = 0; i < serviceProfiles.size(); i++) {
         extraInfo += serviceProfiles[i].dump();
-        if (i != serviceProfiles.size() - 1) {
+        if (i != size) {
             extraInfo += ",";
         }
     }
@@ -622,9 +626,10 @@ bool DpRadarHelper::ReportPutCharProfileBatch(int32_t errCode,
     int32_t stageRes = (errCode == DP_SUCCESS) ?
         static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL);
     std::string extraInfo = "";
+    size_t size = characteristicProfiles.size() > 0 ? (characteristicProfiles.size() - 1) : 0;
     for (size_t i = 0; i < characteristicProfiles.size(); i++) {
         extraInfo += characteristicProfiles[i].dump();
-        if (i != characteristicProfiles.size() - 1) {
+        if (i != size) {
             extraInfo += ",";
         }
     }
@@ -1077,8 +1082,14 @@ std::string DpRadarHelper::GetPeerUdidList(const std::vector<TrustDeviceProfile>
         }
         cJSON_AddItemToArray(peerUdidList, object);
     }
-    std::string peerUdidStr = std::string(cJSON_PrintUnformatted(deviceInfoJson));
+    char *peerDevUdidStr = cJSON_PrintUnformatted(deviceInfoJson);
+    if (peerDevUdidStr == nullptr) {
+        cJSON_Delete(deviceInfoJson);
+        return "";
+    }
+    std::string peerUdidStr = std::string(peerDevUdidStr);
     cJSON_Delete(deviceInfoJson);
+    cJSON_free(peerDevUdidStr);
     return peerUdidStr;
 }
 
@@ -1106,8 +1117,14 @@ std::string DpRadarHelper::GetPeerUdidList(const std::vector<AccessControlProfil
         }
         cJSON_AddItemToArray(peerUdidList, object);
     }
-    std::string peerUdidStr = std::string(cJSON_PrintUnformatted(deviceInfoJson));
+    char *peerDevUdidStr = cJSON_PrintUnformatted(deviceInfoJson);
+    if (peerDevUdidStr == nullptr) {
+        cJSON_Delete(deviceInfoJson);
+        return "";
+    }
+    std::string peerUdidStr = std::string(peerDevUdidStr);
     cJSON_Delete(deviceInfoJson);
+    cJSON_free(peerDevUdidStr);
     return peerUdidStr;
 }
 
@@ -1135,8 +1152,14 @@ std::string DpRadarHelper::GetPeerUdidList(const std::vector<ServiceProfile>& se
         }
         cJSON_AddItemToArray(peerUdidList, object);
     }
-    std::string peerUdidStr = std::string(cJSON_PrintUnformatted(deviceInfoJson));
+    char *peerDevUdidStr = cJSON_PrintUnformatted(deviceInfoJson);
+    if (peerDevUdidStr == nullptr) {
+        cJSON_Delete(deviceInfoJson);
+        return "";
+    }
+    std::string peerUdidStr = std::string(peerDevUdidStr);
     cJSON_Delete(deviceInfoJson);
+    cJSON_free(peerDevUdidStr);
     return peerUdidStr;
 }
 
@@ -1164,8 +1187,14 @@ std::string DpRadarHelper::GetPeerUdidList(const std::vector<CharacteristicProfi
         }
         cJSON_AddItemToArray(peerUdidList, object);
     }
-    std::string peerUdidStr = std::string(cJSON_PrintUnformatted(deviceInfoJson));
+    char *peerDevUdidStr = cJSON_PrintUnformatted(deviceInfoJson);
+    if (peerDevUdidStr == nullptr) {
+        cJSON_Delete(deviceInfoJson);
+        return "";
+    }
+    std::string peerUdidStr = std::string(peerDevUdidStr);
     cJSON_Delete(deviceInfoJson);
+    cJSON_free(peerDevUdidStr);
     return peerUdidStr;
 }
 

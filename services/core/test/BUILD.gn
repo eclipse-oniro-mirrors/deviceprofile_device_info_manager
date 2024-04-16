@@ -18,8 +18,17 @@ import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
 
 module_output_path = "device_info_manager/deviceprofiletest"
 
-device_profile_configs =
-    [ "${device_profile_service}:device_info_manager_config" ]
+config("device_profile_test_config") {
+  cflags = [
+    "-Dprivate=public",
+    "-Dprotected=public",
+  ]
+}
+
+device_profile_configs = [
+  "${device_profile_service}:device_info_manager_config",
+  ":device_profile_test_config",
+]
 
 device_profile_deps = [
   "${device_profile_common}:distributed_device_profile_common",
