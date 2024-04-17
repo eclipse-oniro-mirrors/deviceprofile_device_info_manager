@@ -23,7 +23,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 #define WRITE_HELPER(parcel, type, value) \
     do { \
-        bool ret = parcel.Write##type((value)); \
+        bool ret = (parcel).Write##type((value)); \
         if (!ret) { \
             HILOGE("write value failed!"); \
             return ERR_FLATTEN_OBJECT; \
@@ -50,7 +50,7 @@ namespace DistributedDeviceProfile {
 
 #define READ_HELPER(parcel, type, out) \
     do { \
-        bool ret = parcel.Read##type((out)); \
+        bool ret = (parcel).Read##type((out)); \
         if (!ret) { \
             HILOGE("read value failed!"); \
             return ERR_FLATTEN_OBJECT; \
@@ -69,12 +69,12 @@ namespace DistributedDeviceProfile {
 #define SEND_REQUEST(remote, code, data, reply) \
     do { \
         MessageOption option; \
-        int32_t errCode = remote->SendRequest(code, data, reply, option); \
+        int32_t errCode = (remote)->SendRequest((code), (data), (reply), option); \
         if (errCode != DP_SUCCESS) { \
             HILOGE("transact failed, errCode = %{public}d", errCode); \
             return errCode; \
         } \
-        int32_t ret = reply.ReadInt32(); \
+        int32_t ret = (reply).ReadInt32(); \
         if (ret != DP_SUCCESS) { \
             HILOGE("dp method call fail, errCode = %{public}d", ret); \
             return ret; \
@@ -83,8 +83,8 @@ namespace DistributedDeviceProfile {
 
 #define GET_REMOTE_OBJECT(remote) \
     do { \
-        remote = Remote(); \
-        if (remote == nullptr) { \
+        (remote) = Remote(); \
+        if ((remote) == nullptr) { \
             HILOGE("RemoteObject is nullptr!"); \
             return DP_IPC_REMOTE_OBJECT_NULLPTR; \
         } \
@@ -92,7 +92,7 @@ namespace DistributedDeviceProfile {
 
 #define WRITE_INTERFACE_TOKEN(data) \
     do { \
-        if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) { \
+        if (!(data).WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) { \
             HILOGE("Write interface token failed!"); \
             return ERR_FLATTEN_OBJECT; \
         } \
@@ -100,7 +100,7 @@ namespace DistributedDeviceProfile {
 
 #define WRITE_CHANGE_LISTENER_TOKEN(data) \
     do { \
-        if (!data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor())) { \
+        if (!(data).WriteInterfaceToken(IProfileChangeListener::GetDescriptor())) { \
             HILOGE("Write interface token failed!"); \
             return ERR_FLATTEN_OBJECT; \
         } \
@@ -108,7 +108,7 @@ namespace DistributedDeviceProfile {
 
 #define WRITE_SYNC_CALLBACK_TOKEN(data) \
     do { \
-        if (!data.WriteInterfaceToken(ISyncCompletedCallback::GetDescriptor())) { \
+        if (!(data).WriteInterfaceToken(ISyncCompletedCallback::GetDescriptor())) { \
             HILOGE("Write interface token failed!"); \
             return ERR_FLATTEN_OBJECT; \
         } \

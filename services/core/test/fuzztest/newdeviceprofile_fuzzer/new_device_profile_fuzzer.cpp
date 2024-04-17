@@ -28,12 +28,7 @@
 #include "token_setproc.h"
 #include "iremote_stub.h"
 
-#define private public
-#define protected public
 #include "distributed_device_profile_service_new.h"
-#undef private
-#undef protected
-
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
@@ -41,14 +36,14 @@ namespace {
     constexpr uint32_t MIN_INTERFACE_CODE = 7;
     constexpr uint32_t MAX_INTERFACE_CODE = 26;
     constexpr int32_t OFFSET = 4;
-    int32_t ZERO_BIT = 0;
-    int32_t FIRST_BIT = 1;
-    int32_t SECOND_BIT = 2;
-    int32_t THIRD_BIT = 3;
-    int32_t ZERO_MOVE_LEN = 24;
-    int32_t FIRST_MOVE_LEN = 16;
-    int32_t SECOND_MOVE_LEN = 8;
-    bool flag_ = false;
+    constexpr int32_t ZERO_BIT = 0;
+    constexpr int32_t FIRST_BIT = 1;
+    constexpr int32_t SECOND_BIT = 2;
+    constexpr int32_t THIRD_BIT = 3;
+    constexpr int32_t ZERO_MOVE_LEN = 24;
+    constexpr int32_t FIRST_MOVE_LEN = 16;
+    constexpr int32_t SECOND_MOVE_LEN = 8;
+    bool g_flag = false;
     const std::u16string DP_INTERFACE_TOKEN = u"OHOS.DeviceProfile.IDistributedDeviceProfile";
 }
 
@@ -97,9 +92,9 @@ void FuzzDeviceProfile(const uint8_t* rawData, size_t size)
     MessageOption option;
     std::string baseDir = "/data/service/el1/public/database/distributed_device_profile_service";
     mkdir(baseDir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    if (!flag_) {
+    if (!g_flag) {
         DistributedDeviceProfileServiceNew::GetInstance().Init();
-        flag_ = true;
+        g_flag = true;
     }
     code = code % MAX_INTERFACE_CODE + 1;
     if (code < MIN_INTERFACE_CODE) {

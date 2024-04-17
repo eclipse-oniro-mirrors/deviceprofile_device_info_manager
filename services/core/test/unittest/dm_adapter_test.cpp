@@ -23,14 +23,7 @@
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 #include "event_handler_factory.h"
-#define private public
-#define protected public
-
 #include "dm_adapter.h"
-
-#undef private
-#undef protected
-
 using namespace testing::ext;
 namespace OHOS {
 namespace DistributedDeviceProfile {
