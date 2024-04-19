@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,11 +20,11 @@
 #include "datetime_ex.h"
 #include "string_ex.h"
 
-#include "profile_utils.h"
-#include "profile_cache.h"
-#include "subscribe_profile_manager.h"
-#include "subscribe_profile_manager.h"
+#include "device_profile_manager.h"
 #include "distributed_device_profile_log.h"
+#include "profile_cache.h"
+#include "profile_utils.h"
+#include "subscribe_profile_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -57,6 +57,33 @@ void KvDataChangeListener::OnChange(const DistributedKv::ChangeNotification& cha
     if (!changeNotification.GetDeleteEntries().empty() &&
         changeNotification.GetDeleteEntries().size() <= MAX_DB_RECORD_SIZE) {
         HandleDeleteChange(changeNotification.GetDeleteEntries());
+    }
+}
+
+void KvDataChangeListener::OnChange(const DistributedKv::DataOrigin& origin, Keys &&keys)
+{
+    HILOGI("Cloud data change. store=%{public}s", origin.store.c_str());
+    ProfileCache::GetInstance().RefreshProfileCache();
+    std::vector<DistributedKv::Entry> insertRecords = DeviceProfileManager::GetInstance()
+        .GetEntriesByKeys(keys[ChangeOp::OP_INSERT]);
+    if (!insertRecords.empty() && insertRecords.size() <= MAX_DB_RECORD_SIZE) {
+        HandleAddChange(insertRecords);
+    }
+    std::vector<DistributedKv::Entry> updateRecords = DeviceProfileManager::GetInstance()
+        .GetEntriesByKeys(keys[ChangeOp::OP_UPDATE]);
+    if (!updateRecords.empty() && updateRecords.size() <= MAX_DB_RECORD_SIZE) {
+        HandleUpdateChange(updateRecords);
+    }
+    std::vector<std::string> delKeys = keys[ChangeOp::OP_DELETE];
+    if (!delKeys.empty() && delKeys.size() <= MAX_DB_RECORD_SIZE) {
+        std::vector<DistributedKv::Entry> deleteRecords;
+        for (const auto &key : delKeys) {
+            DistributedKv::Entry entry;
+            DistributedKv::Key kvKey(key);
+            entry.key = kvKey;
+            deleteRecords.emplace_back(entry);
+        }
+        HandleDeleteChange(deleteRecords);
     }
 }
 

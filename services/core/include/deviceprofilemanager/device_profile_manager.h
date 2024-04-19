@@ -59,6 +59,7 @@ public:
     int32_t DeviceOnlineAutoSync(const std::string& peerNetworkId);
     void OnNodeOnline(const std::string& peerNetworkId);
     void OnNodeOffline(const std::string& peerNetworkId);
+    std::vector<DistributedKv::Entry> GetEntriesByKeys(const std::vector<std::string> &keys);
 
 private:
     bool LoadDpSyncAdapter();
