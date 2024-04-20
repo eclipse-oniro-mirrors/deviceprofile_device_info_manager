@@ -56,7 +56,7 @@ int32_t SubscribeProfileManager::NotifyProfileChange(ProfileType profileType, Ch
         return DP_INVALID_PARAMS;
     }
     if (!DpRadarHelper::GetInstance().ReportNotifyProfileChange(code)) {
-        HILOGE("ReportPutAclProfile failed");
+        HILOGE("ReportNotifyProfileChange failed");
     }
     return (this->*(funcsMap_[code]))(dbKey, dbValue);
 }

@@ -102,6 +102,7 @@ void DistributedDeviceProfileClient::LoadSystemAbilitySuccess(const sptr<IRemote
         remoteObject->AddDeathRecipient(dpDeathRecipient_);
         dpProxy_ = iface_cast<IDistributedDeviceProfile>(remoteObject);
         proxyConVar_.notify_one();
+        DpRadarHelper::GetInstance().SetDeviceProfileInit(true);
     }
 }
 
@@ -462,7 +463,8 @@ sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfile
         auto object = samgrProxy->CheckSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID);
         int32_t stageRes = (object != nullptr) ?
                 static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL);
-        if (!DpRadarHelper::GetInstance().ReportCheckDpSa(stageRes)) {
+        if (!DpRadarHelper::GetInstance().IsDeviceProfileInit() &&
+            !DpRadarHelper::GetInstance().ReportCheckDpSa(stageRes)) {
             HILOGE("ReportCheckDpSa failed");
         }
         if (object != nullptr) {
@@ -494,6 +496,7 @@ void DistributedDeviceProfileClient::OnServiceDied(const sptr<IRemoteObject>& re
 {
     HILOGI("called");
     std::lock_guard<std::mutex> lock(serviceLock_);
+    DpRadarHelper::GetInstance().SetDeviceProfileInit(false);
     dpProxy_ = nullptr;
 }
 

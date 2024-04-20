@@ -32,7 +32,7 @@ namespace DistributedDeviceProfile {
 
 #define WRITE_HELPER_NORET(parcel, type, value) \
     do { \
-        bool ret = parcel.Write##type((value)); \
+        bool ret = (parcel).Write##type((value)); \
         if (!ret) { \
             HILOGE("write value failed!"); \
             return; \
@@ -41,7 +41,7 @@ namespace DistributedDeviceProfile {
 
 #define WRITE_HELPER_RET(parcel, type, value, failRet) \
     do { \
-        bool ret = parcel.Write##type((value)); \
+        bool ret = (parcel).Write##type((value)); \
         if (!ret) { \
             HILOGE("write value failed!"); \
             return failRet; \
@@ -59,7 +59,7 @@ namespace DistributedDeviceProfile {
 
 #define READ_HELPER_RET(parcel, type, out, failRet) \
     do { \
-        bool ret = parcel.Read##type((out)); \
+        bool ret = (parcel).Read##type((out)); \
         if (!ret) { \
             HILOGE("read value failed!"); \
             return failRet; \
