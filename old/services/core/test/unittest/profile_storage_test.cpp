@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -596,6 +596,70 @@ HWTEST_F(ProfileStorageTest, GetDeviceProfile_005, TestSize.Level2)
     std::string key = "";
     std::string value = "";
     int32_t res = onlineSyncTbl_->GetDeviceProfile(key, value);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: GetDeviceProfile_006
+ * @tc.desc: get device profile
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, GetDeviceProfile_006, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    std::string key = "";
+    std::string udid = "";
+    std::string value = "";
+    int32_t res = onlineSyncTbl_->GetDeviceProfile(udid, key, value);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: GetDeviceProfile_006
+ * @tc.desc: get device profile
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, GetDeviceProfile_007, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    std::string key = "11111";
+    std::string udid = "";
+    std::string value = "";
+    int32_t res = onlineSyncTbl_->GetDeviceProfile(udid, key, value);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: GetDeviceProfile_006
+ * @tc.desc: get device profile
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, GetDeviceProfile_008, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    std::string key = "";
+    std::string udid = "111111";
+    std::string value = "";
+    int32_t res = onlineSyncTbl_->GetDeviceProfile(udid, key, value);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
+}
+
+/**
+ * @tc.name: GetDeviceProfile_006
+ * @tc.desc: get device profile
+ * @tc.type: FUNC
+ * @tc.require: I4OH93
+ */
+HWTEST_F(ProfileStorageTest, GetDeviceProfile_009, TestSize.Level2)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<OnlineSyncTable>();
+    std::string key = "11111";
+    std::string udid = "11111";
+    std::string value = "";
+    int32_t res = onlineSyncTbl_->GetDeviceProfile(udid, key, value);
     EXPECT_EQ(ERR_DP_INVALID_PARAMS, res);
 }
 
@@ -1412,6 +1476,27 @@ HWTEST_F(ProfileStorageTest, DeviceProfileStorage_001, TestSize.Level3)
     onlineSyncTbl_->Init();
     onlineSyncTbl_->kvStorePtr_ = nullptr;
     bool ret = onlineSyncTbl_->TryGetKvStore();
+    EXPECT_EQ(ret, false);
+}
+
+void MyKvStoreInitCallback()
+{
+    return;
+} 
+
+/**
+ * @tc.name: RegisterKvStoreInitCallback_001
+ * @tc.desc: onlineSyncTbl_ nullptr
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileStorageTest, RegisterKvStoreInitCallback_001, TestSize.Level3)
+{
+    std::shared_ptr<DeviceProfileStorage> onlineSyncTbl_ = std::make_shared<DeviceProfileStorage>(APP_ID, STORE_ID);
+    onlineSyncTbl_->kvStoreInitCallback_ = nullptr;
+    DeviceProfileStorage::KvStoreInitCallback callback;
+    onlineSyncTbl_->RegisterKvStoreInitCallback(MyKvStoreInitCallback);
+    bool ret = onlineSyncTbl_->RegisterKvStoreInitCallback(MyKvStoreInitCallback);
     EXPECT_EQ(ret, false);
 }
 }
