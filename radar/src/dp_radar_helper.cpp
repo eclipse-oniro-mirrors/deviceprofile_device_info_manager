@@ -18,6 +18,7 @@
 #include <cJSON.h>
 #include <errors.h>
 #include "hisysevent.h"
+#include "content_sensor_manager_utils.h"
 #include "distributed_device_profile_log.h"
 #include "profile_utils.h"
 
@@ -1208,12 +1209,23 @@ std::string DpRadarHelper::GetAnonyUdid(std::string udid)
 
 std::string DpRadarHelper::GetLocalUdid()
 {
-    return GetAnonyUdid(ProfileUtils::GetLocalUdidFromDM());
+    return GetAnonyUdid(ContentSensorManagerUtils::GetInstance().ObtainLocalUdid());
 }
 
 std::string DpRadarHelper::GetPeerUdid(std::string udid)
 {
-    return udid.compare(ProfileUtils::GetLocalUdidFromDM()) == 0 ? "" : GetAnonyUdid(udid);
+    std::string localUdid = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
+    return udid.compare(localUdid) == 0 ? "" : GetAnonyUdid(udid);
+}
+
+bool DpRadarHelper::IsDeviceProfileInit()
+{
+    return isInit_;
+}
+
+void DpRadarHelper::SetDeviceProfileInit(bool isInit)
+{
+    isInit_ = isInit;
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
