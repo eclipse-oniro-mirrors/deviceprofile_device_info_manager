@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,26 +13,31 @@
  * limitations under the License.
  */
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
+#include <string>
+#include <vector>
+#include <iostream>
 
-#include <sys/statvfs.h>
-
+#include "distributed_device_profile_constants.h"
+#include "distributed_device_profile_log.h"
+#include "distributed_device_profile_errors.h"
+#include "parameter.h"
 #define private public
 #define protected public
-#include "distributed_device_profile_client.h"
-#include "device_info_collector.h"
-#include "storage_info_collector.h"
-#include "syscap_info_collector.h"
-#include "system_info_collector.h"
+
+#include "content_sensor_manager_utils.h"
+
 #undef private
 #undef protected
 
+using namespace testing::ext;
 namespace OHOS {
 namespace DistributedDeviceProfile {
-using namespace testing;
-using namespace testing::ext;
-
-class DpContentSensorTest : public testing::Test {
+using namespace std;
+namespace {
+    const std::string TAG = "ContentSensorManagerUtilsTest";
+}
+class ContentSensorManagerUtilsTest : public testing::Test {
 public:
     static void SetUpTestCase();
     static void TearDownTestCase();
@@ -40,225 +45,132 @@ public:
     void TearDown();
 };
 
-void DpContentSensorTest::SetUpTestCase()
+void ContentSensorManagerUtilsTest::SetUpTestCase()
 {
 }
 
-void DpContentSensorTest::TearDownTestCase()
+void ContentSensorManagerUtilsTest::TearDownTestCase()
 {
 }
 
-void DpContentSensorTest::SetUp()
+void ContentSensorManagerUtilsTest::SetUp()
 {
 }
 
-void DpContentSensorTest::TearDown()
+void ContentSensorManagerUtilsTest::TearDown()
 {
 }
 
-/**
- * @tc.name: GetDeviceName_001
- * @tc.desc: get device name
+/*
+ * @tc.name: ObtainProductModel001
+ * @tc.desc: ObtainProductModel
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(DpContentSensorTest, GetDeviceName_001, TestSize.Level2)
+HWTEST_F(ContentSensorManagerUtilsTest, ObtainProductModel001, TestSize.Level1)
 {
-    DeviceInfoCollector devInfo;
-    auto result = devInfo.GetDeviceName();
-    EXPECT_NE(result, "");
+    std::string str = "123456";
+    DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().deviceModel_ = str;
+    std::string result = DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainProductModel();
+    EXPECT_EQ(result, str);
 }
 
-/**
- * @tc.name: GetDeviceModel_002
- * @tc.desc: get device model
+/*
+ * @tc.name: ObtainDeviceType001
+ * @tc.desc: ObtainDeviceType
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(DpContentSensorTest, GetDeviceModel_001, TestSize.Level2)
+HWTEST_F(ContentSensorManagerUtilsTest, ObtainDeviceType001, TestSize.Level1)
 {
-    DeviceInfoCollector devInfo;
-    auto result = devInfo.GetDeviceModel();
-    EXPECT_NE(result, "");
+    std::string str = "123456";
+    DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().deviceType_ = str;
+    std::string result = DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainDeviceType();
+    EXPECT_EQ(result, str);
 }
 
-/**
- * @tc.name: GetDeviceUdid_003
- * @tc.desc: get device udid
+/*
+ * @tc.name: ObtainManufacture001
+ * @tc.desc: ObtainManufacture
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(DpContentSensorTest, GetDeviceUdid_001, TestSize.Level2)
+HWTEST_F(ContentSensorManagerUtilsTest, ObtainManufacture001, TestSize.Level1)
 {
-    DeviceInfoCollector devInfo;
-    auto result = devInfo.GetDeviceUdid();
-    EXPECT_NE(result, "");
+    std::string str = "123456";
+    DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().manufacture_ = str;
+    std::string result = DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainManufacture();
+    EXPECT_EQ(result, str);
 }
 
-/**
- * @tc.name: GetDevType_004
- * @tc.desc: get device type
+/*
+ * @tc.name: ObtainSerial001
+ * @tc.desc: ObtainSerial
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(DpContentSensorTest, GetDevType_001, TestSize.Level2)
+HWTEST_F(ContentSensorManagerUtilsTest, ObtainSerial001, TestSize.Level1)
 {
-    DeviceInfoCollector devInfo;
-    auto result = devInfo.GetDevType();
-    EXPECT_NE(result, "");
+    std::string str = "123456";
+    DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().serial_ = str;
+    std::string result = DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainSerial();
+    EXPECT_EQ(result, str);
 }
 
-/**
- * @tc.name: GetDeviceManufacturer_001
- * @tc.desc: get device manufacturer
+
+/*
+ * @tc.name: ObtainMarketName001
+ * @tc.desc: ObtainMarketName
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(DpContentSensorTest, GetDeviceManufacturer_001, TestSize.Level2)
+HWTEST_F(ContentSensorManagerUtilsTest, ObtainMarketName001, TestSize.Level1)
 {
-    DeviceInfoCollector devInfo;
-    auto result = devInfo.GetDeviceManufacturer();
-    EXPECT_NE(result, "");
+    std::string str = GetDeviceType();
+    DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().serial_ = str;
+    DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainMarketName();
 }
 
-/**
- * @tc.name: GetDeviceSerial_001
- * @tc.desc: get device serial
+/*
+ * @tc.name: ObtainOsFullName001
+ * @tc.desc: ObtainOsFullName
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(DpContentSensorTest, GetDeviceSerial_001, TestSize.Level2)
+HWTEST_F(ContentSensorManagerUtilsTest, ObtainOsFullName001, TestSize.Level1)
 {
-    DeviceInfoCollector devInfo;
-    auto result = devInfo.GetDeviceSerial();
-    EXPECT_NE(result, "");
+    std::string str = "123456";
+    DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().osFullName_ = str;
+    std::string result = DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainOsFullName();
+    EXPECT_EQ(result, str);
 }
 
-/**
- * @tc.name: GetTotalSize_001
- * @tc.desc: get total size
+/*
+ * @tc.name: ObtainDisplayVersion001
+ * @tc.desc: ObtainDisplayVersion
  * @tc.type: FUNC
- * @tc.require: I5J7PW
+ * @tc.require:
  */
-HWTEST_F(DpContentSensorTest, GetTotalSize_001, TestSize.Level2)
+HWTEST_F(ContentSensorManagerUtilsTest, ObtainDisplayVersion001, TestSize.Level1)
 {
-    const char* PATH_DATA = "/data";
-    struct statvfs diskInfo;
-    int ret = statvfs(PATH_DATA, &diskInfo);
-    EXPECT_EQ(ret, 0);
+    std::string str = "123456";
+    DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().displayVersion_ = str;
+    std::string result = DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainDisplayVersion();
+    EXPECT_EQ(result, str);
 }
 
-/**
- * @tc.name: GetOsType_001
- * @tc.desc: GetOsType
+/*
+ * @tc.name: ObtainLocalUdid001
+ * @tc.desc: ObtainLocalUdid
  * @tc.type: FUNC
- * @tc.require: I52U5M
+ * @tc.require:
  */
-HWTEST_F(DpContentSensorTest, GetOsType_001, TestSize.Level3)
+HWTEST_F(ContentSensorManagerUtilsTest, ObtainLocalUdid001, TestSize.Level1)
 {
-    SystemInfoCollector systemInfo;
-    int32_t result = systemInfo.GetOsType();
-    EXPECT_NE(result, -1);
+    std::string str = "123456";
+    DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().localUdid_ = str;
+    std::string result = DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
+    EXPECT_EQ(result, str);
 }
-
-/**
- * @tc.name: GetOsVersion_001
- * @tc.desc: GetOsVersion
- * @tc.type: FUNC
- * @tc.require: I52U5M
- */
-HWTEST_F(DpContentSensorTest, GetOsVersion_001, TestSize.Level3)
-{
-    SystemInfoCollector systemInfo;
-    std::string result = systemInfo.GetOsVersion();
-    EXPECT_NE(result, "");
-}
-
-/**
- * @tc.name: SyscapInfoCollector_001
- * @tc.desc: syscap info collector
- * @tc.type: FUNC
- * @tc.require: I59PZ3
- */
-HWTEST_F(DpContentSensorTest, SyscapInfoCollector_001, TestSize.Level3)
-{
-    DeviceProfile profile;
-    profile.SetDeviceId("test");
-    profile.SetDeviceName("test");
-    SyscapInfoCollector syscapInfo;
-    bool result = syscapInfo.ConvertToProfile(profile);
-    EXPECT_EQ(result, true);
-}
-
-/**
- * @tc.name: SyscapInfoCollector_001
- * @tc.desc: syscap info collector
- * @tc.type: FUNC
- * @tc.require: I59PZ3
- */
-HWTEST_F(DpContentSensorTest, SyscapInfoCollector_002, TestSize.Level3)
-{
-    DeviceProfile profile;
-    profile.SetDeviceId("");
-    profile.SetDeviceName("");
-    SyscapInfoCollector syscapInfo;
-    bool result = syscapInfo.ConvertToProfile(profile);
-    EXPECT_EQ(result, true);
-}
-
-/**
- * @tc.name: SyscapInfoCollector_001
- * @tc.desc: syscap info collector
- * @tc.type: FUNC
- * @tc.require: I59PZ3
- */
-HWTEST_F(DpContentSensorTest, SyscapInfoCollector_003, TestSize.Level3)
-{
-    DeviceProfile profile;
-    profile.SetDeviceId("");
-    profile.SetDeviceName("test");
-    SyscapInfoCollector syscapInfo;
-    bool result = syscapInfo.ConvertToProfile(profile);
-    EXPECT_EQ(result, true);
-}
-
-/**
- * @tc.name: SyscapInfoCollector_001
- * @tc.desc: syscap info collector
- * @tc.type: FUNC
- * @tc.require: I59PZ3
- */
-HWTEST_F(DpContentSensorTest, SyscapInfoCollector_004, TestSize.Level3)
-{
-    DeviceProfile profile;
-    profile.SetDeviceId("test");
-    profile.SetDeviceName("");
-    SyscapInfoCollector syscapInfo;
-    bool result = syscapInfo.ConvertToProfile(profile);
-    EXPECT_EQ(result, true);
-}
-
-/**
- * @tc.name: StorageInfoCollector_001
- * @tc.desc: syscap info collector
- * @tc.type: FUNC
- * @tc.require: I59PZ3
- */
-HWTEST_F(DpContentSensorTest, StorageInfoCollector_001, TestSize.Level3)
-{
-    DeviceProfile profile;
-    profile.SetDeviceId("test");
-    profile.SetDeviceName("");
-    StorageInfoCollector storageInfo;
-    bool result = storageInfo.ConvertToProfile(profile);
-    EXPECT_EQ(result, true);
-}
-
-/**
- * @tc.name: GetTotalSize_002
- * @tc.desc: get total size
- * @tc.type: FUNC
- * @tc.require: I59PZ3
- */
-HWTEST_F(DpContentSensorTest, GetTotalSize_002, TestSize.Level3)
-{
-    StorageInfoCollector storageInfo;
-    int64_t result = storageInfo.GetTotalSize();
-    EXPECT_NE(result, 0);
-}
-}
-}
+} // namespace DistributedDeviceProfile
+} // namespace OHOS
