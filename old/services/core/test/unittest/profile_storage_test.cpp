@@ -1482,7 +1482,7 @@ HWTEST_F(ProfileStorageTest, DeviceProfileStorage_001, TestSize.Level3)
 void MyKvStoreInitCallback()
 {
     return;
-} 
+}
 
 /**
  * @tc.name: RegisterKvStoreInitCallback_001
