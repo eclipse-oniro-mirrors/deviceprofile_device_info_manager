@@ -22,13 +22,8 @@
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_errors.h"
 #include "parameter.h"
-#define private public
-#define protected public
-
 #include "content_sensor_manager_utils.h"
 
-#undef private
-#undef protected
 
 using namespace testing::ext;
 namespace OHOS {
