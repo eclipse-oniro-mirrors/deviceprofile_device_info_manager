@@ -343,6 +343,16 @@ ohos_unittest("distributed_device_profile_stub_new_test") {
   ]
 }
 
+ohos_unittest("content_sensor_manager_utils_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/content_sensor_manager_utils_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 group("unittest") {
   testonly = true
   deps = [
@@ -353,6 +363,7 @@ group("unittest") {
     ":ProfileChangeListenerProxyTest",
     ":TrustProfileManagerTest",
     ":content_sensor_manager_test",
+    ":content_sensor_manager_utils_test",
     ":content_sensor_pasteboard_info_test",
     ":device_profile_locd_callback_test",
     ":device_profile_manager_new_test",
