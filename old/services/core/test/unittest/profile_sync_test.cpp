@@ -220,5 +220,43 @@ HWTEST_F(ProfileSyncTest, OnIdle_002, TestSize.Level3)
     int result = DistributedDeviceProfileService::GetInstance().OnIdle(reason);
     EXPECT_EQ(0, result);
 }
+
+/**
+ * @tc.name: DeviceOnline_001
+ * @tc.desc: put device profile with empty service id
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileSyncTest, DeviceOnline_001, TestSize.Level3)
+{
+    DistributedDeviceProfileService::GetInstance().DeviceOnline();
+}
+
+/**
+ * @tc.name: OnStop_001
+ * @tc.desc: put device profile with empty service id
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileSyncTest, OnStop_001, TestSize.Level3)
+{
+    DistributedDeviceProfileService::GetInstance().OnStop();
+}
+
+/**
+ * @tc.name: Dump_001
+ * @tc.desc: put device profile with empty service id
+ * @tc.type: FUNC
+ * @tc.require: I4NY23
+ */
+HWTEST_F(ProfileSyncTest, Dump_001, TestSize.Level3)
+{
+    int32_t fd = 0;
+    std::vector<std::u16string> args;
+    std::u16string arg = u"123456";
+    args.push_back(arg);
+    int result = DistributedDeviceProfileService::GetInstance().Dump(fd, args);
+    EXPECT_EQ(ERR_DP_FILE_FAILED_ERR, result);
+}
 }
 }

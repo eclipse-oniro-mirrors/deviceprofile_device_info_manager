@@ -329,6 +329,20 @@ ohos_unittest("dp_dm_adapter_test") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("distributed_device_profile_stub_new_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/distributed_device_profile_stub_new_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+  cflags = [
+    "-Dprivate=public",
+    "-Dprotected=public",
+  ]
+}
+
 group("unittest") {
   testonly = true
   deps = [
@@ -343,6 +357,7 @@ group("unittest") {
     ":device_profile_locd_callback_test",
     ":device_profile_manager_new_test",
     ":distributed_device_profile_client_kv_new_test",
+    ":distributed_device_profile_stub_new_test",
     ":dp_content_sensor_test",
     ":dp_dm_adapter_test",
     ":dp_dumper_new_test",

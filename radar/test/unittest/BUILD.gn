@@ -41,4 +41,8 @@ ohos_unittest("dp_radar_helper_test_new") {
   external_deps = device_profile_external_deps
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
+  cflags = [
+    "-Dprivate=public",
+    "-Dprotected=public",
+  ]
 }

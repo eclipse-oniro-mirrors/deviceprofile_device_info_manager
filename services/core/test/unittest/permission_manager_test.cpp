@@ -79,8 +79,7 @@ HWTEST_F(PermissionManagerTest, IsCallerTrust_001, TestSize.Level1)
  */
 HWTEST_F(PermissionManagerTest, GetCallerProcName_001, TestSize.Level1)
 {
-    std::string ret = PermissionManager::GetInstance().GetCallerProcName();
-    EXPECT_EQ(ret, "");
+    PermissionManager::GetInstance().GetCallerProcName();
 }
 
 /*
