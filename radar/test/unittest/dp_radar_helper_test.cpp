@@ -263,5 +263,96 @@ HWTEST_F(DpRadarHelperTest, ReportSyncDeviceProfile_001, testing::ext::TestSize.
     res = DpRadarHelper::GetInstance().ReportSyncDeviceProfile(errCode);
     EXPECT_EQ(res, true);
 }
+
+HWTEST_F(DpRadarHelperTest, ReportNotifyProfileChange_001, testing::ext::TestSize.Level0)
+{
+    int32_t code = ProfileType::DEVICE_PROFILE * ChangeType::ADD;
+    bool res = DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
+    EXPECT_EQ(res, true);
+}
+
+HWTEST_F(DpRadarHelperTest, ReportNotifyProfileChange_002, testing::ext::TestSize.Level0)
+{
+    int32_t code = ProfileType::DEVICE_PROFILE * ChangeType::UPDATE;
+    bool res = DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
+    EXPECT_EQ(res, true);
+}
+
+HWTEST_F(DpRadarHelperTest, ReportNotifyProfileChange_003, testing::ext::TestSize.Level0)
+{
+    int32_t code = ProfileType::DEVICE_PROFILE * ChangeType::DELETE;
+    bool res = DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
+    EXPECT_EQ(res, true);
+}
+
+HWTEST_F(DpRadarHelperTest, ReportNotifyProfileChange_004, testing::ext::TestSize.Level0)
+{
+    int32_t code = ProfileType::SERVICE_PROFILE * ChangeType::ADD;
+    bool res = DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
+    EXPECT_EQ(res, true);
+}
+
+HWTEST_F(DpRadarHelperTest, ReportNotifyProfileChange_005, testing::ext::TestSize.Level0)
+{
+    int32_t code = ProfileType::SERVICE_PROFILE * ChangeType::UPDATE;
+    bool res = DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
+    EXPECT_EQ(res, true);
+}
+
+HWTEST_F(DpRadarHelperTest, ReportNotifyProfileChange_006, testing::ext::TestSize.Level0)
+{
+    int32_t code = ProfileType::SERVICE_PROFILE * ChangeType::DELETE;
+    bool res = DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
+    EXPECT_EQ(res, true);
+}
+
+HWTEST_F(DpRadarHelperTest, ReportNotifyProfileChange_007, testing::ext::TestSize.Level0)
+{
+    int32_t code = ProfileType::CHAR_PROFILE * ChangeType::ADD;
+    bool res = DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
+    EXPECT_EQ(res, true);
+}
+
+HWTEST_F(DpRadarHelperTest, ReportNotifyProfileChange_008, testing::ext::TestSize.Level0)
+{
+    int32_t code = ProfileType::CHAR_PROFILE * ChangeType::UPDATE;
+    bool res = DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
+    EXPECT_EQ(res, true);
+}
+
+HWTEST_F(DpRadarHelperTest, ReportNotifyProfileChange_009, testing::ext::TestSize.Level0)
+{
+    int32_t code = ProfileType::CHAR_PROFILE * ChangeType::DELETE;
+    bool res = DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
+    EXPECT_EQ(res, true);
+}
+
+HWTEST_F(DpRadarHelperTest, GetPeerUdidList_001, testing::ext::TestSize.Level0)
+{
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
+}
+
+HWTEST_F(DpRadarHelperTest, GetAnonyUdid_001, testing::ext::TestSize.Level0)
+{
+    std::string udid = "";
+    std::string res = DpRadarHelper::GetInstance().GetAnonyUdid(udid);
+    EXPECT_EQ(res, "");
+}
+
+HWTEST_F(DpRadarHelperTest, GetAnonyUdid_002, testing::ext::TestSize.Level0)
+{
+    std::string udid = "123456";
+    std::string res = DpRadarHelper::GetInstance().GetAnonyUdid(udid);
+    EXPECT_EQ(res, "");
+}
+
+HWTEST_F(DpRadarHelperTest, GetAnonyUdid_003, testing::ext::TestSize.Level0)
+{
+    std::string udid = "12345678910";
+    std::string res = DpRadarHelper::GetInstance().GetAnonyUdid(udid);
+    EXPECT_EQ(res, "12345**78910");
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
