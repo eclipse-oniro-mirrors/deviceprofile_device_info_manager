@@ -416,7 +416,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, OnServiceDied001, TestSize.Level1
  * @tc.name: OnRemoteDied001
  * @tc.desc: OnRemoteDied
  * @tc.type: FUNC
- * @tc.require:
+ * @tc.requir
  */
 HWTEST_F(DistributedDeviceProfileClientKvTest, OnRemoteDied001, TestSize.Level1)
 {
