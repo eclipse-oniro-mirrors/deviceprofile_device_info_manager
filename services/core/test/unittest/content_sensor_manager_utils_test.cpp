@@ -121,9 +121,10 @@ HWTEST_F(ContentSensorManagerUtilsTest, ObtainSerial001, TestSize.Level1)
  */
 HWTEST_F(ContentSensorManagerUtilsTest, ObtainMarketName001, TestSize.Level1)
 {
-    std::string str = GetDeviceType();
+    std::string str = "123456";
     DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().serial_ = str;
-    DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainMarketName();
+    std::string result = DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainMarketName();
+    EXPECT_NE(result, str);
 }
 
 /*
