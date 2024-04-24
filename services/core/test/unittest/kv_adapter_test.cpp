@@ -375,5 +375,136 @@ HWTEST_F(KVAdapterTest, Sync003, TestSize.Level1)
     mode = SyncMode::MIN;
     EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Sync(deviceList, mode));
 }
+
+/**
+ * @tc.name: DeleteKvStore001
+ * @tc.desc: syncMode all.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, DeleteKvStore001, TestSize.Level1)
+{
+    shared_ptr<KVAdapter> kvStore_;
+    kvStore_= make_shared<KVAdapter>(APP_ID, STORE_ID,
+            make_shared<KvDataChangeListener>(),
+            make_shared<KvSyncCompletedListener>(),
+            make_shared<KvDeathRecipient>());
+    int32_t ret = kvStore_->DeleteKvStore();
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+/**
+ * @tc.name: Get003
+ * @tc.desc: syncMode all.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, Get003, TestSize.Level1)
+{
+    std::string udid = "";
+    std::string key = "";
+    std::string value = "";
+    shared_ptr<KVAdapter> kvStore_;
+    kvStore_= make_shared<KVAdapter>(APP_ID, STORE_ID,
+            make_shared<KvDataChangeListener>(),
+            make_shared<KvSyncCompletedListener>(),
+            make_shared<KvDeathRecipient>());
+    int32_t ret = kvStore_->Get(udid, key, value);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret);
+}
+
+/**
+ * @tc.name: Get004
+ * @tc.desc: syncMode all.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, Get004, TestSize.Level1)
+{
+    std::string udid = "11111";
+    std::string key = "";
+    std::string value = "";
+    shared_ptr<KVAdapter> kvStore_;
+    kvStore_= make_shared<KVAdapter>(APP_ID, STORE_ID,
+            make_shared<KvDataChangeListener>(),
+            make_shared<KvSyncCompletedListener>(),
+            make_shared<KvDeathRecipient>());
+    int32_t ret = kvStore_->Get(udid, key, value);;
+    EXPECT_EQ(DP_INVALID_PARAMS, ret);
+}
+
+/**
+ * @tc.name: Get005
+ * @tc.desc: syncMode all.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, Get005, TestSize.Level1)
+{
+    std::string udid = "";
+    std::string key = "11111";
+    std::string value = "";
+    shared_ptr<KVAdapter> kvStore_;
+    kvStore_= make_shared<KVAdapter>(APP_ID, STORE_ID,
+            make_shared<KvDataChangeListener>(),
+            make_shared<KvSyncCompletedListener>(),
+            make_shared<KvDeathRecipient>());
+    int32_t ret = kvStore_->Get(udid, key, value);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret);
+}
+
+/**
+ * @tc.name: Get006
+ * @tc.desc: syncMode all.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, Get006, TestSize.Level1)
+{
+    std::string udid = "11111";
+    std::string key = "11111";
+    std::string value = "";
+    shared_ptr<KVAdapter> kvStore_;
+    kvStore_= make_shared<KVAdapter>(APP_ID, STORE_ID,
+            make_shared<KvDataChangeListener>(),
+            make_shared<KvSyncCompletedListener>(),
+            make_shared<KvDeathRecipient>());
+    int32_t ret = kvStore_->Get(udid, key, value);
+    EXPECT_EQ(DP_KV_DB_PTR_NULL, ret);
+}
+
+/**
+ * @tc.name: SyncDeviceProfile001
+ * @tc.desc: syncMode all.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, SyncDeviceProfile001, TestSize.Level1)
+{
+    std::string udid = "11111";
+    shared_ptr<KVAdapter> kvStore_;
+    kvStore_= make_shared<KVAdapter>(APP_ID, STORE_ID,
+            make_shared<KvDataChangeListener>(),
+            make_shared<KvSyncCompletedListener>(),
+            make_shared<KvDeathRecipient>());
+    kvStore_->SyncDeviceProfile(udid);
+}
+
+/**
+ * @tc.name: SyncDeviceProfile002
+ * @tc.desc: syncMode all.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, SyncDeviceProfile002, TestSize.Level1)
+{
+    std::string udid = "";
+    shared_ptr<KVAdapter> kvStore_;
+    kvStore_= make_shared<KVAdapter>(APP_ID, STORE_ID,
+            make_shared<KvDataChangeListener>(),
+            make_shared<KvSyncCompletedListener>(),
+            make_shared<KvDeathRecipient>());
+    kvStore_->SyncDeviceProfile(udid);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

@@ -411,5 +411,18 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, OnServiceDied001, TestSize.Level1
     DistributedDeviceProfileClient::GetInstance().OnServiceDied(remote);
     EXPECT_EQ(nullptr, DistributedDeviceProfileClient::GetInstance().dpProxy_);
 }
+
+/**
+ * @tc.name: OnRemoteDied001
+ * @tc.desc: OnRemoteDied
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, OnRemoteDied001, TestSize.Level1)
+{
+    OHOS::wptr<OHOS::IRemoteObject> remote = nullptr;
+    DistributedDeviceProfileClient::DeviceProfileDeathRecipient deathRecipient;
+    deathRecipient.OnRemoteDied(remote);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
