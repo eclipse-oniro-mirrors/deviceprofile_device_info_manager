@@ -155,6 +155,32 @@ HWTEST_F(DeviceProfileUtilsTest, ReadProfileEvents_004, TestSize.Level3)
 }
 
 /**
+ * @tc.name: AnonymizeString_003
+ * @tc.desc: AnonymizeString
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(DeviceProfileUtilsTest, AnonymizeString_001, TestSize.Level3)
+{
+    std::string value = "";
+    std::string ret = DeviceProfileUtils::AnonymizeString(value);
+    EXPECT_EQ("******", ret);
+}
+
+/**
+ * @tc.name: AnonymizeString_003
+ * @tc.desc: AnonymizeString
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(DeviceProfileUtilsTest, AnonymizeString_002, TestSize.Level3)
+{
+    std::string value = "123456789012345678901";
+    std::string ret = DeviceProfileUtils::AnonymizeString(value);
+    EXPECT_EQ("1234******8901", ret);
+}
+
+/**
  * @tc.name: Dump_001
  * @tc.desc: dump
  * @tc.type: FUNC
