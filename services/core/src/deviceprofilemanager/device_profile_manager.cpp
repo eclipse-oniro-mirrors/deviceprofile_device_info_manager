@@ -621,7 +621,7 @@ bool DeviceProfileManager::IsLocalOrOnlineDevice(const std::string& deviceId)
     return false;
 }
 
-std::vector<DistributedKv::Entry> DeviceProfileManager::GetEntriesByKeys(const std::vector<std::string> &keys)
+std::vector<DistributedKv::Entry> DeviceProfileManager::GetEntriesByKeys(const std::vector<std::string>& keys)
 {
     HILOGI("call!");
     std::vector<DistributedKv::Entry> entries;

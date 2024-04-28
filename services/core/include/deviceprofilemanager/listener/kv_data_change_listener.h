@@ -28,7 +28,7 @@ public:
     ~KvDataChangeListener();
 
     void OnChange(const DistributedKv::ChangeNotification& changeNotification) override;
-    void OnChange(const DistributedKv::DataOrigin& origin, Keys &&keys) override;
+    void OnChange(const DistributedKv::DataOrigin& origin, Keys&& keys) override;
 
 private:
     void HandleAddChange(const std::vector<DistributedKv::Entry> &insertRecords);

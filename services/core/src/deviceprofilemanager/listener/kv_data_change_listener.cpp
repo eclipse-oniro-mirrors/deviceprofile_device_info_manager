@@ -60,7 +60,7 @@ void KvDataChangeListener::OnChange(const DistributedKv::ChangeNotification& cha
     }
 }
 
-void KvDataChangeListener::OnChange(const DistributedKv::DataOrigin& origin, Keys &&keys)
+void KvDataChangeListener::OnChange(const DistributedKv::DataOrigin& origin, Keys&& keys)
 {
     HILOGI("Cloud data change. store=%{public}s", origin.store.c_str());
     ProfileCache::GetInstance().RefreshProfileCache();
