@@ -466,8 +466,8 @@ int32_t ProfileUtils::EntriesToServiceProfile(std::map<std::string, std::string>
     auto iter = values.begin();
     profile.SetDeviceId(GetDeviceIdByDBKey(iter->first));
     auto propertiesMap = GetProfilePropertiesMap(values);
-    if (propertiesMap.count(SERVICE_NAME) != 0 && 0 < values[SERVICE_NAME].length() &&
-        values[SERVICE_NAME].length() < MAX_STRING_LEN) {
+    if (propertiesMap.count(SERVICE_NAME) != 0 && 0 < propertiesMap[SERVICE_NAME].length() &&
+        propertiesMap[SERVICE_NAME].length() < MAX_STRING_LEN) {
         profile.SetServiceName(propertiesMap[SERVICE_NAME]);
     }
     if (propertiesMap.count(SERVICE_TYPE) != 0 && 0 < propertiesMap[SERVICE_TYPE].length() &&
@@ -509,6 +509,9 @@ std::string ProfileUtils::GetProfileProperty(const std::string& dbKey)
         return "";
     }
     std::size_t pos = dbKey.find_last_of("#");
+    if (pos == std::string::npos){
+        return dbKey;
+    }
     return dbKey.substr(pos + 1);
 }
 
