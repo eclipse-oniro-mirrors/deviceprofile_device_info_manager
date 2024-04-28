@@ -78,6 +78,26 @@ HWTEST_F(KvDataChangeListenerTest, OnChange001, TestSize.Level1)
 }
 
 /*
+ * @tc.name: OnChange002
+ * @tc.desc: OnChange
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KvDataChangeListenerTest, OnChange002, TestSize.Level1)
+{
+    
+    DistributedKv::DataOrigin origin;
+    origin.id = {};
+    origin.store = "";
+    Keys keys;
+    keys[ChangeOp::OP_INSERT] = {};
+    keys[ChangeOp::OP_UPDATE] = {};
+    keys[ChangeOp::OP_DELETE] = {};
+    KvDataChangeListener KvDataChangeListener_;
+    KvDataChangeListener_.OnChange(origin, keys);
+}
+
+/*
  * @tc.name: HandleAddChange001
  * @tc.desc: HandleAddChange
  * @tc.type: FUNC

@@ -77,7 +77,7 @@ void KvDataChangeListener::OnChange(const DistributedKv::DataOrigin& origin, Key
     std::vector<std::string> delKeys = keys[ChangeOp::OP_DELETE];
     if (!delKeys.empty() && delKeys.size() <= MAX_DB_RECORD_SIZE) {
         std::vector<DistributedKv::Entry> deleteRecords;
-        for (const auto &key : delKeys) {
+        for (const auto& key : delKeys) {
             DistributedKv::Entry entry;
             DistributedKv::Key kvKey(key);
             entry.key = kvKey;

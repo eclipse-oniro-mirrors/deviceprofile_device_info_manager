@@ -635,7 +635,7 @@ std::vector<DistributedKv::Entry> DeviceProfileManager::GetEntriesByKeys(const s
             HILOGE("deviceProfileStore is nullptr!");
             return entries;
         }
-        for (const auto &key : keys) {
+        for (const auto& key : keys) {
             std::string value;
             if (deviceProfileStore_->Get(key, value) != DP_SUCCESS) {
                 continue;
