@@ -510,7 +510,7 @@ std::string ProfileUtils::GetProfileProperty(const std::string& dbKey)
     }
     std::size_t pos = dbKey.find_last_of("#");
     if (pos == std::string::npos) {
-        return dbKey;
+        return "";
     }
     return dbKey.substr(pos + 1);
 }
