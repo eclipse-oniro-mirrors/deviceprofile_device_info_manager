@@ -72,6 +72,7 @@ public:
         return 0;
     }
 };
+
 void FuzzDumpLocalProfile(const uint8_t* data, size_t size)
 {
     if ((data == nullptr) || (size < sizeof(uint32_t))) {
