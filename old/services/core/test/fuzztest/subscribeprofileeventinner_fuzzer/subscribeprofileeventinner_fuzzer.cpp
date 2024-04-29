@@ -72,7 +72,6 @@ public:
         return 0;
     }
 };
-
 void FuzzDumpLocalProfile(const uint8_t* data, size_t size)
 {
     if ((data == nullptr) || (size < sizeof(uint32_t))) {
@@ -87,13 +86,248 @@ void FuzzDumpLocalProfile(const uint8_t* data, size_t size)
     deviceProfileStub->SubscribeProfileEventInner(messageData, reply);
     deviceProfileStub->UnsubscribeProfileEventInner(messageData, reply);
 }
+
+void PutAccessControlProfileInnerTest(const uint8_t *data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::string udid(reinterpret_cast<const char*>(data), size);
+    std::string serviceId(reinterpret_cast<const char*>(data), size);
+    MessageParcel messageData;
+    messageData.WriteString(udid);
+    messageData.WriteString(serviceId);
+    MessageParcel reply;
+    std::shared_ptr<DistributedDeviceProfileStub> deviceProfilePutStub =
+        std::make_shared<DistributedDeviceProfileStubTest>();
+    deviceProfilePutStub->PutAccessControlProfileInner(messageData, reply);
+    deviceProfilePutStub->GetAccessControlProfileInner(messageData, reply);
 }
+
+void GetTrustDeviceProfileInnerTest(const uint8_t *data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::string udid(reinterpret_cast<const char*>(data), size);
+    std::string serviceId(reinterpret_cast<const char*>(data), size);
+    MessageParcel messageData;
+    messageData.WriteString(udid);
+    messageData.WriteString(serviceId);
+    MessageParcel reply;
+    std::shared_ptr<DistributedDeviceProfileStub> deviceProfileGetStub =
+        std::make_shared<DistributedDeviceProfileStubTest>();
+    deviceProfileGetStub->GetTrustDeviceProfileInner(messageData, reply);
+    deviceProfileGetStub->GetAllTrustDeviceProfileInner(messageData, reply);
 }
+
+void UpdateAccessControlProfileInnerTest(const uint8_t *data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::string udid(reinterpret_cast<const char*>(data), size);
+    std::string serviceId(reinterpret_cast<const char*>(data), size);
+    MessageParcel messageData;
+    messageData.WriteString(udid);
+    messageData.WriteString(serviceId);
+    MessageParcel reply;
+    std::shared_ptr<DistributedDeviceProfileStub> deviceProfileUpdateStub =
+        std::make_shared<DistributedDeviceProfileStubTest>();
+    deviceProfileUpdateStub->PutAccessControlProfileInner(messageData, reply);
+    deviceProfileUpdateStub->UpdateAccessControlProfileInner(messageData, reply);
+}
+
+void GetAllAccessControlProfileInnerTest(const uint8_t *data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::string udid(reinterpret_cast<const char*>(data), size);
+    std::string serviceId(reinterpret_cast<const char*>(data), size);
+    MessageParcel messageData;
+    messageData.WriteString(udid);
+    messageData.WriteString(serviceId);
+    MessageParcel reply;
+    std::shared_ptr<DistributedDeviceProfileStub> deviceProfileGetAllStub =
+        std::make_shared<DistributedDeviceProfileStubTest>();
+    deviceProfileGetAllStub->PutAccessControlProfileInner(messageData, reply);
+    deviceProfileGetAllStub->GetAllAccessControlProfileInner(messageData, reply);
+}
+
+void DeleteAccessControlProfileInnerTest(const uint8_t *data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::string udid(reinterpret_cast<const char*>(data), size);
+    std::string serviceId(reinterpret_cast<const char*>(data), size);
+    MessageParcel messageData;
+    messageData.WriteString(udid);
+    messageData.WriteString(serviceId);
+    MessageParcel reply;
+    std::shared_ptr<DistributedDeviceProfileStub> deviceProfileDeleteStub =
+        std::make_shared<DistributedDeviceProfileStubTest>();
+    deviceProfileDeleteStub->PutAccessControlProfileInner(messageData, reply);
+    deviceProfileDeleteStub->GetAllAccessControlProfileInner(messageData, reply);
+    deviceProfileDeleteStub->DeleteAccessControlProfileInner(messageData, reply);
+}
+
+void PutServiceProfileInnerTest(const uint8_t *data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::string udid(reinterpret_cast<const char*>(data), size);
+    std::string serviceId(reinterpret_cast<const char*>(data), size);
+    MessageParcel messageData;
+    messageData.WriteString(udid);
+    messageData.WriteString(serviceId);
+    MessageParcel reply;
+    std::shared_ptr<DistributedDeviceProfileStub> deviceProfilePutSerStub =
+        std::make_shared<DistributedDeviceProfileStubTest>();
+    deviceProfilePutSerStub->PutServiceProfileInner(messageData, reply);
+    deviceProfilePutSerStub->GetServiceProfileInner(messageData, reply);
+}
+
+void PutServiceProfileBatchInnerTest(const uint8_t *data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::string udid(reinterpret_cast<const char*>(data), size);
+    std::string serviceId(reinterpret_cast<const char*>(data), size);
+    MessageParcel messageData;
+    messageData.WriteString(udid);
+    messageData.WriteString(serviceId);
+    MessageParcel reply;
+    std::shared_ptr<DistributedDeviceProfileStub> deviceProfilePutSerStub =
+        std::make_shared<DistributedDeviceProfileStubTest>();
+    deviceProfilePutSerStub->PutServiceProfileBatchInner(messageData, reply);
+    deviceProfilePutSerStub->GetServiceProfileInner(messageData, reply);
+}
+
+void PutCharacteristicProfileInnerTest(const uint8_t *data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::string udid(reinterpret_cast<const char*>(data), size);
+    std::string serviceId(reinterpret_cast<const char*>(data), size);
+    MessageParcel messageData;
+    messageData.WriteString(udid);
+    messageData.WriteString(serviceId);
+    MessageParcel reply;
+    std::shared_ptr<DistributedDeviceProfileStub> deviceProfilePutStub =
+        std::make_shared<DistributedDeviceProfileStubTest>();
+    deviceProfilePutStub->PutCharacteristicProfileInner(messageData, reply);
+    deviceProfilePutStub->GetCharacteristicProfileInner(messageData, reply);
+}
+
+void PutCharacteristicProfileBatchInnerTest(const uint8_t *data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::string udid(reinterpret_cast<const char*>(data), size);
+    std::string serviceId(reinterpret_cast<const char*>(data), size);
+    MessageParcel messageData;
+    messageData.WriteString(udid);
+    messageData.WriteString(serviceId);
+    MessageParcel reply;
+    std::shared_ptr<DistributedDeviceProfileStub> deviceProfileStub =
+        std::make_shared<DistributedDeviceProfileStubTest>();
+    deviceProfileStub->PutCharacteristicProfileBatchInner(messageData, reply);
+    deviceProfileStub->GetCharacteristicProfileInner(messageData, reply);
+}
+
+void DeleteCharacteristicProfileInnerTest(const uint8_t *data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::string udid(reinterpret_cast<const char*>(data), size);
+    std::string serviceId(reinterpret_cast<const char*>(data), size);
+    MessageParcel messageData;
+    messageData.WriteString(udid);
+    messageData.WriteString(serviceId);
+    MessageParcel reply;
+    std::shared_ptr<DistributedDeviceProfileStub> deviceProfileStub =
+        std::make_shared<DistributedDeviceProfileStubTest>();
+    deviceProfileStub->PutCharacteristicProfileBatchInner(messageData, reply);
+    deviceProfileStub->DeleteCharacteristicProfileInner(messageData, reply);
+}
+
+void DeleteServiceProfileInnerTest(const uint8_t *data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::string udid(reinterpret_cast<const char*>(data), size);
+    std::string serviceId(reinterpret_cast<const char*>(data), size);
+    MessageParcel messageData;
+    messageData.WriteString(udid);
+    messageData.WriteString(serviceId);
+    MessageParcel reply;
+    std::shared_ptr<DistributedDeviceProfileStub> deviceProfileDeleteSerStub =
+        std::make_shared<DistributedDeviceProfileStubTest>();
+    deviceProfileDeleteSerStub->PutServiceProfileBatchInner(messageData, reply);
+    deviceProfileDeleteSerStub->DeleteServiceProfileInner(messageData, reply);
+}
+
+void SubscribeDeviceProfileInnerTest(const uint8_t *data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::string udid(reinterpret_cast<const char*>(data), size);
+    std::string serviceId(reinterpret_cast<const char*>(data), size);
+    MessageParcel messageData;
+    messageData.WriteString(udid);
+    messageData.WriteString(serviceId);
+    MessageParcel reply;
+    std::shared_ptr<DistributedDeviceProfileStub> deviceProfileSubStub =
+        std::make_shared<DistributedDeviceProfileStubTest>();
+    deviceProfileSubStub->SubscribeDeviceProfileInner(messageData, reply);
+    deviceProfileSubStub->UnSubscribeDeviceProfileInner(messageData, reply);
+}
+
+void SyncDeviceProfileNewInnerTest(const uint8_t *data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::string udid(reinterpret_cast<const char*>(data), size);
+    std::string serviceId(reinterpret_cast<const char*>(data), size);
+    MessageParcel messageData;
+    messageData.WriteString(udid);
+    messageData.WriteString(serviceId);
+    MessageParcel reply;
+    std::shared_ptr<DistributedDeviceProfileStub> deviceProfileSyncStub =
+        std::make_shared<DistributedDeviceProfileStubTest>();
+    deviceProfileSyncStub->SyncDeviceProfileNewInner(messageData, reply);
+    deviceProfileSyncStub->SendSubscribeInfosInner(messageData, reply);
+}
+} // namespace DeviceProfile
+} // namespace OHOS
 
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     OHOS::DeviceProfile::FuzzDumpLocalProfile(data, size);
+    OHOS::DeviceProfile::PutAccessControlProfileInnerTest(data, size);
+    OHOS::DeviceProfile::GetTrustDeviceProfileInnerTest(data, size);
+    OHOS::DeviceProfile::UpdateAccessControlProfileInnerTest(data, size);
+    OHOS::DeviceProfile::GetAllAccessControlProfileInnerTest(data, size);
+    OHOS::DeviceProfile::DeleteAccessControlProfileInnerTest(data, size);
+    OHOS::DeviceProfile::PutServiceProfileBatchInnerTest(data, size);
+    OHOS::DeviceProfile::PutServiceProfileInnerTest(data, size);
+    OHOS::DeviceProfile::PutCharacteristicProfileInnerTest(data, size);
+    OHOS::DeviceProfile::PutCharacteristicProfileBatchInnerTest(data, size);
+    OHOS::DeviceProfile::DeleteCharacteristicProfileInnerTest(data, size);
+    OHOS::DeviceProfile::DeleteServiceProfileInnerTest(data, size);
+    OHOS::DeviceProfile::SyncDeviceProfileNewInnerTest(data, size);
+    OHOS::DeviceProfile::SubscribeDeviceProfileInnerTest(data, size);
     return 0;
 }
 
