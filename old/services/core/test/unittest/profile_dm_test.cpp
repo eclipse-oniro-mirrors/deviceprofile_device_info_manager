@@ -231,5 +231,17 @@ HWTEST_F(ProfileDmTest, DisconnectDeviceManager_001, TestSize.Level3)
     bool res = DpDeviceManager::GetInstance().DisconnectDeviceManager();
     EXPECT_EQ(true, res);
 }
+
+/**
+ * @tc.name: AutoSync_001
+ * @tc.desc: marshalling
+ * @tc.type: FUNC
+ * @tc.require: I4OH94
+ */
+HWTEST_F(ProfileDmTest, AutoSync_001, TestSize.Level3)
+{
+    DistributedHardware::DmDeviceInfo deviceInfo;
+    DpDeviceManager::GetInstance().AutoSync(deviceInfo);
+}
 }
 }

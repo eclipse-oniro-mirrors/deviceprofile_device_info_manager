@@ -127,10 +127,13 @@ public:
     std::string GetPeerUdidList(const std::vector<AccessControlProfile>& accessControlProfiles);
     std::string GetPeerUdidList(const std::vector<ServiceProfile>& serviceProfiles);
     std::string GetPeerUdidList(const std::vector<CharacteristicProfile>& characteristicProfiles);
+    bool IsDeviceProfileInit();
+    void SetDeviceProfileInit(bool isInit);
 private:
     std::string GetAnonyUdid(std::string udid);
     std::string GetLocalUdid();
     std::string GetPeerUdid(std::string udid);
+    bool isInit_ = false;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
