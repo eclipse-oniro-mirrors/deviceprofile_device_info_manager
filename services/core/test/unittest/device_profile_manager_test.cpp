@@ -1438,5 +1438,18 @@ HWTEST_F(DeviceProfileManagerTest, IsLocalOrOnlineDevice0013, TestSize.Level1)
     bool ret = DeviceProfileManager::GetInstance().IsLocalOrOnlineDevice(deviceId);
     EXPECT_EQ(ret, true);
 }
+
+/**
+ * @tc.name: GetEntriesByKeys001
+ * @tc.desc: GetEntriesByKeys
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, GetEntriesByKeys001, TestSize.Level1)
+{
+    std::vector<std::string> keys{};
+    auto entries = DeviceProfileManager::GetInstance().GetEntriesByKeys(keys);
+    EXPECT_EQ(0, entries.size());
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

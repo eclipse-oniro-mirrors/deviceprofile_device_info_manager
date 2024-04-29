@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -28,11 +28,13 @@ public:
     ~KvDataChangeListener();
 
     void OnChange(const DistributedKv::ChangeNotification& changeNotification) override;
+    void OnChange(const DistributedKv::DataOrigin& origin, Keys&& keys) override;
 
 private:
     void HandleAddChange(const std::vector<DistributedKv::Entry> &insertRecords);
     void HandleUpdateChange(const std::vector<DistributedKv::Entry> &updateRecords);
     void HandleDeleteChange(const std::vector<DistributedKv::Entry> &deleteRecords);
+    std::vector<DistributedKv::Entry> ConvertCloudChangeDataToEntries(const std::vector<std::string> &keys);
 };
 } // namespace DeviceProfile
 } // namespace OHOS

@@ -21,6 +21,7 @@
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_errors.h"
+#include "kvstore_observer.h"
 #define private public
 #define protected public
 
@@ -75,6 +76,25 @@ HWTEST_F(KvDataChangeListenerTest, OnChange001, TestSize.Level1)
         std::move(insertEntries), deviceId, isClear);
     KvDataChangeListener KvDataChangeListener_;
     KvDataChangeListener_.OnChange(changeNotification_);
+}
+
+/*
+ * @tc.name: OnChange002
+ * @tc.desc: OnChange
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KvDataChangeListenerTest, OnChange002, TestSize.Level1)
+{
+    DistributedKv::DataOrigin origin;
+    origin.id = {};
+    origin.store = "";
+    KvDataChangeListener::Keys keys;
+    keys[KvDataChangeListener::OP_INSERT] = {};
+    keys[KvDataChangeListener::OP_UPDATE] = {};
+    keys[KvDataChangeListener::OP_DELETE] = {};
+    KvDataChangeListener KvDataChangeListener_;
+    KvDataChangeListener_.OnChange(origin, std::move(keys));
 }
 
 /*

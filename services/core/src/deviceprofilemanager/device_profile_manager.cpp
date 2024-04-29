@@ -620,5 +620,34 @@ bool DeviceProfileManager::IsLocalOrOnlineDevice(const std::string& deviceId)
     HILOGE("%{public}s is offline or is not a local device.", ProfileUtils::GetAnonyString(deviceId).c_str());
     return false;
 }
+
+std::vector<DistributedKv::Entry> DeviceProfileManager::GetEntriesByKeys(const std::vector<std::string>& keys)
+{
+    HILOGI("call!");
+    std::vector<DistributedKv::Entry> entries;
+    if (keys.empty()) {
+        HILOGE("keys empty.");
+        return entries;
+    }
+    {
+        std::lock_guard<std::mutex> lock(dpStoreMutex_);
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore is nullptr!");
+            return entries;
+        }
+        for (const auto& key : keys) {
+            std::string value;
+            if (deviceProfileStore_->Get(key, value) != DP_SUCCESS) {
+                continue;
+            }
+            DistributedKv::Entry entry;
+            DistributedKv::Key kvKey(key);
+            entry.key = kvKey;
+            entry.value = value;
+            entries.emplace_back(entry);
+        }
+    }
+    return entries;
+}
 } // namespace DeviceProfile
 } // namespace OHOS

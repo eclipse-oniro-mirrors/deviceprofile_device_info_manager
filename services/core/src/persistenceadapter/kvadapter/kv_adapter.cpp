@@ -18,10 +18,11 @@
 
 #include "datetime_ex.h"
 #include "string_ex.h"
-#include "kv_adapter.h"
+
+#include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
-#include "distributed_device_profile_constants.h"
+#include "kv_adapter.h"
 #include "profile_utils.h"
 
 namespace OHOS {
@@ -44,7 +45,7 @@ KVAdapter::KVAdapter(const std::string &appId, const std::string &storeId,
     this->dataChangeListener_ = dataChangeListener;
     this->syncCompletedListener_= syncCompletedListener;
     this->deathRecipient_ = deathListener;
-    HILOGI("KVAdapter Constructor Success, appId: %s, storeId: %s", appId.c_str(), storeId.c_str());
+    HILOGI("KVAdapter Constructor Success, appId: %{public}s, storeId: %{public}s", appId.c_str(), storeId.c_str());
 }
 
 KVAdapter::~KVAdapter()
@@ -54,7 +55,7 @@ KVAdapter::~KVAdapter()
 
 int32_t KVAdapter::Init()
 {
-    HILOGI("Init kvAdapter, storeId: %s", storeId_.storeId.c_str());
+    HILOGI("Init kvAdapter, storeId: %{public}s", storeId_.storeId.c_str());
     int32_t tryTimes = MAX_INIT_RETRY_TIMES;
     int64_t beginTime = GetTickCount();
     while (tryTimes > 0) {
@@ -117,7 +118,7 @@ int32_t KVAdapter::Put(const std::string& key, const std::string& value)
         status = kvStorePtr_->Put(kvKey, kvValue);
     }
     if (status != DistributedKv::Status::SUCCESS) {
-        HILOGE("Put kv to db failed, ret: %d", status);
+        HILOGE("Put kv to db failed, ret: %{public}d", status);
         return DP_PUT_KV_DB_FAIL;
     }
     return DP_SUCCESS;
@@ -160,7 +161,7 @@ int32_t KVAdapter::PutBatch(const std::map<std::string, std::string>& values)
         status = kvStorePtr_->PutBatch(entries);
     }
     if (status != DistributedKv::Status::SUCCESS) {
-        HILOGE("PutBatch kv to db failed, ret: %d", status);
+        HILOGE("PutBatch kv to db failed, ret: %{public}d", status);
         return DP_PUT_KV_DB_FAIL;
     }
     return DP_SUCCESS;
@@ -188,7 +189,7 @@ int32_t KVAdapter::Delete(const std::string& key)
 
 int32_t KVAdapter::Get(const std::string& key, std::string& value)
 {
-    HILOGI("Get data by key: %s", ProfileUtils::GetAnonyString(key).c_str());
+    HILOGI("Get data by key: %{public}s", ProfileUtils::GetAnonyString(key).c_str());
     DistributedKv::Key kvKey(key);
     DistributedKv::Value kvValue;
     DistributedKv::Status status;
@@ -201,7 +202,7 @@ int32_t KVAdapter::Get(const std::string& key, std::string& value)
         status = kvStorePtr_->Get(kvKey, kvValue);
     }
     if (status != DistributedKv::Status::SUCCESS) {
-        HILOGE("Get data from kv failed, key: %s", ProfileUtils::GetAnonyString(key).c_str());
+        HILOGE("Get data from kv failed, key: %{public}s", ProfileUtils::GetAnonyString(key).c_str());
         return DP_GET_KV_DB_FAIL;
     }
     value = kvValue.ToString();
@@ -210,7 +211,7 @@ int32_t KVAdapter::Get(const std::string& key, std::string& value)
 
 int32_t KVAdapter::GetByPrefix(const std::string& keyPrefix, std::map<std::string, std::string>& values)
 {
-    HILOGI("Get data by key prefix: %s", ProfileUtils::GetAnonyString(keyPrefix).c_str());
+    HILOGI("Get data by key prefix: %{public}s", ProfileUtils::GetAnonyString(keyPrefix).c_str());
     std::lock_guard<std::mutex> lock(kvAdapterMutex_);
     if (kvStorePtr_ == nullptr) {
         HILOGE("kvStoragePtr_ is null");
@@ -221,7 +222,7 @@ int32_t KVAdapter::GetByPrefix(const std::string& keyPrefix, std::map<std::strin
     std::vector<DistributedKv::Entry> allEntries;
     DistributedKv::Status status = kvStorePtr_->GetEntries(allEntryKeyPrefix, allEntries);
     if (status != DistributedKv::Status::SUCCESS) {
-        HILOGE("Query data by keyPrefix failed, prefix: %s", ProfileUtils::GetAnonyString(keyPrefix).c_str());
+        HILOGE("Query data by keyPrefix failed, prefix: %{public}s", ProfileUtils::GetAnonyString(keyPrefix).c_str());
         return DP_GET_KV_DB_FAIL;
     }
     if (allEntries.size() == 0 || allEntries.size() > MAX_DB_SIZE) {
@@ -267,6 +268,7 @@ DistributedKv::Status KVAdapter::GetKvStorePtr()
         .createIfMissing = true,
         .encrypt = false,
         .autoSync = true,
+        .isPublic = true,
         .securityLevel = DistributedKv::SecurityLevel::S1,
         .area = 1,
         .kvStoreType = KvStoreType::SINGLE_VERSION,
@@ -332,7 +334,7 @@ int32_t KVAdapter::RegisterDataChangeListener()
         DistributedKv::Status status =
             kvStorePtr_->SubscribeKvStore(DistributedKv::SubscribeType::SUBSCRIBE_TYPE_ALL, dataChangeListener_);
         if (status != DistributedKv::Status::SUCCESS) {
-            HILOGE("Register db data change listener failed, ret: %d", status);
+            HILOGE("Register db data change listener failed, ret: %{public}d", status);
             return DP_REGISTER_KV_DATA_LISTENER_FAILED;
         }
     }
@@ -351,7 +353,7 @@ int32_t KVAdapter::UnRegisterDataChangeListener()
         DistributedKv::Status status =
             kvStorePtr_->UnSubscribeKvStore(DistributedKv::SubscribeType::SUBSCRIBE_TYPE_ALL, dataChangeListener_);
         if (status != DistributedKv::Status::SUCCESS) {
-            HILOGE("UnRegister db data change listener failed, ret: %d", status);
+            HILOGE("UnRegister db data change listener failed, ret: %{public}d", status);
             return DP_UNREGISTER_KV_DATA_LISTENER_FAILED;
         }
     }
@@ -379,7 +381,7 @@ int32_t KVAdapter::RegisterSyncCompletedListener()
         }
         DistributedKv::Status status = kvStorePtr_->RegisterSyncCallback(syncCompletedListener_);
         if (status != DistributedKv::Status::SUCCESS) {
-            HILOGE("Register syncCompleted listener failed, ret: %d", status);
+            HILOGE("Register syncCompleted listener failed, ret: %{public}d", status);
             return DP_REGISTER_KV_SYNC_LISTENER_FAILED;
         }
     }
@@ -397,7 +399,7 @@ int32_t KVAdapter::UnRegisterSyncCompletedListener()
         }
         DistributedKv::Status status = kvStorePtr_->UnRegisterSyncCallback();
         if (status != DistributedKv::Status::SUCCESS) {
-            HILOGE("UnRegister db data change listener failed, ret: %d", status);
+            HILOGE("UnRegister db data change listener failed, ret: %{public}d", status);
             return DP_UNREGISTER_KV_SYNC_LISTENER_FAILED;
         }
     }
