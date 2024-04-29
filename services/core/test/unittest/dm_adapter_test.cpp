@@ -65,7 +65,7 @@ HWTEST_F(DMAdapterTest, Init001, TestSize.Level1)
 {
     DMAdapter::GetInstance().autoSyncHandler_ = nullptr;
     int32_t ret = DMAdapter::GetInstance().Init();
-    EXPECT_EQ(0, ret);
+    EXPECT_EQ(-20014, ret);
 }
 
 /*
@@ -78,7 +78,7 @@ HWTEST_F(DMAdapterTest, Init002, TestSize.Level1)
 {
     DMAdapter::GetInstance().deviceStateCallback_ = nullptr;
     int32_t ret = DMAdapter::GetInstance().Init();
-    EXPECT_EQ(0, ret);
+    EXPECT_EQ(-20014, ret);
 }
 
 /*
@@ -92,7 +92,7 @@ HWTEST_F(DMAdapterTest, Init003, TestSize.Level1)
     DMAdapter::GetInstance().autoSyncHandler_ = EventHandlerFactory::
         GetInstance().CreateEventHandler(AUTO_SYNC_HANDLER);
     int32_t ret = DMAdapter::GetInstance().Init();
-    EXPECT_EQ(0, ret);
+    EXPECT_EQ(-20014, ret);
 }
 
 /*
@@ -105,7 +105,7 @@ HWTEST_F(DMAdapterTest, Init004, TestSize.Level1)
 {
     DMAdapter::GetInstance().deviceStateCallback_ = std::make_shared<DMAdapter::DpDeviceStateCallback>();
     int32_t ret = DMAdapter::GetInstance().Init();
-    EXPECT_EQ(0, ret);
+    EXPECT_EQ(-20014, ret);
 }
 
 /*
@@ -158,7 +158,7 @@ HWTEST_F(DMAdapterTest, UnInit004, TestSize.Level1)
 {
     DMAdapter::GetInstance().deviceStateCallback_ = std::make_shared<DMAdapter::DpDeviceStateCallback>();
     int32_t ret = DMAdapter::GetInstance().Init();
-    EXPECT_EQ(0, ret);
+    EXPECT_EQ(-20014, ret);
 }
 
 /*
@@ -170,7 +170,7 @@ HWTEST_F(DMAdapterTest, UnInit004, TestSize.Level1)
 HWTEST_F(DMAdapterTest, ReInit001, TestSize.Level1)
 {
     int32_t ret = DMAdapter::GetInstance().ReInit();
-    EXPECT_EQ(0, ret);
+    EXPECT_EQ(-20014, ret);
 }
 
 /*

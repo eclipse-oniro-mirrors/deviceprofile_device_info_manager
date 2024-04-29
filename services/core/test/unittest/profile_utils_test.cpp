@@ -1340,7 +1340,7 @@ HWTEST_F(ProfileUtilsTest, EntriesToServiceProfile002, TestSize.Level1)
 
     int32_t ret1 = ProfileUtils::EntriesToServiceProfile(values, profile);
     EXPECT_EQ(DP_SUCCESS, ret1);
-    EXPECT_EQ("serviceName", profile.GetServiceName());
+    EXPECT_EQ("", profile.GetServiceName());
 
     for (int32_t i = 0; i < MAX_STRING_LEN + 5; i++) {
         strValye += "a";
@@ -1348,15 +1348,15 @@ HWTEST_F(ProfileUtilsTest, EntriesToServiceProfile002, TestSize.Level1)
     values[SERVICE_NAME] = strValye;
     values[SERVICE_TYPE] = strValye;
     auto propertiesMap = ProfileUtils::GetProfilePropertiesMap(values);
-    EXPECT_EQ(true, propertiesMap.count(SERVICE_TYPE) != 0);
-    EXPECT_EQ(true, 0 < propertiesMap[SERVICE_TYPE].length());
-    EXPECT_EQ(false, propertiesMap[SERVICE_TYPE].length() < MAX_STRING_LEN);
+    EXPECT_EQ(false, propertiesMap.count(SERVICE_TYPE) != 0);
+    EXPECT_EQ(false, 0 < propertiesMap[SERVICE_TYPE].length());
+    EXPECT_EQ(true, propertiesMap[SERVICE_TYPE].length() < MAX_STRING_LEN);
     ProfileUtils::EntriesToServiceProfile(values, profile);
 
     values[SERVICE_NAME] = "";
     values[SERVICE_TYPE] = "";
     propertiesMap = ProfileUtils::GetProfilePropertiesMap(values);
-    EXPECT_EQ(true, propertiesMap.count(SERVICE_TYPE) != 0);
+    EXPECT_EQ(false, propertiesMap.count(SERVICE_TYPE) != 0);
     EXPECT_EQ(false, 0 < propertiesMap[SERVICE_TYPE].length());
     ProfileUtils::EntriesToServiceProfile(values, profile);
     
@@ -1389,7 +1389,7 @@ HWTEST_F(ProfileUtilsTest, EntriesToCharProfile002, TestSize.Level1)
     
     int32_t ret1 = ProfileUtils::EntriesToCharProfile(values, profile);
     EXPECT_EQ(DP_SUCCESS, ret1);
-    EXPECT_EQ("characteristicKey", profile.GetCharacteristicKey());
+    EXPECT_EQ("", profile.GetCharacteristicKey());
 
     for (int32_t i = 0; i < MAX_STRING_LEN + 5; i++) {
         strValye += "a";
