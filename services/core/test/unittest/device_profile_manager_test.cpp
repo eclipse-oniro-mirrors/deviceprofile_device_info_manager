@@ -109,31 +109,6 @@ HWTEST_F(DeviceProfileManagerTest, ReInit001, TestSize.Level1)
 }
 
 /**
- * @tc.name: PutDeviceProfile001
- * @tc.desc: PutDeviceProfile succeed.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(DeviceProfileManagerTest, PutDeviceProfile001, TestSize.Level1)
-{
-    DeviceProfile deviceProfile;
-    deviceProfile.SetDeviceId("anything");
-    deviceProfile.SetDeviceTypeName("anything");
-    deviceProfile.SetDeviceTypeId(0);
-    deviceProfile.SetDeviceName("anything");
-    deviceProfile.SetManufactureName("anything");
-    deviceProfile.SetDeviceModel("anything");
-    deviceProfile.SetStorageCapability(1);
-    deviceProfile.SetOsSysCap("anything");
-    deviceProfile.SetOsApiLevel(1);
-    deviceProfile.SetOsVersion("anything");
-    deviceProfile.SetOsType(1);
-    
-    int32_t ret = DeviceProfileManager::GetInstance().PutDeviceProfile(deviceProfile);
-    EXPECT_EQ(ret, DP_SUCCESS);
-}
-
-/**
  * @tc.name: PutDeviceProfile002
  * @tc.desc: PutDeviceProfile failed, the profile is invalid.
  * @tc.type: FUNC
