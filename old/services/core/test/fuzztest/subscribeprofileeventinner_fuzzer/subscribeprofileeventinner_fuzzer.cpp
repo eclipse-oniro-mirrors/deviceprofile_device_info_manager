@@ -30,6 +30,10 @@
 
 namespace OHOS {
 namespace DeviceProfile {
+namespace {
+const int32_t PERMS_NUM = 2;
+}
+    
 class DistributedDeviceProfileStubTest : public DistributedDeviceProfileStub {
 public:
 public:
@@ -79,7 +83,6 @@ public:
 
 void MockPermission(const char* processName)
 {
-    const int32_t PERMS_NUM = 2;
     const char *perms[PERMS_NUM] = {
         "ohos.permission.DISTRIBUTED_DATASYNC",
         "ohos.permission.DISTRIBUTED_SOFTBUS_CENTER"
