@@ -272,7 +272,11 @@ DistributedKv::Status KVAdapter::GetKvStorePtr()
         .securityLevel = DistributedKv::SecurityLevel::S1,
         .area = 1,
         .kvStoreType = KvStoreType::SINGLE_VERSION,
-        .baseDir = DATABASE_DIR
+        .baseDir = DATABASE_DIR,
+        .cloudConfig = {
+            .enableCloud = true,
+            .autoSync  = true,
+        }
     };
     SyncPolicy syncPolicyOnline {
         .type = PolicyType::IMMEDIATE_SYNC_ON_ONLINE
