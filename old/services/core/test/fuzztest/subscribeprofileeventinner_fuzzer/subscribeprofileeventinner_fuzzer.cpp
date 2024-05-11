@@ -89,7 +89,7 @@ void FuzzDumpLocalProfile(const uint8_t* data, size_t size)
 
 void PutAccessControlProfileInnerTest(const uint8_t *data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
+    if ((data == nullptr) || (size == 0)) {
         return;
     }
     std::string udid(reinterpret_cast<const char*>(data), size);
