@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,9 +23,17 @@
 #include <cstdlib>
 #include <fcntl.h>
 #include <string>
+#include <iostream>
+#include "accesstoken_kit.h"
+#include "nativetoken_kit.h"
+#include "token_setproc.h"
 
 namespace OHOS {
 namespace DeviceProfile {
+namespace {
+const int32_t PERMS_NUM = 2;
+}
+    
 class DistributedDeviceProfileStubTest : public DistributedDeviceProfileStub {
 public:
 public:
@@ -72,6 +80,29 @@ public:
         return 0;
     }
 };
+
+void MockPermission(const char* processName)
+{
+    const char *perms[PERMS_NUM] = {
+        "ohos.permission.DISTRIBUTED_DATASYNC",
+        "ohos.permission.DISTRIBUTED_SOFTBUS_CENTER"
+    };
+    uint64_t tokenId;
+    NativeTokenInfoParams infoInstance = {
+        .dcapsNum = 0,
+        .permsNum = PERMS_NUM,
+        .aclsNum = 0,
+        .dcaps = nullptr,
+        .perms = perms,
+        .acls = nullptr,
+        .processName = processName,
+        .aplStr = "system_core",
+    };
+    tokenId = GetAccessTokenId(&infoInstance);
+    SetSelfTokenID(tokenId);
+    OHOS::Security::AccessToken::AccessTokenKit::ReloadNativeTokenInfo();
+}
+
 void FuzzDumpLocalProfile(const uint8_t* data, size_t size)
 {
     if ((data == nullptr) || (size < sizeof(uint32_t))) {
@@ -89,9 +120,10 @@ void FuzzDumpLocalProfile(const uint8_t* data, size_t size)
 
 void PutAccessControlProfileInnerTest(const uint8_t *data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
+    if ((data == nullptr) || (size == 0)) {
         return;
     }
+    MockPermission("deviceprofile");
     std::string udid(reinterpret_cast<const char*>(data), size);
     std::string serviceId(reinterpret_cast<const char*>(data), size);
     MessageParcel messageData;
@@ -106,26 +138,27 @@ void PutAccessControlProfileInnerTest(const uint8_t *data, size_t size)
 
 void GetTrustDeviceProfileInnerTest(const uint8_t *data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
+    if ((data == nullptr) || (size == 0)) {
         return;
     }
-    std::string udid(reinterpret_cast<const char*>(data), size);
-    std::string serviceId(reinterpret_cast<const char*>(data), size);
+    MockPermission("deviceprofile");
+    std::string deviceId(reinterpret_cast<const char*>(data), size);
     MessageParcel messageData;
-    messageData.WriteString(udid);
-    messageData.WriteString(serviceId);
+    messageData.WriteString(deviceId);
     MessageParcel reply;
     std::shared_ptr<DistributedDeviceProfileStub> deviceProfileGetStub =
         std::make_shared<DistributedDeviceProfileStubTest>();
+    deviceProfileGetStub->PutAccessControlProfileInner(messageData, reply);
     deviceProfileGetStub->GetTrustDeviceProfileInner(messageData, reply);
     deviceProfileGetStub->GetAllTrustDeviceProfileInner(messageData, reply);
 }
 
 void UpdateAccessControlProfileInnerTest(const uint8_t *data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
+    if ((data == nullptr) || (size == 0)) {
         return;
     }
+    MockPermission("deviceprofile");
     std::string udid(reinterpret_cast<const char*>(data), size);
     std::string serviceId(reinterpret_cast<const char*>(data), size);
     MessageParcel messageData;
@@ -140,9 +173,10 @@ void UpdateAccessControlProfileInnerTest(const uint8_t *data, size_t size)
 
 void GetAllAccessControlProfileInnerTest(const uint8_t *data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
+    if ((data == nullptr) || (size == 0)) {
         return;
     }
+    MockPermission("deviceprofile");
     std::string udid(reinterpret_cast<const char*>(data), size);
     std::string serviceId(reinterpret_cast<const char*>(data), size);
     MessageParcel messageData;
@@ -157,9 +191,10 @@ void GetAllAccessControlProfileInnerTest(const uint8_t *data, size_t size)
 
 void DeleteAccessControlProfileInnerTest(const uint8_t *data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
+    if ((data == nullptr) || (size == 0)) {
         return;
     }
+    MockPermission("deviceprofile");
     std::string udid(reinterpret_cast<const char*>(data), size);
     std::string serviceId(reinterpret_cast<const char*>(data), size);
     MessageParcel messageData;
@@ -175,9 +210,10 @@ void DeleteAccessControlProfileInnerTest(const uint8_t *data, size_t size)
 
 void PutServiceProfileInnerTest(const uint8_t *data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
+    if ((data == nullptr) || (size == 0)) {
         return;
     }
+    MockPermission("deviceprofile");
     std::string udid(reinterpret_cast<const char*>(data), size);
     std::string serviceId(reinterpret_cast<const char*>(data), size);
     MessageParcel messageData;
@@ -192,9 +228,10 @@ void PutServiceProfileInnerTest(const uint8_t *data, size_t size)
 
 void PutServiceProfileBatchInnerTest(const uint8_t *data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
+    if ((data == nullptr) || (size == 0)) {
         return;
     }
+    MockPermission("deviceprofile");
     std::string udid(reinterpret_cast<const char*>(data), size);
     std::string serviceId(reinterpret_cast<const char*>(data), size);
     MessageParcel messageData;
@@ -209,9 +246,10 @@ void PutServiceProfileBatchInnerTest(const uint8_t *data, size_t size)
 
 void PutCharacteristicProfileInnerTest(const uint8_t *data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
+    if ((data == nullptr) || (size == 0)) {
         return;
     }
+    MockPermission("deviceprofile");
     std::string udid(reinterpret_cast<const char*>(data), size);
     std::string serviceId(reinterpret_cast<const char*>(data), size);
     MessageParcel messageData;
@@ -226,9 +264,10 @@ void PutCharacteristicProfileInnerTest(const uint8_t *data, size_t size)
 
 void PutCharacteristicProfileBatchInnerTest(const uint8_t *data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
+    if ((data == nullptr) || (size == 0)) {
         return;
     }
+    MockPermission("deviceprofile");
     std::string udid(reinterpret_cast<const char*>(data), size);
     std::string serviceId(reinterpret_cast<const char*>(data), size);
     MessageParcel messageData;
@@ -243,9 +282,10 @@ void PutCharacteristicProfileBatchInnerTest(const uint8_t *data, size_t size)
 
 void DeleteCharacteristicProfileInnerTest(const uint8_t *data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
+    if ((data == nullptr) || (size == 0)) {
         return;
     }
+    MockPermission("deviceprofile");
     std::string udid(reinterpret_cast<const char*>(data), size);
     std::string serviceId(reinterpret_cast<const char*>(data), size);
     MessageParcel messageData;
@@ -260,9 +300,10 @@ void DeleteCharacteristicProfileInnerTest(const uint8_t *data, size_t size)
 
 void DeleteServiceProfileInnerTest(const uint8_t *data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
+    if ((data == nullptr) || (size == 0)) {
         return;
     }
+    MockPermission("deviceprofile");
     std::string udid(reinterpret_cast<const char*>(data), size);
     std::string serviceId(reinterpret_cast<const char*>(data), size);
     MessageParcel messageData;
@@ -277,9 +318,10 @@ void DeleteServiceProfileInnerTest(const uint8_t *data, size_t size)
 
 void SubscribeDeviceProfileInnerTest(const uint8_t *data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
+    if ((data == nullptr) || (size == 0)) {
         return;
     }
+    MockPermission("deviceprofile");
     std::string udid(reinterpret_cast<const char*>(data), size);
     std::string serviceId(reinterpret_cast<const char*>(data), size);
     MessageParcel messageData;
@@ -294,9 +336,10 @@ void SubscribeDeviceProfileInnerTest(const uint8_t *data, size_t size)
 
 void SyncDeviceProfileNewInnerTest(const uint8_t *data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
+    if ((data == nullptr) || (size == 0)) {
         return;
     }
+    MockPermission("deviceprofile");
     std::string udid(reinterpret_cast<const char*>(data), size);
     std::string serviceId(reinterpret_cast<const char*>(data), size);
     MessageParcel messageData;
@@ -330,4 +373,3 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::DeviceProfile::SubscribeDeviceProfileInnerTest(data, size);
     return 0;
 }
-
