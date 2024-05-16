@@ -14,6 +14,9 @@
  */
 
 #include <gtest/gtest.h>
+#include "accesstoken_kit.h"
+#include "nativetoken_kit.h"
+#include "token_setproc.h"
 
 #define private   public
 #define protected public
@@ -37,8 +40,8 @@ using namespace testing;
 using namespace testing::ext;
 namespace {
 const std::string PERMISSION_JSON_PATH = "/system/etc/deviceprofile/permission.json";
+const int32_t PERMS_NUM = 2;
 }
-
 class DpProfileServiceTest : public testing::Test {
 public:
     static void SetUpTestCase();
@@ -54,6 +57,24 @@ void DpProfileServiceTest::TearDownTestCase() {
 }
 
 void DpProfileServiceTest::SetUp() {
+    const char *perms[PERMS_NUM] = {
+        "ohos.permission.DISTRIBUTED_DATASYNC",
+        "ohos.permission.DISTRIBUTED_SOFTBUS_CENTER"
+    };
+    uint64_t tokenId;
+    NativeTokenInfoParams infoInstance = {
+        .dcapsNum = 0,
+        .permsNum = PERMS_NUM,
+        .aclsNum = 0,
+        .dcaps = nullptr,
+        .perms = perms,
+        .acls = nullptr,
+        .processName = "deviceprofile",
+        .aplStr = "system_core",
+    };
+    tokenId = GetAccessTokenId(&infoInstance);
+    SetSelfTokenID(tokenId);
+    OHOS::Security::AccessToken::AccessTokenKit::ReloadNativeTokenInfo();
 }
 
 void DpProfileServiceTest::TearDown() {
