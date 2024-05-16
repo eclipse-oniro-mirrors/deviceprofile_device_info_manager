@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -49,6 +49,7 @@ const std::string BOOT_COMPLETED_EVENT = "usual.event.BOOT_COMPLETED";
 const std::string STRING_DEVICE_ONLINE = "deviceonline";
 const std::string EVENT_ID = "eventId";
 const std::string NAME = "name";
+const std::string INIT_TASK_ID = "CheckAndInitDP";
 constexpr int32_t DELAY_TIME = 180000;
 constexpr int32_t UNLOAD_IMMEDIATELY = 0;
 }
@@ -70,23 +71,20 @@ bool DistributedDeviceProfileService::Init()
     if (unloadHandler_ == nullptr) {
         return false;
     }
-    if (!DpDeviceManager::GetInstance().Init()) {
-        HILOGE("DeviceManager init failed");
-        return false;
-    }
-    if (!DeviceProfileStorageManager::GetInstance().Init()) {
-        HILOGE("DeviceProfileStorageManager init failed");
-        return false;
-    }
-    if (!SubscribeManager::GetInstance().Init()) {
-        HILOGE("SubscribeManager init failed");
-        return false;
-    }
-    if (!AuthorityManager::GetInstance().Init()) {
-        HILOGE("AuthorityManager init failed");
-        return false;
-    }
-    TrustGroupManager::GetInstance().InitHichainService();
+    auto executeInnerFunc = [this] {
+        int32_t retry = 3;
+        while (retry > 0) {
+            if (DoBusinessInit()) {
+                break;
+            }
+            retry--;
+        }
+        if (retry <= 0) {
+            HILOGE("DeviceProfileService init failed.");
+            UnLoadTask();
+        }
+    };
+    unloadHandler_->PostTask(executeInnerFunc, INIT_TASK_ID, 0);
     HILOGI("init succeeded");
     return true;
 }
@@ -255,18 +253,16 @@ void DistributedDeviceProfileService::DelayUnloadTask()
 void DistributedDeviceProfileService::OnStart(const SystemAbilityOnDemandReason& startReason)
 {
     HILOGI("called");
-    if (!Init()) {
-        HILOGE("init failed");
-        return;
-    }
-
-    HILOGI("start reason %{public}s", startReason.GetName().c_str());
-    ContentSensorManager::GetInstance().Init();
-    DelayUnloadTask();
     if (!Publish(this)) {
         HILOGE("publish SA failed");
         return;
     }
+    if (!Init()) {
+        HILOGE("init failed");
+        return;
+    }
+    HILOGI("start reason %{public}s", startReason.GetName().c_str());
+    DelayUnloadTask();
 }
 
 int32_t DistributedDeviceProfileService::OnIdle(const SystemAbilityOnDemandReason& idleReason)
@@ -278,6 +274,50 @@ int32_t DistributedDeviceProfileService::OnIdle(const SystemAbilityOnDemandReaso
 void DistributedDeviceProfileService::OnStop()
 {
     HILOGI("called");
+}
+
+bool DistributedDeviceProfileService::DoBusinessInit()
+{
+    HILOGI("called");
+    if (!DpDeviceManager::GetInstance().Init()) {
+        HILOGE("DeviceManager init failed");
+        return false;
+    }
+    if (!DeviceProfileStorageManager::GetInstance().Init()) {
+        HILOGE("DeviceProfileStorageManager init failed");
+        return false;
+    }
+    if (!SubscribeManager::GetInstance().Init()) {
+        HILOGE("SubscribeManager init failed");
+        return false;
+    }
+    if (!AuthorityManager::GetInstance().Init()) {
+        HILOGE("AuthorityManager init failed");
+        return false;
+    }
+    if (!ContentSensorManager::GetInstance().Init()) {
+        HILOGE("ContentSensorManager init failed");
+        return false;
+    }
+    TrustGroupManager::GetInstance().InitHichainService();
+    HILOGI("DoBusinessInit succeeded");
+    return true;
+}
+
+void DistributedDeviceProfileService::UnLoadTask()
+{
+    HILOGI("called");
+    auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    if (samgrProxy == nullptr) {
+        HILOGE("get samgr failed");
+        return;
+    }
+    int32_t ret = samgrProxy->UnloadSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID);
+    if (ret != ERR_OK) {
+        HILOGE("remove system ability failed");
+        return;
+    }
+    unloadHandler_->RemoveTask(TASK_ID);
 }
 } // namespace DeviceProfile
 } // namespace OHOS
