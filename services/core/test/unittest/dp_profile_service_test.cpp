@@ -50,13 +50,16 @@ public:
     void TearDown();
 };
 
-void DpProfileServiceTest::SetUpTestCase() {
+void DpProfileServiceTest::SetUpTestCase()
+{
 }
 
-void DpProfileServiceTest::TearDownTestCase() {
+void DpProfileServiceTest::TearDownTestCase()
+{
 }
 
-void DpProfileServiceTest::SetUp() {
+void DpProfileServiceTest::SetUp()
+{
     const char *perms[PERMS_NUM] = {
         "ohos.permission.DISTRIBUTED_DATASYNC",
         "ohos.permission.DISTRIBUTED_SOFTBUS_CENTER"
@@ -77,7 +80,8 @@ void DpProfileServiceTest::SetUp() {
     OHOS::Security::AccessToken::AccessTokenKit::ReloadNativeTokenInfo();
 }
 
-void DpProfileServiceTest::TearDown() {
+void DpProfileServiceTest::TearDown()
+{
 }
 
 HWTEST_F(DpProfileServiceTest, Init_001, TestSize.Level1)
