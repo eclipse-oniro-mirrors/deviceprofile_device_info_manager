@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -49,8 +49,10 @@ const std::string BOOT_COMPLETED_EVENT = "usual.event.BOOT_COMPLETED";
 const std::string STRING_DEVICE_ONLINE = "deviceonline";
 const std::string EVENT_ID = "eventId";
 const std::string NAME = "name";
+const std::string INIT_TASK_ID = "CheckAndInitDP";
 constexpr int32_t DELAY_TIME = 180000;
 constexpr int32_t UNLOAD_IMMEDIATELY = 0;
+constexpr int32_t INIT_BUSINESS_DELAY_TIME_MS = 5 * 100;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileService);
@@ -70,23 +72,8 @@ bool DistributedDeviceProfileService::Init()
     if (unloadHandler_ == nullptr) {
         return false;
     }
-    if (!DpDeviceManager::GetInstance().Init()) {
-        HILOGE("DeviceManager init failed");
-        return false;
-    }
-    if (!DeviceProfileStorageManager::GetInstance().Init()) {
-        HILOGE("DeviceProfileStorageManager init failed");
-        return false;
-    }
-    if (!SubscribeManager::GetInstance().Init()) {
-        HILOGE("SubscribeManager init failed");
-        return false;
-    }
-    if (!AuthorityManager::GetInstance().Init()) {
-        HILOGE("AuthorityManager init failed");
-        return false;
-    }
-    TrustGroupManager::GetInstance().InitHichainService();
+    auto executeInnerFunc = [this] { DoInit(); };
+    unloadHandler_->PostTask(executeInnerFunc, INIT_TASK_ID, 0);
     HILOGI("init succeeded");
     return true;
 }
@@ -255,18 +242,16 @@ void DistributedDeviceProfileService::DelayUnloadTask()
 void DistributedDeviceProfileService::OnStart(const SystemAbilityOnDemandReason& startReason)
 {
     HILOGI("called");
-    if (!Init()) {
-        HILOGE("init failed");
-        return;
-    }
-
-    HILOGI("start reason %{public}s", startReason.GetName().c_str());
-    ContentSensorManager::GetInstance().Init();
-    DelayUnloadTask();
     if (!Publish(this)) {
         HILOGE("publish SA failed");
         return;
     }
+    if (!Init()) {
+        HILOGE("init failed");
+        return;
+    }
+    HILOGI("start reason %{public}s", startReason.GetName().c_str());
+    DelayUnloadTask();
 }
 
 int32_t DistributedDeviceProfileService::OnIdle(const SystemAbilityOnDemandReason& idleReason)
@@ -278,6 +263,81 @@ int32_t DistributedDeviceProfileService::OnIdle(const SystemAbilityOnDemandReaso
 void DistributedDeviceProfileService::OnStop()
 {
     HILOGI("called");
+}
+
+bool DistributedDeviceProfileService::DoInit()
+{
+    HILOGI("called");
+    if (!IsDepSAStart()) {
+        HILOGE("Depend sa not start");
+        auto executeInnerFunc = [this] { DoInit(); };
+        unloadHandler_->PostTask(executeInnerFunc, INIT_TASK_ID, INIT_BUSINESS_DELAY_TIME_MS);
+        return false;
+    }
+    if (!DoBusinessInit()) {
+        HILOGE("DoBusinessInit init failed");
+        auto executeInnerFunc = [this] { DoInit(); };
+        unloadHandler_->PostTask(executeInnerFunc, INIT_TASK_ID, INIT_BUSINESS_DELAY_TIME_MS);
+        return false;
+    }
+    HILOGI("DoInit succeeded");
+    return true;
+}
+
+bool DistributedDeviceProfileService::IsDepSAStart()
+{
+    auto saMgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    if (saMgr == nullptr) {
+        HILOGE("Get System Ability Manager failed");
+        return false;
+    }
+    HILOGI("Check DSoftbus sa");
+    auto remoteObject = saMgr->CheckSystemAbility(SOFTBUS_SERVER_SA_ID);
+    if (remoteObject == nullptr) {
+        HILOGE("DSoftbus not start");
+        return false;
+    }
+    HILOGI("Check KVDB sa");
+    remoteObject = saMgr->CheckSystemAbility(DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID);
+    if (remoteObject == nullptr) {
+        HILOGE("KVDB not start");
+        return false;
+    }
+    HILOGI("Check DM sa");
+    remoteObject = saMgr->CheckSystemAbility(DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID);
+    if (remoteObject == nullptr) {
+        HILOGE("DM not start");
+        return false;
+    }
+    return true;
+}
+
+bool DistributedDeviceProfileService::DoBusinessInit()
+{
+    HILOGI("called");
+    if (!DpDeviceManager::GetInstance().Init()) {
+        HILOGE("DeviceManager init failed");
+        return false;
+    }
+    if (!DeviceProfileStorageManager::GetInstance().Init()) {
+        HILOGE("DeviceProfileStorageManager init failed");
+        return false;
+    }
+    if (!SubscribeManager::GetInstance().Init()) {
+        HILOGE("SubscribeManager init failed");
+        return false;
+    }
+    if (!AuthorityManager::GetInstance().Init()) {
+        HILOGE("AuthorityManager init failed");
+        return false;
+    }
+    if (!ContentSensorManager::GetInstance().Init()) {
+        HILOGE("ContentSensorManager init failed");
+        return false;
+    }
+    TrustGroupManager::GetInstance().InitHichainService();
+    HILOGI("DoBusinessInit succeeded");
+    return true;
 }
 } // namespace DeviceProfile
 } // namespace OHOS
