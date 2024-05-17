@@ -52,6 +52,7 @@ const std::string NAME = "name";
 const std::string INIT_TASK_ID = "CheckAndInitDP";
 constexpr int32_t DELAY_TIME = 180000;
 constexpr int32_t UNLOAD_IMMEDIATELY = 0;
+constexpr int32_t INIT_BUSINESS_DELAY_TIME_MS = 5 * 100;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileService);
@@ -71,19 +72,7 @@ bool DistributedDeviceProfileService::Init()
     if (unloadHandler_ == nullptr) {
         return false;
     }
-    auto executeInnerFunc = [this] {
-        int32_t retry = 3;
-        while (retry > 0) {
-            if (DoBusinessInit()) {
-                break;
-            }
-            retry--;
-        }
-        if (retry <= 0) {
-            HILOGE("DeviceProfileService init failed.");
-            UnLoadTask();
-        }
-    };
+    auto executeInnerFunc = [this] { DoInit(); };
     unloadHandler_->PostTask(executeInnerFunc, INIT_TASK_ID, 0);
     HILOGI("init succeeded");
     return true;
@@ -276,6 +265,53 @@ void DistributedDeviceProfileService::OnStop()
     HILOGI("called");
 }
 
+bool DistributedDeviceProfileService::DoInit()
+{
+    HILOGI("called");
+    if (!IsDepSAStart()) {
+        HILOGE("Depend sa not start");
+        auto executeInnerFunc = [this] { DoInit(); };
+        unloadHandler_->PostTask(executeInnerFunc, INIT_TASK_ID, INIT_BUSINESS_DELAY_TIME_MS);
+        return false;
+    }
+    if (!DoBusinessInit()) {
+        HILOGE("DoBusinessInit init failed");
+        auto executeInnerFunc = [this] { DoInit(); };
+        unloadHandler_->PostTask(executeInnerFunc, INIT_TASK_ID, INIT_BUSINESS_DELAY_TIME_MS);
+        return false;
+    }
+    HILOGI("DoInit succeeded");
+    return true;
+}
+
+bool DistributedDeviceProfileService::IsDepSAStart()
+{
+    auto saMgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    if (saMgr == nullptr) {
+        HILOGE("Get System Ability Manager failed");
+        return false;
+    }
+    HILOGI("Check DSoftbus sa");
+    auto remoteObject = saMgr->CheckSystemAbility(SOFTBUS_SERVER_SA_ID);
+    if (remoteObject == nullptr) {
+        HILOGE("DSoftbus not start");
+        return false;
+    }
+    HILOGI("Check KVDB sa");
+    remoteObject = saMgr->CheckSystemAbility(DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID);
+    if (remoteObject == nullptr) {
+        HILOGE("KVDB not start");
+        return false;
+    }
+    HILOGI("Check DM sa");
+    remoteObject = saMgr->CheckSystemAbility(DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID);
+    if (remoteObject == nullptr) {
+        HILOGE("DM not start");
+        return false;
+    }
+    return true;
+}
+
 bool DistributedDeviceProfileService::DoBusinessInit()
 {
     HILOGI("called");
@@ -302,22 +338,6 @@ bool DistributedDeviceProfileService::DoBusinessInit()
     TrustGroupManager::GetInstance().InitHichainService();
     HILOGI("DoBusinessInit succeeded");
     return true;
-}
-
-void DistributedDeviceProfileService::UnLoadTask()
-{
-    HILOGI("called");
-    auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    if (samgrProxy == nullptr) {
-        HILOGE("get samgr failed");
-        return;
-    }
-    int32_t ret = samgrProxy->UnloadSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID);
-    if (ret != ERR_OK) {
-        HILOGE("remove system ability failed");
-        return;
-    }
-    unloadHandler_->RemoveTask(TASK_ID);
 }
 } // namespace DeviceProfile
 } // namespace OHOS
