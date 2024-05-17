@@ -349,7 +349,7 @@ const std::string ON_SYNC_HANDLER = "kv_sync_completed_handler";
 const std::string AUTO_SYNC_HANDLER = "auto_sync_handler";
 const std::string EMPTY_STRING = "";
 /* switch attribute */
-const std::string SWITCH_CAPABILITY_PATH = "/system/etc/deviceprofile/dp_switch_status_cfg.json";
+const std::string SWITCH_CAPABILITY_PATH = "etc/deviceprofile/dp_switch_status_cfg.json";
 const std::string SWITCH_CALLERS = "DP_Callers";
 const std::string SWITCH_SERVICE_NAMES = "name";
 const std::string SWITCH_STATUS = "SwitchStatus";
