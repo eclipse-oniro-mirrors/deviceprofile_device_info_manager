@@ -29,7 +29,6 @@ namespace {
 SubscribeInfo::SubscribeInfo(int32_t saId, const std::string& subscribeKey,
     std::unordered_set<ProfileChangeType> subscribeChangeTypes, sptr<IProfileChangeListener> profileChangeListener)
 {
-    HILOGI("constructor!");
     this->saId_ = saId;
     this->subscribeKey_ = subscribeKey;
     this->subscribeChangeTypes_ = subscribeChangeTypes;
@@ -46,12 +45,10 @@ SubscribeInfo::SubscribeInfo(int32_t saId, const std::string& subscribeKey,
 
 SubscribeInfo::SubscribeInfo()
 {
-    HILOGI("destructor!");
 }
 
 SubscribeInfo::~SubscribeInfo()
 {
-    HILOGI("destructor!");
 }
 
 int32_t SubscribeInfo::GetSaId() const

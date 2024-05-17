@@ -135,6 +135,30 @@ enum ProfileChangeType {
     CHAR_PROFILE_DELETE = 12,
     PROFILE_CHANGE_TYPE_MAX = 13
 };
+enum StaticCapabilityFlag {
+    CAPABILITY_FLAG_MIN = -1,
+    CAPABILITY_FLAG_DMS = 0,
+    CAPABILITY_FLAG_PASTE_BOARD = 1,
+    CAPABILITY_FLAG_COLLABORATION_FWK = 2,
+    CAPABILITY_FLAG_DEVICE_STATUS = 3,
+    CAPABILITY_FLAG_MAX = 4,
+};
+enum SwitchFlag {
+    SWITCH_FLAG_MIN = -1,
+    SWITCH_FLAG_KEY_MOUSE_EDGE_CROSSING = 0,
+    SWITCH_FLAG_KEY_MOUSE_CROSSING_CAPABILITY = 1,
+    SWITCH_FLAG_MAX = 2
+};
+const std::unordered_map<std::string, SwitchFlag> SWITCH_SERVICE_MAP = {
+    { "SwitchStatus_Key_Mouse_Edge_Crossing", SwitchFlag::SWITCH_FLAG_KEY_MOUSE_EDGE_CROSSING },
+    { "SwitchStatus_Key_Mouse_Crossing_Capability", SwitchFlag::SWITCH_FLAG_KEY_MOUSE_CROSSING_CAPABILITY }
+};
+const std::unordered_map<std::string, StaticCapabilityFlag> CAPABILITY_FLAG_MAP = {
+    { "dmsfwk_svr_id", StaticCapabilityFlag::CAPABILITY_FLAG_DMS },
+    { "pasteboardService", StaticCapabilityFlag::CAPABILITY_FLAG_PASTE_BOARD },
+    { "collaborationFwk", StaticCapabilityFlag::CAPABILITY_FLAG_COLLABORATION_FWK },
+    { "deviceStatus", StaticCapabilityFlag::CAPABILITY_FLAG_DEVICE_STATUS },
+};
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_ENUMS_H

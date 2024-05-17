@@ -22,8 +22,10 @@
 
 #ifdef __LP64__
 constexpr const char* LIB_LOAD_PATH = "/system/lib64/";
+constexpr const char* DMS_LIB_LOAD_PATH = "/system/lib64/platformsdk/";
 #else
 constexpr const char* LIB_LOAD_PATH = "/system/lib/";
+constexpr const char* DMS_LIB_LOAD_PATH = "/system/lib/platformsdk/";
 #endif
 
 namespace OHOS {
@@ -127,6 +129,7 @@ constexpr int32_t MAX_SUBSCRIBE_CHANGE_SIZE = 3;
 constexpr int32_t MAX_INTERFACE_SIZE = 20;
 constexpr int32_t MAX_SUBSCRIBE_INFO_SIZE = 500;
 constexpr int32_t MAX_SYNC_RESULTS_SIZE = 50;
+constexpr int32_t MAX_STATIC_CAPABILITY_SIZE = 100;
 const std::string SEPARATOR = "#";
 const std::string DEV_PREFIX = "dev";
 const std::string SVR_PREFIX = "svr";
@@ -138,6 +141,12 @@ const std::string ALL_PROC = "all";
 constexpr int32_t NUM_1 = 1;
 constexpr int32_t NUM_2 = 2;
 constexpr int32_t NUM_3 = 3;
+constexpr uint32_t NUM_1U = 1;
+constexpr uint32_t NUM_8U = 8;
+constexpr uint16_t NUM_24U = 24;
+const std::string DP_PKG_NAME = "ohos.dhardware.dmasdpadapter";
+const std::string DYNAMIC_APP_ID = "distributed_dynamic_profile_service";
+const std::string STATIC_APP_ID = "distributed_static_profile_service";
 /* rdb constants */
 const std::string RDB_PATH = "/data/service/el1/public/database/distributed_device_profile_service/";
 const std::string DATABASE_NAME = "dp_rdb.db";
@@ -339,6 +348,35 @@ const std::string KV_DEATH_HANDLER = "kv_store_death_handler";
 const std::string ON_SYNC_HANDLER = "kv_sync_completed_handler";
 const std::string AUTO_SYNC_HANDLER = "auto_sync_handler";
 const std::string EMPTY_STRING = "";
+/* switch attribute */
+const std::string SWITCH_CAPABILITY_PATH = "etc/deviceprofile/dp_switch_status_cfg.json";
+const std::string SWITCH_CALLERS = "DP_Callers";
+const std::string SWITCH_SERVICE_NAMES = "name";
+const std::string SWITCH_STATUS = "SwitchStatus";
+const std::string SWITCH_ON = "1";
+const std::string SWITCH_OFF = "0";
+const std::string SWITCH_OPERATE_PUT = "PutSwitch";
+const std::string SWITCH_OPERATE_GET = "GetSwitch";
+/* static attribute */
+const std::string STATIC_CAPABILITY_SVR_ID = "static_cap_svr_id";
+const std::string STATIC_CAPABILITY_CHAR_ID = "static_capability";
+const std::string STATIC_CAPABILITY_PATH = "etc/deviceprofile/dp_static_capability_cfg.json";
+const std::string STATIC_INFO_PATH = "etc/deviceprofile/dp_static_info_cfg.json";
+const std::string STATIC_CAPABILITY_ATTRIBUTE = "static_capability";
+const std::string STATIC_INFO = "static_info";
+const std::string DEFAULT_STATIC_VAL = "0";
+const std::string STATIC_CHARACTERISTIC_KEY = "static_capability";
+const std::string STATIC_CAPABILITY_VERSION = "staticCapabilityVersion";
+const std::string STATIC_CAPABILITY_VALUE = "staticCapabilityValue";
+const std::string DP_VERSION = "DPVersion";
+const std::string ABILITIES = "abilities";
+const std::string ABILITY_KEY = "abilityKey";
+const std::string ABILITY_VALUE = "abilityValue";
+constexpr char NOT_SUPPORT_STATIC_VAL = '0';
+constexpr char SUPPORT_STATIC_VAL = '1';
+const std::string STATIC_CAP_HANDLER_NAME = "service_name";
+const std::string STATIC_CAP_HANDLER_LOC = "handler_loc";
+const std::string DMS_HANDLER_LOC = "libdistributed_sdk.z.so";
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_CONSTANTS_H

@@ -28,16 +28,13 @@ namespace {
 ServiceProfile::ServiceProfile(const std::string& deviceId, const std::string& serviceName,
     const std::string& serviceType) : deviceId_(deviceId), serviceName_(serviceName), serviceType_(serviceType)
 {
-    HILOGI("constructor!");
 }
 ServiceProfile::ServiceProfile()
 {
-    HILOGI("constructor!");
 }
 
 ServiceProfile::~ServiceProfile()
 {
-    HILOGI("destructor");
 }
 
 std::string ServiceProfile::GetDeviceId() const
