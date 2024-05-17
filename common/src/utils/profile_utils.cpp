@@ -606,5 +606,18 @@ bool ProfileUtils::GetUdidByNetworkId(const std::string& networkId, std::string&
     return ((DeviceManager::GetInstance().GetUdidByNetworkId(
         PKG_NAME, networkId, udid) == 0) ? true : false);
 }
+
+std::string ProfileUtils::GetDbKeyByProfile(const CharacteristicProfile& profile)
+{
+    if (profile.GetDeviceId().empty() ||
+        profile.GetServiceName().empty() ||
+        profile.GetCharacteristicKey().empty()) {
+        HILOGE("GetDbKeyByProfile fail");
+        return "";
+    }
+    std::string dbKey = CHAR_PREFIX + SEPARATOR + profile.GetDeviceId() + SEPARATOR + profile.GetServiceName() +
+        SEPARATOR + profile.GetCharacteristicKey() + SEPARATOR + CHARACTERISTIC_VALUE;
+        return dbKey; 
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

@@ -20,6 +20,8 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <mutex>
+#include <unordered_map>
 #include "trust_device_profile.h"
 #include "access_control_profile.h"
 #include "device_profile.h"
@@ -67,6 +69,7 @@ public:
     static std::string GetDeviceIdByDBKey(const std::string& dbKey);
     static std::string GetServiceNameByDBKey(const std::string& dbKey);
     static std::string GetCharKeyByDBKey(const std::string& dbKey);
+    static std::string GetDbKeyByProfile(const CharacteristicProfile& profile);
     static int32_t SplitString(const std::string& str, const std::string& splits, std::vector<std::string>& res);
     static std::string GetProfileProperty(const std::string& dbKey);
     static std::map<std::string, std::string> GetProfilePropertiesMap(std::map<std::string, std::string> dbEntries);
