@@ -242,12 +242,11 @@ void DistributedDeviceProfileService::DelayUnloadTask()
 void DistributedDeviceProfileService::OnStart(const SystemAbilityOnDemandReason& startReason)
 {
     HILOGI("called");
-    if (!Publish(this)) {
-        HILOGE("publish SA failed");
-        return;
-    }
     if (!Init()) {
         HILOGE("init failed");
+    }
+    if (!Publish(this)) {
+        HILOGE("publish SA failed");
         return;
     }
     HILOGI("start reason %{public}s", startReason.GetName().c_str());
