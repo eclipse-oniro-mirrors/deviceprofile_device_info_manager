@@ -617,7 +617,7 @@ std::string ProfileUtils::GetDbKeyByProfile(const CharacteristicProfile& profile
     }
     std::string dbKey = CHAR_PREFIX + SEPARATOR + profile.GetDeviceId() + SEPARATOR + profile.GetServiceName() +
         SEPARATOR + profile.GetCharacteristicKey() + SEPARATOR + CHARACTERISTIC_VALUE;
-        return dbKey; 
+        return dbKey;
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
