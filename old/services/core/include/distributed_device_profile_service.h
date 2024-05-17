@@ -55,8 +55,9 @@ protected:
 
 private:
     bool Init();
+    bool DoInit();
+    bool IsDepSAStart();
     bool DoBusinessInit();
-    void UnLoadTask();
 private:
     std::shared_ptr<AppExecFwk::EventHandler> unloadHandler_;
     std::mutex unloadMutex_;
