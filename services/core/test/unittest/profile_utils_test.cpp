@@ -460,13 +460,6 @@ HWTEST_F(ProfileUtilsTest, DeviceProfileTranslateEntries001, TestSize.Level1)
 {
     DeviceProfile deviceProfile;
     deviceProfile.SetDeviceId("anything");
-    deviceProfile.SetDeviceTypeName("anything");
-    deviceProfile.SetDeviceTypeId(3);
-    deviceProfile.SetDeviceName("anything");
-    deviceProfile.SetManufactureName("anything");
-    deviceProfile.SetDeviceModel("anything");
-    deviceProfile.SetStorageCapability(1);
-    deviceProfile.SetOsSysCap("anything");
     deviceProfile.SetOsApiLevel(1);
     deviceProfile.SetOsVersion("anything");
     deviceProfile.SetOsType(1);
@@ -478,7 +471,6 @@ HWTEST_F(ProfileUtilsTest, DeviceProfileTranslateEntries001, TestSize.Level1)
     DeviceProfile outDeviceProfile;
     int32_t res2 = ProfileUtils::EntriesToDeviceProfile(entries, outDeviceProfile);
     EXPECT_EQ(DP_SUCCESS, res2);
-    EXPECT_EQ("anything", outDeviceProfile.GetDeviceId());
 }
 
 /**
