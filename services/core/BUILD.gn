@@ -62,7 +62,7 @@ ohos_shared_library("distributed_device_profile_svr") {
     "src/contentsensormanager/syscap_info_collector.cpp",
     "src/contentsensormanager/switch_status_collector.cpp",
     "src/contentsensormanager/system_info_collector.cpp",
-    "src/deviceprofilemanager/dynamic_profile_manager.cpp",
+    "src/deviceprofilemanager/device_profile_manager.cpp",
     "src/deviceprofilemanager/static_profile_manager.cpp",
     "src/deviceprofilemanager/switch_profile_manager.cpp",
     "src/deviceprofilemanager/listener/kv_data_change_listener.cpp",

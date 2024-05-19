@@ -22,7 +22,7 @@
 #include "datetime_ex.h"
 #include "device_manager.h"
 #include "profile_utils.h"
-#include "dynamic_profile_manager.h"
+#include "device_profile_manager.h"
 #include "static_profile_manager.h"
 #include "switch_profile_manager.h"
 #include "sync_subscriber_death_recipient.h"
@@ -346,13 +346,13 @@ int32_t ProfileCache::RefreshProfileCache()
 {
     int64_t beginTime = GetTickCount();
     std::vector<DeviceProfile> deviceProfiles;
-    DynamicProfileManager::GetInstance().GetAllDeviceProfile(deviceProfiles);
+    DeviceProfileManager::GetInstance().GetAllDeviceProfile(deviceProfiles);
     RefreshDeviceProfileCache(deviceProfiles);
     std::vector<ServiceProfile> serviceProfiles;
-    DynamicProfileManager::GetInstance().GetAllServiceProfile(serviceProfiles);
+    DeviceProfileManager::GetInstance().GetAllServiceProfile(serviceProfiles);
     RefreshServiceProfileCache(serviceProfiles);
     std::vector<CharacteristicProfile> charProfiles;
-    DynamicProfileManager::GetInstance().GetAllCharacteristicProfile(charProfiles);
+    DeviceProfileManager::GetInstance().GetAllCharacteristicProfile(charProfiles);
     StaticProfileManager::GetInstance().GetAllCharacteristicProfile(charProfiles);
     RefreshCharProfileCache(charProfiles);
     int64_t endTime = GetTickCount();

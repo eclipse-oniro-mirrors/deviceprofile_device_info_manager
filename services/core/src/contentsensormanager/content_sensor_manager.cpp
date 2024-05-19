@@ -32,7 +32,7 @@
 #include "event_handler.h"
 #include "collector.h"
 #include "content_sensor_manager_utils.h"
-#include "dynamic_profile_manager.h"
+#include "device_profile_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -80,14 +80,14 @@ int32_t ContentSensorManager::Collect()
             task->ConvertToProfile(charProfileList);
         }
         deviceProfile.SetDeviceId(ContentSensorManagerUtils::GetInstance().ObtainLocalUdid());
-        DynamicProfileManager::GetInstance().PutDeviceProfile(deviceProfile);
+        DeviceProfileManager::GetInstance().PutDeviceProfile(deviceProfile);
         if (!svrProfileList.empty()) {
-            DynamicProfileManager::GetInstance().PutServiceProfileBatch(svrProfileList);
+            DeviceProfileManager::GetInstance().PutServiceProfileBatch(svrProfileList);
         } else {
             HILOGI("svrProfileList is empty");
         }
         if (!charProfileList.empty()) {
-            DynamicProfileManager::GetInstance().PutCharacteristicProfileBatch(charProfileList);
+            DeviceProfileManager::GetInstance().PutCharacteristicProfileBatch(charProfileList);
         } else {
             HILOGI("charProfileList is empty");
         }

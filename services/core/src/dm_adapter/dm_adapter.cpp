@@ -15,7 +15,7 @@
 
 #include "dm_adapter.h"
 #include "cJSON.h"
-#include "dynamic_profile_manager.h"
+#include "device_profile_manager.h"
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
@@ -110,7 +110,7 @@ void DMAdapter::AutoSync(const DistributedHardware::DmDeviceInfo &deviceInfo)
         cJSON_Delete(extraData);
         HILOGI("osType=%{public}d", osType);
         if (osType != DEFAULT_OS_TYPE) {
-            int32_t errCode = DynamicProfileManager::GetInstance().DeviceOnlineAutoSync(deviceInfo.networkId);
+            int32_t errCode = DeviceProfileManager::GetInstance().DeviceOnlineAutoSync(deviceInfo.networkId);
             HILOGI("DeviceOnlineAutoSync errCode=%{public}d, networdId=%{public}s", errCode,
                 ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
         }

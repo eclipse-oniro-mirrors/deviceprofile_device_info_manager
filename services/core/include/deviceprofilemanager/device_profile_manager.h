@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_DP_DYNAMIC_PROFILE_MANAGER_H
-#define OHOS_DP_DYNAMIC_PROFILE_MANAGER_H
+#ifndef OHOS_DP_DEVICE_PROFILE_MANAGER_H
+#define OHOS_DP_DEVICE_PROFILE_MANAGER_H
 
 #include <unordered_map>
 
@@ -33,8 +33,8 @@
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
-class DynamicProfileManager {
-DECLARE_SINGLE_INSTANCE(DynamicProfileManager);
+class DeviceProfileManager {
+DECLARE_SINGLE_INSTANCE(DeviceProfileManager);
 
 public:
     int32_t Init();
@@ -74,4 +74,4 @@ private:
 };
 } // namespace DeviceProfile
 } // namespace OHOS
-#endif // OHOS_DP_DYNAMIC_PROFILE_MANAGER_H
+#endif // OHOS_DP_DEVICE_PROFILE_MANAGER_H

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "dynamic_profile_manager.h"
+#include "device_profile_manager.h"
 
 #include <mutex>
 #include <memory>
@@ -34,15 +34,15 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 constexpr const char *LIB_DP_ADAPTER_NAME = "libdeviceprofileadapter.z.so";
-IMPLEMENT_SINGLE_INSTANCE(DynamicProfileManager);
+IMPLEMENT_SINGLE_INSTANCE(DeviceProfileManager);
 namespace {
     const std::string APP_ID = "distributed_device_profile_service";
     const std::string STORE_ID = "dp_kv_store";
-    const std::string TAG = "DynamicProfileManager";
+    const std::string TAG = "DeviceProfileManager";
     const std::string DP_MANAGER_HANDLER = "dp_manager_handler";
 }
 
-int32_t DynamicProfileManager::Init()
+int32_t DeviceProfileManager::Init()
 {
     HILOGI("call!");
     int32_t initResult = DP_MANAGER_INIT_FAIL;
@@ -58,7 +58,7 @@ int32_t DynamicProfileManager::Init()
     return initResult;
 }
 
-int32_t DynamicProfileManager::UnInit()
+int32_t DeviceProfileManager::UnInit()
 {
     HILOGI("call!");
     {
@@ -70,14 +70,14 @@ int32_t DynamicProfileManager::UnInit()
     return DP_SUCCESS;
 }
 
-int32_t DynamicProfileManager::ReInit()
+int32_t DeviceProfileManager::ReInit()
 {
     HILOGI("call!");
     UnInit();
     return Init();
 }
 
-int32_t DynamicProfileManager::PutDeviceProfile(const DeviceProfile& deviceProfile)
+int32_t DeviceProfileManager::PutDeviceProfile(const DeviceProfile& deviceProfile)
 {
     HILOGI("call!");
     int32_t res;
@@ -93,7 +93,7 @@ int32_t DynamicProfileManager::PutDeviceProfile(const DeviceProfile& deviceProfi
     return DP_SUCCESS;
 }
 
-int32_t DynamicProfileManager::PutServiceProfile(const ServiceProfile& serviceProfile)
+int32_t DeviceProfileManager::PutServiceProfile(const ServiceProfile& serviceProfile)
 {
     HILOGI("call!");
     int32_t res;
@@ -109,7 +109,7 @@ int32_t DynamicProfileManager::PutServiceProfile(const ServiceProfile& servicePr
     return DP_SUCCESS;
 }
 
-int32_t DynamicProfileManager::PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles)
+int32_t DeviceProfileManager::PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles)
 {
     HILOGI("call!");
     int32_t res;
@@ -125,7 +125,7 @@ int32_t DynamicProfileManager::PutServiceProfileBatch(const std::vector<ServiceP
     return DP_SUCCESS;
 }
 
-int32_t DynamicProfileManager::PutCharacteristicProfile(const CharacteristicProfile& charProfile)
+int32_t DeviceProfileManager::PutCharacteristicProfile(const CharacteristicProfile& charProfile)
 {
     HILOGI("call!");
     int32_t res;
@@ -141,7 +141,7 @@ int32_t DynamicProfileManager::PutCharacteristicProfile(const CharacteristicProf
     return DP_SUCCESS;
 }
 
-int32_t DynamicProfileManager::PutCharacteristicProfileBatch(const std::vector<CharacteristicProfile>& charProfiles)
+int32_t DeviceProfileManager::PutCharacteristicProfileBatch(const std::vector<CharacteristicProfile>& charProfiles)
 {
     HILOGI("call!");
     int32_t res;
@@ -157,7 +157,7 @@ int32_t DynamicProfileManager::PutCharacteristicProfileBatch(const std::vector<C
     return DP_SUCCESS;
 }
 
-int32_t DynamicProfileManager::GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile)
+int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile)
 {
     HILOGI("call!");
     int32_t res;
@@ -173,7 +173,7 @@ int32_t DynamicProfileManager::GetDeviceProfile(const std::string& deviceId, Dev
     return DP_SUCCESS;
 }
 
-int32_t DynamicProfileManager::GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
+int32_t DeviceProfileManager::GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
     ServiceProfile& serviceProfile)
 {
     HILOGI("call!");
@@ -191,7 +191,7 @@ int32_t DynamicProfileManager::GetServiceProfile(const std::string& deviceId, co
     return DP_SUCCESS;
 }
 
-int32_t DynamicProfileManager::GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
+int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
     const std::string& characteristicKey, CharacteristicProfile& charProfile)
 {
     HILOGI("call!");
@@ -209,7 +209,7 @@ int32_t DynamicProfileManager::GetCharacteristicProfile(const std::string& devic
     return DP_SUCCESS;
 }
 
-int32_t DynamicProfileManager::DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName)
+int32_t DeviceProfileManager::DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName)
 {
     HILOGI("call!");
     int32_t res;
@@ -225,7 +225,7 @@ int32_t DynamicProfileManager::DeleteServiceProfile(const std::string& deviceId,
     return DP_SUCCESS;
 }
 
-int32_t DynamicProfileManager::DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
+int32_t DeviceProfileManager::DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
     const std::string& characteristicKey)
 {
     HILOGI("call!");
@@ -243,7 +243,7 @@ int32_t DynamicProfileManager::DeleteCharacteristicProfile(const std::string& de
     return DP_SUCCESS;
 }
 
-int32_t DynamicProfileManager::GetAllDeviceProfile(std::vector<DeviceProfile>& deviceProfiles)
+int32_t DeviceProfileManager::GetAllDeviceProfile(std::vector<DeviceProfile>& deviceProfiles)
 {
     HILOGI("call!");
     int32_t res;
@@ -259,7 +259,7 @@ int32_t DynamicProfileManager::GetAllDeviceProfile(std::vector<DeviceProfile>& d
     return DP_SUCCESS;
 }
 
-int32_t DynamicProfileManager::GetAllServiceProfile(std::vector<ServiceProfile>& serviceProfiles)
+int32_t DeviceProfileManager::GetAllServiceProfile(std::vector<ServiceProfile>& serviceProfiles)
 {
     HILOGI("call!");
     int32_t res;
@@ -275,7 +275,7 @@ int32_t DynamicProfileManager::GetAllServiceProfile(std::vector<ServiceProfile>&
     return DP_SUCCESS;
 }
 
-int32_t DynamicProfileManager::GetAllCharacteristicProfile(std::vector<CharacteristicProfile>& charProfiles)
+int32_t DeviceProfileManager::GetAllCharacteristicProfile(std::vector<CharacteristicProfile>& charProfiles)
 {
     HILOGI("call!");
     int32_t res;
@@ -291,7 +291,7 @@ int32_t DynamicProfileManager::GetAllCharacteristicProfile(std::vector<Character
     return DP_SUCCESS;
 }
 
-int32_t DynamicProfileManager::SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions &syncOptions,
+int32_t DeviceProfileManager::SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions &syncOptions,
     sptr<IRemoteObject> syncCompletedCallback)
 {
     HILOGI("call!");
@@ -329,9 +329,9 @@ int32_t DynamicProfileManager::SyncDeviceProfile(const DistributedDeviceProfile:
     return DP_SUCCESS;
 }
 
-bool DynamicProfileManager::LoadDpSyncAdapter()
+bool DeviceProfileManager::LoadDpSyncAdapter()
 {
-    HILOGI("DynamicProfileManager::LoadDpSyncAdapter start.");
+    HILOGI("DeviceProfileManager::LoadDpSyncAdapter start.");
     std::lock_guard<std::mutex> lock(isAdapterLoadLock_);
     if (isAdapterSoLoaded_ && (dpSyncAdapter_ != nullptr)) {
         return true;
@@ -363,13 +363,13 @@ bool DynamicProfileManager::LoadDpSyncAdapter()
         return false;
     }
     isAdapterSoLoaded_ = true;
-    HILOGI("DynamicProfileManager::LoadDpSyncAdapter sucess");
+    HILOGI("DeviceProfileManager::LoadDpSyncAdapter sucess");
     return true;
 }
 
-void DynamicProfileManager::UnloadDpSyncAdapter()
+void DeviceProfileManager::UnloadDpSyncAdapter()
 {
-    HILOGI("DynamicProfileManager::UnloadDpSyncAdapter start.");
+    HILOGI("DeviceProfileManager::UnloadDpSyncAdapter start.");
     std::lock_guard<std::mutex> lock(isAdapterLoadLock_);
     if (dpSyncAdapter_ != nullptr) {
         dpSyncAdapter_->Release();
@@ -390,7 +390,7 @@ void DynamicProfileManager::UnloadDpSyncAdapter()
     }
 }
 
-int32_t DynamicProfileManager::RunloadedFunction(std::string deviceId, sptr<IRemoteObject> syncCompletedCallback)
+int32_t DeviceProfileManager::RunloadedFunction(std::string deviceId, sptr<IRemoteObject> syncCompletedCallback)
 {
     if (!LoadDpSyncAdapter()) {
         HILOGE("dp service adapter load failed.");
@@ -413,7 +413,7 @@ int32_t DynamicProfileManager::RunloadedFunction(std::string deviceId, sptr<IRem
     return DP_SUCCESS;
 }
 
-int32_t DynamicProfileManager::DeviceOnlineAutoSync(const std::string& peerNetworkId)
+int32_t DeviceProfileManager::DeviceOnlineAutoSync(const std::string& peerNetworkId)
 {
     HILOGI("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
     std::vector<std::string> deviceList{peerNetworkId};
@@ -431,7 +431,7 @@ int32_t DynamicProfileManager::DeviceOnlineAutoSync(const std::string& peerNetwo
     return errCode;
 }
 
-std::vector<DistributedKv::Entry> DynamicProfileManager::GetEntriesByKeys(const std::vector<std::string>& keys)
+std::vector<DistributedKv::Entry> DeviceProfileManager::GetEntriesByKeys(const std::vector<std::string>& keys)
 {
     HILOGI("call!");
     std::vector<DistributedKv::Entry> entries;

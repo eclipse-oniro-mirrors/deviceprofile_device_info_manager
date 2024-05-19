@@ -658,7 +658,7 @@ HWTEST_F(ProfileCacheTest, IsLocalOrOnlineDevice002, TestSize.Level1)
 HWTEST_F(ProfileCacheTest, IsLocalOrOnlineDevice0013, TestSize.Level1)
 {
     std::string deviceId = "deviceId";
-    ProfileCache::GetInstance().onlineDevMap_.[deviceId] = deviceId;
+    ProfileCache::GetInstance().onlineDevMap_[deviceId] = deviceId;
     bool ret = ProfileCache::GetInstance().IsLocalOrOnlineDevice(deviceId);
     EXPECT_EQ(ret, true);
 }

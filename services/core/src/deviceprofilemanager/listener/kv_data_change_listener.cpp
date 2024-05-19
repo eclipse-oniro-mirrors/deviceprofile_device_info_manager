@@ -22,7 +22,7 @@
 
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
-#include "dynamic_profile_manager.h"
+#include "device_profile_manager.h"
 #include "profile_utils.h"
 #include "profile_cache.h"
 #include "subscribe_profile_manager.h"
@@ -69,12 +69,12 @@ void KvDataChangeListener::OnChange(const DistributedKv::DataOrigin& origin, Key
 {
     HILOGI("Cloud data change. store=%{public}s", origin.store.c_str());
     ProfileCache::GetInstance().RefreshProfileCache();
-    std::vector<DistributedKv::Entry> insertRecords = DynamicProfileManager::GetInstance()
+    std::vector<DistributedKv::Entry> insertRecords = DeviceProfileManager::GetInstance()
         .GetEntriesByKeys(keys[ChangeOp::OP_INSERT]);
     if (!insertRecords.empty() && insertRecords.size() <= MAX_DB_RECORD_SIZE) {
         HandleAddChange(insertRecords);
     }
-    std::vector<DistributedKv::Entry> updateRecords = DynamicProfileManager::GetInstance()
+    std::vector<DistributedKv::Entry> updateRecords = DeviceProfileManager::GetInstance()
         .GetEntriesByKeys(keys[ChangeOp::OP_UPDATE]);
     if (!updateRecords.empty() && updateRecords.size() <= MAX_DB_RECORD_SIZE) {
         HandleUpdateChange(updateRecords);

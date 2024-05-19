@@ -15,7 +15,7 @@
 
 #include "collaboration_info_collector.h"
 #include "content_sensor_manager_utils.h"
-#include "dynamic_profile_manager.h"
+#include "device_profile_manager.h"
 #include "distributed_device_profile_log.h"
 #include "profile_utils.h"
 
@@ -35,7 +35,7 @@ bool CollaborationInfoCollector::ConvertToProfile(std::vector<ServiceProfile> &s
     auto deviceId = GetDeviceUdid();
     for (auto it = COLLABORATION_SERVICE_ID_VECTOR.begin(); it != COLLABORATION_SERVICE_ID_VECTOR.end(); it++) {
         ServiceProfile svrProfile;
-        if (DynamicProfileManager::GetInstance().GetServiceProfile(deviceId, *it, svrProfile) == DP_SUCCESS) {
+        if (DeviceProfileManager::GetInstance().GetServiceProfile(deviceId, *it, svrProfile) == DP_SUCCESS) {
             continue;
         }
         svrProfile.SetDeviceId(deviceId);
@@ -52,7 +52,7 @@ bool CollaborationInfoCollector::ConvertToProfile(std::vector<CharacteristicProf
     auto deviceId = GetDeviceUdid();
     for (auto it = COLLABORATION_SERVICE_ID_VECTOR.begin(); it != COLLABORATION_SERVICE_ID_VECTOR.end(); it++) {
         CharacteristicProfile charProfile;
-        if (DynamicProfileManager::GetInstance().GetCharacteristicProfile(deviceId, *it,
+        if (DeviceProfileManager::GetInstance().GetCharacteristicProfile(deviceId, *it,
             COLLABORATION_CHARACTERISTIC_KEY, charProfile) == DP_SUCCESS) {
             continue;
         }

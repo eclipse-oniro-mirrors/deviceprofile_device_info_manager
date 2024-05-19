@@ -23,7 +23,7 @@
 #include "parameter.h"
 
 #include "device_profile_log.h"
-#include "dynamic_profile_manager.h"
+#include "device_profile_manager.h"
 #include "device_profile_utils.h"
 #include "distributed_device_profile_service.h"
 #include "dm_constants.h"
@@ -415,7 +415,7 @@ void DpDeviceManager::AutoSync(const DistributedHardware::DmDeviceInfo &deviceIn
         }
         HILOGI("osType=%{public}d", osType);
         if (osType != DEFAULT_OS_TYPE) {
-            int32_t errCode = DistributedDeviceProfile::DynamicProfileManager::GetInstance()
+            int32_t errCode = DistributedDeviceProfile::DeviceProfileManager::GetInstance()
                 .DeviceOnlineAutoSync(deviceInfo.networkId);
             HILOGI("DeviceOnlineAutoSync errCode=%{public}d, networdId=%{public}s", errCode,
                 DeviceProfileUtils::AnonymizeDeviceId(deviceInfo.networkId).c_str());

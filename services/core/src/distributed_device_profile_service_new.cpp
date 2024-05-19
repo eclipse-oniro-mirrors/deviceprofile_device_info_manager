@@ -30,7 +30,7 @@
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "dm_adapter.h"
-#include "dynamic_profile_manager.h"
+#include "device_profile_manager.h"
 #include "event_handler_factory.h"
 #include "permission_manager.h"
 #include "profile_cache.h"
@@ -93,8 +93,8 @@ int32_t DistributedDeviceProfileServiceNew::PostInit()
         HILOGE("SwitchProfileManager init failed");
         return DP_DEVICE_PROFILE_MANAGER_INIT_FAIL;
     }
-    if (DynamicProfileManager::GetInstance().Init() != DP_SUCCESS) {
-        HILOGE("DynamicProfileManager init failed");
+    if (DeviceProfileManager::GetInstance().Init() != DP_SUCCESS) {
+        HILOGE("DeviceProfileManager init failed");
         return DP_DEVICE_PROFILE_MANAGER_INIT_FAIL;
     }
     if (StaticProfileManager::GetInstance().Init() != DP_SUCCESS) {
@@ -134,8 +134,8 @@ int32_t DistributedDeviceProfileServiceNew::UnInit()
         HILOGE("SwitchProfileManager UnInit failed");
         return DP_DEVICE_PROFILE_MANAGER_UNINIT_FAIL;
     }
-    if (DynamicProfileManager::GetInstance().UnInit() != DP_SUCCESS) {
-        HILOGE("DynamicProfileManager UnInit failed");
+    if (DeviceProfileManager::GetInstance().UnInit() != DP_SUCCESS) {
+        HILOGE("DeviceProfileManager UnInit failed");
         return DP_DEVICE_PROFILE_MANAGER_UNINIT_FAIL;
     }
     if (StaticProfileManager::GetInstance().UnInit() != DP_SUCCESS) {
@@ -271,7 +271,7 @@ int32_t DistributedDeviceProfileServiceNew::PutServiceProfile(const ServiceProfi
         return DP_PERMISSION_DENIED;
     }
     HILOGI("CheckCallerPermission success interface PutServiceProfile");
-    return DynamicProfileManager::GetInstance().PutServiceProfile(serviceProfile);
+    return DeviceProfileManager::GetInstance().PutServiceProfile(serviceProfile);
 }
 
 int32_t DistributedDeviceProfileServiceNew::PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles)
@@ -281,7 +281,7 @@ int32_t DistributedDeviceProfileServiceNew::PutServiceProfileBatch(const std::ve
         return DP_PERMISSION_DENIED;
     }
     HILOGI("CheckCallerPermission success interface PutServiceProfileBatch");
-    return DynamicProfileManager::GetInstance().PutServiceProfileBatch(serviceProfiles);
+    return DeviceProfileManager::GetInstance().PutServiceProfileBatch(serviceProfiles);
 }
 
 int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfile(const CharacteristicProfile& charProfile)
@@ -294,8 +294,8 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfile(const Chara
         HILOGI("CheckCallerPermission success interface SwitchProfileManager::PutCharacteristicProfile");
         return SwitchProfileManager::GetInstance().PutCharacteristicProfile(charProfile);
     }
-    HILOGI("CheckCallerPermission success interface DynamicProfileManager::PutCharacteristicProfile");
-    return DynamicProfileManager::GetInstance().PutCharacteristicProfile(charProfile);
+    HILOGI("CheckCallerPermission success interface DeviceProfileManager::PutCharacteristicProfile");
+    return DeviceProfileManager::GetInstance().PutCharacteristicProfile(charProfile);
 }
 
 int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfileBatch(
@@ -327,7 +327,7 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfileBatch(
         }
     }
     if (dynamicCharProfiles.size() > 0) {
-        res = DynamicProfileManager::GetInstance().PutCharacteristicProfileBatch(dynamicCharProfiles);
+        res = DeviceProfileManager::GetInstance().PutCharacteristicProfileBatch(dynamicCharProfiles);
         if (res != DP_SUCCESS) {
             HILOGE("PutCharacteristicProfileBatch fail, res:%d", res);
             return DP_PUT_CHAR_BATCH_FAIL;
@@ -344,7 +344,7 @@ int32_t DistributedDeviceProfileServiceNew::GetDeviceProfile(const std::string& 
         return DP_PERMISSION_DENIED;
     }
     HILOGI("CheckCallerPermission success interface GetDeviceProfile");
-    return DynamicProfileManager::GetInstance().GetDeviceProfile(deviceId, deviceProfile);
+    return DeviceProfileManager::GetInstance().GetDeviceProfile(deviceId, deviceProfile);
 }
 
 int32_t DistributedDeviceProfileServiceNew::GetServiceProfile(const std::string& deviceId,
@@ -355,7 +355,7 @@ int32_t DistributedDeviceProfileServiceNew::GetServiceProfile(const std::string&
         return DP_PERMISSION_DENIED;
     }
     HILOGI("CheckCallerPermission success interface GetServiceProfile");
-    return DynamicProfileManager::GetInstance().GetServiceProfile(deviceId, serviceName, serviceProfile);
+    return DeviceProfileManager::GetInstance().GetServiceProfile(deviceId, serviceName, serviceProfile);
 }
 
 int32_t DistributedDeviceProfileServiceNew::GetCharacteristicProfile(const std::string& deviceId,
@@ -375,8 +375,8 @@ int32_t DistributedDeviceProfileServiceNew::GetCharacteristicProfile(const std::
         return StaticProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName, characteristicKey,
             charProfile);
     }
-    HILOGI("CheckCallerPermission success interface DynamicProfileManager::GetCharacteristicProfile");
-    return DynamicProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName, characteristicKey,
+    HILOGI("CheckCallerPermission success interface DeviceProfileManager::GetCharacteristicProfile");
+    return DeviceProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName, characteristicKey,
         charProfile);
 }
 
@@ -388,7 +388,7 @@ int32_t DistributedDeviceProfileServiceNew::DeleteServiceProfile(const std::stri
         return DP_PERMISSION_DENIED;
     }
     HILOGI("CheckCallerPermission success interface DeleteServiceProfile");
-    return DynamicProfileManager::GetInstance().DeleteServiceProfile(deviceId, serviceName);
+    return DeviceProfileManager::GetInstance().DeleteServiceProfile(deviceId, serviceName);
 }
 
 int32_t DistributedDeviceProfileServiceNew::DeleteCharacteristicProfile(const std::string& deviceId,
@@ -399,7 +399,7 @@ int32_t DistributedDeviceProfileServiceNew::DeleteCharacteristicProfile(const st
         return DP_PERMISSION_DENIED;
     }
     HILOGI("CheckCallerPermission success interface DeleteCharacteristicProfile");
-    return DynamicProfileManager::GetInstance().DeleteCharacteristicProfile(deviceId, serviceName, characteristicKey);
+    return DeviceProfileManager::GetInstance().DeleteCharacteristicProfile(deviceId, serviceName, characteristicKey);
 }
 
 int32_t DistributedDeviceProfileServiceNew::SubscribeDeviceProfile(const SubscribeInfo& subscriberInfo)
@@ -430,7 +430,7 @@ int32_t DistributedDeviceProfileServiceNew::SyncDeviceProfile(
         return DP_PERMISSION_DENIED;
     }
     HILOGI("CheckCallerSyncPermission success interface SyncDeviceProfile");
-    return DynamicProfileManager::GetInstance().SyncDeviceProfile(syncOptions, syncCompletedCallback);
+    return DeviceProfileManager::GetInstance().SyncDeviceProfile(syncOptions, syncCompletedCallback);
 }
 
 int32_t DistributedDeviceProfileServiceNew::SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap)

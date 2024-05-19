@@ -55,7 +55,8 @@ void KVAdapterTest::SetUpTestCase(void)
     kvStore = make_shared<KVAdapter>(APP_ID, STORE_ID,
             make_shared<KvDataChangeListener>(),
             make_shared<KvSyncCompletedListener>(),
-            make_shared<KvDeathRecipient>());
+            make_shared<KvDeathRecipient>(),
+            DistributedKv::TYPE_DYNAMICAL);
 }
 
 void KVAdapterTest::TearDownTestCase(void) {
