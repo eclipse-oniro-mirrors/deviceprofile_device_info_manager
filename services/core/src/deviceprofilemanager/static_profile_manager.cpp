@@ -26,7 +26,6 @@
 #include "kv_data_change_listener.h"
 #include "kv_store_death_recipient.h"
 #include "kv_sync_completed_listener.h"
-#include "sync_subscriber_death_recipient.h"
 #include "kv_adapter.h"
 #include "profile_cache.h"
 #include "profile_control_utils.h"
