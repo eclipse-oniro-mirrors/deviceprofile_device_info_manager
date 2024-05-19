@@ -18,7 +18,6 @@
 #include "gtest/gtest.h"
 #include "profile_cache.h"
 #include "profile_utils.h"
-#include "device_profile_manager.h"
 #include "i_sync_completed_callback.h"
 #include "sync_completed_callback_stub.h"
 #undef private
@@ -592,8 +591,76 @@ HWTEST_F(ProfileCacheTest, RemoveSyncListener002, TestSize.Level1)
     ProfileCache::GetInstance().UnInit();
     ProfileCache::GetInstance().Init();
 }
-    
 
+/**
+ * @tc.name: OnNodeOnline001
+ * @tc.desc: OnNodeOnline001
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, OnNodeOnline001, TestSize.Level1)
+{
+    std::string peerNetworkId = "";
+    ProfileCache::GetInstance().OnNodeOnline(peerNetworkId);
+
+    peerNetworkId = ProfileUtils::GetLocalUdidFromDM();
+    ProfileCache::GetInstance().OnNodeOnline(peerNetworkId);
+}
+
+/**
+ * @tc.name: OnNodeOffline001
+ * @tc.desc: OnNodeOffline001
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, OnNodeOffline001, TestSize.Level1)
+{
+    std::string peerNetworkId = "";
+    ProfileCache::GetInstance().OnNodeOffline(peerNetworkId);
+
+    peerNetworkId = ProfileUtils::GetLocalUdidFromDM();
+    ProfileCache::GetInstance().OnNodeOffline(peerNetworkId);
+}
+
+/**
+ * @tc.name: IsLocalOrOnlineDevice001
+ * @tc.desc: IsLocalOrOnlineDevice001
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, IsLocalOrOnlineDevice001, TestSize.Level1)
+{
+    std::string deviceId = "";
+    bool ret = ProfileCache::GetInstance().IsLocalOrOnlineDevice(deviceId);
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: IsLocalOrOnlineDevice002
+ * @tc.desc: IsLocalOrOnlineDevice002
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, IsLocalOrOnlineDevice002, TestSize.Level1)
+{
+    std::string deviceId = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
+    bool ret = ProfileCache::GetInstance().IsLocalOrOnlineDevice(deviceId);
+    EXPECT_EQ(ret, true);
+}
+
+/**
+ * @tc.name: IsLocalOrOnlineDevice003
+ * @tc.desc: IsLocalOrOnlineDevice003
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, IsLocalOrOnlineDevice0013, TestSize.Level1)
+{
+    std::string deviceId = "deviceId";
+    ProfileCache::GetInstance().onlineDevMap_.[deviceId] = deviceId;
+    bool ret = ProfileCache::GetInstance().IsLocalOrOnlineDevice(deviceId);
+    EXPECT_EQ(ret, true);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 
