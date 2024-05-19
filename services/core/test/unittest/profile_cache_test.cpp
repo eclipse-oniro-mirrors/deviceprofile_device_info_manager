@@ -15,6 +15,7 @@
 
 #define private   public
 #define protected public
+#include "content_sensor_manager_utils.h"
 #include "gtest/gtest.h"
 #include "profile_cache.h"
 #include "profile_utils.h"

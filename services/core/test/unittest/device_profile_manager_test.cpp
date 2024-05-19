@@ -243,7 +243,7 @@ HWTEST_F(DeviceProfileManagerTest, PutDeviceProfile004, TestSize.Level1)
     deviceProfile10.SetOsVersion("anything");
     deviceProfile10.SetOsType(1);
 
-    DynamicProfileManager::GetInstance().deviceProfileStore_ = nullptr;
+    DynamicProfileManager::GetInstance().dynamicProfileStore_ = nullptr;
     int32_t ret = DynamicProfileManager::GetInstance().PutDeviceProfile(deviceProfile10);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
     DynamicProfileManager::GetInstance().Init();
@@ -270,7 +270,7 @@ HWTEST_F(DeviceProfileManagerTest, PutDeviceProfile005, TestSize.Level1)
     deviceProfile11.SetOsVersion("anything");
     deviceProfile11.SetOsType(1);
 
-    DynamicProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DynamicProfileManager::GetInstance().dynamicProfileStore_->UnInit();
     int32_t ret = DynamicProfileManager::GetInstance().PutDeviceProfile(deviceProfile11);
     EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
     DynamicProfileManager::GetInstance().Init();
@@ -346,7 +346,7 @@ HWTEST_F(DeviceProfileManagerTest, PutServiceProfile004, TestSize.Level1)
     serviceProfile10.SetServiceName("serviceName10");
     serviceProfile10.SetServiceType("serviceType10");
 
-    DynamicProfileManager::GetInstance().deviceProfileStore_ = nullptr;
+    DynamicProfileManager::GetInstance().dynamicProfileStore_ = nullptr;
     int32_t ret = DynamicProfileManager::GetInstance().PutServiceProfile(serviceProfile10);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
     DynamicProfileManager::GetInstance().Init();
@@ -365,7 +365,7 @@ HWTEST_F(DeviceProfileManagerTest, PutServiceProfile005, TestSize.Level1)
     serviceProfile11.SetServiceName("serviceName11");
     serviceProfile11.SetServiceType("serviceType11");
 
-    DynamicProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DynamicProfileManager::GetInstance().dynamicProfileStore_->UnInit();
     int32_t ret = DynamicProfileManager::GetInstance().PutServiceProfile(serviceProfile11);
     EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
     DynamicProfileManager::GetInstance().Init();
@@ -496,7 +496,7 @@ HWTEST_F(DeviceProfileManagerTest, PutCharacteristicProfile004, TestSize.Level1)
     charProfile10.SetCharacteristicKey("characteristicKey10");
     charProfile10.SetCharacteristicValue("characteristicValue10");
 
-    DynamicProfileManager::GetInstance().deviceProfileStore_ = nullptr;
+    DynamicProfileManager::GetInstance().dynamicProfileStore_ = nullptr;
     int32_t ret = DynamicProfileManager::GetInstance().PutCharacteristicProfile(charProfile10);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
     DynamicProfileManager::GetInstance().Init();
@@ -516,7 +516,7 @@ HWTEST_F(DeviceProfileManagerTest, PutCharacteristicProfile005, TestSize.Level1)
     charProfile11.SetCharacteristicKey("characteristicKey11");
     charProfile11.SetCharacteristicValue("characteristicValue11");
 
-    DynamicProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DynamicProfileManager::GetInstance().dynamicProfileStore_->UnInit();
     int32_t ret = DynamicProfileManager::GetInstance().PutCharacteristicProfile(charProfile11);
     EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
     DynamicProfileManager::GetInstance().Init();
@@ -641,7 +641,7 @@ HWTEST_F(DeviceProfileManagerTest, GetDeviceProfile002, TestSize.Level1)
 HWTEST_F(DeviceProfileManagerTest, GetDeviceProfile003, TestSize.Level1)
 {
     string deviceId = "anything12";
-    DynamicProfileManager::GetInstance().deviceProfileStore_ = nullptr;
+    DynamicProfileManager::GetInstance().dynamicProfileStore_ = nullptr;
     DeviceProfile outDeviceProfile;
     int32_t ret = DynamicProfileManager::GetInstance().GetDeviceProfile(deviceId, outDeviceProfile);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
@@ -657,7 +657,7 @@ HWTEST_F(DeviceProfileManagerTest, GetDeviceProfile003, TestSize.Level1)
 HWTEST_F(DeviceProfileManagerTest, GetDeviceProfile004, TestSize.Level1)
 {
     string deviceId = "#anything13";
-    DynamicProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DynamicProfileManager::GetInstance().dynamicProfileStore_->UnInit();
     DeviceProfile outDeviceProfile;
     int32_t ret = DynamicProfileManager::GetInstance().GetDeviceProfile(deviceId, outDeviceProfile);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
@@ -720,7 +720,7 @@ HWTEST_F(DeviceProfileManagerTest, GetServiceProfile003, TestSize.Level1)
 {
     string deviceId = "deviceId12";
     string serviceName = "serviceName12";
-    DynamicProfileManager::GetInstance().deviceProfileStore_ = nullptr;
+    DynamicProfileManager::GetInstance().dynamicProfileStore_ = nullptr;
     ServiceProfile outServiceProfile;
     int32_t ret = DynamicProfileManager::GetInstance().GetServiceProfile(deviceId, serviceName, outServiceProfile);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
@@ -737,7 +737,7 @@ HWTEST_F(DeviceProfileManagerTest, GetServiceProfile004, TestSize.Level1)
 {
     string deviceId = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
     string serviceName = "serviceName13";
-    DynamicProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DynamicProfileManager::GetInstance().dynamicProfileStore_->UnInit();
     ServiceProfile outServiceProfile;
     int32_t ret = DynamicProfileManager::GetInstance().GetServiceProfile(deviceId, serviceName, outServiceProfile);
     EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
@@ -809,7 +809,7 @@ HWTEST_F(DeviceProfileManagerTest, GetCharacteristicProfile003, TestSize.Level1)
     string deviceId = "deviceId12";
     string serviceName = "serviceName12";
     string characteristicKey = "characteristicKey12";
-    DynamicProfileManager::GetInstance().deviceProfileStore_ = nullptr;
+    DynamicProfileManager::GetInstance().dynamicProfileStore_ = nullptr;
     CharacteristicProfile outCharProfile;
     int32_t ret = DynamicProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
         characteristicKey, outCharProfile);
@@ -828,7 +828,7 @@ HWTEST_F(DeviceProfileManagerTest, GetCharacteristicProfile004, TestSize.Level1)
     string deviceId = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
     string serviceName = "serviceName13";
     string characteristicKey = "characteristicKey13";
-    DynamicProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DynamicProfileManager::GetInstance().dynamicProfileStore_->UnInit();
     CharacteristicProfile outCharProfile;
     int32_t ret = DynamicProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
         characteristicKey, outCharProfile);
@@ -885,7 +885,7 @@ HWTEST_F(DeviceProfileManagerTest, DeleteServiceProfile003, TestSize.Level1)
 {
     string deviceId = "deviceId14";
     string serviceName = "serviceName14";
-    DynamicProfileManager::GetInstance().deviceProfileStore_ = nullptr;
+    DynamicProfileManager::GetInstance().dynamicProfileStore_ = nullptr;
     int32_t ret = DynamicProfileManager::GetInstance().DeleteServiceProfile(deviceId, serviceName);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
     DynamicProfileManager::GetInstance().Init();
@@ -901,7 +901,7 @@ HWTEST_F(DeviceProfileManagerTest, DeleteServiceProfile004, TestSize.Level1)
 {
     string deviceId = "deviceId15";
     string serviceName = "serviceName15";
-    DynamicProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DynamicProfileManager::GetInstance().dynamicProfileStore_->UnInit();
     int32_t ret = DynamicProfileManager::GetInstance().DeleteServiceProfile(deviceId, serviceName);
     EXPECT_EQ(ret, DP_DEL_KV_DB_FAIL);
     DynamicProfileManager::GetInstance().Init();
@@ -964,7 +964,7 @@ HWTEST_F(DeviceProfileManagerTest, DeleteCharacteristicProfile003, TestSize.Leve
     string deviceId = "deviceId14";
     string serviceName = "serviceName14";
     string characteristicKey = "characteristicKey14";
-    DynamicProfileManager::GetInstance().deviceProfileStore_ = nullptr;
+    DynamicProfileManager::GetInstance().dynamicProfileStore_ = nullptr;
     int32_t ret = DynamicProfileManager::GetInstance().DeleteCharacteristicProfile(deviceId, serviceName,
         characteristicKey);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
@@ -982,7 +982,7 @@ HWTEST_F(DeviceProfileManagerTest, DeleteCharacteristicProfile004, TestSize.Leve
     string deviceId = "deviceId15";
     string serviceName = "serviceName15";
     string characteristicKey = "characteristicKey15";
-    DynamicProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DynamicProfileManager::GetInstance().dynamicProfileStore_->UnInit();
     int32_t ret = DynamicProfileManager::GetInstance().DeleteCharacteristicProfile(deviceId, serviceName,
         characteristicKey);
     EXPECT_EQ(ret, DP_DEL_KV_DB_FAIL);
@@ -1010,7 +1010,7 @@ HWTEST_F(DeviceProfileManagerTest, GetAllDeviceProfile001, TestSize.Level1)
  */
 HWTEST_F(DeviceProfileManagerTest, GetAllDeviceProfile002, TestSize.Level1)
 {
-    DynamicProfileManager::GetInstance().deviceProfileStore_ = nullptr;
+    DynamicProfileManager::GetInstance().dynamicProfileStore_ = nullptr;
     vector<DeviceProfile> deviceProfiles;
     int32_t ret = DynamicProfileManager::GetInstance().GetAllDeviceProfile(deviceProfiles);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
@@ -1025,7 +1025,7 @@ HWTEST_F(DeviceProfileManagerTest, GetAllDeviceProfile002, TestSize.Level1)
  */
 HWTEST_F(DeviceProfileManagerTest, GetAllDeviceProfile003, TestSize.Level1)
 {
-    DynamicProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DynamicProfileManager::GetInstance().dynamicProfileStore_->UnInit();
     vector<DeviceProfile> deviceProfiles;
     int32_t ret = DynamicProfileManager::GetInstance().GetAllDeviceProfile(deviceProfiles);
     EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
@@ -1053,7 +1053,7 @@ HWTEST_F(DeviceProfileManagerTest, GetAllServiceProfile001, TestSize.Level1)
  */
 HWTEST_F(DeviceProfileManagerTest, GetAllServiceProfile002, TestSize.Level1)
 {
-    DynamicProfileManager::GetInstance().deviceProfileStore_ = nullptr;
+    DynamicProfileManager::GetInstance().dynamicProfileStore_ = nullptr;
     vector<ServiceProfile> serviceProfiles;
     int32_t ret = DynamicProfileManager::GetInstance().GetAllServiceProfile(serviceProfiles);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
@@ -1068,7 +1068,7 @@ HWTEST_F(DeviceProfileManagerTest, GetAllServiceProfile002, TestSize.Level1)
  */
 HWTEST_F(DeviceProfileManagerTest, GetAllServiceProfile003, TestSize.Level1)
 {
-    DynamicProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DynamicProfileManager::GetInstance().dynamicProfileStore_->UnInit();
     vector<ServiceProfile> serviceProfiles;
     int32_t ret = DynamicProfileManager::GetInstance().GetAllServiceProfile(serviceProfiles);
     EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
@@ -1096,7 +1096,7 @@ HWTEST_F(DeviceProfileManagerTest, GetAllCharacteristicProfile001, TestSize.Leve
  */
 HWTEST_F(DeviceProfileManagerTest, GetAllCharacteristicProfile002, TestSize.Level1)
 {
-    DynamicProfileManager::GetInstance().deviceProfileStore_ = nullptr;
+    DynamicProfileManager::GetInstance().dynamicProfileStore_ = nullptr;
     vector<CharacteristicProfile> charProfiles;
     int32_t ret = DynamicProfileManager::GetInstance().GetAllCharacteristicProfile(charProfiles);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
@@ -1111,7 +1111,7 @@ HWTEST_F(DeviceProfileManagerTest, GetAllCharacteristicProfile002, TestSize.Leve
  */
 HWTEST_F(DeviceProfileManagerTest, GetAllCharacteristicProfile003, TestSize.Level1)
 {
-    DynamicProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DynamicProfileManager::GetInstance().dynamicProfileStore_->UnInit();
     vector<CharacteristicProfile> charProfiles;
     int32_t ret = DynamicProfileManager::GetInstance().GetAllCharacteristicProfile(charProfiles);
     EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
