@@ -118,6 +118,10 @@ int32_t DistributedDeviceProfileStub::OnRemoteRequest(uint32_t code, MessageParc
             HILOGE("caller is not trusted");
             return ERR_DP_PERMISSION_DENIED;
         }
+        if (!DistributedDeviceProfileServiceNew::GetInstance().IsInited()) {
+            HILOGE("DP not finish init");
+            return ERR_DP_LOAD_SERVICE_ERR;
+        }
         if (func != nullptr) {
             return (this->*func)(data, reply);
         }

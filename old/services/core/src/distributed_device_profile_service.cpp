@@ -24,6 +24,7 @@
 #include "device_profile_errors.h"
 #include "device_profile_log.h"
 #include "device_profile_storage_manager.h"
+#include "distributed_device_profile_service_new.h"
 #include "dp_device_manager.h"
 #include "dp_radar_helper.h"
 #include "hitrace_meter.h"
@@ -72,6 +73,8 @@ bool DistributedDeviceProfileService::Init()
     if (unloadHandler_ == nullptr) {
         return false;
     }
+    HILOGI("init DistributedDeviceProfileServiceNew");
+    DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().Init();
     auto executeInnerFunc = [this] { DoInit(); };
     unloadHandler_->PostTask(executeInnerFunc, INIT_TASK_ID, 0);
     HILOGI("init succeeded");
@@ -330,11 +333,8 @@ bool DistributedDeviceProfileService::DoBusinessInit()
         HILOGE("AuthorityManager init failed");
         return false;
     }
-    if (!ContentSensorManager::GetInstance().Init()) {
-        HILOGE("ContentSensorManager init failed");
-        return false;
-    }
     TrustGroupManager::GetInstance().InitHichainService();
+    DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().PostInit();
     HILOGI("DoBusinessInit succeeded");
     return true;
 }

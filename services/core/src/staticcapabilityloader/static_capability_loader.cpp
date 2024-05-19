@@ -54,6 +54,7 @@ int32_t StaticCapabilityLoader::LoadStaticCapability(std::string& staticCapabili
         HILOGE("Load json failed, result: %{public}d!", loadJsonResult);
         return loadJsonResult;
     }
+    HILOGI("fileContent : %{public}s", fileContent.c_str());
     cJSON* staticCapabilityJson = cJSON_Parse(fileContent.c_str());
     if (!cJSON_IsObject(staticCapabilityJson)) {
         HILOGE("Static capability json parse failed!");

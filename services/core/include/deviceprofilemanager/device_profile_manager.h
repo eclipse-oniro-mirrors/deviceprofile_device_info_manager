@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,6 +15,8 @@
 
 #ifndef OHOS_DP_DEVICE_PROFILE_MANAGER_H
 #define OHOS_DP_DEVICE_PROFILE_MANAGER_H
+
+#include <unordered_map>
 
 #include "single_instance.h"
 #include "device_profile.h"
@@ -57,22 +59,18 @@ public:
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
         sptr<IRemoteObject> syncCompletedCallback);
     int32_t DeviceOnlineAutoSync(const std::string& peerNetworkId);
-    void OnNodeOnline(const std::string& peerNetworkId);
-    void OnNodeOffline(const std::string& peerNetworkId);
     std::vector<DistributedKv::Entry> GetEntriesByKeys(const std::vector<std::string>& keys);
-
+    
 private:
     bool LoadDpSyncAdapter();
     void UnloadDpSyncAdapter();
     int32_t RunloadedFunction(std::string deviceId, sptr<IRemoteObject> syncCompletedCallback);
-    bool IsLocalOrOnlineDevice(const std::string& deviceId);
     bool isAdapterSoLoaded_ = false;
     std::mutex isAdapterLoadLock_;
-    std::mutex dpStoreMutex_;
-    std::mutex onlineDeviceLock_;
+    std::mutex dynamicStoreMutex_;
     std::shared_ptr<IKVAdapter> deviceProfileStore_ = nullptr;
     std::shared_ptr<IDPSyncAdapter> dpSyncAdapter_;
-    std::unordered_set<std::string> onlineDevUdidSet_;
+    std::mutex dpStoreMutex_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

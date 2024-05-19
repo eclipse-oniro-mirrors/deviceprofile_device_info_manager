@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "kv_store_death_recipient.h"
+#include "listener/kv_store_death_recipient.h"
 
 #include "device_profile_manager.h"
 #include "event_handler_factory.h"

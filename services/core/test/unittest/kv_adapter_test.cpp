@@ -55,7 +55,8 @@ void KVAdapterTest::SetUpTestCase(void)
     kvStore = make_shared<KVAdapter>(APP_ID, STORE_ID,
             make_shared<KvDataChangeListener>(),
             make_shared<KvSyncCompletedListener>(),
-            make_shared<KvDeathRecipient>());
+            make_shared<KvDeathRecipient>(),
+            DistributedKv::TYPE_DYNAMICAL);
 }
 
 void KVAdapterTest::TearDownTestCase(void) {
@@ -388,7 +389,8 @@ HWTEST_F(KVAdapterTest, DeleteKvStore001, TestSize.Level1)
     kvStore_= make_shared<KVAdapter>(APP_ID, STORE_ID,
             make_shared<KvDataChangeListener>(),
             make_shared<KvSyncCompletedListener>(),
-            make_shared<KvDeathRecipient>());
+            make_shared<KvDeathRecipient>(),
+            DistributedKv::TYPE_DYNAMICAL);
     int32_t ret = kvStore_->DeleteKvStore();
     EXPECT_EQ(DP_SUCCESS, ret);
 }
@@ -408,7 +410,8 @@ HWTEST_F(KVAdapterTest, Get003, TestSize.Level1)
     kvStore_= make_shared<KVAdapter>(APP_ID, STORE_ID,
             make_shared<KvDataChangeListener>(),
             make_shared<KvSyncCompletedListener>(),
-            make_shared<KvDeathRecipient>());
+            make_shared<KvDeathRecipient>(),
+            DistributedKv::TYPE_DYNAMICAL);
     int32_t ret = kvStore_->Get(udid, key, value);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
 }
@@ -428,7 +431,8 @@ HWTEST_F(KVAdapterTest, Get004, TestSize.Level1)
     kvStore_= make_shared<KVAdapter>(APP_ID, STORE_ID,
             make_shared<KvDataChangeListener>(),
             make_shared<KvSyncCompletedListener>(),
-            make_shared<KvDeathRecipient>());
+            make_shared<KvDeathRecipient>(),
+            DistributedKv::TYPE_DYNAMICAL);
     int32_t ret = kvStore_->Get(udid, key, value);;
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
 }
@@ -448,7 +452,8 @@ HWTEST_F(KVAdapterTest, Get005, TestSize.Level1)
     kvStore_= make_shared<KVAdapter>(APP_ID, STORE_ID,
             make_shared<KvDataChangeListener>(),
             make_shared<KvSyncCompletedListener>(),
-            make_shared<KvDeathRecipient>());
+            make_shared<KvDeathRecipient>(),
+            DistributedKv::TYPE_DYNAMICAL);
     int32_t ret = kvStore_->Get(udid, key, value);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
 }
@@ -466,7 +471,8 @@ HWTEST_F(KVAdapterTest, Get006, TestSize.Level1)
     kvStore_= make_shared<KVAdapter>(APP_ID, STORE_ID,
             make_shared<KvDataChangeListener>(),
             make_shared<KvSyncCompletedListener>(),
-            make_shared<KvDeathRecipient>());
+            make_shared<KvDeathRecipient>(),
+            DistributedKv::TYPE_DYNAMICAL);
     kvStore_->SyncDeviceProfile(peerUdid);
  
     peerUdid = "";

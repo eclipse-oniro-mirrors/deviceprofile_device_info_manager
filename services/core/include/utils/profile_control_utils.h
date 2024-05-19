@@ -25,9 +25,6 @@
 #include "iremote_object.h"
 #include "i_sync_completed_callback.h"
 #include "ikv_adapter.h"
-#include "common/kv_data_change_listener.h"
-#include "common/kv_sync_completed_listener.h"
-#include "common/kv_store_death_recipient.h"
 #include "i_dp_sync_adapter.h"
 
 namespace OHOS {

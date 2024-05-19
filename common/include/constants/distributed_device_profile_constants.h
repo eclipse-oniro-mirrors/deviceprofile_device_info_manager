@@ -143,10 +143,8 @@ constexpr int32_t NUM_2 = 2;
 constexpr int32_t NUM_3 = 3;
 constexpr uint32_t NUM_1U = 1;
 constexpr uint32_t NUM_8U = 8;
-constexpr uint16_t NUM_24U = 24;
-const std::string DP_PKG_NAME = "ohos.dhardware.dmasdpadapter";
-const std::string DYNAMIC_APP_ID = "distributed_dynamic_profile_service";
-const std::string STATIC_APP_ID = "distributed_static_profile_service";
+constexpr uint16_t CUR_SWITCH_LEN = 1;
+const std::string DP_PKG_NAME = "deviceprofile";
 /* rdb constants */
 const std::string RDB_PATH = "/data/service/el1/public/database/distributed_device_profile_service/";
 const std::string DATABASE_NAME = "dp_rdb.db";
@@ -349,7 +347,7 @@ const std::string ON_SYNC_HANDLER = "kv_sync_completed_handler";
 const std::string AUTO_SYNC_HANDLER = "auto_sync_handler";
 const std::string EMPTY_STRING = "";
 /* switch attribute */
-const std::string SWITCH_CAPABILITY_PATH = "etc/deviceprofile/dp_switch_status_cfg.json";
+const std::string SWITCH_CAPABILITY_PATH = "etc/deviceprofile/dp_switch_status_cfg.json"; // update
 const std::string SWITCH_CALLERS = "DP_Callers";
 const std::string SWITCH_SERVICE_NAMES = "name";
 const std::string SWITCH_STATUS = "SwitchStatus";

@@ -223,7 +223,7 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::map<std::string, std::s
         }
         std::string key = item.substr(0, position);
         std::string value = item.substr(position + 1);
-        HILOGI("the key is %s, value is %s", key.c_str(), value.c_str());
+        HILOGI("the key is %{public}s, value is %{public}s", key.c_str(), value.c_str());
         params[key] = value;
     }
     return true;

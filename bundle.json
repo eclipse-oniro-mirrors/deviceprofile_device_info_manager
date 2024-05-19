@@ -23,7 +23,7 @@
         "components": [
           "cJSON",
           "c_utils",
-	  "config_policy",
+          "config_policy",
           "hisysevent",
           "hilog",
           "ipc",

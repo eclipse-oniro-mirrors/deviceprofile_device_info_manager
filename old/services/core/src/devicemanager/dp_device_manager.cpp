@@ -30,6 +30,7 @@
 #include "ipc_object_proxy.h"
 #include "ipc_skeleton.h"
 #include "iservice_registry.h"
+#include "profile_cache.h"
 #include "system_ability_definition.h"
 
 namespace OHOS {
@@ -100,7 +101,7 @@ void DpDeviceManager::DpDeviceStateCallback::OnDeviceOnline(const DmDeviceInfo &
     DistributedDeviceProfileService::GetInstance().DeviceOnline();
     DpDeviceManager::GetInstance().AutoSync(deviceInfo);
     std::string networkId = deviceInfo.networkId;
-    DistributedDeviceProfile::DeviceProfileManager::GetInstance().OnNodeOnline(networkId);
+    DistributedDeviceProfile::ProfileCache::GetInstance().OnNodeOnline(networkId);
 }
 
 void DpDeviceManager::DpDeviceStateCallback::OnDeviceOffline(const DmDeviceInfo &deviceInfo)
@@ -108,7 +109,7 @@ void DpDeviceManager::DpDeviceStateCallback::OnDeviceOffline(const DmDeviceInfo 
     HILOGI("offline called");
     std::string networkId = deviceInfo.networkId;
     DpDeviceManager::GetInstance().OnNodeOffline(networkId);
-    DistributedDeviceProfile::DeviceProfileManager::GetInstance().OnNodeOffline(networkId);
+    DistributedDeviceProfile::ProfileCache::GetInstance().OnNodeOffline(networkId);
 }
 
 void DpDeviceManager::DpDeviceStateCallback::OnDeviceChanged(const DmDeviceInfo &deviceInfo)

@@ -23,6 +23,9 @@
 
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
+#include "kv_data_change_listener.h"
+#include "kv_store_death_recipient.h"
+#include "kv_sync_completed_listener.h"
 #include "kv_adapter.h"
 #include "profile_cache.h"
 #include "profile_control_utils.h"
@@ -139,10 +142,6 @@ int32_t StaticProfileManager::GetAllCharacteristicProfile(
     if (getAllResult != DP_SUCCESS) {
         HILOGE("StaticProfileManager GetAllCharacteristicProfile fail, reason: %{public}d!", getAllResult);
         return getAllResult;
-    }
-    for (const CharacteristicProfile& staticCapabilityProfile : staticCapabilityProfiles) {
-        HILOGI("staticCapabilityProfile %{public}s!", staticCapabilityProfile.dump().c_str());
-        GenerateStaticInfoProfile(staticCapabilityProfile, staticInfoProfiles);
     }
     return DP_SUCCESS;
 }

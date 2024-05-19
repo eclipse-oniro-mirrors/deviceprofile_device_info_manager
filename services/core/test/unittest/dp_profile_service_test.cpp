@@ -25,7 +25,6 @@
 #include "profile_cache.h"
 #include "distributed_device_profile_errors.h"
 #include "trust_profile_manager.h"
-#include "device_profile_manager.h"
 #include "permission_manager.h"
 #include "subscribe_profile_manager.h"
 #include "event_handler_factory.h"

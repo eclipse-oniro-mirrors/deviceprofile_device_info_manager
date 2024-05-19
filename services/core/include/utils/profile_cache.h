@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -41,10 +41,18 @@ public:
     int32_t AddDeviceProfile(const DeviceProfile& deviceProfile);
     int32_t AddServiceProfile(const ServiceProfile& serviceProfile);
     int32_t AddCharProfile(const CharacteristicProfile& charProfile);
+    int32_t AddStaticCharProfile(const CharacteristicProfile& charProfile);
+    int32_t AddCharProfileBatch(const std::unordered_map<std::string, CharacteristicProfile>& charProfiles);
+    int32_t AddStaticCharProfileBatch(const std::unordered_map<std::string, CharacteristicProfile>& charProfiles);
+    uint32_t GetSwitch();
+    int32_t GetNetWorkIdByUdid(const std::string& udid, std::string& networkId);
+    int32_t GetUdidByNetWorkId(const std::string& networkId, std::string& udid);
     int32_t GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile);
     int32_t GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
         ServiceProfile& serviceProfile);
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
+        const std::string& charKey, CharacteristicProfile& charProfile);
+    int32_t GetStaticCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
         const std::string& charKey, CharacteristicProfile& charProfile);
     int32_t DeleteDeviceProfile(const std::string& deviceId);
     int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName);
@@ -58,13 +66,37 @@ public:
     int32_t RemoveSyncListeners(std::map<std::string, sptr<IRemoteObject>> syncListeners);
     int32_t RemoveSyncListener(const std::string& caller);
     int32_t RemoveSyncListener(sptr<IRemoteObject> syncListener);
+    int32_t SetSwitchByProfileBatch(const std::vector<CharacteristicProfile>& charProfiles,
+        const std::unordered_map<std::string, SwitchFlag>& switchServiceMap, uint32_t& outSwitch);
+    int32_t SetSwitchByProfile(const CharacteristicProfile& charProfile,
+        const std::unordered_map<std::string, SwitchFlag>& switchServiceMap, uint32_t& outSwitch);
+    bool IsSwitchValid(const CharacteristicProfile& charProfile,
+        const std::unordered_map<std::string, SwitchFlag>& switchServiceMap, const std::string& operate);
+    int32_t SetSwitchProfile(CharacteristicProfile& charProfile, uint32_t switchValue);
+    void OnNodeOnline(const std::string& peerNetworkId);
+    void OnNodeOffline(const std::string& peerNetworkId);
+    bool IsLocalOrOnlineDevice(const std::string& deviceId);
+    void SetCurSwitch(uint32_t newSwitch);
+    int32_t GetServiceNameByPos(int32_t pos, const std::unordered_map<std::string, SwitchFlag>& switchServiceMap,
+        std::string& serviceName);
+    int32_t GetSwitchProfilesByServiceName(const std::string& charProfileKey, CharacteristicProfile& switchProfile);
+    bool IsCharProfileKeyExist(const std::string& charKey);
+    std::string GetLocalUdid();
+    std::string GetLocalNetworkId();
 
 private:
     int32_t RefreshDeviceProfileCache(const std::vector<DeviceProfile>& deviceProfiles);
     int32_t RefreshServiceProfileCache(const std::vector<ServiceProfile>& serviceProfiles);
     int32_t RefreshCharProfileCache(const std::vector<CharacteristicProfile>& characteristicProfiles);
+    int32_t RefreshStaticProfileCache(const std::unordered_map<std::string, CharacteristicProfile>& staticProfiles);
 
 private:
+    std::string localUdid_;
+    std::string localNetworkId_;
+    std::mutex switchMutex_;
+    uint32_t curLocalSwitch_ = 0x0000;
+    std::mutex onlineDeviceLock_;
+    std::unordered_map<std::string, std::string> onlineDevMap_;
     std::mutex deviceProfileMutex_;
     // The key is profileKey, the value is DeviceProfile
     std::unordered_map<std::string, DeviceProfile> deviceProfileMap_;
@@ -74,6 +106,9 @@ private:
     std::mutex charProfileMutex_;
     // The key is profileKey, the value is CharacteristicProfile
     std::unordered_map<std::string, CharacteristicProfile> charProfileMap_;
+    std::mutex staticCharProfileMutex_;
+    // The key is profileKey, the value is CharacteristicProfile
+    std::unordered_map<std::string, CharacteristicProfile> staticCharProfileMap_;
     std::mutex syncListenerMutex_;
     // The key is procName, the value is syncCallback
     std::map<std::string, sptr<IRemoteObject>> syncListenerMap_;

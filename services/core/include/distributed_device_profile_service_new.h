@@ -16,6 +16,7 @@
 #ifndef OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_SERVICE_H
 #define OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_SERVICE_H
 
+#include <atomic>
 #include <mutex>
 #include "distributed_device_profile_stub_new.h"
 #include "event_handler.h"
@@ -34,6 +35,7 @@ public:
     ~DistributedDeviceProfileServiceNew();
 
     int32_t Init();
+    int32_t PostInit();
     int32_t UnInit();
     int32_t PutAccessControlProfile(const AccessControlProfile& aclProfile) override;
     int32_t UpdateAccessControlProfile(const AccessControlProfile& aclProfile) override;
@@ -62,6 +64,7 @@ public:
     int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) override;
     int32_t Dump(int32_t fd, const std::vector<std::u16string>& args) override;
     void DelayUnloadTask();
+    bool IsInited();
 
 protected:
     void OnStart(const SystemAbilityOnDemandReason& startReason) override;
@@ -75,6 +78,7 @@ private:
 private:
     std::shared_ptr<AppExecFwk::EventHandler> unloadHandler_;
     std::mutex unloadMutex_;
+    std::atomic<bool> isInited_{false};
 };
 } // namespace DeviceProfile
 } // namespace OHOS
