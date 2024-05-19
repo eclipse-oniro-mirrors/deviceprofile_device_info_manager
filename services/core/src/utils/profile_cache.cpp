@@ -13,13 +13,18 @@
  * limitations under the License.
  */
 
+#include "profile_cache.h"
+
 #include <cinttypes>
 #include <algorithm>
-#include "datetime_ex.h"
 
-#include "profile_cache.h"
+#include "content_sensor_manager_utils.h"
+#include "datetime_ex.h"
+#include "device_manager.h"
 #include "profile_utils.h"
-#include "device_profile_manager.h"
+#include "dynamic_profile_manager.h"
+#include "static_profile_manager.h"
+#include "switch_profile_manager.h"
 #include "sync_subscriber_death_recipient.h"
 
 namespace OHOS {
@@ -103,6 +108,47 @@ int32_t ProfileCache::AddCharProfile(const CharacteristicProfile& charProfile)
     return DP_SUCCESS;
 }
 
+int32_t ProfileCache::AddStaticCharProfile(const CharacteristicProfile& charProfile)
+{
+    if (!ProfileUtils::IsKeyValid(charProfile.GetDeviceId()) ||
+        !ProfileUtils::IsKeyValid(charProfile.GetServiceName()) ||
+        !ProfileUtils::IsKeyValid(charProfile.GetCharacteristicKey())) {
+        HILOGE("Params is invalid!");
+        return DP_INVALID_PARAMS;
+    }
+    std::string charProfileKey = ProfileUtils::GenerateCharProfileKey(charProfile.GetDeviceId(),
+        charProfile.GetServiceName(), charProfile.GetCharacteristicKey());
+    {
+        std::lock_guard<std::mutex> lock(staticCharProfileMutex_);
+        if (staticCharProfileMap_.size() > MAX_CHAR_SIZE) {
+            HILOGE("CharProfileMap size is invalid!");
+            return DP_EXCEED_MAX_SIZE_FAIL;
+        }
+        staticCharProfileMap_[charProfileKey] = charProfile;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileCache::AddCharProfileBatch(const std::unordered_map<std::string, CharacteristicProfile>& charProfiles)
+{
+    for (const auto& item : charProfiles) {
+        HILOGI("AddCharProfile key %{public}s value %{public}s!", item.first.c_str(),
+            item.second.GetCharacteristicValue().c_str());
+        ProfileCache::AddCharProfile(item.second);
+    }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileCache::AddStaticCharProfileBatch(const std::unordered_map<std::string, CharacteristicProfile>& charProfiles)
+{
+    for (const auto& item : charProfiles) {
+        HILOGI("AddStaticCharProfileBatch key %{public}s value %{public}s!", item.first.c_str(),
+            item.second.GetCharacteristicValue().c_str());
+        ProfileCache::AddStaticCharProfile(item.second);
+    }
+    return DP_SUCCESS;
+}
+
 int32_t ProfileCache::GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile)
 {
     if (!ProfileUtils::IsKeyValid(deviceId)) {
@@ -156,6 +202,26 @@ int32_t ProfileCache::GetCharacteristicProfile(const std::string& deviceId, cons
             return DP_NOT_FOUND_FAIL;
         }
         charProfile = charProfileMap_[charProfileKey];
+    }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileCache::GetStaticCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
+    const std::string& charKey, CharacteristicProfile& charProfile)
+{
+    if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsKeyValid(serviceName) ||
+        !ProfileUtils::IsKeyValid(charKey)) {
+        HILOGE("Params is invalid!");
+        return DP_INVALID_PARAMS;
+    }
+    {
+        std::lock_guard<std::mutex> lock(staticCharProfileMutex_);
+        std::string charProfileKey = ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, charKey);
+        if (staticCharProfileMap_.find(charProfileKey) == staticCharProfileMap_.end()) {
+            HILOGI("ProfileKey is not found in charProfileMap!");
+            return DP_NOT_FOUND_FAIL;
+        }
+        charProfile = staticCharProfileMap_[charProfileKey];
     }
     return DP_SUCCESS;
 }
@@ -279,13 +345,14 @@ int32_t ProfileCache::RefreshProfileCache()
 {
     int64_t beginTime = GetTickCount();
     std::vector<DeviceProfile> deviceProfiles;
-    DeviceProfileManager::GetInstance().GetAllDeviceProfile(deviceProfiles);
+    DynamicProfileManager::GetInstance().GetAllDeviceProfile(deviceProfiles);
     RefreshDeviceProfileCache(deviceProfiles);
     std::vector<ServiceProfile> serviceProfiles;
-    DeviceProfileManager::GetInstance().GetAllServiceProfile(serviceProfiles);
+    DynamicProfileManager::GetInstance().GetAllServiceProfile(serviceProfiles);
     RefreshServiceProfileCache(serviceProfiles);
     std::vector<CharacteristicProfile> charProfiles;
-    DeviceProfileManager::GetInstance().GetAllCharacteristicProfile(charProfiles);
+    DynamicProfileManager::GetInstance().GetAllCharacteristicProfile(charProfiles);
+    StaticProfileManager::GetInstance().GetAllCharacteristicProfile(charProfiles);
     RefreshCharProfileCache(charProfiles);
     int64_t endTime = GetTickCount();
     HILOGI("RefreshProfileCache, spend %{public}" PRId64 " ms", endTime - beginTime);
@@ -345,6 +412,24 @@ int32_t ProfileCache::RefreshCharProfileCache(const std::vector<CharacteristicPr
     return DP_SUCCESS;
 }
 
+int32_t ProfileCache::RefreshStaticProfileCache(const std::unordered_map<std::string, CharacteristicProfile>&
+    staticProfiles)
+{
+    if (staticProfiles.empty() || staticProfiles.size() > MAX_DB_RECORD_SIZE) {
+        HILOGE("Params is invalid!");
+        return DP_INVALID_PARAMS;
+    }
+    {
+        std::lock_guard<std::mutex> lock(charProfileMutex_);
+        charProfileMap_.clear();
+        for (const auto& staticProfileItem : staticProfiles) {
+            HILOGI("RefreshStaticProfileCache profile: %{public}s!", staticProfileItem.second.dump().c_str());
+            charProfileMap_[staticProfileItem.first] = staticProfileItem.second;
+        }
+    }
+    return DP_SUCCESS;
+}
+
 int32_t ProfileCache::AddSyncListener(const std::string& caller, sptr<IRemoteObject> syncListener)
 {
     if (caller.empty() || caller.size() > MAX_STRING_LEN || syncListener == nullptr) {
@@ -399,6 +484,7 @@ int32_t ProfileCache::RemoveSyncListeners(std::map<std::string, sptr<IRemoteObje
 
 int32_t ProfileCache::RemoveSyncListener(const std::string& caller)
 {
+    HILOGI("call!");
     if (caller.empty() || caller.size() > MAX_STRING_LEN) {
         HILOGE("descriptor is invalid!");
         return DP_INVALID_PARAMS;
@@ -418,6 +504,7 @@ int32_t ProfileCache::RemoveSyncListener(const std::string& caller)
 
 int32_t ProfileCache::RemoveSyncListener(sptr<IRemoteObject> syncListener)
 {
+    HILOGI("call!");
     if (syncListener == nullptr) {
         HILOGE("syncListener is nullptr!");
         return DP_INVALID_PARAMS;
@@ -439,6 +526,299 @@ int32_t ProfileCache::RemoveSyncListener(sptr<IRemoteObject> syncListener)
         syncListenerMap_.erase(iter);
     }
     return DP_SUCCESS;
+}
+
+uint32_t ProfileCache::GetSwitch()
+{
+    HILOGI("call!");
+    std::lock_guard<std::mutex> lock(switchMutex_);
+    return curLocalSwitch_;
+}
+
+int32_t ProfileCache::SetSwitchByProfileBatch(const std::vector<CharacteristicProfile>& charProfiles,
+    const std::unordered_map<std::string, SwitchFlag>& switchServiceMap, uint32_t& outSwitch)
+{
+    HILOGI("call!");
+    if (charProfiles.empty()) {
+        HILOGE("charProfiles is empty");
+        return DP_INVALID_PARAMS;
+    }
+    std::lock_guard<std::mutex> lock(switchMutex_);
+    outSwitch = curLocalSwitch_;
+    for (auto item : charProfiles) {
+        if (!IsSwitchValid(item, switchServiceMap, SWITCH_OPERATE_PUT)) {
+            HILOGE("SetSwitchByProfileBatch params invalid");
+            return DP_INVALID_PARAMS;
+        }
+        auto service = switchServiceMap.find(item.GetServiceName());
+        uint32_t mask = NUM_1U << (static_cast<uint32_t>(service->second));
+        uint32_t value = std::stoi(item.GetCharacteristicValue());
+        if (value) {
+            outSwitch |= mask;
+            HILOGI("SetSwitchByProfileBatch service: %s, switch on, currentSwitch: %d",
+                ProfileUtils::GetAnonyString(item.GetServiceName()).c_str(), outSwitch);
+        } else {
+            outSwitch &= ~mask;
+            HILOGI("SetSwitchByProfileBatch service: %s, switch off, currentSwitch: %d",
+                ProfileUtils::GetAnonyString(item.GetServiceName()).c_str(), outSwitch);
+        }
+        HILOGI("SetSwitchByProfileBatch success, currentSwitch: %d", outSwitch);
+    }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileCache::SetSwitchByProfile(const CharacteristicProfile& charProfile,
+    const std::unordered_map<std::string, SwitchFlag>& switchServiceMap, uint32_t& outSwitch)
+{
+    HILOGI("call!");
+    if (!IsSwitchValid(charProfile, switchServiceMap, SWITCH_OPERATE_PUT)) {
+        HILOGE("SetSwitch params invalid");
+        return DP_INVALID_PARAMS;
+    }
+    std::lock_guard<std::mutex> lock(switchMutex_);
+    outSwitch = curLocalSwitch_;
+    auto service = switchServiceMap.find(charProfile.GetServiceName());
+    uint32_t mask = NUM_1U << (static_cast<uint32_t>(service->second));
+    uint32_t value = std::stoi(charProfile.GetCharacteristicValue());
+
+    if (value) {
+        outSwitch |= mask;
+        HILOGI("SetSwitch service: %s, switch on, currentSwitch: %d",
+            ProfileUtils::GetAnonyString(charProfile.GetServiceName()).c_str(), outSwitch);
+    } else {
+        outSwitch &= ~mask;
+        HILOGI("SetSwitch service: %s, switch off, currentSwitch: %d",
+            ProfileUtils::GetAnonyString(charProfile.GetServiceName()).c_str(), outSwitch);
+    }
+    return DP_SUCCESS;
+}
+
+bool ProfileCache::IsSwitchValid(const CharacteristicProfile& charProfile,
+    const std::unordered_map<std::string, SwitchFlag>& switchServiceMap, const std::string& operate)
+{
+    HILOGI("call!");
+    if (charProfile.GetCharacteristicKey() != SWITCH_STATUS || switchServiceMap.empty()) {
+        HILOGE("params invalid");
+        return false;
+    }
+    //Verify and intercept the input switch key and value.
+    if (operate == SWITCH_OPERATE_PUT) {
+        if (charProfile.GetCharacteristicValue().empty()
+            || (charProfile.GetCharacteristicValue() != SWITCH_OFF
+                && charProfile.GetCharacteristicValue() != SWITCH_ON)) {
+            HILOGE("params invalid");
+            return false;
+        }
+    }
+    if (switchServiceMap.find(charProfile.GetServiceName()) == switchServiceMap.end()) {
+        HILOGE("can not find switchServiceName : %s", charProfile.GetServiceName().c_str());
+        return false;
+    }
+    return true;
+}
+
+//Queries the corresponding switch data based on the service name in the charprofile file and updates the current switch value.
+int32_t ProfileCache::SetSwitchProfile(CharacteristicProfile& charProfile, uint32_t switchValue)
+{
+    HILOGI("call!");
+    if (!IsSwitchValid(charProfile, SWITCH_SERVICE_MAP, SWITCH_OPERATE_GET)) {
+        HILOGE("SetSwitchProfile params invalid");
+        return DP_INVALID_PARAMS;
+    }
+    auto service = SWITCH_SERVICE_MAP.find(charProfile.GetServiceName());
+    uint32_t mask = NUM_1U << static_cast<int32_t>(service->second);
+    charProfile.SetCharacteristicValue(std::to_string((((switchValue & mask) >>
+        (static_cast<int32_t>(service->second))))));
+    HILOGI("SetSwitchProfile success, serviceName: %s, switch: %s", charProfile.GetServiceName().c_str(),
+        charProfile.GetCharacteristicValue().c_str());
+
+    if (charProfile.GetDeviceId() == GetLocalUdid()) {
+        HILOGI("%{public}s is localDevice", ProfileUtils::GetAnonyString(GetLocalUdid()).c_str());
+        std::lock_guard<std::mutex> lock(switchMutex_);
+        curLocalSwitch_ = switchValue;
+    }
+    return DP_SUCCESS;
+}
+
+void ProfileCache::SetCurSwitch(uint32_t newSwitch)
+{
+    std::lock_guard<std::mutex> lock(switchMutex_);
+    curLocalSwitch_ = newSwitch;
+    return;
+}
+
+void ProfileCache::OnNodeOnline(const std::string& peerNetworkId)
+{
+    HILOGI("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
+    std::string udid;
+    if (!ProfileUtils::GetUdidByNetworkId(peerNetworkId, udid)) {
+        HILOGE("get udid by networkId failed");
+        return;
+    }
+    {
+        std::lock_guard<std::mutex> lock(onlineDeviceLock_);
+        onlineDevMap_[udid] = peerNetworkId;
+        HILOGI("add %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
+    }
+}
+
+void ProfileCache::OnNodeOffline(const std::string& peerNetworkId)
+{
+    HILOGI("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
+    std::string udid;
+    if (!ProfileUtils::GetUdidByNetworkId(peerNetworkId, udid)) {
+        HILOGE("get udid by networkId failed");
+        return;
+    }
+    {
+        std::lock_guard<std::mutex> lock(onlineDeviceLock_);
+        onlineDevMap_.erase(udid);
+        HILOGI("release %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
+    }
+}
+
+bool ProfileCache::IsLocalOrOnlineDevice(const std::string& deviceId)
+{
+    HILOGI("call!");
+    if (deviceId == GetLocalUdid()) {
+        HILOGI("%{public}s is localDevice", ProfileUtils::GetAnonyString(deviceId).c_str());
+        return true;
+    }
+    std::lock_guard<std::mutex> lock(onlineDeviceLock_);
+    if (onlineDevMap_.find(deviceId) != onlineDevMap_.end()) {
+        HILOGI("%{public}s is online", ProfileUtils::GetAnonyString(deviceId).c_str());
+        return true;
+    }
+    HILOGE("%{public}s is offline or is not a local device.", ProfileUtils::GetAnonyString(deviceId).c_str());
+    return false;
+}
+
+int32_t ProfileCache::GetNetWorkIdByUdid(const std::string& udid, std::string& networkId)
+{
+    HILOGI("call!");
+    if (udid.empty()) {
+        HILOGE("UDID is empty");
+        return DP_INVALID_PARAMS;
+    }
+    
+    if (udid == GetLocalUdid()) {
+        networkId = GetLocalNetworkId();
+        HILOGI("GetNetWorkIdByUdid success, networkId is localNetworkid: %s",
+            ProfileUtils::GetAnonyString(networkId).c_str());
+        return DP_SUCCESS;
+    }
+    std::lock_guard<std::mutex> lock(onlineDeviceLock_);
+    if (onlineDevMap_.find(udid) == onlineDevMap_.end()) {
+        HILOGE("GetNetWorkIdByUdid failed");
+        return DP_GET_NETWORKID_BY_UDID_FAIL;
+    }
+    networkId = onlineDevMap_[udid];
+    HILOGI("GetNetWorkIdByUdid success, networkId: %s", ProfileUtils::GetAnonyString(networkId).c_str());
+    return DP_SUCCESS;
+}
+
+int32_t ProfileCache::GetUdidByNetWorkId(const std::string& networkId, std::string& udid)
+{
+    if (networkId.empty()) {
+        HILOGE("networkId is empty");
+        return DP_INVALID_PARAMS;
+    }
+    if (GetLocalNetworkId() == networkId) {
+        udid = GetLocalUdid();
+        HILOGI("networkId is local");
+        return DP_SUCCESS;
+    }
+    std::lock_guard<std::mutex> lock(onlineDeviceLock_);
+    for (auto& item : onlineDevMap_) {
+        if (item.second == networkId) {
+            udid = item.first;
+            HILOGI("find udid: %s", ProfileUtils::GetAnonyString(udid).c_str());
+            return DP_SUCCESS;
+        }
+    }
+    if (!ProfileUtils::GetUdidByNetworkId(networkId, udid)) {
+        HILOGE("GetUdidByNetworkId failed");
+        return DP_GET_UDID_BY_NETWORKID_FAIL;
+    }
+    onlineDevMap_[udid] = networkId;
+    HILOGI("GetUdidByNetworkId success");
+    HILOGE("GetUdidByNetWorkId failed");
+    return DP_SUCCESS;
+}
+
+int32_t ProfileCache::GetServiceNameByPos(int32_t pos, const std::unordered_map<std::string, SwitchFlag>& switchServiceMap,
+    std::string& serviceName)
+{
+    if (pos <= (int32_t)SwitchFlag::SWITCH_FLAG_MIN || pos >= (int32_t)SwitchFlag::SWITCH_FLAG_MAX || switchServiceMap.empty()) {
+        HILOGE("params are invalid");
+        return DP_INVALID_PARAMS;
+    }
+    for (auto& item : switchServiceMap) {
+        if (item.second == (SwitchFlag)pos) {
+            serviceName = item.first;
+            HILOGI("find serviceName: %s", serviceName.c_str());
+            return DP_SUCCESS;
+        }
+    }
+    HILOGE("GetServiceNameByPos failed");
+    return DP_GET_SERVICENAME_BY_POS_FAIL;
+}
+
+int32_t ProfileCache::GetSwitchProfilesByServiceName(const std::string& charProfileKey, CharacteristicProfile& switchProfile)
+{
+    if (charProfileKey.empty()) {
+        HILOGE("params are invalid");
+        return DP_INVALID_PARAMS;
+    }
+
+    std::lock_guard<std::mutex> lock(charProfileMutex_);
+    if (charProfileMap_.find(charProfileKey) == charProfileMap_.end()) {
+        HILOGW("ProfileKey is not found in charProfileMap!");
+    }
+
+    switchProfile = charProfileMap_[charProfileKey];
+    return DP_SUCCESS;
+}
+
+bool ProfileCache::IsCharProfileKeyExist(const std::string& charKey)
+{
+    if (charKey.empty()) {
+        HILOGE("Params is invalid!");
+        return false;
+    }
+    {
+        std::lock_guard<std::mutex> lock(charProfileMutex_);
+        if (charProfileMap_.find(charKey) == charProfileMap_.end()) {
+            HILOGI("charKey is not found in charProfileMap!");
+            return false;
+        }
+    }
+    return true;
+}
+
+std::string ProfileCache::GetLocalUdid()
+{
+    if (!localUdid_.empty()) {
+        return localUdid_;
+    }
+    localUdid_ = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
+    return localUdid_;
+}
+
+std::string ProfileCache::GetLocalNetworkId()
+{
+    if (!localNetworkId_.empty()) {
+        return localNetworkId_;
+    }
+    DistributedHardware::DmDeviceInfo localDevInfo;
+    int32_t res = DistributedHardware::DeviceManager::GetInstance().GetLocalDeviceInfo(DP_PKG_NAME, localDevInfo);
+    if (res != DP_SUCCESS) {
+        HILOGE("GetLocalDeviceInfo fail, res: %d.", res);
+        return EMPTY_STRING;
+    }
+    localNetworkId_ = localDevInfo.networkId;
+    return localNetworkId_;
+
 }
 } // namespace DeviceProfile
 } // namespace OHOS

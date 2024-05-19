@@ -143,15 +143,13 @@ enum StaticCapabilityFlag {
     CAPABILITY_FLAG_DEVICE_STATUS = 3,
     CAPABILITY_FLAG_MAX = 4,
 };
-enum SwitchFlag {
+enum class SwitchFlag : int32_t {
     SWITCH_FLAG_MIN = -1,
     SWITCH_FLAG_KEY_MOUSE_EDGE_CROSSING = 0,
-    SWITCH_FLAG_KEY_MOUSE_CROSSING_CAPABILITY = 1,
-    SWITCH_FLAG_MAX = 2
+    SWITCH_FLAG_MAX = 1
 };
 const std::unordered_map<std::string, SwitchFlag> SWITCH_SERVICE_MAP = {
-    { "SwitchStatus_Key_Mouse_Edge_Crossing", SwitchFlag::SWITCH_FLAG_KEY_MOUSE_EDGE_CROSSING },
-    { "SwitchStatus_Key_Mouse_Crossing_Capability", SwitchFlag::SWITCH_FLAG_KEY_MOUSE_CROSSING_CAPABILITY }
+    { "SwitchStatus_Key_Mouse_Edge_Crossing", SwitchFlag::SWITCH_FLAG_KEY_MOUSE_EDGE_CROSSING }
 };
 const std::unordered_map<std::string, StaticCapabilityFlag> CAPABILITY_FLAG_MAP = {
     { "dmsfwk_svr_id", StaticCapabilityFlag::CAPABILITY_FLAG_DMS },

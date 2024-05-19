@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
-#include "kv_store_death_recipient.h"
+#include "listener/kv_store_death_recipient.h"
 
-#include "device_profile_manager.h"
+#include "dynamic_profile_manager.h"
 #include "event_handler_factory.h"
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_constants.h"
@@ -55,7 +55,7 @@ void KvDeathRecipient::OnRemoteDied()
     HILOGI("OnRemoteDied, recover db begin");
     auto reInitTask = []() {
         // how to recover kv_store
-        DeviceProfileManager::GetInstance().ReInit();
+        DynamicProfileManager::GetInstance().ReInit();
     };
     {
         std::lock_guard<std::mutex> lock(reInitMutex_);

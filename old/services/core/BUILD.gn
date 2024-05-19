@@ -117,6 +117,7 @@ ohos_shared_library("distributed_device_profile") {
     "device_manager:devicemanagersdk",
     "dmsfwk:common_sdk",
     "eventhandler:libeventhandler",
+    "relational_store:native_rdb",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hitrace:hitrace_meter",

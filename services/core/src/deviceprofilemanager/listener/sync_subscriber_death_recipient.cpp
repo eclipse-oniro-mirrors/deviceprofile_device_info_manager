@@ -14,7 +14,7 @@
  */
 
 #include <string>
-#include "sync_subscriber_death_recipient.h"
+#include "listener/sync_subscriber_death_recipient.h"
 
 #include "distributed_device_profile_log.h"
 #include "profile_cache.h"

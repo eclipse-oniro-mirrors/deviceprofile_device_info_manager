@@ -17,8 +17,11 @@
 #define OHOS_DP_DATA_CHANGE_LISTENER_H
 
 #include <vector>
+#include <mutex>
 
 #include "kvstore_observer.h"
+
+#include "distributed_device_profile_enums.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -29,12 +32,19 @@ public:
 
     void OnChange(const DistributedKv::ChangeNotification& changeNotification) override;
     void OnChange(const DistributedKv::DataOrigin& origin, Keys&& keys) override;
+    void OnSwitchChange(const DistributedKv::SwitchNotification &notification) override;
 
 private:
     void HandleAddChange(const std::vector<DistributedKv::Entry> &insertRecords);
     void HandleUpdateChange(const std::vector<DistributedKv::Entry> &updateRecords);
     void HandleDeleteChange(const std::vector<DistributedKv::Entry> &deleteRecords);
     std::vector<DistributedKv::Entry> ConvertCloudChangeDataToEntries(const std::vector<std::string> &keys);
+    void HandleSwitchUpdateChange(const std::string netWorkId, uint32_t switchValue);
+    int32_t GenerateSwitchNotify(const std::string& udid, const std::string& servcieName,
+        const std::string& characteristicProfileKey, const std::string& characteristicProfileValue,
+        ChangeType changeType);
+private:
+    std::mutex dataChangeListenerMutex_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

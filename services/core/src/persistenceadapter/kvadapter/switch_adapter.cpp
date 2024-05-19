@@ -31,7 +31,7 @@ namespace {
 void SwitchAdapter::Init()
 {
     HILOGI("called");
-    std::lock_guard<std::mutex> lock(switchAdapterMutex_);
+    
     observer_ = std::make_shared<KvDataChangeListener>();
 }
 
@@ -48,7 +48,7 @@ int32_t SwitchAdapter::PutSwitch(const std::string& appId, uint32_t value, uint1
     appID.appId = appId;
     const DistributedKv::SwitchData switchData = {value, length};
 
-    std::lock_guard<std::mutex> lock(switchAdapterMutex_);
+    
     DistributedKv::Status res = kvDataMgr_.PutSwitch(appID, switchData);
     if (res != DistributedKv::Status::SUCCESS) {
         HILOGE("PutSwitch kv to db failed, ret: %d", res);
@@ -67,12 +67,13 @@ int32_t SwitchAdapter::GetSwitch(const std::string& appId, const std::string& ne
     DistributedKv::AppId appID;
     appID.appId = appId;
 
-    std::lock_guard<std::mutex> lock(switchAdapterMutex_);
+    
     auto res = kvDataMgr_.GetSwitch(appID, networkId);
     if (res.first != DistributedKv::Status::SUCCESS) {
-        HILOGE("kv from db failed, ret: %d", res.first);
+        HILOGE("switch from db failed, ret: %d", res.first);
         return DP_PUT_KV_DB_FAIL;
     }
+    HILOGI("switch value %{public}u", res.second.value);
     value = res.second.value;
     return DP_SUCCESS;
 }
@@ -87,7 +88,7 @@ int32_t SwitchAdapter::SubscribeSwitchData(const std::string& appId)
     DistributedKv::AppId appID;
     appID.appId = appId;
 
-    std::lock_guard<std::mutex> lock(switchAdapterMutex_);
+    
     auto res = kvDataMgr_.SubscribeSwitchData(appID, observer_);
     if (res != DistributedKv::Status::SUCCESS) {
         HILOGE("SubscribeSwitchData failed, ret: %d", res);
@@ -106,11 +107,11 @@ int32_t SwitchAdapter::UnsubscribeSwitchData(const std::string& appId)
 
     DistributedKv::AppId appID;
     appID.appId = appId;
-    std::lock_guard<std::mutex> lock(switchAdapterMutex_);
+    
     auto res = kvDataMgr_.UnsubscribeSwitchData(appID, observer_);
     if (res != DistributedKv::Status::SUCCESS) {
-        HILOGE("SubscribeSwitchData failed, ret: %d", res);
-        return DP_SUBSCRIBE_FAILED;
+        HILOGE("UnSubscribeSwitchData failed, ret: %d", res);
+        return DP_UNSUBSCRIBE_FAILED;
     }
     return DP_SUCCESS;
 }

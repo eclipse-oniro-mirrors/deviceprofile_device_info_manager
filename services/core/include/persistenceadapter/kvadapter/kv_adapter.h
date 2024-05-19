@@ -25,6 +25,8 @@
 #include "kvstore_observer.h"
 #include "distributed_device_profile_enums.h"
 
+#include "types.h"
+
 namespace OHOS {
 namespace DistributedDeviceProfile {
 class KVAdapter : public IKVAdapter {
@@ -32,7 +34,8 @@ public:
     KVAdapter(const std::string &appId, const std::string &storeId,
         const std::shared_ptr<DistributedKv::KvStoreObserver> &dataChangeListener,
         const std::shared_ptr<DistributedKv::KvStoreSyncCallback> &syncCompletedListener,
-        const std::shared_ptr<DistributedKv::KvStoreDeathRecipient> &deathListener);
+        const std::shared_ptr<DistributedKv::KvStoreDeathRecipient> &deathListener,
+        DistributedKv::DataType dataType);
     virtual ~KVAdapter();
 
     int32_t Init() override;
@@ -48,9 +51,10 @@ public:
         std::map<std::string, std::string>& values) override;
     int32_t Sync(const std::vector<std::string>& deviceList, SyncMode syncMode) override;
     int32_t DeleteKvStore();
+    void TriggerDynamicQuery(const std::string& udid);
 
 private:
-    DistributedKv::Status GetKvStorePtr();
+    DistributedKv::Status GetKvStorePtr(DistributedKv::DataType dataType);
     int32_t DeleteKvStorePtr();
     int32_t RegisterDataChangeListener();
     int32_t UnRegisterDataChangeListener();
@@ -67,6 +71,7 @@ private:
     DistributedKv::AppId appId_;
     DistributedKv::StoreId storeId_;
     DistributedKv::DistributedKvDataManager kvDataMgr_;
+    DistributedKv::DataType dataType_;
     std::shared_ptr<DistributedKv::SingleKvStore> kvStorePtr_ = nullptr;
     std::shared_ptr<DistributedKv::KvStoreObserver> dataChangeListener_ = nullptr;
     std::shared_ptr<DistributedKv::KvStoreSyncCallback> syncCompletedListener_ = nullptr;

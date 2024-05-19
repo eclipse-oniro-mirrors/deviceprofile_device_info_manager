@@ -94,10 +94,10 @@ int32_t SwitchProfileManager::PutCharacteristicProfileBatch(const std::vector<Ch
         res = ProfileControlUtils::PutSwitchCharacteristicProfileBatch(APP_ID, charProfiles);
     }
     if (res != DP_SUCCESS) {
-        HILOGE("PutCharacteristicProfileBatch fail, reason: %{public}d!", res);
+        HILOGE("fail, reason: %{public}d!", res);
         return res;
     }
-    HILOGI("PutCharacteristicProfileBatch success");
+    HILOGI("success");
     return DP_SUCCESS;
 }
 
@@ -131,5 +131,11 @@ int32_t SwitchProfileManager::RefreshLocalSwitchProfile()
     return DP_SUCCESS;
 }
 
+int32_t SwitchProfileManager::GetLocalSwitchFromDB(uint32_t& localSwitch)
+{
+    HILOGI("calll");
+    std::string netId = ProfileCache::GetInstance().GetLocalNetworkId();
+    return SwitchAdapter::GetInstance().GetSwitch(APP_ID, netId, localSwitch);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

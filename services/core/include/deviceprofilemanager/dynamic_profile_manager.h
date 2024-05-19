@@ -59,6 +59,7 @@ public:
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
         sptr<IRemoteObject> syncCompletedCallback);
     int32_t DeviceOnlineAutoSync(const std::string& peerNetworkId);
+    std::vector<DistributedKv::Entry> GetEntriesByKeys(const std::vector<std::string>& keys);
     
 private:
     bool LoadDpSyncAdapter();
@@ -69,6 +70,7 @@ private:
     std::mutex dynamicStoreMutex_;
     std::shared_ptr<IKVAdapter> dynamicProfileStore_ = nullptr;
     std::shared_ptr<IDPSyncAdapter> dpSyncAdapter_;
+    std::mutex dpStoreMutex_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

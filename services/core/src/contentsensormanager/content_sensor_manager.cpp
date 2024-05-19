@@ -24,6 +24,7 @@
 #include "distributed_device_profile_log.h"
 #include "dms_info_collector.h"
 #include "pasteboard_info_collector.h"
+#include "switch_status_collector.h"
 #include "syscap_info_collector.h"
 #include "system_info_collector.h"
 #include "distributed_device_profile_errors.h"
@@ -31,7 +32,7 @@
 #include "event_handler.h"
 #include "collector.h"
 #include "content_sensor_manager_utils.h"
-#include "device_profile_manager.h"
+#include "dynamic_profile_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -69,6 +70,7 @@ int32_t ContentSensorManager::Collect()
         taskList.push_back(std::make_shared<DmsInfoCollector>());
         taskList.push_back(std::make_shared<CollaborationInfoCollector>());
         taskList.push_back(std::make_shared<PasteboardInfoCollector>());
+        taskList.push_back(std::make_shared<SwitchStatusCollector>());
         DeviceProfile deviceProfile;
         std::vector<ServiceProfile> svrProfileList;
         std::vector<CharacteristicProfile> charProfileList;
@@ -78,14 +80,14 @@ int32_t ContentSensorManager::Collect()
             task->ConvertToProfile(charProfileList);
         }
         deviceProfile.SetDeviceId(ContentSensorManagerUtils::GetInstance().ObtainLocalUdid());
-        DeviceProfileManager::GetInstance().PutDeviceProfile(deviceProfile);
+        DynamicProfileManager::GetInstance().PutDeviceProfile(deviceProfile);
         if (!svrProfileList.empty()) {
-            DeviceProfileManager::GetInstance().PutServiceProfileBatch(svrProfileList);
+            DynamicProfileManager::GetInstance().PutServiceProfileBatch(svrProfileList);
         } else {
             HILOGI("svrProfileList is empty");
         }
         if (!charProfileList.empty()) {
-            DeviceProfileManager::GetInstance().PutCharacteristicProfileBatch(charProfileList);
+            DynamicProfileManager::GetInstance().PutCharacteristicProfileBatch(charProfileList);
         } else {
             HILOGI("charProfileList is empty");
         }

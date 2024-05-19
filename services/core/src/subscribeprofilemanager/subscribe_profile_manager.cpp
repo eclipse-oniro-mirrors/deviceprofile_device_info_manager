@@ -28,7 +28,7 @@ namespace {
 
 int32_t SubscribeProfileManager::Init()
 {
-    HILOGE("call!");
+    HILOGI("call!");
     funcsMap_[ProfileType::DEVICE_PROFILE * ChangeType::ADD] = &SubscribeProfileManager::NotifyDeviceProfileAdd;
     funcsMap_[ProfileType::DEVICE_PROFILE * ChangeType::UPDATE] = &SubscribeProfileManager::NotifyDeviceProfileUpdate;
     funcsMap_[ProfileType::DEVICE_PROFILE * ChangeType::DELETE] = &SubscribeProfileManager::NotifyDeviceProfileDelete;
@@ -43,7 +43,7 @@ int32_t SubscribeProfileManager::Init()
 
 int32_t SubscribeProfileManager::UnInit()
 {
-    HILOGE("call!");
+    HILOGI("call!");
     return DP_SUCCESS;
 }
 
@@ -112,7 +112,7 @@ int32_t SubscribeProfileManager::NotifyTrustDeviceProfileDelete(const TrustDevic
 
 int32_t SubscribeProfileManager::SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)
 {
-    HILOGE("SubscribeDeviceProfile, saId: %{public}d!, subscribeKey: %{public}s", subscribeInfo.GetSaId(),
+    HILOGI("SubscribeDeviceProfile, saId: %{public}d!, subscribeKey: %{public}s", subscribeInfo.GetSaId(),
         ProfileUtils::GetAnonyString(subscribeInfo.GetSubscribeKey()).c_str());
     {
         std::lock_guard<std::mutex> lock(subscribeMutex_);
@@ -131,7 +131,7 @@ int32_t SubscribeProfileManager::SubscribeDeviceProfile(const SubscribeInfo& sub
 
 int32_t SubscribeProfileManager::SubscribeDeviceProfile(std::map<std::string, SubscribeInfo> subscribeInfos)
 {
-    HILOGE("call!");
+    HILOGI("call!");
     for (auto item : subscribeInfos) {
         SubscribeDeviceProfile(item.second);
     }
@@ -140,7 +140,7 @@ int32_t SubscribeProfileManager::SubscribeDeviceProfile(std::map<std::string, Su
 
 int32_t SubscribeProfileManager::UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)
 {
-    HILOGE("UnSubscribeDeviceProfile, saId: %{public}d!, subscribeKey: %{public}s", subscribeInfo.GetSaId(),
+    HILOGI("UnSubscribeDeviceProfile, saId: %{public}d!, subscribeKey: %{public}s", subscribeInfo.GetSaId(),
         ProfileUtils::GetAnonyString(subscribeInfo.GetSubscribeKey()).c_str());
     {
         std::lock_guard<std::mutex> lock(subscribeMutex_);

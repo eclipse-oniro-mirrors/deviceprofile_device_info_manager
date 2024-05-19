@@ -18,11 +18,11 @@
 
 #include "datetime_ex.h"
 #include "string_ex.h"
-
-#include "distributed_device_profile_constants.h"
+#include "kv_adapter.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
-#include "kv_adapter.h"
+#include "distributed_device_profile_constants.h"
+#include "profile_cache.h"
 #include "profile_utils.h"
 
 namespace OHOS {
@@ -38,14 +38,16 @@ namespace {
 KVAdapter::KVAdapter(const std::string &appId, const std::string &storeId,
     const std::shared_ptr<DistributedKv::KvStoreObserver> &dataChangeListener,
     const std::shared_ptr<DistributedKv::KvStoreSyncCallback> &syncCompletedListener,
-    const std::shared_ptr<DistributedKv::KvStoreDeathRecipient> &deathListener)
+    const std::shared_ptr<DistributedKv::KvStoreDeathRecipient> &deathListener,
+    DistributedKv::DataType dataType)
 {
     this->appId_.appId = appId;
     this->storeId_.storeId = storeId;
     this->dataChangeListener_ = dataChangeListener;
     this->syncCompletedListener_= syncCompletedListener;
     this->deathRecipient_ = deathListener;
-    HILOGI("KVAdapter Constructor Success, appId: %{public}s, storeId: %{public}s", appId.c_str(), storeId.c_str());
+    this->dataType_ = dataType;
+    HILOGI("KVAdapter Constructor Success, appId: %s, storeId: %s", appId.c_str(), storeId.c_str());
 }
 
 KVAdapter::~KVAdapter()
@@ -59,7 +61,7 @@ int32_t KVAdapter::Init()
     int32_t tryTimes = MAX_INIT_RETRY_TIMES;
     int64_t beginTime = GetTickCount();
     while (tryTimes > 0) {
-        DistributedKv::Status status = GetKvStorePtr();
+        DistributedKv::Status status = GetKvStorePtr(dataType_);
         if (kvStorePtr_ && status == DistributedKv::Status::SUCCESS) {
             int64_t endTime = GetTickCount();
             HILOGI("Init KvStorePtr Success, spend %{public}" PRId64 " ms", endTime - beginTime);
@@ -261,18 +263,19 @@ int32_t KVAdapter::DeleteByPrefix(const std::string& keyPrefix)
     return DP_SUCCESS;
 }
 
-DistributedKv::Status KVAdapter::GetKvStorePtr()
+DistributedKv::Status KVAdapter::GetKvStorePtr(DistributedKv::DataType dataType)
 {
     HILOGI("called");
     DistributedKv::Options options = {
         .createIfMissing = true,
         .encrypt = false,
-        .autoSync = true,
+        .autoSync = (dataType == DistributedKv::TYPE_DYNAMICAL),
         .isPublic = true,
         .securityLevel = DistributedKv::SecurityLevel::S1,
         .area = 1,
         .kvStoreType = KvStoreType::SINGLE_VERSION,
         .baseDir = DATABASE_DIR,
+        .dataType = dataType,
         .cloudConfig = {
             .enableCloud = true,
             .autoSync  = true,
@@ -450,6 +453,25 @@ int32_t KVAdapter::DeleteDeathListener()
     return DP_SUCCESS;
 }
 
+void KVAdapter::TriggerDynamicQuery(const std::string& udid)
+{
+    HILOGI("Trigger DynamicQuery, key :%{public}s", ProfileUtils::GetAnonyString(udid).c_str());
+    std::string networkId = "";
+    if (ProfileCache::GetInstance().GetNetWorkIdByUdid(udid, networkId) != DP_SUCCESS) {
+        HILOGE("Can not find networkId by udid");
+        return;
+    }
+    HILOGI("Try Sync Dynamic data with remote dev, networkId: %{public}s", 
+        ProfileUtils::GetAnonyString(networkId).c_str());
+    std::function<void(DistributedKv::Status, DistributedKv::Value&&)> call = 
+        [](DistributedKv::Status status, DistributedKv::Value &&value) {
+        (void)status;
+        (void)value;
+    };
+    DistributedKv::Key KvKey(networkId);
+    kvStorePtr_->Get(KvKey, networkId, call);
+}
+
 int32_t KVAdapter::DeleteKvStore()
 {
     HILOGI("Delete KvStore!");
@@ -476,6 +498,10 @@ int32_t KVAdapter::GetByPrefix(const std::string& udid, const std::string& keyPr
         if (kvStorePtr_ == nullptr) {
             HILOGE("kvStoragePtr_ is null");
             return DP_KV_DB_PTR_NULL;
+        }
+        if ((this->dataType_ == DistributedKv::DataType::TYPE_DYNAMICAL) &&
+            (ProfileCache::GetInstance().GetLocalUdid() != udid)) {
+            TriggerDynamicQuery(udid);
         }
         // if prefix is empty, get all entries.
         DistributedKv::Key allEntryKeyPrefix(keyPrefix);
@@ -518,6 +544,10 @@ int32_t KVAdapter::Get(const std::string& udid, const std::string& key, std::str
         if (kvStorePtr_ == nullptr) {
             HILOGE("kvStoragePtr_ is null");
             return DP_KV_DB_PTR_NULL;
+        }
+        if ((this->dataType_ == DistributedKv::DataType::TYPE_DYNAMICAL) &&
+            (ProfileCache::GetInstance().GetLocalUdid() != udid)) {
+            TriggerDynamicQuery(udid);
         }
         status = kvStorePtr_->Get(kvKey, kvValue);
     }
