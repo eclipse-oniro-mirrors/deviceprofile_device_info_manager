@@ -139,7 +139,8 @@ int32_t ProfileCache::AddCharProfileBatch(const std::unordered_map<std::string, 
     return DP_SUCCESS;
 }
 
-int32_t ProfileCache::AddStaticCharProfileBatch(const std::unordered_map<std::string, CharacteristicProfile>& charProfiles)
+int32_t ProfileCache::AddStaticCharProfileBatch(
+    const std::unordered_map<std::string, CharacteristicProfile>& charProfiles)
 {
     for (const auto& item : charProfiles) {
         HILOGI("AddStaticCharProfileBatch key %{public}s value %{public}s!", item.first.c_str(),
@@ -580,7 +581,6 @@ int32_t ProfileCache::SetSwitchByProfile(const CharacteristicProfile& charProfil
     auto service = switchServiceMap.find(charProfile.GetServiceName());
     uint32_t mask = NUM_1U << (static_cast<uint32_t>(service->second));
     uint32_t value = std::stoi(charProfile.GetCharacteristicValue());
-
     if (value) {
         outSwitch |= mask;
         HILOGI("SetSwitch service: %s, switch on, currentSwitch: %d",
@@ -617,7 +617,6 @@ bool ProfileCache::IsSwitchValid(const CharacteristicProfile& charProfile,
     return true;
 }
 
-//Queries the corresponding switch data based on the service name in the charprofile file and updates the current switch value.
 int32_t ProfileCache::SetSwitchProfile(CharacteristicProfile& charProfile, uint32_t switchValue)
 {
     HILOGI("call!");
@@ -746,10 +745,11 @@ int32_t ProfileCache::GetUdidByNetWorkId(const std::string& networkId, std::stri
     return DP_SUCCESS;
 }
 
-int32_t ProfileCache::GetServiceNameByPos(int32_t pos, const std::unordered_map<std::string, SwitchFlag>& switchServiceMap,
-    std::string& serviceName)
+int32_t ProfileCache::GetServiceNameByPos(int32_t pos,
+    const std::unordered_map<std::string, SwitchFlag>& switchServiceMap, std::string& serviceName)
 {
-    if (pos <= (int32_t)SwitchFlag::SWITCH_FLAG_MIN || pos >= (int32_t)SwitchFlag::SWITCH_FLAG_MAX || switchServiceMap.empty()) {
+    if (pos <= (int32_t)SwitchFlag::SWITCH_FLAG_MIN || pos >= (int32_t)SwitchFlag::SWITCH_FLAG_MAX
+        || switchServiceMap.empty()) {
         HILOGE("params are invalid");
         return DP_INVALID_PARAMS;
     }
@@ -764,7 +764,8 @@ int32_t ProfileCache::GetServiceNameByPos(int32_t pos, const std::unordered_map<
     return DP_GET_SERVICENAME_BY_POS_FAIL;
 }
 
-int32_t ProfileCache::GetSwitchProfilesByServiceName(const std::string& charProfileKey, CharacteristicProfile& switchProfile)
+int32_t ProfileCache::GetSwitchProfilesByServiceName(const std::string& charProfileKey,
+    CharacteristicProfile& switchProfile)
 {
     if (charProfileKey.empty()) {
         HILOGE("params are invalid");
@@ -818,7 +819,6 @@ std::string ProfileCache::GetLocalNetworkId()
     }
     localNetworkId_ = localDevInfo.networkId;
     return localNetworkId_;
-
 }
 } // namespace DeviceProfile
 } // namespace OHOS

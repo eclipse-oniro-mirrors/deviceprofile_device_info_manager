@@ -461,9 +461,9 @@ void KVAdapter::TriggerDynamicQuery(const std::string& udid)
         HILOGE("Can not find networkId by udid");
         return;
     }
-    HILOGI("Try Sync Dynamic data with remote dev, networkId: %{public}s", 
+    HILOGI("Try Sync Dynamic data with remote dev, networkId: %{public}s",
         ProfileUtils::GetAnonyString(networkId).c_str());
-    std::function<void(DistributedKv::Status, DistributedKv::Value&&)> call = 
+    std::function<void(DistributedKv::Status, DistributedKv::Value&&)> call =
         [](DistributedKv::Status status, DistributedKv::Value &&value) {
         (void)status;
         (void)value;

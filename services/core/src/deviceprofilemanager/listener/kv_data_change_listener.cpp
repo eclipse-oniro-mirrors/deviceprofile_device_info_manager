@@ -105,7 +105,7 @@ void KvDataChangeListener::OnSwitchChange(const DistributedKv::SwitchNotificatio
     int32_t res = ProfileCache::GetInstance().GetUdidByNetWorkId(netWorkId, udid);
     if (res != DP_SUCCESS || udid.empty()) {
         HILOGE("KvDataChangeListener: get udid fail, netWorkId is invalid: %s",
-             ProfileUtils::GetAnonyString(netWorkId).c_str());
+            ProfileUtils::GetAnonyString(netWorkId).c_str());
         return;
     }
     HandleSwitchUpdateChange(udid, notification.data.value);
@@ -151,7 +151,8 @@ void KvDataChangeListener::HandleSwitchUpdateChange(const std::string udid, uint
     std::string serviceName;
 
     // std::lock_guard<std::mutex> lock(dataChangeListenerMutex_);
-    for (int32_t i = (int32_t)SwitchFlag::SWITCH_FLAG_MIN + (int32_t)NUM_1U; i < (int32_t)SwitchFlag::SWITCH_FLAG_MAX; ++i) {
+    for (int32_t i = (int32_t)SwitchFlag::SWITCH_FLAG_MIN + (int32_t)NUM_1U;
+        i < (int32_t)SwitchFlag::SWITCH_FLAG_MAX; ++i) {
         std::string itemSwitchValue =  std::to_string((switchValue >> i) & NUM_1);
         int32_t res = ProfileCache::GetInstance().GetServiceNameByPos(i, SWITCH_SERVICE_MAP, serviceName);
         if (res != DP_SUCCESS || serviceName.empty()) {
@@ -159,7 +160,7 @@ void KvDataChangeListener::HandleSwitchUpdateChange(const std::string udid, uint
             return;
         }
         res = GenerateSwitchNotify(udid, serviceName, SWITCH_STATUS,
-                itemSwitchValue, ChangeType::UPDATE);
+        itemSwitchValue, ChangeType::UPDATE);
         if (res != DP_SUCCESS) {
             HILOGE("GenerateSwitchNotify failed, res: %d", res);
             return;
@@ -169,7 +170,6 @@ void KvDataChangeListener::HandleSwitchUpdateChange(const std::string udid, uint
             HILOGI("update curLocalSwitch: %{public}d", ProfileCache::GetInstance().GetSwitch());
         }
     }
-
 }
 
 int32_t KvDataChangeListener::GenerateSwitchNotify(const std::string& udid, const std::string& serviceName,
