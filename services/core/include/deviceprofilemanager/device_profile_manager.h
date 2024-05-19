@@ -68,7 +68,7 @@ private:
     bool isAdapterSoLoaded_ = false;
     std::mutex isAdapterLoadLock_;
     std::mutex dynamicStoreMutex_;
-    std::shared_ptr<IKVAdapter> dynamicProfileStore_ = nullptr;
+    std::shared_ptr<IKVAdapter> deviceProfileStore_ = nullptr;
     std::shared_ptr<IDPSyncAdapter> dpSyncAdapter_;
     std::mutex dpStoreMutex_;
 };

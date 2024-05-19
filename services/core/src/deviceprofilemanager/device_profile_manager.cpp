@@ -48,10 +48,10 @@ int32_t DeviceProfileManager::Init()
     int32_t initResult = DP_MANAGER_INIT_FAIL;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        dynamicProfileStore_ = std::make_shared<KVAdapter>(APP_ID, STORE_ID, std::make_shared<KvDataChangeListener>(),
+        deviceProfileStore_ = std::make_shared<KVAdapter>(APP_ID, STORE_ID, std::make_shared<KvDataChangeListener>(),
             std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
             DistributedKv::TYPE_DYNAMICAL);
-        initResult = dynamicProfileStore_->Init();
+        initResult = deviceProfileStore_->Init();
     }
     LoadDpSyncAdapter();
     HILOGI("Init finish, res: %d", initResult);
@@ -63,8 +63,8 @@ int32_t DeviceProfileManager::UnInit()
     HILOGI("call!");
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        dynamicProfileStore_->UnInit();
-        dynamicProfileStore_ = nullptr;
+        deviceProfileStore_->UnInit();
+        deviceProfileStore_ = nullptr;
     }
     UnloadDpSyncAdapter();
     return DP_SUCCESS;
@@ -83,7 +83,7 @@ int32_t DeviceProfileManager::PutDeviceProfile(const DeviceProfile& deviceProfil
     int32_t res;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::PutDeviceProfile(dynamicProfileStore_, deviceProfile);
+        res = ProfileControlUtils::PutDeviceProfile(deviceProfileStore_, deviceProfile);
     }
     if (res != DP_SUCCESS) {
         HILOGE("PutDeviceProfile fail, reason: %{public}d!", res);
@@ -99,7 +99,7 @@ int32_t DeviceProfileManager::PutServiceProfile(const ServiceProfile& servicePro
     int32_t res;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::PutServiceProfile(dynamicProfileStore_, serviceProfile);
+        res = ProfileControlUtils::PutServiceProfile(deviceProfileStore_, serviceProfile);
     }
     if (res != DP_SUCCESS) {
         HILOGE("PutServiceProfile fail, reason: %{public}d!", res);
@@ -115,7 +115,7 @@ int32_t DeviceProfileManager::PutServiceProfileBatch(const std::vector<ServicePr
     int32_t res;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::PutServiceProfileBatch(dynamicProfileStore_, serviceProfiles);
+        res = ProfileControlUtils::PutServiceProfileBatch(deviceProfileStore_, serviceProfiles);
     }
     if (res != DP_SUCCESS) {
         HILOGE("PutServiceProfileBatch fail, reason: %{public}d!", res);
@@ -131,7 +131,7 @@ int32_t DeviceProfileManager::PutCharacteristicProfile(const CharacteristicProfi
     int32_t res;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::PutCharacteristicProfile(dynamicProfileStore_, charProfile);
+        res = ProfileControlUtils::PutCharacteristicProfile(deviceProfileStore_, charProfile);
     }
     if (res != DP_SUCCESS) {
         HILOGE("PutCharacteristicProfile fail, reason: %{public}d!", res);
@@ -147,7 +147,7 @@ int32_t DeviceProfileManager::PutCharacteristicProfileBatch(const std::vector<Ch
     int32_t res;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::PutCharacteristicProfileBatch(dynamicProfileStore_, charProfiles);
+        res = ProfileControlUtils::PutCharacteristicProfileBatch(deviceProfileStore_, charProfiles);
     }
     if (res != DP_SUCCESS) {
         HILOGE("PutCharacteristicProfileBatch fail, reason: %{public}d!", res);
@@ -163,7 +163,7 @@ int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, Devi
     int32_t res;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::GetDeviceProfile(dynamicProfileStore_, deviceId, deviceProfile);
+        res = ProfileControlUtils::GetDeviceProfile(deviceProfileStore_, deviceId, deviceProfile);
     }
     if (res != DP_SUCCESS) {
         HILOGE("GetDeviceProfile fail, reason: %{public}d!", res);
@@ -180,7 +180,7 @@ int32_t DeviceProfileManager::GetServiceProfile(const std::string& deviceId, con
     int32_t res;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::GetServiceProfile(dynamicProfileStore_, deviceId, serviceName,
+        res = ProfileControlUtils::GetServiceProfile(deviceProfileStore_, deviceId, serviceName,
             serviceProfile);
     }
     if (res != DP_SUCCESS) {
@@ -198,7 +198,7 @@ int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& device
     int32_t res;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::GetCharacteristicProfile(dynamicProfileStore_, deviceId, serviceName,
+        res = ProfileControlUtils::GetCharacteristicProfile(deviceProfileStore_, deviceId, serviceName,
             characteristicKey, charProfile);
     }
     if (res != DP_SUCCESS) {
@@ -215,7 +215,7 @@ int32_t DeviceProfileManager::DeleteServiceProfile(const std::string& deviceId, 
     int32_t res;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::DeleteServiceProfile(dynamicProfileStore_, deviceId, serviceName);
+        res = ProfileControlUtils::DeleteServiceProfile(deviceProfileStore_, deviceId, serviceName);
     }
     if (res != DP_SUCCESS) {
         HILOGE("DeleteServiceProfile fail, reason: %{public}d!", res);
@@ -232,7 +232,7 @@ int32_t DeviceProfileManager::DeleteCharacteristicProfile(const std::string& dev
     int32_t res;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::DeleteCharacteristicProfile(dynamicProfileStore_, deviceId, serviceName,
+        res = ProfileControlUtils::DeleteCharacteristicProfile(deviceProfileStore_, deviceId, serviceName,
             characteristicKey);
     }
     if (res != DP_SUCCESS) {
@@ -249,7 +249,7 @@ int32_t DeviceProfileManager::GetAllDeviceProfile(std::vector<DeviceProfile>& de
     int32_t res;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::GetAllDeviceProfile(dynamicProfileStore_, deviceProfiles);
+        res = ProfileControlUtils::GetAllDeviceProfile(deviceProfileStore_, deviceProfiles);
     }
     if (res != DP_SUCCESS) {
         HILOGE("GetAllDeviceProfile fail, reason: %{public}d!", res);
@@ -265,7 +265,7 @@ int32_t DeviceProfileManager::GetAllServiceProfile(std::vector<ServiceProfile>& 
     int32_t res;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::GetAllServiceProfile(dynamicProfileStore_, serviceProfiles);
+        res = ProfileControlUtils::GetAllServiceProfile(deviceProfileStore_, serviceProfiles);
     }
     if (res != DP_SUCCESS) {
         HILOGE("serviceProfiles fail, reason: %{public}d!", res);
@@ -281,7 +281,7 @@ int32_t DeviceProfileManager::GetAllCharacteristicProfile(std::vector<Characteri
     int32_t res;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::GetAllCharacteristicProfile(dynamicProfileStore_, charProfiles);
+        res = ProfileControlUtils::GetAllCharacteristicProfile(deviceProfileStore_, charProfiles);
     }
     if (res != DP_SUCCESS) {
         HILOGE("GetAllCharacteristicProfile fail, reason: %{public}d!", res);
@@ -319,7 +319,7 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const DistributedDeviceProfile::
     ProfileCache::GetInstance().AddSyncListener(callerDescriptor, syncCompletedCallback);
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        int32_t syncResult = dynamicProfileStore_->Sync(openHarmonyDevices, syncOptions.GetSyncMode());
+        int32_t syncResult = deviceProfileStore_->Sync(openHarmonyDevices, syncOptions.GetSyncMode());
         if (syncResult != DP_SUCCESS) {
             HILOGI("SyncDeviceProfile fail, res: %d!", syncResult);
             return DP_SYNC_DEVICE_FAIL;
@@ -441,13 +441,13 @@ std::vector<DistributedKv::Entry> DeviceProfileManager::GetEntriesByKeys(const s
     }
     {
         std::lock_guard<std::mutex> lock(dpStoreMutex_);
-        if (dynamicProfileStore_ == nullptr) {
+        if (deviceProfileStore_ == nullptr) {
             HILOGE("dynamicProfileStore is nullptr!");
             return entries;
         }
         for (const auto& key : keys) {
             std::string value;
-            if (dynamicProfileStore_->Get(key, value) != DP_SUCCESS) {
+            if (deviceProfileStore_->Get(key, value) != DP_SUCCESS) {
                 continue;
             }
             DistributedKv::Entry entry;
