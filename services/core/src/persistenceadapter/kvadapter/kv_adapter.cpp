@@ -71,6 +71,10 @@ int32_t KVAdapter::Init()
             return DP_SUCCESS;
         }
         HILOGI("CheckKvStore, left times: %{public}d, status: %{public}d", tryTimes, status);
+        if (status == DistributedKv::Status::STORE_META_CHANGED) {
+            HILOGW("This db meta changed, remove and rebuild it");
+            DeleteKvStore();
+        }
         if (status == DistributedKv::Status::SECURITY_LEVEL_ERROR) {
             DeleteKvStore();
         }
