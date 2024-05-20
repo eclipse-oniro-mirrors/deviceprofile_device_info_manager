@@ -133,7 +133,7 @@ int32_t DistributedDeviceProfileStub::OnRemoteRequest(uint32_t code, MessageParc
             HILOGE("caller is not trusted");
             return ERR_DP_PERMISSION_DENIED;
         }
-        if (std::find(aclAndSubcribeFuncs_.begin(),aclAndSubcribeFuncs_.begin(), code) != aclAndSubcribeFuncs_.end() 
+        if (std::find(aclAndSubscribeFuncs_.begin(), aclAndSubscribeFuncs_.end(), code) != aclAndSubscribeFuncs_.end()
             && func != nullptr) {
             return (this->*func)(data, reply);
         }
