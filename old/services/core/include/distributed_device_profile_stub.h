@@ -71,8 +71,11 @@ private:
 
     void InitNewIpcInterface();
 
+    void InitAclAndSubscribe();
+
 private:
     std::map<uint32_t, Func> funcsMap_;
+    std::vector<uint32_t> aclAndSubscribeFuncs_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS
