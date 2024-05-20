@@ -93,7 +93,7 @@ void DistributedDeviceProfileStub::InitNewIpcInterface()
         &DistributedDeviceProfileStub::UnSubscribeDeviceProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SEND_SUBSCRIBE_INFOS)] =
         &DistributedDeviceProfileStub::SendSubscribeInfosInner;
-    funcsMap_[static_cast<uint32_t>DPInterfaceCode::SYNC_DEVICE_PROFILE_NEW)] =
+    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SYNC_DEVICE_PROFILE_NEW)] =
         &DistributedDeviceProfileStub::SyncDeviceProfileNewInner;
     InitAclAndSubscribe();
 }
