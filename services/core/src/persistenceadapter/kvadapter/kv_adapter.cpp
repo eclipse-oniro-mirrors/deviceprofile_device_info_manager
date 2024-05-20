@@ -70,11 +70,11 @@ int32_t KVAdapter::Init()
             RegisterDeathListener();
             return DP_SUCCESS;
         }
+        HILOGI("CheckKvStore, left times: %{public}d, status: %{public}d", tryTimes, status);
         if (status == DistributedKv::Status::STORE_META_CHANGED) {
             HILOGW("This db meta changed, remove and rebuild it");
             kvDataMgr_.DeleteKvStore(appId_, storeId_, DATABASE_DIR + appId_.appId);
         }
-        HILOGI("CheckKvStore, left times: %{public}d, status: %{public}d", tryTimes, status);
         if (status == DistributedKv::Status::SECURITY_LEVEL_ERROR) {
             DeleteKvStore();
         }
