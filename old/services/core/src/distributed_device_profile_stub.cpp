@@ -93,23 +93,23 @@ void DistributedDeviceProfileStub::InitNewIpcInterface()
         &DistributedDeviceProfileStub::UnSubscribeDeviceProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SEND_SUBSCRIBE_INFOS)] =
         &DistributedDeviceProfileStub::SendSubscribeInfosInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SYNC_DEVICE_PROFILE_NEW)] =
+    funcsMap_[static_cast<uint32_t>DPInterfaceCode::SYNC_DEVICE_PROFILE_NEW)] =
         &DistributedDeviceProfileStub::SyncDeviceProfileNewInner;
     InitAclAndSubscribe();
 }
 
 void DistributedDeviceProfileStub::InitAclAndSubscribe()
 {
-    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::PUT_ACL_PROFILE);
-    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::UPDATE_ACL_PROFILE);
-    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::GET_TRUST_DEVICE_PROFILE);
-    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::GET_ALL_TRUST_DEVICE_PROFILE);
-    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::GET_ACL_PROFILE);
-    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::GET_ALL_ACL_PROFILE);
-    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::DELETE_ACL_PROFILE);
-    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE);
-    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE);
-    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::SEND_SUBSCRIBE_INFOS);
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::PUT_ACL_PROFILE));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::UPDATE_ACL_PROFILE));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::GET_TRUST_DEVICE_PROFILE));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::GET_ALL_TRUST_DEVICE_PROFILE));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::GET_ACL_PROFILE));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::GET_ALL_ACL_PROFILE));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::DELETE_ACL_PROFILE));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::SEND_SUBSCRIBE_INFOS));
 }
 
 bool DistributedDeviceProfileStub::EnforceInterfaceToken(MessageParcel& data)
