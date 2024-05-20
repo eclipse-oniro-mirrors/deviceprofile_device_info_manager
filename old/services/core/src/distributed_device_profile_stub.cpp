@@ -91,10 +91,25 @@ void DistributedDeviceProfileStub::InitNewIpcInterface()
         &DistributedDeviceProfileStub::SubscribeDeviceProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE)] =
         &DistributedDeviceProfileStub::UnSubscribeDeviceProfileInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SYNC_DEVICE_PROFILE_NEW)] =
-        &DistributedDeviceProfileStub::SyncDeviceProfileNewInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SEND_SUBSCRIBE_INFOS)] =
         &DistributedDeviceProfileStub::SendSubscribeInfosInner;
+    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SYNC_DEVICE_PROFILE_NEW)] =
+        &DistributedDeviceProfileStub::SyncDeviceProfileNewInner;
+    InitAclAndSubscribe();
+}
+
+void DistributedDeviceProfileStub::InitAclAndSubscribe()
+{
+    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::PUT_ACL_PROFILE);
+    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::UPDATE_ACL_PROFILE);
+    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::GET_TRUST_DEVICE_PROFILE);
+    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::GET_ALL_TRUST_DEVICE_PROFILE);
+    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::GET_ACL_PROFILE);
+    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::GET_ALL_ACL_PROFILE);
+    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::DELETE_ACL_PROFILE);
+    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE);
+    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE);
+    aclAndSubscribeFuncs_.emplace_back(DPInterfaceCode::SEND_SUBSCRIBE_INFOS);
 }
 
 bool DistributedDeviceProfileStub::EnforceInterfaceToken(MessageParcel& data)
@@ -117,6 +132,9 @@ int32_t DistributedDeviceProfileStub::OnRemoteRequest(uint32_t code, MessageParc
         if (!AuthorityManager::GetInstance().CheckCallerTrust()) {
             HILOGE("caller is not trusted");
             return ERR_DP_PERMISSION_DENIED;
+        }
+        if (aclAndSubscribeFuncs_.find(code) != aclAndSubscribeFuncs_.end() && func != nullptr) {
+            return (this->*func)(data, reply);
         }
         if (!DistributedDeviceProfileServiceNew::GetInstance().IsInited()) {
             HILOGE("DP not finish init");
