@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,865 +13,788 @@
  * limitations under the License.
  */
 
-#include <gtest/gtest.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <string>
+#include "gtest/gtest.h"
+
+#include <mutex>
+#include <memory>
+#include <algorithm>
+#include <dlfcn.h>
 #include <vector>
-#include <iostream>
+#include <list>
 
-#include "profile_utils.h"
-#include "trust_profile_manager.h"
-#include "distributed_device_profile_constants.h"
-#include "distributed_device_profile_log.h"
+#include "kv_adapter.h"
+#include "profile_cache.h"
+#include "profile_control_utils.h"
 #include "distributed_device_profile_errors.h"
-#include "rdb_open_callback.h"
+#include "distributed_device_profile_enums.h"
+#include "distributed_device_profile_log.h"
+#include "listener/kv_data_change_listener.h"
+#include "listener/kv_sync_completed_listener.h"
+#include "listener/kv_store_death_recipient.h"
 
 
+namespace OHOS {
+namespace DistributedDeviceProfile {
+using namespace testing;
 using namespace testing::ext;
-using namespace OHOS::NativeRdb;
-using namespace OHOS::DistributedDeviceProfile;
 using namespace std;
+
 namespace {
-    const std::string TAG = "TrustProfileManagerTest";
+    const std::string TAG = "ProfileControlUtilsTest";
+    const std::string APP_ID = "distributed_device_profile_service";
+    const std::string STORE_ID = "dp_kv_store";
 }
-class TrustProfileManagerTest : public testing::Test {
+
+class ProfileControlUtilsTest : public testing::Test {
 public:
     static void SetUpTestCase();
     static void TearDownTestCase();
     void SetUp();
     void TearDown();
-    int ResultSize(std::shared_ptr<ResultSet>& resultSet);
 };
 
-void TrustProfileManagerTest::SetUpTestCase()
-{
-    int32_t ret = OHOS::DistributedDeviceProfile::
-        TrustProfileManager::GetInstance().Init();
-    EXPECT_EQ(ret, DP_SUCCESS);
+void ProfileControlUtilsTest::SetUpTestCase() {
 }
 
-void TrustProfileManagerTest::TearDownTestCase()
-{
-    int32_t ret = OHOS::DistributedDeviceProfile::
-        TrustProfileManager::GetInstance().UnInit();
-    EXPECT_EQ(ret, DP_SUCCESS);
+void ProfileControlUtilsTest::TearDownTestCase() {
 }
 
-void TrustProfileManagerTest::SetUp()
-{
+void ProfileControlUtilsTest::SetUp() {
 }
 
-void TrustProfileManagerTest::TearDown()
-{
+void ProfileControlUtilsTest::TearDown() {
 }
 
-int TrustProfileManagerTest::ResultSize(std::shared_ptr<ResultSet> &resultSet)
-{
-    if (resultSet->GoToFirstRow() != E_OK) {
-        return 0;
-    }
-    int count;
-    resultSet->GetRowCount(count);
-    return count;
-}
-
-/*
- * @tc.name: PutAccessControlProfile_001
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutDeviceProfile001
+ * @tc.desc: PutDeviceProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_001, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutDeviceProfile001, TestSize.Level1)
 {
-    Accesser accesser;
-    accesser.SetAccesserDeviceId("acer1");
-    accesser.SetAccesserUserId(11);
-    accesser.SetAccesserAccountId("a1");
-    accesser.SetAccesserTokenId(111);
-    accesser.SetAccesserBundleName("b1");
-    accesser.SetAccesserHapSignature("h1");
-    accesser.SetAccesserBindLevel(1);
-
-    Accessee accessee;
-    accessee.SetAccesseeDeviceId("acee1");
-    accessee.SetAccesseeUserId(22);
-    accessee.SetAccesseeAccountId("a1");
-    accessee.SetAccesseeTokenId(222);
-    accessee.SetAccesseeBundleName("bb1");
-    accessee.SetAccesseeHapSignature("h1");
-    accessee.SetAccesseeBindLevel(1);
-
-    AccessControlProfile profile;
-    profile.SetTrustDeviceId("123456");
-    profile.SetSessionKey("key1");
-    profile.SetBindType(1);
-    profile.SetAuthenticationType(1);
-    profile.SetDeviceIdType(1);
-    profile.SetDeviceIdHash("abcd");
-    profile.SetStatus(0);
-    profile.SetValidPeriod(1);
-    profile.SetLastAuthTime(5);
-    profile.SetBindLevel(0);
-
-    profile.SetAccesser(accesser);
-    profile.SetAccessee(accessee);
-
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::shared_ptr<IKVAdapter> kvStore = nullptr;
+    DeviceProfile deviceProfile;
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutDeviceProfile(kvStore, deviceProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
-/*
- * @tc.name: PutAccessControlProfile_011
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutDeviceProfile002
+ * @tc.desc: PutDeviceProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_011, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutDeviceProfile002, TestSize.Level1)
 {
-    Accesser accesser;
-    accesser.SetAccesserDeviceId("acer11");
-    accesser.SetAccesserUserId(11);
-    accesser.SetAccesserAccountId("a11");
-    accesser.SetAccesserTokenId(111);
-    accesser.SetAccesserBundleName("b11");
-    accesser.SetAccesserHapSignature("h11");
-    accesser.SetAccesserBindLevel(1);
-
-    Accessee accessee;
-    accessee.SetAccesseeDeviceId("acee11");
-    accessee.SetAccesseeUserId(22);
-    accessee.SetAccesseeAccountId("a11");
-    accessee.SetAccesseeTokenId(222);
-    accessee.SetAccesseeBundleName("bb11");
-    accessee.SetAccesseeHapSignature("h11");
-    accessee.SetAccesseeBindLevel(1);
-
-    AccessControlProfile profile;
-    profile.SetTrustDeviceId("123456");
-    profile.SetSessionKey("key1");
-    profile.SetBindType(1);
-    profile.SetAuthenticationType(1);
-    profile.SetDeviceIdType(1);
-    profile.SetDeviceIdHash("abcd");
-    profile.SetStatus(0);
-    profile.SetValidPeriod(1);
-    profile.SetLastAuthTime(5);
-    profile.SetBindLevel(1);
-
-    profile.SetAccesser(accesser);
-    profile.SetAccessee(accessee);
-
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    DeviceProfile deviceProfile;
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutDeviceProfile(kvStore, deviceProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
-/*
- * @tc.name: PutAccessControlProfile_002
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutDeviceProfile003
+ * @tc.desc: PutDeviceProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_002, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutDeviceProfile003, TestSize.Level1)
 {
-    Accesser accesser;
-    accesser.SetAccesserDeviceId("acer2");
-    accesser.SetAccesserUserId(33);
-    accesser.SetAccesserAccountId("a2");
-    accesser.SetAccesserTokenId(333);
-    accesser.SetAccesserBundleName("b2");
-    accesser.SetAccesserHapSignature("h2");
-    accesser.SetAccesserBindLevel(1);
-
-    Accessee accessee;
-    accessee.SetAccesseeDeviceId("acee2");
-    accessee.SetAccesseeUserId(44);
-    accessee.SetAccesseeAccountId("a2");
-    accessee.SetAccesseeTokenId(444);
-    accessee.SetAccesseeBundleName("bb2");
-    accessee.SetAccesseeHapSignature("h2");
-    accessee.SetAccesseeBindLevel(1);
-
-    AccessControlProfile profile;
-    profile.SetTrustDeviceId("123456");
-    profile.SetSessionKey("key1");
-    profile.SetBindType(1);
-    profile.SetAuthenticationType(1);
-    profile.SetDeviceIdType(1);
-    profile.SetDeviceIdHash("abcd");
-    profile.SetStatus(1);
-    profile.SetValidPeriod(99);
-    profile.SetLastAuthTime(66);
-    profile.SetBindLevel(1);
-
-    profile.SetAccesser(accesser);
-    profile.SetAccessee(accessee);
-
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    DeviceProfile deviceProfile;
+    deviceProfile.SetDeviceId("deviceId");
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutDeviceProfile(kvStore, deviceProfile);
+    EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
 }
 
-/*
- * @tc.name: PutAccessControlProfile_022
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutDeviceProfile004
+ * @tc.desc: PutDeviceProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_022, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutDeviceProfile004, TestSize.Level1)
 {
-    Accesser accesser;
-    accesser.SetAccesserDeviceId("acer22");
-    accesser.SetAccesserUserId(33);
-    accesser.SetAccesserAccountId("a22");
-    accesser.SetAccesserTokenId(333);
-    accesser.SetAccesserBundleName("b22");
-    accesser.SetAccesserHapSignature("h22");
-    accesser.SetAccesserBindLevel(1);
-
-    Accessee accessee;
-    accessee.SetAccesseeDeviceId("acee22");
-    accessee.SetAccesseeUserId(555);
-    accessee.SetAccesseeAccountId("a2");
-    accessee.SetAccesseeTokenId(444);
-    accessee.SetAccesseeBundleName("bb2");
-    accessee.SetAccesseeHapSignature("h2");
-    accessee.SetAccesseeBindLevel(1);
-
-    AccessControlProfile profile;
-    profile.SetTrustDeviceId("123456");
-    profile.SetSessionKey("key1");
-    profile.SetBindType(1);
-    profile.SetAuthenticationType(1);
-    profile.SetDeviceIdType(1);
-    profile.SetDeviceIdHash("abcd");
-    profile.SetStatus(0);
-    profile.SetValidPeriod(99);
-    profile.SetLastAuthTime(66);
-    profile.SetBindLevel(1);
-
-    profile.SetAccesser(accesser);
-    profile.SetAccessee(accessee);
-
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    DeviceProfile deviceProfile1;
+    deviceProfile1.SetDeviceId("anything1");
+    deviceProfile1.SetDeviceTypeName("anything");
+    deviceProfile1.SetDeviceTypeId(0);
+    deviceProfile1.SetDeviceName("anything");
+    deviceProfile1.SetManufactureName("anything");
+    deviceProfile1.SetDeviceModel("anything");
+    deviceProfile1.SetStorageCapability(1);
+    deviceProfile1.SetOsSysCap("anything");
+    deviceProfile1.SetOsApiLevel(1);
+    deviceProfile1.SetOsVersion("anything");
+    deviceProfile1.SetOsType(1);
+    ProfileCache::GetInstance().AddDeviceProfile(deviceProfile1);
+    ProfileCache::GetInstance().IsDeviceProfileExist(deviceProfile1);
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutDeviceProfile(kvStore, deviceProfile1);
+    EXPECT_EQ(ret, DP_CACHE_EXIST);
 }
 
-/*
- * @tc.name: PutAccessControlProfile_003
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutServiceProfile001
+ * @tc.desc: PutServiceProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_003, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutServiceProfile001, TestSize.Level1)
 {
-    Accesser accesser;
-    accesser.SetAccesserDeviceId("acer3");
-    accesser.SetAccesserUserId(55);
-    accesser.SetAccesserAccountId("a3");
-    accesser.SetAccesserTokenId(555);
-    accesser.SetAccesserBundleName("b3");
-    accesser.SetAccesserHapSignature("h3");
-    accesser.SetAccesserBindLevel(1);
-
-    Accessee accessee;
-    accessee.SetAccesseeDeviceId("acee3");
-    accessee.SetAccesseeUserId(66);
-    accessee.SetAccesseeAccountId("a3");
-    accessee.SetAccesseeTokenId(666);
-    accessee.SetAccesseeBundleName("bb3");
-    accessee.SetAccesseeHapSignature("h3");
-    accessee.SetAccesseeBindLevel(1);
-
-    AccessControlProfile profile;
-    profile.SetTrustDeviceId("6666");
-    profile.SetSessionKey("key1");
-    profile.SetBindType(3);
-    profile.SetAuthenticationType(1);
-    profile.SetDeviceIdType(1);
-    profile.SetDeviceIdHash("abcd");
-    profile.SetStatus(1);
-    profile.SetValidPeriod(1);
-    profile.SetLastAuthTime(5);
-    profile.SetBindLevel(1);
-
-    profile.SetAccesser(accesser);
-    profile.SetAccessee(accessee);
-
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::shared_ptr<IKVAdapter> kvStore = nullptr;
+    ServiceProfile serviceProfile;
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutServiceProfile(kvStore, serviceProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
-/*
- * @tc.name: PutAccessControlProfile_033
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutServiceProfile002
+ * @tc.desc: PutServiceProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_033, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutServiceProfile002, TestSize.Level1)
 {
-    Accesser accesser;
-    accesser.SetAccesserDeviceId("acer33");
-    accesser.SetAccesserUserId(10086);
-    accesser.SetAccesserAccountId("a33");
-    accesser.SetAccesserTokenId(555);
-    accesser.SetAccesserBundleName("b3");
-    accesser.SetAccesserHapSignature("h33");
-    accesser.SetAccesserBindLevel(1);
-
-    Accessee accessee;
-    accessee.SetAccesseeDeviceId("acee33");
-    accessee.SetAccesseeUserId(10010);
-    accessee.SetAccesseeAccountId("a33");
-    accessee.SetAccesseeTokenId(666);
-    accessee.SetAccesseeBundleName("bb33");
-    accessee.SetAccesseeHapSignature("h33");
-    accessee.SetAccesseeBindLevel(1);
-
-    AccessControlProfile profile;
-    profile.SetTrustDeviceId("6666");
-    profile.SetSessionKey("key1");
-    profile.SetBindType(3);
-    profile.SetAuthenticationType(33);
-    profile.SetDeviceIdType(33);
-    profile.SetDeviceIdHash("abcd33");
-    profile.SetStatus(1);
-    profile.SetValidPeriod(1);
-    profile.SetLastAuthTime(5);
-    profile.SetBindLevel(1);
-
-    profile.SetAccesser(accesser);
-    profile.SetAccessee(accessee);
-
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    ServiceProfile serviceProfile;
+    serviceProfile.SetDeviceId("deviceId");
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutServiceProfile(kvStore, serviceProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
-/*
- * @tc.name: PutAccessControlProfile_004
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutServiceProfile003
+ * @tc.desc: PutServiceProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_004, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutServiceProfile003, TestSize.Level1)
 {
-    Accesser accesser;
-    accesser.SetAccesserDeviceId("acer4");
-    accesser.SetAccesserUserId(77);
-    accesser.SetAccesserAccountId("a4");
-    accesser.SetAccesserTokenId(777);
-    accesser.SetAccesserBundleName("b4");
-    accesser.SetAccesserHapSignature("h4");
-    accesser.SetAccesserBindLevel(1);
-
-    Accessee accessee;
-    accessee.SetAccesseeDeviceId("acee4");
-    accessee.SetAccesseeUserId(88);
-    accessee.SetAccesseeAccountId("a4");
-    accessee.SetAccesseeTokenId(888);
-    accessee.SetAccesseeBundleName("bb4");
-    accessee.SetAccesseeHapSignature("h4");
-    accessee.SetAccesseeBindLevel(1);
-
-    AccessControlProfile profile;
-    profile.SetTrustDeviceId("6666");
-    profile.SetSessionKey("key1");
-    profile.SetBindType(4);
-    profile.SetAuthenticationType(99);
-    profile.SetDeviceIdType(1);
-    profile.SetDeviceIdHash("abcd");
-    profile.SetStatus(0);
-    profile.SetValidPeriod(66);
-    profile.SetLastAuthTime(20);
-    profile.SetBindLevel(0);
-
-    profile.SetAccesser(accesser);
-    profile.SetAccessee(accessee);
-
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    ServiceProfile serviceProfile;
+    serviceProfile.SetServiceName("ServiceName");
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutServiceProfile(kvStore, serviceProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
-/*
- * @tc.name: PutAccessControlProfile_044
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutServiceProfile004
+ * @tc.desc: PutServiceProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_044, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutServiceProfile004, TestSize.Level1)
 {
-    Accesser accesser;
-    accesser.SetAccesserDeviceId("acer44");
-    accesser.SetAccesserUserId(77);
-    accesser.SetAccesserAccountId("a44");
-    accesser.SetAccesserTokenId(777);
-    accesser.SetAccesserBundleName("b4");
-    accesser.SetAccesserHapSignature("h44");
-    accesser.SetAccesserBindLevel(1);
-
-    Accessee accessee;
-    accessee.SetAccesseeDeviceId("acee44");
-    accessee.SetAccesseeUserId(88);
-    accessee.SetAccesseeAccountId("a44");
-    accessee.SetAccesseeTokenId(888);
-    accessee.SetAccesseeBundleName("bb4");
-    accessee.SetAccesseeHapSignature("h44");
-    accessee.SetAccesseeBindLevel(1);
-
-    AccessControlProfile profile;
-    profile.SetTrustDeviceId("9999");
-    profile.SetSessionKey("key1");
-    profile.SetBindType(4);
-    profile.SetAuthenticationType(100);
-    profile.SetDeviceIdType(1);
-    profile.SetDeviceIdHash("abcd");
-    profile.SetStatus(0);
-    profile.SetValidPeriod(66);
-    profile.SetLastAuthTime(20);
-    profile.SetBindLevel(0);
-
-    profile.SetAccesser(accesser);
-    profile.SetAccessee(accessee);
-
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    ServiceProfile serviceProfile;
+    serviceProfile.SetDeviceId("deviceId");
+    serviceProfile.SetServiceName("ServiceName");
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutServiceProfile(kvStore, serviceProfile);
+    EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
 }
 
-/*
- * @tc.name: PutAccessControlProfile_005
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutServiceProfile005
+ * @tc.desc: PutServiceProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_005, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutServiceProfile005, TestSize.Level1)
 {
-    Accesser accesser;
-    accesser.SetAccesserDeviceId("acer44");
-    accesser.SetAccesserUserId(77);
-    accesser.SetAccesserAccountId("a44");
-    accesser.SetAccesserTokenId(777);
-    accesser.SetAccesserBundleName("b4");
-    accesser.SetAccesserHapSignature("h44");
-    accesser.SetAccesserBindLevel(1);
-
-    Accessee accessee;
-    accessee.SetAccesseeDeviceId("acee4");
-    accessee.SetAccesseeUserId(88);
-    accessee.SetAccesseeAccountId("a4");
-    accessee.SetAccesseeTokenId(888);
-    accessee.SetAccesseeBundleName("bb4");
-    accessee.SetAccesseeHapSignature("h4");
-    accessee.SetAccesseeBindLevel(1);
-
-    AccessControlProfile profile;
-    profile.SetTrustDeviceId("9999");
-    profile.SetSessionKey("key1");
-    profile.SetBindType(4);
-    profile.SetAuthenticationType(100);
-    profile.SetDeviceIdType(1);
-    profile.SetDeviceIdHash("abcd");
-    profile.SetStatus(1);
-    profile.SetValidPeriod(66);
-    profile.SetLastAuthTime(20);
-    profile.SetBindLevel(0);
-
-    profile.SetAccesser(accesser);
-    profile.SetAccessee(accessee);
-
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().PutAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    ServiceProfile serviceProfile1;
+    serviceProfile1.SetDeviceId("deviceId1");
+    serviceProfile1.SetServiceName("serviceName1");
+    serviceProfile1.SetServiceType("serviceType1");
+    ProfileCache::GetInstance().AddServiceProfile(serviceProfile1);
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutServiceProfile(kvStore, serviceProfile1);
+    EXPECT_EQ(ret, DP_CACHE_EXIST);
 }
 
-/*
- * @tc.name: GetAccessControlProfile_001
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutServiceProfileBatch001
+ * @tc.desc: PutServiceProfileBatch
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_001, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutServiceProfileBatch001, TestSize.Level1)
 {
-    std::vector<AccessControlProfile> profile;
-    std::map<std::string, std::string> parms;
-    parms.insert({{"userId", "22"}, {"bundleName", "bb1"}, {"bindType", "1"}, {"status", "0"}});
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().GetAccessControlProfile(parms, profile);
-    for (size_t i = 0; i < profile.size(); i++) {
-        std::cout << profile[i].dump() <<std::endl;
-        ValuesBucket value;
-        ProfileUtils::AccessControlProfileToEntries(profile[i], value);
-        AccessControlProfile aclProfile;
-        ProfileUtils::EntriesToAccessControlProfile(value, aclProfile);
-        value.Clear();
-        std::cout << profile[i].GetAccesser().dump() <<std::endl;
-        ProfileUtils::AccesserToEntries(profile[i], value);
-        Accesser accesser;
-        ProfileUtils::EntriesToAccesser(value, accesser);
-        value.Clear();
-        std::cout << profile[i].GetAccessee().dump() <<std::endl;
-        ProfileUtils::AccesseeToEntries(profile[i], value);
-        Accessee accessee;
-        ProfileUtils::EntriesToAccessee(value, accessee);
-        value.Clear();
-    }
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::shared_ptr<IKVAdapter> kvStore = nullptr;
+    ServiceProfile serviceProfile;
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutServiceProfile(kvStore, serviceProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
-/*
- * @tc.name: GetAccessControlProfile_002
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutCharacteristicProfile001
+ * @tc.desc: PutCharacteristicProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_002, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutCharacteristicProfile001, TestSize.Level1)
 {
-    std::vector<AccessControlProfile> profile;
-    std::map<std::string, std::string> parms;
-    parms.insert({{"userId", "555"}, {"bundleName", "b1"}, {"trustDeviceId", "123456"}, {"status", "0"}});
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().GetAccessControlProfile(parms, profile);
-    for (size_t i = 0; i < profile.size(); i++) {
-        std::cout << profile[i].dump() <<std::endl;
-        std::cout << profile[i].GetAccesser().dump() <<std::endl;
-        std::cout << profile[i].GetAccessee().dump() <<std::endl;
-    }
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    CharacteristicProfile charProfile;
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutCharacteristicProfile(kvStore, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
-/*
- * @tc.name: GetAccessControlProfile_003
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutCharacteristicProfile002
+ * @tc.desc: PutCharacteristicProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_003, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutCharacteristicProfile002, TestSize.Level1)
 {
-    std::vector<AccessControlProfile> profile;
-    std::map<std::string, std::string> parms;
-    parms.insert({{"bundleName", "bb3"}, {"trustDeviceId", "6666"}, {"status", "1"}});
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().GetAccessControlProfile(parms, profile);
-    for (size_t i = 0; i < profile.size(); i++) {
-        std::cout << profile[i].dump() <<std::endl;
-        std::cout << profile[i].GetAccesser().dump() <<std::endl;
-        std::cout << profile[i].GetAccessee().dump() <<std::endl;
-    }
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    CharacteristicProfile charProfile;
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutCharacteristicProfile(kvStore, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
-/*
- * @tc.name: GetAccessControlProfile_004
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutCharacteristicProfile003
+ * @tc.desc: PutCharacteristicProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_004, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutCharacteristicProfile003, TestSize.Level1)
 {
-    std::vector<AccessControlProfile> profile;
-    std::map<std::string, std::string> parms;
-    parms.insert({{"bundleName", "bb4"}, {"bindType", "4"}, {"status", "0"}});
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().GetAccessControlProfile(parms, profile);
-    for (size_t i = 0; i < profile.size(); i++) {
-        std::cout << profile[i].dump() <<std::endl;
-        std::cout << profile[i].GetAccesser().dump() <<std::endl;
-        std::cout << profile[i].GetAccessee().dump() <<std::endl;
-    }
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    CharacteristicProfile charProfile;
+    charProfile.SetServiceName("ServiceName");
+    charProfile.SetCharacteristicKey("CharacteristicKey");
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutCharacteristicProfile(kvStore, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
-/*
- * @tc.name: GetAccessControlProfile_005
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutCharacteristicProfile004
+ * @tc.desc: PutCharacteristicProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_005, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutCharacteristicProfile004, TestSize.Level1)
 {
-    std::vector<AccessControlProfile> profile;
-    std::map<std::string, std::string> parms;
-    parms.insert({{"userId", "77"}, {"accountId", "a44"}});
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().GetAccessControlProfile(parms, profile);
-    for (size_t i = 0; i < profile.size(); i++) {
-        std::cout << profile[i].dump() <<std::endl;
-        std::cout << profile[i].GetAccesser().dump() <<std::endl;
-        std::cout << profile[i].GetAccessee().dump() <<std::endl;
-    }
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    CharacteristicProfile charProfile;
+    charProfile.SetDeviceId("DeviceId");
+    charProfile.SetCharacteristicKey("CharacteristicKey");
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutCharacteristicProfile(kvStore, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
-/*
- * @tc.name: GetAccessControlProfile_006
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutCharacteristicProfile005
+ * @tc.desc: PutCharacteristicProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_006, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutCharacteristicProfile005, TestSize.Level1)
 {
-    std::vector<AccessControlProfile> profile;
-    std::map<std::string, std::string> parms;
-    parms.insert({{"accesserTokenId", "777"}, {"accesseeDeviceId", "acee4"}});
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().GetAccessControlProfile(parms, profile);
-    for (size_t i = 0; i < profile.size(); i++) {
-        std::cout << profile[i].dump() <<std::endl;
-        std::cout << profile[i].GetAccesser().dump() <<std::endl;
-        std::cout << profile[i].GetAccessee().dump() <<std::endl;
-    }
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    CharacteristicProfile charProfile;
+    charProfile.SetDeviceId("DeviceId");
+    charProfile.SetServiceName("ServiceName");
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutCharacteristicProfile(kvStore, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
-/*
- * @tc.name: UpdateAccessControlProfile_001
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutCharacteristicProfile006
+ * @tc.desc: PutCharacteristicProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, UpdateAccessControlProfile_001, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutCharacteristicProfile006, TestSize.Level1)
 {
-    Accesser accesser;
-    accesser.SetAccesserId(1);
-    accesser.SetAccesserDeviceId("upacer1");
-    accesser.SetAccesserUserId(101);
-    accesser.SetAccesserAccountId("upa1");
-    accesser.SetAccesserTokenId(1001);
-    accesser.SetAccesserBundleName("b1");
-    accesser.SetAccesserHapSignature("uph1");
-    accesser.SetAccesserBindLevel(1);
-
-    Accessee accessee;
-    accessee.SetAccesseeId(1);
-    accessee.SetAccesseeDeviceId("upacee1");
-    accessee.SetAccesseeUserId(22);
-    accessee.SetAccesseeAccountId("upa1");
-    accessee.SetAccesseeTokenId(2002);
-    accessee.SetAccesseeBundleName("yyy");
-    accessee.SetAccesseeHapSignature("uph1");
-    accessee.SetAccesseeBindLevel(1);
-
-    AccessControlProfile profile;
-    profile.SetAccessControlId(1);
-    profile.SetAccesserId(1);
-    profile.SetAccesseeId(1);
-    profile.SetTrustDeviceId("123456");
-    profile.SetSessionKey("key1");
-    profile.SetBindType(1);
-    profile.SetAuthenticationType(1);
-    profile.SetDeviceIdType(1);
-    profile.SetDeviceIdHash("abcd");
-    profile.SetStatus(0);
-    profile.SetValidPeriod(1);
-    profile.SetLastAuthTime(5);
-    profile.SetBindLevel(0);
-
-    profile.SetAccesser(accesser);
-    profile.SetAccessee(accessee);
-
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().UpdateAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    CharacteristicProfile charProfile;
+    charProfile.SetDeviceId("DeviceId");
+    charProfile.SetServiceName("ServiceName");
+    charProfile.SetCharacteristicKey("CharacteristicKey");
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutCharacteristicProfile(kvStore, charProfile);
+    EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
 }
 
-/*
- * @tc.name: UpdateAccessControlProfile_002
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutCharacteristicProfile007
+ * @tc.desc: PutCharacteristicProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, UpdateAccessControlProfile_002, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutCharacteristicProfile007, TestSize.Level1)
 {
-    Accesser accesser;
-    accesser.SetAccesserId(3);
-    accesser.SetAccesserDeviceId("upacer2");
-    accesser.SetAccesserUserId(555);
-    accesser.SetAccesserAccountId("upa1");
-    accesser.SetAccesserTokenId(4444);
-    accesser.SetAccesserBundleName("b1");
-    accesser.SetAccesserHapSignature("uph1");
-    accesser.SetAccesserBindLevel(1);
-
-    Accessee accessee;
-    accessee.SetAccesseeId(3);
-    accessee.SetAccesseeDeviceId("upacee2");
-    accessee.SetAccesseeUserId(456);
-    accessee.SetAccesseeAccountId("upa2");
-    accessee.SetAccesseeTokenId(5555);
-    accessee.SetAccesseeBundleName("b1");
-    accessee.SetAccesseeHapSignature("uph2");
-    accessee.SetAccesseeBindLevel(1);
-
-    AccessControlProfile profile;
-    profile.SetAccessControlId(3);
-    profile.SetAccesserId(3);
-    profile.SetAccesseeId(3);
-    profile.SetTrustDeviceId("123456");
-    profile.SetSessionKey("key2");
-    profile.SetBindType(2);
-    profile.SetAuthenticationType(1);
-    profile.SetDeviceIdType(1);
-    profile.SetDeviceIdHash("abcd");
-    profile.SetStatus(0);
-    profile.SetValidPeriod(999);
-    profile.SetLastAuthTime(666);
-    profile.SetBindLevel(0);
-
-    profile.SetAccesser(accesser);
-    profile.SetAccessee(accessee);
-
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().UpdateAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    CharacteristicProfile charProfile;
+    charProfile.SetDeviceId("DeviceId");
+    charProfile.SetServiceName("ServiceName");
+    charProfile.SetCharacteristicKey("CharacteristicKey");
+    ProfileCache::GetInstance().AddCharProfile(charProfile);
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutCharacteristicProfile(kvStore, charProfile);
+    EXPECT_EQ(ret, DP_CACHE_EXIST);
 }
 
-/*
- * @tc.name: UpdateAccessControlProfile_003
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutSwitchCharacteristicProfile001
+ * @tc.desc: PutSwitchCharacteristicProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, UpdateAccessControlProfile_003, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfile001, TestSize.Level1)
 {
-    Accesser accesser;
-    accesser.SetAccesserId(5);
-    accesser.SetAccesserDeviceId("upacer3");
-    accesser.SetAccesserUserId(55);
-    accesser.SetAccesserAccountId("upa3");
-    accesser.SetAccesserTokenId(555);
-    accesser.SetAccesserBundleName("b3");
-    accesser.SetAccesserHapSignature("uph3");
-    accesser.SetAccesserBindLevel(1);
-
-    Accessee accessee;
-    accessee.SetAccesseeId(5);
-    accessee.SetAccesseeDeviceId("upacee3");
-    accessee.SetAccesseeUserId(66);
-    accessee.SetAccesseeAccountId("upa3");
-    accessee.SetAccesseeTokenId(6666);
-    accessee.SetAccesseeBundleName("bb3");
-    accessee.SetAccesseeHapSignature("uph3");
-    accessee.SetAccesseeBindLevel(1);
-
-    AccessControlProfile profile;
-    profile.SetAccessControlId(5);
-    profile.SetAccesserId(5);
-    profile.SetAccesseeId(5);
-    profile.SetTrustDeviceId("6666");
-    profile.SetSessionKey("key1");
-    profile.SetBindType(3);
-    profile.SetAuthenticationType(1);
-    profile.SetDeviceIdType(1);
-    profile.SetDeviceIdHash("aaaa");
-    profile.SetStatus(1);
-    profile.SetValidPeriod(1);
-    profile.SetLastAuthTime(5);
-    profile.SetBindLevel(1);
-
-    profile.SetAccesser(accesser);
-    profile.SetAccessee(accessee);
-
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().UpdateAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::string appId;
+    CharacteristicProfile charProfile;
+    charProfile.SetServiceName("ServiceName");
+    charProfile.SetCharacteristicKey("CharacteristicKey");
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutSwitchCharacteristicProfile(appId, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
-/*
- * @tc.name: DeleteAccessControlProfile_001
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutSwitchCharacteristicProfile002
+ * @tc.desc: PutSwitchCharacteristicProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, DeleteAccessControlProfile_001, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfile002, TestSize.Level1)
 {
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().DeleteAccessControlProfile(9);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::string appId;
+    CharacteristicProfile charProfile;
+    charProfile.SetDeviceId("DeviceId");
+    charProfile.SetCharacteristicKey("CharacteristicKey");
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutSwitchCharacteristicProfile(appId, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
-/*
- * @tc.name: DeleteAccessControlProfile_002
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutSwitchCharacteristicProfile003
+ * @tc.desc: PutSwitchCharacteristicProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, DeleteAccessControlProfile_002, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfile003, TestSize.Level1)
 {
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().DeleteAccessControlProfile(8);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::string appId;
+    CharacteristicProfile charProfile;
+    charProfile.SetDeviceId("DeviceId");
+    charProfile.SetServiceName("ServiceName");
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutSwitchCharacteristicProfile(appId, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
-/*
- * @tc.name: DeleteAccessControlProfile_003
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutSwitchCharacteristicProfile004
+ * @tc.desc: PutSwitchCharacteristicProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, DeleteAccessControlProfile_003, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfile004, TestSize.Level1)
 {
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().DeleteAccessControlProfile(5);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::string appId;
+    CharacteristicProfile charProfile;
+    charProfile.SetDeviceId("DeviceId");
+    charProfile.SetServiceName("ServiceName");
+    charProfile.SetCharacteristicKey("CharacteristicKey");
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutSwitchCharacteristicProfile(appId, charProfile);
+    EXPECT_EQ(ret, DP_CACHE_EXIST);
 }
 
-/*
- * @tc.name: DeleteAccessControlProfile_004
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutSwitchCharacteristicProfile005
+ * @tc.desc: PutSwitchCharacteristicProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, DeleteAccessControlProfile_004, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfile005, TestSize.Level1)
 {
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().DeleteAccessControlProfile(6);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::string appId;
+    CharacteristicProfile charProfile;
+    charProfile.SetDeviceId("DeviceId");
+    charProfile.SetServiceName("ServiceName");
+    charProfile.SetCharacteristicKey("CharacteristicKey");
+    ProfileCache::GetInstance().AddCharProfile(charProfile);
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutSwitchCharacteristicProfile(appId, charProfile);
+    EXPECT_EQ(ret, DP_CACHE_EXIST);
 }
 
-/*
- * @tc.name: DeleteAccessControlProfile_005
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutSwitchCharacteristicProfile006
+ * @tc.desc: PutSwitchCharacteristicProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, DeleteAccessControlProfile_005, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfile006, TestSize.Level1)
 {
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().DeleteAccessControlProfile(7);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::string appId;
+    CharacteristicProfile charProfile;
+    charProfile.SetDeviceId("DeviceId");
+    charProfile.SetServiceName("deviceStatus");
+    charProfile.SetCharacteristicKey(SWITCH_STATUS);
+    charProfile.SetCharacteristicValue("1");
+
+    ProfileCache::GetInstance().AddCharProfile(charProfile);
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutSwitchCharacteristicProfile(appId, charProfile);
+    EXPECT_EQ(ret, DP_CACHE_EXIST);
 }
 
-/*
- * @tc.name: GetAllAccessControlProfile_001
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutSwitchCharacteristicProfile007
+ * @tc.desc: PutSwitchCharacteristicProfile
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, GetAllAccessControlProfile_001, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfile007, TestSize.Level1)
 {
-    std::vector<AccessControlProfile> profile;
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().GetAllAccessControlProfile(profile);
-    for (size_t i = 0; i < profile.size(); i++) {
-        std::cout << profile[i].dump() <<std::endl;
-        std::cout << profile[i].GetAccesser().dump() <<std::endl;
-        std::cout << profile[i].GetAccessee().dump() <<std::endl;
-    }
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::string appId = "appId";
+    CharacteristicProfile charProfile;
+    charProfile.SetDeviceId("DeviceId");
+    charProfile.SetServiceName("deviceStatus");
+    charProfile.SetCharacteristicKey(SWITCH_STATUS);
+    charProfile.SetCharacteristicValue("1");
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutSwitchCharacteristicProfile(appId, charProfile);
+    EXPECT_EQ(ret, DP_CACHE_EXIST);
 }
 
-/*
- * @tc.name: GetAllTrustDeviceProfile_001
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutSwitchCharacteristicProfileBatch001
+ * @tc.desc: PutSwitchCharacteristicProfileBatch
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, GetAllTrustDeviceProfile_001, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfileBatch001, TestSize.Level1)
 {
-    std::vector<TrustDeviceProfile> profile;
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().GetAllTrustDeviceProfile(profile);
-    for (size_t i = 0; i < profile.size(); i++) {
-        std::cout << profile[i].dump() <<std::endl;
-    }
-    EXPECT_EQ(ret, DP_SUCCESS);
+    std::string appId = "appId";
+    std::vector<CharacteristicProfile> charProfiles;
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutSwitchCharacteristicProfileBatch(appId, charProfiles);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
-/*
- * @tc.name: GetTrustDeviceProfile_001
- * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+/**
+ * @tc.name: PutSwitchCharacteristicProfileBatch002
+ * @tc.desc: PutSwitchCharacteristicProfileBatch
  * @tc.type: FUNC
+ * @tc.require:
  */
-HWTEST_F(TrustProfileManagerTest, GetTrustDeviceProfile_001, TestSize.Level1)
+HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfileBatch002, TestSize.Level1)
 {
-    TrustDeviceProfile profile;
-    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().GetTrustDeviceProfile("123456", profile);
-    ValuesBucket value;
-    ProfileUtils::TrustDeviceProfileToEntries(profile, value);
-    std::cout << profile.dump() <<std::endl;
-    ProfileUtils::EntriesToTrustDeviceProfile(value, profile);
+    std::string appId = "appId";
+    std::vector<CharacteristicProfile> charProfiles;
+    
+    CharacteristicProfile charProfile;
+    charProfile.SetCharacteristicKey(SWITCH_STATUS);
+    charProfile.SetCharacteristicValue("1");
+    charProfiles.push_back(charProfile);
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutSwitchCharacteristicProfileBatch(appId, charProfiles);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: PutSwitchCharacteristicProfileBatch003
+ * @tc.desc: PutSwitchCharacteristicProfileBatch
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfileBatch003, TestSize.Level1)
+{
+    std::string appId = "appId";
+    std::vector<CharacteristicProfile> charProfiles;
+    
+    CharacteristicProfile charProfile;
+    charProfile.SetDeviceId("DeviceId");
+    charProfile.SetCharacteristicValue("1");
+    charProfiles.push_back(charProfile);
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutSwitchCharacteristicProfileBatch(appId, charProfiles);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: PutSwitchCharacteristicProfileBatch004
+ * @tc.desc: PutSwitchCharacteristicProfileBatch
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfileBatch004, TestSize.Level1)
+{
+    std::string appId = "appId";
+    std::vector<CharacteristicProfile> charProfiles;
+    
+    CharacteristicProfile charProfile;
+    charProfile.SetDeviceId("DeviceId");
+    charProfile.SetServiceName("deviceStatus");
+    charProfiles.push_back(charProfile);
+    charProfiles.push_back(charProfile);
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutSwitchCharacteristicProfileBatch(appId, charProfiles);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: PutSwitchCharacteristicProfileBatch005
+ * @tc.desc: PutSwitchCharacteristicProfileBatch
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfileBatch005, TestSize.Level1)
+{
+    std::string appId = "appId";
+    std::vector<CharacteristicProfile> charProfiles;
+    
+    CharacteristicProfile charProfile;
+    charProfile.SetDeviceId("DeviceId");
+    charProfile.SetServiceName("deviceStatus");
+    charProfile.SetCharacteristicKey(SWITCH_STATUS);
+    charProfile.SetCharacteristicValue("1");
+
+    charProfiles.push_back(charProfile);
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutSwitchCharacteristicProfileBatch(appId, charProfiles);
+    EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
+}
+
+/**
+ * @tc.name: PutSwitchCharacteristicProfileBatch006
+ * @tc.desc: PutSwitchCharacteristicProfileBatch
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfileBatch006, TestSize.Level1)
+{
+    std::string appId = "appId";
+    std::vector<CharacteristicProfile> charProfiles;
+    
+    CharacteristicProfile charProfile;
+    charProfile.SetDeviceId("DeviceId");
+    charProfile.SetServiceName("deviceStatus");
+    charProfile.SetCharacteristicKey("key");
+    charProfile.SetCharacteristicValue("1");
+
+    ProfileCache::GetInstance().AddCharProfile(charProfile);
+
+    charProfiles.push_back(charProfile);
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutSwitchCharacteristicProfileBatch(appId, charProfiles);
+    EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
+}
+
+/**
+ * @tc.name: PutSwitchCharacteristicProfileBatch007
+ * @tc.desc: PutSwitchCharacteristicProfileBatch
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfileBatch007, TestSize.Level1)
+{
+    std::string appId = "appId";
+    std::vector<CharacteristicProfile> charProfiles;
+    
+    CharacteristicProfile charProfile;
+    charProfile.SetDeviceId("DeviceId");
+    charProfile.SetServiceName("deviceStatus");
+    charProfile.SetCharacteristicKey(SWITCH_STATUS);
+    charProfile.SetCharacteristicValue("1");
+
+    ProfileCache::GetInstance().AddCharProfile(charProfile);
+    charProfiles.push_back(charProfile);
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutSwitchCharacteristicProfileBatch(appId, charProfiles);
+    EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
+}
+
+/**
+ * @tc.name: PutSwitchCharacteristicProfileBatch008
+ * @tc.desc: PutSwitchCharacteristicProfileBatch
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfileBatch008, TestSize.Level1)
+{
+    std::string appId = "";
+    std::vector<CharacteristicProfile> charProfiles;
+    
+    CharacteristicProfile charProfile;
+    charProfile.SetDeviceId("DeviceId");
+    charProfile.SetServiceName("deviceStatus");
+    charProfile.SetCharacteristicKey(SWITCH_STATUS);
+    charProfile.SetCharacteristicValue("1");
+
+    ProfileCache::GetInstance().AddCharProfile(charProfile);
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutSwitchCharacteristicProfileBatch(appId, charProfiles);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: PutCharacteristicProfileBatch001
+ * @tc.desc: PutCharacteristicProfileBatch
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, PutCharacteristicProfileBatch001, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    std::vector<CharacteristicProfile> charProfiles;
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->PutCharacteristicProfileBatch(kvStore, charProfiles);
     EXPECT_EQ(ret, DP_SUCCESS);
 }
 
+/**
+ * @tc.name: GetDeviceProfile001
+ * @tc.desc: GetDeviceProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetDeviceProfile001, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = nullptr;
+    DeviceProfile deviceProfile;
+    std::string deviceId;
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetDeviceProfile(kvStore, deviceId, deviceProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetDeviceProfile002
+ * @tc.desc: GetDeviceProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetDeviceProfile002, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    DeviceProfile deviceProfile;
+    std::string deviceId;
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetDeviceProfile(kvStore, deviceId, deviceProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetDeviceProfile003
+ * @tc.desc: GetDeviceProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetDeviceProfile003, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    DeviceProfile deviceProfile;
+    std::string deviceId = "deviceId";
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetDeviceProfile(kvStore, deviceId, deviceProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetDeviceProfile004
+ * @tc.desc: GetDeviceProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetDeviceProfile004, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    DeviceProfile deviceProfile;
+    std::string deviceId = "deviceId";
+    
+    ProfileCache::GetInstance().localUdid_ = deviceId;
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetDeviceProfile(kvStore, deviceId, deviceProfile);
+    EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
+}
+} // namespace DistributedDeviceProfile
+} // namespace OHOS
