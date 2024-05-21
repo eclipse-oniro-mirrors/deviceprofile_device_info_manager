@@ -43,6 +43,7 @@ device_profile_external_deps = [
   "access_token:libtoken_setproc",
   "cJSON:cjson",
   "c_utils:utils",
+  "config_policy:configpolicy_util",
   "device_auth:deviceauth_sdk",
   "device_manager:devicemanagersdk",
   "dmsfwk:common_sdk",
@@ -353,6 +354,36 @@ ohos_unittest("content_sensor_manager_utils_test") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("static_capability_collector_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/static_capability_collector_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("static_capability_loader_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/static_capability_loader_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("switch_adapter_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/switch_adapter_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 ohos_unittest("profile_control_utils_test") {
   module_out_path = module_output_path
   sources = [ "unittest/profile_control_utils_test.cpp" ]
@@ -382,7 +413,6 @@ ohos_unittest("switch_profile_manager_test") {
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
 }
-
 group("unittest") {
   testonly = true
   deps = [
@@ -412,8 +442,11 @@ group("unittest") {
     ":profile_control_utils_test",
     ":profile_utils_new_test",
     ":rdb_adapter_new_test",
+    ":static_capability_collector_test",
+    ":static_capability_loader_test",
     ":static_profile_manager_test",
     ":subscribe_profile_manager_test",
+    ":switch_adapter_test",
     ":switch_profile_manager_test",
     ":sync_completed_callback_test",
     ":sync_options_new_test",
