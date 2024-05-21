@@ -38,7 +38,7 @@ using namespace std::chrono_literals;
 namespace {
 const std::string TAG = "DeviceProfileStorage";
 const std::string PKG_NAME = "DBinderBus_" + std::to_string(getpid());
-constexpr int32_t RETRY_TIMES_GET_KVSTORE = 30;
+constexpr int32_t RETRY_TIMES_GET_KVSTORE = 1;
 }
 
 DeviceProfileStorage::DeviceProfileStorage(const std::string& appId, const std::string& storeId)
@@ -138,7 +138,6 @@ bool DeviceProfileStorage::TryGetKvStore()
             return true;
         }
         HILOGD("retry get kvstore...");
-        std::this_thread::sleep_for(500ms);
         retryTimes++;
     }
     if (kvStorePtr_ == nullptr) {
