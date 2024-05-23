@@ -25,12 +25,15 @@
 #include "kv_adapter.h"
 #include "profile_cache.h"
 #include "profile_control_utils.h"
+#include "content_sensor_manager_utils.h"
+#include "device_manager.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_enums.h"
 #include "distributed_device_profile_log.h"
 #include "listener/kv_data_change_listener.h"
 #include "listener/kv_sync_completed_listener.h"
 #include "listener/kv_store_death_recipient.h"
+#include "switch_adapter.h"
 
 
 namespace OHOS {
@@ -795,6 +798,501 @@ HWTEST_F(ProfileControlUtilsTest, GetDeviceProfile004, TestSize.Level1)
     auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
     int32_t ret = profileControlUtils->GetDeviceProfile(kvStore, deviceId, deviceProfile);
     EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
+    ProfileCache::GetInstance().localUdid_ = "";
+}
+
+/**
+ * @tc.name: GetServiceProfile001
+ * @tc.desc: GetServiceProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetServiceProfile001, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = nullptr;
+    std::string deviceId = "deviceId";
+    std::string serviceName;
+    ServiceProfile serviceProfile;
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetServiceProfile(kvStore, deviceId, serviceName, serviceProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetServiceProfile002
+ * @tc.desc: GetServiceProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetServiceProfile002, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    std::string deviceId = "deviceId";
+    std::string serviceName;
+    ServiceProfile serviceProfile;
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetServiceProfile(kvStore, deviceId, serviceName, serviceProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetServiceProfile003
+ * @tc.desc: GetServiceProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetServiceProfile003, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    std::string deviceId;
+    std::string serviceName = "serviceName";
+    ServiceProfile serviceProfile;
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetServiceProfile(kvStore, deviceId, serviceName, serviceProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetServiceProfile004
+ * @tc.desc: GetServiceProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetServiceProfile004, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    std::string deviceId= "deviceId";
+    std::string serviceName = "serviceName";
+    ServiceProfile serviceProfile;
+
+    ProfileCache::GetInstance().localUdid_ = "";
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetServiceProfile(kvStore, deviceId, serviceName, serviceProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetServiceProfile005
+ * @tc.desc: GetServiceProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetServiceProfile005, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    std::string deviceId= "deviceId";
+    std::string serviceName = "serviceName";
+    ServiceProfile serviceProfile;
+
+    ProfileCache::GetInstance().onlineDevMap_[deviceId] = "peerNetworkId";
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetServiceProfile(kvStore, deviceId, serviceName, serviceProfile);
+    ProfileCache::GetInstance().onlineDevMap_.erase(deviceId);
+    EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
+}
+
+/**
+ * @tc.name: GetServiceProfile006
+ * @tc.desc: GetServiceProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetServiceProfile006, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    std::string deviceId= "deviceId";
+    std::string serviceName = "serviceName";
+    ServiceProfile serviceProfile;
+
+    ProfileCache::GetInstance().onlineDevMap_[deviceId] = "peerNetworkId";
+    std::string serviceProfileKey = SVR_PREFIX + SEPARATOR + deviceId + SEPARATOR + serviceName;
+    ProfileCache::GetInstance().serviceProfileMap_[serviceProfileKey] = serviceProfile;
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetServiceProfile(kvStore, deviceId, serviceName, serviceProfile);
+    ProfileCache::GetInstance().onlineDevMap_.erase(deviceId);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: GetCharacteristicProfile001
+ * @tc.desc: GetCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile001, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = nullptr;
+    std::string deviceId= "deviceId";
+    std::string serviceName = "serviceName";
+    std::string characteristicKey;
+    CharacteristicProfile charProfile;
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetCharacteristicProfile(kvStore, deviceId, serviceName,
+        characteristicKey, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetCharacteristicProfile002
+ * @tc.desc: GetCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile002, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    std::string deviceId;
+    std::string serviceName = "serviceName";
+    std::string characteristicKey = "characteristicKey";
+    CharacteristicProfile charProfile;
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetCharacteristicProfile(kvStore, deviceId, serviceName,
+        characteristicKey, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetCharacteristicProfile003
+ * @tc.desc: GetCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile003, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    std::string deviceId= "deviceId";
+    std::string serviceName = "serviceName";
+    std::string characteristicKey;
+    CharacteristicProfile charProfile;
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetCharacteristicProfile(kvStore, deviceId, serviceName,
+        characteristicKey, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetCharacteristicProfile004
+ * @tc.desc: GetCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile004, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    std::string deviceId= "deviceId";
+    std::string serviceName = "serviceName";
+    std::string characteristicKey;
+    CharacteristicProfile charProfile;
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetCharacteristicProfile(kvStore, deviceId, serviceName,
+        characteristicKey, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetCharacteristicProfile005
+ * @tc.desc: GetCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile005, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    std::string deviceId= "deviceId";
+    std::string serviceName = "serviceName";
+    std::string characteristicKey = "characteristicKey";
+    CharacteristicProfile charProfile;
+
+    ProfileCache::GetInstance().localUdid_ = "";
+    ProfileCache::GetInstance().onlineDevMap_.erase(deviceId);
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetCharacteristicProfile(kvStore, deviceId, serviceName,
+        characteristicKey, charProfile);
+    ProfileCache::GetInstance().onlineDevMap_.erase(deviceId);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetCharacteristicProfile006
+ * @tc.desc: GetCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile006, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    std::string deviceId= "deviceId";
+    std::string serviceName = "serviceName";
+    std::string characteristicKey = "characteristicKey";
+    CharacteristicProfile charProfile;
+
+    ProfileCache::GetInstance().onlineDevMap_[deviceId] = "peerNetworkId";
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetCharacteristicProfile(kvStore, deviceId, serviceName,
+        characteristicKey, charProfile);
+    ProfileCache::GetInstance().onlineDevMap_.erase(deviceId);
+    EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
+}
+
+/**
+ * @tc.name: GetCharacteristicProfile007
+ * @tc.desc: GetCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile007, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+        std::make_shared<KvDataChangeListener>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        DistributedKv::TYPE_DYNAMICAL);
+    std::string deviceId= "deviceId";
+    std::string serviceName = "serviceName";
+    std::string characteristicKey = "characteristicKey";
+    CharacteristicProfile charProfile;
+
+    ProfileCache::GetInstance().onlineDevMap_[deviceId] = "peerNetworkId";
+    std::string charProfileKey =
+        CHAR_PREFIX + SEPARATOR + deviceId + SEPARATOR + serviceName + SEPARATOR + characteristicKey;
+    ProfileCache::GetInstance().charProfileMap_[charProfileKey] = charProfile;
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetCharacteristicProfile(kvStore, deviceId, serviceName,
+        characteristicKey, charProfile);
+    ProfileCache::GetInstance().charProfileMap_.erase(charProfileKey);
+    ProfileCache::GetInstance().onlineDevMap_.erase(deviceId);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: RefreshLocalSwitchProfile001
+ * @tc.desc: RefreshLocalSwitchProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, RefreshLocalSwitchProfile001, TestSize.Level1)
+{
+    std::string appId = "appId";
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->RefreshLocalSwitchProfile(appId);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: RefreshLocalSwitchProfile002
+ * @tc.desc: RefreshLocalSwitchProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, RefreshLocalSwitchProfile002, TestSize.Level1)
+{
+    std::string appId = "";
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    ProfileCache::GetInstance().localNetworkId_ = "localNetwork";
+    int32_t ret = profileControlUtils->RefreshLocalSwitchProfile(appId);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: RefreshLocalSwitchProfile003
+ * @tc.desc: RefreshLocalSwitchProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, RefreshLocalSwitchProfile003, TestSize.Level1)
+{
+    std::string appId = "appId";
+  
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    ProfileCache::GetInstance().localNetworkId_ = "localNetwork";
+    int32_t ret = profileControlUtils->RefreshLocalSwitchProfile(appId);
+    EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
+}
+
+/**
+ * @tc.name: GetSwitchCharacteristicProfile001
+ * @tc.desc: GetSwitchCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetSwitchCharacteristicProfile001, TestSize.Level1)
+{
+    std::string appId = "appId";
+    std::string deviceId = "";
+    std::string serviceName = "serviceName";
+    std::string characteristicKey = "characteristicKey";
+    CharacteristicProfile charProfile;
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetSwitchCharacteristicProfile(appId, deviceId,
+        serviceName, characteristicKey, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetSwitchCharacteristicProfile002
+ * @tc.desc: GetSwitchCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetSwitchCharacteristicProfile002, TestSize.Level1)
+{
+    std::string appId = "appId";
+    std::string deviceId = "deviceId";
+    std::string serviceName = "";
+    std::string characteristicKey = "characteristicKey";
+    CharacteristicProfile charProfile;
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetSwitchCharacteristicProfile(appId, deviceId,
+        serviceName, characteristicKey, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetSwitchCharacteristicProfile003
+ * @tc.desc: GetSwitchCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetSwitchCharacteristicProfile003, TestSize.Level1)
+{
+    std::string appId = "appId";
+    std::string deviceId = "deviceId";
+    std::string serviceName = "serviceName";
+    std::string characteristicKey = "";
+    CharacteristicProfile charProfile;
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetSwitchCharacteristicProfile(appId, deviceId,
+        serviceName, characteristicKey, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetSwitchCharacteristicProfile004
+ * @tc.desc: GetSwitchCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetSwitchCharacteristicProfile004, TestSize.Level1)
+{
+    std::string appId = "";
+    std::string deviceId = "deviceId";
+    std::string serviceName = "serviceName";
+    std::string characteristicKey = "characteristicKey";
+    CharacteristicProfile charProfile;
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetSwitchCharacteristicProfile(appId, deviceId,
+        serviceName, characteristicKey, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetSwitchCharacteristicProfile005
+ * @tc.desc: GetSwitchCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetSwitchCharacteristicProfile005, TestSize.Level1)
+{
+    std::string appId = "appId";
+    std::string deviceId = "deviceId";
+    std::string serviceName = "serviceName";
+    std::string characteristicKey = "characteristicKey";
+    CharacteristicProfile charProfile;
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetSwitchCharacteristicProfile(appId, deviceId,
+        serviceName, characteristicKey, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetSwitchCharacteristicProfile006
+ * @tc.desc: GetSwitchCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetSwitchCharacteristicProfile006, TestSize.Level1)
+{
+    std::string appId = "appId";
+    std::string deviceId = "deviceId";
+    std::string serviceName = "serviceName";
+    std::string characteristicKey = "characteristicKey";
+    CharacteristicProfile charProfile;
+
+    ProfileCache::GetInstance().onlineDevMap_[deviceId] = "peerNetworkId";
+    std::string charProfileKey =
+        CHAR_PREFIX + SEPARATOR + deviceId + SEPARATOR + serviceName + SEPARATOR + characteristicKey;
+    ProfileCache::GetInstance().charProfileMap_[charProfileKey] = charProfile;
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetSwitchCharacteristicProfile(appId, deviceId,
+        serviceName, characteristicKey, charProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ProfileCache::GetInstance().charProfileMap_.erase(charProfileKey);
+    ProfileCache::GetInstance().onlineDevMap_.erase(deviceId);
+}
+
+/**
+ * @tc.name: GetSwitchCharacteristicProfile007
+ * @tc.desc: GetSwitchCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileControlUtilsTest, GetSwitchCharacteristicProfile007, TestSize.Level1)
+{
+    std::string appId = "appId";
+    std::string deviceId = "deviceId";
+    std::string serviceName = "serviceName";
+    std::string characteristicKey = "SwitchStatus";
+    CharacteristicProfile charProfile;
+
+    ProfileCache::GetInstance().onlineDevMap_[deviceId] = "peerNetworkId";
+
+    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
+    int32_t ret = profileControlUtils->GetSwitchCharacteristicProfile(appId, deviceId,
+        serviceName, characteristicKey, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+    ProfileCache::GetInstance().onlineDevMap_.erase(deviceId);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
