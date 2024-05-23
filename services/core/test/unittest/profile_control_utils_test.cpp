@@ -796,5 +796,6 @@ HWTEST_F(ProfileControlUtilsTest, GetDeviceProfile004, TestSize.Level1)
     int32_t ret = profileControlUtils->GetDeviceProfile(kvStore, deviceId, deviceProfile);
     EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
 }
+
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
