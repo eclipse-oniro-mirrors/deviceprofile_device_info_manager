@@ -25,12 +25,15 @@
 #include "kv_adapter.h"
 #include "profile_cache.h"
 #include "profile_control_utils.h"
+#include "content_sensor_manager_utils.h"
+#include "device_manager.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_enums.h"
 #include "distributed_device_profile_log.h"
 #include "listener/kv_data_change_listener.h"
 #include "listener/kv_sync_completed_listener.h"
 #include "listener/kv_store_death_recipient.h"
+#include "switch_adapter.h"
 
 
 namespace OHOS {
@@ -795,6 +798,7 @@ HWTEST_F(ProfileControlUtilsTest, GetDeviceProfile004, TestSize.Level1)
     auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
     int32_t ret = profileControlUtils->GetDeviceProfile(kvStore, deviceId, deviceProfile);
     EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
+    ProfileCache::GetInstance().localUdid_ = "";
 }
 
 /**
