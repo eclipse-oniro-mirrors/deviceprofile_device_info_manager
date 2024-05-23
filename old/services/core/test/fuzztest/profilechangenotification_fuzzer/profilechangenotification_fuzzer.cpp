@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
-#include "syncdeviceprofileinner_fuzzer.h"
+#include "profilechangenotification_fuzzer.h"
 
-#include "distributed_device_profile_stub.h"
+#include "profile_change_notification.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -26,66 +26,47 @@
 
 namespace OHOS {
 namespace DeviceProfile {
-class DistributedDeviceProfileStubTest : public DistributedDeviceProfileStub {
-public:
-    DistributedDeviceProfileStubTest() = default;
-    ~DistributedDeviceProfileStubTest() = default;
-    int32_t PutDeviceProfile(const ServiceCharacteristicProfile& profile)
-    {
-        (void)profile;
-        return 0;
-    }
-    int32_t GetDeviceProfile(const std::string& udid, const std::string& serviceId,
-        ServiceCharacteristicProfile& profile)
-    {
-        (void)udid;
-        (void)serviceId;
-        (void)profile;
-        return 0;
-    }
-    int32_t DeleteDeviceProfile(const std::string& serviceId)
-    {
-        (void)serviceId;
-        return 0;
-    }
-    int32_t SubscribeProfileEvents(const std::list<SubscribeInfo>& subscribeInfos,
-        const sptr<IRemoteObject>& profileEventNotifier, std::list<ProfileEvent>& failedEvents)
-    {
-        (void)subscribeInfos;
-        (void)profileEventNotifier;
-        (void)failedEvents;
-        return 0;
-    }
-    int32_t UnsubscribeProfileEvents(const std::list<ProfileEvent>& profileEvents,
-        const sptr<IRemoteObject>& profileEventNotifier, std::list<ProfileEvent>& failedEvents)
-    {
-        (void)profileEvents;
-        (void)profileEventNotifier;
-        (void)failedEvents;
-        return 0;
-    }
-    int32_t SyncDeviceProfile(const SyncOptions& syncOptions, const sptr<IRemoteObject>& profileEventNotifier)
-    {
-        (void)syncOptions;
-        (void)profileEventNotifier;
-        return 0;
-    }
-};
-void FuzzDumpLocalProfile(const uint8_t* data, size_t size)
+
+void GetProfileEntriesFuzzTest(const uint8_t* data, size_t size)
 {
     if ((data == nullptr) || (size == 0)) {
         return;
     }
-    std::string udid(reinterpret_cast<const char*>(data), size);
-    std::string serviceId(reinterpret_cast<const char*>(data), size);
-    MessageParcel messageData;
-    messageData.WriteString(udid);
-    messageData.WriteString(serviceId);
-    MessageParcel reply;
-    std::shared_ptr<DistributedDeviceProfileStub> deviceProfileStub =
-        std::make_shared<DistributedDeviceProfileStubTest>();
-    deviceProfileStub->SyncDeviceProfileInner(messageData, reply);
-    deviceProfileStub->DeleteDeviceProfileInner(messageData, reply);
+    std::shared_ptr<ProfileChangeNotification> profileNotification =
+        std::make_shared<ProfileChangeNotification>();
+    profileNotification->GetProfileEntries();
+}
+
+void GetDeviceIdFuzzTest(const uint8_t* data, size_t size)
+{
+    if ((data == nullptr) || (size == 0)) {
+        return;
+    }
+    std::shared_ptr<ProfileChangeNotification> profileNotification =
+        std::make_shared<ProfileChangeNotification>();
+    profileNotification->GetDeviceId();
+}
+
+void MarshallingFuzzTest(const uint8_t* data, size_t size)
+{
+    if ((data == nullptr) || (size == 0)) {
+        return;
+    }
+    Parcel parcel;
+    std::shared_ptr<ProfileChangeNotification> profileNotification =
+        std::make_shared<ProfileChangeNotification>();
+    profileNotification->Marshalling(parcel);
+}
+
+void UnmarshallingFuzzTest(const uint8_t* data, size_t size)
+{
+    if ((data == nullptr) || (size == 0)) {
+        return;
+    }
+    Parcel parcel;
+    std::shared_ptr<ProfileChangeNotification> profileNotification =
+        std::make_shared<ProfileChangeNotification>();
+    profileNotification->Unmarshalling(parcel);
 }
 }
 }
@@ -93,7 +74,9 @@ void FuzzDumpLocalProfile(const uint8_t* data, size_t size)
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
-    OHOS::DeviceProfile::FuzzDumpLocalProfile(data, size);
+    OHOS::DeviceProfile::GetProfileEntriesFuzzTest(data, size);
+    OHOS::DeviceProfile::GetDeviceIdFuzzTest(data, size);
+    OHOS::DeviceProfile::MarshallingFuzzTest(data, size);
+    OHOS::DeviceProfile::UnmarshallingFuzzTest(data, size);
     return 0;
 }
-
