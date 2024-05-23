@@ -46,8 +46,7 @@ device_profile_deps = [
 ohos_fuzztest("ProfileChangeNotificationFuzzTest") {
   module_out_path = module_output_path
 
-  fuzz_config_file =
-      "${old_device_profile_service}/core/test/fuzztest/profilechangenotification_fuzzer"
+  fuzz_config_file = "${old_device_profile_service}/core/test/fuzztest/profilechangenotification_fuzzer"
 
   cflags = [
     "-g",
