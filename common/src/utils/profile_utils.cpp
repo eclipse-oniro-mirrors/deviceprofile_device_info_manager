@@ -557,8 +557,9 @@ bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& pro
 bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
     uint32_t minValue, uint32_t maxValue)
 {
-    if (propertyMap.count(property) != 0 && static_cast<int32_t>(minValue) < std::atoi(propertyMap.at(property).c_str())
-        && std::atoi(propertyMap.at(property).c_str()) < static_cast<int32_t>(maxValue)) {
+    if (propertyMap.count(property) != 0 &&
+        static_cast<int32_t>(minValue) < std::atoi(propertyMap.at(property).c_str()) &&
+        std::atoi(propertyMap.at(property).c_str()) < static_cast<int32_t>(maxValue)) {
         return true;
     }
     return false;

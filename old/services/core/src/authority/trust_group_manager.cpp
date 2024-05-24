@@ -122,8 +122,8 @@ bool TrustGroupManager::CheckGroupsInfo(const char* returnGroups, uint32_t group
         }
 
         // check group type is whether (same count or point to point) or not
-        if (groupInfo.groupType == GroupType::IDENTICAL_ACCOUNT_GROUP
-                || groupInfo.groupType == GroupType::PEER_TO_PEER_GROUP) {
+        if (groupInfo.groupType == GroupType::IDENTICAL_ACCOUNT_GROUP ||
+            groupInfo.groupType == GroupType::PEER_TO_PEER_GROUP) {
             HILOGI("check success type = %{public}d", groupInfo.groupType);
             return true;
         }

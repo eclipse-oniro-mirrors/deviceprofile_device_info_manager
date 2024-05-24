@@ -72,7 +72,7 @@ int32_t SwitchProfileManager::ReInit()
 int32_t SwitchProfileManager::PutCharacteristicProfile(const CharacteristicProfile& charProfile)
 {
     HILOGI("call!");
-    int32_t res;
+    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(switchProfileMutex_);
         res = ProfileControlUtils::PutSwitchCharacteristicProfile(APP_ID, charProfile);
@@ -88,7 +88,7 @@ int32_t SwitchProfileManager::PutCharacteristicProfile(const CharacteristicProfi
 int32_t SwitchProfileManager::PutCharacteristicProfileBatch(const std::vector<CharacteristicProfile>& charProfiles)
 {
     HILOGI("call!");
-    int32_t res;
+    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(switchProfileMutex_);
         res = ProfileControlUtils::PutSwitchCharacteristicProfileBatch(APP_ID, charProfiles);
@@ -105,7 +105,7 @@ int32_t SwitchProfileManager::GetCharacteristicProfile(const std::string& device
     const std::string& characteristicKey, CharacteristicProfile& charProfile)
 {
     HILOGI("call!");
-    int32_t res;
+    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(switchProfileMutex_);
         res = ProfileControlUtils::GetSwitchCharacteristicProfile(APP_ID, deviceId, serviceName, characteristicKey,

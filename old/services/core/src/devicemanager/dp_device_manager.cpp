@@ -409,8 +409,8 @@ void DpDeviceManager::AutoSync(const DistributedHardware::DmDeviceInfo &deviceIn
             return;
         }
         int32_t osType = DEFAULT_OS_TYPE;
-        if (extraData.contains(DistributedHardware::PARAM_KEY_OS_TYPE)
-            && extraData[DistributedHardware::PARAM_KEY_OS_TYPE].is_number_integer()) {
+        if (extraData.contains(DistributedHardware::PARAM_KEY_OS_TYPE) &&
+            extraData[DistributedHardware::PARAM_KEY_OS_TYPE].is_number_integer()) {
             osType = extraData[DistributedHardware::PARAM_KEY_OS_TYPE].get<int32_t>();
         }
         HILOGI("osType=%{public}d", osType);

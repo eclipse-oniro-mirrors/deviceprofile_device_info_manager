@@ -40,20 +40,24 @@ public:
 private:
     int32_t LoadJsonFile(const std::string& filePath, std::string& fileContent);
     int32_t GetStaticCapability(const cJSON* const staticCapabilityJson, std::string& staticCapability);
-    int32_t GetStaticInfo(const cJSON* const staticInfoJson, std::string& staticVersion,
+    int32_t GetStaticInfo(const cJSON* const staticInfoJson, const std::string& staticCapability,
+        std::string& staticVersion, std::unordered_map<std::string, CharacteristicProfile>& charProfiles);
+    int32_t GetStaticInfoByVersion(const std::string& deviceId, const std::string& staticCapability,
+        const cJSON* const staticInfoJson, const std::string& staticVersion,
         std::unordered_map<std::string, CharacteristicProfile>& charProfiles);
-    int32_t GetStaticInfoByVersion(const std::string& deviceId, const cJSON* const staticInfoJson,
-        const std::string& staticVersion, std::unordered_map<std::string, CharacteristicProfile>& charProfiles);
     cJSON* GetLatestStaticInfoJson(const cJSON* const staticInfoJson);
     cJSON* GetStaticInfoJsonByVersion(const cJSON* const staticInfoJson, const std::string& staticVersion);
     int32_t GetStaticVersion(const cJSON* const staticInfoJson, std::string& staticVersion);
-    int32_t GenerateStaticProfiles(const std::string& deviceId, const cJSON* const staticInfoJson,
-        std::unordered_map<std::string, CharacteristicProfile>& charProfiles);
+    int32_t GenerateStaticProfiles(const std::string& deviceId, const std::string& staticCapability,
+        const cJSON* const staticInfoJson, std::unordered_map<std::string, CharacteristicProfile>& charProfiles);
     void InitStaticCapability(int32_t size, std::string& staticCapability);
     void SetStaticCapability(const cJSON* const staticCapabilities, std::string& staticCapability);
     void SetStaticCapabilityFlag(const std::string& handlerName, const std::string& handlerLoc,
         std::string& staticCapability);
     bool GetStaticCapabilityValue(const std::string& handlerLoc);
+    bool HasStaticCapability(const std::string& serviceId, const std::string& staticCapability);
+    bool StaticVersionCheck(const std::string& peerVersion, const std::string& localVersion);
+    bool IsValidVersion(const std::string& version);
 };
 }
 }
