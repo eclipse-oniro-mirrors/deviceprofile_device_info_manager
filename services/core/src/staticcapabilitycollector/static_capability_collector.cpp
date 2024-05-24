@@ -96,6 +96,7 @@ int32_t StaticCapabilityCollector::AddStaticCapabilityToDB(const std::string& st
     char* characteristicValueStr = cJSON_Print(characteristicValueJson);
     if (characteristicValueStr == NULL) {
         HILOGE("characteristicValueStr is null!");
+        cJSON_Delete(characteristicValueJson);
         return DP_STATIC_COLLECT_FAIL;
     }
     std::string characteristicValue = characteristicValueStr;

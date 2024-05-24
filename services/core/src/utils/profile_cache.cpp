@@ -553,8 +553,8 @@ int32_t ProfileCache::SetSwitchByProfileBatch(const std::vector<CharacteristicPr
         }
         auto service = switchServiceMap.find(item.GetServiceName());
         uint32_t mask = NUM_1U << (static_cast<uint32_t>(service->second));
-        uint32_t value = std::stoi(item.GetCharacteristicValue());
-        if (value) {
+        uint32_t value = static_cast<uint32_t>(std::stoi(item.GetCharacteristicValue()));
+        if (value != 0) {
             outSwitch |= mask;
             HILOGI("SetSwitchByProfileBatch service: %s, switch on, currentSwitch: %d",
                 ProfileUtils::GetAnonyString(item.GetServiceName()).c_str(), outSwitch);
@@ -580,8 +580,8 @@ int32_t ProfileCache::SetSwitchByProfile(const CharacteristicProfile& charProfil
     outSwitch = curLocalSwitch_;
     auto service = switchServiceMap.find(charProfile.GetServiceName());
     uint32_t mask = NUM_1U << (static_cast<uint32_t>(service->second));
-    uint32_t value = std::stoi(charProfile.GetCharacteristicValue());
-    if (value) {
+    uint32_t value = static_cast<uint32_t>(std::stoi(charProfile.GetCharacteristicValue()));
+    if (value != 0) {
         outSwitch |= mask;
         HILOGI("SetSwitch service: %s, switch on, currentSwitch: %d",
             ProfileUtils::GetAnonyString(charProfile.GetServiceName()).c_str(), outSwitch);
