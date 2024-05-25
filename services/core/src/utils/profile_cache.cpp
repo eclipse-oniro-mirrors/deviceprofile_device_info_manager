@@ -44,14 +44,16 @@ int32_t ProfileCache::Init()
     int32_t res =
         DistributedHardware::DeviceManager::GetInstance().GetTrustedDeviceList(DP_PKG_NAME, "", allOnlineDeviceInfo);
     if (res != DP_SUCCESS || allOnlineDeviceInfo.empty()) {
-        HILOGW("GetTrustedDeviceList failed");
+        HILOGW("GetTrustedDeviceList failed, res: %{public}d", res);
+        return DP_SUCCESS;
     }
 
     std::string udid = EMPTY_STRING;
     std::lock_guard<std::mutex> lock(onlineDeviceLock_);
     for (const auto& dmDeviceInfo : allOnlineDeviceInfo) {
         if (!ProfileUtils::GetUdidByNetworkId(dmDeviceInfo.networkId, udid)) {
-            HILOGE("get udid by networkId failed");
+            HILOGE("get udid by networkId failed, networkId:%{public}s",
+                ProfileUtils::GetAnonyString(dmDeviceInfo.networkId).c_str());
             continue;
         }
         onlineDevMap_[udid] = dmDeviceInfo.networkId;

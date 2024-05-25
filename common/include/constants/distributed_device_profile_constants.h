@@ -145,6 +145,7 @@ constexpr uint32_t NUM_1U = 1;
 constexpr uint32_t NUM_8U = 8;
 constexpr uint16_t CUR_SWITCH_LEN = 1;
 const std::string DP_PKG_NAME = "deviceprofile";
+const std::string IS_NUMSTRING_RULES = "^[-+]?[0-9]+$";
 /* rdb constants */
 const std::string RDB_PATH = "/data/service/el1/public/database/distributed_device_profile_service/";
 const std::string DATABASE_NAME = "dp_rdb.db";

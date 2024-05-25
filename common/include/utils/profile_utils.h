@@ -78,14 +78,11 @@ public:
         int32_t maxValue);
     static bool IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
         int32_t minValue, int32_t maxValue);
-    static bool IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
-        uint32_t minValue, uint32_t maxValue);
-    static bool IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
-        int64_t minValue, int64_t maxValue);
     static bool GetIntValue(const ValuesBucket& values, const std::string& property, int32_t& value);
     static bool GetStringValue(const ValuesBucket& values, const std::string& property, std::string& value);
     static bool GetLongValue(const ValuesBucket& values, const std::string& property, int64_t& value);
     static bool GetUdidByNetworkId(const std::string& networkId, std::string& udid);
+    static bool IsNumStr(const std::string& inString);
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
