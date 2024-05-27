@@ -132,7 +132,7 @@ void DeleteTrustDeviceProfileFuzzTest(const uint8_t* data, size_t size)
 
 void DeleteAccessControlProfileFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int64_t ))) {
+    if ((data == nullptr) || (size < sizeof(int64_t))) {
         return;
     }
     int64_t  status = *(reinterpret_cast<const int64_t *>(data));
