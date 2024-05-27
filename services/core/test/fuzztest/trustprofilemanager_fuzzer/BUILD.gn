@@ -1,4 +1,4 @@
-# Copyright (c) 2023 Huawei Device Co., Ltd.
+# Copyright (c) 2024 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -16,56 +16,63 @@ import("//build/config/features.gni")
 import("//build/ohos.gni")
 import("//build/test.gni")
 import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
-module_output_path = old_fuzz_test_output_path
+module_output_path = fuzz_test_output_path
 
-device_profile_configs = [
-  "${old_device_profile_service}/core:device_info_manager_config",
-  "${old_device_profile_test}/resource:coverage_flags",
-]
-
-device_profile_external_deps = [
-  "access_token:libaccesstoken_sdk",
-  "c_utils:utils",
-  "device_auth:deviceauth_sdk",
-  "device_manager:devicemanagersdk",
-  "dsoftbus:softbus_client",
-  "eventhandler:libeventhandler",
-  "hilog:libhilog",
-  "hisysevent:libhisysevent",
-  "ipc:ipc_core",
-  "kv_store:distributeddata_inner",
-  "syscap_codec:syscap_interface_shared",
-]
+device_profile_configs =
+    [ "${device_profile_service}:device_info_manager_config" ]
 
 device_profile_deps = [
-  "${old_device_profile_innerkits}/core:distributed_device_profile_client",
-  "${old_device_profile_service}/core:distributed_device_profile",
+  "${device_profile_common}:distributed_device_profile_common",
+  "${device_profile_innerkits}:distributed_device_profile_sdk",
+  "${device_profile_service}:distributed_device_profile_svr",
 ]
 
 ##############################fuzztest##########################################
-ohos_fuzztest("SyncDeviceProfileInnerFuzzTest") {
+ohos_fuzztest("TrustProfileManagerFuzzTest") {
   module_out_path = module_output_path
 
-  fuzz_config_file = "${old_device_profile_service}/core/test/fuzztest/syncdeviceprofileinner_fuzzer"
+  fuzz_config_file =
+      "${device_profile_service}/test/fuzztest/trustprofilemanager_fuzzer"
 
   cflags = [
     "-g",
     "-O0",
+    "-Dprivate=public",
+    "-Dprotected=public",
     "-Wno-unused-variable",
     "-fno-omit-frame-pointer",
   ]
 
   configs = device_profile_configs
 
-  sources = [ "syncdeviceprofileinner_fuzzer.cpp" ]
+  sources = [ "trustprofilemanager_fuzzer.cpp" ]
 
   deps = device_profile_deps
 
-  external_deps = device_profile_external_deps
+  external_deps = [
+    "access_token:libaccesstoken_sdk",
+    "cJSON:cjson",
+    "c_utils:utils",
+    "config_policy:configpolicy_util",
+    "device_auth:deviceauth_sdk",
+    "device_manager:devicemanagersdk",
+    "dmsfwk:common_sdk",
+    "eventhandler:libeventhandler",
+    "hilog:libhilog",
+    "hisysevent:libhisysevent",
+    "hitrace:hitrace_meter",
+    "init:libbegetutil",
+    "ipc:ipc_core",
+    "kv_store:distributeddata_inner",
+    "relational_store:native_rdb",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "syscap_codec:syscap_interface_shared",
+  ]
 }
 
 group("fuzztest") {
   testonly = true
 
-  deps = [ ":SyncDeviceProfileInnerFuzzTest" ]
+  deps = [ ":TrustProfileManagerFuzzTest" ]
 }
