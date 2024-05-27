@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,9 +13,7 @@
  * limitations under the License.
  */
 
-#include "syncdeviceprofileinner_fuzzer.h"
-
-#include "distributed_device_profile_stub.h"
+#include "trustprofilemanager_fuzzer.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -23,69 +21,122 @@
 #include <cstdlib>
 #include <fcntl.h>
 #include <string>
+#include <sys/types.h>
+#include "sys/stat.h"
+
+#include "trust_profile_manager.h"
+#include "accesser.h"
+#include "accessee.h"
 
 namespace OHOS {
-namespace DeviceProfile {
-class DistributedDeviceProfileStubTest : public DistributedDeviceProfileStub {
-public:
-    DistributedDeviceProfileStubTest() = default;
-    ~DistributedDeviceProfileStubTest() = default;
-    int32_t PutDeviceProfile(const ServiceCharacteristicProfile& profile)
-    {
-        (void)profile;
-        return 0;
-    }
-    int32_t GetDeviceProfile(const std::string& udid, const std::string& serviceId,
-        ServiceCharacteristicProfile& profile)
-    {
-        (void)udid;
-        (void)serviceId;
-        (void)profile;
-        return 0;
-    }
-    int32_t DeleteDeviceProfile(const std::string& serviceId)
-    {
-        (void)serviceId;
-        return 0;
-    }
-    int32_t SubscribeProfileEvents(const std::list<SubscribeInfo>& subscribeInfos,
-        const sptr<IRemoteObject>& profileEventNotifier, std::list<ProfileEvent>& failedEvents)
-    {
-        (void)subscribeInfos;
-        (void)profileEventNotifier;
-        (void)failedEvents;
-        return 0;
-    }
-    int32_t UnsubscribeProfileEvents(const std::list<ProfileEvent>& profileEvents,
-        const sptr<IRemoteObject>& profileEventNotifier, std::list<ProfileEvent>& failedEvents)
-    {
-        (void)profileEvents;
-        (void)profileEventNotifier;
-        (void)failedEvents;
-        return 0;
-    }
-    int32_t SyncDeviceProfile(const SyncOptions& syncOptions, const sptr<IRemoteObject>& profileEventNotifier)
-    {
-        (void)syncOptions;
-        (void)profileEventNotifier;
-        return 0;
-    }
-};
-void FuzzDumpLocalProfile(const uint8_t* data, size_t size)
+namespace DistributedDeviceProfile {
+
+void GetAccessControlProfileByTokenIdFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size == 0)) {
+    if ((data == nullptr) || (size < sizeof(int64_t))) {
         return;
     }
-    std::string udid(reinterpret_cast<const char*>(data), size);
-    std::string serviceId(reinterpret_cast<const char*>(data), size);
-    MessageParcel messageData;
-    messageData.WriteString(udid);
-    messageData.WriteString(serviceId);
-    MessageParcel reply;
-    std::shared_ptr<DistributedDeviceProfileStub> deviceProfileStub =
-        std::make_shared<DistributedDeviceProfileStubTest>();
-    deviceProfileStub->SyncDeviceProfileInner(messageData, reply);
-    deviceProfileStub->DeleteDeviceProfileInner(messageData, reply);
+    int64_t tokenId = *(reinterpret_cast<const int64_t*>(data));
+    std::string trustDeviceId(reinterpret_cast<const char*>(data), size);
+    int32_t status = *(reinterpret_cast<const int32_t*>(data));
+    std::vector<AccessControlProfile> profile;
+    AccessControlProfile acProfile;
+    profile.push_back(acProfile);
+    TrustProfileManager::GetInstance().GetAccessControlProfileByTokenId(tokenId, trustDeviceId, status, profile);
+}
+
+void GetAccessControlProfileOneFuzzTest(const uint8_t* data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::string accountId(reinterpret_cast<const char*>(data), size);
+    int32_t userId = *(reinterpret_cast<const int32_t*>(data));
+    std::vector<AccessControlProfile> profile;
+    AccessControlProfile acProfile;
+    profile.push_back(acProfile);
+    TrustProfileManager::GetInstance().GetAccessControlProfile(userId, accountId, profile);
+}
+
+void GetAccessControlProfileTwoFuzzTest(const uint8_t* data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    int32_t userId = *(reinterpret_cast<const int32_t*>(data));
+    std::vector<AccessControlProfile> profile;
+    AccessControlProfile acProfile;
+    profile.push_back(acProfile);
+    TrustProfileManager::GetInstance().GetAccessControlProfile(userId, profile);
+}
+
+void GetAllAccessControlProfileFuzzTest(const uint8_t* data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::vector<AccessControlProfile> profile;
+    AccessControlProfile acProfile;
+    profile.push_back(acProfile);
+    TrustProfileManager::GetInstance().GetAllAccessControlProfile(profile);
+}
+
+void GetAccessControlProfileThreeFuzzTest(const uint8_t* data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::string bundleName(reinterpret_cast<const char*>(data), size);
+    int32_t bindType = *(reinterpret_cast<const int32_t*>(data));
+    int32_t status = *(reinterpret_cast<const int32_t*>(data));
+    std::vector<AccessControlProfile> profile;
+    AccessControlProfile acProfile;
+    profile.push_back(acProfile);
+    TrustProfileManager::GetInstance().GetAccessControlProfile(bundleName, bindType, status, profile);
+}
+
+void GetAccessControlProfileFourFuzzTest(const uint8_t* data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::string bundleName(reinterpret_cast<const char*>(data), size);
+    std::string trustDeviceId(reinterpret_cast<const char*>(data), size);
+    int32_t status = *(reinterpret_cast<const int32_t*>(data));
+    std::vector<AccessControlProfile> profile;
+    AccessControlProfile acProfile;
+    profile.push_back(acProfile);
+    TrustProfileManager::GetInstance().GetAccessControlProfile(bundleName, trustDeviceId, status, profile);
+}
+
+void GetAccessControlProfileFiveFuzzTest(const uint8_t* data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::map<std::string, std::string> params;
+    std::vector<AccessControlProfile> profile;
+    AccessControlProfile acProfile;
+    profile.push_back(acProfile);
+    TrustProfileManager::GetInstance().GetAccessControlProfile(params, profile);
+}
+
+void DeleteTrustDeviceProfileFuzzTest(const uint8_t* data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int32_t))) {
+        return;
+    }
+    std::string deviceId(reinterpret_cast<const char*>(data), size);
+    TrustProfileManager::GetInstance().DeleteTrustDeviceProfile(deviceId);
+}
+
+void DeleteAccessControlProfileFuzzTest(const uint8_t* data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int64_t ))) {
+        return;
+    }
+    int64_t  status = *(reinterpret_cast<const int64_t *>(data));
+    TrustProfileManager::GetInstance().DeleteAccessControlProfile(status);
 }
 }
 }
@@ -93,7 +144,14 @@ void FuzzDumpLocalProfile(const uint8_t* data, size_t size)
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
-    OHOS::DeviceProfile::FuzzDumpLocalProfile(data, size);
+    OHOS::DistributedDeviceProfile::GetAccessControlProfileByTokenIdFuzzTest(data, size);
+    OHOS::DistributedDeviceProfile::GetAccessControlProfileOneFuzzTest(data, size);
+    OHOS::DistributedDeviceProfile::GetAccessControlProfileTwoFuzzTest(data, size);
+    OHOS::DistributedDeviceProfile::GetAllAccessControlProfileFuzzTest(data, size);
+    OHOS::DistributedDeviceProfile::GetAccessControlProfileThreeFuzzTest(data, size);
+    OHOS::DistributedDeviceProfile::GetAccessControlProfileFourFuzzTest(data, size);
+    OHOS::DistributedDeviceProfile::GetAccessControlProfileFiveFuzzTest(data, size);
+    OHOS::DistributedDeviceProfile::DeleteTrustDeviceProfileFuzzTest(data, size);
+    OHOS::DistributedDeviceProfile::DeleteAccessControlProfileFuzzTest(data, size);
     return 0;
 }
-
