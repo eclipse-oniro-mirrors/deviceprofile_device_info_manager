@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
-#ifndef SYNC_DEVICE_PROFILE_INNER_FUZZER_H
-#define SYNC_DEVICE_PROFILE_INNER_FUZZER_H
+#ifndef TRUST_PROFILE_MANAGER_FUZZER_H
+#define TRUST_PROFILE_MANAGER_FUZZER_H
 
-#define FUZZ_PROJECT_NAME "syncdeviceprofileInner_fuzzer"
+#define FUZZ_PROJECT_NAME "trustprofilemanager_fuzzer"
 
 #endif
