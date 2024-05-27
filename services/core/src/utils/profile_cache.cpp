@@ -40,6 +40,25 @@ int32_t ProfileCache::Init()
     HILOGI("call!");
     RefreshProfileCache();
     syncListenerDeathRecipient_ = sptr<IRemoteObject::DeathRecipient>(new SyncSubscriberDeathRecipient);
+    std::vector<DistributedHardware::DmDeviceInfo> allOnlineDeviceInfo;
+    int32_t res =
+        DistributedHardware::DeviceManager::GetInstance().GetTrustedDeviceList(DP_PKG_NAME, "", allOnlineDeviceInfo);
+    if (res != DP_SUCCESS || allOnlineDeviceInfo.empty()) {
+        HILOGW("GetTrustedDeviceList failed, res: %{public}d", res);
+        return DP_SUCCESS;
+    }
+
+    std::string udid = EMPTY_STRING;
+    std::lock_guard<std::mutex> lock(onlineDeviceLock_);
+    for (const auto& dmDeviceInfo : allOnlineDeviceInfo) {
+        if (!ProfileUtils::GetUdidByNetworkId(dmDeviceInfo.networkId, udid)) {
+            HILOGE("get udid by networkId failed, networkId:%{public}s",
+                ProfileUtils::GetAnonyString(dmDeviceInfo.networkId).c_str());
+            continue;
+        }
+        onlineDevMap_[udid] = dmDeviceInfo.networkId;
+        HILOGI("Init add %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
+    }
     return DP_SUCCESS;
 }
 
@@ -603,9 +622,9 @@ bool ProfileCache::IsSwitchValid(const CharacteristicProfile& charProfile,
     }
     //Verify and intercept the input switch key and value.
     if (operate == SWITCH_OPERATE_PUT) {
-        if (charProfile.GetCharacteristicValue().empty()
-            || (charProfile.GetCharacteristicValue() != SWITCH_OFF
-                && charProfile.GetCharacteristicValue() != SWITCH_ON)) {
+        if (charProfile.GetCharacteristicValue().empty() ||
+            (charProfile.GetCharacteristicValue() != SWITCH_OFF &&
+                charProfile.GetCharacteristicValue() != SWITCH_ON)) {
             HILOGE("params invalid");
             return false;
         }
@@ -649,7 +668,7 @@ void ProfileCache::SetCurSwitch(uint32_t newSwitch)
 void ProfileCache::OnNodeOnline(const std::string& peerNetworkId)
 {
     HILOGI("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
-    std::string udid;
+    std::string udid = EMPTY_STRING;
     if (!ProfileUtils::GetUdidByNetworkId(peerNetworkId, udid)) {
         HILOGE("get udid by networkId failed");
         return;
@@ -664,7 +683,7 @@ void ProfileCache::OnNodeOnline(const std::string& peerNetworkId)
 void ProfileCache::OnNodeOffline(const std::string& peerNetworkId)
 {
     HILOGI("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
-    std::string udid;
+    std::string udid = EMPTY_STRING;
     if (!ProfileUtils::GetUdidByNetworkId(peerNetworkId, udid)) {
         HILOGE("get udid by networkId failed");
         return;
@@ -748,8 +767,8 @@ int32_t ProfileCache::GetUdidByNetWorkId(const std::string& networkId, std::stri
 int32_t ProfileCache::GetServiceNameByPos(int32_t pos,
     const std::unordered_map<std::string, SwitchFlag>& switchServiceMap, std::string& serviceName)
 {
-    if (pos <= (int32_t)SwitchFlag::SWITCH_FLAG_MIN || pos >= (int32_t)SwitchFlag::SWITCH_FLAG_MAX
-        || switchServiceMap.empty()) {
+    if (pos <= (int32_t)SwitchFlag::SWITCH_FLAG_MIN || pos >= (int32_t)SwitchFlag::SWITCH_FLAG_MAX ||
+        switchServiceMap.empty()) {
         HILOGE("params are invalid");
         return DP_INVALID_PARAMS;
     }

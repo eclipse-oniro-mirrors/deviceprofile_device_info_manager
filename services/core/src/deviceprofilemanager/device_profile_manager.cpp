@@ -80,7 +80,7 @@ int32_t DeviceProfileManager::ReInit()
 int32_t DeviceProfileManager::PutDeviceProfile(const DeviceProfile& deviceProfile)
 {
     HILOGI("call!");
-    int32_t res;
+    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         res = ProfileControlUtils::PutDeviceProfile(deviceProfileStore_, deviceProfile);
@@ -96,7 +96,7 @@ int32_t DeviceProfileManager::PutDeviceProfile(const DeviceProfile& deviceProfil
 int32_t DeviceProfileManager::PutServiceProfile(const ServiceProfile& serviceProfile)
 {
     HILOGI("call!");
-    int32_t res;
+    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         res = ProfileControlUtils::PutServiceProfile(deviceProfileStore_, serviceProfile);
@@ -112,7 +112,7 @@ int32_t DeviceProfileManager::PutServiceProfile(const ServiceProfile& servicePro
 int32_t DeviceProfileManager::PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles)
 {
     HILOGI("call!");
-    int32_t res;
+    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         res = ProfileControlUtils::PutServiceProfileBatch(deviceProfileStore_, serviceProfiles);
@@ -128,7 +128,7 @@ int32_t DeviceProfileManager::PutServiceProfileBatch(const std::vector<ServicePr
 int32_t DeviceProfileManager::PutCharacteristicProfile(const CharacteristicProfile& charProfile)
 {
     HILOGI("call!");
-    int32_t res;
+    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         res = ProfileControlUtils::PutCharacteristicProfile(deviceProfileStore_, charProfile);
@@ -144,7 +144,7 @@ int32_t DeviceProfileManager::PutCharacteristicProfile(const CharacteristicProfi
 int32_t DeviceProfileManager::PutCharacteristicProfileBatch(const std::vector<CharacteristicProfile>& charProfiles)
 {
     HILOGI("call!");
-    int32_t res;
+    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         res = ProfileControlUtils::PutCharacteristicProfileBatch(deviceProfileStore_, charProfiles);
@@ -160,7 +160,7 @@ int32_t DeviceProfileManager::PutCharacteristicProfileBatch(const std::vector<Ch
 int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile)
 {
     HILOGI("call!");
-    int32_t res;
+    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         res = ProfileControlUtils::GetDeviceProfile(deviceProfileStore_, deviceId, deviceProfile);
@@ -177,7 +177,7 @@ int32_t DeviceProfileManager::GetServiceProfile(const std::string& deviceId, con
     ServiceProfile& serviceProfile)
 {
     HILOGI("call!");
-    int32_t res;
+    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         res = ProfileControlUtils::GetServiceProfile(deviceProfileStore_, deviceId, serviceName,
@@ -195,7 +195,7 @@ int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& device
     const std::string& characteristicKey, CharacteristicProfile& charProfile)
 {
     HILOGI("call!");
-    int32_t res;
+    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         res = ProfileControlUtils::GetCharacteristicProfile(deviceProfileStore_, deviceId, serviceName,
@@ -212,7 +212,7 @@ int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& device
 int32_t DeviceProfileManager::DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName)
 {
     HILOGI("call!");
-    int32_t res;
+    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         res = ProfileControlUtils::DeleteServiceProfile(deviceProfileStore_, deviceId, serviceName);
@@ -229,7 +229,7 @@ int32_t DeviceProfileManager::DeleteCharacteristicProfile(const std::string& dev
     const std::string& characteristicKey)
 {
     HILOGI("call!");
-    int32_t res;
+    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         res = ProfileControlUtils::DeleteCharacteristicProfile(deviceProfileStore_, deviceId, serviceName,
@@ -246,7 +246,7 @@ int32_t DeviceProfileManager::DeleteCharacteristicProfile(const std::string& dev
 int32_t DeviceProfileManager::GetAllDeviceProfile(std::vector<DeviceProfile>& deviceProfiles)
 {
     HILOGI("call!");
-    int32_t res;
+    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         res = ProfileControlUtils::GetAllDeviceProfile(deviceProfileStore_, deviceProfiles);
@@ -262,7 +262,7 @@ int32_t DeviceProfileManager::GetAllDeviceProfile(std::vector<DeviceProfile>& de
 int32_t DeviceProfileManager::GetAllServiceProfile(std::vector<ServiceProfile>& serviceProfiles)
 {
     HILOGI("call!");
-    int32_t res;
+    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         res = ProfileControlUtils::GetAllServiceProfile(deviceProfileStore_, serviceProfiles);
@@ -278,7 +278,7 @@ int32_t DeviceProfileManager::GetAllServiceProfile(std::vector<ServiceProfile>& 
 int32_t DeviceProfileManager::GetAllCharacteristicProfile(std::vector<CharacteristicProfile>& charProfiles)
 {
     HILOGI("call!");
-    int32_t res;
+    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         res = ProfileControlUtils::GetAllCharacteristicProfile(deviceProfileStore_, charProfiles);
@@ -418,8 +418,8 @@ int32_t DeviceProfileManager::DeviceOnlineAutoSync(const std::string& peerNetwor
     HILOGI("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
     std::vector<std::string> deviceList{peerNetworkId};
     std::vector<std::string> onlineDevices = ProfileUtils::FilterOnlineDevices(deviceList);
-    if (onlineDevices.empty()
-        || std::find(onlineDevices.begin(), onlineDevices.end(), peerNetworkId) == onlineDevices.end()) {
+    if (onlineDevices.empty() ||
+        std::find(onlineDevices.begin(), onlineDevices.end(), peerNetworkId) == onlineDevices.end()) {
         HILOGE("Params is invalid! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
         return DP_INVALID_PARAMS;
     }

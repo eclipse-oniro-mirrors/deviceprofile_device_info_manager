@@ -15,6 +15,7 @@
 
 #include <dlfcn.h>
 #include <fstream>
+#include <regex>
 
 #include "static_capability_loader.h"
 
@@ -54,7 +55,6 @@ int32_t StaticCapabilityLoader::LoadStaticCapability(std::string& staticCapabili
         HILOGE("Load json failed, result: %{public}d!", loadJsonResult);
         return loadJsonResult;
     }
-    HILOGI("fileContent : %{public}s", fileContent.c_str());
     cJSON* staticCapabilityJson = cJSON_Parse(fileContent.c_str());
     if (!cJSON_IsObject(staticCapabilityJson)) {
         HILOGE("Static capability json parse failed!");
@@ -123,8 +123,8 @@ int32_t StaticCapabilityLoader::GetStaticCapability(const cJSON* const staticCap
     return DP_SUCCESS;
 }
 
-int32_t StaticCapabilityLoader::GetStaticInfo(const cJSON* const staticInfoJson, std::string& staticVersion,
-    std::unordered_map<std::string, CharacteristicProfile>& charProfiles)
+int32_t StaticCapabilityLoader::GetStaticInfo(const cJSON* const staticInfoJson, const std::string& staticCapability,
+    std::string& staticVersion, std::unordered_map<std::string, CharacteristicProfile>& charProfiles)
 {
     HILOGI("call!");
     if (!cJSON_IsObject(staticInfoJson)) {
@@ -138,11 +138,12 @@ int32_t StaticCapabilityLoader::GetStaticInfo(const cJSON* const staticInfoJson,
     }
     GetStaticVersion(lastStaticInfoJson, staticVersion);
     std::string localDeviceId = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
-    GenerateStaticProfiles(localDeviceId, lastStaticInfoJson, charProfiles);
+    GenerateStaticProfiles(localDeviceId, staticCapability, lastStaticInfoJson, charProfiles);
     return DP_SUCCESS;
 }
 
-int32_t StaticCapabilityLoader::GetStaticInfoByVersion(const std::string& deviceId, const cJSON* const staticInfoJson,
+int32_t StaticCapabilityLoader::GetStaticInfoByVersion(const std::string& deviceId,
+    const std::string& staticCapability, const cJSON* const staticInfoJson,
     const std::string& staticVersion, std::unordered_map<std::string, CharacteristicProfile>& charProfiles)
 {
     HILOGI("call!");
@@ -163,7 +164,7 @@ int32_t StaticCapabilityLoader::GetStaticInfoByVersion(const std::string& device
         HILOGE("staticInfoJson is nullptr!");
         return DP_GET_STATIC_INFO_FAIL;
     }
-    GenerateStaticProfiles(deviceId, json, charProfiles);
+    GenerateStaticProfiles(deviceId, staticCapability, json, charProfiles);
     return DP_SUCCESS;
 }
 
@@ -221,11 +222,12 @@ cJSON* StaticCapabilityLoader::GetStaticInfoJsonByVersion(const cJSON* const sta
             continue;
         }
         std::string version = versionItem->valuestring;
-        if (staticVersion == version) {
+        if (StaticVersionCheck(staticVersion, version)) {
             HILOGI("Get staticInfoJson Success!");
             return item;
         }
     }
+    HILOGE("staticInfoJson not found");
     return NULL;
 }
 
@@ -245,8 +247,8 @@ int32_t StaticCapabilityLoader::GetStaticVersion(const cJSON* const lastStaticIn
     return DP_SUCCESS;
 }
 
-int32_t StaticCapabilityLoader::GenerateStaticProfiles(const std::string& deviceId, const cJSON* const staticInfoJson,
-    std::unordered_map<std::string, CharacteristicProfile>& charProfiles)
+int32_t StaticCapabilityLoader::GenerateStaticProfiles(const std::string& deviceId, const std::string& staticCapability,
+    const cJSON* const staticInfoJson, std::unordered_map<std::string, CharacteristicProfile>& charProfiles)
 {
     HILOGI("call!");
     if (deviceId.empty() || deviceId.size() > MAX_STRING_LEN) {
@@ -279,6 +281,11 @@ int32_t StaticCapabilityLoader::GenerateStaticProfiles(const std::string& device
             continue;
         }
         std::string serviceId = abilityKeyItem->valuestring;
+        if (!HasStaticCapability(serviceId, staticCapability)) {
+            HILOGW("service: %{public}s does not have static capability", serviceId.c_str());
+            continue;
+        }
+        HILOGD("service: %{public}s has static capability", serviceId.c_str());
         char* abilityValue = cJSON_Print(abilityValueItem);
         if (abilityValue == NULL) {
             HILOGE("Get abilityValue fail!");
@@ -313,7 +320,7 @@ int32_t StaticCapabilityLoader::LoadStaticInfo(const std::string& staticCapabili
         cJSON_Delete(staticInfoJson);
         return DP_PARSE_STATIC_INFO_FAIL;
     }
-    int32_t getInfoResult = GetStaticInfo(staticInfoJson, staticVersion, charProfiles);
+    int32_t getInfoResult = GetStaticInfo(staticInfoJson, staticCapability, staticVersion, charProfiles);
     if (getInfoResult != DP_SUCCESS) {
         HILOGE("Get static info result %{public}d!", getInfoResult);
         cJSON_Delete(staticInfoJson);
@@ -352,7 +359,8 @@ int32_t StaticCapabilityLoader::LoadStaticProfiles(const std::string& deviceId, 
         cJSON_Delete(staticInfoJson);
         return DP_PARSE_STATIC_INFO_FAIL;
     }
-    int32_t getInfoResult = GetStaticInfoByVersion(deviceId, staticInfoJson, staticVersion, charProfiles);
+    int32_t getInfoResult = GetStaticInfoByVersion(deviceId, staticCapability, staticInfoJson,
+        staticVersion, charProfiles);
     if (getInfoResult != DP_SUCCESS) {
         HILOGE("Get static info result %{public}d!", getInfoResult);
         cJSON_Delete(staticInfoJson);
@@ -459,5 +467,37 @@ bool StaticCapabilityLoader::GetStaticCapabilityValue(const std::string& handler
     dlclose(so_handler);
     return isSupportStaticCapability;
 }
+bool StaticCapabilityLoader::HasStaticCapability(const std::string& serviceId, const std::string& staticCapability)
+{
+    HILOGI("call!");
+    int32_t capabilityFlag = static_cast<int32_t>(CAPABILITY_FLAG_MAP.at(serviceId));
+    if (capabilityFlag >= static_cast<int32_t>(staticCapability.size())) {
+        HILOGE("HasStaticCapability fail, capabilityFlag is out of range, serviceId: %{public}s",
+            ProfileUtils::GetAnonyString(serviceId).c_str());
+        return false;
+    }
+    return staticCapability[capabilityFlag] == SUPPORT_STATIC_VAL;
+}
+
+bool StaticCapabilityLoader::StaticVersionCheck(const std::string& peerVersion, const std::string& localVersion)
+{
+    HILOGI("call!");
+    if (peerVersion == localVersion) {
+        HILOGI("staticVersion equal");
+        return true;
+    }
+    if (!IsValidVersion(peerVersion) || !IsValidVersion(localVersion)) {
+        HILOGE("Params are valid");
+        return false;
+    }
+    return true;
+}
+
+bool StaticCapabilityLoader::IsValidVersion(const std::string& version)
+{
+    std::regex rule(STATIC_VERSION_RULES);
+    return std::regex_match(version, rule);
+}
+
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

@@ -44,8 +44,8 @@ int32_t StaticCapabilityCollector::CollectStaticCapability()
 {
     HILOGI("call!");
     std::string staticCapability = "";
-    if (StaticCapabilityLoader::GetInstance().LoadStaticCapability(staticCapability) != DP_SUCCESS
-        || staticCapability.empty()) {
+    if (StaticCapabilityLoader::GetInstance().LoadStaticCapability(staticCapability) != DP_SUCCESS ||
+        staticCapability.empty()) {
         HILOGE("staticCapability is invalid!");
         return DP_STATIC_COLLECT_FAIL;
     }

@@ -174,7 +174,7 @@ int32_t StaticProfileManager::GenerateStaticInfoProfile(const CharacteristicProf
     std::string staticCapabilityValue = staticCapabilityValueItem->valuestring;
     cJSON_Delete(charValueJson);
     StaticCapabilityLoader::GetInstance().LoadStaticProfiles(staticCapabilityProfile.GetDeviceId(),
-        staticCapabilityVersion, staticCapabilityValue, staticInfoProfiles);
+        staticCapabilityValue, staticCapabilityVersion, staticInfoProfiles);
     return DP_SUCCESS;
 }
 } // namespace DistributedDeviceProfile

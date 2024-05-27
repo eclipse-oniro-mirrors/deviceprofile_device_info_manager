@@ -13,10 +13,13 @@
  * limitations under the License.
  */
 
-#include <string>
 #include <algorithm>
-#include <locale>
 #include <codecvt>
+#include <locale>
+
+#include <regex>
+#include <string>
+
 #include "profile_utils.h"
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_errors.h"
@@ -547,31 +550,30 @@ bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& pro
 bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
     int32_t minValue, int32_t maxValue)
 {
-    if (propertyMap.count(property) != 0 && minValue < std::atoi(propertyMap.at(property).c_str()) &&
-        std::atoi(propertyMap.at(property).c_str()) < maxValue) {
+    if (property.empty()) {
+        HILOGE("property is empty");
+        return false;
+    }
+    std::string propertyValue = propertyMap.at(property);
+    if (!IsNumStr(propertyValue)) {
+        HILOGE("%{public}s is not numeric string", propertyValue.c_str());
+        return false;
+    }
+    if (propertyMap.count(property) != 0 && minValue < std::atoi(propertyValue.c_str()) &&
+        std::atoi(propertyValue.c_str()) < maxValue) {
         return true;
     }
     return false;
 }
 
-bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
-    uint32_t minValue, uint32_t maxValue)
+bool ProfileUtils::IsNumStr(const std::string& inString)
 {
-    if (propertyMap.count(property) != 0 && static_cast<int32_t>(minValue) < std::atoi(propertyMap.at(property).c_str())
-        && std::atoi(propertyMap.at(property).c_str()) < static_cast<int32_t>(maxValue)) {
-        return true;
+    if (inString.empty()) {
+        HILOGE("inString is empty");
+        return false;
     }
-    return false;
-}
-
-bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
-    int64_t minValue, int64_t maxValue)
-{
-    if (propertyMap.count(property) != 0 && minValue < std::atoi(propertyMap.at(property).c_str()) &&
-        std::atoi(propertyMap.at(property).c_str()) < maxValue) {
-        return true;
-    }
-    return false;
+    std::regex isNumStrRule(IS_NUMSTRING_RULES);
+    return std::regex_match(inString, isNumStrRule);
 }
 
 bool ProfileUtils::GetIntValue(const ValuesBucket& values, const std::string& property, int32_t& value)
