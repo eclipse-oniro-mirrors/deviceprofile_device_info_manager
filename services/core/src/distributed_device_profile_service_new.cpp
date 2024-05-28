@@ -322,14 +322,14 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfileBatch(
     if (switchCharProfiles.size() > 0) {
         res = SwitchProfileManager::GetInstance().PutCharacteristicProfileBatch(switchCharProfiles);
         if (res != DP_SUCCESS) {
-            HILOGE("PutCharacteristicProfileBatch fail, res:%d", res);
+            HILOGE("PutCharacteristicProfileBatch fail, res:%{public}d", res);
             return DP_PUT_CHAR_BATCH_FAIL;
         }
     }
     if (dynamicCharProfiles.size() > 0) {
         res = DeviceProfileManager::GetInstance().PutCharacteristicProfileBatch(dynamicCharProfiles);
         if (res != DP_SUCCESS) {
-            HILOGE("PutCharacteristicProfileBatch fail, res:%d", res);
+            HILOGE("PutCharacteristicProfileBatch fail, res:%{public}d", res);
             return DP_PUT_CHAR_BATCH_FAIL;
         }
     }

@@ -47,7 +47,7 @@ KVAdapter::KVAdapter(const std::string &appId, const std::string &storeId,
     this->syncCompletedListener_= syncCompletedListener;
     this->deathRecipient_ = deathListener;
     this->dataType_ = dataType;
-    HILOGI("KVAdapter Constructor Success, appId: %s, storeId: %s", appId.c_str(), storeId.c_str());
+    HILOGI("KVAdapter Constructor Success, appId: %{public}s, storeId: %{public}s", appId.c_str(), storeId.c_str());
 }
 
 KVAdapter::~KVAdapter()

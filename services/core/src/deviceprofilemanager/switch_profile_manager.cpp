@@ -45,7 +45,7 @@ int32_t SwitchProfileManager::Init()
     SwitchAdapter::GetInstance().Init();
     int32_t res = SwitchAdapter::GetInstance().SubscribeSwitchData(APP_ID);
     if (res != DP_SUCCESS) {
-        HILOGE("SubscribeSwitchData failed, res: %d", res);
+        HILOGE("SubscribeSwitchData failed, res: %{public}d", res);
         return DP_INIT_SWITCH_PROFILE_MANAGER_FAIL;
     }
     return DP_SUCCESS;
@@ -56,7 +56,7 @@ int32_t SwitchProfileManager::UnInit()
     HILOGI("call!");
     int32_t res = SwitchAdapter::GetInstance().UnsubscribeSwitchData(APP_ID);
     if (res != DP_SUCCESS) {
-        HILOGE("UnsubscribeSwitchData failed, res: %d", res);
+        HILOGE("UnsubscribeSwitchData failed, res: %{public}d", res);
         return DP_UNSUBSCRIBE_FAILED;
     }
     return DP_SUCCESS;

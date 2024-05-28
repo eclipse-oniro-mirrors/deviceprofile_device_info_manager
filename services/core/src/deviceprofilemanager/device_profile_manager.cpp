@@ -54,7 +54,7 @@ int32_t DeviceProfileManager::Init()
         initResult = deviceProfileStore_->Init();
     }
     LoadDpSyncAdapter();
-    HILOGI("Init finish, res: %d", initResult);
+    HILOGI("Init finish, res: %{public}d", initResult);
     return initResult;
 }
 
@@ -321,11 +321,11 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const DistributedDeviceProfile::
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         int32_t syncResult = deviceProfileStore_->Sync(openHarmonyDevices, syncOptions.GetSyncMode());
         if (syncResult != DP_SUCCESS) {
-            HILOGI("SyncDeviceProfile fail, res: %d!", syncResult);
+            HILOGI("SyncDeviceProfile fail, res: %{public}d!", syncResult);
             return DP_SYNC_DEVICE_FAIL;
         }
     }
-    HILOGI("SyncDeviceProfile success, caller: %s!", callerDescriptor.c_str());
+    HILOGI("SyncDeviceProfile success, caller: %{public}s!", callerDescriptor.c_str());
     return DP_SUCCESS;
 }
 
@@ -339,12 +339,12 @@ bool DeviceProfileManager::LoadDpSyncAdapter()
     char path[PATH_MAX + 1] = {0x00};
     std::string soName = std::string(LIB_LOAD_PATH) + std::string(LIB_DP_ADAPTER_NAME);
     if ((soName.length() == 0) || (soName.length() > PATH_MAX) || (realpath(soName.c_str(), path) == nullptr)) {
-        HILOGI("File %s canonicalization failed", soName.c_str());
+        HILOGI("File %{public}s canonicalization failed", soName.c_str());
         return false;
     }
     void *so_handle = dlopen(path, RTLD_NOW);
     if (so_handle == nullptr) {
-        HILOGI("load dp sync adapter so %s failed", soName.c_str());
+        HILOGI("load dp sync adapter so %{public}s failed", soName.c_str());
         return false;
     }
     dlerror();
@@ -379,7 +379,7 @@ void DeviceProfileManager::UnloadDpSyncAdapter()
     std::string soPathName = std::string(LIB_LOAD_PATH) + std::string(LIB_DP_ADAPTER_NAME);
     if ((soPathName.length() == 0) || (soPathName.length() > PATH_MAX) ||
         (realpath(soPathName.c_str(), path) == nullptr)) {
-        HILOGI("File %s canonicalization failed", soPathName.c_str());
+        HILOGI("File %{public}s canonicalization failed", soPathName.c_str());
         return;
     }
     void *so_handle = dlopen(path, RTLD_NOW | RTLD_NOLOAD);
