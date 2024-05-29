@@ -17,5 +17,6 @@ group("fuzztest") {
   deps = [
     "newdeviceprofile_fuzzer:fuzztest",
     "trustprofilemanager_fuzzer:fuzztest",
+    "profileutils_fuzzer:fuzztest"
   ]
 }
