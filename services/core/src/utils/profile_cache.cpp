@@ -462,7 +462,7 @@ int32_t ProfileCache::AddSyncListener(const std::string& caller, sptr<IRemoteObj
             HILOGE("syncListenerMap is exceed max listenerSize!");
             return DP_EXCEED_MAX_SIZE_FAIL;
         }
-        HILOGI("AddSyncListener caller %s!", caller.c_str());
+        HILOGI("AddSyncListener caller %{public}s!", caller.c_str());
         syncListener->AddDeathRecipient(syncListenerDeathRecipient_);
         syncListenerMap_[caller] = syncListener;
     }
@@ -492,7 +492,7 @@ int32_t ProfileCache::RemoveSyncListeners(std::map<std::string, sptr<IRemoteObje
                 if (iter->second != nullptr) {
                     iter->second->RemoveDeathRecipient(syncListenerDeathRecipient_);
                 }
-                HILOGI("RemoveSyncListener caller %s!", iter->first.c_str());
+                HILOGI("RemoveSyncListener caller %{public}s!", iter->first.c_str());
                 iter = syncListenerMap_.erase(iter);
             } else {
                 iter++;
@@ -515,7 +515,7 @@ int32_t ProfileCache::RemoveSyncListener(const std::string& caller)
             HILOGE("Can not find this listener!");
             return DP_NOT_FOUND_FAIL;
         }
-        HILOGI("RemoveSyncListener caller %s!", caller.c_str());
+        HILOGI("RemoveSyncListener caller %{public}s!", caller.c_str());
         syncListenerMap_[caller]->RemoveDeathRecipient(syncListenerDeathRecipient_);
         syncListenerMap_.erase(caller);
     }
@@ -575,14 +575,14 @@ int32_t ProfileCache::SetSwitchByProfileBatch(const std::vector<CharacteristicPr
         uint32_t value = static_cast<uint32_t>(std::stoi(item.GetCharacteristicValue()));
         if (value != 0) {
             outSwitch |= mask;
-            HILOGI("SetSwitchByProfileBatch service: %s, switch on, currentSwitch: %d",
+            HILOGI("SetSwitchByProfileBatch service: %{public}s, switch on, currentSwitch: %{public}d",
                 ProfileUtils::GetAnonyString(item.GetServiceName()).c_str(), outSwitch);
         } else {
             outSwitch &= ~mask;
-            HILOGI("SetSwitchByProfileBatch service: %s, switch off, currentSwitch: %d",
+            HILOGI("SetSwitchByProfileBatch service: %{public}s, switch off, currentSwitch: %{public}d",
                 ProfileUtils::GetAnonyString(item.GetServiceName()).c_str(), outSwitch);
         }
-        HILOGI("SetSwitchByProfileBatch success, currentSwitch: %d", outSwitch);
+        HILOGI("SetSwitchByProfileBatch success, currentSwitch: %{public}d", outSwitch);
     }
     return DP_SUCCESS;
 }
@@ -602,11 +602,11 @@ int32_t ProfileCache::SetSwitchByProfile(const CharacteristicProfile& charProfil
     uint32_t value = static_cast<uint32_t>(std::stoi(charProfile.GetCharacteristicValue()));
     if (value != 0) {
         outSwitch |= mask;
-        HILOGI("SetSwitch service: %s, switch on, currentSwitch: %d",
+        HILOGI("SetSwitch service: %{public}s, switch on, currentSwitch: %{public}d",
             ProfileUtils::GetAnonyString(charProfile.GetServiceName()).c_str(), outSwitch);
     } else {
         outSwitch &= ~mask;
-        HILOGI("SetSwitch service: %s, switch off, currentSwitch: %d",
+        HILOGI("SetSwitch service: %{public}s, switch off, currentSwitch: %{public}d",
             ProfileUtils::GetAnonyString(charProfile.GetServiceName()).c_str(), outSwitch);
     }
     return DP_SUCCESS;
@@ -630,7 +630,7 @@ bool ProfileCache::IsSwitchValid(const CharacteristicProfile& charProfile,
         }
     }
     if (switchServiceMap.find(charProfile.GetServiceName()) == switchServiceMap.end()) {
-        HILOGE("can not find switchServiceName : %s", charProfile.GetServiceName().c_str());
+        HILOGE("can not find switchServiceName : %{public}s", charProfile.GetServiceName().c_str());
         return false;
     }
     return true;
@@ -647,8 +647,8 @@ int32_t ProfileCache::SetSwitchProfile(CharacteristicProfile& charProfile, uint3
     uint32_t mask = NUM_1U << static_cast<int32_t>(service->second);
     charProfile.SetCharacteristicValue(std::to_string((((switchValue & mask) >>
         (static_cast<int32_t>(service->second))))));
-    HILOGI("SetSwitchProfile success, serviceName: %s, switch: %s", charProfile.GetServiceName().c_str(),
-        charProfile.GetCharacteristicValue().c_str());
+    HILOGI("SetSwitchProfile success, serviceName: %{public}s, switch: %{public}s",
+        charProfile.GetServiceName().c_str(), charProfile.GetCharacteristicValue().c_str());
 
     if (charProfile.GetDeviceId() == GetLocalUdid()) {
         HILOGI("%{public}s is localDevice", ProfileUtils::GetAnonyString(GetLocalUdid()).c_str());
@@ -721,7 +721,7 @@ int32_t ProfileCache::GetNetWorkIdByUdid(const std::string& udid, std::string& n
     
     if (udid == GetLocalUdid()) {
         networkId = GetLocalNetworkId();
-        HILOGI("GetNetWorkIdByUdid success, networkId is localNetworkid: %s",
+        HILOGI("GetNetWorkIdByUdid success, networkId is localNetworkid: %{public}s",
             ProfileUtils::GetAnonyString(networkId).c_str());
         return DP_SUCCESS;
     }
@@ -731,7 +731,7 @@ int32_t ProfileCache::GetNetWorkIdByUdid(const std::string& udid, std::string& n
         return DP_GET_NETWORKID_BY_UDID_FAIL;
     }
     networkId = onlineDevMap_[udid];
-    HILOGI("GetNetWorkIdByUdid success, networkId: %s", ProfileUtils::GetAnonyString(networkId).c_str());
+    HILOGI("GetNetWorkIdByUdid success, networkId: %{public}s", ProfileUtils::GetAnonyString(networkId).c_str());
     return DP_SUCCESS;
 }
 
@@ -750,7 +750,7 @@ int32_t ProfileCache::GetUdidByNetWorkId(const std::string& networkId, std::stri
     for (auto& item : onlineDevMap_) {
         if (item.second == networkId) {
             udid = item.first;
-            HILOGI("find udid: %s", ProfileUtils::GetAnonyString(udid).c_str());
+            HILOGI("find udid: %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
             return DP_SUCCESS;
         }
     }
@@ -775,7 +775,7 @@ int32_t ProfileCache::GetServiceNameByPos(int32_t pos,
     for (auto& item : switchServiceMap) {
         if (item.second == (SwitchFlag)pos) {
             serviceName = item.first;
-            HILOGI("find serviceName: %s", serviceName.c_str());
+            HILOGI("find serviceName: %{public}s", serviceName.c_str());
             return DP_SUCCESS;
         }
     }
@@ -833,7 +833,7 @@ std::string ProfileCache::GetLocalNetworkId()
     DistributedHardware::DmDeviceInfo localDevInfo;
     int32_t res = DistributedHardware::DeviceManager::GetInstance().GetLocalDeviceInfo(DP_PKG_NAME, localDevInfo);
     if (res != DP_SUCCESS) {
-        HILOGE("GetLocalDeviceInfo fail, res: %d.", res);
+        HILOGE("GetLocalDeviceInfo fail, res: %{public}d.", res);
         return EMPTY_STRING;
     }
     localNetworkId_ = localDevInfo.networkId;

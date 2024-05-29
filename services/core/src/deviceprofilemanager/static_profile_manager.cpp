@@ -95,7 +95,7 @@ int32_t StaticProfileManager::GetCharacteristicProfile(const std::string& device
         HILOGE("Params are invalid!");
         return DP_INVALID_PARAMS;
     }
-    HILOGI("GetCharacteristicProfile, deviceId: %s, serviceName: %s, charKey: %s!",
+    HILOGI("GetCharacteristicProfile, deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
         ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
     if (ProfileCache::GetInstance().GetStaticCharacteristicProfile(deviceId, serviceName, characteristicKey,
         charProfile) == DP_SUCCESS) {
@@ -121,7 +121,7 @@ int32_t StaticProfileManager::GetCharacteristicProfile(const std::string& device
     }
     std::string charProfileKey = ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, characteristicKey);
     if (staticInfoProfiles.find(charProfileKey) == staticInfoProfiles.end()) {
-        HILOGE("charProfileKey is not exist, deviceId: %s, serviceName: %s, characteristicKey: %s",
+        HILOGE("charKey not exist, deviceId: %{public}s, serviceName: %{public}s, characteristicKey: %{public}s",
             ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
         return DP_NOT_FOUND_FAIL;
     }

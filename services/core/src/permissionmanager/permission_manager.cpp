@@ -88,7 +88,7 @@ int32_t PermissionManager::LoadPermissionCfg(const std::string& filePath)
         return DP_PARSE_PERMISSION_JSON_FAIL;
     }
     int32_t parseResult = ParsePermissionJson(permissionJson);
-    HILOGI("permission json load result %d!", parseResult);
+    HILOGI("permission json load result %{public}d!", parseResult);
     cJSON_Delete(permissionJson);
     return parseResult;
 }
@@ -163,7 +163,7 @@ bool PermissionManager::IsCallerTrust(const std::string& interfaceName)
         return false;
     }
     if (!CheckInterfacePermission(interfaceName)) {
-        HILOGE("This caller cannot call this interface, interfaceName: %s", interfaceName.c_str());
+        HILOGE("This caller cannot call this interface, interfaceName: %{public}s", interfaceName.c_str());
         if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
             HILOGE("ReportSaCheckAuth failed");
         }
@@ -272,7 +272,7 @@ void PermissionManager::SetPermissionMap(const cJSON* const permissionJson, cons
     cJSON* item = cJSON_GetObjectItem(permissionJson, interfaceName.c_str());
     int32_t itemSize = static_cast<int32_t>(cJSON_GetArraySize(item));
     if (!cJSON_IsArray(item) || itemSize == 0 || itemSize > MAX_INTERFACE_SIZE) {
-        HILOGE("PermissionJson not contains the key, %s!", interfaceName.c_str());
+        HILOGE("PermissionJson not contains the key, %{public}s!", interfaceName.c_str());
         return;
     }
     std::unordered_set<std::string> interfaceNameSets;

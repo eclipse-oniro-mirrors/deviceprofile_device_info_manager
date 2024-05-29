@@ -115,7 +115,7 @@ int32_t StaticCapabilityLoader::GetStaticCapability(const cJSON* const staticCap
     }
     int32_t capabilityNum = static_cast<int32_t>(cJSON_GetArraySize(staticCapabilities));
     if (capabilityNum == 0 || capabilityNum > MAX_STATIC_CAPABILITY_SIZE) {
-        HILOGE("CapabilityNum is invalid, nums: %d!", capabilityNum);
+        HILOGE("CapabilityNum is invalid, nums: %{public}d!", capabilityNum);
         return DP_PARSE_STATIC_CAP_FAIL;
     }
     InitStaticCapability(capabilityNum, staticCapability);
@@ -182,7 +182,7 @@ cJSON* StaticCapabilityLoader::GetLatestStaticInfoJson(const cJSON* const static
     }
     int32_t staticInfoNum = static_cast<int32_t>(cJSON_GetArraySize(staticInfos));
     if (staticInfoNum == 0 || staticInfoNum > MAX_STATIC_CAPABILITY_SIZE) {
-        HILOGE("staticInfoNum is invalid, nums: %d!", staticInfoNum);
+        HILOGE("staticInfoNum is invalid, nums: %{public}d!", staticInfoNum);
         return NULL;
     }
     return cJSON_GetArrayItem(staticInfos, staticInfoNum - 1);
@@ -207,7 +207,7 @@ cJSON* StaticCapabilityLoader::GetStaticInfoJsonByVersion(const cJSON* const sta
     }
     int32_t staticInfoNum = static_cast<int32_t>(cJSON_GetArraySize(staticInfos));
     if (staticInfoNum == 0 || staticInfoNum > MAX_STATIC_CAPABILITY_SIZE) {
-        HILOGE("staticInfoNum is invalid, nums: %d!", staticInfoNum);
+        HILOGE("staticInfoNum is invalid, nums: %{public}d!", staticInfoNum);
         return NULL;
     }
     cJSON *item = NULL;

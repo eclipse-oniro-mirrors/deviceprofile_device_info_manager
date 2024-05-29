@@ -98,7 +98,7 @@ std::vector<std::string> ProfileUtils::FilterOnlineDevices(const std::vector<std
     std::vector<std::string> targetDevices;
     for (const DmDeviceInfo& dmDeviceInfo : allOnlineDeviceInfos) {
         if (std::find(deviceList.begin(), deviceList.end(), dmDeviceInfo.networkId) == deviceList.end()) {
-            HILOGE("This device is not online, networkId: %s!",
+            HILOGE("This device is not online, networkId: %{public}s!",
                    ProfileUtils::GetAnonyString(dmDeviceInfo.networkId).c_str());
             continue;
         }
@@ -110,7 +110,7 @@ std::vector<std::string> ProfileUtils::FilterOnlineDevices(const std::vector<std
 ProfileType ProfileUtils::GetProfileType(const std::string& key)
 {
     if (key.length() == 0 || key.length() > MAX_STRING_LEN) {
-        HILOGE("This key is invalid, value: %s!", key.c_str());
+        HILOGE("This key is invalid, value: %{public}s!", key.c_str());
         return ProfileType::PROFILE_TYPE_MIN;
     }
     ProfileType profileType = ProfileType::PROFILE_TYPE_MIN;
@@ -524,7 +524,7 @@ std::map<std::string, std::string> ProfileUtils::GetProfilePropertiesMap(std::ma
     for (const auto& item : dbEntries) {
         std::string profileProperty = GetProfileProperty(item.first);
         if (profileProperty.empty()) {
-            HILOGE("GetProfileProperty fail, %s!", item.first.c_str());
+            HILOGE("GetProfileProperty fail, %{public}s!", item.first.c_str());
             continue;
         }
         propertiesMap[profileProperty] = item.second;

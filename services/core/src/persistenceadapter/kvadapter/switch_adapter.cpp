@@ -49,7 +49,7 @@ int32_t SwitchAdapter::PutSwitch(const std::string& appId, uint32_t value, uint1
     const DistributedKv::SwitchData switchData = {value, length};
     DistributedKv::Status res = kvDataMgr_.PutSwitch(appID, switchData);
     if (res != DistributedKv::Status::SUCCESS) {
-        HILOGE("PutSwitch kv to db failed, ret: %d", res);
+        HILOGE("PutSwitch kv to db failed, ret: %{public}d", res);
         return DP_PUT_KV_DB_FAIL;
     }
     return DP_SUCCESS;
@@ -66,7 +66,7 @@ int32_t SwitchAdapter::GetSwitch(const std::string& appId, const std::string& ne
     appID.appId = appId;
     auto res = kvDataMgr_.GetSwitch(appID, networkId);
     if (res.first != DistributedKv::Status::SUCCESS) {
-        HILOGE("switch from db failed, ret: %d", res.first);
+        HILOGE("switch from db failed, ret: %{public}d", res.first);
         return DP_PUT_KV_DB_FAIL;
     }
     HILOGI("switch value %{public}u", res.second.value);
@@ -85,7 +85,7 @@ int32_t SwitchAdapter::SubscribeSwitchData(const std::string& appId)
     appID.appId = appId;
     auto res = kvDataMgr_.SubscribeSwitchData(appID, observer_);
     if (res != DistributedKv::Status::SUCCESS) {
-        HILOGE("SubscribeSwitchData failed, ret: %d", res);
+        HILOGE("SubscribeSwitchData failed, ret: %{public}d", res);
         return DP_SUBSCRIBE_FAILED;
     }
     return DP_SUCCESS;
@@ -103,7 +103,7 @@ int32_t SwitchAdapter::UnsubscribeSwitchData(const std::string& appId)
     appID.appId = appId;
     auto res = kvDataMgr_.UnsubscribeSwitchData(appID, observer_);
     if (res != DistributedKv::Status::SUCCESS) {
-        HILOGE("UnSubscribeSwitchData failed, ret: %d", res);
+        HILOGE("UnSubscribeSwitchData failed, ret: %{public}d", res);
         return DP_UNSUBSCRIBE_FAILED;
     }
     return DP_SUCCESS;

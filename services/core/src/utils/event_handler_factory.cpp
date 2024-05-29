@@ -55,7 +55,7 @@ std::shared_ptr<AppExecFwk::EventHandler> EventHandlerFactory::CreateEventHandle
         HILOGI("handlerName is invalid!");
         return nullptr;
     }
-    HILOGI("createEventHandler, handlerName: %s", handlerName.c_str());
+    HILOGI("createEventHandler, handlerName: %{public}s", handlerName.c_str());
     std::lock_guard<std::mutex> lock(eventHandlerMutex_);
     return eventHandlerMap_[handlerName];
 }
