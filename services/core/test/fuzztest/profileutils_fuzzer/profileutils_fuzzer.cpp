@@ -29,6 +29,14 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 
+namespace {
+    const int32_t AERUSERID = 11;
+    const int32_t USERIDS = 22;
+    const int32_t AERTOKENID = 111;
+    const int32_t TOKENIDS = 222;
+    const int32_t AUTHTIME = 5;
+}
+
 void GetProfileTypeFuzzTest(const uint8_t* data, size_t size)
 {
     if ((data == nullptr) || (size == 0)) {
@@ -140,18 +148,18 @@ void AccessControlProfileToEntriesFuzzTest(const uint8_t* data, size_t size)
     }
     Accesser accesser;
     accesser.SetAccesserDeviceId("acer1");
-    accesser.SetAccesserUserId(11);
+    accesser.SetAccesserUserId(AERUSERID);
     accesser.SetAccesserAccountId("a1");
-    accesser.SetAccesserTokenId(111);
+    accesser.SetAccesserTokenId(AERTOKENID);
     accesser.SetAccesserBundleName("b1");
     accesser.SetAccesserHapSignature("h1");
     accesser.SetAccesserBindLevel(1);
     
     Accessee accessee;
     accessee.SetAccesseeDeviceId("acee1");
-    accessee.SetAccesseeUserId(22);
+    accessee.SetAccesseeUserId(USERIDS);
     accessee.SetAccesseeAccountId("a1");
-    accessee.SetAccesseeTokenId(222);
+    accessee.SetAccesseeTokenId(TOKENIDS);
     accessee.SetAccesseeBundleName("bb1");
     accessee.SetAccesseeHapSignature("h1");
     accessee.SetAccesseeBindLevel(1);
@@ -165,7 +173,7 @@ void AccessControlProfileToEntriesFuzzTest(const uint8_t* data, size_t size)
     profile.SetDeviceIdHash("abcd");
     profile.SetStatus(0);
     profile.SetValidPeriod(1);
-    profile.SetLastAuthTime(5);
+    profile.SetLastAuthTime(AUTHTIME);
     profile.SetBindLevel(0);
     
     profile.SetAccesser(accesser);
@@ -278,7 +286,7 @@ void toStringFuzzTest(const uint8_t* data, size_t size)
         return;
     }
     std::u16string str16 = u"abc";
-    ProfileUtils::toString(str16); 
+    ProfileUtils::toString(str16);
 }
 
 void IsPropertyValidFuzzTest(const uint8_t* data, size_t size)
