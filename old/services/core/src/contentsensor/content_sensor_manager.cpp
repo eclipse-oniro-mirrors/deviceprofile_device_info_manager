@@ -35,12 +35,7 @@ IMPLEMENT_SINGLE_INSTANCE(ContentSensorManager);
 
 bool ContentSensorManager::Init()
 {
-    auto runner = AppExecFwk::EventRunner::Create("csCollector");
-    csCollectorHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
-    if (csCollectorHandler_ == nullptr) {
-        return false;
-    }
-    return Collect();
+    return true;
 }
 
 bool ContentSensorManager::Collect()
