@@ -53,7 +53,7 @@ const std::string NAME = "name";
 const std::string INIT_TASK_ID = "CheckAndInitDP";
 constexpr int32_t DELAY_TIME = 180000;
 constexpr int32_t UNLOAD_IMMEDIATELY = 0;
-constexpr int32_t INIT_BUSINESS_DELAY_TIME_MS = 5 * 100;
+constexpr int32_t INIT_BUSINESS_DELAY_TIME_MS = 2 * 100;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileService);
@@ -66,12 +66,16 @@ DistributedDeviceProfileService::DistributedDeviceProfileService()
 
 bool DistributedDeviceProfileService::Init()
 {
-    auto runner = AppExecFwk::EventRunner::Create("unload");
-    if (unloadHandler_ == nullptr) {
-        unloadHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
-    }
-    if (unloadHandler_ == nullptr) {
-        return false;
+    HILOGI("called");
+    {
+        std::lock_guard<std::mutex> lock(unloadMutex_);
+        auto runner = AppExecFwk::EventRunner::Create("unloadRunner");
+        if (unloadHandler_ == nullptr) {
+            unloadHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
+        }
+        if (unloadHandler_ == nullptr) {
+            return false;
+        }
     }
     HILOGI("init DistributedDeviceProfileServiceNew");
     DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().Init();
@@ -321,19 +325,10 @@ bool DistributedDeviceProfileService::DoBusinessInit()
         HILOGE("DeviceManager init failed");
         return false;
     }
-    if (!DeviceProfileStorageManager::GetInstance().Init()) {
-        HILOGE("DeviceProfileStorageManager init failed");
-        return false;
-    }
-    if (!SubscribeManager::GetInstance().Init()) {
-        HILOGE("SubscribeManager init failed");
-        return false;
-    }
     if (!AuthorityManager::GetInstance().Init()) {
         HILOGE("AuthorityManager init failed");
         return false;
     }
-    TrustGroupManager::GetInstance().InitHichainService();
     DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().PostInit();
     HILOGI("DoBusinessInit succeeded");
     return true;

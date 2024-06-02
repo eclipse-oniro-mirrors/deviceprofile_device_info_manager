@@ -30,14 +30,10 @@ namespace {
 int32_t EventHandlerFactory::Init()
 {
     HILOGI("call!");
-    auto unloadRunner = AppExecFwk::EventRunner::Create(UNLOAD_DP_SA_HANDLER);
-    eventHandlerMap_[UNLOAD_DP_SA_HANDLER] = std::make_shared<AppExecFwk::EventHandler>(unloadRunner);
     auto kvDeathRunner = AppExecFwk::EventRunner::Create(KV_DEATH_HANDLER);
     eventHandlerMap_[KV_DEATH_HANDLER] = std::make_shared<AppExecFwk::EventHandler>(kvDeathRunner);
     auto onSyncRunner = AppExecFwk::EventRunner::Create(ON_SYNC_HANDLER);
     eventHandlerMap_[ON_SYNC_HANDLER] = std::make_shared<AppExecFwk::EventHandler>(onSyncRunner);
-    auto autoSyncRunner = AppExecFwk::EventRunner::Create(AUTO_SYNC_HANDLER);
-    eventHandlerMap_[AUTO_SYNC_HANDLER] = std::make_shared<AppExecFwk::EventHandler>(autoSyncRunner);
     return DP_SUCCESS;
 }
 
