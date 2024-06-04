@@ -78,10 +78,10 @@
             <!--licensematcher name="uvwxyz License" desc="If the scanning result is InvalidLicense, you can define matching rules here. Note that quotation marks must be escaped.">
                 <licensetext name="
                     uvwxyz license textA xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-				 " desc=""/>
+                 " desc=""/>
                 <licensetext name="
                     uvwxyz license textB xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-				 " desc=""/>
+                 " desc=""/>
             </licensematcher-->
         </licensematcherlist>
     </oatconfig>
