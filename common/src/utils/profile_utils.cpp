@@ -550,8 +550,8 @@ bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& pro
 bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
     int32_t minValue, int32_t maxValue)
 {
-    if (property.empty()) {
-        HILOGE("property is empty");
+    if (property.empty() || propertyMap.find(property) == propertyMap.end()) {
+        HILOGE("property is valid");
         return false;
     }
     std::string propertyValue = propertyMap.at(property);
@@ -559,8 +559,7 @@ bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& pro
         HILOGE("%{public}s is not numeric string", propertyValue.c_str());
         return false;
     }
-    if (propertyMap.count(property) != 0 && minValue < std::atoi(propertyValue.c_str()) &&
-        std::atoi(propertyValue.c_str()) < maxValue) {
+    if (minValue < std::atoi(propertyValue.c_str()) && std::atoi(propertyValue.c_str()) < maxValue) {
         return true;
     }
     return false;

@@ -34,8 +34,6 @@ namespace {
     const std::string TAG = "StaticCapabilityLoaderTest";
 }
 
-std::string staticCapability = EMPTY_STRING;
-
 class StaticCapabilityLoaderTest : public testing::Test {
 public:
     static void SetUpTestCase();
@@ -79,7 +77,7 @@ HWTEST_F(StaticCapabilityLoaderTest, Init_001, TestSize.Level1)
  */
 HWTEST_F(StaticCapabilityLoaderTest, LoadStaticCapability_001, TestSize.Level1)
 {
-    std::string staticCapability;
+    std::string staticCapability = EMPTY_STRING;
     int32_t ret = OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().LoadStaticCapability(staticCapability);
     EXPECT_EQ(ret, DP_SUCCESS);
@@ -177,7 +175,7 @@ HWTEST_F(StaticCapabilityLoaderTest, LoadJsonFile_006, TestSize.Level1)
 HWTEST_F(StaticCapabilityLoaderTest, GetStaticCapability_001, TestSize.Level1)
 {
     cJSON *staticCapabilityJson = cJSON_CreateObject();
-    std::string staticCapability;
+    std::string staticCapability = EMPTY_STRING;
     int32_t ret = OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().GetStaticCapability(staticCapabilityJson, staticCapability);
     EXPECT_EQ(ret, DP_PARSE_STATIC_CAP_FAIL);
@@ -193,7 +191,7 @@ HWTEST_F(StaticCapabilityLoaderTest, GetStaticCapability_002, TestSize.Level1)
 {
     cJSON *staticCapabilityJson = cJSON_CreateObject();
     cJSON_AddItemToObject(staticCapabilityJson, STATIC_CAPABILITY_ATTRIBUTE.c_str(), cJSON_CreateArray());
-    std::string staticCapability;
+    std::string staticCapability = EMPTY_STRING;
     int32_t ret = OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().GetStaticCapability(staticCapabilityJson, staticCapability);
     EXPECT_EQ(ret, DP_PARSE_STATIC_CAP_FAIL);
@@ -210,7 +208,7 @@ HWTEST_F(StaticCapabilityLoaderTest, GetStaticCapability_003, TestSize.Level1)
     cJSON *staticCapabilityJson = cJSON_CreateObject();
     cJSON *staticCapabilities = cJSON_CreateArray();
     cJSON_AddItemToObject(staticCapabilityJson, STATIC_CAPABILITY_ATTRIBUTE.c_str(), staticCapabilities);
-    std::string staticCapability;
+    std::string staticCapability = EMPTY_STRING;
     int32_t ret = OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().GetStaticCapability(staticCapabilityJson, staticCapability);
     EXPECT_EQ(ret, DP_PARSE_STATIC_CAP_FAIL);
@@ -227,6 +225,7 @@ HWTEST_F(StaticCapabilityLoaderTest, GetStaticInfo_001, TestSize.Level1)
     std::unordered_map<std::string, CharacteristicProfile> charProfiles;
     cJSON *staticInfoJson = cJSON_CreateObject();
     std::string staticVersion = EMPTY_STRING;
+    std::string staticCapability = EMPTY_STRING;
     int32_t ret = OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().GetStaticInfo(staticInfoJson, staticCapability,
             staticVersion, charProfiles);
@@ -244,7 +243,8 @@ HWTEST_F(StaticCapabilityLoaderTest, GetStaticInfo_002, TestSize.Level1)
     std::unordered_map<std::string, CharacteristicProfile> charProfiles;
     cJSON *staticInfoJson = cJSON_CreateObject();
     cJSON_AddItemToObject(staticInfoJson, "test", cJSON_CreateString("test"));
-    std::string staticVersion;
+    std::string staticVersion = EMPTY_STRING;
+    std::string staticCapability = EMPTY_STRING;
     int32_t ret = OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().GetStaticInfo(staticInfoJson, staticCapability,
             staticVersion, charProfiles);
@@ -263,7 +263,8 @@ HWTEST_F(StaticCapabilityLoaderTest, GetStaticInfo_003, TestSize.Level1)
     cJSON *staticInfoJson = cJSON_CreateObject();
     cJSON_AddItemToObject(staticInfoJson, "test", cJSON_CreateString("test"));
     cJSON_AddItemToObject(staticInfoJson, "test2", cJSON_CreateString("test2"));
-    std::string staticVersion;
+    std::string staticVersion = EMPTY_STRING;
+    std::string staticCapability = EMPTY_STRING;
     int32_t ret = OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().GetStaticInfo(staticInfoJson, staticCapability,
             staticVersion, charProfiles);
@@ -282,6 +283,7 @@ HWTEST_F(StaticCapabilityLoaderTest, GetStaticInfoByVersion_001, TestSize.Level1
     std::unordered_map<std::string, CharacteristicProfile> charProfiles;
     cJSON *staticInfoJson = cJSON_CreateObject();
     std::string staticVersion = "1.0";
+    std::string staticCapability = EMPTY_STRING;
     int32_t ret = OHOS::DistributedDeviceProfile::StaticCapabilityLoader::
         GetInstance().GetStaticInfoByVersion(deviceId, staticCapability,
         staticInfoJson, staticVersion, charProfiles);
@@ -300,6 +302,7 @@ HWTEST_F(StaticCapabilityLoaderTest, GetStaticInfoByVersion_002, TestSize.Level1
     std::unordered_map<std::string, CharacteristicProfile> charProfiles;
     cJSON *staticInfoJson = nullptr;
     std::string staticVersion = "1.0";
+    std::string staticCapability = EMPTY_STRING;
     int32_t ret = OHOS::DistributedDeviceProfile::StaticCapabilityLoader::
         GetInstance().GetStaticInfoByVersion(deviceId, staticCapability,
         staticInfoJson, staticVersion, charProfiles);
@@ -317,6 +320,7 @@ HWTEST_F(StaticCapabilityLoaderTest, GetStaticInfoByVersion_003, TestSize.Level1
     std::unordered_map<std::string, CharacteristicProfile> charProfiles;
     cJSON *staticInfoJson = cJSON_CreateObject();
     std::string staticVersion = "";
+    std::string staticCapability = EMPTY_STRING;
     int32_t ret = OHOS::DistributedDeviceProfile::StaticCapabilityLoader::
         GetInstance().GetStaticInfoByVersion(deviceId, staticCapability,
         staticInfoJson, staticVersion, charProfiles);
@@ -335,6 +339,7 @@ HWTEST_F(StaticCapabilityLoaderTest, GetStaticInfoByVersion_004, TestSize.Level1
     std::unordered_map<std::string, CharacteristicProfile> charProfiles;
     cJSON *staticInfoJson = cJSON_CreateObject();
     std::string staticVersion = "1.0";
+    std::string staticCapability = EMPTY_STRING;
     int32_t ret = OHOS::DistributedDeviceProfile::StaticCapabilityLoader::
         GetInstance().GetStaticInfoByVersion(deviceId, staticCapability,
         staticInfoJson, staticVersion, charProfiles);
@@ -439,7 +444,7 @@ HWTEST_F(StaticCapabilityLoaderTest, GetStaticInfoJsonByVersion_004, TestSize.Le
 HWTEST_F(StaticCapabilityLoaderTest, GetStaticVersion_001, TestSize.Level1)
 {
     cJSON *lastStaticJson = nullptr;
-    std::string staticVersion;
+    std::string staticVersion = EMPTY_STRING;
     int32_t ret = OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().GetStaticVersion(lastStaticJson, staticVersion);
     EXPECT_EQ(ret, DP_GET_STATIC_INFO_FAIL);
@@ -455,7 +460,7 @@ HWTEST_F(StaticCapabilityLoaderTest, GetStaticVersion_002, TestSize.Level1)
     cJSON *lastStaticJson = cJSON_CreateObject();
     cJSON *dpVersionJson = cJSON_CreateString("1.0");
     cJSON_AddItemToObject(lastStaticJson, "dpVersion", dpVersionJson);
-    std::string staticVersion;
+    std::string staticVersion = EMPTY_STRING;
     int32_t ret = OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().GetStaticVersion(lastStaticJson, staticVersion);
     EXPECT_EQ(ret, DP_GET_STATIC_INFO_FAIL);
@@ -471,6 +476,7 @@ HWTEST_F(StaticCapabilityLoaderTest, GenerateStaticProfiles_001, TestSize.Level1
 {
     std::unordered_map<std::string, CharacteristicProfile> charProfiles;
     cJSON *staticInfoJson = cJSON_CreateObject();
+    std::string staticCapability = EMPTY_STRING;
     int32_t ret = OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().GenerateStaticProfiles("", staticCapability,
         staticInfoJson, charProfiles);
@@ -489,6 +495,7 @@ HWTEST_F(StaticCapabilityLoaderTest, GenerateStaticProfiles_002, TestSize.Level1
     std::unordered_map<std::string, CharacteristicProfile> charProfiles;
     cJSON *staticInfoJson = cJSON_CreateObject();
     std::string longDeviceId(MAX_STRING_LEN + 1, 'a');
+    std::string staticCapability = EMPTY_STRING;
     int32_t ret = OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().GenerateStaticProfiles(longDeviceId, staticCapability,
         staticInfoJson, charProfiles);
@@ -505,6 +512,7 @@ HWTEST_F(StaticCapabilityLoaderTest, GenerateStaticProfiles_003, TestSize.Level1
 {
     std::string deviceId = "deviceId";
     std::unordered_map<std::string, CharacteristicProfile> charProfiles;
+    std::string staticCapability = EMPTY_STRING;
     int32_t ret = OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().GenerateStaticProfiles(deviceId, staticCapability,
         nullptr, charProfiles);
@@ -521,6 +529,7 @@ HWTEST_F(StaticCapabilityLoaderTest, GenerateStaticProfiles_004, TestSize.Level1
     std::string deviceId = "deviceId";
     std::unordered_map<std::string, CharacteristicProfile> charProfiles;
     cJSON *staticInfoJson = cJSON_CreateObject();
+    std::string staticCapability = EMPTY_STRING;
     cJSON_AddItemToObject(staticInfoJson, ABILITY_KEY.c_str(), cJSON_CreateString("not an array"));
     int32_t ret = OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().GenerateStaticProfiles(deviceId, staticCapability,
@@ -536,7 +545,7 @@ HWTEST_F(StaticCapabilityLoaderTest, GenerateStaticProfiles_004, TestSize.Level1
  */
 HWTEST_F(StaticCapabilityLoaderTest, LoadStaticInfo_001, TestSize.Level1)
 {
-    std::string staticCapability = "";
+    std::string staticCapability = EMPTY_STRING;
     std::string staticVersion = "";
     std::unordered_map<std::string, CharacteristicProfile> charProfiles;
     int32_t ret = OHOS::DistributedDeviceProfile::
@@ -613,7 +622,7 @@ HWTEST_F(StaticCapabilityLoaderTest, LoadStaticProfiles_001, TestSize.Level1)
 HWTEST_F(StaticCapabilityLoaderTest, LoadStaticProfiles_002, TestSize.Level1)
 {
     std::string deviceId = "deviceId";
-    std::string staticCapability = "";
+    std::string staticCapability = EMPTY_STRING;
     std::string staticVersion = "staticVersion";
     std::unordered_map<std::string, CharacteristicProfile> charProfiles;
     int32_t ret = OHOS::DistributedDeviceProfile::StaticCapabilityLoader::
@@ -661,7 +670,7 @@ HWTEST_F(StaticCapabilityLoaderTest, LoadStaticProfiles_004, TestSize.Level1)
 HWTEST_F(StaticCapabilityLoaderTest, InitStaticCapability_001, TestSize.Level1)
 {
     int32_t size = 2;
-    std::string staticCapability;
+    std::string staticCapability = EMPTY_STRING;
     OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().InitStaticCapability(size, staticCapability);
     EXPECT_EQ(staticCapability, "00");
@@ -675,7 +684,7 @@ HWTEST_F(StaticCapabilityLoaderTest, InitStaticCapability_001, TestSize.Level1)
 HWTEST_F(StaticCapabilityLoaderTest, SetStaticCapability_001, TestSize.Level1)
 {
     const cJSON *staticCapabilityItems = cJSON_CreateString("NotJsonArray");
-    std::string staticCapability;
+    std::string staticCapability = EMPTY_STRING;
     OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().SetStaticCapability(staticCapabilityItems, staticCapability);
     EXPECT_EQ(staticCapability, "");
@@ -690,7 +699,7 @@ HWTEST_F(StaticCapabilityLoaderTest, SetStaticCapability_002, TestSize.Level1)
 {
     cJSON *staticCapabilityItems = cJSON_CreateArray();
     cJSON *item = cJSON_CreateString("NotObject");
-    std::string staticCapability;
+    std::string staticCapability = EMPTY_STRING;
     cJSON_AddItemToArray(staticCapabilityItems, item);
     OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().SetStaticCapability(staticCapabilityItems, staticCapability);
@@ -707,7 +716,7 @@ HWTEST_F(StaticCapabilityLoaderTest, SetStaticCapabilityFlag_001, TestSize.Level
 {
     std::string handlerName = "";
     std::string handlerLoc = "loc";
-    std::string staticCapability = "";
+    std::string staticCapability = EMPTY_STRING;
     OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().SetStaticCapabilityFlag(handlerName, handlerLoc, staticCapability);
     EXPECT_EQ(staticCapability, "");
@@ -722,7 +731,7 @@ HWTEST_F(StaticCapabilityLoaderTest, SetStaticCapabilityFlag_002, TestSize.Level
 {
     std::string handlerName(MAX_STRING_LEN + 1, 'a');
     std::string handlerLoc = "loc";
-    std::string staticCapability = "";
+    std::string staticCapability = EMPTY_STRING;
     OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().SetStaticCapabilityFlag(handlerName, handlerLoc, staticCapability);
     EXPECT_EQ(staticCapability, "");
@@ -737,7 +746,7 @@ HWTEST_F(StaticCapabilityLoaderTest, SetStaticCapabilityFlag_003, TestSize.Level
 {
     std::string handlerName = "name";
     std::string handlerLoc = "";
-    std::string staticCapability = "";
+    std::string staticCapability = EMPTY_STRING;
     OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().SetStaticCapabilityFlag(handlerName, handlerLoc, staticCapability);
     EXPECT_EQ(staticCapability, "");
@@ -752,7 +761,7 @@ HWTEST_F(StaticCapabilityLoaderTest, SetStaticCapabilityFlag_004, TestSize.Level
 {
     std::string handlerName = "name";
     std::string handlerLoc(MAX_STRING_LEN + 1, 'a');
-    std::string staticCapability = "";
+    std::string staticCapability = EMPTY_STRING;
     OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().SetStaticCapabilityFlag(handlerName, handlerLoc, staticCapability);
     EXPECT_EQ(staticCapability, "");
@@ -767,7 +776,7 @@ HWTEST_F(StaticCapabilityLoaderTest, SetStaticCapabilityFlag_005, TestSize.Level
 {
     std::string handlerName = "name";
     std::string handlerLoc = "handlerLoc";
-    std::string staticCapability = "";
+    std::string staticCapability = EMPTY_STRING;
     OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().SetStaticCapabilityFlag(handlerName, handlerLoc, staticCapability);
     EXPECT_EQ(staticCapability, "");
