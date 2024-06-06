@@ -873,7 +873,7 @@ HWTEST_F(ProfileControlUtilsTest, GetServiceProfile004, TestSize.Level1)
         std::make_shared<KvDataChangeListener>(),
         std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
         DistributedKv::TYPE_DYNAMICAL);
-    std::string deviceId= "deviceId";
+    std::string deviceId = "deviceId";
     std::string serviceName = "serviceName";
     ServiceProfile serviceProfile;
 
@@ -895,7 +895,7 @@ HWTEST_F(ProfileControlUtilsTest, GetServiceProfile005, TestSize.Level1)
         std::make_shared<KvDataChangeListener>(),
         std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
         DistributedKv::TYPE_DYNAMICAL);
-    std::string deviceId= "deviceId";
+    std::string deviceId = "deviceId";
     std::string serviceName = "serviceName";
     ServiceProfile serviceProfile;
 
@@ -918,7 +918,7 @@ HWTEST_F(ProfileControlUtilsTest, GetServiceProfile006, TestSize.Level1)
         std::make_shared<KvDataChangeListener>(),
         std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
         DistributedKv::TYPE_DYNAMICAL);
-    std::string deviceId= "deviceId";
+    std::string deviceId = "deviceId";
     std::string serviceName = "serviceName";
     ServiceProfile serviceProfile;
 
@@ -940,7 +940,7 @@ HWTEST_F(ProfileControlUtilsTest, GetServiceProfile006, TestSize.Level1)
 HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile001, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = nullptr;
-    std::string deviceId= "deviceId";
+    std::string deviceId = "deviceId";
     std::string serviceName = "serviceName";
     std::string characteristicKey;
     CharacteristicProfile charProfile;
@@ -986,7 +986,7 @@ HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile003, TestSize.Level1)
         std::make_shared<KvDataChangeListener>(),
         std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
         DistributedKv::TYPE_DYNAMICAL);
-    std::string deviceId= "deviceId";
+    std::string deviceId = "deviceId";
     std::string serviceName = "serviceName";
     std::string characteristicKey;
     CharacteristicProfile charProfile;
@@ -1009,7 +1009,7 @@ HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile004, TestSize.Level1)
         std::make_shared<KvDataChangeListener>(),
         std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
         DistributedKv::TYPE_DYNAMICAL);
-    std::string deviceId= "deviceId";
+    std::string deviceId = "deviceId";
     std::string serviceName = "serviceName";
     std::string characteristicKey;
     CharacteristicProfile charProfile;
@@ -1032,7 +1032,7 @@ HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile005, TestSize.Level1)
         std::make_shared<KvDataChangeListener>(),
         std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
         DistributedKv::TYPE_DYNAMICAL);
-    std::string deviceId= "deviceId";
+    std::string deviceId = "deviceId";
     std::string serviceName = "serviceName";
     std::string characteristicKey = "characteristicKey";
     CharacteristicProfile charProfile;
@@ -1058,7 +1058,7 @@ HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile006, TestSize.Level1)
         std::make_shared<KvDataChangeListener>(),
         std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
         DistributedKv::TYPE_DYNAMICAL);
-    std::string deviceId= "deviceId";
+    std::string deviceId = "deviceId";
     std::string serviceName = "serviceName";
     std::string characteristicKey = "characteristicKey";
     CharacteristicProfile charProfile;
@@ -1083,7 +1083,7 @@ HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile007, TestSize.Level1)
         std::make_shared<KvDataChangeListener>(),
         std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
         DistributedKv::TYPE_DYNAMICAL);
-    std::string deviceId= "deviceId";
+    std::string deviceId = "deviceId";
     std::string serviceName = "serviceName";
     std::string characteristicKey = "characteristicKey";
     CharacteristicProfile charProfile;

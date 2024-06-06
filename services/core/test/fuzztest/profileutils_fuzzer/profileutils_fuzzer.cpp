@@ -280,7 +280,7 @@ void GetProfilePropertiesMapFuzzTest(const uint8_t* data, size_t size)
     ProfileUtils::GetProfilePropertiesMap(values);
 }
 
-void toStringFuzzTest(const uint8_t* data, size_t size)
+void ToStringFuzzTest(const uint8_t* data, size_t size)
 {
     if ((data == nullptr) || (size == 0)) {
         return;
@@ -399,7 +399,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::DistributedDeviceProfile::GenerateDBKeyFuzzTest(data, size);
     OHOS::DistributedDeviceProfile::GetProfilePropertyFuzzTest(data, size);
     OHOS::DistributedDeviceProfile::GetProfilePropertiesMapFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::toStringFuzzTest(data, size);
+    OHOS::DistributedDeviceProfile::ToStringFuzzTest(data, size);
     OHOS::DistributedDeviceProfile::IsPropertyValidFuzzTest(data, size);
     OHOS::DistributedDeviceProfile::GetIntValueFuzzTest(data, size);
     OHOS::DistributedDeviceProfile::GetStringValueFuzzTest(data, size);

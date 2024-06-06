@@ -53,6 +53,7 @@ ohos_shared_library("distributed_device_profile_sdk") {
   ]
 
   external_deps = [
+    "cJSON:cjson",
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
