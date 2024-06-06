@@ -166,6 +166,7 @@ int32_t DistributedDeviceProfileServiceNew::UnInit()
         HILOGE("EventHandlerFactory UnInit failed");
         return DP_CACHE_UNINIT_FAIL;
     }
+    DestroyUnloadHandler();
     HILOGI("init succeeded");
     return DP_SUCCESS;
 }

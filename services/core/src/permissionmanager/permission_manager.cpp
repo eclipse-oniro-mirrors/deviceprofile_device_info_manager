@@ -63,6 +63,10 @@ int32_t PermissionManager::Init()
 int32_t PermissionManager::UnInit()
 {
     HILOGI("UnInit");
+    {
+        std::lock_guard<std::mutex> lockGuard(permissionMutex_);
+        permissionMap_.clear();
+    }
     return DP_SUCCESS;
 }
 

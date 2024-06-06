@@ -44,6 +44,11 @@ int32_t SubscribeProfileManager::Init()
 int32_t SubscribeProfileManager::UnInit()
 {
     HILOGI("call!");
+    {
+        std::lock_guard<std::mutex> lockGuard(subscribeMutex_);
+        subscribeInfoMap_.clear();
+    }
+    funcsMap_.clear();
     return DP_SUCCESS;
 }
 

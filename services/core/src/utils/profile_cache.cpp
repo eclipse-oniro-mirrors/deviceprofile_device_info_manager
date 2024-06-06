@@ -65,6 +65,30 @@ int32_t ProfileCache::Init()
 int32_t ProfileCache::UnInit()
 {
     HILOGI("UnInit");
+    {
+        std::lock_guard<std::mutex> lock(onlineDeviceLock_);
+        onlineDevMap_.clear();
+    }
+    {
+        std::lock_guard<std::mutex> lock(deviceProfileMutex_);
+        deviceProfileMap_.clear();
+    }
+    {
+        std::lock_guard<std::mutex> lock(serviceProfileMutex_);
+        serviceProfileMap_.clear();
+    }
+    {
+        std::lock_guard<std::mutex> lock(charProfileMutex_);
+        charProfileMap_.clear();
+    }
+    {
+        std::lock_guard<std::mutex> lock(staticCharProfileMutex_);
+        staticCharProfileMap_.clear();
+    }
+    {
+        std::lock_guard<std::mutex> lock(syncListenerMutex_);
+        syncListenerMap_.clear();
+    }
     return DP_SUCCESS;
 }
 
