@@ -31,15 +31,24 @@ int32_t SubscribeProfileManager::Init()
     HILOGI("call!");
     {
         std::lock_guard<std::mutex> lockGuard(funcsMutex_);
-        funcsMap_[ProfileType::DEVICE_PROFILE * ChangeType::ADD] = &SubscribeProfileManager::NotifyDeviceProfileAdd;
-        funcsMap_[ProfileType::DEVICE_PROFILE * ChangeType::UPDATE] = &SubscribeProfileManager::NotifyDeviceProfileUpdate;
-        funcsMap_[ProfileType::DEVICE_PROFILE * ChangeType::DELETE] = &SubscribeProfileManager::NotifyDeviceProfileDelete;
-        funcsMap_[ProfileType::SERVICE_PROFILE * ChangeType::ADD] = &SubscribeProfileManager::NotifyServiceProfileAdd;
-        funcsMap_[ProfileType::SERVICE_PROFILE * ChangeType::UPDATE] = &SubscribeProfileManager::NotifyServiceProfileUpdate;
-        funcsMap_[ProfileType::SERVICE_PROFILE * ChangeType::DELETE] = &SubscribeProfileManager::NotifyServiceProfileDelete;
-        funcsMap_[ProfileType::CHAR_PROFILE * ChangeType::ADD] = &SubscribeProfileManager::NotifyCharProfileAdd;
-        funcsMap_[ProfileType::CHAR_PROFILE * ChangeType::UPDATE] = &SubscribeProfileManager::NotifyCharProfileUpdate;
-        funcsMap_[ProfileType::CHAR_PROFILE * ChangeType::DELETE] = &SubscribeProfileManager::NotifyCharProfileDelete;
+        funcsMap_[ProfileType::DEVICE_PROFILE * ChangeType::ADD] =
+            &SubscribeProfileManager::NotifyDeviceProfileAdd;
+        funcsMap_[ProfileType::DEVICE_PROFILE * ChangeType::UPDATE] =
+            &SubscribeProfileManager::NotifyDeviceProfileUpdate;
+        funcsMap_[ProfileType::DEVICE_PROFILE * ChangeType::DELETE] =
+            &SubscribeProfileManager::NotifyDeviceProfileDelete;
+        funcsMap_[ProfileType::SERVICE_PROFILE * ChangeType::ADD] =
+            &SubscribeProfileManager::NotifyServiceProfileAdd;
+        funcsMap_[ProfileType::SERVICE_PROFILE * ChangeType::UPDATE] =
+            &SubscribeProfileManager::NotifyServiceProfileUpdate;
+        funcsMap_[ProfileType::SERVICE_PROFILE * ChangeType::DELETE] =
+            &SubscribeProfileManager::NotifyServiceProfileDelete;
+        funcsMap_[ProfileType::CHAR_PROFILE * ChangeType::ADD] =
+            &SubscribeProfileManager::NotifyCharProfileAdd;
+        funcsMap_[ProfileType::CHAR_PROFILE * ChangeType::UPDATE] =
+            &SubscribeProfileManager::NotifyCharProfileUpdate;
+        funcsMap_[ProfileType::CHAR_PROFILE * ChangeType::DELETE] =
+            &SubscribeProfileManager::NotifyCharProfileDelete;
     }
     return DP_SUCCESS;
 }
