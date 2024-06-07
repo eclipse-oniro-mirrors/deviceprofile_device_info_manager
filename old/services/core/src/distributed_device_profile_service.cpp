@@ -269,6 +269,10 @@ int32_t DistributedDeviceProfileService::OnIdle(const SystemAbilityOnDemandReaso
 void DistributedDeviceProfileService::OnStop()
 {
     HILOGI("called");
+    if (!DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().UnInit()) {
+        HILOGE("UnInit failed");
+        return;
+    }
 }
 
 bool DistributedDeviceProfileService::DoInit()
