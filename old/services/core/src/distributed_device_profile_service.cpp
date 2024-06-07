@@ -53,7 +53,8 @@ const std::string NAME = "name";
 const std::string INIT_TASK_ID = "CheckAndInitDP";
 constexpr int32_t DELAY_TIME = 180000;
 constexpr int32_t UNLOAD_IMMEDIATELY = 0;
-constexpr int32_t INIT_BUSINESS_DELAY_TIME_MS = 2 * 100;
+constexpr int32_t INIT_BUSINESS_DELAY_TIME_MS = 100 * 1000;
+constexpr int32_t MAX_INIT_RETRY_TIMES = 30;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileService);
@@ -79,7 +80,19 @@ bool DistributedDeviceProfileService::Init()
     }
     HILOGI("init DistributedDeviceProfileServiceNew");
     DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().Init();
-    auto executeInnerFunc = [this] { DoInit(); };
+    auto executeInnerFunc = [this] {
+        int32_t tryTimes = MAX_INIT_RETRY_TIMES;
+        while (tryTimes > 0) {
+            if (DoInit()) {
+                break;
+            }
+            usleep(INIT_BUSINESS_DELAY_TIME_MS);
+            tryTimes--;
+        }
+        if (tryTimes <= 0) {
+            DelayUnloadTask();
+        }
+    };
     unloadHandler_->PostTask(executeInnerFunc, INIT_TASK_ID, 0);
     HILOGI("init succeeded");
     return true;
@@ -276,14 +289,10 @@ bool DistributedDeviceProfileService::DoInit()
     HILOGI("called");
     if (!IsDepSAStart()) {
         HILOGE("Depend sa not start");
-        auto executeInnerFunc = [this] { DoInit(); };
-        unloadHandler_->PostTask(executeInnerFunc, INIT_TASK_ID, INIT_BUSINESS_DELAY_TIME_MS);
         return false;
     }
     if (!DoBusinessInit()) {
         HILOGE("DoBusinessInit init failed");
-        auto executeInnerFunc = [this] { DoInit(); };
-        unloadHandler_->PostTask(executeInnerFunc, INIT_TASK_ID, INIT_BUSINESS_DELAY_TIME_MS);
         return false;
     }
     HILOGI("DoInit succeeded");
@@ -329,7 +338,10 @@ bool DistributedDeviceProfileService::DoBusinessInit()
         HILOGE("AuthorityManager init failed");
         return false;
     }
-    DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().PostInit();
+    if (DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().PostInit() != ERR_OK) {
+        HILOGE("PostInit failed");
+        return false;
+    }
     HILOGI("DoBusinessInit succeeded");
     return true;
 }

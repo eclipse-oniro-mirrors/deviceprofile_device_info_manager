@@ -97,7 +97,7 @@ int32_t PermissionManager::ParsePermissionJson(const cJSON* const permissionJson
 {
     int size = cJSON_GetArraySize(permissionJson);
     if (size == 0 || size > MAX_INTERFACE_SIZE) {
-        HILOGE("Permission json size is invalid!");
+        HILOGE("Permission json size is invalid!size: %{public}d!", size);
         return DP_PARSE_PERMISSION_JSON_FAIL;
     }
     SetPermissionMap(permissionJson, PUT_ACCESS_CONTROL_PROFILE);
@@ -198,8 +198,7 @@ bool PermissionManager::CheckCallerPermission()
     std::string callProcName = GetCallerProcName();
     int32_t ret = AccessTokenKit::VerifyAccessToken(tokenID, DP_SERVICE_ACCESS_PERMISSION);
     if (ret != PermissionState::PERMISSION_GRANTED) {
-        HILOGE("CheckCallerPermission failed callProc %{public}s!",
-            ProfileUtils::GetAnonyString(callProcName).c_str());
+        HILOGE("CheckCallerPermission failed callProc %{public}s!", callProcName.c_str());
         if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
             HILOGE("ReportSaCheckAuth failed");
         }
@@ -209,8 +208,7 @@ bool PermissionManager::CheckCallerPermission()
     if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
         HILOGE("ReportSaCheckAuth failed");
     }
-    HILOGI("CheckCallerPermission success callProc %{public}s!",
-        ProfileUtils::GetAnonyString(callProcName).c_str());
+    HILOGI("CheckCallerPermission success callProc %{public}s!", callProcName.c_str());
     return true;
 }
 
@@ -236,8 +234,7 @@ bool PermissionManager::CheckCallerSyncPermission()
     std::string callProcName = GetCallerProcName();
     int32_t ret = AccessTokenKit::VerifyAccessToken(tokenID, DP_SERVICE_SYNC_PERMISSION);
     if (ret != PermissionState::PERMISSION_GRANTED) {
-        HILOGE("CheckCallerSyncPermission failed callProc %{public}s!",
-            ProfileUtils::GetAnonyString(callProcName).c_str());
+        HILOGE("CheckCallerSyncPermission failed callProc %{public}s!", callProcName.c_str());
         if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
             HILOGE("ReportSaCheckAuth failed");
         }
@@ -247,8 +244,7 @@ bool PermissionManager::CheckCallerSyncPermission()
     if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
         HILOGE("ReportSaCheckAuth failed");
     }
-    HILOGI("CheckCallerSyncPermission success callProc %{public}s!",
-        ProfileUtils::GetAnonyString(callProcName).c_str());
+    HILOGI("CheckCallerSyncPermission success callProc %{public}s!", callProcName.c_str());
     return true;
 }
 

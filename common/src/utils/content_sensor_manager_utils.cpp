@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,7 +26,7 @@ namespace {
 IMPLEMENT_SINGLE_INSTANCE(ContentSensorManagerUtils);
 std::string ContentSensorManagerUtils::ObtainProductModel()
 {
-    HILOGE("called!");
+    HILOGI("called!");
     std::lock_guard<std::mutex> lock(csMutex_);
     if (!deviceModel_.empty()) {
         return deviceModel_;
@@ -43,7 +43,7 @@ std::string ContentSensorManagerUtils::ObtainProductModel()
 
 std::string ContentSensorManagerUtils::ObtainDeviceType()
 {
-    HILOGE("called!");
+    HILOGI("called!");
     std::lock_guard<std::mutex> lock(csMutex_);
     if (!deviceType_.empty()) {
         return deviceType_;
@@ -60,7 +60,7 @@ std::string ContentSensorManagerUtils::ObtainDeviceType()
 
 std::string ContentSensorManagerUtils::ObtainManufacture()
 {
-    HILOGE("called!");
+    HILOGI("called!");
     std::lock_guard<std::mutex> lock(csMutex_);
     if (!manufacture_.empty()) {
         return manufacture_;
@@ -77,7 +77,7 @@ std::string ContentSensorManagerUtils::ObtainManufacture()
 
 std::string ContentSensorManagerUtils::ObtainSerial()
 {
-    HILOGE("called!");
+    HILOGI("called!");
     std::lock_guard<std::mutex> lock(csMutex_);
     if (!serial_.empty()) {
         return serial_;
@@ -94,7 +94,7 @@ std::string ContentSensorManagerUtils::ObtainSerial()
 
 std::string ContentSensorManagerUtils::ObtainMarketName()
 {
-    HILOGE("called!");
+    HILOGI("called!");
     std::lock_guard<std::mutex> lock(csMutex_);
     if (!marketName_.empty()) {
         return marketName_;
@@ -111,7 +111,7 @@ std::string ContentSensorManagerUtils::ObtainMarketName()
 
 std::string ContentSensorManagerUtils::ObtainOsFullName()
 {
-    HILOGE("called!");
+    HILOGI("called!");
     std::lock_guard<std::mutex> lock(csMutex_);
     if (!osFullName_.empty()) {
         return osFullName_;
@@ -128,7 +128,7 @@ std::string ContentSensorManagerUtils::ObtainOsFullName()
 
 std::string ContentSensorManagerUtils::ObtainDisplayVersion()
 {
-    HILOGE("called!");
+    HILOGI("called!");
     std::lock_guard<std::mutex> lock(csMutex_);
     if (!displayVersion_.empty()) {
         return displayVersion_;
@@ -145,7 +145,7 @@ std::string ContentSensorManagerUtils::ObtainDisplayVersion()
 
 std::string ContentSensorManagerUtils::ObtainLocalUdid()
 {
-    HILOGE("called!");
+    HILOGD("called!");
     std::lock_guard<std::mutex> lock(csMutex_);
     if (!localUdid_.empty()) {
         return localUdid_;

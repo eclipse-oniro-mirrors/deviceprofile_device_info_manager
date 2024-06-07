@@ -12,13 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "kv_adapter.h"
 
 #include <cinttypes>
 #include <mutex>
 
 #include "datetime_ex.h"
 #include "string_ex.h"
-#include "kv_adapter.h"
+
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_constants.h"
@@ -30,9 +31,12 @@ namespace DistributedDeviceProfile {
 using namespace OHOS::DistributedKv;
 namespace {
     constexpr int32_t MAX_INIT_RETRY_TIMES = 30;
-    constexpr int32_t INIT_RETRY_SLEEP_INTERVAL = 500 * 1000; // 500ms
+    constexpr int32_t INIT_RETRY_SLEEP_INTERVAL = 200 * 1000; // 500ms
     const std::string DATABASE_DIR = "/data/service/el1/public/database/distributed_device_profile_service";
     const std::string TAG = "KVAdapter";
+    constexpr uint8_t ASYNC_GET_WAIT_SECONDS = 3;
+    constexpr bool ASYNC_GET_FINISHED = true;
+    constexpr bool ASYNC_GET_NO_FINISHED = false;
 }
 
 KVAdapter::KVAdapter(const std::string &appId, const std::string &storeId,
@@ -232,7 +236,7 @@ int32_t KVAdapter::GetByPrefix(const std::string& keyPrefix, std::map<std::strin
         return DP_GET_KV_DB_FAIL;
     }
     if (allEntries.size() == 0 || allEntries.size() > MAX_DB_SIZE) {
-        HILOGE("AllEntries size is invalid!");
+        HILOGE("AllEntries size is invalid!size: %{public}zu!", allEntries.size());
         return DP_INVALID_PARAMS;
     }
     for (const auto& item : allEntries) {
@@ -273,7 +277,6 @@ DistributedKv::Status KVAdapter::GetKvStorePtr(DistributedKv::DataType dataType)
     DistributedKv::Options options = {
         .createIfMissing = true,
         .encrypt = false,
-        .autoSync = (dataType == DistributedKv::TYPE_DYNAMICAL),
         .isPublic = true,
         .securityLevel = DistributedKv::SecurityLevel::S1,
         .area = 1,
@@ -285,10 +288,6 @@ DistributedKv::Status KVAdapter::GetKvStorePtr(DistributedKv::DataType dataType)
             .autoSync  = true,
         }
     };
-    SyncPolicy syncPolicyOnline {
-        .type = PolicyType::IMMEDIATE_SYNC_ON_ONLINE
-    };
-    options.policies.emplace_back(syncPolicyOnline);
     DistributedKv::Status status;
     {
         std::lock_guard<std::mutex> lock(kvAdapterMutex_);
@@ -457,25 +456,6 @@ int32_t KVAdapter::DeleteDeathListener()
     return DP_SUCCESS;
 }
 
-void KVAdapter::TriggerDynamicQuery(const std::string& udid)
-{
-    HILOGI("Trigger DynamicQuery, key :%{public}s", ProfileUtils::GetAnonyString(udid).c_str());
-    std::string networkId = "";
-    if (ProfileCache::GetInstance().GetNetWorkIdByUdid(udid, networkId) != DP_SUCCESS) {
-        HILOGE("Can not find networkId by udid");
-        return;
-    }
-    HILOGI("Try Sync Dynamic data with remote dev, networkId: %{public}s",
-        ProfileUtils::GetAnonyString(networkId).c_str());
-    std::function<void(DistributedKv::Status, DistributedKv::Value&&)> call =
-        [](DistributedKv::Status status, DistributedKv::Value &&value) {
-        (void)status;
-        (void)value;
-    };
-    DistributedKv::Key KvKey(networkId);
-    kvStorePtr_->Get(KvKey, networkId, call);
-}
-
 int32_t KVAdapter::DeleteKvStore()
 {
     HILOGI("Delete KvStore!");
@@ -490,95 +470,95 @@ int32_t KVAdapter::DeleteKvStore()
 int32_t KVAdapter::GetByPrefix(const std::string& udid, const std::string& keyPrefix,
     std::map<std::string, std::string>& values)
 {
+    HILOGI("Get data by key prefix, udid: %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
     if (udid.empty() || keyPrefix.empty()) {
         HILOGE("udid or keyPrefix is invalid");
         return DP_INVALID_PARAMS;
     }
-    HILOGI("Get data by key prefix: %{public}s", ProfileUtils::GetAnonyString(keyPrefix).c_str());
-    DistributedKv::Status status;
-    std::vector<DistributedKv::Entry> allEntries;
+    if (ProfileCache::GetInstance().GetLocalUdid() == udid) {
+        return GetByPrefix(keyPrefix, values);
+    }
+    {
+        std::unique_lock<std::mutex> lck(syncOnDemandUdidSetMtx_);
+        if (syncOnDemandUdidSet_.find(udid) != syncOnDemandUdidSet_.end()) {
+            return GetByPrefix(keyPrefix, values);
+        }
+        syncOnDemandUdidSet_.insert(udid);
+    }
+    return SyncOnDemand(udid, keyPrefix, values);
+}
+
+int32_t KVAdapter::SyncOnDemand(const std::string& udid, const std::string& keyPrefix,
+    std::map<std::string, std::string>& values)
+{
+    std::string networkId = "";
+    if (ProfileCache::GetInstance().GetNetWorkIdByUdid(udid, networkId) != DP_SUCCESS) {
+        HILOGE("Can not find networkId by udid");
+        return DP_GET_NETWORKID_BY_UDID_FAIL;
+    }
+    HILOGI("networkId: %{public}s", ProfileUtils::GetAnonyString(networkId).c_str());
+    int32_t ret = DP_GET_KV_DB_FAIL;
+    bool isExeced = ASYNC_GET_NO_FINISHED;
+    auto call = [this, udid, & isExeced, & ret, & values] (DistributedKv::Status status,
+        std::vector<DistributedKv::Entry>&& allEntries) {
+        HILOGI("async GetEntries callback, storeId:%{public}s, udid:%{public}s, status:%{public}d, size:%{public}zu",
+            storeId_.storeId.c_str(), ProfileUtils::GetAnonyString(udid).c_str(), status, allEntries.size());
+        {
+            std::unique_lock<std::mutex> lck(syncOnDemandUdidSetMtx_);
+            syncOnDemandUdidSet_.erase(udid);
+        }
+        isExeced = ASYNC_GET_FINISHED;
+        if (status == DistributedKv::Status::SUCCESS) {
+            for (const auto& item : allEntries) {
+                values[item.key.ToString()] = item.value.ToString();
+            }
+            ret = DP_SUCCESS;
+        } else {
+            HILOGE("async GetEntries failed");
+        }
+        std::unique_lock<std::mutex> lck(syncOnDemandMtx_);
+        syncOnDemandCond_.notify_one();
+    };
+    DistributedKv::Key kvKeyPrefix(keyPrefix);
     {
         std::lock_guard<std::mutex> lock(kvAdapterMutex_);
         if (kvStorePtr_ == nullptr) {
             HILOGE("kvStoragePtr_ is null");
             return DP_KV_DB_PTR_NULL;
         }
-        if ((this->dataType_ == DistributedKv::DataType::TYPE_DYNAMICAL) &&
-            (ProfileCache::GetInstance().GetLocalUdid() != udid)) {
-            TriggerDynamicQuery(udid);
-        }
-        // if prefix is empty, get all entries.
-        DistributedKv::Key allEntryKeyPrefix(keyPrefix);
-        status = kvStorePtr_->GetEntries(allEntryKeyPrefix, allEntries);
-        HILOGI("Get data status: %{public}d", status);
+        HILOGI("exec async GetEntries, storeId: %{public}s, udid:%{public}s",
+            storeId_.storeId.c_str(), ProfileUtils::GetAnonyString(udid).c_str());
+        kvStorePtr_->GetEntries(kvKeyPrefix, networkId, call);
     }
-    // if data does not exist, GetEntries return SUCCESS, allEntries size is 0.
-    if (status != DistributedKv::Status::SUCCESS) {
-        HILOGE("Query data by keyPrefix failed, prefix: %{public}s", ProfileUtils::GetAnonyString(keyPrefix).c_str());
-        return DP_GET_KV_DB_FAIL;
-    }
-    // data to be queried must exist, if not, try to sync.
-    if (allEntries.size() == 0) {
-        HILOGE("AllEntries is empty!");
-        SyncDeviceProfile(udid);
-        return DP_INVALID_PARAMS;
-    }
-    if (allEntries.size() > MAX_DB_SIZE) {
-        HILOGE("AllEntries size is invalid!");
-        return DP_INVALID_PARAMS;
-    }
-    for (const auto& item : allEntries) {
-        values[item.key.ToString()] = item.value.ToString();
-    }
-    return DP_SUCCESS;
+    std::unique_lock<std::mutex> lck(syncOnDemandMtx_);
+    syncOnDemandCond_.wait_for(lck, std::chrono::seconds(ASYNC_GET_WAIT_SECONDS), [& isExeced] {return isExeced;});
+    return ret;
 }
 
 int32_t KVAdapter::Get(const std::string& udid, const std::string& key, std::string& value)
 {
+    HILOGI("Get data by key, udid: %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
     if (udid.empty() || key.empty()) {
         HILOGE("udid or key is invalid");
         return DP_INVALID_PARAMS;
     }
-    HILOGI("Get data by key: %{public}s", ProfileUtils::GetAnonyString(key).c_str());
-    DistributedKv::Key kvKey(key);
-    DistributedKv::Value kvValue;
-    DistributedKv::Status status;
+    if (ProfileCache::GetInstance().GetLocalUdid() == udid) {
+        return Get(key, value);
+    }
     {
-        std::lock_guard<std::mutex> lock(kvAdapterMutex_);
-        if (kvStorePtr_ == nullptr) {
-            HILOGE("kvStoragePtr_ is null");
-            return DP_KV_DB_PTR_NULL;
+        std::unique_lock<std::mutex> lck(syncOnDemandUdidSetMtx_);
+        if (syncOnDemandUdidSet_.find(udid) != syncOnDemandUdidSet_.end()) {
+            return Get(key, value);
         }
-        if ((this->dataType_ == DistributedKv::DataType::TYPE_DYNAMICAL) &&
-            (ProfileCache::GetInstance().GetLocalUdid() != udid)) {
-            TriggerDynamicQuery(udid);
-        }
-        status = kvStorePtr_->Get(kvKey, kvValue);
+        syncOnDemandUdidSet_.insert(udid);
     }
-    if (status == DistributedKv::Status::NOT_FOUND) {
-        SyncDeviceProfile(udid);
-        return DP_GET_KV_DB_FAIL;
+    std::map<std::string, std::string> values;
+    int32_t ret = SyncOnDemand(udid, key, values);
+    if (!values.empty()) {
+        auto it = values.begin();
+        value = it->second;
     }
-    if (status != DistributedKv::Status::SUCCESS) {
-        HILOGE("Get data from kv failed, key: %{public}s", ProfileUtils::GetAnonyString(key).c_str());
-        return DP_GET_KV_DB_FAIL;
-    }
-    value = kvValue.ToString();
-    return DP_SUCCESS;
-}
-
-void KVAdapter::SyncDeviceProfile(const std::string& udid)
-{
-    HILOGI("call!");
-    if (udid.empty()) {
-        HILOGE("udid is invalid.");
-        return;
-    }
-    std::vector<std::string> device;
-    device.push_back(udid);
-    SyncMode syncMode{ SyncMode::PUSH_PULL };
-    int32_t syncResult = Sync(device, syncMode);
-    HILOGI("SyncDeviceProfile res: %{public}d!", syncResult);
+    return ret;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

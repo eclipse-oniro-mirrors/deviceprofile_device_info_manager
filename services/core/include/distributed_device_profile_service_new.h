@@ -18,6 +18,7 @@
 
 #include <atomic>
 #include <mutex>
+#include <unordered_map>
 #include "distributed_device_profile_stub_new.h"
 #include "event_handler.h"
 #include "event_runner.h"
@@ -74,11 +75,21 @@ protected:
 private:
     int32_t CreateUnloadHandler();
     int32_t DestroyUnloadHandler();
+    int32_t AddSvrProfilesToCache(const std::vector<ServiceProfile>& serviceProfiles);
+    int32_t AddCharProfilesToCache(const std::vector<CharacteristicProfile>& charProfiles);
+    int32_t SaveSvrProfilesBatch();
+    int32_t SaveCharProfilesBatch();
+    int32_t SaveCharProfilesBatch(const std::vector<CharacteristicProfile>& charProfiles);
 
 private:
     std::shared_ptr<AppExecFwk::EventHandler> unloadHandler_;
     std::mutex unloadMutex_;
     std::atomic<bool> isInited_{false};
+
+    std::mutex serviceProfilesCacheMtx_;
+    std::unordered_map<std::string, ServiceProfile> serviceProfilesCache_;
+    std::mutex charProfilesCacheMtx_;
+    std::unordered_map<std::string, CharacteristicProfile> charProfileCache_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

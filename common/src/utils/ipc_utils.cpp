@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,7 +25,7 @@ namespace {
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<TrustDeviceProfile>& trustDeviceProfiles)
 {
     if (trustDeviceProfiles.empty() || trustDeviceProfiles.size() > MAX_PROFILE_SIZE) {
-        HILOGE("profile size is invalid!");
+        HILOGE("profile size is invalid!size : %{public}zu", trustDeviceProfiles.size());
         return false;
     }
     uint32_t size = trustDeviceProfiles.size();
@@ -42,7 +42,7 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<TrustDeviceP
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<AccessControlProfile>& aclProfiles)
 {
     if (aclProfiles.empty() || aclProfiles.size() > MAX_PROFILE_SIZE) {
-        HILOGE("profile size is invalid!");
+        HILOGE("profile size is invalid!size : %{public}zu", aclProfiles.size());
         return false;
     }
     uint32_t size = aclProfiles.size();
@@ -59,7 +59,7 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<AccessContro
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<ServiceProfile>& serviceProfiles)
 {
     if (serviceProfiles.empty() || serviceProfiles.size() > MAX_PROFILE_SIZE) {
-        HILOGE("profile size is invalid!");
+        HILOGE("profile size is invalid!size : %{public}zu", serviceProfiles.size());
         return false;
     }
     uint32_t size = serviceProfiles.size();
@@ -76,7 +76,7 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<ServiceProfi
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<CharacteristicProfile>& charProfiles)
 {
     if (charProfiles.empty() || charProfiles.size() > MAX_PROFILE_SIZE) {
-        HILOGE("profile size is invalid!");
+        HILOGE("profile size is invalid!size : %{public}zu", charProfiles.size());
         return false;
     }
     uint32_t size = charProfiles.size();
@@ -90,7 +90,7 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<Characterist
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::map<std::string, std::string>& params)
 {
     if (params.size() == 0 || params.size() > MAX_PARAM_SIZE) {
-        HILOGE("Params size is invalid!");
+        HILOGE("Params size is invalid!size : %{public}zu", params.size());
         return false;
     }
     uint32_t size = params.size();
@@ -105,7 +105,7 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::map<std::string,
     OHOS::DistributedDeviceProfile::SubscribeInfo>& listenerMap)
 {
     if (listenerMap.size() == 0 || listenerMap.size() > MAX_LISTENER_SIZE) {
-        HILOGE("listenerMap size is invalid!");
+        HILOGE("listenerMap size is invalid!size : %{public}zu", listenerMap.size());
         return false;
     }
     uint32_t size = listenerMap.size();
@@ -123,7 +123,7 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::map<std::string,
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::unordered_set<ProfileChangeType>& changeTypes)
 {
     if (changeTypes.size() == 0 || changeTypes.size() > MAX_SUBSCRIBE_CHANGE_SIZE) {
-        HILOGE("listenerMap size is invalid!");
+        HILOGE("listenerMap size is invalid!size : %{public}zu", changeTypes.size());
         return false;
     }
     uint32_t size = changeTypes.size();
@@ -138,7 +138,7 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<TrustDeviceProfi
 {
     uint32_t size = parcel.ReadUint32();
     if (size == 0 || size > MAX_PROFILE_SIZE) {
-        HILOGE("Profile size is invalid!");
+        HILOGE("Profile size is invalid!size : %{public}u", size);
         return false;
     }
     for (uint32_t i = 0; i < size; i++) {
@@ -156,7 +156,7 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<AccessControlPro
 {
     uint32_t size = parcel.ReadUint32();
     if (size == 0 || size > MAX_PROFILE_SIZE) {
-        HILOGE("Profile size is invalid!");
+        HILOGE("Profile size is invalid!size : %{public}u", size);
         return false;
     }
     for (uint32_t i = 0; i < size; i++) {
@@ -174,7 +174,7 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<ServiceProfile>&
 {
     uint32_t size = parcel.ReadUint32();
     if (size == 0 || size > MAX_PROFILE_SIZE) {
-        HILOGE("Profile size is invalid!");
+        HILOGE("Profile size is invalid!size : %{public}u", size);
         return false;
     }
     for (uint32_t i = 0; i < size; i++) {
@@ -192,7 +192,7 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<CharacteristicPr
 {
     uint32_t size = parcel.ReadUint32();
     if (size == 0 || size > MAX_PROFILE_SIZE) {
-        HILOGE("Profile size is invalid!");
+        HILOGE("Profile size is invalid!size : %{public}u", size);
         return false;
     }
     for (uint32_t i = 0; i < size; i++) {
@@ -210,7 +210,7 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::map<std::string, std::s
 {
     uint32_t size = parcel.ReadUint32();
     if (size == 0 || size > MAX_PARAM_SIZE) {
-        HILOGE("Params size is invalid!");
+        HILOGE("Params size is invalid!size : %{public}u", size);
         return false;
     }
     for (uint32_t i = 0; i < size; i++) {
@@ -234,7 +234,7 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::map<std::string,
 {
     uint32_t size = parcel.ReadUint32();
     if (size == 0 || size > MAX_LISTENER_SIZE) {
-        HILOGE("Params size is invalid!");
+        HILOGE("Params size is invalid!size : %{public}u", size);
         return false;
     }
     for (uint32_t i = 0; i < size; i++) {
@@ -253,7 +253,7 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::unordered_set<ProfileCh
 {
     uint32_t size = parcel.ReadUint32();
     if (size == 0 || size > MAX_SUBSCRIBE_CHANGE_SIZE) {
-        HILOGE("Params size is invalid!");
+        HILOGE("Params size is invalid!size : %{public}u", size);
         return false;
     }
     for (uint32_t i = 0; i < size; i++) {
