@@ -60,7 +60,6 @@ DistributedDeviceProfileServiceNew::DistributedDeviceProfileServiceNew()
 DistributedDeviceProfileServiceNew::~DistributedDeviceProfileServiceNew()
 {
     HILOGE("DPService destruction!");
-    UnInit();
 }
 
 int32_t DistributedDeviceProfileServiceNew::Init()
