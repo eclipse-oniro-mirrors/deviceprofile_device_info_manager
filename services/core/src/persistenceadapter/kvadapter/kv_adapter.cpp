@@ -509,12 +509,14 @@ int32_t KVAdapter::SyncOnDemand(const std::string& udid, const std::string& keyP
         }
         isExeced = ASYNC_GET_FINISHED;
         if (status == DistributedKv::Status::SUCCESS) {
-            for (const auto& item : allEntries) {
-                values[item.key.ToString()] = item.value.ToString();
-            }
             ret = DP_SUCCESS;
         } else {
             HILOGE("async GetEntries failed");
+        }
+        if (!allEntries.empty()) {
+            for (const auto& item : allEntries) {
+                values[item.key.ToString()] = item.value.ToString();
+            }
         }
         std::unique_lock<std::mutex> lck(syncOnDemandMtx_);
         syncOnDemandCond_.notify_one();

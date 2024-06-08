@@ -60,7 +60,6 @@ DistributedDeviceProfileServiceNew::DistributedDeviceProfileServiceNew()
 DistributedDeviceProfileServiceNew::~DistributedDeviceProfileServiceNew()
 {
     HILOGE("DPService destruction!");
-    UnInit();
 }
 
 int32_t DistributedDeviceProfileServiceNew::Init()
@@ -168,6 +167,7 @@ int32_t DistributedDeviceProfileServiceNew::UnInit()
         HILOGE("EventHandlerFactory UnInit failed");
         return DP_CACHE_UNINIT_FAIL;
     }
+    DestroyUnloadHandler();
     {
         std::lock_guard<std::mutex> lock(serviceProfilesCacheMtx_);
         serviceProfilesCache_.clear();
@@ -176,7 +176,7 @@ int32_t DistributedDeviceProfileServiceNew::UnInit()
         std::lock_guard<std::mutex> lock(charProfilesCacheMtx_);
         charProfileCache_.clear();
     }
-    HILOGI("init succeeded");
+    HILOGI("UnInit succeeded");
     return DP_SUCCESS;
 }
 

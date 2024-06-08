@@ -57,6 +57,7 @@ private:
 
 private:
     using Func = int32_t(SubscribeProfileManager::*)(const std::string& profileKey, const std::string& profileValue);
+    std::mutex funcsMutex_;
     std::map<uint32_t, Func> funcsMap_;
     std::mutex subscribeMutex_;
     std::map<std::string, std::unordered_set<SubscribeInfo, SubscribeHash, SubscribeCompare>> subscribeInfoMap_;
