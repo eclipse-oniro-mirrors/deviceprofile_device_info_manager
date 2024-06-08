@@ -110,6 +110,10 @@ void DistributedDeviceProfileStub::InitAclAndSubscribe()
     aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE));
     aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE));
     aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::SEND_SUBSCRIBE_INFOS));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE_BATCH));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE_BATCH));
 }
 
 bool DistributedDeviceProfileStub::EnforceInterfaceToken(MessageParcel& data)

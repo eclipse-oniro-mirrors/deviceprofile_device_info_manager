@@ -15,14 +15,15 @@
 
 #include "profile_cache.h"
 
-#include <cinttypes>
 #include <algorithm>
+#include <cinttypes>
 
-#include "content_sensor_manager_utils.h"
 #include "datetime_ex.h"
 #include "device_manager.h"
-#include "profile_utils.h"
+
+#include "content_sensor_manager_utils.h"
 #include "device_profile_manager.h"
+#include "profile_utils.h"
 #include "static_profile_manager.h"
 #include "switch_profile_manager.h"
 #include "sync_subscriber_death_recipient.h"
@@ -102,7 +103,7 @@ int32_t ProfileCache::AddDeviceProfile(const DeviceProfile& deviceProfile)
     {
         std::lock_guard<std::mutex> lock(deviceProfileMutex_);
         if (deviceProfileMap_.size() > MAX_DEVICE_SIZE) {
-            HILOGE("DeviceProfileMap size is invalid!");
+            HILOGE("DeviceProfileMap size is invalid!size: %{public}zu!", deviceProfileMap_.size());
             return DP_EXCEED_MAX_SIZE_FAIL;
         }
         deviceProfileMap_[deviceProfileKey] = deviceProfile;
@@ -122,7 +123,7 @@ int32_t ProfileCache::AddServiceProfile(const ServiceProfile& serviceProfile)
     {
         std::lock_guard<std::mutex> lock(serviceProfileMutex_);
         if (serviceProfileMap_.size() > MAX_SERVICE_SIZE) {
-            HILOGE("ServiceProfileMap size is invalid!");
+            HILOGE("ServiceProfileMap size is invalid!size: %{public}zu!", serviceProfileMap_.size());
             return DP_EXCEED_MAX_SIZE_FAIL;
         }
         serviceProfileMap_[serviceProfileKey] = serviceProfile;
@@ -143,7 +144,7 @@ int32_t ProfileCache::AddCharProfile(const CharacteristicProfile& charProfile)
     {
         std::lock_guard<std::mutex> lock(charProfileMutex_);
         if (charProfileMap_.size() > MAX_CHAR_SIZE) {
-            HILOGE("CharProfileMap size is invalid!");
+            HILOGE("CharProfileMap size is invalid!size: %{public}zu!", charProfileMap_.size());
             return DP_EXCEED_MAX_SIZE_FAIL;
         }
         charProfileMap_[charProfileKey] = charProfile;
@@ -164,20 +165,10 @@ int32_t ProfileCache::AddStaticCharProfile(const CharacteristicProfile& charProf
     {
         std::lock_guard<std::mutex> lock(staticCharProfileMutex_);
         if (staticCharProfileMap_.size() > MAX_CHAR_SIZE) {
-            HILOGE("CharProfileMap size is invalid!");
+            HILOGE("CharProfileMap size is invalid!size: %{public}zu!", staticCharProfileMap_.size());
             return DP_EXCEED_MAX_SIZE_FAIL;
         }
         staticCharProfileMap_[charProfileKey] = charProfile;
-    }
-    return DP_SUCCESS;
-}
-
-int32_t ProfileCache::AddCharProfileBatch(const std::unordered_map<std::string, CharacteristicProfile>& charProfiles)
-{
-    for (const auto& item : charProfiles) {
-        HILOGI("AddCharProfile key %{public}s value %{public}s!", item.first.c_str(),
-            item.second.GetCharacteristicValue().c_str());
-        ProfileCache::AddCharProfile(item.second);
     }
     return DP_SUCCESS;
 }
@@ -186,8 +177,7 @@ int32_t ProfileCache::AddStaticCharProfileBatch(
     const std::unordered_map<std::string, CharacteristicProfile>& charProfiles)
 {
     for (const auto& item : charProfiles) {
-        HILOGI("AddStaticCharProfileBatch key %{public}s value %{public}s!", item.first.c_str(),
-            item.second.GetCharacteristicValue().c_str());
+        HILOGI("AddStaticCharProfileBatch %{public}s!", item.second.dump().c_str());
         ProfileCache::AddStaticCharProfile(item.second);
     }
     return DP_SUCCESS;
@@ -388,53 +378,11 @@ bool ProfileCache::IsCharProfileExist(const CharacteristicProfile& charProfile)
 int32_t ProfileCache::RefreshProfileCache()
 {
     int64_t beginTime = GetTickCount();
-    std::vector<DeviceProfile> deviceProfiles;
-    DeviceProfileManager::GetInstance().GetAllDeviceProfile(deviceProfiles);
-    RefreshDeviceProfileCache(deviceProfiles);
-    std::vector<ServiceProfile> serviceProfiles;
-    DeviceProfileManager::GetInstance().GetAllServiceProfile(serviceProfiles);
-    RefreshServiceProfileCache(serviceProfiles);
     std::vector<CharacteristicProfile> charProfiles;
-    DeviceProfileManager::GetInstance().GetAllCharacteristicProfile(charProfiles);
     StaticProfileManager::GetInstance().GetAllCharacteristicProfile(charProfiles);
     RefreshCharProfileCache(charProfiles);
     int64_t endTime = GetTickCount();
     HILOGI("RefreshProfileCache, spend %{public}" PRId64 " ms", endTime - beginTime);
-    return DP_SUCCESS;
-}
-
-int32_t ProfileCache::RefreshDeviceProfileCache(const std::vector<DeviceProfile>& deviceProfiles)
-{
-    if (deviceProfiles.empty() || deviceProfiles.size() > MAX_DB_RECORD_SIZE) {
-        HILOGE("Params is invalid!");
-        return DP_INVALID_PARAMS;
-    }
-    {
-        std::lock_guard<std::mutex> lock(deviceProfileMutex_);
-        deviceProfileMap_.clear();
-        for (const auto& deviceProfile : deviceProfiles) {
-            std::string profileKey = ProfileUtils::GenerateDeviceProfileKey(deviceProfile.GetDeviceId());
-            deviceProfileMap_[profileKey] = deviceProfile;
-        }
-    }
-    return DP_SUCCESS;
-}
-
-int32_t ProfileCache::RefreshServiceProfileCache(const std::vector<ServiceProfile>& serviceProfiles)
-{
-    if (serviceProfiles.empty() || serviceProfiles.size() > MAX_DB_RECORD_SIZE) {
-        HILOGE("Params is invalid!");
-        return DP_INVALID_PARAMS;
-    }
-    {
-        std::lock_guard<std::mutex> lock(serviceProfileMutex_);
-        serviceProfileMap_.clear();
-        for (const auto& serviceProfile : serviceProfiles) {
-            std::string profileKey = ProfileUtils::GenerateServiceProfileKey(serviceProfile.GetDeviceId(),
-                serviceProfile.GetServiceName());
-            serviceProfileMap_[profileKey] = serviceProfile;
-        }
-    }
     return DP_SUCCESS;
 }
 
@@ -842,11 +790,7 @@ bool ProfileCache::IsCharProfileKeyExist(const std::string& charKey)
 
 std::string ProfileCache::GetLocalUdid()
 {
-    if (!localUdid_.empty()) {
-        return localUdid_;
-    }
-    localUdid_ = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
-    return localUdid_;
+    return ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
 }
 
 std::string ProfileCache::GetLocalNetworkId()

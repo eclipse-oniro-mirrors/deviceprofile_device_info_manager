@@ -50,7 +50,6 @@ KvDataChangeListener::~KvDataChangeListener()
 void KvDataChangeListener::OnChange(const DistributedKv::ChangeNotification& changeNotification)
 {
     HILOGI("KvDataChangeListener: DB data OnChange");
-    ProfileCache::GetInstance().RefreshProfileCache();
     if (!changeNotification.GetInsertEntries().empty() &&
         changeNotification.GetInsertEntries().size() <= MAX_DB_RECORD_SIZE) {
         HandleAddChange(changeNotification.GetInsertEntries());
@@ -68,7 +67,6 @@ void KvDataChangeListener::OnChange(const DistributedKv::ChangeNotification& cha
 void KvDataChangeListener::OnChange(const DistributedKv::DataOrigin& origin, Keys&& keys)
 {
     HILOGI("Cloud data change. store=%{public}s", origin.store.c_str());
-    ProfileCache::GetInstance().RefreshProfileCache();
     std::vector<DistributedKv::Entry> insertRecords = DeviceProfileManager::GetInstance()
         .GetEntriesByKeys(keys[ChangeOp::OP_INSERT]);
     if (!insertRecords.empty() && insertRecords.size() <= MAX_DB_RECORD_SIZE) {

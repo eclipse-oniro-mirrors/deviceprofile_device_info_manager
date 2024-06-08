@@ -443,7 +443,7 @@ int32_t ProfileUtils::EntriesToAccessee(const ValuesBucket& values, Accessee& ac
 int32_t ProfileUtils::EntriesToDeviceProfile(std::map<std::string, std::string> values, DeviceProfile& profile)
 {
     if (values.empty() || values.size() > MAX_DB_RECORD_SIZE) {
-        HILOGI("Entries size is invalid!");
+        HILOGI("Entries size is invalid!size: %{public}zu!", values.size());
         return DP_INVALID_PARAMS;
     }
     auto propertiesMap = GetProfilePropertiesMap(values);
@@ -463,7 +463,7 @@ int32_t ProfileUtils::EntriesToDeviceProfile(std::map<std::string, std::string> 
 int32_t ProfileUtils::EntriesToServiceProfile(std::map<std::string, std::string> values, ServiceProfile& profile)
 {
     if (values.empty() || values.size() > MAX_DB_RECORD_SIZE) {
-        HILOGI("Entries size is invalid!");
+        HILOGI("Entries size is invalid!size: %{public}zu!", values.size());
         return DP_INVALID_PARAMS;
     }
     auto iter = values.begin();
@@ -483,7 +483,7 @@ int32_t ProfileUtils::EntriesToServiceProfile(std::map<std::string, std::string>
 int32_t ProfileUtils::EntriesToCharProfile(std::map<std::string, std::string> values, CharacteristicProfile& profile)
 {
     if (values.empty() || values.size() > MAX_DB_RECORD_SIZE) {
-        HILOGI("Entries size is invalid!");
+        HILOGI("Entries size is invalid!size : %{public}zu", values.size());
         return DP_INVALID_PARAMS;
     }
     auto iter = values.begin();

@@ -793,12 +793,12 @@ HWTEST_F(ProfileControlUtilsTest, GetDeviceProfile004, TestSize.Level1)
     DeviceProfile deviceProfile;
     std::string deviceId = "deviceId";
     
-    ProfileCache::GetInstance().localUdid_ = deviceId;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = deviceId;
 
     auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
     int32_t ret = profileControlUtils->GetDeviceProfile(kvStore, deviceId, deviceProfile);
     EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
-    ProfileCache::GetInstance().localUdid_ = "";
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "";
 }
 
 /**
@@ -877,7 +877,7 @@ HWTEST_F(ProfileControlUtilsTest, GetServiceProfile004, TestSize.Level1)
     std::string serviceName = "serviceName";
     ServiceProfile serviceProfile;
 
-    ProfileCache::GetInstance().localUdid_ = "";
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "";
     auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
     int32_t ret = profileControlUtils->GetServiceProfile(kvStore, deviceId, serviceName, serviceProfile);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
@@ -1037,7 +1037,7 @@ HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile005, TestSize.Level1)
     std::string characteristicKey = "characteristicKey";
     CharacteristicProfile charProfile;
 
-    ProfileCache::GetInstance().localUdid_ = "";
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "";
     ProfileCache::GetInstance().onlineDevMap_.erase(deviceId);
     auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
     int32_t ret = profileControlUtils->GetCharacteristicProfile(kvStore, deviceId, serviceName,

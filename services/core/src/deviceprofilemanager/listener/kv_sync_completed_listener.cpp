@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -60,7 +60,6 @@ void KvSyncCompletedListener::SyncCompleted(const std::map<std::string, Distribu
 {
     HILOGI("called!");
 
-    ProfileCache::GetInstance().RefreshProfileCache();
     SyncResults syncResults;
     for (const auto& [deviceId, status] : results) {
         HILOGD("deviceId = %{public}s, status = %{public}d", ProfileUtils::GetAnonyString(deviceId).c_str(), status);

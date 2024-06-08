@@ -82,7 +82,7 @@ int32_t StaticProfileManager::PutCharacteristicProfile(const CharacteristicProfi
         std::lock_guard<std::mutex> lock(staticStoreMutex_);
         putResult = ProfileControlUtils::PutCharacteristicProfile(staticProfileStore_, charProfile);
     }
-    HILOGI("PutCharacteristicProfile fail, reason: %{public}d!", putResult);
+    HILOGI("PutCharacteristicProfile result: %{public}d!", putResult);
     return putResult;
 }
 
@@ -113,6 +113,7 @@ int32_t StaticProfileManager::GetCharacteristicProfile(const std::string& device
         HILOGE("GetCharacteristicProfile fail, reason: %{public}d!", getResult);
         return getResult;
     }
+    HILOGI("staticCapabilityProfile : %{public}s", staticCapabilityProfile.dump().c_str());
     std::unordered_map<std::string, CharacteristicProfile> staticInfoProfiles;
     int generateProfileResult = GenerateStaticInfoProfile(staticCapabilityProfile, staticInfoProfiles);
     if (generateProfileResult != DP_SUCCESS) {
@@ -153,7 +154,7 @@ int32_t StaticProfileManager::GenerateStaticInfoProfile(const CharacteristicProf
     std::string charValue = staticCapabilityProfile.GetCharacteristicValue();
     cJSON* charValueJson = cJSON_Parse(charValue.c_str());
     if (!cJSON_IsObject(charValueJson)) {
-        HILOGE("charValueJson parse fail!");
+        HILOGE("cJSON_Parse fail! charValue : %{public}s", charValue.c_str());
         cJSON_Delete(charValueJson);
         return DP_PARSE_STATIC_CAP_FAIL;
     }

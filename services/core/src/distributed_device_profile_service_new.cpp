@@ -113,6 +113,8 @@ int32_t DistributedDeviceProfileServiceNew::PostInit()
         return DP_CONTENT_SENSOR_MANAGER_INIT_FAIL;
     }
     isInited_ = true;
+    SaveSvrProfilesBatch();
+    SaveCharProfilesBatch();
     HILOGI("PostInit finish");
     return DP_SUCCESS;
 }
@@ -166,7 +168,8 @@ int32_t DistributedDeviceProfileServiceNew::UnInit()
         return DP_CACHE_UNINIT_FAIL;
     }
     DestroyUnloadHandler();
-    HILOGI("init succeeded");
+    ClearProfileCache();
+    HILOGI("UnInit succeeded");
     return DP_SUCCESS;
 }
 
@@ -271,6 +274,9 @@ int32_t DistributedDeviceProfileServiceNew::PutServiceProfile(const ServiceProfi
         return DP_PERMISSION_DENIED;
     }
     HILOGI("CheckCallerPermission success interface PutServiceProfile");
+    if (!IsInited()) {
+        return AddSvrProfilesToCache({ serviceProfile });
+    }
     return DeviceProfileManager::GetInstance().PutServiceProfile(serviceProfile);
 }
 
@@ -281,6 +287,9 @@ int32_t DistributedDeviceProfileServiceNew::PutServiceProfileBatch(const std::ve
         return DP_PERMISSION_DENIED;
     }
     HILOGI("CheckCallerPermission success interface PutServiceProfileBatch");
+    if (!IsInited()) {
+        return AddSvrProfilesToCache(serviceProfiles);
+    }
     return DeviceProfileManager::GetInstance().PutServiceProfileBatch(serviceProfiles);
 }
 
@@ -289,6 +298,9 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfile(const Chara
     if (!PermissionManager::GetInstance().CheckCallerPermission()) {
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
+    }
+    if (!IsInited()) {
+        return AddCharProfilesToCache({ charProfile });
     }
     if (charProfile.GetCharacteristicKey() == SWITCH_STATUS) {
         HILOGI("CheckCallerPermission success interface SwitchProfileManager::PutCharacteristicProfile");
@@ -309,32 +321,10 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfileBatch(
         HILOGE("charProfiles is empty");
         return DP_PUT_CHAR_BATCH_FAIL;
     }
-    std::vector<CharacteristicProfile> switchCharProfiles;
-    std::vector<CharacteristicProfile> dynamicCharProfiles;
-    for (auto& profile : charProfiles) {
-        if (profile.GetCharacteristicKey() == SWITCH_STATUS) {
-            switchCharProfiles.push_back(profile);
-            continue;
-        }
-        dynamicCharProfiles.push_back(profile);
+    if (!IsInited()) {
+        return AddCharProfilesToCache(charProfiles);
     }
-    int32_t res = 0;
-    if (switchCharProfiles.size() > 0) {
-        res = SwitchProfileManager::GetInstance().PutCharacteristicProfileBatch(switchCharProfiles);
-        if (res != DP_SUCCESS) {
-            HILOGE("PutCharacteristicProfileBatch fail, res:%{public}d", res);
-            return DP_PUT_CHAR_BATCH_FAIL;
-        }
-    }
-    if (dynamicCharProfiles.size() > 0) {
-        res = DeviceProfileManager::GetInstance().PutCharacteristicProfileBatch(dynamicCharProfiles);
-        if (res != DP_SUCCESS) {
-            HILOGE("PutCharacteristicProfileBatch fail, res:%{public}d", res);
-            return DP_PUT_CHAR_BATCH_FAIL;
-        }
-    }
-    HILOGI("CheckCallerPermission success interface PutCharacteristicProfileBatch");
-    return DP_SUCCESS;
+    return SaveCharProfilesBatch(charProfiles);
 }
 
 int32_t DistributedDeviceProfileServiceNew::GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile)
@@ -516,6 +506,115 @@ int32_t DistributedDeviceProfileServiceNew::OnIdle(const SystemAbilityOnDemandRe
 {
     HILOGI("idle reason %{public}d", idleReason.GetId());
     return UNLOAD_IMMEDIATELY;
+}
+
+int32_t DistributedDeviceProfileServiceNew::AddSvrProfilesToCache(const std::vector<ServiceProfile>& serviceProfiles)
+{
+    if (serviceProfiles.empty()) {
+        return DP_INVALID_PARAM;
+    }
+    std::lock_guard<std::mutex> lock(serviceProfilesCacheMtx_);
+    for (const auto& item : serviceProfiles) {
+        std::string profileKey = ProfileUtils::GenerateServiceProfileKey(item.GetDeviceId(), item.GetServiceName());
+        serviceProfilesCache_[profileKey] = item;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileServiceNew::AddCharProfilesToCache(
+    const std::vector<CharacteristicProfile>& charProfiles)
+{
+    if (charProfiles.empty()) {
+        return DP_INVALID_PARAM;
+    }
+    std::lock_guard<std::mutex> lock(charProfilesCacheMtx_);
+    for (const auto& item : charProfiles) {
+        std::string profileKey = ProfileUtils::GenerateCharProfileKey(item.GetDeviceId(),
+            item.GetServiceName(), item.GetCharacteristicKey());
+        charProfileCache_[profileKey] = item;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileServiceNew::SaveSvrProfilesBatch()
+{
+    std::vector<ServiceProfile> serviceProfiles;
+    {
+        std::lock_guard<std::mutex> lock(serviceProfilesCacheMtx_);
+        if (serviceProfilesCache_.empty()) {
+            return DP_INVALID_PARAM;
+        }
+        for (const auto& [profileKey, item] : serviceProfilesCache_) {
+            serviceProfiles.emplace_back(item);
+        }
+        serviceProfilesCache_.clear();
+    }
+    int32_t res = DeviceProfileManager::GetInstance().PutServiceProfileBatch(serviceProfiles);
+    if (res != DP_SUCCESS) {
+        HILOGE("PutServiceProfileBatch fail, res:%{public}d", res);
+    }
+    return res;
+}
+
+int32_t DistributedDeviceProfileServiceNew::SaveCharProfilesBatch()
+{
+    std::vector<CharacteristicProfile> charProfiles;
+    {
+        std::lock_guard<std::mutex> lock(charProfilesCacheMtx_);
+        if (charProfileCache_.empty()) {
+            return DP_PUT_CHAR_BATCH_FAIL;
+        }
+        for (const auto& [profileKey, item] : charProfileCache_) {
+            charProfiles.emplace_back(item);
+        }
+        charProfileCache_.clear();
+    }
+    return SaveCharProfilesBatch(charProfiles);
+}
+
+int32_t DistributedDeviceProfileServiceNew::SaveCharProfilesBatch(
+    const std::vector<CharacteristicProfile>& charProfiles)
+{
+    std::vector<CharacteristicProfile> switchCharProfiles;
+    std::vector<CharacteristicProfile> dynamicCharProfiles;
+    for (auto& profile : charProfiles) {
+        if (profile.GetCharacteristicKey() == SWITCH_STATUS) {
+            switchCharProfiles.push_back(profile);
+            continue;
+        }
+        dynamicCharProfiles.push_back(profile);
+    }
+    int32_t switchRes = DP_SUCCESS;
+    if (switchCharProfiles.size() > 0) {
+        switchRes = SwitchProfileManager::GetInstance().PutCharacteristicProfileBatch(switchCharProfiles);
+    }
+    if (switchRes != DP_SUCCESS) {
+        HILOGE("PutCharacteristicProfileBatch fail, res:%{public}d", switchRes);
+    }
+    int32_t dynamicRes = DP_SUCCESS;
+    if (dynamicCharProfiles.size() > 0) {
+        dynamicRes = DeviceProfileManager::GetInstance().PutCharacteristicProfileBatch(dynamicCharProfiles);
+    }
+    if (dynamicRes != DP_SUCCESS) {
+        HILOGE("PutCharacteristicProfileBatch fail, res:%{public}d", dynamicRes);
+    }
+    if (switchRes != DP_SUCCESS || dynamicRes != DP_SUCCESS) {
+        return DP_PUT_CHAR_BATCH_FAIL;
+    }
+    HILOGI("PutCharacteristicProfileBatch success ");
+    return DP_SUCCESS;
+}
+
+void DistributedDeviceProfileServiceNew::ClearProfileCache()
+{
+    {
+        std::lock_guard<std::mutex> lock(serviceProfilesCacheMtx_);
+        serviceProfilesCache_.clear();
+    }
+    {
+        std::lock_guard<std::mutex> lock(charProfilesCacheMtx_);
+        charProfileCache_.clear();
+    }
 }
 } // namespace DeviceProfile
 } // namespace OHOS

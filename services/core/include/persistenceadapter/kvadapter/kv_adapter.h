@@ -16,16 +16,19 @@
 #ifndef OHOS_DP_KV_ADAPTER_H
 #define OHOS_DP_KV_ADAPTER_H
 
+#include <condition_variable>
 #include <map>
 #include <memory>
-#include <vector>
 #include <string>
-#include "ikv_adapter.h"
+#include <unordered_set>
+#include <vector>
+
 #include "distributed_kv_data_manager.h"
 #include "kvstore_observer.h"
-#include "distributed_device_profile_enums.h"
-
 #include "types.h"
+
+#include "distributed_device_profile_enums.h"
+#include "ikv_adapter.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -51,7 +54,6 @@ public:
         std::map<std::string, std::string>& values) override;
     int32_t Sync(const std::vector<std::string>& deviceList, SyncMode syncMode) override;
     int32_t DeleteKvStore();
-    void TriggerDynamicQuery(const std::string& udid);
 
 private:
     DistributedKv::Status GetKvStorePtr(DistributedKv::DataType dataType);
@@ -65,7 +67,8 @@ private:
     int32_t RegisterDeathListener();
     int32_t UnRegisterDeathListener();
     int32_t DeleteDeathListener();
-    void SyncDeviceProfile(const std::string& udid);
+    int32_t SyncOnDemand(const std::string& udid, const std::string& keyPrefix,
+        std::map<std::string, std::string>& values);
 
 private:
     DistributedKv::AppId appId_;
@@ -77,7 +80,10 @@ private:
     std::shared_ptr<DistributedKv::KvStoreSyncCallback> syncCompletedListener_ = nullptr;
     std::shared_ptr<DistributedKv::KvStoreDeathRecipient> deathRecipient_ = nullptr;
     std::mutex kvAdapterMutex_;
-    std::unordered_map<std::string, int32_t> manualSyncCountMap_;
+    std::mutex syncOnDemandMtx_;
+    std::condition_variable syncOnDemandCond_;
+    std::mutex syncOnDemandUdidSetMtx_;
+    std::unordered_set<std::string> syncOnDemandUdidSet_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

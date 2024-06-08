@@ -457,32 +457,5 @@ HWTEST_F(KVAdapterTest, Get005, TestSize.Level1)
     int32_t ret = kvStore_->Get(udid, key, value);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
 }
-
-/**
- * @tc.name: Get006
- * @tc.desc: syncMode all.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(KVAdapterTest, Get006, TestSize.Level1)
-{
-    std::string peerUdid = "11111";
-    shared_ptr<KVAdapter> kvStore_;
-    kvStore_= make_shared<KVAdapter>(APP_ID, STORE_ID,
-            make_shared<KvDataChangeListener>(),
-            make_shared<KvSyncCompletedListener>(),
-            make_shared<KvDeathRecipient>(),
-            DistributedKv::TYPE_DYNAMICAL);
-    kvStore_->SyncDeviceProfile(peerUdid);
- 
-    peerUdid = "";
-    kvStore_->SyncDeviceProfile(peerUdid);
- 
-    std::string udid = "11111";
-    std::string key = "11111";
-    std::string value = "";
-    int32_t ret = kvStore_->Get(udid, key, value);
-    EXPECT_EQ(DP_KV_DB_PTR_NULL, ret);
-}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

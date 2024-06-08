@@ -16,19 +16,21 @@
 #ifndef OHOS_DP_PROFILE_CACHE_H
 #define OHOS_DP_PROFILE_CACHE_H
 
+#include <mutex>
 #include <unordered_map>
 #include <unordered_set>
-#include <mutex>
 #include <vector>
-#include "device_profile.h"
-#include "service_profile.h"
-#include "characteristic_profile.h"
-#include "dp_subscribe_info.h"
-#include "distributed_device_profile_log.h"
-#include "profile_utils.h"
-#include "single_instance.h"
-#include "distributed_device_profile_constants.h"
+
 #include "iremote_object.h"
+#include "single_instance.h"
+
+#include "characteristic_profile.h"
+#include "device_profile.h"
+#include "distributed_device_profile_constants.h"
+#include "distributed_device_profile_log.h"
+#include "dp_subscribe_info.h"
+#include "profile_utils.h"
+#include "service_profile.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -38,11 +40,14 @@ class ProfileCache {
 public:
     int32_t Init();
     int32_t UnInit();
+    // local dynamic DeviceProfile
     int32_t AddDeviceProfile(const DeviceProfile& deviceProfile);
+    // local dynamic ServiceProfile
     int32_t AddServiceProfile(const ServiceProfile& serviceProfile);
+    // all static meta CharProfile 、 all switch CharProfile 、 local dynamic CharProfile
     int32_t AddCharProfile(const CharacteristicProfile& charProfile);
+    // all static CharProfile
     int32_t AddStaticCharProfile(const CharacteristicProfile& charProfile);
-    int32_t AddCharProfileBatch(const std::unordered_map<std::string, CharacteristicProfile>& charProfiles);
     int32_t AddStaticCharProfileBatch(const std::unordered_map<std::string, CharacteristicProfile>& charProfiles);
     uint32_t GetSwitch();
     int32_t GetNetWorkIdByUdid(const std::string& udid, std::string& networkId);
@@ -85,13 +90,10 @@ public:
     std::string GetLocalNetworkId();
 
 private:
-    int32_t RefreshDeviceProfileCache(const std::vector<DeviceProfile>& deviceProfiles);
-    int32_t RefreshServiceProfileCache(const std::vector<ServiceProfile>& serviceProfiles);
     int32_t RefreshCharProfileCache(const std::vector<CharacteristicProfile>& characteristicProfiles);
     int32_t RefreshStaticProfileCache(const std::unordered_map<std::string, CharacteristicProfile>& staticProfiles);
 
 private:
-    std::string localUdid_;
     std::string localNetworkId_;
     std::mutex switchMutex_;
     uint32_t curLocalSwitch_ = 0x0000;

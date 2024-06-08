@@ -399,36 +399,6 @@ HWTEST_F(ProfileCacheTest, IsCharProfileExist_001, TestSize.Level2)
     EXPECT_EQ(true, ret);
 }
 
-HWTEST_F(ProfileCacheTest, RefreshDeviceProfileCache_001, TestSize.Level2)
-{
-    std::vector<DeviceProfile> deviceProfiles;
-    int32_t ret = ProfileCache::GetInstance().RefreshDeviceProfileCache(deviceProfiles);
-    EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
-    DeviceProfile deviceProfile;
-    std::string devId = "dp_devId";
-    deviceProfile.SetDeviceId(devId);
-    deviceProfiles.push_back(deviceProfile);
-    ret = ProfileCache::GetInstance().RefreshDeviceProfileCache(deviceProfiles);
-    EXPECT_EQ(DP_SUCCESS, ret);
-}
-
-HWTEST_F(ProfileCacheTest, RefreshServiceProfileCache_001, TestSize.Level2)
-{
-    std::vector<ServiceProfile> serviceProfiles;
-    int32_t ret = ProfileCache::GetInstance().RefreshServiceProfileCache(serviceProfiles);
-    EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
-    ServiceProfile serviceProfile;
-    std::string devId = "dp_devId";
-    std::string serName = "dp_serName";
-    serviceProfile.SetDeviceId(devId);
-    serviceProfile.SetServiceName(serName);
-    serviceProfiles.push_back(serviceProfile);
-    ret = ProfileCache::GetInstance().RefreshServiceProfileCache(serviceProfiles);
-    EXPECT_EQ(DP_SUCCESS, ret);
-}
-
 HWTEST_F(ProfileCacheTest, RefreshCharProfileCache_001, TestSize.Level2)
 {
     std::vector<CharacteristicProfile> characteristicProfiles;

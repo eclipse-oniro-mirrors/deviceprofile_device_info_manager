@@ -126,7 +126,7 @@ void DistributedDeviceProfileClient::SendSubscribeInfosToService()
     {
         std::lock_guard<std::mutex> lock(serviceLock_);
         if (subscribeInfos_.empty() || subscribeInfos_.size() > MAX_SUBSCRIBE_INFO_SIZE) {
-            HILOGE("SubscribeInfos size is invalid!");
+            HILOGE("SubscribeInfos size is invalid!size: %{public}zu!", subscribeInfos_.size());
             return;
         }
         dpService->SendSubscribeInfos(subscribeInfos_);
@@ -199,7 +199,7 @@ int32_t DistributedDeviceProfileClient::GetAccessControlProfile(std::map<std::st
         return DP_GET_SERVICE_FAILED;
     }
     if (params.empty() || params.size() > MAX_PARAM_SIZE) {
-        HILOGE("Params size is invalid!");
+        HILOGE("Params size is invalid!size: %{public}zu!", params.size());
         return DP_INVALID_PARAMS;
     }
     int32_t ret = dpService->GetAccessControlProfile(params, accessControlProfiles);
@@ -260,7 +260,7 @@ int32_t DistributedDeviceProfileClient::PutServiceProfileBatch(const std::vector
         return DP_GET_SERVICE_FAILED;
     }
     if (serviceProfiles.empty() || serviceProfiles.size() > MAX_PROFILE_SIZE) {
-        HILOGE("ServiceProfiles size is invalid!");
+        HILOGE("ServiceProfiles size is invalid!size: %{public}zu!", serviceProfiles.size());
         return DP_INVALID_PARAMS;
     }
     int32_t ret = dpService->PutServiceProfileBatch(serviceProfiles);
@@ -293,7 +293,7 @@ int32_t DistributedDeviceProfileClient::PutCharacteristicProfileBatch(
         return DP_GET_SERVICE_FAILED;
     }
     if (characteristicProfiles.empty()  || characteristicProfiles.size() > MAX_PROFILE_SIZE) {
-        HILOGE("ServiceProfiles size is invalid!");
+        HILOGE("ServiceProfiles size is invalid!size: %{public}zu!", characteristicProfiles.size());
         return DP_INVALID_PARAMS;
     }
     int32_t ret = dpService->PutCharacteristicProfileBatch(characteristicProfiles);
@@ -389,7 +389,7 @@ int32_t DistributedDeviceProfileClient::SubscribeDeviceProfile(const SubscribeIn
         std::lock_guard<std::mutex> lock(serviceLock_);
         HILOGI("subscribeInfos_.size is %{public}zu", subscribeInfos_.size());
         if (subscribeInfos_.size() > MAX_LISTENER_SIZE) {
-            HILOGE("ProfileChangeListeners size is invalid!");
+            HILOGE("ProfileChangeListeners size is invalid!size: %{public}zu!", subscribeInfos_.size());
             return DP_EXCEED_MAX_SIZE_FAIL;
         }
         std::string subscribeTag =
@@ -450,6 +450,7 @@ int32_t DistributedDeviceProfileClient::SyncDeviceProfile(const DpSyncOptions& s
 
 sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfileService()
 {
+    HILOGI("call!");
     {
         std::lock_guard<std::mutex> lock(serviceLock_);
         if (dpProxy_ != nullptr) {
@@ -502,6 +503,7 @@ void DistributedDeviceProfileClient::OnServiceDied(const sptr<IRemoteObject>& re
 
 void DistributedDeviceProfileClient::DeviceProfileDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
 {
+    HILOGI("call!");
     DistributedDeviceProfileClient::GetInstance().OnServiceDied(remote.promote());
 }
 
