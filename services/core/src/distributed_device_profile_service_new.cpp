@@ -168,14 +168,7 @@ int32_t DistributedDeviceProfileServiceNew::UnInit()
         return DP_CACHE_UNINIT_FAIL;
     }
     DestroyUnloadHandler();
-    {
-        std::lock_guard<std::mutex> lock(serviceProfilesCacheMtx_);
-        serviceProfilesCache_.clear();
-    }
-    {
-        std::lock_guard<std::mutex> lock(charProfilesCacheMtx_);
-        charProfileCache_.clear();
-    }
+    ClearProfileCache();
     HILOGI("UnInit succeeded");
     return DP_SUCCESS;
 }
@@ -610,6 +603,18 @@ int32_t DistributedDeviceProfileServiceNew::SaveCharProfilesBatch(
     }
     HILOGI("PutCharacteristicProfileBatch success ");
     return DP_SUCCESS;
+}
+
+void DistributedDeviceProfileServiceNew::ClearProfileCache()
+{
+    {
+        std::lock_guard<std::mutex> lock(serviceProfilesCacheMtx_);
+        serviceProfilesCache_.clear();
+    }
+    {
+        std::lock_guard<std::mutex> lock(charProfilesCacheMtx_);
+        charProfileCache_.clear();
+    }
 }
 } // namespace DeviceProfile
 } // namespace OHOS

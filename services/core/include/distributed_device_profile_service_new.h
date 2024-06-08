@@ -80,6 +80,7 @@ private:
     int32_t SaveSvrProfilesBatch();
     int32_t SaveCharProfilesBatch();
     int32_t SaveCharProfilesBatch(const std::vector<CharacteristicProfile>& charProfiles);
+    void ClearProfileCache();
 
 private:
     std::shared_ptr<AppExecFwk::EventHandler> unloadHandler_;
