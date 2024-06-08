@@ -53,7 +53,7 @@ const std::string NAME = "name";
 const std::string INIT_TASK_ID = "CheckAndInitDP";
 constexpr int32_t DELAY_TIME = 180000;
 constexpr int32_t UNLOAD_IMMEDIATELY = 0;
-constexpr int32_t INIT_BUSINESS_DELAY_TIME_MS = 100 * 1000;
+constexpr int32_t INIT_BUSINESS_DELAY_TIME_US = 100 * 1000;
 constexpr int32_t MAX_INIT_RETRY_TIMES = 30;
 }
 
@@ -86,7 +86,7 @@ bool DistributedDeviceProfileService::Init()
             if (DoInit()) {
                 break;
             }
-            usleep(INIT_BUSINESS_DELAY_TIME_MS);
+            usleep(INIT_BUSINESS_DELAY_TIME_US);
             tryTimes--;
         }
         if (tryTimes <= 0) {

@@ -331,7 +331,7 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfileBatch(
     if (!IsInited()) {
         return AddCharProfilesToCache(charProfiles);
     }
-    return SaveCharProfilesBatch(charProfiles);;
+    return SaveCharProfilesBatch(charProfiles);
 }
 
 int32_t DistributedDeviceProfileServiceNew::GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile)

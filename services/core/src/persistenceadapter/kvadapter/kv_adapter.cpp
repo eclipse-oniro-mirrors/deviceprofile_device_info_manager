@@ -499,7 +499,7 @@ int32_t KVAdapter::SyncOnDemand(const std::string& udid, const std::string& keyP
     HILOGI("networkId: %{public}s", ProfileUtils::GetAnonyString(networkId).c_str());
     int32_t ret = DP_GET_KV_DB_FAIL;
     bool isExeced = ASYNC_GET_NO_FINISHED;
-    auto call = [this, udid, & isExeced, & ret, & values] (DistributedKv::Status status,
+    auto call = [this, udid, &isExeced, &ret, &values] (DistributedKv::Status status,
         std::vector<DistributedKv::Entry>&& allEntries) {
         HILOGI("async GetEntries callback, storeId:%{public}s, udid:%{public}s, status:%{public}d, size:%{public}zu",
             storeId_.storeId.c_str(), ProfileUtils::GetAnonyString(udid).c_str(), status, allEntries.size());
