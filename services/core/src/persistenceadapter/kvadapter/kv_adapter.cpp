@@ -533,7 +533,7 @@ int32_t KVAdapter::SyncOnDemand(const std::string& udid, const std::string& keyP
         kvStorePtr_->GetEntries(kvKeyPrefix, networkId, call);
     }
     std::unique_lock<std::mutex> lck(syncOnDemandMtx_);
-    syncOnDemandCond_.wait_for(lck, std::chrono::seconds(ASYNC_GET_WAIT_SECONDS), [& isExeced] {return isExeced;});
+    syncOnDemandCond_.wait_for(lck, std::chrono::seconds(ASYNC_GET_WAIT_SECONDS), [&isExeced] {return isExeced;});
     return ret;
 }
 
