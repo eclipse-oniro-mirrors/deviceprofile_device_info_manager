@@ -485,7 +485,12 @@ int32_t KVAdapter::GetByPrefix(const std::string& udid, const std::string& keyPr
         }
         syncOnDemandUdidSet_.insert(udid);
     }
-    return SyncOnDemand(udid, keyPrefix, values);
+    int32_t ret = SyncOnDemand(udid, keyPrefix, values);
+    if (ret != DP_SUCCESS) {
+        HILOGE("SyncOnDemand fail, ret: %{public}d", ret);
+        return ret;
+    }
+    return GetByPrefix(keyPrefix, values);
 }
 
 int32_t KVAdapter::SyncOnDemand(const std::string& udid, const std::string& keyPrefix,
@@ -512,11 +517,6 @@ int32_t KVAdapter::SyncOnDemand(const std::string& udid, const std::string& keyP
             ret = DP_SUCCESS;
         } else {
             HILOGE("async GetEntries failed");
-        }
-        if (!allEntries.empty()) {
-            for (const auto& item : allEntries) {
-                values[item.key.ToString()] = item.value.ToString();
-            }
         }
         std::unique_lock<std::mutex> lck(syncOnDemandMtx_);
         syncOnDemandCond_.notify_one();
@@ -556,11 +556,11 @@ int32_t KVAdapter::Get(const std::string& udid, const std::string& key, std::str
     }
     std::map<std::string, std::string> values;
     int32_t ret = SyncOnDemand(udid, key, values);
-    if (!values.empty()) {
-        auto it = values.begin();
-        value = it->second;
+    if (ret != DP_SUCCESS) {
+        HILOGE("SyncOnDemand fail, ret: %{public}d", ret);
+        return ret;
     }
-    return ret;
+    return Get(key, value);
 }
 } // namespace DeviceProfile
 } // namespace OHOS
