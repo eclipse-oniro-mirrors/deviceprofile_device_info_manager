@@ -520,7 +520,8 @@ int32_t KVAdapter::SyncOnDemand(const std::string& udid, const std::string& keyP
     }
     {
         std::unique_lock<std::mutex> lck(syncOnDemandMtx_);
-        syncOnDemandCond_.wait_for(lck, std::chrono::seconds(ASYNC_GET_WAIT_SECONDS), [this, udid] {
+        syncOnDemandCond_.wait_for(lck, std::chrono::seconds(ASYNC_GET_WAIT_SECONDS), [this, udid] { 
+            std::unique_lock<std::mutex> lck(syncOnDemandUdidSetMtx_);
             return syncOnDemandUdidSet_.find(udid) == syncOnDemandUdidSet_.end();
         });
     }
