@@ -67,8 +67,7 @@ private:
     int32_t RegisterDeathListener();
     int32_t UnRegisterDeathListener();
     int32_t DeleteDeathListener();
-    int32_t SyncOnDemand(const std::string& udid, const std::string& keyPrefix,
-        std::map<std::string, std::string>& values);
+    int32_t SyncOnDemand(const std::string& udid, const std::string& keyPrefix);
 
 private:
     DistributedKv::AppId appId_;
