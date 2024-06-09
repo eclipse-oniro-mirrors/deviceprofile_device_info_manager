@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -146,10 +146,12 @@ enum StaticCapabilityFlag {
 enum class SwitchFlag : int32_t {
     SWITCH_FLAG_MIN = -1,
     SWITCH_FLAG_KEY_MOUSE_EDGE_CROSSING = 0,
-    SWITCH_FLAG_MAX = 1
+    SWITCH_FLAG_KEY_DISTRIBUTED_PASTEBOARD = 1,
+    SWITCH_FLAG_MAX = 2
 };
 const std::unordered_map<std::string, SwitchFlag> SWITCH_SERVICE_MAP = {
-    { "SwitchStatus_Key_Mouse_Edge_Crossing", SwitchFlag::SWITCH_FLAG_KEY_MOUSE_EDGE_CROSSING }
+    { "SwitchStatus_Key_Mouse_Edge_Crossing", SwitchFlag::SWITCH_FLAG_KEY_MOUSE_EDGE_CROSSING },
+    { "SwitchStatus_Key_Distributed_Pasteboard", SwitchFlag::SWITCH_FLAG_KEY_DISTRIBUTED_PASTEBOARD }
 };
 const std::unordered_map<std::string, StaticCapabilityFlag> CAPABILITY_FLAG_MAP = {
     { "dmsfwk_svr_id", StaticCapabilityFlag::CAPABILITY_FLAG_DMS },
