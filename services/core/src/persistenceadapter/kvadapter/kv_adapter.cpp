@@ -35,8 +35,6 @@ namespace {
     const std::string DATABASE_DIR = "/data/service/el1/public/database/distributed_device_profile_service";
     const std::string TAG = "KVAdapter";
     constexpr uint8_t ASYNC_GET_WAIT_SECONDS = 3;
-    constexpr bool ASYNC_GET_FINISHED = true;
-    constexpr bool ASYNC_GET_NO_FINISHED = false;
 }
 
 KVAdapter::KVAdapter(const std::string &appId, const std::string &storeId,
@@ -522,7 +520,7 @@ int32_t KVAdapter::SyncOnDemand(const std::string& udid, const std::string& keyP
     }
     {
         std::unique_lock<std::mutex> lck(syncOnDemandMtx_);
-        syncOnDemandCond_.wait_for(lck, std::chrono::seconds(ASYNC_GET_WAIT_SECONDS), [this] {
+        syncOnDemandCond_.wait_for(lck, std::chrono::seconds(ASYNC_GET_WAIT_SECONDS), [this, udid] {
             return syncOnDemandUdidSet_.find(udid) == syncOnDemandUdidSet_.end();
         });
     }
