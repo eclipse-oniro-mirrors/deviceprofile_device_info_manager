@@ -38,24 +38,24 @@ HWTEST_F(DpRadarHelperTest, ReportPutACProfile_001, testing::ext::TestSize.Level
 {
     AccessControlProfile accessControlProfile;
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportPutAclProfile(errCode, accessControlProfile);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportPutAclProfile(errCode, accessControlProfile);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportPutAclProfile(errCode, accessControlProfile);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportPutAclProfile(errCode, accessControlProfile);
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportUpdateACProfile_001, testing::ext::TestSize.Level0)
 {
     AccessControlProfile accessControlProfile;
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportUpdateAclProfile(errCode, accessControlProfile);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportUpdateAclProfile(errCode, accessControlProfile);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportUpdateAclProfile(errCode, accessControlProfile);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportUpdateAclProfile(errCode, accessControlProfile);
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportGetTrustProfile_001, testing::ext::TestSize.Level0)
@@ -63,107 +63,107 @@ HWTEST_F(DpRadarHelperTest, ReportGetTrustProfile_001, testing::ext::TestSize.Le
     TrustDeviceProfile trustDeviceProfile;
     std::string deviceId = "";
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportGetTrustProfile(errCode, deviceId, trustDeviceProfile);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportGetTrustProfile(errCode, deviceId, trustDeviceProfile);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportGetTrustProfile(errCode, deviceId, trustDeviceProfile);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportGetTrustProfile(errCode, deviceId, trustDeviceProfile);
+
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportGetAllTrustProfile_001, testing::ext::TestSize.Level0)
 {
     std::vector<TrustDeviceProfile> trustDeviceProfiles;
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportGetAllTrustProfile(errCode, trustDeviceProfiles);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportGetAllTrustProfile(errCode, trustDeviceProfiles);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportGetAllTrustProfile(errCode, trustDeviceProfiles);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportGetAllTrustProfile(errCode, trustDeviceProfiles);
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportGetACProfile_001, testing::ext::TestSize.Level0)
 {
     std::vector<AccessControlProfile> accessControlProfiles;
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportGetAclProfile(errCode, accessControlProfiles);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportGetAclProfile(errCode, accessControlProfiles);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportGetAclProfile(errCode, accessControlProfiles);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportGetAclProfile(errCode, accessControlProfiles);
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportGetAllACProfile_001, testing::ext::TestSize.Level0)
 {
     std::vector<AccessControlProfile> accessControlProfiles;
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportGetAllAclProfile(errCode, accessControlProfiles);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportGetAllAclProfile(errCode, accessControlProfiles);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportGetAllAclProfile(errCode, accessControlProfiles);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportGetAllAclProfile(errCode, accessControlProfiles);
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportDeleteACProfile_001, testing::ext::TestSize.Level0)
 {
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportDeleteAclProfile(errCode);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportDeleteAclProfile(errCode);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportDeleteAclProfile(errCode);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportDeleteAclProfile(errCode);
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportPutServiceProfile_001, testing::ext::TestSize.Level0)
 {
     ServiceProfile serviceProfile;
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportPutServiceProfile(errCode, serviceProfile);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportPutServiceProfile(errCode, serviceProfile);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportPutServiceProfile(errCode, serviceProfile);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportPutServiceProfile(errCode, serviceProfile);
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportPutServiceProfileBatch_001, testing::ext::TestSize.Level0)
 {
     std::vector<ServiceProfile> serviceProfiles;
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportPutServiceProfileBatch(errCode, serviceProfiles);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportPutServiceProfileBatch(errCode, serviceProfiles);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportPutServiceProfileBatch(errCode, serviceProfiles);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportPutServiceProfileBatch(errCode, serviceProfiles);
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportPutChProfile_001, testing::ext::TestSize.Level0)
 {
     CharacteristicProfile characteristicProfile;
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportPutCharProfile(errCode, characteristicProfile);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportPutCharProfile(errCode, characteristicProfile);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportPutCharProfile(errCode, characteristicProfile);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportPutCharProfile(errCode, characteristicProfile);
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportPutChProfileBatch_001, testing::ext::TestSize.Level0)
 {
     std::vector<CharacteristicProfile> characteristicProfiles;
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportPutCharProfileBatch(errCode, characteristicProfiles);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportPutCharProfileBatch(errCode, characteristicProfiles);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportPutCharProfileBatch(errCode, characteristicProfiles);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportPutCharProfileBatch(errCode, characteristicProfiles);
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportGetDeviceProfile_001, testing::ext::TestSize.Level0)
@@ -171,12 +171,13 @@ HWTEST_F(DpRadarHelperTest, ReportGetDeviceProfile_001, testing::ext::TestSize.L
     std::string deviceId = "";
     DeviceProfile deviceProfile;
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportGetDeviceProfile(errCode, deviceId, deviceProfile);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportGetDeviceProfile(errCode, deviceId, deviceProfile);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportGetDeviceProfile(errCode, deviceId, deviceProfile);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportGetDeviceProfile(errCode, deviceId, deviceProfile);
+
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportGetServiceProfile_001, testing::ext::TestSize.Level0)
@@ -184,12 +185,12 @@ HWTEST_F(DpRadarHelperTest, ReportGetServiceProfile_001, testing::ext::TestSize.
     std::string deviceId = "";
     ServiceProfile serviceProfile;
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportGetServiceProfile(errCode, deviceId, serviceProfile);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportGetServiceProfile(errCode, deviceId, serviceProfile);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportGetServiceProfile(errCode, deviceId, serviceProfile);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportGetServiceProfile(errCode, deviceId, serviceProfile);
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportGetChProfile_001, testing::ext::TestSize.Level0)
@@ -197,134 +198,96 @@ HWTEST_F(DpRadarHelperTest, ReportGetChProfile_001, testing::ext::TestSize.Level
     std::string deviceId = "";
     CharacteristicProfile characteristicProfile;
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportGetCharProfile(errCode, deviceId, characteristicProfile);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportGetCharProfile(errCode, deviceId, characteristicProfile);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportGetCharProfile(errCode, deviceId, characteristicProfile);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportGetCharProfile(errCode, deviceId, characteristicProfile);
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportDeleteServiceProfile_001, testing::ext::TestSize.Level0)
 {
     std::string deviceId = "";
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportDeleteServiceProfile(errCode, deviceId);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportDeleteServiceProfile(errCode, deviceId);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportDeleteServiceProfile(errCode, deviceId);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportDeleteServiceProfile(errCode, deviceId);
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportDeleteChProfile_001, testing::ext::TestSize.Level0)
 {
     std::string deviceId = "";
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportDeleteCharProfile(errCode, deviceId);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportDeleteCharProfile(errCode, deviceId);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportDeleteCharProfile(errCode, deviceId);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportDeleteCharProfile(errCode, deviceId);
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportSubscribeDeviceProfile_001, testing::ext::TestSize.Level0)
 {
     SubscribeInfo subscribeInfo;
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportSubscribeDeviceProfile(errCode, subscribeInfo);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportSubscribeDeviceProfile(errCode, subscribeInfo);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportSubscribeDeviceProfile(errCode, subscribeInfo);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportSubscribeDeviceProfile(errCode, subscribeInfo);
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportUnSubscribeDeviceProfile_001, testing::ext::TestSize.Level0)
 {
     SubscribeInfo subscribeInfo;
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportUnSubscribeDeviceProfile(errCode, subscribeInfo);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportUnSubscribeDeviceProfile(errCode, subscribeInfo);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportUnSubscribeDeviceProfile(errCode, subscribeInfo);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportUnSubscribeDeviceProfile(errCode, subscribeInfo);
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportSyncDeviceProfile_001, testing::ext::TestSize.Level0)
 {
     int32_t errCode = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    bool res = DpRadarHelper::GetInstance().ReportSyncDeviceProfile(errCode);
-    EXPECT_EQ(res, true);
-
+    DpRadarHelper::GetInstance().ReportSyncDeviceProfile(errCode);
     errCode = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    res = DpRadarHelper::GetInstance().ReportSyncDeviceProfile(errCode);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportSyncDeviceProfile(errCode);
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, ReportNotifyProfileChange_001, testing::ext::TestSize.Level0)
 {
     int32_t code = ProfileType::DEVICE_PROFILE * ChangeType::ADD;
-    bool res = DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
-    EXPECT_EQ(res, true);
-}
-
-HWTEST_F(DpRadarHelperTest, ReportNotifyProfileChange_002, testing::ext::TestSize.Level0)
-{
-    int32_t code = ProfileType::DEVICE_PROFILE * ChangeType::UPDATE;
-    bool res = DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
-    EXPECT_EQ(res, true);
-}
-
-HWTEST_F(DpRadarHelperTest, ReportNotifyProfileChange_003, testing::ext::TestSize.Level0)
-{
-    int32_t code = ProfileType::DEVICE_PROFILE * ChangeType::DELETE;
-    bool res = DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
-    EXPECT_EQ(res, true);
-}
-
-HWTEST_F(DpRadarHelperTest, ReportNotifyProfileChange_004, testing::ext::TestSize.Level0)
-{
-    int32_t code = ProfileType::SERVICE_PROFILE * ChangeType::ADD;
-    bool res = DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
-    EXPECT_EQ(res, true);
-}
-
-HWTEST_F(DpRadarHelperTest, ReportNotifyProfileChange_005, testing::ext::TestSize.Level0)
-{
-    int32_t code = ProfileType::SERVICE_PROFILE * ChangeType::UPDATE;
-    bool res = DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
-    EXPECT_EQ(res, true);
-}
-
-HWTEST_F(DpRadarHelperTest, ReportNotifyProfileChange_006, testing::ext::TestSize.Level0)
-{
-    int32_t code = ProfileType::SERVICE_PROFILE * ChangeType::DELETE;
-    bool res = DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
-    EXPECT_EQ(res, true);
-}
-
-HWTEST_F(DpRadarHelperTest, ReportNotifyProfileChange_007, testing::ext::TestSize.Level0)
-{
-    int32_t code = ProfileType::CHAR_PROFILE * ChangeType::ADD;
-    bool res = DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
-    EXPECT_EQ(res, true);
-}
-
-HWTEST_F(DpRadarHelperTest, ReportNotifyProfileChange_008, testing::ext::TestSize.Level0)
-{
-    int32_t code = ProfileType::CHAR_PROFILE * ChangeType::UPDATE;
-    bool res = DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
-    EXPECT_EQ(res, true);
-}
-
-HWTEST_F(DpRadarHelperTest, ReportNotifyProfileChange_009, testing::ext::TestSize.Level0)
-{
-    int32_t code = ProfileType::CHAR_PROFILE * ChangeType::DELETE;
-    bool res = DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
-    EXPECT_EQ(res, true);
+    DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
+    code = ProfileType::DEVICE_PROFILE * ChangeType::UPDATE;
+    DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
+    code = ProfileType::DEVICE_PROFILE * ChangeType::DELETE;
+    DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
+    code = ProfileType::SERVICE_PROFILE * ChangeType::ADD;
+    DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
+    code = ProfileType::SERVICE_PROFILE * ChangeType::UPDATE;
+    DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
+    code = ProfileType::SERVICE_PROFILE * ChangeType::DELETE;
+    DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
+    code = ProfileType::CHAR_PROFILE * ChangeType::ADD;
+    DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
+    code = ProfileType::CHAR_PROFILE * ChangeType::UPDATE;
+    DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
+    code = ProfileType::CHAR_PROFILE * ChangeType::DELETE;
+    DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
+    std::vector<TrustDeviceProfile> trustDeviceProfiles;
+    std::string res = DpRadarHelper::GetInstance().GetPeerUdidList(trustDeviceProfiles);
+    EXPECT_EQ(res, "");
 }
 
 HWTEST_F(DpRadarHelperTest, GetPeerUdidList_001, testing::ext::TestSize.Level0)

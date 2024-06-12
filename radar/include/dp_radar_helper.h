@@ -95,34 +95,34 @@ enum class ProfileOperateStage : int32_t {
 class DpRadarHelper {
     DECLARE_SINGLE_INSTANCE(DpRadarHelper);
 public:
-    bool ReportCheckDpSa(int32_t stageRes);
-    bool ReportLoadDpSa(int32_t stageRes);
-    bool ReportLoadDpSaCb(int32_t stageRes);
-    bool ReportSaCheckAuth(int32_t stageRes);
-    bool ReportPutAclProfile(int32_t errCode, const AccessControlProfile& accessControlProfile);
-    bool ReportUpdateAclProfile(int32_t errCode, const AccessControlProfile& accessControlProfile);
-    bool ReportGetTrustProfile(int32_t errCode, const std::string& deviceId,
+    void ReportCheckDpSa(int32_t stageRes);
+    void ReportLoadDpSa(int32_t stageRes);
+    void ReportLoadDpSaCb(int32_t stageRes);
+    void ReportSaCheckAuth(int32_t stageRes);
+    void ReportPutAclProfile(int32_t errCode, const AccessControlProfile& accessControlProfile);
+    void ReportUpdateAclProfile(int32_t errCode, const AccessControlProfile& accessControlProfile);
+    void ReportGetTrustProfile(int32_t errCode, const std::string& deviceId,
         const TrustDeviceProfile& trustDeviceProfile);
-    bool ReportGetAllTrustProfile(int32_t errCode, std::vector<TrustDeviceProfile>& trustDeviceProfiles);
-    bool ReportGetAclProfile(int32_t errCode, std::vector<AccessControlProfile>& accessControlProfiles);
-    bool ReportGetAllAclProfile(int32_t errCode, std::vector<AccessControlProfile>& accessControlProfiles);
-    bool ReportDeleteAclProfile(int32_t errCode);
-    bool ReportPutServiceProfile(int32_t errCode, const ServiceProfile& serviceProfile);
-    bool ReportPutServiceProfileBatch(int32_t errCode, const std::vector<ServiceProfile>& serviceProfiles);
-    bool ReportPutCharProfile(int32_t errCode, const CharacteristicProfile& characteristicProfile);
-    bool ReportPutCharProfileBatch(int32_t errCode,
+    void ReportGetAllTrustProfile(int32_t errCode, std::vector<TrustDeviceProfile>& trustDeviceProfiles);
+    void ReportGetAclProfile(int32_t errCode, std::vector<AccessControlProfile>& accessControlProfiles);
+    void ReportGetAllAclProfile(int32_t errCode, std::vector<AccessControlProfile>& accessControlProfiles);
+    void ReportDeleteAclProfile(int32_t errCode);
+    void ReportPutServiceProfile(int32_t errCode, const ServiceProfile& serviceProfile);
+    void ReportPutServiceProfileBatch(int32_t errCode, const std::vector<ServiceProfile>& serviceProfiles);
+    void ReportPutCharProfile(int32_t errCode, const CharacteristicProfile& characteristicProfile);
+    void ReportPutCharProfileBatch(int32_t errCode,
         const std::vector<CharacteristicProfile>& characteristicProfiles);
-    bool ReportGetDeviceProfile(int32_t errCode, const std::string& deviceId, DeviceProfile& deviceProfile);
-    bool ReportGetServiceProfile(int32_t errCode,
+    void ReportGetDeviceProfile(int32_t errCode, const std::string& deviceId, DeviceProfile& deviceProfile);
+    void ReportGetServiceProfile(int32_t errCode,
         const std::string& deviceId, ServiceProfile& serviceProfile);
-    bool ReportGetCharProfile(int32_t errCode,
+    void ReportGetCharProfile(int32_t errCode,
         const std::string& deviceId, CharacteristicProfile& characteristicProfile);
-    bool ReportDeleteServiceProfile(int32_t errCode, const std::string& deviceId);
-    bool ReportDeleteCharProfile(int32_t errCode, const std::string& deviceId);
-    bool ReportSubscribeDeviceProfile(int32_t errCode, const SubscribeInfo& subscribeInfo);
-    bool ReportUnSubscribeDeviceProfile(int32_t errCode, const SubscribeInfo& subscribeInfo);
-    bool ReportSyncDeviceProfile(int32_t errCode);
-    bool ReportNotifyProfileChange(int32_t code);
+    void ReportDeleteServiceProfile(int32_t errCode, const std::string& deviceId);
+    void ReportDeleteCharProfile(int32_t errCode, const std::string& deviceId);
+    void ReportSubscribeDeviceProfile(int32_t errCode, const SubscribeInfo& subscribeInfo);
+    void ReportUnSubscribeDeviceProfile(int32_t errCode, const SubscribeInfo& subscribeInfo);
+    void ReportSyncDeviceProfile(int32_t errCode);
+    void ReportNotifyProfileChange(int32_t code);
     std::string GetPeerUdidList(const std::vector<TrustDeviceProfile>& trustDeviceProfiles);
     std::string GetPeerUdidList(const std::vector<AccessControlProfile>& accessControlProfiles);
     std::string GetPeerUdidList(const std::vector<ServiceProfile>& serviceProfiles);

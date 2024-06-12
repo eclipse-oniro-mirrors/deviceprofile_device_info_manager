@@ -68,9 +68,7 @@ sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::LoadDeviceProfil
     int32_t ret = samgrProxy->LoadSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, loadCallback);
     int32_t stageRes = (ret == ERR_OK) ?
         static_cast<int32_t>(StageRes::STAGE_IDLE) : static_cast<int32_t>(StageRes::STAGE_FAIL);
-    if (!DpRadarHelper::GetInstance().ReportLoadDpSa(stageRes)) {
-        HILOGE("ReportLoadDpSa failed");
-    }
+    DpRadarHelper::GetInstance().ReportLoadDpSa(stageRes);
     if (ret != ERR_OK) {
         HILOGE("Failed to Load systemAbility");
         return nullptr;
@@ -91,9 +89,7 @@ void DistributedDeviceProfileClient::LoadSystemAbilitySuccess(const sptr<IRemote
 {
     HILOGI("DistributedDeviceProfileClient FinishStartSA");
     int32_t stageRes = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    if (!DpRadarHelper::GetInstance().ReportLoadDpSaCb(stageRes)) {
-        HILOGE("ReportLoadDpSaCb failed");
-    }
+    DpRadarHelper::GetInstance().ReportLoadDpSaCb(stageRes);
     std::lock_guard<std::mutex> lock(serviceLock_);
     if (dpDeathRecipient_ == nullptr) {
         dpDeathRecipient_ = sptr<IRemoteObject::DeathRecipient>(new DeviceProfileDeathRecipient);
@@ -109,9 +105,7 @@ void DistributedDeviceProfileClient::LoadSystemAbilitySuccess(const sptr<IRemote
 void DistributedDeviceProfileClient::LoadSystemAbilityFail()
 {
     int32_t stageRes = static_cast<int32_t>(StageRes::STAGE_FAIL);
-    if (!DpRadarHelper::GetInstance().ReportLoadDpSaCb(stageRes)) {
-        HILOGE("ReportLoadDpSaCb failed");
-    }
+    DpRadarHelper::GetInstance().ReportLoadDpSaCb(stageRes);
     std::lock_guard<std::mutex> lock(serviceLock_);
     dpProxy_ = nullptr;
 }
@@ -140,11 +134,7 @@ int32_t DistributedDeviceProfileClient::PutAccessControlProfile(const AccessCont
         HILOGE("get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    int32_t ret = dpService->PutAccessControlProfile(accessControlProfile);
-    if (!DpRadarHelper::GetInstance().ReportPutAclProfile(ret, accessControlProfile)) {
-        HILOGE("ReportPutAclProfile failed");
-    }
-    return ret;
+    return dpService->PutAccessControlProfile(accessControlProfile);
 }
 
 int32_t DistributedDeviceProfileClient::UpdateAccessControlProfile(const AccessControlProfile& accessControlProfile)
@@ -154,11 +144,7 @@ int32_t DistributedDeviceProfileClient::UpdateAccessControlProfile(const AccessC
         HILOGE("get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    int32_t ret = dpService->UpdateAccessControlProfile(accessControlProfile);
-    if (!DpRadarHelper::GetInstance().ReportUpdateAclProfile(ret, accessControlProfile)) {
-        HILOGE("ReportUpdateAclProfile failed");
-    }
-    return ret;
+    return dpService->UpdateAccessControlProfile(accessControlProfile);
 }
 
 int32_t DistributedDeviceProfileClient::GetTrustDeviceProfile(const std::string& deviceId,
@@ -169,11 +155,7 @@ int32_t DistributedDeviceProfileClient::GetTrustDeviceProfile(const std::string&
         HILOGE("get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    int32_t ret = dpService->GetTrustDeviceProfile(deviceId, trustDeviceProfile);
-    if (!DpRadarHelper::GetInstance().ReportGetTrustProfile(ret, deviceId, trustDeviceProfile)) {
-        HILOGE("ReportGetTrustProfile failed");
-    }
-    return ret;
+    return dpService->GetTrustDeviceProfile(deviceId, trustDeviceProfile);
 }
 
 int32_t DistributedDeviceProfileClient::GetAllTrustDeviceProfile(std::vector<TrustDeviceProfile>& trustDeviceProfiles)
@@ -183,11 +165,7 @@ int32_t DistributedDeviceProfileClient::GetAllTrustDeviceProfile(std::vector<Tru
         HILOGE("get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    int32_t ret = dpService->GetAllTrustDeviceProfile(trustDeviceProfiles);
-    if (!DpRadarHelper::GetInstance().ReportGetAllTrustProfile(ret, trustDeviceProfiles)) {
-        HILOGE("ReportGetAllTrustProfile failed");
-    }
-    return ret;
+    return dpService->GetAllTrustDeviceProfile(trustDeviceProfiles);
 }
 
 int32_t DistributedDeviceProfileClient::GetAccessControlProfile(std::map<std::string, std::string> params,
@@ -202,11 +180,7 @@ int32_t DistributedDeviceProfileClient::GetAccessControlProfile(std::map<std::st
         HILOGE("Params size is invalid!size: %{public}zu!", params.size());
         return DP_INVALID_PARAMS;
     }
-    int32_t ret = dpService->GetAccessControlProfile(params, accessControlProfiles);
-    if (!DpRadarHelper::GetInstance().ReportGetAclProfile(ret, accessControlProfiles)) {
-        HILOGE("ReportGetAclProfile failed");
-    }
-    return ret;
+    return dpService->GetAccessControlProfile(params, accessControlProfiles);
 }
 
 int32_t DistributedDeviceProfileClient::GetAllAccessControlProfile(
@@ -217,11 +191,7 @@ int32_t DistributedDeviceProfileClient::GetAllAccessControlProfile(
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    int32_t ret = dpService->GetAllAccessControlProfile(accessControlProfiles);
-    if (!DpRadarHelper::GetInstance().ReportGetAllAclProfile(ret, accessControlProfiles)) {
-        HILOGE("ReportGetAllAclProfile failed");
-    }
-    return ret;
+    return dpService->GetAllAccessControlProfile(accessControlProfiles);
 }
 
 int32_t DistributedDeviceProfileClient::DeleteAccessControlProfile(int32_t accessControlId)
@@ -231,11 +201,7 @@ int32_t DistributedDeviceProfileClient::DeleteAccessControlProfile(int32_t acces
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    int32_t ret = dpService->DeleteAccessControlProfile(accessControlId);
-    if (!DpRadarHelper::GetInstance().ReportDeleteAclProfile(ret)) {
-        HILOGE("ReportDeleteAclProfile failed");
-    }
-    return ret;
+    return dpService->DeleteAccessControlProfile(accessControlId);
 }
 
 int32_t DistributedDeviceProfileClient::PutServiceProfile(const ServiceProfile& serviceProfile)
@@ -245,11 +211,7 @@ int32_t DistributedDeviceProfileClient::PutServiceProfile(const ServiceProfile& 
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    int32_t ret = dpService->PutServiceProfile(serviceProfile);
-    if (!DpRadarHelper::GetInstance().ReportPutServiceProfile(ret, serviceProfile)) {
-        HILOGE("ReportPutServiceProfile failed");
-    }
-    return ret;
+    return dpService->PutServiceProfile(serviceProfile);
 }
 
 int32_t DistributedDeviceProfileClient::PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles)
@@ -263,11 +225,7 @@ int32_t DistributedDeviceProfileClient::PutServiceProfileBatch(const std::vector
         HILOGE("ServiceProfiles size is invalid!size: %{public}zu!", serviceProfiles.size());
         return DP_INVALID_PARAMS;
     }
-    int32_t ret = dpService->PutServiceProfileBatch(serviceProfiles);
-    if (!DpRadarHelper::GetInstance().ReportPutServiceProfileBatch(ret, serviceProfiles)) {
-        HILOGE("ReportPutServiceProfileBatch failed");
-    }
-    return ret;
+    return dpService->PutServiceProfileBatch(serviceProfiles);
 }
 
 int32_t DistributedDeviceProfileClient::PutCharacteristicProfile(const CharacteristicProfile& characteristicProfile)
@@ -277,11 +235,7 @@ int32_t DistributedDeviceProfileClient::PutCharacteristicProfile(const Character
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    int32_t ret = dpService->PutCharacteristicProfile(characteristicProfile);
-    if (!DpRadarHelper::GetInstance().ReportPutCharProfile(ret, characteristicProfile)) {
-        HILOGE("ReportPutCharProfile failed");
-    }
-    return ret;
+    return dpService->PutCharacteristicProfile(characteristicProfile);
 }
 
 int32_t DistributedDeviceProfileClient::PutCharacteristicProfileBatch(
@@ -296,11 +250,7 @@ int32_t DistributedDeviceProfileClient::PutCharacteristicProfileBatch(
         HILOGE("ServiceProfiles size is invalid!size: %{public}zu!", characteristicProfiles.size());
         return DP_INVALID_PARAMS;
     }
-    int32_t ret = dpService->PutCharacteristicProfileBatch(characteristicProfiles);
-    if (!DpRadarHelper::GetInstance().ReportPutCharProfileBatch(ret, characteristicProfiles)) {
-        HILOGE("ReportPutCharProfileBatch failed");
-    }
-    return ret;
+    return dpService->PutCharacteristicProfileBatch(characteristicProfiles);
 }
 
 int32_t DistributedDeviceProfileClient::GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile)
@@ -310,11 +260,7 @@ int32_t DistributedDeviceProfileClient::GetDeviceProfile(const std::string& devi
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    int32_t ret = dpService->GetDeviceProfile(deviceId, deviceProfile);
-    if (!DpRadarHelper::GetInstance().ReportGetDeviceProfile(ret, deviceId, deviceProfile)) {
-        HILOGE("ReportGetDeviceProfile failed");
-    }
-    return ret;
+    return dpService->GetDeviceProfile(deviceId, deviceProfile);
 }
 
 int32_t DistributedDeviceProfileClient::GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
@@ -325,11 +271,7 @@ int32_t DistributedDeviceProfileClient::GetServiceProfile(const std::string& dev
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    int32_t ret = dpService->GetServiceProfile(deviceId, serviceName, serviceProfile);
-    if (!DpRadarHelper::GetInstance().ReportGetServiceProfile(ret, deviceId, serviceProfile)) {
-        HILOGE("ReportGetServiceProfile failed");
-    }
-    return ret;
+    return dpService->GetServiceProfile(deviceId, serviceName, serviceProfile);
 }
 
 int32_t DistributedDeviceProfileClient::GetCharacteristicProfile(const std::string& deviceId,
@@ -340,11 +282,7 @@ int32_t DistributedDeviceProfileClient::GetCharacteristicProfile(const std::stri
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    int32_t ret = dpService->GetCharacteristicProfile(deviceId, serviceName, characteristicId, characteristicProfile);
-    if (!DpRadarHelper::GetInstance().ReportGetCharProfile(ret, deviceId, characteristicProfile)) {
-        HILOGE("ReportGetCharProfile failed");
-    }
-    return ret;
+    return dpService->GetCharacteristicProfile(deviceId, serviceName, characteristicId, characteristicProfile);
 }
 
 int32_t DistributedDeviceProfileClient::DeleteServiceProfile(const std::string& deviceId,
@@ -355,11 +293,7 @@ int32_t DistributedDeviceProfileClient::DeleteServiceProfile(const std::string& 
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    int32_t ret = dpService->DeleteServiceProfile(deviceId, serviceName);
-    if (!DpRadarHelper::GetInstance().ReportDeleteServiceProfile(ret, deviceId)) {
-        HILOGE("ReportDeleteServiceProfile failed");
-    }
-    return ret;
+    return dpService->DeleteServiceProfile(deviceId, serviceName);
 }
 
 int32_t DistributedDeviceProfileClient::DeleteCharacteristicProfile(const std::string& deviceId,
@@ -370,11 +304,7 @@ int32_t DistributedDeviceProfileClient::DeleteCharacteristicProfile(const std::s
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    int32_t ret = dpService->DeleteCharacteristicProfile(deviceId, serviceName, characteristicKey);
-    if (!DpRadarHelper::GetInstance().ReportDeleteCharProfile(ret, deviceId)) {
-        HILOGE("ReportDeleteCharProfile failed");
-    }
-    return ret;
+    return dpService->DeleteCharacteristicProfile(deviceId, serviceName, characteristicKey);
 }
 
 int32_t DistributedDeviceProfileClient::SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)
@@ -397,11 +327,7 @@ int32_t DistributedDeviceProfileClient::SubscribeDeviceProfile(const SubscribeIn
         subscribeInfos_[subscribeTag] = subscribeInfo;
         HILOGI("subscribeInfos_.size is %{public}zu", subscribeInfos_.size());
     }
-    int32_t ret = dpService->SubscribeDeviceProfile(subscribeInfo);
-    if (!DpRadarHelper::GetInstance().ReportSubscribeDeviceProfile(ret, subscribeInfo)) {
-        HILOGE("ReportSubscribeDeviceProfile failed");
-    }
-    return ret;
+    return dpService->SubscribeDeviceProfile(subscribeInfo);
 }
 
 int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)
@@ -417,11 +343,7 @@ int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfile(const Subscribe
         subscribeInfos_.erase(subscribeInfo.GetSubscribeKey() + SEPARATOR + std::to_string(subscribeInfo.GetSaId()));
         HILOGI("subscribeInfos_.size is %{public}zu", subscribeInfos_.size());
     }
-    int32_t ret = dpService->UnSubscribeDeviceProfile(subscribeInfo);
-    if (!DpRadarHelper::GetInstance().ReportUnSubscribeDeviceProfile(ret, subscribeInfo)) {
-        HILOGE("ReportUnSubscribeDeviceProfile failed");
-    }
-    return ret;
+    return dpService->UnSubscribeDeviceProfile(subscribeInfo);
 }
 
 int32_t DistributedDeviceProfileClient::SyncDeviceProfile(const DpSyncOptions& syncOptions,
@@ -441,11 +363,7 @@ int32_t DistributedDeviceProfileClient::SyncDeviceProfile(const DpSyncOptions& s
         HILOGE("SyncCb ipc cast fail!");
         return DP_SYNC_DEVICE_FAIL;
     }
-    int32_t ret = dpService->SyncDeviceProfile(syncOptions, syncCompletedCallback);
-    if (!DpRadarHelper::GetInstance().ReportSyncDeviceProfile(ret)) {
-        HILOGE("ReportSyncDeviceProfile failed");
-    }
-    return ret;
+    return dpService->SyncDeviceProfile(syncOptions, syncCompletedCallback);
 }
 
 sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfileService()
@@ -464,9 +382,8 @@ sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfile
         auto object = samgrProxy->CheckSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID);
         int32_t stageRes = (object != nullptr) ?
                 static_cast<int32_t>(StageRes::STAGE_SUCC) : static_cast<int32_t>(StageRes::STAGE_FAIL);
-        if (!DpRadarHelper::GetInstance().IsDeviceProfileInit() &&
-            !DpRadarHelper::GetInstance().ReportCheckDpSa(stageRes)) {
-            HILOGE("ReportCheckDpSa failed");
+        if (!DpRadarHelper::GetInstance().IsDeviceProfileInit()) {
+            DpRadarHelper::GetInstance().ReportCheckDpSa(stageRes);
         }
         if (object != nullptr) {
             HILOGI("get service succeeded");

@@ -25,7 +25,10 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(DpRadarHelper);
-bool DpRadarHelper::ReportCheckDpSa(int32_t stageRes)
+namespace {
+const std::string TAG = "DpRadarHelper";
+}
+void DpRadarHelper::ReportCheckDpSa(int32_t stageRes)
 {
     int32_t res = ERR_OK;
     if (stageRes == static_cast<int32_t>(StageRes::STAGE_SUCC)) {
@@ -55,12 +58,12 @@ bool DpRadarHelper::ReportCheckDpSa(int32_t stageRes)
             "ERROR_CODE", DP_LOAD_SERVICE_ERR);
     }
     if (res != ERR_OK) {
-        return false;
+        HILOGE("ReportCheckDpSa fail");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportLoadDpSa(int32_t stageRes)
+void DpRadarHelper::ReportLoadDpSa(int32_t stageRes)
 {
     int32_t res = ERR_OK;
     if (stageRes == static_cast<int32_t>(StageRes::STAGE_IDLE)) {
@@ -89,12 +92,12 @@ bool DpRadarHelper::ReportLoadDpSa(int32_t stageRes)
             "ERROR_CODE", DP_LOAD_SERVICE_ERR);
     }
     if (res != ERR_OK) {
-        return false;
+        HILOGE("ReportLoadDpSa failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportLoadDpSaCb(int32_t stageRes)
+void DpRadarHelper::ReportLoadDpSaCb(int32_t stageRes)
 {
     int32_t res = ERR_OK;
     if (stageRes == static_cast<int32_t>(StageRes::STAGE_SUCC)) {
@@ -123,12 +126,12 @@ bool DpRadarHelper::ReportLoadDpSaCb(int32_t stageRes)
             "ERROR_CODE", DP_LOAD_SERVICE_ERR);
     }
     if (res != ERR_OK) {
-        return false;
+        HILOGE("ReportLoadDpSaCb failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportSaCheckAuth(int32_t stageRes)
+void DpRadarHelper::ReportSaCheckAuth(int32_t stageRes)
 {
     int res = ERR_OK;
     if (stageRes == static_cast<int32_t>(StageRes::STAGE_SUCC)) {
@@ -156,12 +159,12 @@ bool DpRadarHelper::ReportSaCheckAuth(int32_t stageRes)
             "ERROR_CODE", ERR_PERMISSION_DENIED);
     }
     if (res != ERR_OK) {
-        return false;
+        HILOGE("ReportSaCheckAuth failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportPutAclProfile(int32_t errCode, const AccessControlProfile& accessControlProfile)
+void DpRadarHelper::ReportPutAclProfile(int32_t errCode, const AccessControlProfile& accessControlProfile)
 {
     int res = DP_SUCCESS;
     int32_t stageRes = (errCode == DP_SUCCESS) ?
@@ -199,12 +202,12 @@ bool DpRadarHelper::ReportPutAclProfile(int32_t errCode, const AccessControlProf
             "EXTRA_INFO", accessControlProfile.dump());
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportPutAclProfile failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportUpdateAclProfile(int32_t errCode, const AccessControlProfile& accessControlProfile)
+void DpRadarHelper::ReportUpdateAclProfile(int32_t errCode, const AccessControlProfile& accessControlProfile)
 {
     int res = DP_SUCCESS;
     int32_t stageRes = (errCode == DP_SUCCESS) ?
@@ -242,12 +245,12 @@ bool DpRadarHelper::ReportUpdateAclProfile(int32_t errCode, const AccessControlP
             "EXTRA_INFO", accessControlProfile.dump());
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportUpdateAclProfile failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportGetTrustProfile(int32_t errCode, const std::string& deviceId,
+void DpRadarHelper::ReportGetTrustProfile(int32_t errCode, const std::string& deviceId,
     const TrustDeviceProfile& trustDeviceProfile)
 {
     int res = DP_SUCCESS;
@@ -286,12 +289,12 @@ bool DpRadarHelper::ReportGetTrustProfile(int32_t errCode, const std::string& de
             "EXTRA_INFO", trustDeviceProfile.dump());
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportGetTrustProfile failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportGetAllTrustProfile(int32_t errCode, std::vector<TrustDeviceProfile>& trustDeviceProfiles)
+void DpRadarHelper::ReportGetAllTrustProfile(int32_t errCode, std::vector<TrustDeviceProfile>& trustDeviceProfiles)
 {
     int res = DP_SUCCESS;
     int32_t stageRes = (errCode == DP_SUCCESS) ?
@@ -337,12 +340,12 @@ bool DpRadarHelper::ReportGetAllTrustProfile(int32_t errCode, std::vector<TrustD
             "EXTRA_INFO", extraInfo);
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportGetAllTrustProfile failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportGetAclProfile(int32_t errCode, std::vector<AccessControlProfile>& accessControlProfiles)
+void DpRadarHelper::ReportGetAclProfile(int32_t errCode, std::vector<AccessControlProfile>& accessControlProfiles)
 {
     int res = DP_SUCCESS;
     int32_t stageRes = (errCode == DP_SUCCESS) ?
@@ -388,12 +391,12 @@ bool DpRadarHelper::ReportGetAclProfile(int32_t errCode, std::vector<AccessContr
             "EXTRA_INFO", extraInfo);
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportGetAclProfile failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportGetAllAclProfile(int32_t errCode, std::vector<AccessControlProfile>& accessControlProfiles)
+void DpRadarHelper::ReportGetAllAclProfile(int32_t errCode, std::vector<AccessControlProfile>& accessControlProfiles)
 {
     int res = DP_SUCCESS;
     int32_t stageRes = (errCode == DP_SUCCESS) ?
@@ -439,12 +442,12 @@ bool DpRadarHelper::ReportGetAllAclProfile(int32_t errCode, std::vector<AccessCo
             "EXTRA_INFO", extraInfo);
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportGetAllAclProfile failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportDeleteAclProfile(int32_t errCode)
+void DpRadarHelper::ReportDeleteAclProfile(int32_t errCode)
 {
     int res = DP_SUCCESS;
     int32_t stageRes = (errCode == DP_SUCCESS) ?
@@ -478,12 +481,12 @@ bool DpRadarHelper::ReportDeleteAclProfile(int32_t errCode)
             "ERROR_CODE", errCode);
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportDeleteAclProfile failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportPutServiceProfile(int32_t errCode, const ServiceProfile& serviceProfile)
+void DpRadarHelper::ReportPutServiceProfile(int32_t errCode, const ServiceProfile& serviceProfile)
 {
     int res = DP_SUCCESS;
     int32_t stageRes = (errCode == DP_SUCCESS) ?
@@ -521,12 +524,12 @@ bool DpRadarHelper::ReportPutServiceProfile(int32_t errCode, const ServiceProfil
             "EXTRA_INFO", serviceProfile.dump());
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportPutServiceProfile failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportPutServiceProfileBatch(int32_t errCode, const std::vector<ServiceProfile>& serviceProfiles)
+void DpRadarHelper::ReportPutServiceProfileBatch(int32_t errCode, const std::vector<ServiceProfile>& serviceProfiles)
 {
     int res = DP_SUCCESS;
     int32_t stageRes = (errCode == DP_SUCCESS) ?
@@ -572,12 +575,12 @@ bool DpRadarHelper::ReportPutServiceProfileBatch(int32_t errCode, const std::vec
             "EXTRA_INFO", extraInfo);
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportPutServiceProfileBatch failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportPutCharProfile(int32_t errCode, const CharacteristicProfile& characteristicProfile)
+void DpRadarHelper::ReportPutCharProfile(int32_t errCode, const CharacteristicProfile& characteristicProfile)
 {
     int res = DP_SUCCESS;
     int32_t stageRes = (errCode == DP_SUCCESS) ?
@@ -615,12 +618,12 @@ bool DpRadarHelper::ReportPutCharProfile(int32_t errCode, const CharacteristicPr
             "EXTRA_INFO", characteristicProfile.dump());
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportPutCharProfile failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportPutCharProfileBatch(int32_t errCode,
+void DpRadarHelper::ReportPutCharProfileBatch(int32_t errCode,
     const std::vector<CharacteristicProfile>& characteristicProfiles)
 {
     int res = DP_SUCCESS;
@@ -667,12 +670,12 @@ bool DpRadarHelper::ReportPutCharProfileBatch(int32_t errCode,
             "EXTRA_INFO", extraInfo);
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportPutCharProfileBatch failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportGetDeviceProfile(int32_t errCode, const std::string& deviceId, DeviceProfile& deviceProfile)
+void DpRadarHelper::ReportGetDeviceProfile(int32_t errCode, const std::string& deviceId, DeviceProfile& deviceProfile)
 {
     int res = DP_SUCCESS;
     int32_t stageRes = (errCode == DP_SUCCESS) ?
@@ -710,12 +713,12 @@ bool DpRadarHelper::ReportGetDeviceProfile(int32_t errCode, const std::string& d
             "EXTRA_INFO", deviceProfile.dump());
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportGetDeviceProfile failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportGetServiceProfile(int32_t errCode,
+void DpRadarHelper::ReportGetServiceProfile(int32_t errCode,
     const std::string& deviceId, ServiceProfile& serviceProfile)
 {
     int res = DP_SUCCESS;
@@ -754,12 +757,12 @@ bool DpRadarHelper::ReportGetServiceProfile(int32_t errCode,
             "EXTRA_INFO", serviceProfile.dump());
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportGetServiceProfile failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportGetCharProfile(int32_t errCode,
+void DpRadarHelper::ReportGetCharProfile(int32_t errCode,
     const std::string& deviceId, CharacteristicProfile& characteristicProfile)
 {
     int res = DP_SUCCESS;
@@ -798,12 +801,12 @@ bool DpRadarHelper::ReportGetCharProfile(int32_t errCode,
             "EXTRA_INFO", characteristicProfile.dump());
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportGetCharProfile failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportDeleteServiceProfile(int32_t errCode, const std::string& deviceId)
+void DpRadarHelper::ReportDeleteServiceProfile(int32_t errCode, const std::string& deviceId)
 {
     int res = DP_SUCCESS;
     int32_t stageRes = (errCode == DP_SUCCESS) ?
@@ -839,12 +842,12 @@ bool DpRadarHelper::ReportDeleteServiceProfile(int32_t errCode, const std::strin
             "ERROR_CODE", errCode);
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportDeleteServiceProfile failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportDeleteCharProfile(int32_t errCode, const std::string& deviceId)
+void DpRadarHelper::ReportDeleteCharProfile(int32_t errCode, const std::string& deviceId)
 {
     int res = DP_SUCCESS;
     int32_t stageRes = (errCode == DP_SUCCESS) ?
@@ -880,12 +883,12 @@ bool DpRadarHelper::ReportDeleteCharProfile(int32_t errCode, const std::string& 
             "ERROR_CODE", errCode);
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportDeleteCharProfile failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportSubscribeDeviceProfile(int32_t errCode, const SubscribeInfo& subscribeInfo)
+void DpRadarHelper::ReportSubscribeDeviceProfile(int32_t errCode, const SubscribeInfo& subscribeInfo)
 {
     int res = DP_SUCCESS;
     int32_t stageRes = (errCode == DP_SUCCESS) ?
@@ -921,12 +924,12 @@ bool DpRadarHelper::ReportSubscribeDeviceProfile(int32_t errCode, const Subscrib
             "EXTRA_INFO", subscribeInfo.dump());
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportSubscribeDeviceProfile failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportUnSubscribeDeviceProfile(int32_t errCode, const SubscribeInfo& subscribeInfo)
+void DpRadarHelper::ReportUnSubscribeDeviceProfile(int32_t errCode, const SubscribeInfo& subscribeInfo)
 {
     int res = DP_SUCCESS;
     int32_t stageRes = (errCode == DP_SUCCESS) ?
@@ -962,12 +965,12 @@ bool DpRadarHelper::ReportUnSubscribeDeviceProfile(int32_t errCode, const Subscr
             "EXTRA_INFO", subscribeInfo.dump());
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportUnSubscribeDeviceProfile failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportSyncDeviceProfile(int32_t errCode)
+void DpRadarHelper::ReportSyncDeviceProfile(int32_t errCode)
 {
     int res = DP_SUCCESS;
     int32_t stageRes = (errCode == DP_SUCCESS) ?
@@ -1003,12 +1006,12 @@ bool DpRadarHelper::ReportSyncDeviceProfile(int32_t errCode)
             "ERROR_CODE", errCode);
     }
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportSyncDeviceProfile failed");
     }
-    return true;
+    return;
 }
 
-bool DpRadarHelper::ReportNotifyProfileChange(int32_t code)
+void DpRadarHelper::ReportNotifyProfileChange(int32_t code)
 {
     std::string funcName = "";
     switch (code) {
@@ -1054,9 +1057,9 @@ bool DpRadarHelper::ReportNotifyProfileChange(int32_t code)
         "LOCAL_UDID", GetLocalUdid(),
         "TO_CALL_PKG", RDB_NAME);
     if (res != DP_SUCCESS) {
-        return false;
+        HILOGE("ReportNotifyProfileChange failed");
     }
-    return true;
+    return;
 }
 
 std::string DpRadarHelper::GetPeerUdidList(const std::vector<TrustDeviceProfile>& trustDeviceProfiles)
