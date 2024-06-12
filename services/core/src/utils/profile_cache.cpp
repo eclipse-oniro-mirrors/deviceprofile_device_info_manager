@@ -744,7 +744,7 @@ int32_t ProfileCache::GetServiceNameByPos(int32_t pos,
         HILOGE("params are invalid");
         return DP_INVALID_PARAMS;
     }
-    for (auto& item : switchServiceMap) {
+    for (const auto& item : switchServiceMap) {
         if (item.second == (SwitchFlag)pos) {
             serviceName = item.first;
             HILOGI("find serviceName: %{public}s", serviceName.c_str());
