@@ -344,7 +344,7 @@ int32_t ProfileControlUtils::RefreshLocalSwitchProfile(const std::string& appId)
         HILOGI("Find Switch, idx: %{public}d", i);
         std::string itemSwitchValue = std::to_string((newSwitch >> i) & NUM_1);
         std::string serviceName;
-        int32_t res = ProfileCache::GetInstance().GetServiceNameByPos(i, SWITCH_SERVICE_MAP, serviceName);
+        res = ProfileCache::GetInstance().GetServiceNameByPos(i, SWITCH_SERVICE_MAP, serviceName);
         if (res != DP_SUCCESS || serviceName.empty()) {
             HILOGE("GetServiceNameByPos failed, serviceName:%{public}s", serviceName.c_str());
             continue;
