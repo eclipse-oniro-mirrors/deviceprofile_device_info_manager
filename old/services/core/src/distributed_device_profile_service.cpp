@@ -54,7 +54,7 @@ const std::string INIT_TASK_ID = "CheckAndInitDP";
 constexpr int32_t DELAY_TIME = 180000;
 constexpr int32_t UNLOAD_IMMEDIATELY = 0;
 constexpr int32_t INIT_BUSINESS_DELAY_TIME_US = 100 * 1000;
-constexpr int32_t MAX_INIT_RETRY_TIMES = 30;
+constexpr int32_t MAX_INIT_RETRY_TIMES = 1200;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileService);
