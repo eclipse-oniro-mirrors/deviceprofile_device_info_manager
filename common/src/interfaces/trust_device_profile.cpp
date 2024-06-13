@@ -80,6 +80,7 @@ bool TrustDeviceProfile::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, Uint32, deviceIdType_, false);
     WRITE_HELPER_RET(parcel, String, deviceIdHash_, false);
     WRITE_HELPER_RET(parcel, Int32, status_, false);
+    WRITE_HELPER_RET(parcel, Uint32, bindType_, false);
     return true;
 }
 
@@ -89,6 +90,7 @@ bool TrustDeviceProfile::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, Uint32, deviceIdType_, false);
     READ_HELPER_RET(parcel, String, deviceIdHash_, false);
     READ_HELPER_RET(parcel, Int32, status_, false);
+    READ_HELPER_RET(parcel, Uint32, bindType_, false);
     return true;
 }
 
