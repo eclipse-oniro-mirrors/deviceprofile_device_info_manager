@@ -15,6 +15,7 @@
 
 #include "subscribe_profile_manager.h"
 
+#include "distributed_device_profile_errors.h"
 #include "dp_radar_helper.h"
 #include "profile_utils.h"
 #include "profile_cache.h"

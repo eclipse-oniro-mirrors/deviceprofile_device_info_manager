@@ -15,21 +15,13 @@
 
 #include "switch_profile_manager.h"
 
-#include <algorithm>
-#include <dlfcn.h>
-#include <mutex>
-#include <memory>
-#include <vector>
-
-#include "switch_adapter.h"
-#include "content_sensor_manager_utils.h"
-#include "device_manager.h"
+#include "distributed_device_profile_enums.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
-#include "profile_utils.h"
 #include "profile_cache.h"
 #include "profile_control_utils.h"
-#include "permission_manager.h"
+#include "profile_utils.h"
+#include "switch_adapter.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -71,8 +63,8 @@ int32_t SwitchProfileManager::ReInit()
 
 int32_t SwitchProfileManager::PutCharacteristicProfile(const CharacteristicProfile& charProfile)
 {
-    HILOGI("call!");
-    int32_t res = 0;
+    HILOGI("PutSwitchCharacteristicProfile : %{public}s!", charProfile.dump().c_str());
+    int32_t res = DP_SUCCESS;
     {
         std::lock_guard<std::mutex> lock(switchProfileMutex_);
         res = ProfileControlUtils::PutSwitchCharacteristicProfile(APP_ID, charProfile);

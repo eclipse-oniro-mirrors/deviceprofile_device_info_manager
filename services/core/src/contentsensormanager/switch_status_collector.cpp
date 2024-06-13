@@ -41,7 +41,6 @@ bool SwitchStatusCollector::ConvertToProfile(std::vector<CharacteristicProfile>&
         HILOGE("Load json failed, result: %{public}d!", loadJsonResult);
         return false;
     }
-    HILOGI("fileContent: %{public}s", fileContent.c_str());
     cJSON* switchCapabilityJson = cJSON_Parse(fileContent.c_str());
     if (!cJSON_IsObject(switchCapabilityJson)) {
         HILOGE("Switch capability json parse failed!");

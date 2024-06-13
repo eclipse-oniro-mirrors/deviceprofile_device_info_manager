@@ -30,8 +30,8 @@
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "dm_adapter.h"
-#include "dp_radar_helper.h"
 #include "device_profile_manager.h"
+#include "dp_radar_helper.h"
 #include "event_handler_factory.h"
 #include "permission_manager.h"
 #include "profile_cache.h"
@@ -48,6 +48,8 @@ const std::string TAG = "DistributedDeviceProfileServiceNew";
 const std::string UNLOAD_TASK_ID = "unload_dp_svr";
 constexpr int32_t DELAY_TIME = 180000;
 constexpr int32_t UNLOAD_IMMEDIATELY = 0;
+constexpr int32_t WAIT_BUSINESS_PUT_TIME_S = 5;
+constexpr int32_t WRTE_CACHE_PROFILE_DELAY_TIME_US = 100 * 1000;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileServiceNew);
@@ -113,9 +115,9 @@ int32_t DistributedDeviceProfileServiceNew::PostInit()
         HILOGE("ContentSensorManager init failed");
         return DP_CONTENT_SENSOR_MANAGER_INIT_FAIL;
     }
+    SaveSwitchProfilesFromTempCache();
+    SaveDynamicProfilesFromTempCache();
     isInited_ = true;
-    SaveSvrProfilesBatch();
-    SaveCharProfilesBatch();
     HILOGI("PostInit finish");
     return DP_SUCCESS;
 }
@@ -347,7 +349,36 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfileBatch(
     if (!IsInited()) {
         return AddCharProfilesToCache(charProfiles);
     }
-    return SaveCharProfilesBatch(charProfiles);
+    std::vector<CharacteristicProfile> switchCharProfiles;
+    std::vector<CharacteristicProfile> dynamicCharProfiles;
+    for (auto& profile : charProfiles) {
+        if (profile.GetCharacteristicKey() == SWITCH_STATUS) {
+            switchCharProfiles.push_back(profile);
+            continue;
+        }
+        dynamicCharProfiles.push_back(profile);
+    }
+    int32_t switchRes = DP_SUCCESS;
+    if (switchCharProfiles.size() > 0) {
+        switchRes = SwitchProfileManager::GetInstance().PutCharacteristicProfileBatch(switchCharProfiles);
+        DpRadarHelper::GetInstance().ReportPutCharProfileBatch(switchRes, switchCharProfiles);
+    }
+    if (switchRes != DP_SUCCESS) {
+        HILOGE("PutCharacteristicProfileBatch fail, res:%{public}d", switchRes);
+    }
+    int32_t dynamicRes = DP_SUCCESS;
+    if (dynamicCharProfiles.size() > 0) {
+        dynamicRes = DeviceProfileManager::GetInstance().PutCharacteristicProfileBatch(dynamicCharProfiles);
+        DpRadarHelper::GetInstance().ReportPutCharProfileBatch(dynamicRes, dynamicCharProfiles);
+    }
+    if (dynamicRes != DP_SUCCESS) {
+        HILOGE("PutCharacteristicProfileBatch fail, res:%{public}d", dynamicRes);
+    }
+    if (switchRes != DP_SUCCESS || dynamicRes != DP_SUCCESS) {
+        return DP_PUT_CHAR_BATCH_FAIL;
+    }
+    HILOGI("PutCharacteristicProfileBatch success ");
+    return DP_SUCCESS;
 }
 
 int32_t DistributedDeviceProfileServiceNew::GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile)
@@ -557,10 +588,21 @@ int32_t DistributedDeviceProfileServiceNew::AddSvrProfilesToCache(const std::vec
     if (serviceProfiles.empty()) {
         return DP_INVALID_PARAM;
     }
-    std::lock_guard<std::mutex> lock(serviceProfilesCacheMtx_);
-    for (const auto& item : serviceProfiles) {
-        std::string profileKey = ProfileUtils::GenerateServiceProfileKey(item.GetDeviceId(), item.GetServiceName());
-        serviceProfilesCache_[profileKey] = item;
+    std::map<std::string, std::string> entries;
+    for(const auto& item : serviceProfiles) {
+        if (!ProfileUtils::IsSvrProfileValid(item)) {
+            HILOGE("the is invalid, serviceProfile:%{public}s", item.dump().c_str());
+            return DP_INVALID_PARAM;
+        }
+        if (ProfileCache::GetInstance().IsServiceProfileExist(item)) {
+            HILOGW("the profile is exist!, serviceProfile:%{public}s", item.dump().c_str());
+            return DP_CACHE_EXIST;
+        }
+        ProfileUtils::ServiceProfileToEntries(item, entries);
+    }
+    std::lock_guard<std::mutex> lock(dynamicProfileMapMtx_);
+    for (const auto& [key, value] : entries) {
+        dynamicProfileMap_[key] = value;
     }
     return DP_SUCCESS;
 }
@@ -571,95 +613,105 @@ int32_t DistributedDeviceProfileServiceNew::AddCharProfilesToCache(
     if (charProfiles.empty()) {
         return DP_INVALID_PARAM;
     }
-    std::lock_guard<std::mutex> lock(charProfilesCacheMtx_);
-    for (const auto& item : charProfiles) {
-        std::string profileKey = ProfileUtils::GenerateCharProfileKey(item.GetDeviceId(),
-            item.GetServiceName(), item.GetCharacteristicKey());
-        charProfileCache_[profileKey] = item;
+    std::vector<CharacteristicProfile> switchCharProfiles;
+    std::map<std::string, std::string> entries;
+    for(const auto& item : charProfiles) {
+        if (!ProfileUtils::IsCharProfileValid(item)) {
+            HILOGE("the is invalid, charProfile:%{public}s", item.dump().c_str());
+            return DP_INVALID_PARAM;
+        }
+        if (ProfileCache::GetInstance().IsCharProfileExist(item)) {
+            HILOGW("the profile is exist!, charProfile:%{public}s", item.dump().c_str());
+            return DP_CACHE_EXIST;
+        }
+        if (item.GetCharacteristicKey() == SWITCH_STATUS) {
+            switchCharProfiles.push_back(item);
+            continue;
+        }
+        ProfileUtils::CharacteristicProfileToEntries(item, entries);
+    }
+    if (!entries.empty()) {
+        std::lock_guard<std::mutex> lock(dynamicProfileMapMtx_);
+        for (const auto& [key, value] : entries) {
+            dynamicProfileMap_[key] = value;
+        }
+    }
+    if (!switchCharProfiles.empty()) {
+        std::lock_guard<std::mutex> lock(switchProfileMapMtx_);
+        for (const auto& item : charProfiles) {
+            std::string profileKey = ProfileUtils::GenerateCharProfileKey(item.GetDeviceId(),
+                item.GetServiceName(), item.GetCharacteristicKey());
+            switchProfileMap_[profileKey] = item;
+        }
     }
     return DP_SUCCESS;
 }
 
-int32_t DistributedDeviceProfileServiceNew::SaveSvrProfilesBatch()
-{
-    std::vector<ServiceProfile> serviceProfiles;
-    {
-        std::lock_guard<std::mutex> lock(serviceProfilesCacheMtx_);
-        if (serviceProfilesCache_.empty()) {
-            return DP_INVALID_PARAM;
-        }
-        for (const auto& [profileKey, item] : serviceProfilesCache_) {
-            serviceProfiles.emplace_back(item);
-        }
-        serviceProfilesCache_.clear();
-    }
-    int32_t res = DeviceProfileManager::GetInstance().PutServiceProfileBatch(serviceProfiles);
-    if (res != DP_SUCCESS) {
-        HILOGE("PutServiceProfileBatch fail, res:%{public}d", res);
-    }
-    return res;
-}
-
-int32_t DistributedDeviceProfileServiceNew::SaveCharProfilesBatch()
-{
-    std::vector<CharacteristicProfile> charProfiles;
-    {
-        std::lock_guard<std::mutex> lock(charProfilesCacheMtx_);
-        if (charProfileCache_.empty()) {
-            return DP_PUT_CHAR_BATCH_FAIL;
-        }
-        for (const auto& [profileKey, item] : charProfileCache_) {
-            charProfiles.emplace_back(item);
-        }
-        charProfileCache_.clear();
-    }
-    return SaveCharProfilesBatch(charProfiles);
-}
-
-int32_t DistributedDeviceProfileServiceNew::SaveCharProfilesBatch(
-    const std::vector<CharacteristicProfile>& charProfiles)
+int32_t DistributedDeviceProfileServiceNew::SaveSwitchProfilesFromTempCache()
 {
     std::vector<CharacteristicProfile> switchCharProfiles;
-    std::vector<CharacteristicProfile> dynamicCharProfiles;
-    for (auto& profile : charProfiles) {
-        if (profile.GetCharacteristicKey() == SWITCH_STATUS) {
-            switchCharProfiles.push_back(profile);
-            continue;
+    {
+        std::lock_guard<std::mutex> lock(switchProfileMapMtx_);
+        if (switchProfileMap_.empty()) {
+            return DP_SUCCESS;
         }
-        dynamicCharProfiles.push_back(profile);
+        for (const auto& [profileKey, item] : switchProfileMap_) {
+            switchCharProfiles.emplace_back(item);
+        }
+        switchProfileMap_.clear();
     }
-    int32_t switchRes = DP_SUCCESS;
-    if (switchCharProfiles.size() > 0) {
-        switchRes = SwitchProfileManager::GetInstance().PutCharacteristicProfileBatch(switchCharProfiles);
-        DpRadarHelper::GetInstance().ReportPutCharProfileBatch(switchRes, switchCharProfiles);
+    int32_t ret = SwitchProfileManager::GetInstance().PutCharacteristicProfileBatch(switchCharProfiles);
+    DpRadarHelper::GetInstance().ReportPutCharProfileBatch(ret, switchCharProfiles);
+    if (ret != DP_SUCCESS) {
+        HILOGE("PutCharacteristicProfileBatch fail, ret: %{public}d!", ret);
     }
-    if (switchRes != DP_SUCCESS) {
-        HILOGE("PutCharacteristicProfileBatch fail, res:%{public}d", switchRes);
+    return ret;
+}
+
+void DistributedDeviceProfileServiceNew::GetDynamicProfilesFromTempCache(
+    std::map<std::string, std::string>& entries)
+{
+    {
+        std::lock_guard<std::mutex> lock(dynamicProfileMapMtx_);
+        if (dynamicProfileMap_.empty()) {
+            HILOGW("dynamicProfileMap empty!");
+            return;
+        }
+        for (const auto& [key, value] : dynamicProfileMap_) {
+            entries[key] = value;
+        }
     }
-    int32_t dynamicRes = DP_SUCCESS;
-    if (dynamicCharProfiles.size() > 0) {
-        dynamicRes = DeviceProfileManager::GetInstance().PutCharacteristicProfileBatch(dynamicCharProfiles);
-        DpRadarHelper::GetInstance().ReportPutCharProfileBatch(dynamicRes, dynamicCharProfiles);
+}
+
+int32_t DistributedDeviceProfileServiceNew::SaveDynamicProfilesFromTempCache()
+{
+    std::map<std::string, std::string> entries;
+    GetDynamicProfilesFromTempCache(entries);
+    if (entries.empty()) {
+        HILOGW("entries empty!");
+        sleep(WAIT_BUSINESS_PUT_TIME_S);
+        GetDynamicProfilesFromTempCache(entries);
     }
-    if (dynamicRes != DP_SUCCESS) {
-        HILOGE("PutCharacteristicProfileBatch fail, res:%{public}d", dynamicRes);
+    while (DeviceProfileManager::GetInstance().SavePutTempCache(entries) != DP_SUCCESS) {
+        HILOGW("SavePutTempCache fail!");
+        usleep(WRTE_CACHE_PROFILE_DELAY_TIME_US);
     }
-    if (switchRes != DP_SUCCESS || dynamicRes != DP_SUCCESS) {
-        return DP_PUT_CHAR_BATCH_FAIL;
+    {
+        std::lock_guard<std::mutex> lock(dynamicProfileMapMtx_);
+        dynamicProfileMap_.clear();
     }
-    HILOGI("PutCharacteristicProfileBatch success ");
     return DP_SUCCESS;
 }
 
 void DistributedDeviceProfileServiceNew::ClearProfileCache()
 {
     {
-        std::lock_guard<std::mutex> lock(serviceProfilesCacheMtx_);
-        serviceProfilesCache_.clear();
+        std::lock_guard<std::mutex> lock(dynamicProfileMapMtx_);
+        dynamicProfileMap_.clear();
     }
     {
-        std::lock_guard<std::mutex> lock(charProfilesCacheMtx_);
-        charProfileCache_.clear();
+        std::lock_guard<std::mutex> lock(switchProfileMapMtx_);
+        switchProfileMap_.clear();
     }
 }
 } // namespace DeviceProfile
