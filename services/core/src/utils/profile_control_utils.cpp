@@ -15,20 +15,13 @@
 
 #include "profile_control_utils.h"
 
-#include <mutex>
-#include <memory>
-#include <algorithm>
-#include <dlfcn.h>
-#include <vector>
-#include <list>
+#include <map>
 
-#include "kv_adapter.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_enums.h"
 #include "distributed_device_profile_log.h"
-#include "profile_utils.h"
 #include "profile_cache.h"
-#include "permission_manager.h"
+#include "profile_utils.h"
 #include "switch_adapter.h"
 
 namespace OHOS {
@@ -43,7 +36,7 @@ int32_t ProfileControlUtils::PutDeviceProfile(std::shared_ptr<IKVAdapter> kvStor
         HILOGE("kvStore is nullptr!");
         return DP_INVALID_PARAMS;
     }
-    if (!ProfileUtils::IsKeyValid(deviceProfile.GetDeviceId())) {
+    if (!ProfileUtils::IsDevProfileValid(deviceProfile)) {
         HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;
     }
@@ -69,8 +62,7 @@ int32_t ProfileControlUtils::PutServiceProfile(std::shared_ptr<IKVAdapter> kvSto
         HILOGE("kvStore is nullptr!");
         return DP_INVALID_PARAMS;
     }
-    if (!ProfileUtils::IsKeyValid(serviceProfile.GetDeviceId()) ||
-        !ProfileUtils::IsKeyValid(serviceProfile.GetServiceName())) {
+    if (!ProfileUtils::IsSvrProfileValid(serviceProfile)) {
         HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;
     }
@@ -111,9 +103,7 @@ int32_t ProfileControlUtils::PutCharacteristicProfile(std::shared_ptr<IKVAdapter
         HILOGE("kvStore is nullptr!");
         return DP_INVALID_PARAMS;
     }
-    if (!ProfileUtils::IsKeyValid(charProfile.GetDeviceId()) ||
-        !ProfileUtils::IsKeyValid(charProfile.GetServiceName()) ||
-        !ProfileUtils::IsKeyValid(charProfile.GetCharacteristicKey())) {
+    if (!ProfileUtils::IsCharProfileValid(charProfile)) {
         HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;
     }
@@ -136,9 +126,7 @@ int32_t ProfileControlUtils::PutSwitchCharacteristicProfile(const std::string& a
     const CharacteristicProfile& charProfile)
 {
     HILOGI("PutSwitchCharacteristicProfile : %{public}s!", charProfile.dump().c_str());
-    if (!ProfileUtils::IsKeyValid(charProfile.GetDeviceId()) ||
-        !ProfileUtils::IsKeyValid(charProfile.GetServiceName()) ||
-        !ProfileUtils::IsKeyValid(charProfile.GetCharacteristicKey())) {
+    if (!ProfileUtils::IsCharProfileValid(charProfile)) {
         HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;
     }
@@ -175,12 +163,10 @@ int32_t ProfileControlUtils::PutSwitchCharacteristicProfileBatch(const std::stri
     }
     int32_t res = 0;
     uint32_t curSwitch = ProfileCache::GetInstance().GetSwitch();
-    HILOGD(" curSwitch:%{public}d", curSwitch);
+    HILOGD("curSwitch:%{public}d", curSwitch);
     uint32_t newSwitch = curSwitch;
     for (auto item : charProfiles) {
-        if (!ProfileUtils::IsKeyValid(item.GetDeviceId()) ||
-            !ProfileUtils::IsKeyValid(item.GetServiceName()) ||
-            !ProfileUtils::IsKeyValid(item.GetCharacteristicKey())) {
+        if (!ProfileUtils::IsCharProfileValid(item)) {
             HILOGE("a profile is invalid! serviceName: %{public}s", item.GetServiceName().c_str());
             return DP_INVALID_PARAMS;
         }
@@ -188,9 +174,7 @@ int32_t ProfileControlUtils::PutSwitchCharacteristicProfileBatch(const std::stri
             HILOGW("this profile is exist!");
             continue;
         }
-        HILOGI("PutCharacteristicProfile, deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
-            ProfileUtils::GetAnonyString(item.GetDeviceId()).c_str(), item.GetServiceName().c_str(),
-            item.GetCharacteristicKey().c_str());
+        HILOGI("PutCharacteristicProfile, charProfile: %{public}s!", item.dump().c_str());
         res = ProfileCache::GetInstance().SetSwitchByProfile(item, SWITCH_SERVICE_MAP, newSwitch);
         if (res != DP_SUCCESS) {
             HILOGW("set switch profile failed: %{public}d", res);
@@ -416,7 +400,8 @@ int32_t ProfileControlUtils::DeleteServiceProfile(std::shared_ptr<IKVAdapter> kv
         HILOGE("kvStore is nullptr!");
         return DP_INVALID_PARAMS;
     }
-    if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsKeyValid(serviceName)) {
+    if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsLocalUdid(deviceId) ||
+        !ProfileUtils::IsKeyValid(serviceName)) {
         HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;
     }
@@ -440,8 +425,8 @@ int32_t ProfileControlUtils::DeleteCharacteristicProfile(std::shared_ptr<IKVAdap
         HILOGE("kvStore is nullptr!");
         return DP_INVALID_PARAMS;
     }
-    if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsKeyValid(serviceName) ||
-        !ProfileUtils::IsKeyValid(characteristicKey)) {
+    if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsLocalUdid(deviceId) ||
+        !ProfileUtils::IsKeyValid(serviceName) || !ProfileUtils::IsKeyValid(characteristicKey)) {
         HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;
     }

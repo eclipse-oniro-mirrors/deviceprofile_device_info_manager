@@ -17,8 +17,8 @@
 #define OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_SERVICE_H
 
 #include <atomic>
+#include <map>
 #include <mutex>
-#include <unordered_map>
 #include "distributed_device_profile_stub_new.h"
 #include "event_handler.h"
 #include "event_runner.h"
@@ -77,20 +77,19 @@ private:
     int32_t DestroyUnloadHandler();
     int32_t AddSvrProfilesToCache(const std::vector<ServiceProfile>& serviceProfiles);
     int32_t AddCharProfilesToCache(const std::vector<CharacteristicProfile>& charProfiles);
-    int32_t SaveSvrProfilesBatch();
-    int32_t SaveCharProfilesBatch();
-    int32_t SaveCharProfilesBatch(const std::vector<CharacteristicProfile>& charProfiles);
+    int32_t SaveSwitchProfilesFromTempCache();
+    int32_t SaveDynamicProfilesFromTempCache();
+    void GetDynamicProfilesFromTempCache(std::map<std::string, std::string>& entries);
     void ClearProfileCache();
 
 private:
     std::shared_ptr<AppExecFwk::EventHandler> unloadHandler_;
     std::mutex unloadMutex_;
     std::atomic<bool> isInited_{false};
-
-    std::mutex serviceProfilesCacheMtx_;
-    std::unordered_map<std::string, ServiceProfile> serviceProfilesCache_;
-    std::mutex charProfilesCacheMtx_;
-    std::unordered_map<std::string, CharacteristicProfile> charProfileCache_;
+    std::mutex dynamicProfileMapMtx_;
+    std::map<std::string, std::string> dynamicProfileMap_;
+    std::mutex switchProfileMapMtx_;
+    std::map<std::string, CharacteristicProfile> switchProfileMap_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

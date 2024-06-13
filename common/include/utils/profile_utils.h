@@ -16,21 +16,18 @@
 #ifndef OHOS_DP_PROFILE_UTILS_H
 #define OHOS_DP_PROFILE_UTILS_H
 
-#include <list>
-#include <string>
-#include <vector>
 #include <map>
 #include <mutex>
-#include <unordered_map>
-#include "trust_device_profile.h"
+#include <string>
+#include <vector>
+
+#include "values_bucket.h"
+
 #include "access_control_profile.h"
+#include "characteristic_profile.h"
 #include "device_profile.h"
 #include "service_profile.h"
-#include "characteristic_profile.h"
-#include "distributed_device_profile_constants.h"
-#include "distributed_device_profile_errors.h"
-#include "distributed_device_profile_enums.h"
-#include "values_bucket.h"
+#include "trust_device_profile.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -45,6 +42,13 @@ public:
     static ProfileType GetProfileType(const std::string& key);
     static bool StartsWith(const std::string& str, const std::string prefix);
     static bool IsKeyValid(const std::string& key);
+    static bool IsLocalUdid(const std::string& udid);
+    // This mothed can be invoked only when put or delete profile.
+    static bool IsDevProfileValid(const DeviceProfile& devProfile);
+    // This mothed can be invoked only when put or delete profile.
+    static bool IsSvrProfileValid(const ServiceProfile& svrProfile);
+    // This mothed can be invoked only when put or delete profile.
+    static bool IsCharProfileValid(const CharacteristicProfile& charProfile);
     static std::string GenerateDeviceProfileKey(const std::string& deviceId);
     static std::string GenerateServiceProfileKey(const std::string& deviceId, const std::string& serviceName);
     static std::string GenerateCharProfileKey(const std::string& deviceId, const std::string& serviceName,

@@ -19,6 +19,7 @@
 #include <string>
 
 #include "content_sensor_manager_utils.h"
+#include "distributed_device_profile_errors.h"
 #include "static_capability_collector.h"
 #include "static_capability_loader.h"
 #include "static_profile_manager.h"

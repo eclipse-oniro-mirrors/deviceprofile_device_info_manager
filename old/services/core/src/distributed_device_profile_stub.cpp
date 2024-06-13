@@ -23,6 +23,7 @@
 #include "device_profile_log.h"
 #include "device_profile_storage.h"
 #include "device_profile_utils.h"
+#include "ipc_skeleton.h"
 #include "iprofile_event_notifier.h"
 #include "parcel_helper.h"
 #include "distributed_device_profile_service_new.h"
@@ -124,7 +125,8 @@ bool DistributedDeviceProfileStub::EnforceInterfaceToken(MessageParcel& data)
 int32_t DistributedDeviceProfileStub::OnRemoteRequest(uint32_t code, MessageParcel& data,
     MessageParcel& reply, MessageOption& option)
 {
-    HILOGI("code = %{public}u, flags = %{public}d", code, option.GetFlags());
+    HILOGI("code = %{public}u, flags = %{public}d, CallingPid = %{public}u", code, option.GetFlags(),
+        IPCSkeleton::GetCallingPid());
     DelayUnloadTask();
     auto iter = funcsMap_.find(code);
     if (iter != funcsMap_.end()) {

@@ -145,11 +145,11 @@ std::string ContentSensorManagerUtils::ObtainDisplayVersion()
 
 std::string ContentSensorManagerUtils::ObtainLocalUdid()
 {
-    HILOGD("called!");
     std::lock_guard<std::mutex> lock(csMutex_);
     if (!localUdid_.empty()) {
         return localUdid_;
     }
+    HILOGD("GetDevUdid");
     char localUdidTemp[DEVICE_UUID_LENGTH] = {0};
     GetDevUdid(localUdidTemp, DEVICE_UUID_LENGTH);
     localUdid_ = localUdidTemp;

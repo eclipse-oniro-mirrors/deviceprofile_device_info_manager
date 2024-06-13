@@ -22,6 +22,7 @@
 #include "device_manager.h"
 
 #include "content_sensor_manager_utils.h"
+#include "distributed_device_profile_errors.h"
 #include "device_profile_manager.h"
 #include "profile_utils.h"
 #include "static_profile_manager.h"

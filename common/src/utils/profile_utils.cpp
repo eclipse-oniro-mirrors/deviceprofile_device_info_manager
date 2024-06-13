@@ -13,18 +13,20 @@
  * limitations under the License.
  */
 
-#include <algorithm>
+#include "profile_utils.h"
+
 #include <codecvt>
 #include <locale>
-
 #include <regex>
-#include <string>
 
-#include "profile_utils.h"
-#include "distributed_device_profile_log.h"
-#include "distributed_device_profile_errors.h"
-#include "rdb_errno.h"
 #include "device_manager.h"
+#include "rdb_errno.h"
+
+#include "content_sensor_manager_utils.h"
+#include "distributed_device_profile_constants.h"
+#include "distributed_device_profile_enums.h"
+#include "distributed_device_profile_errors.h"
+#include "distributed_device_profile_log.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -213,6 +215,32 @@ bool ProfileUtils::IsKeyValid(const std::string& key)
         return false;
     }
     return true;
+}
+
+bool ProfileUtils::IsLocalUdid(const std::string& udid)
+{
+    if (udid.length() == 0 || udid.length() > MAX_STRING_LEN) {
+        return false;
+    }
+    std::string localUdid = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
+    return localUdid == udid;
+}
+
+bool ProfileUtils::IsDevProfileValid(const DeviceProfile& devProfile)
+{
+    return IsKeyValid(devProfile.GetDeviceId()) && IsLocalUdid(devProfile.GetDeviceId());
+}
+
+bool ProfileUtils::IsSvrProfileValid(const ServiceProfile& svrProfile)
+{
+    return IsKeyValid(svrProfile.GetDeviceId()) && IsLocalUdid(svrProfile.GetDeviceId()) &&
+        IsKeyValid(svrProfile.GetServiceName());
+}
+
+bool ProfileUtils::IsCharProfileValid(const CharacteristicProfile& charProfile)
+{
+    return IsKeyValid(charProfile.GetDeviceId()) && IsLocalUdid(charProfile.GetDeviceId()) &&
+        IsKeyValid(charProfile.GetServiceName()) && IsKeyValid(charProfile.GetCharacteristicKey());
 }
 
 std::string ProfileUtils::GenerateDeviceProfileKey(const std::string& deviceId)

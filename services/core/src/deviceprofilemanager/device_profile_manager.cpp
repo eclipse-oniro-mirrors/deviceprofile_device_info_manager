@@ -15,11 +15,8 @@
 
 #include "device_profile_manager.h"
 
-#include <mutex>
-#include <memory>
 #include <algorithm>
 #include <dlfcn.h>
-#include <vector>
 #include <list>
 
 #include "kv_adapter.h"
@@ -52,6 +49,17 @@ int32_t DeviceProfileManager::Init()
             std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
             DistributedKv::TYPE_DYNAMICAL);
         initResult = deviceProfileStore_->Init();
+        if (initResult != DP_SUCCESS) {
+            HILOGE("deviceProfileStore init failed");
+            return initResult;
+        }
+        std::string localDeviceId = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
+        std::string dbKeyPrefix = ProfileUtils::GenerateDeviceProfileKey(localDeviceId);
+        std::map<std::string, std::string> values;
+        int32_t status = deviceProfileStore_->GetByPrefix(dbKeyPrefix, values);
+        if (status == DP_SUCCESS) {
+            isFirst_.store(values.empty());
+        }
     }
     LoadDpSyncAdapter();
     HILOGI("Init finish, res: %{public}d", initResult);
@@ -66,6 +74,10 @@ int32_t DeviceProfileManager::UnInit()
         deviceProfileStore_->UnInit();
         deviceProfileStore_ = nullptr;
     }
+    {
+        std::lock_guard<std::mutex> lock(putTempCacheMutex_);
+        putTempCache_.clear();
+    }
     UnloadDpSyncAdapter();
     return DP_SUCCESS;
 }
@@ -79,15 +91,27 @@ int32_t DeviceProfileManager::ReInit()
 
 int32_t DeviceProfileManager::PutDeviceProfile(const DeviceProfile& deviceProfile)
 {
-    HILOGI("call!");
-    int32_t res = 0;
+    HILOGI("call! deviceProfile: %{public}s", deviceProfile.dump().c_str());
+    if (!ProfileUtils::IsDevProfileValid(deviceProfile)) {
+        HILOGE("the profile is invalid! deviceProfile: %{public}s", deviceProfile.dump().c_str());
+        return DP_INVALID_PARAMS;
+    }
+    std::map<std::string, std::string> entries;
+    ProfileUtils::DeviceProfileToEntries(deviceProfile, entries);
+    if (isFirst_.load()) {
+        AddToPutTempCache(entries);
+        return DP_SUCCESS;
+    }
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::PutDeviceProfile(deviceProfileStore_, deviceProfile);
-    }
-    if (res != DP_SUCCESS) {
-        HILOGE("PutDeviceProfile fail, reason: %{public}d!", res);
-        return res;
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore is nullptr!");
+            return DP_KV_DB_PTR_NULL;
+        }
+        if (deviceProfileStore_->PutBatch(entries) != DP_SUCCESS) {
+            HILOGE("PutDeviceProfile fail! deviceProfile: %{public}s", deviceProfile.dump().c_str());
+            return DP_PUT_KV_DB_FAIL;
+        }
     }
     HILOGI("PutDeviceProfile success");
     return DP_SUCCESS;
@@ -95,15 +119,27 @@ int32_t DeviceProfileManager::PutDeviceProfile(const DeviceProfile& deviceProfil
 
 int32_t DeviceProfileManager::PutServiceProfile(const ServiceProfile& serviceProfile)
 {
-    HILOGI("call!");
-    int32_t res = 0;
+    HILOGI("call! serviceProfile: %{public}s", serviceProfile.dump().c_str());
+    if (!ProfileUtils::IsSvrProfileValid(serviceProfile)) {
+        HILOGE("the profile is invalid!");
+        return DP_INVALID_PARAMS;
+    }
+    std::map<std::string, std::string> entries;
+    ProfileUtils::ServiceProfileToEntries(serviceProfile, entries);
+    if (isFirst_.load()) {
+        AddToPutTempCache(entries);
+        return DP_SUCCESS;
+    }
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::PutServiceProfile(deviceProfileStore_, serviceProfile);
-    }
-    if (res != DP_SUCCESS) {
-        HILOGE("PutServiceProfile fail, reason: %{public}d!", res);
-        return res;
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore is nullptr!");
+            return DP_KV_DB_PTR_NULL;
+        }
+        if (deviceProfileStore_->PutBatch(entries) != DP_SUCCESS) {
+            HILOGE("PutServiceProfile fail! serviceProfile: %{public}s", serviceProfile.dump().c_str());
+            return DP_PUT_KV_DB_FAIL;
+        }
     }
     HILOGI("PutServiceProfile success");
     return DP_SUCCESS;
@@ -112,14 +148,28 @@ int32_t DeviceProfileManager::PutServiceProfile(const ServiceProfile& servicePro
 int32_t DeviceProfileManager::PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles)
 {
     HILOGI("call!");
-    int32_t res = 0;
+    std::map<std::string, std::string> entries;
+    for (const auto& serviceProfile : serviceProfiles) {
+        if (!ProfileUtils::IsSvrProfileValid(serviceProfile)) {
+            HILOGE("the profile is invalid! serviceProfile:%{public}s", serviceProfile.dump().c_str());
+            continue;
+        }
+        ProfileUtils::ServiceProfileToEntries(serviceProfile, entries);
+    }
+    if (isFirst_.load()) {
+        AddToPutTempCache(entries);
+        return DP_SUCCESS;
+    }
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::PutServiceProfileBatch(deviceProfileStore_, serviceProfiles);
-    }
-    if (res != DP_SUCCESS) {
-        HILOGE("PutServiceProfileBatch fail, reason: %{public}d!", res);
-        return res;
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore is nullptr!");
+            return DP_KV_DB_PTR_NULL;
+        }
+        if (deviceProfileStore_->PutBatch(entries) != DP_SUCCESS) {
+            HILOGE("PutServiceProfileBatch fail!");
+            return DP_PUT_KV_DB_FAIL;
+        }
     }
     HILOGI("PutServiceProfileBatch success");
     return DP_SUCCESS;
@@ -127,15 +177,27 @@ int32_t DeviceProfileManager::PutServiceProfileBatch(const std::vector<ServicePr
 
 int32_t DeviceProfileManager::PutCharacteristicProfile(const CharacteristicProfile& charProfile)
 {
-    HILOGI("call!");
-    int32_t res = 0;
+    HILOGI("call! charProfile: %{public}s", charProfile.dump().c_str());
+    if (!ProfileUtils::IsCharProfileValid(charProfile)) {
+        HILOGE("the profile is invalid!");
+        return DP_INVALID_PARAMS;
+    }
+    std::map<std::string, std::string> entries;
+    ProfileUtils::CharacteristicProfileToEntries(charProfile, entries);
+    if (isFirst_.load()) {
+        AddToPutTempCache(entries);
+        return DP_SUCCESS;
+    }
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::PutCharacteristicProfile(deviceProfileStore_, charProfile);
-    }
-    if (res != DP_SUCCESS) {
-        HILOGE("PutCharacteristicProfile fail, reason: %{public}d!", res);
-        return res;
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore is nullptr!");
+            return DP_KV_DB_PTR_NULL;
+        }
+        if (deviceProfileStore_->PutBatch(entries) != DP_SUCCESS) {
+            HILOGE("PutCharacteristicProfile fail! charProfile: %{public}s", charProfile.dump().c_str());
+            return DP_PUT_KV_DB_FAIL;
+        }
     }
     HILOGI("PutCharacteristicProfile success");
     return DP_SUCCESS;
@@ -144,14 +206,28 @@ int32_t DeviceProfileManager::PutCharacteristicProfile(const CharacteristicProfi
 int32_t DeviceProfileManager::PutCharacteristicProfileBatch(const std::vector<CharacteristicProfile>& charProfiles)
 {
     HILOGI("call!");
-    int32_t res = 0;
+    std::map<std::string, std::string> entries;
+    for (const auto& charProfile : charProfiles) {
+        if (!ProfileUtils::IsCharProfileValid(charProfile)) {
+            HILOGE("the profile is invalid! charProfile:%{public}s", charProfile.dump().c_str());
+            continue;
+        }
+        ProfileUtils::CharacteristicProfileToEntries(charProfile, entries);
+    }
+    if (isFirst_.load()) {
+        AddToPutTempCache(entries);
+        return DP_SUCCESS;
+    }
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::PutCharacteristicProfileBatch(deviceProfileStore_, charProfiles);
-    }
-    if (res != DP_SUCCESS) {
-        HILOGE("PutCharacteristicProfileBatch fail, reason: %{public}d!", res);
-        return res;
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore is nullptr!");
+            return DP_KV_DB_PTR_NULL;
+        }
+        if (deviceProfileStore_->PutBatch(entries) != DP_SUCCESS) {
+            HILOGE("PutCharacteristicProfileBatch fail!");
+            return DP_PUT_KV_DB_FAIL;
+        }
     }
     HILOGI("PutCharacteristicProfileBatch success");
     return DP_SUCCESS;
@@ -458,6 +534,74 @@ std::vector<DistributedKv::Entry> DeviceProfileManager::GetEntriesByKeys(const s
         }
     }
     return entries;
+}
+
+void DeviceProfileManager::AddToPutTempCache(const std::map<std::string, std::string>& values)
+{
+    if (values.empty()) {
+        HILOGW("values empty!");
+        return;
+    }
+    HILOGI("values.size : %{public}zu", values.size());
+    {
+        std::lock_guard<std::mutex> lock(putTempCacheMutex_);
+        for (const auto& [key, value] : values) {
+            putTempCache_[key] = value;
+        }
+    }
+}
+
+int32_t DeviceProfileManager::SavePutTempCache(std::map<std::string, std::string>& entries)
+{
+    HILOGI("business entries.size : %{public}zu", entries.size());
+    {
+        std::lock_guard<std::mutex> lock(putTempCacheMutex_);
+        if (!putTempCache_.empty()) {
+            for (const auto& [key, value] : putTempCache_) {
+                entries[key] = value;
+            }
+        }
+    }
+    if (entries.empty()) {
+        HILOGW("all entries empty!");
+        isFirst_.store(false);
+        {
+            std::lock_guard<std::mutex> lock(putTempCacheMutex_);
+            putTempCache_.clear();
+        }
+        return DP_SUCCESS;
+    }
+    HILOGI("all entries.size : %{public}zu", entries.size());
+    int32_t ret = DP_SUCCESS;
+    {
+        std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore is nullptr!");
+            return DP_GET_KV_DB_FAIL;
+        }
+        ret = deviceProfileStore_->PutBatch(entries);
+        if (ret != DP_SUCCESS) {
+            HILOGE("PutBatch fail! ret:%{public}d", ret);
+            return ret;
+        }
+    }
+    isFirst_.store(false);
+    {
+        std::lock_guard<std::mutex> lock(putTempCacheMutex_);
+        putTempCache_.clear();
+    }
+    HILOGI("put all entries success");
+    return ret;
+}
+
+bool DeviceProfileManager::IsFirstInitDB()
+{
+    return isFirst_.load();
+}
+
+void DeviceProfileManager::ResetFirst()
+{
+    isFirst_.store(false);
 }
 } // namespace DeviceProfile
 } // namespace OHOS

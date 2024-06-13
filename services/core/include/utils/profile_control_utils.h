@@ -16,16 +16,14 @@
 #ifndef OHOS_DP_PROFILE_CONTROLLER_H
 #define OHOS_DP_PROFILE_CONTROLLER_H
 
-#include <unordered_map>
-#include "single_instance.h"
-#include "device_profile.h"
-#include "service_profile.h"
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "characteristic_profile.h"
-#include "dp_sync_options.h"
-#include "iremote_object.h"
-#include "i_sync_completed_callback.h"
+#include "device_profile.h"
 #include "ikv_adapter.h"
-#include "i_dp_sync_adapter.h"
+#include "service_profile.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {

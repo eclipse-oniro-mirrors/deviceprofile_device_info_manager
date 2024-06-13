@@ -19,6 +19,7 @@
 #include <errors.h>
 #include "hisysevent.h"
 #include "content_sensor_manager_utils.h"
+#include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 #include "profile_utils.h"
 

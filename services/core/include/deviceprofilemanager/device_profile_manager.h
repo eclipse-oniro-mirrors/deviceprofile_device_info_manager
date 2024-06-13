@@ -16,7 +16,11 @@
 #ifndef OHOS_DP_DEVICE_PROFILE_MANAGER_H
 #define OHOS_DP_DEVICE_PROFILE_MANAGER_H
 
-#include <unordered_map>
+#include <atomic>
+#include <map>
+#include <memory>
+#include <mutex>
+#include <vector>
 
 #include "single_instance.h"
 #include "device_profile.h"
@@ -60,17 +64,24 @@ public:
         sptr<IRemoteObject> syncCompletedCallback);
     int32_t DeviceOnlineAutoSync(const std::string& peerNetworkId);
     std::vector<DistributedKv::Entry> GetEntriesByKeys(const std::vector<std::string>& keys);
-    
+    int32_t SavePutTempCache(std::map<std::string, std::string>& entries);
+    bool IsFirstInitDB();
+    void ResetFirst();
+
 private:
     bool LoadDpSyncAdapter();
     void UnloadDpSyncAdapter();
     int32_t RunloadedFunction(std::string deviceId, sptr<IRemoteObject> syncCompletedCallback);
+    void AddToPutTempCache(const std::map<std::string, std::string>& values);
     bool isAdapterSoLoaded_ = false;
     std::mutex isAdapterLoadLock_;
     std::mutex dynamicStoreMutex_;
     std::shared_ptr<IKVAdapter> deviceProfileStore_ = nullptr;
     std::shared_ptr<IDPSyncAdapter> dpSyncAdapter_;
     std::mutex dpStoreMutex_;
+    std::atomic<bool> isFirst_{true};
+    std::mutex putTempCacheMutex_;
+    std::map<std::string, std::string> putTempCache_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

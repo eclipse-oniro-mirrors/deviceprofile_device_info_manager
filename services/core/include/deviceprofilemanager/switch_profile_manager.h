@@ -16,23 +16,13 @@
 #ifndef OHOS_DP_SWITCH_PROFILE_MANAGER_H
 #define OHOS_DP_SWITCH_PROFILE_MANAGER_H
 
-#include "single_instance.h"
-
-#include <vector>
 #include <mutex>
+#include <string>
 #include <unordered_map>
+#include <vector>
 
-#include "single_instance.h"
-#include "device_profile.h"
-#include "service_profile.h"
 #include "characteristic_profile.h"
-#include "distributed_kv_data_manager.h"
-#include "dp_sync_options.h"
-#include "iremote_object.h"
-#include "i_sync_completed_callback.h"
-#include "ikv_adapter.h"
-#include "kv_data_change_listener.h"
-#include "i_dp_sync_adapter.h"
+#include "single_instance.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -51,9 +41,8 @@ public:
     int32_t GetLocalSwitchFromDB(uint32_t& localSwitch);
 private:
     int32_t GenerateSwitchInfoProfile(const CharacteristicProfile& switchProfile,
-        std::unordered_map<std::string, CharacteristicProfile> switchProfileMap);
+    std::unordered_map<std::string, CharacteristicProfile> switchProfileMap);
     std::mutex switchProfileMutex_;
-    std::shared_ptr<IKVAdapter> switchProfileStore_ = nullptr;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
