@@ -524,7 +524,7 @@ std::map<std::string, std::string> ProfileUtils::GetProfilePropertiesMap(std::ma
     for (const auto& item : dbEntries) {
         std::string profileProperty = GetProfileProperty(item.first);
         if (profileProperty.empty()) {
-            HILOGE("GetProfileProperty fail, %{public}s!", item.first.c_str());
+            HILOGE("GetProfileProperty fail, %{public}s!", GetAnonyString(item.first).c_str());
             continue;
         }
         propertiesMap[profileProperty] = item.second;

@@ -769,6 +769,7 @@ int32_t TrustProfileManager::ConvertToTrustDeviceProfile(
     trustDeviceProfile.SetDeviceIdType(accessControlProfile.GetDeviceIdType());
     trustDeviceProfile.SetDeviceIdHash(accessControlProfile.GetDeviceIdHash());
     trustDeviceProfile.SetStatus(accessControlProfile.GetStatus());
+    trustDeviceProfile.SetBindType(accessControlProfile.GetBindType());
     return DP_SUCCESS;
 }
 
