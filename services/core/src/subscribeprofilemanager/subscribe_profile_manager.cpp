@@ -75,9 +75,7 @@ int32_t SubscribeProfileManager::NotifyProfileChange(ProfileType profileType, Ch
         HILOGE("Params is invalid!");
         return DP_INVALID_PARAMS;
     }
-    if (!DpRadarHelper::GetInstance().ReportNotifyProfileChange(code)) {
-        HILOGE("ReportNotifyProfileChange failed");
-    }
+    DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
     return (this->*(funcsMap_[code]))(dbKey, dbValue);
 }
 

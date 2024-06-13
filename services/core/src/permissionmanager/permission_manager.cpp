@@ -150,31 +150,23 @@ bool PermissionManager::IsCallerTrust(const std::string& interfaceName)
     auto tokenID = IPCSkeleton::GetCallingTokenID();
     if (tokenID == INVALID_TOKEN_ID) {
         HILOGW("invalid token id");
-        if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
-            HILOGE("ReportSaCheckAuth failed");
-        }
+        DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes);
         return false;
     }
     ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(tokenID);
     // currently only support native trusted caller
     if (tokenType != ATokenTypeEnum::TOKEN_NATIVE) {
         HILOGE("TokenType is not native");
-        if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
-            HILOGE("ReportSaCheckAuth failed");
-        }
+        DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes);
         return false;
     }
     if (!CheckInterfacePermission(interfaceName)) {
         HILOGE("This caller cannot call this interface, interfaceName: %{public}s", interfaceName.c_str());
-        if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
-            HILOGE("ReportSaCheckAuth failed");
-        }
+        DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes);
         return false;
     }
     stageRes = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
-        HILOGE("ReportSaCheckAuth failed");
-    }
+    DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes);
     return true;
 }
 
@@ -184,32 +176,24 @@ bool PermissionManager::CheckCallerPermission()
     auto tokenID = IPCSkeleton::GetCallingTokenID();
     if (tokenID == INVALID_TOKEN_ID) {
         HILOGW("invalid token id");
-        if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
-            HILOGE("ReportSaCheckAuth failed");
-        }
+        DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes);
         return false;
     }
     ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(tokenID);
     if (tokenType != ATokenTypeEnum::TOKEN_NATIVE) {
         HILOGE("TokenType is not native");
-        if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
-            HILOGE("ReportSaCheckAuth failed");
-        }
+        DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes);
         return false;
     }
     std::string callProcName = GetCallerProcName();
     int32_t ret = AccessTokenKit::VerifyAccessToken(tokenID, DP_SERVICE_ACCESS_PERMISSION);
     if (ret != PermissionState::PERMISSION_GRANTED) {
         HILOGE("CheckCallerPermission failed callProc %{public}s!", callProcName.c_str());
-        if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
-            HILOGE("ReportSaCheckAuth failed");
-        }
+        DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes);
         return false;
     }
     stageRes = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
-        HILOGE("ReportSaCheckAuth failed");
-    }
+    DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes);
     HILOGI("CheckCallerPermission success callProc %{public}s!", callProcName.c_str());
     return true;
 }
@@ -220,32 +204,24 @@ bool PermissionManager::CheckCallerSyncPermission()
     auto tokenID = IPCSkeleton::GetCallingTokenID();
     if (tokenID == INVALID_TOKEN_ID) {
         HILOGW("invalid token id");
-        if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
-            HILOGE("ReportSaCheckAuth failed");
-        }
+        DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes);
         return false;
     }
     ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(tokenID);
     if (tokenType != ATokenTypeEnum::TOKEN_NATIVE) {
         HILOGE("TokenType is not native");
-        if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
-            HILOGE("ReportSaCheckAuth failed");
-        }
+        DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes);
         return false;
     }
     std::string callProcName = GetCallerProcName();
     int32_t ret = AccessTokenKit::VerifyAccessToken(tokenID, DP_SERVICE_SYNC_PERMISSION);
     if (ret != PermissionState::PERMISSION_GRANTED) {
         HILOGE("CheckCallerSyncPermission failed callProc %{public}s!", callProcName.c_str());
-        if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
-            HILOGE("ReportSaCheckAuth failed");
-        }
+        DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes);
         return false;
     }
     stageRes = static_cast<int32_t>(StageRes::STAGE_SUCC);
-    if (!DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes)) {
-        HILOGE("ReportSaCheckAuth failed");
-    }
+    DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes);
     HILOGI("CheckCallerSyncPermission success callProc %{public}s!", callProcName.c_str());
     return true;
 }
