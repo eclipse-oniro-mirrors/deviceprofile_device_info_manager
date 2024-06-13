@@ -40,6 +40,8 @@ public:
     void SetDeviceIdHash(const std::string& deviceIdHash);
     int32_t GetStatus() const;
     void SetStatus(int32_t status);
+    uint32_t GetBindType() const;
+    void SetBindType(uint32_t bindType);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     std::string dump() const override;
@@ -49,6 +51,7 @@ private:
     uint32_t deviceIdType_;
     std::string deviceIdHash_;
     int32_t status_;
+    uint32_t bindType_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

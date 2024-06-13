@@ -64,6 +64,16 @@ void TrustDeviceProfile::SetStatus(int32_t status)
     status_ = status;
 }
 
+uint32_t TrustDeviceProfile::GetBindType() const
+{
+    return bindType_;
+}
+
+void TrustDeviceProfile::SetBindType(uint32_t bindType)
+{
+    bindType_ = bindType;
+}
+
 bool TrustDeviceProfile::Marshalling(MessageParcel& parcel) const
 {
     WRITE_HELPER_RET(parcel, String, deviceId_, false);
