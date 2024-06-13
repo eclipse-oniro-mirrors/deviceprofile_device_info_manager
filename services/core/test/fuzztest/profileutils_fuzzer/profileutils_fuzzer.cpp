@@ -343,7 +343,6 @@ void GetLongValueFuzzTest(const uint8_t* data, size_t size)
 
     ValuesBucket values;
     int64_t longValue = 1;
-    std::string strValue = "strValue";
     std::string property = "property";
     values.PutLong(property, longValue);
     int64_t outValue = 0;
