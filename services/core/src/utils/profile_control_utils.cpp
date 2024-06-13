@@ -400,7 +400,7 @@ int32_t ProfileControlUtils::DeleteServiceProfile(std::shared_ptr<IKVAdapter> kv
         HILOGE("kvStore is nullptr!");
         return DP_INVALID_PARAMS;
     }
-    if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsLocalUdid(deviceId) || 
+    if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsLocalUdid(deviceId) ||
         !ProfileUtils::IsKeyValid(serviceName)) {
         HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;
@@ -425,7 +425,7 @@ int32_t ProfileControlUtils::DeleteCharacteristicProfile(std::shared_ptr<IKVAdap
         HILOGE("kvStore is nullptr!");
         return DP_INVALID_PARAMS;
     }
-    if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsLocalUdid(deviceId) || 
+    if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsLocalUdid(deviceId) ||
         !ProfileUtils::IsKeyValid(serviceName) || !ProfileUtils::IsKeyValid(characteristicKey)) {
         HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;

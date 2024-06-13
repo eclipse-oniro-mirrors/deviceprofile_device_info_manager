@@ -24,6 +24,7 @@
 #include <sys/types.h>
 #include "sys/stat.h"
 
+#include "distributed_device_profile_constants.h"
 #include "profile_utils.h"
 
 namespace OHOS {

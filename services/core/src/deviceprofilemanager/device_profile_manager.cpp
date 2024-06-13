@@ -542,6 +542,7 @@ void DeviceProfileManager::AddToPutTempCache(const std::map<std::string, std::st
         HILOGW("values empty!");
         return;
     }
+    HILOGI("values.size : %{public}zu", values.size());
     {
         std::lock_guard<std::mutex> lock(putTempCacheMutex_);
         for (const auto& [key, value] : values) {
@@ -552,6 +553,7 @@ void DeviceProfileManager::AddToPutTempCache(const std::map<std::string, std::st
 
 int32_t DeviceProfileManager::SavePutTempCache(std::map<std::string, std::string>& entries)
 {
+    HILOGI("business entries.size : %{public}zu", entries.size());
     {
         std::lock_guard<std::mutex> lock(putTempCacheMutex_);
         if (!putTempCache_.empty()) {
@@ -561,7 +563,7 @@ int32_t DeviceProfileManager::SavePutTempCache(std::map<std::string, std::string
         }
     }
     if (entries.empty()) {
-        HILOGW("entries empty!");
+        HILOGW("all entries empty!");
         isFirst_.store(false);
         {
             std::lock_guard<std::mutex> lock(putTempCacheMutex_);
@@ -569,6 +571,7 @@ int32_t DeviceProfileManager::SavePutTempCache(std::map<std::string, std::string
         }
         return DP_SUCCESS;
     }
+    HILOGI("all entries.size : %{public}zu", entries.size());
     int32_t ret = DP_SUCCESS;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
@@ -587,7 +590,18 @@ int32_t DeviceProfileManager::SavePutTempCache(std::map<std::string, std::string
         std::lock_guard<std::mutex> lock(putTempCacheMutex_);
         putTempCache_.clear();
     }
+    HILOGI("put all entries success");
     return ret;
+}
+
+bool DeviceProfileManager::IsFirstInitDB()
+{
+    return isFirst_.load();
+}
+
+void DeviceProfileManager::ResetFirst()
+{
+    isFirst_.store(false);
 }
 } // namespace DeviceProfile
 } // namespace OHOS

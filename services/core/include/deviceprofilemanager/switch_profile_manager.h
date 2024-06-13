@@ -41,8 +41,8 @@ public:
     int32_t GetLocalSwitchFromDB(uint32_t& localSwitch);
 private:
     int32_t GenerateSwitchInfoProfile(const CharacteristicProfile& switchProfile,
-        std::unordered_map<std::string, CharacteristicProfile> switchProfileMap);
-        std::mutex switchProfileMutex_;
+    std::unordered_map<std::string, CharacteristicProfile> switchProfileMap);
+    std::mutex switchProfileMutex_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

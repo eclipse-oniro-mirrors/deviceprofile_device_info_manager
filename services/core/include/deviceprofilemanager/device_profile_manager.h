@@ -65,6 +65,8 @@ public:
     int32_t DeviceOnlineAutoSync(const std::string& peerNetworkId);
     std::vector<DistributedKv::Entry> GetEntriesByKeys(const std::vector<std::string>& keys);
     int32_t SavePutTempCache(std::map<std::string, std::string>& entries);
+    bool IsFirstInitDB();
+    void ResetFirst();
 
 private:
     bool LoadDpSyncAdapter();

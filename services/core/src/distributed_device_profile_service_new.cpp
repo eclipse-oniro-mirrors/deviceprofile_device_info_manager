@@ -49,7 +49,8 @@ const std::string UNLOAD_TASK_ID = "unload_dp_svr";
 constexpr int32_t DELAY_TIME = 180000;
 constexpr int32_t UNLOAD_IMMEDIATELY = 0;
 constexpr int32_t WAIT_BUSINESS_PUT_TIME_S = 5;
-constexpr int32_t WRTE_CACHE_PROFILE_DELAY_TIME_US = 100 * 1000;
+constexpr int32_t WRTE_CACHE_PROFILE_DELAY_TIME_US = 200 * 1000;
+constexpr int32_t WRTE_CACHE_PROFILE_RETRY_TIMES = 20;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileServiceNew);
@@ -586,10 +587,12 @@ int32_t DistributedDeviceProfileServiceNew::OnIdle(const SystemAbilityOnDemandRe
 int32_t DistributedDeviceProfileServiceNew::AddSvrProfilesToCache(const std::vector<ServiceProfile>& serviceProfiles)
 {
     if (serviceProfiles.empty()) {
+        HILOGE("serviceProfiles empty");
         return DP_INVALID_PARAM;
     }
+    HILOGI("serviceProfiles.size:%{public}zu", serviceProfiles.size());
     std::map<std::string, std::string> entries;
-    for(const auto& item : serviceProfiles) {
+    for (const auto& item : serviceProfiles) {
         if (!ProfileUtils::IsSvrProfileValid(item)) {
             HILOGE("the is invalid, serviceProfile:%{public}s", item.dump().c_str());
             return DP_INVALID_PARAM;
@@ -611,11 +614,13 @@ int32_t DistributedDeviceProfileServiceNew::AddCharProfilesToCache(
     const std::vector<CharacteristicProfile>& charProfiles)
 {
     if (charProfiles.empty()) {
+        HILOGE("charProfiles empty");
         return DP_INVALID_PARAM;
     }
+    HILOGI("charProfiles.size:%{public}zu", charProfiles.size());
     std::vector<CharacteristicProfile> switchCharProfiles;
     std::map<std::string, std::string> entries;
-    for(const auto& item : charProfiles) {
+    for (const auto& item : charProfiles) {
         if (!ProfileUtils::IsCharProfileValid(item)) {
             HILOGE("the is invalid, charProfile:%{public}s", item.dump().c_str());
             return DP_INVALID_PARAM;
@@ -631,12 +636,14 @@ int32_t DistributedDeviceProfileServiceNew::AddCharProfilesToCache(
         ProfileUtils::CharacteristicProfileToEntries(item, entries);
     }
     if (!entries.empty()) {
+        HILOGI("entries.size:%{public}zu", entries.size());
         std::lock_guard<std::mutex> lock(dynamicProfileMapMtx_);
         for (const auto& [key, value] : entries) {
             dynamicProfileMap_[key] = value;
         }
     }
     if (!switchCharProfiles.empty()) {
+        HILOGI("switchCharProfiles.size:%{public}zu", switchCharProfiles.size());
         std::lock_guard<std::mutex> lock(switchProfileMapMtx_);
         for (const auto& item : charProfiles) {
             std::string profileKey = ProfileUtils::GenerateCharProfileKey(item.GetDeviceId(),
@@ -653,8 +660,10 @@ int32_t DistributedDeviceProfileServiceNew::SaveSwitchProfilesFromTempCache()
     {
         std::lock_guard<std::mutex> lock(switchProfileMapMtx_);
         if (switchProfileMap_.empty()) {
+            HILOGW("switchProfileMap empty");
             return DP_SUCCESS;
         }
+        HILOGI("switchProfileMap.size:%{public}zu", switchProfileMap_.size());
         for (const auto& [profileKey, item] : switchProfileMap_) {
             switchCharProfiles.emplace_back(item);
         }
@@ -687,14 +696,23 @@ int32_t DistributedDeviceProfileServiceNew::SaveDynamicProfilesFromTempCache()
 {
     std::map<std::string, std::string> entries;
     GetDynamicProfilesFromTempCache(entries);
-    if (entries.empty()) {
+    if (entries.empty() && DeviceProfileManager::GetInstance().IsFirstInitDB()) {
         HILOGW("entries empty!");
         sleep(WAIT_BUSINESS_PUT_TIME_S);
         GetDynamicProfilesFromTempCache(entries);
     }
-    while (DeviceProfileManager::GetInstance().SavePutTempCache(entries) != DP_SUCCESS) {
-        HILOGW("SavePutTempCache fail!");
+    HILOGI("entries.size:%{public}zu", entries.size());
+    int32_t tryTimes = WRTE_CACHE_PROFILE_RETRY_TIMES;
+    while (tryTimes > 0) {
+        if (DeviceProfileManager::GetInstance().SavePutTempCache(entries) != DP_SUCCESS) {
+            break;
+        }
+        HILOGW("SavePutTempCache fail! leftTimes:%{public}d", tryTimes);
         usleep(WRTE_CACHE_PROFILE_DELAY_TIME_US);
+        tryTimes--;
+    }
+    if (tryTimes <= 0) {
+        DeviceProfileManager::GetInstance().ResetFirst();
     }
     {
         std::lock_guard<std::mutex> lock(dynamicProfileMapMtx_);

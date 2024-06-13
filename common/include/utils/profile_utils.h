@@ -43,8 +43,11 @@ public:
     static bool StartsWith(const std::string& str, const std::string prefix);
     static bool IsKeyValid(const std::string& key);
     static bool IsLocalUdid(const std::string& udid);
+    // This mothed can be invoked only when put or delete profile.
     static bool IsDevProfileValid(const DeviceProfile& devProfile);
+    // This mothed can be invoked only when put or delete profile.
     static bool IsSvrProfileValid(const ServiceProfile& svrProfile);
+    // This mothed can be invoked only when put or delete profile.
     static bool IsCharProfileValid(const CharacteristicProfile& charProfile);
     static std::string GenerateDeviceProfileKey(const std::string& deviceId);
     static std::string GenerateServiceProfileKey(const std::string& deviceId, const std::string& serviceName);
