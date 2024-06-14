@@ -121,7 +121,7 @@ int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile&
         HILOGE("PutAccessControlProfile::PutAccesseeProfile failed");
         return ret;
     }
-    if (IsAclExists(profile) == DP_DATA_EXISTS) {
+    if (IsAclExists(accessControlProfile) == DP_DATA_EXISTS) {
         HILOGE("PutAccessControlProfile::acl is exists");
         return DP_SUCCESS;
     }
