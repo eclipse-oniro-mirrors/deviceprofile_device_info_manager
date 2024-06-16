@@ -48,10 +48,7 @@ public:
     int32_t Delete(const std::string& key) override;
     int32_t DeleteByPrefix(const std::string& keyPrefix) override;
     int32_t Get(const std::string& key, std::string& value) override;
-    int32_t Get(const std::string& udid, const std::string& key, std::string& value) override;
     int32_t GetByPrefix(const std::string& keyPrefix, std::map<std::string, std::string>& values) override;
-    int32_t GetByPrefix(const std::string& udid, const std::string& keyPrefix,
-        std::map<std::string, std::string>& values) override;
     int32_t Sync(const std::vector<std::string>& deviceList, SyncMode syncMode) override;
     int32_t DeleteKvStore();
 
@@ -67,7 +64,6 @@ private:
     int32_t RegisterDeathListener();
     int32_t UnRegisterDeathListener();
     int32_t DeleteDeathListener();
-    int32_t SyncOnDemand(const std::string& udid, const std::string& keyPrefix);
 
 private:
     DistributedKv::AppId appId_;
@@ -79,10 +75,6 @@ private:
     std::shared_ptr<DistributedKv::KvStoreSyncCallback> syncCompletedListener_ = nullptr;
     std::shared_ptr<DistributedKv::KvStoreDeathRecipient> deathRecipient_ = nullptr;
     std::mutex kvAdapterMutex_;
-    std::mutex syncOnDemandMtx_;
-    std::condition_variable syncOnDemandCond_;
-    std::mutex syncOnDemandUdidSetMtx_;
-    std::unordered_set<std::string> syncOnDemandUdidSet_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

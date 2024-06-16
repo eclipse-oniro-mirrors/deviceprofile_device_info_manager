@@ -231,7 +231,7 @@ int32_t ProfileControlUtils::GetDeviceProfile(std::shared_ptr<IKVAdapter> kvStor
     }
     std::string dbKeyPrefix = ProfileUtils::GenerateDeviceProfileKey(deviceId);
     std::map<std::string, std::string> values;
-    if (kvStore->GetByPrefix(deviceId, dbKeyPrefix, values) != DP_SUCCESS) {
+    if (kvStore->GetByPrefix(dbKeyPrefix, values) != DP_SUCCESS) {
         HILOGE("Get data fail!");
         return DP_GET_KV_DB_FAIL;
     }
@@ -264,7 +264,7 @@ int32_t ProfileControlUtils::GetServiceProfile(std::shared_ptr<IKVAdapter> kvSto
     }
     std::string dbKeyPrefix = ProfileUtils::GenerateServiceProfileKey(deviceId, serviceName);
     std::map<std::string, std::string> values;
-    if (kvStore->GetByPrefix(deviceId, dbKeyPrefix, values) != DP_SUCCESS) {
+    if (kvStore->GetByPrefix(dbKeyPrefix, values) != DP_SUCCESS) {
         HILOGE("Get data fail!");
         return DP_GET_KV_DB_FAIL;
     }
@@ -298,7 +298,7 @@ int32_t ProfileControlUtils::GetCharacteristicProfile(std::shared_ptr<IKVAdapter
     }
     std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, characteristicKey);
     std::map<std::string, std::string> values;
-    if (kvStore->GetByPrefix(deviceId, profileKeyPrefix, values) != DP_SUCCESS) {
+    if (kvStore->GetByPrefix(profileKeyPrefix, values) != DP_SUCCESS) {
         HILOGE("Get data fail!");
         return DP_GET_KV_DB_FAIL;
     }

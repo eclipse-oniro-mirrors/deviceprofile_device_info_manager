@@ -34,7 +34,6 @@ namespace {
     constexpr int32_t INIT_RETRY_SLEEP_INTERVAL = 200 * 1000; // 500ms
     const std::string DATABASE_DIR = "/data/service/el1/public/database/distributed_device_profile_service";
     const std::string TAG = "KVAdapter";
-    constexpr uint8_t ASYNC_GET_WAIT_SECONDS = 3;
 }
 
 KVAdapter::KVAdapter(const std::string &appId, const std::string &storeId,
@@ -463,94 +462,6 @@ int32_t KVAdapter::DeleteKvStore()
         kvDataMgr_.DeleteKvStore(appId_, storeId_, DATABASE_DIR);
     }
     return DP_SUCCESS;
-}
-
-int32_t KVAdapter::GetByPrefix(const std::string& udid, const std::string& keyPrefix,
-    std::map<std::string, std::string>& values)
-{
-    HILOGI("Get data by key prefix, udid: %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
-    if (udid.empty() || keyPrefix.empty()) {
-        HILOGE("udid or keyPrefix is invalid");
-        return DP_INVALID_PARAMS;
-    }
-    if (ProfileCache::GetInstance().GetLocalUdid() == udid) {
-        return GetByPrefix(keyPrefix, values);
-    }
-    {
-        std::unique_lock<std::mutex> lck(syncOnDemandUdidSetMtx_);
-        if (syncOnDemandUdidSet_.find(udid) != syncOnDemandUdidSet_.end()) {
-            return GetByPrefix(keyPrefix, values);
-        }
-        syncOnDemandUdidSet_.insert(udid);
-    }
-    SyncOnDemand(udid, keyPrefix);
-    return GetByPrefix(keyPrefix, values);
-}
-
-int32_t KVAdapter::SyncOnDemand(const std::string& udid, const std::string& keyPrefix)
-{
-    std::string networkId = "";
-    if (ProfileCache::GetInstance().GetNetWorkIdByUdid(udid, networkId) != DP_SUCCESS) {
-        HILOGE("Can not find networkId by udid");
-        return DP_GET_NETWORKID_BY_UDID_FAIL;
-    }
-    HILOGI("networkId: %{public}s", ProfileUtils::GetAnonyString(networkId).c_str());
-    auto call = [this, udid] (DistributedKv::Status status, std::vector<DistributedKv::Entry>&& allEntries) {
-        HILOGI("async GetEntries callback, storeId:%{public}s, udid:%{public}s, status:%{public}d, size:%{public}zu",
-            storeId_.storeId.c_str(), ProfileUtils::GetAnonyString(udid).c_str(), status, allEntries.size());
-        {
-            std::unique_lock<std::mutex> lck(syncOnDemandUdidSetMtx_);
-            syncOnDemandUdidSet_.erase(udid);
-        }
-        {
-            std::unique_lock<std::mutex> lck(syncOnDemandMtx_);
-            syncOnDemandCond_.notify_one();
-        }
-    };
-    DistributedKv::Key kvKeyPrefix(keyPrefix);
-    {
-        std::lock_guard<std::mutex> lock(kvAdapterMutex_);
-        if (kvStorePtr_ == nullptr) {
-            HILOGE("kvStoragePtr_ is null");
-            return DP_KV_DB_PTR_NULL;
-        }
-        HILOGI("exec async GetEntries, storeId: %{public}s, udid:%{public}s",
-            storeId_.storeId.c_str(), ProfileUtils::GetAnonyString(udid).c_str());
-        kvStorePtr_->GetEntries(kvKeyPrefix, networkId, call);
-    }
-    {
-        std::unique_lock<std::mutex> lck(syncOnDemandMtx_);
-        syncOnDemandCond_.wait_for(lck, std::chrono::seconds(ASYNC_GET_WAIT_SECONDS), [this, udid] {
-            std::unique_lock<std::mutex> lck(syncOnDemandUdidSetMtx_);
-            return syncOnDemandUdidSet_.find(udid) == syncOnDemandUdidSet_.end();
-        });
-    }
-    {
-        std::unique_lock<std::mutex> lck(syncOnDemandUdidSetMtx_);
-        syncOnDemandUdidSet_.erase(udid);
-    }
-    return DP_SUCCESS;
-}
-
-int32_t KVAdapter::Get(const std::string& udid, const std::string& key, std::string& value)
-{
-    HILOGI("Get data by key, udid: %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
-    if (udid.empty() || key.empty()) {
-        HILOGE("udid or key is invalid");
-        return DP_INVALID_PARAMS;
-    }
-    if (ProfileCache::GetInstance().GetLocalUdid() == udid) {
-        return Get(key, value);
-    }
-    {
-        std::unique_lock<std::mutex> lck(syncOnDemandUdidSetMtx_);
-        if (syncOnDemandUdidSet_.find(udid) != syncOnDemandUdidSet_.end()) {
-            return Get(key, value);
-        }
-        syncOnDemandUdidSet_.insert(udid);
-    }
-    SyncOnDemand(udid, key);
-    return Get(key, value);
 }
 } // namespace DeviceProfile
 } // namespace OHOS
