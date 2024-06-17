@@ -704,7 +704,7 @@ int32_t DistributedDeviceProfileServiceNew::SaveDynamicProfilesFromTempCache()
     HILOGI("entries.size:%{public}zu", entries.size());
     int32_t tryTimes = WRTE_CACHE_PROFILE_RETRY_TIMES;
     while (tryTimes > 0) {
-        if (DeviceProfileManager::GetInstance().SavePutTempCache(entries) != DP_SUCCESS) {
+        if (DeviceProfileManager::GetInstance().SavePutTempCache(entries) == DP_SUCCESS) {
             break;
         }
         HILOGW("SavePutTempCache fail! leftTimes:%{public}d", tryTimes);
