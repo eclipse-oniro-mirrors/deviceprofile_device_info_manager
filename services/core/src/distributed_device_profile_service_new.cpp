@@ -23,7 +23,6 @@
 #include "ipc_skeleton.h"
 #include "iservice_registry.h"
 #include "sa_profiles.h"
-#include "system_ability_definition.h"
 
 #include "content_sensor_manager.h"
 #include "device_profile_dumper.h"
@@ -35,11 +34,11 @@
 #include "event_handler_factory.h"
 #include "permission_manager.h"
 #include "profile_cache.h"
+#include "static_profile_manager.h"
+#include "static_capability_collector.h"
 #include "subscribe_profile_manager.h"
 #include "switch_profile_manager.h"
 #include "trust_profile_manager.h"
-#include "static_profile_manager.h"
-#include "static_capability_collector.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -58,12 +57,12 @@ IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileServiceNew);
 DistributedDeviceProfileServiceNew::DistributedDeviceProfileServiceNew()
     : SystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, true)
 {
-    HILOGE("DPService construct!");
+    HILOGI("DPService construct!");
 }
 
 DistributedDeviceProfileServiceNew::~DistributedDeviceProfileServiceNew()
 {
-    HILOGE("DPService destruction!");
+    HILOGI("DPService destruction!");
 }
 
 int32_t DistributedDeviceProfileServiceNew::Init()
@@ -562,6 +561,9 @@ void DistributedDeviceProfileServiceNew::OnStart(const SystemAbilityOnDemandReas
         HILOGI("CreateUnloadHandler success!");
         DelayUnloadTask();
     }
+    AddSystemAbilityListener(SOFTBUS_SERVER_SA_ID);
+    AddSystemAbilityListener(DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID);
+    AddSystemAbilityListener(DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID);
     if (!Publish(this)) {
         HILOGE("publish SA failed");
         return;
@@ -571,7 +573,6 @@ void DistributedDeviceProfileServiceNew::OnStart(const SystemAbilityOnDemandReas
 void DistributedDeviceProfileServiceNew::OnStop()
 {
     HILOGI("called");
-    DestroyUnloadHandler();
     if (!UnInit()) {
         HILOGE("Uninit failed");
         return;
@@ -582,6 +583,25 @@ int32_t DistributedDeviceProfileServiceNew::OnIdle(const SystemAbilityOnDemandRe
 {
     HILOGI("idle reason %{public}d", idleReason.GetId());
     return UNLOAD_IMMEDIATELY;
+}
+
+void DistributedDeviceProfileServiceNew::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
+{
+    HILOGI("called systemAbilityId:%{public}d", systemAbilityId);
+    if (DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().IsInited()) {
+        return;
+    }
+    {
+        std::lock_guard<std::mutex> lock(depSaIdsMtx_);
+        if (depSaIds_.empty()) {
+            return;
+        }
+        depSaIds_.erase(systemAbilityId);
+        if (!depSaIds_.empty()) {
+            return;
+        }
+    }
+    PostInit();
 }
 
 int32_t DistributedDeviceProfileServiceNew::AddSvrProfilesToCache(const std::vector<ServiceProfile>& serviceProfiles)
