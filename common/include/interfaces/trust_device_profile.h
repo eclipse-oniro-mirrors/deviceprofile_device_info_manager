@@ -28,7 +28,8 @@ public:
         : deviceId_(""),
         deviceIdType_(static_cast<uint32_t>(DeviceIdType::MIN)),
         deviceIdHash_(""),
-        status_(static_cast<int32_t>(Status::MIN))
+        status_(static_cast<int32_t>(Status::MIN)),
+        bindType_(static_cast<uint32_t>(BindType::MIN))
     {}
     ~TrustDeviceProfile() = default;
 
