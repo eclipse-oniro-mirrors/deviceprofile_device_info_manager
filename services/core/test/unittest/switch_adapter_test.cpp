@@ -99,8 +99,9 @@ HWTEST_F(SwitchAdapterTest, GetSwitch_001, TestSize.Level1)
     const std::string appId = "";
     std::string networkId = "networkId";
     uint32_t value = 1;
+    uint32_t switchLength = 0;
     int32_t ret = OHOS::DistributedDeviceProfile::
-        SwitchAdapter::GetInstance().GetSwitch(appId, networkId, value);
+        SwitchAdapter::GetInstance().GetSwitch(appId, networkId, value, switchLength);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
@@ -114,8 +115,9 @@ HWTEST_F(SwitchAdapterTest, GetSwitch_002, TestSize.Level1)
     const std::string appId = "appid";
     std::string networkId = "";
     uint32_t value = 1;
+    uint32_t switchLength = 0;
     int32_t ret = OHOS::DistributedDeviceProfile::
-        SwitchAdapter::GetInstance().GetSwitch(appId, networkId, value);
+        SwitchAdapter::GetInstance().GetSwitch(appId, networkId, value, switchLength);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
@@ -129,8 +131,9 @@ HWTEST_F(SwitchAdapterTest, GetSwitch_003, TestSize.Level1)
     const std::string appId = "appid";
     std::string networkId = "networkId";
     uint32_t value = 1;
+    uint32_t switchLength = 0;
     int32_t ret = OHOS::DistributedDeviceProfile::
-        SwitchAdapter::GetInstance().GetSwitch(appId, networkId, value);
+        SwitchAdapter::GetInstance().GetSwitch(appId, networkId, value, switchLength);
     EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
 }
 
