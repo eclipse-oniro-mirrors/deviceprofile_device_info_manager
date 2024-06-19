@@ -38,7 +38,7 @@ public:
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
         const std::string& characteristicKey, CharacteristicProfile& charProfile);
     int32_t RefreshLocalSwitchProfile();
-    int32_t GetLocalSwitchFromDB(uint32_t& localSwitch);
+    int32_t GetLocalSwitchFromDB(uint32_t& localSwitch, uint32_t& switchLength);
 private:
     int32_t GenerateSwitchInfoProfile(const CharacteristicProfile& switchProfile,
         std::unordered_map<std::string, CharacteristicProfile> switchProfileMap);

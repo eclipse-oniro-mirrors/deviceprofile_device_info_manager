@@ -317,7 +317,8 @@ int32_t ProfileControlUtils::RefreshLocalSwitchProfile(const std::string& appId)
         return DP_INVALID_PARAMS;
     }
     uint32_t newSwitch = 0;
-    int32_t res = SwitchAdapter::GetInstance().GetSwitch(appId, localNetwork, newSwitch);
+    uint32_t switchLength = 0;
+    int32_t res = SwitchAdapter::GetInstance().GetSwitch(appId, localNetwork, newSwitch, switchLength);
     if (res != DP_SUCCESS) {
         HILOGE("GetSwitch failed, res: %{public}d", res);
         return DP_GET_KV_DB_FAIL;
@@ -373,7 +374,8 @@ int32_t ProfileControlUtils::GetSwitchCharacteristicProfile(const std::string& a
         return DP_GET_KV_DB_FAIL;
     }
     uint32_t switchValue;
-    res = SwitchAdapter::GetInstance().GetSwitch(appId, netWorkId, switchValue);
+    uint32_t switchLength;
+    res = SwitchAdapter::GetInstance().GetSwitch(appId, netWorkId, switchValue, switchLength);
     if (res != DP_SUCCESS) {
         HILOGE("GetSwitchCharacteristicProfile GetSwitch failed, res: %{public}d", res);
         return DP_GET_KV_DB_FAIL;

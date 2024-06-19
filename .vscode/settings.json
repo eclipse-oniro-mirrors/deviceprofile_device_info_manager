@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "chrono": "cpp",
+        "utility": "cpp",
+        "algorithm": "cpp",
+        "functional": "cpp",
+        "optional": "cpp",
+        "regex": "cpp",
+        "system_error": "cpp",
+        "type_traits": "cpp",
+        "xtr1common": "cpp",
+        "xutility": "cpp"
+    }
+}

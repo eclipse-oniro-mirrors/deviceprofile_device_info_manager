@@ -34,7 +34,7 @@ public:
     void Init();
     void Uninit();
     int32_t PutSwitch(const std::string& appId, uint32_t value, uint16_t length);
-    int32_t GetSwitch(const std::string& appId, const std::string& networkId, uint32_t& value);
+    int32_t GetSwitch(const std::string& appId, const std::string& networkId, uint32_t& value, uint32_t& switchLength);
     int32_t SubscribeSwitchData(const std::string& appId);
     int32_t UnsubscribeSwitchData(const std::string& appId);
 

@@ -121,11 +121,6 @@ int32_t SwitchStatusCollector::GenerateSwitchProfiles(const cJSON* const staticI
         std::string deviceId = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
         std::string serviceId = abilityKeyItem->valuestring;
         std::string charKey = ProfileUtils::GenerateCharProfileKey(deviceId, serviceId, SWITCH_STATUS);
-        if (ProfileCache::GetInstance().IsCharProfileKeyExist(charKey)) {
-            HILOGE("switch already exists in profileCache!");
-            charProfileList.clear();
-            break;
-        }
         std::string charValue = abilityValueItem->valuestring;
         if (charValue != SWITCH_ON && charValue != SWITCH_OFF) {
             HILOGE("switch status invaild");
@@ -144,9 +139,28 @@ void SwitchStatusCollector::AddSwitchStatusToDB(std::vector<CharacteristicProfil
     }
     // get switch from db
     uint32_t switchFromDB;
-    int32_t ret = SwitchProfileManager::GetInstance().GetLocalSwitchFromDB(switchFromDB);
-    if (ret == DP_SUCCESS) {
+    uint32_t switchLength;
+    int32_t ret = SwitchProfileManager::GetInstance().GetLocalSwitchFromDB(switchFromDB, switchLength);
+    if (ret == DP_SUCCESS && charProfileList.size() == switchLength) {
         return;
+    }
+    std::string localUdid = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
+    std::map<std::string, CharacteristicProfile> oldProfileMap;
+    for (const auto& [serviceName, pos] : SWITCH_SERVICE_MAP) {
+        int32_t i = static_cast<int32_t>(pos);
+        std::string itemSwitchValue = std::to_string((switchFromDB >> i) & NUM_1);
+        const CharacteristicProfile oldSwitchProfile = {localUdid, serviceName, SWITCH_STATUS, itemSwitchValue};
+        std::string charKey = ProfileUtils::GenerateCharProfileKey(localUdid, serviceName, SWITCH_STATUS);
+        oldProfileMap[charKey] = oldSwitchProfile;
+    }
+    for (auto& profile : charProfileList) {
+        std::string charKey = ProfileUtils::GenerateCharProfileKey(profile.GetDeviceId(), profile.GetServiceName(),
+            profile.GetCharacteristicKey());
+        auto iter = oldProfileMap.find(charKey);
+        if (iter == oldProfileMap.end() || iter->second.GetCharacteristicValue() == profile.GetCharacteristicValue()) {
+            continue;
+        }
+        profile.SetCharacteristicValue(iter->second.GetCharacteristicValue());
     }
     ret = SwitchProfileManager::GetInstance().PutCharacteristicProfileBatch(charProfileList);
     if (ret != DP_SUCCESS) {

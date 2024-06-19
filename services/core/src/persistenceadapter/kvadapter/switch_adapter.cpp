@@ -55,7 +55,8 @@ int32_t SwitchAdapter::PutSwitch(const std::string& appId, uint32_t value, uint1
     return DP_SUCCESS;
 }
 
-int32_t SwitchAdapter::GetSwitch(const std::string& appId, const std::string& networkId, uint32_t& value)
+int32_t SwitchAdapter::GetSwitch(const std::string& appId, const std::string& networkId,
+    uint32_t& value, uint32_t& switchLength)
 {
     HILOGI("called");
     if (appId.empty() || networkId.empty()) {
@@ -69,8 +70,9 @@ int32_t SwitchAdapter::GetSwitch(const std::string& appId, const std::string& ne
         HILOGE("switch from db failed, ret: %{public}d", res.first);
         return DP_PUT_KV_DB_FAIL;
     }
-    HILOGI("switch value %{public}u", res.second.value);
+    HILOGI("switch value %{public}u, length : %{public}u", res.second.value, res.second.length);
     value = res.second.value;
+    switchLength = res.second.length;
     return DP_SUCCESS;
 }
 
