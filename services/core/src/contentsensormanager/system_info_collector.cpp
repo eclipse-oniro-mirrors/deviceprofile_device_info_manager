@@ -59,14 +59,16 @@ int32_t SystemInfoCollector::GetOsType()
     GetParameter(OHOS_FULL_NAME, UNDEFINED_VALUE, osFullName, FULL_NAME_LEN);
     if (strcmp(apiVersion, UNDEFINED_VALUE) != 0 || strcmp(bootSN, UNDEFINED_VALUE) != 0 ||
         strcmp(osFullName, UNDEFINED_VALUE) != 0) {
-        HILOGI("apiVersion: %{public}s bootSN: %{public}s osFullName: %{public}s", apiVersion,
-            ProfileUtils::GetAnonyString(std::string(bootSN)).c_str(), osFullName);
+        HILOGI("apiVersion: %{public}s bootSN: %{public}s osFullName: %{public}s",
+            ProfileUtils::GetAnonyString(std::string(apiVersion)).c_str(),
+            ProfileUtils::GetAnonyString(std::string(bootSN)).c_str(),
+            ProfileUtils::GetAnonyString(std::string(osFullName)).c_str());
         return OH_OS_TYPE;
     }
     char versionSDK[VERSION_SDK_LEN + 1] = {0};
     GetParameter(VERSION_SDK, UNDEFINED_VALUE, versionSDK, VERSION_SDK_LEN);
     if (strcmp(versionSDK, UNDEFINED_VALUE) != 0) {
-        HILOGI("versionSDK: %{public}s", versionSDK);
+        HILOGI("versionSDK: %{public}s", ProfileUtils::GetAnonyString(std::string(versionSDK)).c_str());
         return HO_OS_TYPE;
     }
     HILOGE("GetOsType fail!");
