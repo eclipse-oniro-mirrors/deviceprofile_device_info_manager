@@ -174,12 +174,12 @@ int32_t SubscribeProfileManager::UnSubscribeDeviceProfile(const SubscribeInfo& s
 
 int32_t SubscribeProfileManager::NotifyDeviceProfileAdd(const std::string& dbKey, const std::string& dbValue)
 {
+    HILOGI("call!");
     std::map<std::string, std::string> values;
     values[dbKey] = dbValue;
     DeviceProfile deviceProfile;
     deviceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
     ProfileUtils::EntriesToDeviceProfile(values, deviceProfile);
-    HILOGI("NotifyDeviceProfileAdd : %{public}s!", deviceProfile.dump().c_str());
     auto subscriberInfos = GetSubscribeInfos(dbKey);
     for (const auto& subscriberInfo : subscriberInfos) {
         sptr<IProfileChangeListener> listenerProxy = iface_cast<IProfileChangeListener>(subscriberInfo.GetListener());
@@ -196,12 +196,12 @@ int32_t SubscribeProfileManager::NotifyDeviceProfileAdd(const std::string& dbKey
 
 int32_t SubscribeProfileManager::NotifyDeviceProfileUpdate(const std::string& dbKey, const std::string& dbValue)
 {
+    HILOGI("call!");
     std::map<std::string, std::string> values;
     values[dbKey] = dbValue;
     DeviceProfile newDeviceProfile;
     newDeviceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
     ProfileUtils::EntriesToDeviceProfile(values, newDeviceProfile);
-    HILOGI("NotifyDeviceProfileUpdate : %{public}s!", newDeviceProfile.dump().c_str());
     DeviceProfile oldDeviceProfile;
     ProfileCache::GetInstance().GetDeviceProfile(ProfileUtils::GetDeviceIdByDBKey(dbKey), oldDeviceProfile);
     auto subscriberInfos = GetSubscribeInfos(dbKey);
@@ -220,12 +220,12 @@ int32_t SubscribeProfileManager::NotifyDeviceProfileUpdate(const std::string& db
 
 int32_t SubscribeProfileManager::NotifyDeviceProfileDelete(const std::string& dbKey, const std::string& dbValue)
 {
+    HILOGI("call!");
     std::map<std::string, std::string> values;
     values[dbKey] = dbValue;
     DeviceProfile deviceProfile;
     deviceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
     ProfileUtils::EntriesToDeviceProfile(values, deviceProfile);
-    HILOGI("NotifyDeviceProfileDelete : %{public}s!", deviceProfile.dump().c_str());
     auto subscriberInfos = GetSubscribeInfos(dbKey);
     for (const auto& subscriberInfo : subscriberInfos) {
         sptr<IProfileChangeListener> listenerProxy = iface_cast<IProfileChangeListener>(subscriberInfo.GetListener());

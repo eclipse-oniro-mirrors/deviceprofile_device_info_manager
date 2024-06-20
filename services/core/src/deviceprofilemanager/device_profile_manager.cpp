@@ -91,9 +91,9 @@ int32_t DeviceProfileManager::ReInit()
 
 int32_t DeviceProfileManager::PutDeviceProfile(const DeviceProfile& deviceProfile)
 {
-    HILOGI("call! deviceProfile: %{public}s", deviceProfile.dump().c_str());
+    HILOGI("call!");
     if (!ProfileUtils::IsDevProfileValid(deviceProfile)) {
-        HILOGE("the profile is invalid! deviceProfile: %{public}s", deviceProfile.dump().c_str());
+        HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;
     }
     std::map<std::string, std::string> entries;
@@ -109,7 +109,7 @@ int32_t DeviceProfileManager::PutDeviceProfile(const DeviceProfile& deviceProfil
             return DP_KV_DB_PTR_NULL;
         }
         if (deviceProfileStore_->PutBatch(entries) != DP_SUCCESS) {
-            HILOGE("PutDeviceProfile fail! deviceProfile: %{public}s", deviceProfile.dump().c_str());
+            HILOGE("PutDeviceProfile fail!");
             return DP_PUT_KV_DB_FAIL;
         }
     }

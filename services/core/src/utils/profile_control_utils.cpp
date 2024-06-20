@@ -31,7 +31,7 @@ namespace {
 }
 int32_t ProfileControlUtils::PutDeviceProfile(std::shared_ptr<IKVAdapter> kvStore, const DeviceProfile& deviceProfile)
 {
-    HILOGI("PutDeviceProfile : %{public}s!", deviceProfile.dump().c_str());
+    HILOGI("call!");
     if (kvStore == nullptr) {
         HILOGE("kvStore is nullptr!");
         return DP_INVALID_PARAMS;
@@ -236,7 +236,6 @@ int32_t ProfileControlUtils::GetDeviceProfile(std::shared_ptr<IKVAdapter> kvStor
         return DP_GET_KV_DB_FAIL;
     }
     ProfileUtils::EntriesToDeviceProfile(values, deviceProfile);
-    HILOGI("GetDeviceProfile in db : %{public}s!", deviceProfile.dump().c_str());
     return DP_SUCCESS;
 }
 
