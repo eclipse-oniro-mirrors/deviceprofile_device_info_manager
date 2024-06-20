@@ -65,6 +65,7 @@ public:
     bool UnMarshalling(MessageParcel& parcel) override;
     bool operator!=(const DeviceProfile& deviceProfile) const;
     std::string dump() const override;
+    std::string AnnoymizeDump() const;
 
 private:
     std::string deviceId_;
