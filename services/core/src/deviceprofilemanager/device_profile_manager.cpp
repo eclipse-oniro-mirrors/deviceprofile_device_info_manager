@@ -516,7 +516,7 @@ std::vector<DistributedKv::Entry> DeviceProfileManager::GetEntriesByKeys(const s
         return entries;
     }
     {
-        std::lock_guard<std::mutex> lock(dpStoreMutex_);
+        std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         if (deviceProfileStore_ == nullptr) {
             HILOGE("dynamicProfileStore is nullptr!");
             return entries;
