@@ -151,10 +151,10 @@ void KvDataChangeListener::HandleSwitchUpdateChange(const std::string udid, uint
     // std::lock_guard<std::mutex> lock(dataChangeListenerMutex_);
     for (int32_t i = (int32_t)SwitchFlag::SWITCH_FLAG_MIN + (int32_t)NUM_1U;
         i < (int32_t)SwitchFlag::SWITCH_FLAG_MAX; ++i) {
-        std::string itemSwitchValue =  std::to_string((switchValue >> i) & NUM_1);
+        std::string itemSwitchValue = std::to_string((switchValue >> i) & NUM_1);
         int32_t res = ProfileCache::GetInstance().GetServiceNameByPos(i, SWITCH_SERVICE_MAP, serviceName);
         if (res != DP_SUCCESS || serviceName.empty()) {
-            HILOGE("GetServiceNameByPos failed, serviceName:%{public}s", serviceName.c_str());
+            HILOGE("GetServiceNameByPos failed, pos:%{public}d", i);
             return;
         }
         res = GenerateSwitchNotify(udid, serviceName, SWITCH_STATUS,

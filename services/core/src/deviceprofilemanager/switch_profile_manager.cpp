@@ -79,7 +79,7 @@ int32_t SwitchProfileManager::PutCharacteristicProfile(const CharacteristicProfi
 
 int32_t SwitchProfileManager::PutCharacteristicProfileBatch(const std::vector<CharacteristicProfile>& charProfiles)
 {
-    HILOGI("call!");
+    HILOGI("charProfiles.size:%{public}zu", charProfiles.size());
     int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(switchProfileMutex_);

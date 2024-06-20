@@ -135,6 +135,7 @@ int32_t SwitchStatusCollector::GenerateSwitchProfiles(const cJSON* const staticI
 void SwitchStatusCollector::AddSwitchStatusToDB(std::vector<CharacteristicProfile>& charProfileList)
 {
     if (charProfileList.empty()) {
+        HILOGW("charProfileList is empty");
         return;
     }
     // get switch from db
@@ -142,13 +143,19 @@ void SwitchStatusCollector::AddSwitchStatusToDB(std::vector<CharacteristicProfil
     uint32_t switchLength;
     int32_t ret = SwitchProfileManager::GetInstance().GetLocalSwitchFromDB(switchFromDB, switchLength);
     if (ret == DP_SUCCESS && charProfileList.size() == switchLength) {
+        HILOGW("switch length equal");
         return;
     }
     std::string localUdid = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
     std::map<std::string, CharacteristicProfile> oldProfileMap;
-    for (const auto& [serviceName, pos] : SWITCH_SERVICE_MAP) {
-        int32_t i = static_cast<int32_t>(pos);
+    for (int32_t i = 0; i < (int32_t)switchLength; ++i) {
+        std::string serviceName;
         std::string itemSwitchValue = std::to_string((switchFromDB >> i) & NUM_1);
+        if (ProfileCache::GetInstance().GetServiceNameByPos(i, SWITCH_SERVICE_MAP, serviceName) != DP_SUCCESS ||
+            serviceName.empty()) {
+            HILOGE("GetServiceNameByPos failed, pos:%{public}d", i);
+            continue;
+        }
         const CharacteristicProfile oldSwitchProfile = {localUdid, serviceName, SWITCH_STATUS, itemSwitchValue};
         std::string charKey = ProfileUtils::GenerateCharProfileKey(localUdid, serviceName, SWITCH_STATUS);
         oldProfileMap[charKey] = oldSwitchProfile;
