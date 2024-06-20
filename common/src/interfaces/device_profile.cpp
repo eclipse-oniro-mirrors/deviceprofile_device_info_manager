@@ -225,11 +225,15 @@ std::string DeviceProfile::AnnoymizeDump() const
     cJSON_AddStringToObject(json, MANUFACTURE_NAME.c_str(), manufactureName_.c_str());
     cJSON_AddStringToObject(json, DEVICE_MODEL.c_str(), deviceModel_.c_str());
     cJSON_AddNumberToObject(json, STORAGE_CAPACITY.c_str(),
-        ProfileUtils::GetAnonyString(to_string(storageCapability_)).c_str());
-    cJSON_AddStringToObject(json, OS_SYS_CAPACITY.c_str(), ProfileUtils::GetAnonyString(osSysCap_).c_str());
-    cJSON_AddNumberToObject(json, OS_API_LEVEL.c_str(), ProfileUtils::GetAnonyString(to_string(osApiLevel_)).c_str());
-    cJSON_AddStringToObject(json, OS_VERSION.c_str(), ProfileUtils::GetAnonyString(osVersion_).c_str());
-    cJSON_AddNumberToObject(json, OS_TYPE.c_str(), ProfileUtils::GetAnonyString(to_string(osType_)).c_str());
+        ProfileUtils::GetAnonyString(std::to_string(storageCapability_)).c_str());
+    cJSON_AddStringToObject(json, OS_SYS_CAPACITY.c_str(),
+        ProfileUtils::GetAnonyString(osSysCap_).c_str());
+    cJSON_AddNumberToObject(json, OS_API_LEVEL.c_str(),
+        ProfileUtils::GetAnonyString(std::to_string(osApiLevel_)).c_str());
+    cJSON_AddStringToObject(json, OS_VERSION.c_str(),
+        ProfileUtils::GetAnonyString(osVersion_).c_str());
+    cJSON_AddNumberToObject(json, OS_TYPE.c_str(),
+        ProfileUtils::GetAnonyString(std::to_string(osType_)).c_str());
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);
