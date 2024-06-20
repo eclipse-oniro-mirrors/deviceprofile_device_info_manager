@@ -78,7 +78,6 @@ private:
     std::mutex dynamicStoreMutex_;
     std::shared_ptr<IKVAdapter> deviceProfileStore_ = nullptr;
     std::shared_ptr<IDPSyncAdapter> dpSyncAdapter_;
-    std::mutex dpStoreMutex_;
     std::atomic<bool> isFirst_{true};
     std::mutex putTempCacheMutex_;
     std::map<std::string, std::string> putTempCache_;
