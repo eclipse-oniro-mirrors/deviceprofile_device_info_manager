@@ -378,7 +378,6 @@ const std::string STATIC_CAP_HANDLER_LOC = "handler_loc";
 const std::string DMS_HANDLER_LOC = "libdistributed_sdk.z.so";
 const std::string STATIC_VERSION_RULES = "^(\\d+\\.){3}\\d+$";
 constexpr uint32_t SWITCH_LENGTH_MAX = 24;
-
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_CONSTANTS_H
