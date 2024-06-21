@@ -59,6 +59,8 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
         sptr<IRemoteObject> syncCompletedCallback) override;
     int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) override;
+    void DelayUnloadTask() override;
+    bool IsInited() override;
 };
 
 class DistributedDeviceProfileStubNewTest : public testing::Test {
@@ -211,6 +213,14 @@ int32_t MockDistributedDeviceProfileStubNew::SendSubscribeInfos(std::map<std::st
 {
     (void)listenerMap;
     return 0;
+}
+void MockDistributedDeviceProfileStubNew::DelayUnloadTask()
+{
+    return;
+}
+bool MockDistributedDeviceProfileStubNew::IsInited()
+{
+    return true;
 }
 
 /**

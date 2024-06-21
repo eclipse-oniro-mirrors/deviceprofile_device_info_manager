@@ -19,11 +19,13 @@
 #include <atomic>
 #include <map>
 #include <mutex>
+#include <unordered_set>
 #include "distributed_device_profile_stub_new.h"
 #include "event_handler.h"
 #include "event_runner.h"
 #include "single_instance.h"
 #include "system_ability.h"
+#include "system_ability_definition.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -64,13 +66,14 @@ public:
         sptr<IRemoteObject> syncCompletedCallback) override;
     int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) override;
     int32_t Dump(int32_t fd, const std::vector<std::u16string>& args) override;
-    void DelayUnloadTask();
-    bool IsInited();
+    void DelayUnloadTask() override;
+    bool IsInited() override;
 
 protected:
     void OnStart(const SystemAbilityOnDemandReason& startReason) override;
     void OnStop() override;
     int32_t OnIdle(const SystemAbilityOnDemandReason& idleReason) override;
+    void OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
 
 private:
     int32_t CreateUnloadHandler();
@@ -90,6 +93,12 @@ private:
     std::map<std::string, std::string> dynamicProfileMap_;
     std::mutex switchProfileMapMtx_;
     std::map<std::string, CharacteristicProfile> switchProfileMap_;
+    std::mutex depSaIdsMtx_;
+    std::unordered_set<int32_t> depSaIds_ {
+        SOFTBUS_SERVER_SA_ID,
+        DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID,
+        DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID
+    };
 };
 } // namespace DeviceProfile
 } // namespace OHOS

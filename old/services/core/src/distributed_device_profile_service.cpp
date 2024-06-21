@@ -36,7 +36,6 @@
 #include "sa_profiles.h"
 #include "service_characteristic_profile.h"
 #include "sync_coordinator.h"
-#include "system_ability_definition.h"
 #include "subscribe_manager.h"
 #include "trust_group_manager.h"
 
@@ -53,8 +52,6 @@ const std::string NAME = "name";
 const std::string INIT_TASK_ID = "CheckAndInitDP";
 constexpr int32_t DELAY_TIME = 180000;
 constexpr int32_t UNLOAD_IMMEDIATELY = 0;
-constexpr int32_t INIT_BUSINESS_DELAY_TIME_US = 100 * 1000;
-constexpr int32_t MAX_INIT_RETRY_TIMES = 1200;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileService);
@@ -80,20 +77,6 @@ bool DistributedDeviceProfileService::Init()
     }
     HILOGI("init DistributedDeviceProfileServiceNew");
     DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().Init();
-    auto executeInnerFunc = [this] {
-        int32_t tryTimes = MAX_INIT_RETRY_TIMES;
-        while (tryTimes > 0) {
-            if (DoInit()) {
-                break;
-            }
-            usleep(INIT_BUSINESS_DELAY_TIME_US);
-            tryTimes--;
-        }
-        if (tryTimes <= 0) {
-            DelayUnloadTask();
-        }
-    };
-    unloadHandler_->PostTask(executeInnerFunc, INIT_TASK_ID, 0);
     HILOGI("init succeeded");
     return true;
 }
@@ -265,6 +248,9 @@ void DistributedDeviceProfileService::OnStart(const SystemAbilityOnDemandReason&
     if (!Init()) {
         HILOGE("init failed");
     }
+    AddSystemAbilityListener(SOFTBUS_SERVER_SA_ID);
+    AddSystemAbilityListener(DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID);
+    AddSystemAbilityListener(DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID);
     if (!Publish(this)) {
         HILOGE("publish SA failed");
         return;
@@ -288,47 +274,23 @@ void DistributedDeviceProfileService::OnStop()
     }
 }
 
-bool DistributedDeviceProfileService::DoInit()
+void DistributedDeviceProfileService::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
 {
-    HILOGI("called");
-    if (!IsDepSAStart()) {
-        HILOGE("Depend sa not start");
-        return false;
+    HILOGI("called systemAbilityId:%{public}d", systemAbilityId);
+    if (DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().IsInited()) {
+        return;
     }
-    if (!DoBusinessInit()) {
-        HILOGE("DoBusinessInit init failed");
-        return false;
+    {
+        std::lock_guard<std::mutex> lock(depSaIdsMtx_);
+        if (depSaIds_.empty()) {
+            return;
+        }
+        depSaIds_.erase(systemAbilityId);
+        if (!depSaIds_.empty()) {
+            return;
+        }
     }
-    HILOGI("DoInit succeeded");
-    return true;
-}
-
-bool DistributedDeviceProfileService::IsDepSAStart()
-{
-    auto saMgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    if (saMgr == nullptr) {
-        HILOGE("Get System Ability Manager failed");
-        return false;
-    }
-    HILOGI("Check DSoftbus sa");
-    auto remoteObject = saMgr->CheckSystemAbility(SOFTBUS_SERVER_SA_ID);
-    if (remoteObject == nullptr) {
-        HILOGE("DSoftbus not start");
-        return false;
-    }
-    HILOGI("Check KVDB sa");
-    remoteObject = saMgr->CheckSystemAbility(DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID);
-    if (remoteObject == nullptr) {
-        HILOGE("KVDB not start");
-        return false;
-    }
-    HILOGI("Check DM sa");
-    remoteObject = saMgr->CheckSystemAbility(DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID);
-    if (remoteObject == nullptr) {
-        HILOGE("DM not start");
-        return false;
-    }
-    return true;
+    DoBusinessInit();
 }
 
 bool DistributedDeviceProfileService::DoBusinessInit()

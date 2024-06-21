@@ -16,12 +16,14 @@
 #include "distributed_device_profile_stub_new.h"
 
 #include <string>
+
+#include "ipc_skeleton.h"
 #include "ipc_utils.h"
+
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_enums.h"
 #include "profile_utils.h"
-#include "macro_utils.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -71,6 +73,25 @@ DistributedDeviceProfileStubNew::DistributedDeviceProfileStubNew()
         &DistributedDeviceProfileStubNew::SyncDeviceProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SEND_SUBSCRIBE_INFOS)] =
             &DistributedDeviceProfileStubNew::SendSubscribeInfosInner;
+    InitAclAndSubscribe();
+}
+
+void DistributedDeviceProfileStubNew::InitAclAndSubscribe()
+{
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_ACL_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::UPDATE_ACL_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_TRUST_DEVICE_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_ALL_TRUST_DEVICE_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_ACL_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_ALL_ACL_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::DELETE_ACL_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::SEND_SUBSCRIBE_INFOS));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE_BATCH));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE_BATCH));
 }
 
 DistributedDeviceProfileStubNew::~DistributedDeviceProfileStubNew()
@@ -86,7 +107,9 @@ bool DistributedDeviceProfileStubNew::IsInterfaceTokenValid(MessageParcel& data)
 int32_t DistributedDeviceProfileStubNew::OnRemoteRequest(uint32_t code, MessageParcel& data,
     MessageParcel& reply, MessageOption& option)
 {
-    HILOGI("code = %{public}u, flags = %{public}d", code, option.GetFlags());
+    HILOGI("code = %{public}u, flags = %{public}d, CallingPid = %{public}u", code, option.GetFlags(),
+        IPCSkeleton::GetCallingPid());
+    DelayUnloadTask();
     auto iter = funcsMap_.find(code);
     if (iter == funcsMap_.end()) {
         HILOGW("unknown request code, please check");
@@ -97,6 +120,13 @@ int32_t DistributedDeviceProfileStubNew::OnRemoteRequest(uint32_t code, MessageP
         return DP_INTERFACE_CHECK_FAILED;
     }
     auto func = iter->second;
+    if (aclAndSubscribeFuncs_.find(code) != aclAndSubscribeFuncs_.end() && func != nullptr) {
+        return (this->*func)(data, reply);
+    }
+    if (!IsInited()) {
+        HILOGE("DP not finish init");
+        return DP_LOAD_SERVICE_ERR;
+    }
     if (func != nullptr) {
         return (this->*func)(data, reply);
     }

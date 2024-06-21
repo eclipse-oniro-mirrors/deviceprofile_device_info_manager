@@ -17,11 +17,13 @@
 #define OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_STUB_H
 
 #include <map>
+#include <unordered_set>
 
 #include "iremote_stub.h"
+
 #include "distributed_device_profile_errors.h"
-#include "ipc_utils.h"
 #include "i_distributed_device_profile.h"
+#include "ipc_utils.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -52,14 +54,17 @@ public:
     int32_t UnSubscribeDeviceProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t SyncDeviceProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t SendSubscribeInfosInner(MessageParcel& data, MessageParcel& reply);
+    virtual void DelayUnloadTask() = 0;
+    virtual bool IsInited() = 0;
 
 private:
     using Func = int32_t(DistributedDeviceProfileStubNew::*)(MessageParcel& data, MessageParcel& reply);
     bool IsInterfaceTokenValid(MessageParcel& data);
+    void InitAclAndSubscribe();
 
 private:
     std::map<uint32_t, Func> funcsMap_;
-    std::mutex funcsMutex_;
+    std::unordered_set<uint32_t> aclAndSubscribeFuncs_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

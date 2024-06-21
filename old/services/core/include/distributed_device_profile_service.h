@@ -16,11 +16,14 @@
 #ifndef OHOS_DISTRIBUTED_DEVICE_PROFILE_SERVICE_H
 #define OHOS_DISTRIBUTED_DEVICE_PROFILE_SERVICE_H
 
+#include <unordered_set>
+
 #include "distributed_device_profile_stub.h"
 #include "event_handler.h"
 #include "event_runner.h"
 #include "single_instance.h"
 #include "system_ability.h"
+#include "system_ability_definition.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -52,16 +55,21 @@ protected:
     void OnStart(const SystemAbilityOnDemandReason& startReason) override;
     void OnStop() override;
     int32_t OnIdle(const SystemAbilityOnDemandReason& idleReason) override;
+    void OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
 
 private:
     bool Init();
-    bool DoInit();
-    bool IsDepSAStart();
     bool DoBusinessInit();
 private:
     std::shared_ptr<AppExecFwk::EventHandler> unloadHandler_;
     std::mutex unloadMutex_;
     std::atomic<bool> isOnline_ {false};
+    std::mutex depSaIdsMtx_;
+    std::unordered_set<int32_t> depSaIds_ {
+        SOFTBUS_SERVER_SA_ID,
+        DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID,
+        DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID
+    };
 };
 } // namespace DeviceProfile
 } // namespace OHOS
