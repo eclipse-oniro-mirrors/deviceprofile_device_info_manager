@@ -568,8 +568,6 @@ int32_t ProfileCache::SetSwitchByProfile(const CharacteristicProfile& charProfil
         HILOGE("SetSwitch params invalid");
         return DP_INVALID_PARAMS;
     }
-    std::lock_guard<std::mutex> lock(switchMutex_);
-    outSwitch = curLocalSwitch_;
     auto service = switchServiceMap.find(charProfile.GetServiceName());
     uint32_t mask = NUM_1U << (static_cast<uint32_t>(service->second));
     uint32_t value = static_cast<uint32_t>(std::stoi(charProfile.GetCharacteristicValue()));
