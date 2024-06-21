@@ -142,13 +142,17 @@ void SwitchStatusCollector::AddSwitchStatusToDB(std::vector<CharacteristicProfil
     uint32_t switchFromDB;
     uint32_t switchLength;
     int32_t ret = SwitchProfileManager::GetInstance().GetLocalSwitchFromDB(switchFromDB, switchLength);
+    if (switchLength > SWITCH_LENGTH_MAX) {
+        HILOGE("switchLength is invalid");
+        return;
+    }
     if (ret == DP_SUCCESS && charProfileList.size() == switchLength) {
         HILOGW("switch length equal");
         return;
     }
     std::string localUdid = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
     std::map<std::string, CharacteristicProfile> oldProfileMap;
-    for (int32_t i = 0; i < (int32_t)switchLength; ++i) {
+    for (uint32_t i = 0; i < switchLength; ++i) {
         std::string serviceName;
         std::string itemSwitchValue = std::to_string((switchFromDB >> i) & NUM_1);
         if (ProfileCache::GetInstance().GetServiceNameByPos(i, SWITCH_SERVICE_MAP, serviceName) != DP_SUCCESS ||
