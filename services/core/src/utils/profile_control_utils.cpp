@@ -156,7 +156,7 @@ int32_t ProfileControlUtils::PutSwitchCharacteristicProfile(const std::string& a
 int32_t ProfileControlUtils::PutSwitchCharacteristicProfileBatch(const std::string& appId,
     const std::vector<CharacteristicProfile>& charProfiles)
 {
-    HILOGI("call!");
+    HILOGI("charProfiles.size:%{public}zu", charProfiles.size());
     if (charProfiles.empty() || appId.empty()) {
         HILOGE("charProfiles or appId are empty");
         return DP_INVALID_PARAMS;
@@ -167,11 +167,11 @@ int32_t ProfileControlUtils::PutSwitchCharacteristicProfileBatch(const std::stri
     uint32_t newSwitch = curSwitch;
     for (auto item : charProfiles) {
         if (!ProfileUtils::IsCharProfileValid(item)) {
-            HILOGE("a profile is invalid! serviceName: %{public}s", item.GetServiceName().c_str());
+            HILOGE("a profile is invalid! charProfile: %{public}s", item.dump().c_str());
             return DP_INVALID_PARAMS;
         }
         if (ProfileCache::GetInstance().IsCharProfileExist(item)) {
-            HILOGW("this profile is exist!");
+            HILOGW("this profile is exist! charProfile: %{public}s", item.dump().c_str());
             continue;
         }
         HILOGI("PutCharacteristicProfile, charProfile: %{public}s!", item.dump().c_str());
@@ -317,7 +317,8 @@ int32_t ProfileControlUtils::RefreshLocalSwitchProfile(const std::string& appId)
         return DP_INVALID_PARAMS;
     }
     uint32_t newSwitch = 0;
-    int32_t res = SwitchAdapter::GetInstance().GetSwitch(appId, localNetwork, newSwitch);
+    uint32_t switchLength = 0;
+    int32_t res = SwitchAdapter::GetInstance().GetSwitch(appId, localNetwork, newSwitch, switchLength);
     if (res != DP_SUCCESS) {
         HILOGE("GetSwitch failed, res: %{public}d", res);
         return DP_GET_KV_DB_FAIL;
@@ -373,7 +374,8 @@ int32_t ProfileControlUtils::GetSwitchCharacteristicProfile(const std::string& a
         return DP_GET_KV_DB_FAIL;
     }
     uint32_t switchValue;
-    res = SwitchAdapter::GetInstance().GetSwitch(appId, netWorkId, switchValue);
+    uint32_t switchLength;
+    res = SwitchAdapter::GetInstance().GetSwitch(appId, netWorkId, switchValue, switchLength);
     if (res != DP_SUCCESS) {
         HILOGE("GetSwitchCharacteristicProfile GetSwitch failed, res: %{public}d", res);
         return DP_GET_KV_DB_FAIL;
