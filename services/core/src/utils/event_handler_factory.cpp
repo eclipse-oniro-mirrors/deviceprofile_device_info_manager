@@ -30,10 +30,12 @@ namespace {
 int32_t EventHandlerFactory::Init()
 {
     HILOGI("call!");
-    auto kvDeathRunner = AppExecFwk::EventRunner::Create(KV_DEATH_HANDLER);
-    eventHandlerMap_[KV_DEATH_HANDLER] = std::make_shared<AppExecFwk::EventHandler>(kvDeathRunner);
-    auto onSyncRunner = AppExecFwk::EventRunner::Create(ON_SYNC_HANDLER);
-    eventHandlerMap_[ON_SYNC_HANDLER] = std::make_shared<AppExecFwk::EventHandler>(onSyncRunner);
+    std::lock_guard<std::mutex> lock(eventHandlerMutex_);
+    if (eventHandler_ != nullptr) {
+        return DP_SUCCESS;
+    }
+    auto runner = AppExecFwk::EventRunner::Create(DP_HANDLER);
+    eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
     return DP_SUCCESS;
 }
 
@@ -41,19 +43,15 @@ int32_t EventHandlerFactory::UnInit()
 {
     HILOGI("UnInit");
     std::lock_guard<std::mutex> lock(eventHandlerMutex_);
-    eventHandlerMap_.clear();
+    eventHandler_ = nullptr;
     return DP_SUCCESS;
 }
 
-std::shared_ptr<AppExecFwk::EventHandler> EventHandlerFactory::CreateEventHandler(const std::string& handlerName)
+std::shared_ptr<AppExecFwk::EventHandler> EventHandlerFactory::GetEventHandler()
 {
-    if (handlerName.empty() || handlerName.size() > MAX_STRING_LEN) {
-        HILOGI("handlerName is invalid!");
-        return nullptr;
-    }
-    HILOGI("createEventHandler, handlerName: %{public}s", handlerName.c_str());
+    HILOGI("call!");
     std::lock_guard<std::mutex> lock(eventHandlerMutex_);
-    return eventHandlerMap_[handlerName];
+    return eventHandler_;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

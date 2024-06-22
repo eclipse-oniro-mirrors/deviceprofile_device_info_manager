@@ -41,10 +41,10 @@ int32_t DMAdapter::Init()
     {
         std::lock_guard<std::mutex> lock(autoSyncHandlerMutex_);
         if (autoSyncHandler_ == nullptr) {
-            autoSyncHandler_ = EventHandlerFactory::GetInstance().CreateEventHandler(AUTO_SYNC_HANDLER);
+            autoSyncHandler_ = EventHandlerFactory::GetInstance().GetEventHandler();
         }
         if (autoSyncHandler_ == nullptr) {
-            HILOGE("Create EventHandler is failed, handlerName: %{public}s!", AUTO_SYNC_HANDLER.c_str());
+            HILOGE("Create EventHandler is failed");
         }
     }
     {
@@ -118,7 +118,7 @@ void DMAdapter::AutoSync(const DistributedHardware::DmDeviceInfo &deviceInfo)
     {
         std::lock_guard<std::mutex> lock(autoSyncHandlerMutex_);
         if (autoSyncHandler_ == nullptr) {
-            HILOGE("Create EventHandler is nullptr, handlerName: %{public}s!", AUTO_SYNC_HANDLER.c_str());
+            HILOGE("Create EventHandler is nullptr");
             return;
         }
         if (!autoSyncHandler_->PostTask(autoSyncTask, AUTO_SYNC_TASK, 0)) {

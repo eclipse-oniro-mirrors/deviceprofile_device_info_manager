@@ -342,10 +342,7 @@ const std::string TRUST_DEVICE_DELETE = "TrustDeviceDelete";
 const std::string TRUST_DEVICE_ADD = "TrustDeviceAdd";
 const std::string TRUST_DEVICE_UPDATE = "TrustDeviceUpdate";
 /* event handler factory */
-const std::string UNLOAD_DP_SA_HANDLER = "unload_dp_sa_handler";
-const std::string KV_DEATH_HANDLER = "kv_store_death_handler";
-const std::string ON_SYNC_HANDLER = "kv_sync_completed_handler";
-const std::string AUTO_SYNC_HANDLER = "auto_sync_handler";
+const std::string DP_HANDLER = "dp_handler";
 const std::string EMPTY_STRING = "";
 /* switch attribute */
 const std::string SWITCH_CAPABILITY_PATH = "etc/deviceprofile/dp_switch_status_cfg.json"; // update

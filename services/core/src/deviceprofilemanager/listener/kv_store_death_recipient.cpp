@@ -32,7 +32,7 @@ KvDeathRecipient::KvDeathRecipient()
     HILOGI("construct!");
     {
         std::lock_guard<std::mutex> lock(reInitMutex_);
-        reInitHandler_ = EventHandlerFactory::GetInstance().CreateEventHandler(KV_DEATH_HANDLER);
+        reInitHandler_ = EventHandlerFactory::GetInstance().GetEventHandler();
     }
 }
 
@@ -60,7 +60,7 @@ void KvDeathRecipient::OnRemoteDied()
     {
         std::lock_guard<std::mutex> lock(reInitMutex_);
         if (reInitHandler_ == nullptr) {
-            HILOGE("Create EventHandler is nullptr, handlerName: %{public}s!", KV_DEATH_HANDLER.c_str());
+            HILOGE("Create EventHandler is nullptr");
             return;
         }
         if (!reInitHandler_->PostTask(reInitTask, REINIT_TASK, 0)) {

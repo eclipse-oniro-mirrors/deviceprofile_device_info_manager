@@ -69,9 +69,9 @@ void KvSyncCompletedListenerTest::TearDown()
  */
 HWTEST_F(KvSyncCompletedListenerTest, KvSyncCompletedListener001, TestSize.Level1)
 {
-    const std::string kvDeathHandler = "kv_store_death_handler";
+    EventHandlerFactory::GetInstance().Init();
     KvSyncCompletedListener KvSyncCompletedListener_;
-    KvSyncCompletedListener_.onSyncHandler_ = EventHandlerFactory::GetInstance().CreateEventHandler(kvDeathHandler);
+    KvSyncCompletedListener_.onSyncHandler_ = EventHandlerFactory::GetInstance().GetEventHandler();
 }
 
 /*

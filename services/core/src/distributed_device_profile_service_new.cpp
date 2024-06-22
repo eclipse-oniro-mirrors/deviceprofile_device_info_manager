@@ -181,7 +181,7 @@ int32_t DistributedDeviceProfileServiceNew::CreateUnloadHandler()
     HILOGI("call!");
     std::lock_guard<std::mutex> lock(unloadMutex_);
     if (unloadHandler_ == nullptr) {
-        unloadHandler_ = EventHandlerFactory::GetInstance().CreateEventHandler(UNLOAD_DP_SA_HANDLER);
+        unloadHandler_ = EventHandlerFactory::GetInstance().GetEventHandler();
     }
     if (unloadHandler_ == nullptr) {
         HILOGE("UnloadHandler is nullptr!");
