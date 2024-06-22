@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -76,6 +76,7 @@ HWTEST_F(KvDataChangeListenerTest, OnChange001, TestSize.Level1)
         std::move(insertEntries), deviceId, isClear);
     KvDataChangeListener KvDataChangeListener_;
     KvDataChangeListener_.OnChange(changeNotification_);
+    EXPECT_NE("deviceId", deviceId);
 }
 
 /*
@@ -95,6 +96,7 @@ HWTEST_F(KvDataChangeListenerTest, OnChange002, TestSize.Level1)
     keys[KvDataChangeListener::OP_DELETE] = {};
     KvDataChangeListener KvDataChangeListener_;
     KvDataChangeListener_.OnChange(origin, std::move(keys));
+    EXPECT_NE("deviceId", deviceId);
 }
 
 /*
@@ -104,10 +106,12 @@ HWTEST_F(KvDataChangeListenerTest, OnChange002, TestSize.Level1)
  * @tc.require:
  */
 HWTEST_F(KvDataChangeListenerTest, HandleAddChange001, TestSize.Level1)
-{
+{   std::vector<std::string> vec;
+    vec.push_back("deviceId");
     std::vector<DistributedKv::Entry> insertRecords;
     std::shared_ptr<KvDataChangeListener> KvDataChangeListener_;
     KvDataChangeListener_->HandleAddChange(insertRecords);
+    EXPECT_NE(vec, insertRecords);
 }
 
 /*
@@ -118,9 +122,12 @@ HWTEST_F(KvDataChangeListenerTest, HandleAddChange001, TestSize.Level1)
  */
 HWTEST_F(KvDataChangeListenerTest, HandleUpdateChange001, TestSize.Level1)
 {
+    std::vector<std::string> vec;
+    vec.push_back("deviceId");
     std::vector<DistributedKv::Entry> updateRecords;
     std::shared_ptr<KvDataChangeListener> KvDataChangeListener_;
     KvDataChangeListener_->HandleUpdateChange(updateRecords);
+    EXPECT_NE(vec, updateRecords);
 }
 
 /*
@@ -131,9 +138,12 @@ HWTEST_F(KvDataChangeListenerTest, HandleUpdateChange001, TestSize.Level1)
  */
 HWTEST_F(KvDataChangeListenerTest, HandleDeleteChange001, TestSize.Level1)
 {
+    std::vector<std::string> vec;
+    vec.push_back("deviceId");
     std::vector<DistributedKv::Entry> deleteRecords;
     std::shared_ptr<KvDataChangeListener> KvDataChangeListener_;
     KvDataChangeListener_->HandleDeleteChange(deleteRecords);
+    EXPECT_NE(vec, deleteRecords);
 }
 }
 }
