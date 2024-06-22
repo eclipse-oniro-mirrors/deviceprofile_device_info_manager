@@ -96,7 +96,7 @@ HWTEST_F(KvDataChangeListenerTest, OnChange002, TestSize.Level1)
     keys[KvDataChangeListener::OP_DELETE] = {};
     KvDataChangeListener KvDataChangeListener_;
     KvDataChangeListener_.OnChange(origin, std::move(keys));
-    EXPECT_NE("deviceId", deviceId);
+    EXPECT_NE("store", origin.store);
 }
 
 /*
@@ -107,12 +107,10 @@ HWTEST_F(KvDataChangeListenerTest, OnChange002, TestSize.Level1)
  */
 HWTEST_F(KvDataChangeListenerTest, HandleAddChange001, TestSize.Level1)
 {
-    std::vector<std::string> vec;
-    vec.push_back("deviceId");
     std::vector<DistributedKv::Entry> insertRecords;
     std::shared_ptr<KvDataChangeListener> KvDataChangeListener_;
     KvDataChangeListener_->HandleAddChange(insertRecords);
-    EXPECT_NE(vec, insertRecords);
+    EXPECT_TRUE(insertRecords.empty());
 }
 
 /*
@@ -123,12 +121,10 @@ HWTEST_F(KvDataChangeListenerTest, HandleAddChange001, TestSize.Level1)
  */
 HWTEST_F(KvDataChangeListenerTest, HandleUpdateChange001, TestSize.Level1)
 {
-    std::vector<std::string> vec;
-    vec.push_back("deviceId");
     std::vector<DistributedKv::Entry> updateRecords;
     std::shared_ptr<KvDataChangeListener> KvDataChangeListener_;
     KvDataChangeListener_->HandleUpdateChange(updateRecords);
-    EXPECT_NE(vec, updateRecords);
+    EXPECT_TRUE(updateRecords.empty());
 }
 
 /*
@@ -139,12 +135,10 @@ HWTEST_F(KvDataChangeListenerTest, HandleUpdateChange001, TestSize.Level1)
  */
 HWTEST_F(KvDataChangeListenerTest, HandleDeleteChange001, TestSize.Level1)
 {
-    std::vector<std::string> vec;
-    vec.push_back("deviceId");
     std::vector<DistributedKv::Entry> deleteRecords;
     std::shared_ptr<KvDataChangeListener> KvDataChangeListener_;
     KvDataChangeListener_->HandleDeleteChange(deleteRecords);
-    EXPECT_NE(vec, deleteRecords);
+    EXPECT_TRUE(deleteRecords.empty());
 }
 }
 }
