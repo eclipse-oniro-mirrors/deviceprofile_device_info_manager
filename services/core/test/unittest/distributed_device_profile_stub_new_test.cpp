@@ -224,18 +224,6 @@ bool MockDistributedDeviceProfileStubNew::IsInited()
 }
 
 /**
- * @tc.name: DistributedDeviceProfileStubNew001
- * @tc.desc: DistributedDeviceProfileStubNew
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(DistributedDeviceProfileStubNewTest, DistributedDeviceProfileStubNew_001, TestSize.Level1)
-{
-    std::shared_ptr<DistributedDeviceProfileStubNew> devProStubNew =
-       std::make_shared<MockDistributedDeviceProfileStubNew>();
-}
-
-/**
  * @tc.name: IsInterfaceTokenValid001
  * @tc.desc: IsInterfaceTokenValid
  * @tc.type: FUNC
@@ -243,6 +231,9 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, DistributedDeviceProfileStubNew_00
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, IsInterfaceTokenValid_001, TestSize.Level1)
 {
+    std::shared_ptr<DistributedDeviceProfileStubNew> devProStubNew =
+       std::make_shared<MockDistributedDeviceProfileStubNew>();
+
     MessageParcel data;
     bool ret = ProfileStub_->IsInterfaceTokenValid(data);
     EXPECT_EQ(false, ret);
