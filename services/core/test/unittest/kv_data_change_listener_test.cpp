@@ -106,7 +106,7 @@ HWTEST_F(KvDataChangeListenerTest, OnChange002, TestSize.Level1)
  * @tc.require:
  */
 HWTEST_F(KvDataChangeListenerTest, HandleAddChange001, TestSize.Level1)
-{   
+{
     std::vector<std::string> vec;
     vec.push_back("deviceId");
     std::vector<DistributedKv::Entry> insertRecords;
