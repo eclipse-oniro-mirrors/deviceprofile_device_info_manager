@@ -114,6 +114,7 @@ HWTEST_F(ProfileControlUtilsTest, PutDeviceProfile003, TestSize.Level1)
         std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
         DistributedKv::TYPE_DYNAMICAL);
     DeviceProfile deviceProfile;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "deviceId";
     deviceProfile.SetDeviceId("deviceId");
     auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
     int32_t ret = profileControlUtils->PutDeviceProfile(kvStore, deviceProfile);
@@ -133,6 +134,7 @@ HWTEST_F(ProfileControlUtilsTest, PutDeviceProfile004, TestSize.Level1)
         std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
         DistributedKv::TYPE_DYNAMICAL);
     DeviceProfile deviceProfile1;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "anything1";
     deviceProfile1.SetDeviceId("anything1");
     deviceProfile1.SetDeviceTypeName("anything");
     deviceProfile1.SetDeviceTypeId(0);
@@ -217,6 +219,7 @@ HWTEST_F(ProfileControlUtilsTest, PutServiceProfile004, TestSize.Level1)
         std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
         DistributedKv::TYPE_DYNAMICAL);
     ServiceProfile serviceProfile;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "deviceId";
     serviceProfile.SetDeviceId("deviceId");
     serviceProfile.SetServiceName("ServiceName");
     auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
@@ -237,6 +240,7 @@ HWTEST_F(ProfileControlUtilsTest, PutServiceProfile005, TestSize.Level1)
         std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
         DistributedKv::TYPE_DYNAMICAL);
     ServiceProfile serviceProfile1;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "deviceId1";
     serviceProfile1.SetDeviceId("deviceId1");
     serviceProfile1.SetServiceName("serviceName1");
     serviceProfile1.SetServiceType("serviceType1");
@@ -370,6 +374,7 @@ HWTEST_F(ProfileControlUtilsTest, PutCharacteristicProfile006, TestSize.Level1)
         std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
         DistributedKv::TYPE_DYNAMICAL);
     CharacteristicProfile charProfile;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "DeviceId";
     charProfile.SetDeviceId("DeviceId");
     charProfile.SetServiceName("ServiceName");
     charProfile.SetCharacteristicKey("CharacteristicKey");
@@ -391,6 +396,7 @@ HWTEST_F(ProfileControlUtilsTest, PutCharacteristicProfile007, TestSize.Level1)
         std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
         DistributedKv::TYPE_DYNAMICAL);
     CharacteristicProfile charProfile;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "DeviceId";
     charProfile.SetDeviceId("DeviceId");
     charProfile.SetServiceName("ServiceName");
     charProfile.SetCharacteristicKey("CharacteristicKey");
@@ -461,6 +467,7 @@ HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfile004, TestSize.Le
 {
     std::string appId;
     CharacteristicProfile charProfile;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "DeviceId";
     charProfile.SetDeviceId("DeviceId");
     charProfile.SetServiceName("ServiceName");
     charProfile.SetCharacteristicKey("CharacteristicKey");
@@ -479,6 +486,7 @@ HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfile005, TestSize.Le
 {
     std::string appId;
     CharacteristicProfile charProfile;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "DeviceId";
     charProfile.SetDeviceId("DeviceId");
     charProfile.SetServiceName("ServiceName");
     charProfile.SetCharacteristicKey("CharacteristicKey");
@@ -498,6 +506,7 @@ HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfile006, TestSize.Le
 {
     std::string appId;
     CharacteristicProfile charProfile;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "DeviceId";
     charProfile.SetDeviceId("DeviceId");
     charProfile.SetServiceName("deviceStatus");
     charProfile.SetCharacteristicKey(SWITCH_STATUS);
@@ -519,6 +528,7 @@ HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfile007, TestSize.Le
 {
     std::string appId = "appId";
     CharacteristicProfile charProfile;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "DeviceId";
     charProfile.SetDeviceId("DeviceId");
     charProfile.SetServiceName("deviceStatus");
     charProfile.SetCharacteristicKey(SWITCH_STATUS);
@@ -618,6 +628,7 @@ HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfileBatch005, TestSi
     std::vector<CharacteristicProfile> charProfiles;
     
     CharacteristicProfile charProfile;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "DeviceId";
     charProfile.SetDeviceId("DeviceId");
     charProfile.SetServiceName("deviceStatus");
     charProfile.SetCharacteristicKey(SWITCH_STATUS);
@@ -641,6 +652,7 @@ HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfileBatch006, TestSi
     std::vector<CharacteristicProfile> charProfiles;
     
     CharacteristicProfile charProfile;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "DeviceId";
     charProfile.SetDeviceId("DeviceId");
     charProfile.SetServiceName("deviceStatus");
     charProfile.SetCharacteristicKey("key");
@@ -666,6 +678,7 @@ HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfileBatch007, TestSi
     std::vector<CharacteristicProfile> charProfiles;
     
     CharacteristicProfile charProfile;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "DeviceId";
     charProfile.SetDeviceId("DeviceId");
     charProfile.SetServiceName("deviceStatus");
     charProfile.SetCharacteristicKey(SWITCH_STATUS);
