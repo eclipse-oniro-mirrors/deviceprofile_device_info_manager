@@ -22,18 +22,19 @@
 #include <mutex>
 #include <vector>
 
-#include "single_instance.h"
-#include "device_profile.h"
-#include "service_profile.h"
-#include "characteristic_profile.h"
-#include "dp_sync_options.h"
 #include "iremote_object.h"
+
+#include "characteristic_profile.h"
+#include "device_profile.h"
+#include "dp_sync_options.h"
+#include "i_dp_sync_adapter.h"
 #include "i_sync_completed_callback.h"
 #include "ikv_adapter.h"
 #include "kv_data_change_listener.h"
-#include "kv_sync_completed_listener.h"
 #include "kv_store_death_recipient.h"
-#include "i_dp_sync_adapter.h"
+#include "kv_sync_completed_listener.h"
+#include "service_profile.h"
+#include "single_instance.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -67,6 +68,7 @@ public:
     int32_t SavePutTempCache(std::map<std::string, std::string>& entries);
     bool IsFirstInitDB();
     void ResetFirst();
+    void ClearDataOnDeviceOnline(const std::string& networkId, const std::string& extraData);
 
 private:
     bool LoadDpSyncAdapter();
