@@ -576,6 +576,7 @@ HWTEST_F(ProfileCacheTest, OnNodeOnline001, TestSize.Level1)
 
     peerNetworkId = ProfileUtils::GetLocalUdidFromDM();
     ProfileCache::GetInstance().OnNodeOnline(peerNetworkId);
+    EXPECT_NE("NetworkId", peerNetworkId);
 }
 
 /**
@@ -591,6 +592,7 @@ HWTEST_F(ProfileCacheTest, OnNodeOffline001, TestSize.Level1)
 
     peerNetworkId = ProfileUtils::GetLocalUdidFromDM();
     ProfileCache::GetInstance().OnNodeOffline(peerNetworkId);
+    EXPECT_NE("NetworkId", peerNetworkId);
 }
 
 /**

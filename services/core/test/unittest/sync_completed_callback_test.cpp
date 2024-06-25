@@ -139,19 +139,9 @@ HWTEST_F(SyncCompletedCallbackStubTest, OnRemoteRequest_003, TestSize.Level3)
     SyncCompletedListener syncCallBackStub;
     int32_t errCode = syncCallBackStub.OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(DP_INTERFACE_CHECK_FAILED, errCode);
-}
 
-/**
- * @tc.name: OnSyncCompleted_003
- * @tc.desc: OnSyncCompleted of profile event notification
- * @tc.type: FUNC
- * @tc.require: I4NY1T
- */
-HWTEST_F(SyncCompletedCallbackStubTest, OnSyncCompleted_003, TestSize.Level3)
-{
     sptr<SyncCompletedListener> stub(new SyncCompletedListener());
     sptr<SyncCompletedCallbackProxy> proxy(new SyncCompletedCallbackProxy(stub));
-    SyncResult syncResults;
     syncResults.emplace("testdeviceid", SUCCEEDED);
     proxy->OnSyncCompleted(syncResults);
 }

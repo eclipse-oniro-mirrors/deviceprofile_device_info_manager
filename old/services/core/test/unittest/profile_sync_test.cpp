@@ -229,18 +229,11 @@ HWTEST_F(ProfileSyncTest, OnIdle_002, TestSize.Level3)
  */
 HWTEST_F(ProfileSyncTest, DeviceOnline_001, TestSize.Level3)
 {
-    DistributedDeviceProfileService::GetInstance().DeviceOnline();
-}
-
-/**
- * @tc.name: OnStop_001
- * @tc.desc: put device profile with empty service id
- * @tc.type: FUNC
- * @tc.require: I4NY23
- */
-HWTEST_F(ProfileSyncTest, OnStop_001, TestSize.Level3)
-{
     DistributedDeviceProfileService::GetInstance().OnStop();
+
+    DistributedDeviceProfileService::GetInstance().DeviceOnline();
+    bool ret = DistributedDeviceProfileService::GetInstance().isOnline_;
+    EXPECT_EQ(true, ret);
 }
 
 /**

@@ -83,20 +83,9 @@ HWTEST_F(KvSyncCompletedListenerTest, KvSyncCompletedListener001, TestSize.Level
 HWTEST_F(KvSyncCompletedListenerTest, SyncCompleted001, TestSize.Level1)
 {
     const std::map<std::string, DistributedKv::Status> results;
-    KvSyncCompletedListener KvSyncCompletedListener_;
     KvSyncCompletedListener_.SyncCompleted(results);
-}
 
-/*
- * @tc.name: NotifySyncCompleted001
- * @tc.desc: OnRemoteDied
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(KvSyncCompletedListenerTest, NotifySyncCompleted001, TestSize.Level1)
-{
     const SyncResults syncResults;
-    KvSyncCompletedListener KvSyncCompletedListener_;
     KvSyncCompletedListener_.NotifySyncCompleted(syncResults);
 }
 }

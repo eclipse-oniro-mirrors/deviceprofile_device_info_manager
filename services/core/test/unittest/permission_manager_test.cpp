@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -68,18 +68,10 @@ void PermissionManagerTest::TearDown()
  */
 HWTEST_F(PermissionManagerTest, IsCallerTrust_001, TestSize.Level1)
 {
+    PermissionManager::GetInstance().GetCallerProcName();
+
     bool ret = PermissionManager::GetInstance().IsCallerTrust(PUT_ACCESS_CONTROL_PROFILE);
     EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: GetCallerProcName_001
- * @tc.desc: Normal testCase of PermissionManagerTest for CRUD
- * @tc.type: FUNC
- */
-HWTEST_F(PermissionManagerTest, GetCallerProcName_001, TestSize.Level1)
-{
-    PermissionManager::GetInstance().GetCallerProcName();
 }
 
 /*
