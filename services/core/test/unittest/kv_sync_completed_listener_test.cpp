@@ -69,19 +69,12 @@ void KvSyncCompletedListenerTest::TearDown()
  */
 HWTEST_F(KvSyncCompletedListenerTest, KvSyncCompletedListener001, TestSize.Level1)
 {
-    EventHandlerFactory::GetInstance().Init();
     KvSyncCompletedListener KvSyncCompletedListener_;
-    KvSyncCompletedListener_.onSyncHandler_ = EventHandlerFactory::GetInstance().GetEventHandler();
-}
+    EventHandlerFactory EventHandlerFactory_;
+    EventHandlerFactory_.Init();
+    KvSyncCompletedListener_.onSyncHandler_ = EventHandlerFactory_.GetEventHandler();
+    EXPECT_EQ(EventHandlerFactory_.eventHandler_, KvSyncCompletedListener_.onSyncHandler_);
 
-/*
- * @tc.name: SyncCompleted001
- * @tc.desc: SyncCompleted
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(KvSyncCompletedListenerTest, SyncCompleted001, TestSize.Level1)
-{
     const std::map<std::string, DistributedKv::Status> results;
     KvSyncCompletedListener_.SyncCompleted(results);
 
