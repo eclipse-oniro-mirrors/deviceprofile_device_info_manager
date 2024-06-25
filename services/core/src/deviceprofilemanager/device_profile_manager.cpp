@@ -18,15 +18,18 @@
 #include <algorithm>
 #include <dlfcn.h>
 #include <list>
+#include <thread>
 
-#include "kv_adapter.h"
+#include "dm_constants.h"
+
 #include "content_sensor_manager_utils.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
+#include "kv_adapter.h"
+#include "permission_manager.h"
 #include "profile_utils.h"
 #include "profile_cache.h"
 #include "profile_control_utils.h"
-#include "permission_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -37,6 +40,7 @@ namespace {
     const std::string STORE_ID = "dp_kv_store";
     const std::string TAG = "DeviceProfileManager";
     const std::string DP_MANAGER_HANDLER = "dp_manager_handler";
+    const int32_t DEFAULT_OS_TYPE = 10;
 }
 
 int32_t DeviceProfileManager::Init()
@@ -602,6 +606,54 @@ bool DeviceProfileManager::IsFirstInitDB()
 void DeviceProfileManager::ResetFirst()
 {
     isFirst_.store(false);
+}
+
+void DeviceProfileManager::ClearDataOnDeviceOnline(const std::string& networkId, const std::string& extraData)
+{
+    HILOGI("networkId:%{public}s", ProfileUtils::GetAnonyString(networkId).c_str());
+    if (networkId.empty() || extraData.empty()) {
+        HILOGE("networkId or extraData is empty!");
+        return;
+    }
+    auto clearDataTask = [this, networkId, extraData]() {
+        cJSON* extraDataJson = cJSON_Parse(extraData.c_str());
+        if (extraDataJson == NULL) {
+            HILOGE("extraData parse failed");
+            return;
+        }
+        int32_t osType = DEFAULT_OS_TYPE;
+        cJSON* osTypeJson = cJSON_GetObjectItem(extraDataJson, DistributedHardware::PARAM_KEY_OS_TYPE);
+        if (cJSON_IsNumber(osTypeJson)) {
+            osType = static_cast<int32_t>(osTypeJson->valueint);
+        }
+        cJSON_Delete(extraDataJson);
+        if (osType != DEFAULT_OS_TYPE) {
+            return;
+        }
+        std::string deviceId;
+        if (!ProfileUtils::GetUdidByNetworkId(networkId, deviceId) || deviceId.empty()) {
+            HILOGE("GetUdidByNetworkId failed");
+            return;
+        }
+        DeviceProfile deviceProfile;
+        if (GetDeviceProfile(deviceId, deviceProfile) != DP_SUCCESS || osType == deviceProfile.GetOsType()) {
+            return;
+        }
+        std::string key = ProfileUtils::GenerateDBKey(ProfileUtils::GenerateDeviceProfileKey(deviceId), OS_TYPE);
+        std::string value = std::to_string(osType);
+        {
+            std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
+            if (deviceProfileStore_ == nullptr) {
+                HILOGE("dynamicProfileStore is nullptr!");
+                return;
+            }
+            if (deviceProfileStore_->Put(key, value) != DP_SUCCESS) {
+                HILOGE("Put failed!");
+                return;
+            }
+        }
+    };
+    std::thread(clearDataTask).detach();
 }
 } // namespace DeviceProfile
 } // namespace OHOS
