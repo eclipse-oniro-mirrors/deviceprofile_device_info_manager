@@ -27,6 +27,7 @@
 #include "distributed_device_profile_service_new.h"
 #include "dp_device_manager.h"
 #include "dp_radar_helper.h"
+#include "event_handler_factory.h"
 #include "hitrace_meter.h"
 #include "if_system_ability_manager.h"
 #include "ipc_object_proxy.h"
@@ -64,19 +65,17 @@ DistributedDeviceProfileService::DistributedDeviceProfileService()
 
 bool DistributedDeviceProfileService::Init()
 {
-    HILOGI("called");
+    HILOGI("init DistributedDeviceProfileServiceNew");
+    DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().Init();
     {
         std::lock_guard<std::mutex> lock(unloadMutex_);
-        auto runner = AppExecFwk::EventRunner::Create("unloadRunner");
         if (unloadHandler_ == nullptr) {
-            unloadHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
+            unloadHandler_ = DistributedDeviceProfile::EventHandlerFactory::GetInstance().GetEventHandler();
         }
         if (unloadHandler_ == nullptr) {
             return false;
         }
     }
-    HILOGI("init DistributedDeviceProfileServiceNew");
-    DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().Init();
     HILOGI("init succeeded");
     return true;
 }
@@ -105,7 +104,13 @@ void DistributedDeviceProfileService::DeviceOnline()
 {
     HILOGI("device online begin");
     isOnline_ = true;
-    unloadHandler_->RemoveTask(TASK_ID);
+    {
+        std::lock_guard<std::mutex> lock(unloadMutex_);
+        if (unloadHandler_ == nullptr) {
+            return;
+        }
+        unloadHandler_->RemoveTask(TASK_ID);
+    }
 }
 
 int32_t DistributedDeviceProfileService::GetDeviceProfile(const std::string& udid, const std::string& serviceId,
@@ -235,10 +240,17 @@ void DistributedDeviceProfileService::DelayUnloadTask()
             return;
         }
     };
-    unloadHandler_->RemoveTask(TASK_ID);
-    if (!isOnline_) {
-        HILOGI("delay unload task post task");
-        unloadHandler_->PostTask(task, TASK_ID, DELAY_TIME);
+
+    {
+        std::lock_guard<std::mutex> lock(unloadMutex_);
+        if (unloadHandler_ == nullptr) {
+            return;
+        }
+        unloadHandler_->RemoveTask(TASK_ID);
+        if (!isOnline_) {
+            HILOGI("delay unload task post task");
+            unloadHandler_->PostTask(task, TASK_ID, DELAY_TIME);
+        }
     }
 }
 

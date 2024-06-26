@@ -16,11 +16,7 @@
 #ifndef OHOS_DP_CONTENT_SENSOR_MANAGER_H
 #define OHOS_DP_CONTENT_SENSOR_MANAGER_H
 
-#include <memory>
 #include <string>
-
-#include "collector.h"
-#include "event_handler.h"
 #include "single_instance.h"
 
 namespace OHOS {
@@ -34,7 +30,6 @@ public:
 
 private:
     int32_t Collect();
-    std::shared_ptr<AppExecFwk::EventHandler> csCollectorHandler_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

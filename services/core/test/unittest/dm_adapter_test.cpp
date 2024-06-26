@@ -89,8 +89,8 @@ HWTEST_F(DMAdapterTest, Init002, TestSize.Level1)
  */
 HWTEST_F(DMAdapterTest, Init003, TestSize.Level1)
 {
-    DMAdapter::GetInstance().autoSyncHandler_ = EventHandlerFactory::
-        GetInstance().CreateEventHandler(AUTO_SYNC_HANDLER);
+    EventHandlerFactory::GetInstance().Init();
+    DMAdapter::GetInstance().autoSyncHandler_ = EventHandlerFactory::GetInstance().GetEventHandler();
     int32_t ret = DMAdapter::GetInstance().Init();
     EXPECT_EQ(-20014, ret);
 }
@@ -142,8 +142,8 @@ HWTEST_F(DMAdapterTest, UnInit002, TestSize.Level1)
  */
 HWTEST_F(DMAdapterTest, UnInit003, TestSize.Level1)
 {
-    DMAdapter::GetInstance().autoSyncHandler_ = EventHandlerFactory::
-        GetInstance().CreateEventHandler(AUTO_SYNC_HANDLER);
+    EventHandlerFactory::GetInstance().Init();
+    DMAdapter::GetInstance().autoSyncHandler_ = EventHandlerFactory::GetInstance().GetEventHandler();
     int32_t ret = DMAdapter::GetInstance().UnInit();
     EXPECT_EQ(0, ret);
 }

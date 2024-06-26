@@ -17,28 +17,25 @@
 
 #include <list>
 #include <vector>
-#include <string>
 #include <memory>
 #include <thread>
 #include "collaboration_info_collector.h"
+#include "collector.h"
+#include "content_sensor_manager_utils.h"
+#include "device_profile.h"
+#include "device_profile_manager.h"
+#include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 #include "dms_info_collector.h"
 #include "pasteboard_info_collector.h"
 #include "switch_status_collector.h"
 #include "syscap_info_collector.h"
 #include "system_info_collector.h"
-#include "distributed_device_profile_errors.h"
-#include "device_profile.h"
-#include "event_handler.h"
-#include "collector.h"
-#include "content_sensor_manager_utils.h"
-#include "device_profile_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
     const std::string TAG = "ContentSensorManager";
-    const std::string DP_CONTENT_SENSOR_TRACE = "DP_CONTENT_SENSOR";
 }
 
 IMPLEMENT_SINGLE_INSTANCE(ContentSensorManager);
@@ -46,11 +43,6 @@ IMPLEMENT_SINGLE_INSTANCE(ContentSensorManager);
 int32_t ContentSensorManager::Init()
 {
     HILOGI("call!");
-    auto runner = AppExecFwk::EventRunner::Create("csCollector");
-    csCollectorHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
-    if (csCollectorHandler_ == nullptr) {
-        return DP_CS_COLLECTOR_HANDLER_INIT_FAIL;
-    }
     return Collect();
 }
 

@@ -16,7 +16,6 @@
 #ifndef OHOS_DP_EVENT_HANDLER_FACTORY_H
 #define OHOS_DP_EVENT_HANDLER_FACTORY_H
 
-#include <map>
 #include <memory>
 #include <mutex>
 #include "event_handler.h"
@@ -30,11 +29,11 @@ DECLARE_SINGLE_INSTANCE(EventHandlerFactory);
 public:
     int32_t Init();
     int32_t UnInit();
-    std::shared_ptr<AppExecFwk::EventHandler> CreateEventHandler(const std::string& handlerName);
+    std::shared_ptr<AppExecFwk::EventHandler> GetEventHandler();
 
 private:
     std::mutex eventHandlerMutex_;
-    std::map<std::string, std::shared_ptr<AppExecFwk::EventHandler>> eventHandlerMap_;
+    std::shared_ptr<AppExecFwk::EventHandler> eventHandler_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

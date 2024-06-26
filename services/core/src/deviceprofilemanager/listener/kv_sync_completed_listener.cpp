@@ -38,7 +38,7 @@ KvSyncCompletedListener::KvSyncCompletedListener()
     HILOGI("construct!");
     {
         std::lock_guard<std::mutex> lock(reInitMutex_);
-        onSyncHandler_ = EventHandlerFactory::GetInstance().CreateEventHandler(ON_SYNC_HANDLER);
+        onSyncHandler_ = EventHandlerFactory::GetInstance().GetEventHandler();
     }
 }
 
@@ -72,7 +72,7 @@ void KvSyncCompletedListener::SyncCompleted(const std::map<std::string, Distribu
     {
         std::lock_guard<std::mutex> lock(reInitMutex_);
         if (onSyncHandler_ == nullptr) {
-            HILOGE("Create EventHandler is nullptr, handlerName: %{public}s!", ON_SYNC_HANDLER.c_str());
+            HILOGE("Create EventHandler is nullptr");
             return;
         }
         if (!onSyncHandler_->PostTask(notifyTask, ON_SYNC_TASK_ID, 0)) {

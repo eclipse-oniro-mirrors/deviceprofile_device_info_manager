@@ -27,6 +27,7 @@
 #include "device_profile_utils.h"
 #include "distributed_device_profile_service.h"
 #include "dm_constants.h"
+#include "event_handler_factory.h"
 #include "ipc_object_proxy.h"
 #include "ipc_skeleton.h"
 #include "iservice_registry.h"
@@ -55,8 +56,7 @@ bool DpDeviceManager::Init()
 {
     initCallback_ = std::make_shared<DeviceInitCallBack>();
     stateCallback_ = std::make_shared<DpDeviceStateCallback>();
-    auto runner = AppExecFwk::EventRunner::Create("devmgr");
-    devMgrHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
+    devMgrHandler_ = DistributedDeviceProfile::EventHandlerFactory::GetInstance().GetEventHandler();
     if (devMgrHandler_ == nullptr) {
         return false;
     }
