@@ -220,16 +220,6 @@ ohos_unittest("content_sensor_pasteboard_info_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("kv_data_change_listener_test") {
-  module_out_path = module_output_path
-  sources = [ "unittest/kv_data_change_listener_test.cpp" ]
-  configs = device_profile_configs
-  deps = device_profile_deps
-  external_deps = device_profile_external_deps
-  part_name = "device_info_manager"
-  subsystem_name = "deviceprofile"
-}
-
 ohos_unittest("kv_store_death_recipient_test") {
   module_out_path = module_output_path
   sources = [ "unittest/kv_store_death_recipient_test.cpp" ]
@@ -435,7 +425,6 @@ group("unittest") {
     ":dp_profile_service_new_test",
     ":event_handler_factory_new_test",
     ":kv_adapter_new_test",
-    ":kv_data_change_listener_test",
     ":kv_store_death_recipient_test",
     ":kv_sync_completed_listener_test",
     ":profile_cache_new_test",
