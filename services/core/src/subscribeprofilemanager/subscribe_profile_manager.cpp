@@ -147,6 +147,11 @@ int32_t SubscribeProfileManager::SubscribeDeviceProfile(const SubscribeInfo& sub
                 subscribeInfoMap_[subscribeInfo.GetSubscribeKey()].size());
             return DP_EXCEED_MAX_SIZE_FAIL;
         }
+        if (subscribeInfoMap_[subscribeInfo.GetSubscribeKey()].find(subscribeInfo) !=
+            subscribeInfoMap_[subscribeInfo.GetSubscribeKey()].end()) {
+            HILOGI("this sa subscribeInfo is exist");
+            subscribeInfoMap_[subscribeInfo.GetSubscribeKey()].erase(subscribeInfo);
+        }
         subscribeInfoMap_[subscribeInfo.GetSubscribeKey()].emplace(subscribeInfo);
     }
     return DP_SUCCESS;
