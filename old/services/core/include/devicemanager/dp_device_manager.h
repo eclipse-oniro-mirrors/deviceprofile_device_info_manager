@@ -49,7 +49,6 @@ public:
     void GetDeviceList(std::list<std::shared_ptr<DeviceInfo>>& deviceList);
     void RemoveDeviceIdsByUdid(const std::string& udid);
     void GetTrustedDeviceList();
-    void AutoSync(const DistributedHardware::DmDeviceInfo &deviceInfo);
 
 private:
     bool WaitForDnetworkReady();

@@ -493,24 +493,6 @@ int32_t DeviceProfileManager::RunloadedFunction(std::string deviceId, sptr<IRemo
     return DP_SUCCESS;
 }
 
-int32_t DeviceProfileManager::DeviceOnlineAutoSync(const std::string& peerNetworkId)
-{
-    HILOGI("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
-    std::vector<std::string> deviceList{peerNetworkId};
-    std::vector<std::string> onlineDevices = ProfileUtils::FilterOnlineDevices(deviceList);
-    if (onlineDevices.empty() ||
-        std::find(onlineDevices.begin(), onlineDevices.end(), peerNetworkId) == onlineDevices.end()) {
-        HILOGE("Params is invalid! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
-        return DP_INVALID_PARAMS;
-    }
-    int32_t errCode = RunloadedFunction(peerNetworkId, nullptr);
-    if (errCode != DP_SUCCESS) {
-        HILOGE("sync profile failed.errCode=%{public}d,peerNetworkId=%{public}s", errCode,
-            ProfileUtils::GetAnonyString(peerNetworkId).c_str());
-    }
-    return errCode;
-}
-
 std::vector<DistributedKv::Entry> DeviceProfileManager::GetEntriesByKeys(const std::vector<std::string>& keys)
 {
     HILOGI("call!");
