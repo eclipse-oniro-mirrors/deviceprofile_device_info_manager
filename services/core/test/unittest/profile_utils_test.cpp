@@ -24,6 +24,7 @@
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_enums.h"
+#include "dm_constants.h"
 #undef private
 #undef protected
 
@@ -105,32 +106,94 @@ HWTEST_F(ProfileUtilsTest, GetOnlineDevices001, TestSize.Level1)
 }
 
 /**
- * @tc.name: FilterOnlineDevices001
- * @tc.desc: FilterOnlineDevices failed, deviceList.size() == 0.
+ * @tc.name: FilterAndGroupOnlineDevices001
+ * @tc.desc: FilterAndGroupOnlineDevices failed, deviceList.size() == 0.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProfileUtilsTest, FilterOnlineDevices001, TestSize.Level1)
+HWTEST_F(ProfileUtilsTest, FilterAndGroupOnlineDevices001, TestSize.Level1)
 {
     vector<string> deviceList;
-    vector<string> res = ProfileUtils::FilterOnlineDevices(deviceList);
-    EXPECT_EQ(0, res.size());
+    std::vector<std::string> nextDevices;
+    std::vector<std::string> noNextDevices;
+    bool res = ProfileUtils::FilterAndGroupOnlineDevices(deviceList, nextDevices, noNextDevices);
+    EXPECT_EQ(false, res);
 }
 
 /**
- * @tc.name: FilterOnlineDevices002
- * @tc.desc: FilterOnlineDevices failed, deviceList.size() > 1000.
+ * @tc.name: FilterAndGroupOnlineDevices002
+ * @tc.desc: FilterAndGroupOnlineDevices failed, deviceList.size() > MAX_DEVICE_SIZE.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProfileUtilsTest, FilterOnlineDevices002, TestSize.Level1)
+HWTEST_F(ProfileUtilsTest, FilterAndGroupOnlineDevices002, TestSize.Level1)
 {
     vector<string> deviceList;
-    for (int32_t i = 0; i < 1005; i++) {
-    deviceList.emplace_back("deviceId");
+    for (int32_t i = 0; i < MAX_DEVICE_SIZE + 5; i++) {
+        deviceList.emplace_back("deviceId");
     }
-    vector<string> res = ProfileUtils::FilterOnlineDevices(deviceList);
-    EXPECT_EQ(0, res.size());
+    std::vector<std::string> nextDevices;
+    std::vector<std::string> noNextDevices;
+    bool res = ProfileUtils::FilterAndGroupOnlineDevices(deviceList, nextDevices, noNextDevices);
+    EXPECT_EQ(false, res);
+}
+
+/**
+ * @tc.name: FilterAndGroupOnlineDevices003
+ * @tc.desc: FilterAndGroupOnlineDevices failed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, FilterAndGroupOnlineDevices003, TestSize.Level1)
+{
+    vector<string> deviceList;
+    for (int32_t i = 0; i < 5; i++) {
+        deviceList.emplace_back("deviceId");
+    }
+    std::vector<std::string> nextDevices;
+    std::vector<std::string> noNextDevices;
+    bool res = ProfileUtils::FilterAndGroupOnlineDevices(deviceList, nextDevices, noNextDevices);
+    EXPECT_EQ(false, res);
+}
+
+/**
+ * @tc.name: IsNextDevice001
+ * @tc.desc: IsNextDevice
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, IsNextDevice001, TestSize.Level1)
+{
+    std::string extraData;
+    bool res = ProfileUtils::IsNextDevice(extraData);
+    EXPECT_EQ(false, res);
+}
+
+/**
+ * @tc.name: IsNextDevice002
+ * @tc.desc: IsNextDevice failed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, IsNextDevice002, TestSize.Level1)
+{
+    std::string extraData = "abc";
+    bool res = ProfileUtils::IsNextDevice(extraData);
+    EXPECT_EQ(false, res);
+}
+
+/**
+ * @tc.name: IsNextDevice003
+ * @tc.desc: IsNextDevice
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, IsNextDevice003, TestSize.Level1)
+{
+    std::string osType = DistributedHardware::PARAM_KEY_OS_TYPE;
+    std::string extraData = "{\"" + osType + "\":10}";
+    bool res = ProfileUtils::IsNextDevice(extraData);
+    EXPECT_EQ(true, res);
 }
 
 /**
