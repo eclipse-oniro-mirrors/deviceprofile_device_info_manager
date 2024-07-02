@@ -68,7 +68,7 @@ int32_t StaticCapabilityCollector::AddStaticInfoToCache(
     HILOGI("call!");
     for (const auto& item : staticProfileMap) {
         HILOGI("AddStaticInfoToCache key: %{public}s, value: %{public}s!",
-            ProfileUtils::GetAnonyString(item.first).c_str(), item.second.dump().c_str());
+            ProfileUtils::GetDbKeyAnonyString(item.first).c_str(), item.second.dump().c_str());
         ProfileCache::GetInstance().AddStaticCharProfile(item.second);
     }
     return DP_SUCCESS;

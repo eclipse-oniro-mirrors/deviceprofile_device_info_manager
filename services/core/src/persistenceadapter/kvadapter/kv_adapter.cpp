@@ -116,7 +116,7 @@ int32_t KVAdapter::Put(const std::string& key, const std::string& value)
         DistributedKv::Value oldV;
         if (kvStorePtr_->Get(kvKey, oldV) == DistributedKv::Status::SUCCESS && oldV.ToString() == value) {
             HILOGD("The key-value pair already exists. key=%{public}s,value=%{public}s",
-                ProfileUtils::GetAnonyString(key).c_str(),
+                ProfileUtils::GetDbKeyAnonyString(key).c_str(),
                 ProfileUtils::GetAnonyString(value).c_str());
             return DP_SUCCESS;
         }
@@ -151,7 +151,7 @@ int32_t KVAdapter::PutBatch(const std::map<std::string, std::string>& values)
             kvKey = item.first;
             if (kvStorePtr_->Get(kvKey, oldV) == DistributedKv::Status::SUCCESS && oldV.ToString() == item.second) {
                 HILOGD("The key-value pair already exists. key=%{public}s,value=%{public}s",
-                    ProfileUtils::GetAnonyString(item.first).c_str(),
+                    ProfileUtils::GetDbKeyAnonyString(item.first).c_str(),
                     ProfileUtils::GetAnonyString(item.second).c_str());
                 continue;
             }
@@ -196,7 +196,7 @@ int32_t KVAdapter::Delete(const std::string& key)
 
 int32_t KVAdapter::Get(const std::string& key, std::string& value)
 {
-    HILOGI("Get data by key: %{public}s", ProfileUtils::GetAnonyString(key).c_str());
+    HILOGI("Get data by key: %{public}s", ProfileUtils::GetDbKeyAnonyString(key).c_str());
     DistributedKv::Key kvKey(key);
     DistributedKv::Value kvValue;
     DistributedKv::Status status;
@@ -209,7 +209,7 @@ int32_t KVAdapter::Get(const std::string& key, std::string& value)
         status = kvStorePtr_->Get(kvKey, kvValue);
     }
     if (status != DistributedKv::Status::SUCCESS) {
-        HILOGE("Get data from kv failed, key: %{public}s", ProfileUtils::GetAnonyString(key).c_str());
+        HILOGE("Get data from kv failed, key: %{public}s", ProfileUtils::GetDbKeyAnonyString(key).c_str());
         return DP_GET_KV_DB_FAIL;
     }
     value = kvValue.ToString();
@@ -218,7 +218,7 @@ int32_t KVAdapter::Get(const std::string& key, std::string& value)
 
 int32_t KVAdapter::GetByPrefix(const std::string& keyPrefix, std::map<std::string, std::string>& values)
 {
-    HILOGI("Get data by key prefix: %{public}s", ProfileUtils::GetAnonyString(keyPrefix).c_str());
+    HILOGI("Get data by key prefix: %{public}s", ProfileUtils::GetDbKeyAnonyString(keyPrefix).c_str());
     std::lock_guard<std::mutex> lock(kvAdapterMutex_);
     if (kvStorePtr_ == nullptr) {
         HILOGE("kvStoragePtr_ is null");
@@ -229,7 +229,8 @@ int32_t KVAdapter::GetByPrefix(const std::string& keyPrefix, std::map<std::strin
     std::vector<DistributedKv::Entry> allEntries;
     DistributedKv::Status status = kvStorePtr_->GetEntries(allEntryKeyPrefix, allEntries);
     if (status != DistributedKv::Status::SUCCESS) {
-        HILOGE("Query data by keyPrefix failed, prefix: %{public}s", ProfileUtils::GetAnonyString(keyPrefix).c_str());
+        HILOGE("Query data by keyPrefix failed, prefix: %{public}s",
+            ProfileUtils::GetDbKeyAnonyString(keyPrefix).c_str());
         return DP_GET_KV_DB_FAIL;
     }
     if (allEntries.size() == 0 || allEntries.size() > MAX_DB_SIZE) {

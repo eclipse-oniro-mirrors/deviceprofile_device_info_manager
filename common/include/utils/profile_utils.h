@@ -35,6 +35,7 @@ using namespace OHOS::NativeRdb;
 
 class ProfileUtils {
 public:
+    static std::string GetDbKeyAnonyString(const std::string& value);
     static std::string GetAnonyString(const std::string& value);
     static std::vector<std::string> GetOnlineDevices();
     static std::string GetLocalUdidFromDM();
@@ -75,6 +76,7 @@ public:
     static std::string GetCharKeyByDBKey(const std::string& dbKey);
     static std::string GetDbKeyByProfile(const CharacteristicProfile& profile);
     static int32_t SplitString(const std::string& str, const std::string& splits, std::vector<std::string>& res);
+    static std::string JoinString(const std::vector<std::string>& strs, const std::string& delimiter);
     static std::string GetProfileProperty(const std::string& dbKey);
     static std::map<std::string, std::string> GetProfilePropertiesMap(std::map<std::string, std::string> dbEntries);
     static std::string toString(const std::u16string& str16);

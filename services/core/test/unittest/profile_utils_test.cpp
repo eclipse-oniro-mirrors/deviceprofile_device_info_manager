@@ -54,6 +54,45 @@ void ProfileUtilsTest::TearDown() {
 }
 
 /**
+ * @tc.name: GetDbKeyAnonyString001
+ * @tc.desc: GetDbKeyAnonyString
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, GetDbKeyAnonyString001, TestSize.Level1)
+{
+    string len2 = "";
+    string res = ProfileUtils::GetDbKeyAnonyString(len2);
+    EXPECT_EQ("******", res);
+}
+
+/**
+ * @tc.name: GetDbKeyAnonyString002
+ * @tc.desc: GetDbKeyAnonyString
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, GetDbKeyAnonyString002, TestSize.Level1)
+{
+    string len2 = "ab";
+    string res = ProfileUtils::GetDbKeyAnonyString(len2);
+    EXPECT_EQ("******", res);
+}
+
+/**
+ * @tc.name: GetDbKeyAnonyString003
+ * @tc.desc: GetDbKeyAnonyString
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, GetDbKeyAnonyString003, TestSize.Level1)
+{
+    string len2 = "ab#abc";
+    string res = ProfileUtils::GetDbKeyAnonyString(len2);
+    EXPECT_EQ("ab#a******c", res);
+}
+
+/**
  * @tc.name: GetAnonyString001
  * @tc.desc: GetAnonyString failed, length < 3.
  * @tc.type: FUNC
@@ -591,6 +630,35 @@ HWTEST_F(ProfileUtilsTest, SplitString002, TestSize.Level1)
     int32_t ret = ProfileUtils::SplitString(str, splits, res);
     EXPECT_EQ(DP_SUCCESS, ret);
     EXPECT_EQ(3, res.size());
+}
+
+/**
+ * @tc.name: JoinString001
+ * @tc.desc: JoinString failed, str == "".
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, JoinString001, TestSize.Level1)
+{
+    string splits = "#";
+    vector<string> strs;
+    string ret = ProfileUtils::JoinString(strs, splits);
+    EXPECT_EQ(EMPTY_STRING, ret);
+}
+
+/**
+ * @tc.name: JoinString002
+ * @tc.desc: JoinString succeed.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, JoinString002, TestSize.Level1)
+{
+    string str = "a#b#c";
+    string splits = "#";
+    vector<string> strs {"a", "b", "c"};
+    string ret = ProfileUtils::JoinString(strs, splits);
+    EXPECT_EQ(str, ret);
 }
 
 /**
