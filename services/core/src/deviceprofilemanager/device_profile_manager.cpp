@@ -608,7 +608,7 @@ void DeviceProfileManager::ResetFirst()
     isFirst_.store(false);
 }
 
-void DeviceProfileManager::ClearDataOnDeviceOnline(const std::string& networkId, const std::string& extraData)
+void DeviceProfileManager::FixDataOnDeviceOnline(const std::string& networkId, const std::string& extraData)
 {
     HILOGI("networkId:%{public}s", ProfileUtils::GetAnonyString(networkId).c_str());
     if (networkId.empty() || extraData.empty()) {
@@ -623,9 +623,12 @@ void DeviceProfileManager::ClearDataOnDeviceOnline(const std::string& networkId,
         }
         int32_t osType = DEFAULT_OS_TYPE;
         cJSON* osTypeJson = cJSON_GetObjectItem(extraDataJson, DistributedHardware::PARAM_KEY_OS_TYPE);
-        if (cJSON_IsNumber(osTypeJson)) {
-            osType = static_cast<int32_t>(osTypeJson->valueint);
+        if (!cJSON_IsNumber(osTypeJson)) {
+            HILOGE("osTypeJson is not a number");
+            cJSON_Delete(extraDataJson);
+            return;
         }
+        osType = static_cast<int32_t>(osTypeJson->valueint);
         cJSON_Delete(extraDataJson);
         if (osType != DEFAULT_OS_TYPE) {
             return;

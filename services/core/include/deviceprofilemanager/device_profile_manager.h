@@ -68,7 +68,7 @@ public:
     int32_t SavePutTempCache(std::map<std::string, std::string>& entries);
     bool IsFirstInitDB();
     void ResetFirst();
-    void ClearDataOnDeviceOnline(const std::string& networkId, const std::string& extraData);
+    void FixDataOnDeviceOnline(const std::string& networkId, const std::string& extraData);
 
 private:
     bool LoadDpSyncAdapter();
