@@ -25,7 +25,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 class KvDeathRecipient : public DistributedKv::KvStoreDeathRecipient {
 public:
-    KvDeathRecipient();
+    KvDeathRecipient(const std::string& storeId);
     virtual ~KvDeathRecipient();
 
     virtual void OnRemoteDied() override;
@@ -33,6 +33,7 @@ public:
 private:
     std::shared_ptr<AppExecFwk::EventHandler> reInitHandler_ = nullptr;
     std::mutex reInitMutex_;
+    std::string storeId_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

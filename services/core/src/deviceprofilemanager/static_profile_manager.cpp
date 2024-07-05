@@ -48,7 +48,7 @@ int32_t StaticProfileManager::Init()
     {
         std::lock_guard<std::mutex> lock(staticStoreMutex_);
         staticProfileStore_ = std::make_shared<KVAdapter>(APP_ID, STORE_ID, std::make_shared<KvDataChangeListener>(),
-            std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+            std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
             DistributedKv::TYPE_STATICS);
         initResult = staticProfileStore_->Init();
     }

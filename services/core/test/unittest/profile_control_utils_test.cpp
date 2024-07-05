@@ -93,7 +93,7 @@ HWTEST_F(ProfileControlUtilsTest, PutDeviceProfile002, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     DeviceProfile deviceProfile;
     auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
@@ -111,7 +111,7 @@ HWTEST_F(ProfileControlUtilsTest, PutDeviceProfile003, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     DeviceProfile deviceProfile;
     ContentSensorManagerUtils::GetInstance().localUdid_ = "deviceId";
@@ -131,7 +131,7 @@ HWTEST_F(ProfileControlUtilsTest, PutDeviceProfile004, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     DeviceProfile deviceProfile1;
     ContentSensorManagerUtils::GetInstance().localUdid_ = "anything1";
@@ -178,7 +178,7 @@ HWTEST_F(ProfileControlUtilsTest, PutServiceProfile002, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     ServiceProfile serviceProfile;
     serviceProfile.SetDeviceId("deviceId");
@@ -197,7 +197,7 @@ HWTEST_F(ProfileControlUtilsTest, PutServiceProfile003, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     ServiceProfile serviceProfile;
     serviceProfile.SetServiceName("ServiceName");
@@ -216,7 +216,7 @@ HWTEST_F(ProfileControlUtilsTest, PutServiceProfile004, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     ServiceProfile serviceProfile;
     ContentSensorManagerUtils::GetInstance().localUdid_ = "deviceId";
@@ -237,7 +237,7 @@ HWTEST_F(ProfileControlUtilsTest, PutServiceProfile005, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     ServiceProfile serviceProfile1;
     ContentSensorManagerUtils::GetInstance().localUdid_ = "deviceId1";
@@ -275,7 +275,7 @@ HWTEST_F(ProfileControlUtilsTest, PutCharacteristicProfile001, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     CharacteristicProfile charProfile;
     auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
@@ -293,7 +293,7 @@ HWTEST_F(ProfileControlUtilsTest, PutCharacteristicProfile002, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     CharacteristicProfile charProfile;
     auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
@@ -311,7 +311,7 @@ HWTEST_F(ProfileControlUtilsTest, PutCharacteristicProfile003, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     CharacteristicProfile charProfile;
     charProfile.SetServiceName("ServiceName");
@@ -331,7 +331,7 @@ HWTEST_F(ProfileControlUtilsTest, PutCharacteristicProfile004, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     CharacteristicProfile charProfile;
     charProfile.SetDeviceId("DeviceId");
@@ -351,7 +351,7 @@ HWTEST_F(ProfileControlUtilsTest, PutCharacteristicProfile005, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     CharacteristicProfile charProfile;
     charProfile.SetDeviceId("DeviceId");
@@ -371,7 +371,7 @@ HWTEST_F(ProfileControlUtilsTest, PutCharacteristicProfile006, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     CharacteristicProfile charProfile;
     ContentSensorManagerUtils::GetInstance().localUdid_ = "DeviceId";
@@ -393,7 +393,7 @@ HWTEST_F(ProfileControlUtilsTest, PutCharacteristicProfile007, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     CharacteristicProfile charProfile;
     ContentSensorManagerUtils::GetInstance().localUdid_ = "DeviceId";
@@ -725,7 +725,7 @@ HWTEST_F(ProfileControlUtilsTest, PutCharacteristicProfileBatch001, TestSize.Lev
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     std::vector<CharacteristicProfile> charProfiles;
 
@@ -761,7 +761,7 @@ HWTEST_F(ProfileControlUtilsTest, GetDeviceProfile002, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     DeviceProfile deviceProfile;
     std::string deviceId;
@@ -781,7 +781,7 @@ HWTEST_F(ProfileControlUtilsTest, GetDeviceProfile003, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     DeviceProfile deviceProfile;
     std::string deviceId = "deviceId";
@@ -801,7 +801,7 @@ HWTEST_F(ProfileControlUtilsTest, GetDeviceProfile004, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     DeviceProfile deviceProfile;
     std::string deviceId = "deviceId";
@@ -842,7 +842,7 @@ HWTEST_F(ProfileControlUtilsTest, GetServiceProfile002, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     std::string deviceId = "deviceId";
     std::string serviceName;
@@ -863,7 +863,7 @@ HWTEST_F(ProfileControlUtilsTest, GetServiceProfile003, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     std::string deviceId;
     std::string serviceName = "serviceName";
@@ -884,7 +884,7 @@ HWTEST_F(ProfileControlUtilsTest, GetServiceProfile004, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     std::string deviceId = "deviceId";
     std::string serviceName = "serviceName";
@@ -906,7 +906,7 @@ HWTEST_F(ProfileControlUtilsTest, GetServiceProfile005, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     std::string deviceId = "deviceId";
     std::string serviceName = "serviceName";
@@ -929,7 +929,7 @@ HWTEST_F(ProfileControlUtilsTest, GetServiceProfile006, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     std::string deviceId = "deviceId";
     std::string serviceName = "serviceName";
@@ -974,7 +974,7 @@ HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile002, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     std::string deviceId;
     std::string serviceName = "serviceName";
@@ -997,7 +997,7 @@ HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile003, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     std::string deviceId = "deviceId";
     std::string serviceName = "serviceName";
@@ -1020,7 +1020,7 @@ HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile004, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     std::string deviceId = "deviceId";
     std::string serviceName = "serviceName";
@@ -1043,7 +1043,7 @@ HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile005, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     std::string deviceId = "deviceId";
     std::string serviceName = "serviceName";
@@ -1069,7 +1069,7 @@ HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile006, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     std::string deviceId = "deviceId";
     std::string serviceName = "serviceName";
@@ -1094,7 +1094,7 @@ HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile007, TestSize.Level1)
 {
     std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
         std::make_shared<KvDataChangeListener>(),
-        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+        std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
     std::string deviceId = "deviceId";
     std::string serviceName = "serviceName";
