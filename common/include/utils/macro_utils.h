@@ -69,6 +69,10 @@ namespace DistributedDeviceProfile {
 #define SEND_REQUEST(remote, code, data, reply) \
     do { \
         MessageOption option; \
+        if ((remote) == nullptr) { \
+            HILOGE("remote is nullptr"); \
+            return DP_IPC_REMOTE_OBJECT_NULLPTR; \
+        } \
         int32_t errCode = (remote)->SendRequest((code), (data), (reply), option); \
         if (errCode != DP_SUCCESS) { \
             HILOGE("transact failed, errCode = %{public}d", errCode); \

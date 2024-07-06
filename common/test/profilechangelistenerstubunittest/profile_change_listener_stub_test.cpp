@@ -125,6 +125,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_001, TestSize.Level0)
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(DP_INTERFACE_CHECK_FAILED, ret);
 }
@@ -133,6 +134,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileAddInner_001, TestSi
 {
     MessageParcel data;
     MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnTrustDeviceProfileAddInner(data, reply);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -141,6 +143,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileDeleteInner_001, Tes
 {
     MessageParcel data;
     MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnTrustDeviceProfileDeleteInner(data, reply);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -149,6 +152,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileUpdateInner_001, Tes
 {
     MessageParcel data;
     MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnTrustDeviceProfileUpdateInner(data, reply);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -157,6 +161,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnDeviceProfileAddInner_001, TestSize.Le
 {
     MessageParcel data;
     MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnDeviceProfileAddInner(data, reply);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -165,6 +170,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnDeviceProfileDeleteInner_001, TestSize
 {
     MessageParcel data;
     MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnDeviceProfileDeleteInner(data, reply);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -173,6 +179,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnDeviceProfileUpdateInner_001, TestSize
 {
     MessageParcel data;
     MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnDeviceProfileUpdateInner(data, reply);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -181,6 +188,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnServiceProfileAddInner_001, TestSize.L
 {
     MessageParcel data;
     MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnServiceProfileAddInner(data, reply);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -189,6 +197,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnServiceProfileDeleteInner_001, TestSiz
 {
     MessageParcel data;
     MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnServiceProfileDeleteInner(data, reply);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -197,6 +206,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnServiceProfileUpdateInner_001, TestSiz
 {
     MessageParcel data;
     MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnServiceProfileUpdateInner(data, reply);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -205,6 +215,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnCharacteristicProfileAddInner_001, Tes
 {
     MessageParcel data;
     MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnCharacteristicProfileAddInner(data, reply);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -213,6 +224,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnCharacteristicProfileDeleteInner_001, 
 {
     MessageParcel data;
     MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnCharacteristicProfileDeleteInner(data, reply);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -221,6 +233,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnCharacteristicProfileUpdateInner_001, 
 {
     MessageParcel data;
     MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnCharacteristicProfileUpdateInner(data, reply);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
