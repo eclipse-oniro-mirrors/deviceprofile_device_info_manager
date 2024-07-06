@@ -150,7 +150,7 @@ int32_t DistributedDeviceProfileStub::NotifyAclEventInner(uint32_t code, Message
         case static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE_BATCH):
             return PutCharacteristicProfileBatchInner(data, reply);
         default:
-            HILOGW("unknown request code, please check code = %{public}u", code);
+            HILOGW("unknown request code, please check, code = %{public}u", code);
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
     }
 }
