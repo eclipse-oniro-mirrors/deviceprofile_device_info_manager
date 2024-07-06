@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -36,15 +36,15 @@ bool SubscribeInfoChecker::Check(const std::list<SubscribeInfo>& subscribeInfos)
 {
     auto checker = [this](const auto& subscribeInfo) {
         auto profileEvent = subscribeInfo.profileEvent;
-        auto iter = checkersMap_.find(profileEvent);
-        if (iter != checkersMap_.end()) {
-            auto func = iter->second;
-            if (func != nullptr) {
-                return (this->*func)(subscribeInfo);
-            }
+        switch (static_cast<uint32_t>(profileEvent)) {
+            case ProfileEvent::EVENT_SYNC_COMPLETED:
+                return SubscribeInfoChecker::CheckSyncEventInner(subscribeInfo);
+            case ProfileEvent::EVENT_PROFILE_CHANGED:
+                return SubscribeInfoChecker::CheckProfileChangeInner(subscribeInfo);
+            default:
+                HILOGE("unknown profile event = %{public}u", static_cast<uint32_t>(profileEvent));
+                return false;
         }
-        HILOGE("unknown profile event = %{public}u", static_cast<uint32_t>(profileEvent));
-        return false;
     };
     return std::all_of(subscribeInfos.begin(), subscribeInfos.end(), checker);
 }

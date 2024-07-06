@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -72,19 +72,40 @@ int32_t ProfileChangeListenerStub::OnRemoteRequest(uint32_t code, MessageParcel&
     MessageParcel& reply, MessageOption& option)
 {
     HILOGI("code = %{public}u, flags = %{public}d", code, option.GetFlags());
-    auto iter = funcsMap_.find(code);
-    if (iter != funcsMap_.end()) {
-        auto func = iter->second;
-        if (!IsInterfaceToken(data)) {
-            HILOGE("check interface token failed");
-            return DP_INTERFACE_CHECK_FAILED;
-        }
-        if (func != nullptr) {
-            return (this->*func)(data, reply);
-        }
+
+    if (!IsInterfaceToken(data)) {
+        HILOGE("check interface token failed");
+        return DP_INTERFACE_CHECK_FAILED;
     }
-    HILOGW("unknown request code, please check");
-    return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
+    switch (code) {
+        case static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_ADD):
+            return ProfileChangeListenerStub::OnTrustDeviceProfileAddInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_DELETE):
+            return ProfileChangeListenerStub::OnTrustDeviceProfileDeleteInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_UPDATE):
+            return ProfileChangeListenerStub::OnTrustDeviceProfileUpdateInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_ADD):
+            return ProfileChangeListenerStub::OnDeviceProfileAddInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_DELETE):
+            return ProfileChangeListenerStub::OnDeviceProfileDeleteInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_UPDATE):
+            return ProfileChangeListenerStub::OnDeviceProfileUpdateInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::ON_SERVICE_PROFILE_ADD):
+            return ProfileChangeListenerStub::OnServiceProfileAddInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::ON_SERVICE_PROFILE_DELETE):
+            return ProfileChangeListenerStub::OnServiceProfileDeleteInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::ON_SERVICE_PROFILE_UPDATE):
+            return ProfileChangeListenerStub::OnServiceProfileUpdateInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::ON_CHAR_PROFILE_ADD):
+            return ProfileChangeListenerStub::OnCharacteristicProfileAddInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::ON_CHAR_PROFILE_DELETE):
+            return ProfileChangeListenerStub::OnCharacteristicProfileDeleteInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::ON_CHAR_PROFILE_UPDATE):
+            return ProfileChangeListenerStub::OnCharacteristicProfileUpdateInner(data, reply);
+        default:
+            HILOGW("unknown request code, please check, code = %{public}u", code);
+            return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
+    }
 }
 
 int32_t ProfileChangeListenerStub::OnTrustDeviceProfileAddInner(MessageParcel& data, MessageParcel& reply)

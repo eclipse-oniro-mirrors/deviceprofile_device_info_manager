@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -38,14 +38,15 @@ ProfileEventHandlerFactory::ProfileEventHandlerFactory()
 std::shared_ptr<ProfileEventHandler> ProfileEventHandlerFactory::GetHandler(ProfileEvent profileEvent)
 {
     HILOGI("get handler for event = %{public}u", static_cast<uint32_t>(profileEvent));
-    auto iter = handlersMap_.find(profileEvent);
-    if (iter != handlersMap_.end()) {
-        auto handler = iter->second;
-        if (handler != nullptr) {
-            return (this->*handler)();
-        }
+    switch (static_cast<uint32_t>(profileEvent)) {
+        case ProfileEvent::EVENT_SYNC_COMPLETED:
+            return ProfileEventHandlerFactory::GetProfileSyncHandlerInner();
+        case ProfileEvent::EVENT_PROFILE_CHANGED:
+            return ProfileEventHandlerFactory::GetProfileChangeHandlerInner();
+        default:
+            HILOGW("unknown request code, please check, code = %{public}u", static_cast<uint32_t>(profileEvent));
+            return nullptr;
     }
-    return nullptr;
 }
 
 std::shared_ptr<ProfileEventHandler> ProfileEventHandlerFactory::GetProfileChangeHandlerInner()
