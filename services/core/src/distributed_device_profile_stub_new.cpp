@@ -138,7 +138,7 @@ int32_t DistributedDeviceProfileStubNew::NotifyAclEventInner(uint32_t code, Mess
         case static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE_BATCH):
             return PutCharacteristicProfileBatchInner(data, reply);
         default:
-            HILOGE("unknown request code, please check");
+            HILOGE("unknown request code, please check, code = %{public}u", code);
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
     }
 }
@@ -160,7 +160,7 @@ int32_t DistributedDeviceProfileStubNew::NotifyEventInner(uint32_t code, Message
         case static_cast<uint32_t>(DPInterfaceCode::SYNC_DEVICE_PROFILE_NEW):
             return SyncDeviceProfileInner(data, reply);
         default:
-            HILOGE("Invalid request code.");
+            HILOGE("Invalid request code, code = %{public}u", code);
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
     }
 }
