@@ -41,9 +41,10 @@ bool SubscribeInfoChecker::Check(const std::list<SubscribeInfo>& subscribeInfos)
                 return SubscribeInfoChecker::CheckSyncEventInner(subscribeInfo);
             case ProfileEvent::EVENT_PROFILE_CHANGED:
                 return SubscribeInfoChecker::CheckProfileChangeInner(subscribeInfo);
+            default:
+                HILOGE("unknown profile event = %{public}u", static_cast<uint32_t>(profileEvent));
+                return false;
         }
-        HILOGE("unknown profile event = %{public}u", static_cast<uint32_t>(profileEvent));
-        return false;
     };
     return std::all_of(subscribeInfos.begin(), subscribeInfos.end(), checker);
 }
