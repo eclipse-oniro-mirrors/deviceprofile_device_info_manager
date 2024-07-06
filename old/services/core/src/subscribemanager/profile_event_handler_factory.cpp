@@ -43,8 +43,10 @@ std::shared_ptr<ProfileEventHandler> ProfileEventHandlerFactory::GetHandler(Prof
             return ProfileEventHandlerFactory::GetProfileSyncHandlerInner();
         case ProfileEvent::EVENT_PROFILE_CHANGED:
             return ProfileEventHandlerFactory::GetProfileChangeHandlerInner();
+        default:
+            HILOGW("unknown request code, please check, code = %{public}u", static_cast<uint32_t>(profileEvent));
+            return nullptr;
     }
-    return nullptr;
 }
 
 std::shared_ptr<ProfileEventHandler> ProfileEventHandlerFactory::GetProfileChangeHandlerInner()
