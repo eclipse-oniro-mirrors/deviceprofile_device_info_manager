@@ -68,8 +68,10 @@ void KvStoreDeathRecipientTest::TearDown()
  */
 HWTEST_F(KvStoreDeathRecipientTest, OnRemoteDied001, TestSize.Level1)
 {
-    std::shared_ptr<KvDeathRecipient> KvDeathRecipient_;
+    std::string storeId = "dp_kv_store";
+    std::shared_ptr<KvDeathRecipient> KvDeathRecipient_ = make_shared<KvDeathRecipient>(storeId);
     KvDeathRecipient_->OnRemoteDied();
+    EXPECT_EQ(storeId, KvDeathRecipient_->storeId_);
 }
 }
 }

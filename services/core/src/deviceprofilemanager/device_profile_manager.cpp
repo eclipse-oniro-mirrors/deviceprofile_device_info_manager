@@ -50,7 +50,7 @@ int32_t DeviceProfileManager::Init()
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         deviceProfileStore_ = std::make_shared<KVAdapter>(APP_ID, STORE_ID, std::make_shared<KvDataChangeListener>(),
-            std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+            std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
             DistributedKv::TYPE_DYNAMICAL);
         initResult = deviceProfileStore_->Init();
         if (initResult != DP_SUCCESS) {

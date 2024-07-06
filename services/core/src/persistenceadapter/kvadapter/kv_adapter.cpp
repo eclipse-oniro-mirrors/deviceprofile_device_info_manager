@@ -435,7 +435,7 @@ int32_t KVAdapter::RegisterDeathListener()
 
 int32_t KVAdapter::UnRegisterDeathListener()
 {
-    HILOGI("UnRegister syncCompleted listener");
+    HILOGI("UnRegister death listener");
     {
         std::lock_guard<std::mutex> lock(kvAdapterMutex_);
         kvDataMgr_.UnRegisterKvStoreServiceDeathRecipient(deathRecipient_);

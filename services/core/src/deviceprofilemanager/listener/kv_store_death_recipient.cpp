@@ -19,17 +19,21 @@
 #include "event_handler_factory.h"
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_constants.h"
+#include "static_profile_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
     const std::string TAG = "KvStoreDeathRecipient";
     const std::string REINIT_TASK = "reInitTask";
+    const std::string DYNAMIC_STORE_ID = "dp_kv_store";
+    const std::string STATIC_STORE_ID = "dp_kv_static_store";
 }
 
-KvDeathRecipient::KvDeathRecipient()
+KvDeathRecipient::KvDeathRecipient(const std::string& storeId)
 {
     HILOGI("construct!");
+    storeId_ = storeId;
     {
         std::lock_guard<std::mutex> lock(reInitMutex_);
         reInitHandler_ = EventHandlerFactory::GetInstance().GetEventHandler();
@@ -53,9 +57,14 @@ KvDeathRecipient::~KvDeathRecipient()
 void KvDeathRecipient::OnRemoteDied()
 {
     HILOGI("OnRemoteDied, recover db begin");
-    auto reInitTask = []() {
-        // how to recover kv_store
-        DeviceProfileManager::GetInstance().ReInit();
+    auto reInitTask = [this]() {
+        HILOGI("ReInit, storeId:%{public}s", storeId_.c_str());
+        if (storeId_ == DYNAMIC_STORE_ID) {
+            DeviceProfileManager::GetInstance().ReInit();
+        }
+        if (storeId_ == STATIC_STORE_ID) {
+            StaticProfileManager::GetInstance().ReInit();
+        }
     };
     {
         std::lock_guard<std::mutex> lock(reInitMutex_);
