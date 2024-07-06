@@ -77,7 +77,7 @@ private:
 
     int32_t NotifyOldEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
 
-    int32_t NotifyNewEventInner (uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
+    int32_t NotifyNewEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
 
 private:
     std::map<uint32_t, Func> funcsMap_;
