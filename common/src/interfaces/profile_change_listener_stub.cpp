@@ -102,9 +102,10 @@ int32_t ProfileChangeListenerStub::OnRemoteRequest(uint32_t code, MessageParcel&
             return ProfileChangeListenerStub::OnCharacteristicProfileDeleteInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::ON_CHAR_PROFILE_UPDATE):
             return ProfileChangeListenerStub::OnCharacteristicProfileUpdateInner(data, reply);
+        default:
+            HILOGW("unknown request code, please check, code = %{public}u", code);
+            return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
     }
-    HILOGW("unknown request code, please check");
-    return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
 int32_t ProfileChangeListenerStub::OnTrustDeviceProfileAddInner(MessageParcel& data, MessageParcel& reply)
