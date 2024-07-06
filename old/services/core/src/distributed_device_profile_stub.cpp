@@ -117,6 +117,87 @@ void DistributedDeviceProfileStub::InitAclAndSubscribe()
     aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE_BATCH));
 }
 
+int32_t DistributedDeviceProfileStub::NotifyAclEventInner(uint32_t code, MessageParcel& data,
+    MessageParcel& reply, MessageOption& option)
+{
+    switch (code) {
+        case static_cast<uint32_t>(DPInterfaceCode::PUT_ACL_PROFILE):
+            return PutAccessControlProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::UPDATE_ACL_PROFILE):
+            return UpdateAccessControlProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::GET_TRUST_DEVICE_PROFILE):
+            return GetTrustDeviceProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::GET_ALL_TRUST_DEVICE_PROFILE):
+            return GetAllTrustDeviceProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::GET_ACL_PROFILE):
+            return GetAccessControlProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::GET_ALL_ACL_PROFILE):
+            return GetAllAccessControlProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::DELETE_ACL_PROFILE):
+            return DeleteAccessControlProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE):
+            return SubscribeDeviceProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE):
+            return UnSubscribeDeviceProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::SEND_SUBSCRIBE_INFOS):
+            return SendSubscribeInfosInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE):
+            return PutServiceProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE_BATCH):
+            return PutServiceProfileBatchInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE):
+            return PutCharacteristicProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE_BATCH):
+            return PutCharacteristicProfileBatchInner(data, reply);
+        default:
+            HILOGW("unknown request code, please check");
+            return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
+    }
+}
+
+int32_t DistributedDeviceProfileStub::NotifyOldEventInner(uint32_t code, MessageParcel& data,
+    MessageParcel& reply, MessageOption& option)
+{
+    switch (code) {
+        case static_cast<uint32_t>(IDeviceProfileInterfaceCode::PUT_DEVICE_PROFILE):
+            return PutDeviceProfileInner(data, reply);
+        case static_cast<uint32_t>(IDeviceProfileInterfaceCode::DELETE_DEVICE_PROFILE):
+            return DeleteDeviceProfileInner(data, reply);
+        case static_cast<uint32_t>(IDeviceProfileInterfaceCode::GET_DEVICE_PROFILE):
+            return GetDeviceProfileInner(data, reply);
+        case static_cast<uint32_t>(IDeviceProfileInterfaceCode::SUBSCRIBE_PROFILE_EVENT):
+            return SubscribeProfileEventInner(data, reply);
+        case static_cast<uint32_t>(IDeviceProfileInterfaceCode::UNSUBSCRIBE_PROFILE_EVENT):
+            return UnsubscribeProfileEventInner(data, reply);
+        case static_cast<uint32_t>(IDeviceProfileInterfaceCode::SYNC_DEVICE_PROFILE):
+            return SyncDeviceProfileInner(data, reply);
+        default:
+            return NotifyNewEventInner(code, data, reply, option);
+    }
+}
+
+int32_t DistributedDeviceProfileStub::NotifyNewEventInner(uint32_t code, MessageParcel& data,
+    MessageParcel& reply, MessageOption& option)
+{
+    switch (code) {
+        case static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_PROFILE_NEW):
+            return GetDeviceProfileNewInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::GET_SERVICE_PROFILE):
+            return GetServiceProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::GET_CHAR_PROFILE):
+            return GetCharacteristicProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::DEL_SERVICE_PROFILE):
+            return DeleteServiceProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::DEL_CHAR_PROFILE):
+            return DeleteCharacteristicProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::SYNC_DEVICE_PROFILE_NEW):
+            return SyncDeviceProfileNewInner(data, reply);
+        default:
+            HILOGW("unknown request code, please check");
+            return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
+    }
+}
+
 bool DistributedDeviceProfileStub::EnforceInterfaceToken(MessageParcel& data)
 {
     return data.ReadInterfaceToken() == IDistributedDeviceProfile::GetDescriptor();
@@ -128,31 +209,25 @@ int32_t DistributedDeviceProfileStub::OnRemoteRequest(uint32_t code, MessageParc
     HILOGI("code = %{public}u, flags = %{public}d, CallingPid = %{public}u", code, option.GetFlags(),
         IPCSkeleton::GetCallingPid());
     DelayUnloadTask();
-    auto iter = funcsMap_.find(code);
-    if (iter != funcsMap_.end()) {
-        auto func = iter->second;
-        if (!EnforceInterfaceToken(data)) {
-            HILOGE("check interface token failed");
-            return ERR_DP_INTERFACE_CHECK_FAILED;
-        }
-        if (!AuthorityManager::GetInstance().CheckCallerTrust()) {
-            HILOGE("caller is not trusted");
-            return ERR_DP_PERMISSION_DENIED;
-        }
-        if (std::find(aclAndSubscribeFuncs_.begin(), aclAndSubscribeFuncs_.end(), code) !=
-            aclAndSubscribeFuncs_.end() && func != nullptr) {
-            return (this->*func)(data, reply);
-        }
-        if (!DistributedDeviceProfileServiceNew::GetInstance().IsInited()) {
-            HILOGE("DP not finish init");
-            return ERR_DP_LOAD_SERVICE_ERR;
-        }
-        if (func != nullptr) {
-            return (this->*func)(data, reply);
-        }
+    if (!EnforceInterfaceToken(data)) {
+        HILOGE("check interface token failed");
+        return ERR_DP_INTERFACE_CHECK_FAILED;
     }
-    HILOGW("unknown request code, please check");
-    return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
+    if (!AuthorityManager::GetInstance().CheckCallerTrust()) {
+        HILOGE("caller is not trusted");
+        return ERR_DP_PERMISSION_DENIED;
+    }
+    if (std::find(aclAndSubscribeFuncs_.begin(), aclAndSubscribeFuncs_.end(), code) !=
+        aclAndSubscribeFuncs_.end()) {
+        int32_t ret = NotifyAclEventInner(code, data, reply, option);
+        return ret;
+    }
+    if (!DistributedDeviceProfileServiceNew::GetInstance().IsInited()) {
+        HILOGE("DP not finish init");
+        return ERR_DP_LOAD_SERVICE_ERR;
+    }
+    int32_t ret = NotifyOldEventInner(code, data, reply, option);
+    return ret;
 }
 
 int32_t DistributedDeviceProfileStub::PutDeviceProfileInner(MessageParcel& data, MessageParcel& reply)

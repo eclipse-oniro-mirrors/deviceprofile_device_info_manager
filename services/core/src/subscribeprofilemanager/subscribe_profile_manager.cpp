@@ -72,12 +72,30 @@ int32_t SubscribeProfileManager::NotifyProfileChange(ProfileType profileType, Ch
     const std::string& dbKey, const std::string& dbValue)
 {
     int32_t code = static_cast<int32_t>(profileType) * static_cast<int32_t>(changeType);
-    if (funcsMap_.find(code) == funcsMap_.end()) {
-        HILOGE("Params is invalid!");
-        return DP_INVALID_PARAMS;
-    }
     DpRadarHelper::GetInstance().ReportNotifyProfileChange(code);
-    return (this->*(funcsMap_[code]))(dbKey, dbValue);
+    switch (code) {
+        case ProfileType::DEVICE_PROFILE * ChangeType::ADD:
+            return SubscribeProfileManager::NotifyDeviceProfileAdd(dbKey, dbValue);
+        case ProfileType::DEVICE_PROFILE * ChangeType::UPDATE:
+            return SubscribeProfileManager::NotifyDeviceProfileUpdate(dbKey, dbValue);
+        case ProfileType::DEVICE_PROFILE * ChangeType::DELETE:
+            return SubscribeProfileManager::NotifyDeviceProfileDelete(dbKey, dbValue);
+        case ProfileType::SERVICE_PROFILE * ChangeType::ADD:
+            return SubscribeProfileManager::NotifyServiceProfileAdd(dbKey, dbValue);
+        case ProfileType::SERVICE_PROFILE * ChangeType::UPDATE:
+            return SubscribeProfileManager::NotifyServiceProfileUpdate(dbKey, dbValue);
+        case ProfileType::SERVICE_PROFILE * ChangeType::DELETE:
+            return SubscribeProfileManager::NotifyServiceProfileDelete(dbKey, dbValue);
+        case ProfileType::CHAR_PROFILE * ChangeType::ADD:
+            return SubscribeProfileManager::NotifyCharProfileAdd(dbKey, dbValue);
+        case ProfileType::CHAR_PROFILE * ChangeType::UPDATE:
+            return SubscribeProfileManager::NotifyCharProfileUpdate(dbKey, dbValue);
+        case ProfileType::CHAR_PROFILE * ChangeType::DELETE:
+            return SubscribeProfileManager::NotifyCharProfileDelete(dbKey, dbValue);
+        default:
+            HILOGE("Params is invalid!");
+            return DP_INVALID_PARAMS;
+    }
 }
 
 int32_t SubscribeProfileManager::NotifyTrustDeviceProfileAdd(const TrustDeviceProfile& trustDeviceProfile)

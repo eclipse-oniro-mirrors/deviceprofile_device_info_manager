@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -57,12 +57,11 @@ int32_t ProfileEventNotifierStub::OnRemoteRequest(uint32_t code, MessageParcel& 
         return ERR_DP_INTERFACE_CHECK_FAILED;
     }
 
-    auto iter = handlersMap_.find(code);
-    if (iter != handlersMap_.end()) {
-        auto handler = iter->second;
-        if (handler != nullptr) {
-            return (this->*handler)(data, reply);
-        }
+    switch (code) {
+        case ProfileEvent::EVENT_SYNC_COMPLETED:
+            return ProfileEventNotifierStub::OnSyncCompletedInner(data, reply);
+        case ProfileEvent::EVENT_PROFILE_CHANGED:
+            return ProfileEventNotifierStub::OnProfileChangedInner(data, reply);
     }
     HILOGW("unknown request code, please check");
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
