@@ -62,9 +62,10 @@ int32_t ProfileEventNotifierStub::OnRemoteRequest(uint32_t code, MessageParcel& 
             return ProfileEventNotifierStub::OnSyncCompletedInner(data, reply);
         case ProfileEvent::EVENT_PROFILE_CHANGED:
             return ProfileEventNotifierStub::OnProfileChangedInner(data, reply);
+        default:
+            HILOGW("unknown request code, please check, code = %{public}u", code);
+            return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
     }
-    HILOGW("unknown request code, please check");
-    return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
 __attribute__((no_sanitize("cfi"))) int32_t ProfileEventNotifierStub::OnSyncCompletedInner(MessageParcel& data,
