@@ -93,7 +93,7 @@ int32_t SubscribeProfileManager::NotifyProfileChange(ProfileType profileType, Ch
         case ProfileType::CHAR_PROFILE * ChangeType::DELETE:
             return SubscribeProfileManager::NotifyCharProfileDelete(dbKey, dbValue);
         default:
-            HILOGE("Params is invalid!");
+            HILOGE("Params is invalid!, code = %{public}u", code);
             return DP_INVALID_PARAMS;
     }
 }
