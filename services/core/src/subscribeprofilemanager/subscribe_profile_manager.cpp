@@ -149,7 +149,7 @@ int32_t SubscribeProfileManager::SubscribeDeviceProfile(const SubscribeInfo& sub
         }
         if (subscribeInfoMap_[subscribeInfo.GetSubscribeKey()].find(subscribeInfo) !=
             subscribeInfoMap_[subscribeInfo.GetSubscribeKey()].end()) {
-            HILOGI("this sa subscribeInfo is exist");
+            HILOGI("this sa subscribeInfo is exist, saId : %{public}d", subscribeInfo.GetSaId());
             subscribeInfoMap_[subscribeInfo.GetSubscribeKey()].erase(subscribeInfo);
         }
         subscribeInfoMap_[subscribeInfo.GetSubscribeKey()].emplace(subscribeInfo);

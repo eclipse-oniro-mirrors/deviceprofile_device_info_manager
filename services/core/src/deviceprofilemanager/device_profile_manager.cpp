@@ -75,6 +75,10 @@ int32_t DeviceProfileManager::UnInit()
     HILOGI("call!");
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore_ is nullptr");
+            return DP_KV_DB_PTR_NULL;
+        }
         deviceProfileStore_->UnInit();
         deviceProfileStore_ = nullptr;
     }
@@ -399,6 +403,10 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const DistributedDeviceProfile::
     ProfileCache::GetInstance().AddSyncListener(callerDescriptor, syncCompletedCallback);
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore_ is nullptr");
+            return DP_KV_DB_PTR_NULL;
+        }
         int32_t syncResult = deviceProfileStore_->Sync(openHarmonyDevices, syncOptions.GetSyncMode());
         if (syncResult != DP_SUCCESS) {
             HILOGI("SyncDeviceProfile fail, res: %{public}d!", syncResult);
@@ -475,6 +483,10 @@ int32_t DeviceProfileManager::RunloadedFunction(std::string deviceId, sptr<IRemo
     if (!LoadDpSyncAdapter()) {
         HILOGE("dp service adapter load failed.");
         return DP_LOAD_SYNC_ADAPTER_FAILED;
+    }
+    if (dpSyncAdapter_ == nullptr) {
+        HILOGE("dpSyncAdapter_ is nullptr");
+        return DP_NULLPTR;
     }
     if (dpSyncAdapter_->Initialize() != DP_SUCCESS) {
         HILOGE("dp service adapter initialize failed.");

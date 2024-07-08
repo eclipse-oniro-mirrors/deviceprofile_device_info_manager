@@ -345,7 +345,7 @@ const std::string TRUST_DEVICE_UPDATE = "TrustDeviceUpdate";
 const std::string DP_HANDLER = "dp_handler";
 const std::string EMPTY_STRING = "";
 /* switch attribute */
-const std::string SWITCH_CAPABILITY_PATH = "etc/deviceprofile/dp_switch_status_cfg.json"; // update
+const std::string SWITCH_CAPABILITY_PATH = "etc/deviceprofile/dp_switch_status_cfg.json";
 const std::string SWITCH_CALLERS = "DP_Callers";
 const std::string SWITCH_SERVICE_NAMES = "name";
 const std::string SWITCH_STATUS = "SwitchStatus";
