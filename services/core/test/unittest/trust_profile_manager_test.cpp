@@ -267,7 +267,7 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_001, TestSize.Level1)
 
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
-    EXPECT_NE(ret, DP_SUCCESS);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*

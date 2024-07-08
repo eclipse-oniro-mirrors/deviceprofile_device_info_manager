@@ -61,6 +61,10 @@ int32_t StaticProfileManager::UnInit()
     HILOGI("call!");
     {
         std::lock_guard<std::mutex> lock(staticStoreMutex_);
+        if (staticProfileStore_ == nullptr) {
+            HILOGE("staticProfileStore_ is nullptr!");
+            return DP_NULLPTR;
+        }
         staticProfileStore_->UnInit();
         staticProfileStore_ = nullptr;
     }
