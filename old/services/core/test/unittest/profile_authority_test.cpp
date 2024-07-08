@@ -53,7 +53,7 @@ const std::string INVALID_AUTHORITY_STR =
     "{\"fakeProcess1\":{\"servicesAuthority\":{\"all\":3}},\"fakeProcess2\":{\"servicesAuthority\":{\"all\":true}}}";
 const std::string VALID_AUTHORITY_STR = "{\"hdcd\":{\"servicesAuthority\":{\"all\":1,\"specific\":" \
     "{\"storage\":3,\"system\":3},\"prefix\":{\"cameraRear\":3}},\"interfacesAuthority\":{\"sync\":{}}}}";
-const std::string PKG_NAME = "DBinderBus_" + std::to_string(getpid());
+const std::string PKG_NAME = "ohos.deviceprofile";
 const std::string INVALID_INTERFACE_SERVICE = "{\"invalidinterface\":\"invalid\"";
 const std::string INVALID_INTERFACE_VALUE = "{\"interfacesAuthority\":\"invalid\"";
 const std::string INVALID_SERVIES_SPE = "{\"specific\":{\"storage\":\"3\"}}";

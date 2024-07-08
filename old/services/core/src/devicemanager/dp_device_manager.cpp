@@ -46,7 +46,7 @@ constexpr int32_t RETRY_TIMES = 30;
 constexpr uint8_t MAX_DEVICE_TYPE = 3;
 constexpr int32_t DEVICE_ID_SIZE = 65;
 constexpr int32_t MAX_TIMES_CONNECT_DEVICEMANAGER = 10;
-const std::string PKG_NAME = "DBinderBus_" + std::to_string(getpid());
+const std::string PKG_NAME = "ohos.deviceprofile";
 const int32_t DEFAULT_OS_TYPE = 10;
 }
 
