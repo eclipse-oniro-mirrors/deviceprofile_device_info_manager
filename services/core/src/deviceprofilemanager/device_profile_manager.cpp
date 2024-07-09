@@ -443,7 +443,7 @@ bool DeviceProfileManager::LoadDpSyncAdapter()
         return false;
     }
     auto adapter = func();
-    if (adapter = nullptr) {
+    if (adapter == nullptr) {
         dlclose(so_handle);
         HILOGI("adapter is nullptr");
         return false;
