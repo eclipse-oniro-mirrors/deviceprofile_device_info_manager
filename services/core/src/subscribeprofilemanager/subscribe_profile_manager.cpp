@@ -153,7 +153,7 @@ int32_t SubscribeProfileManager::NotifyTrustDeviceProfileDelete(const TrustDevic
 int32_t SubscribeProfileManager::SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)
 {
     HILOGI("SubscribeDeviceProfile, saId: %{public}d!, subscribeKey: %{public}s", subscribeInfo.GetSaId(),
-        ProfileUtils::GetAnonyString(subscribeInfo.GetSubscribeKey()).c_str());
+        ProfileUtils::GetDbKeyAnonyString(subscribeInfo.GetSubscribeKey()).c_str());
     {
         std::lock_guard<std::mutex> lock(subscribeMutex_);
         if (subscribeInfoMap_.size() > MAX_LISTENER_SIZE) {
@@ -187,7 +187,7 @@ int32_t SubscribeProfileManager::SubscribeDeviceProfile(std::map<std::string, Su
 int32_t SubscribeProfileManager::UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)
 {
     HILOGI("UnSubscribeDeviceProfile, saId: %{public}d!, subscribeKey: %{public}s", subscribeInfo.GetSaId(),
-        ProfileUtils::GetAnonyString(subscribeInfo.GetSubscribeKey()).c_str());
+        ProfileUtils::GetDbKeyAnonyString(subscribeInfo.GetSubscribeKey()).c_str());
     {
         std::lock_guard<std::mutex> lock(subscribeMutex_);
         subscribeInfoMap_[subscribeInfo.GetSubscribeKey()].erase(subscribeInfo);
@@ -415,7 +415,7 @@ std::unordered_set<SubscribeInfo, SubscribeHash, SubscribeCompare> SubscribeProf
     {
         std::lock_guard<std::mutex> lock(subscribeMutex_);
         if (subscribeInfoMap_.find(dbKey) == subscribeInfoMap_.end()) {
-            HILOGE("This dbKey is not subscribed, dbKey: %{public}s", ProfileUtils::GetAnonyString(dbKey).c_str());
+            HILOGE("This dbKey is not subscribed, dbKey: %{public}s", ProfileUtils::GetDbKeyAnonyString(dbKey).c_str());
             return {};
         }
         return subscribeInfoMap_[dbKey];

@@ -36,6 +36,18 @@ namespace {
     const std::string TAG = "ProfileUtils";
 }
 
+std::string ProfileUtils::GetDbKeyAnonyString(const std::string& dbKey)
+{
+    constexpr size_t DEVICE_ID_INDEX = 1;
+    std::vector<std::string> splitKeys;
+    if (ProfileUtils::SplitString(dbKey, SEPARATOR, splitKeys) != DP_SUCCESS ||
+        splitKeys.size() <= DEVICE_ID_INDEX) {
+        return GetAnonyString(dbKey);
+    }
+    splitKeys[DEVICE_ID_INDEX] = GetAnonyString(splitKeys[DEVICE_ID_INDEX]);
+    return JoinString(splitKeys, SEPARATOR);
+}
+
 std::string ProfileUtils::GetAnonyString(const std::string& value)
 {
     constexpr size_t INT32_SHORT_ID_LENGTH = 20;
@@ -203,6 +215,21 @@ int32_t ProfileUtils::SplitString(const std::string& str, const std::string& spl
         pos = strs.find(splits);
     }
     return DP_SUCCESS;
+}
+
+std::string ProfileUtils::JoinString(const std::vector<std::string>& strs, const std::string& delimiter)
+{
+    std::string res = EMPTY_STRING;
+    if (strs.empty()) {
+        return res;
+    }
+    for (size_t i = 0; i < strs.size(); i++) {
+        res += strs[i];
+        if (i != strs.size() - 1) {
+            res += delimiter;
+        }
+    }
+    return res;
 }
 
 bool ProfileUtils::IsKeyValid(const std::string& key)
@@ -552,7 +579,7 @@ std::map<std::string, std::string> ProfileUtils::GetProfilePropertiesMap(std::ma
     for (const auto& item : dbEntries) {
         std::string profileProperty = GetProfileProperty(item.first);
         if (profileProperty.empty()) {
-            HILOGE("GetProfileProperty fail, %{public}s!", GetAnonyString(item.first).c_str());
+            HILOGE("GetProfileProperty fail, %{public}s!", GetDbKeyAnonyString(item.first).c_str());
             continue;
         }
         propertiesMap[profileProperty] = item.second;
