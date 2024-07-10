@@ -51,7 +51,7 @@ int32_t DeviceProfileManager::Init()
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         deviceProfileStore_ = std::make_shared<KVAdapter>(APP_ID, STORE_ID, std::make_shared<KvDataChangeListener>(),
-            std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(),
+            std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
             DistributedKv::TYPE_DYNAMICAL);
         initResult = deviceProfileStore_->Init();
         if (initResult != DP_SUCCESS) {
@@ -76,6 +76,10 @@ int32_t DeviceProfileManager::UnInit()
     HILOGI("call!");
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore_ is nullptr");
+            return DP_KV_DB_PTR_NULL;
+        }
         deviceProfileStore_->UnInit();
         deviceProfileStore_ = nullptr;
     }
@@ -527,24 +531,6 @@ int32_t DeviceProfileManager::RunloadedFunction(const std::string& deviceId, spt
     return DP_SUCCESS;
 }
 
-int32_t DeviceProfileManager::DeviceOnlineAutoSync(const std::string& peerNetworkId)
-{
-    HILOGI("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
-    std::vector<std::string> deviceList{peerNetworkId};
-    std::vector<std::string> onlineDevices = ProfileUtils::FilterOnlineDevices(deviceList);
-    if (onlineDevices.empty() ||
-        std::find(onlineDevices.begin(), onlineDevices.end(), peerNetworkId) == onlineDevices.end()) {
-        HILOGE("Params is invalid! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
-        return DP_INVALID_PARAMS;
-    }
-    int32_t errCode = RunloadedFunction(peerNetworkId, nullptr);
-    if (errCode != DP_SUCCESS) {
-        HILOGE("sync profile failed.errCode=%{public}d,peerNetworkId=%{public}s", errCode,
-            ProfileUtils::GetAnonyString(peerNetworkId).c_str());
-    }
-    return errCode;
-}
-
 std::vector<DistributedKv::Entry> DeviceProfileManager::GetEntriesByKeys(const std::vector<std::string>& keys)
 {
     HILOGI("call!");
@@ -642,7 +628,7 @@ void DeviceProfileManager::ResetFirst()
     isFirst_.store(false);
 }
 
-void DeviceProfileManager::ClearDataOnDeviceOnline(const std::string& networkId, const std::string& extraData)
+void DeviceProfileManager::FixDataOnDeviceOnline(const std::string& networkId, const std::string& extraData)
 {
     HILOGI("networkId:%{public}s", ProfileUtils::GetAnonyString(networkId).c_str());
     if (networkId.empty() || extraData.empty()) {
@@ -657,9 +643,12 @@ void DeviceProfileManager::ClearDataOnDeviceOnline(const std::string& networkId,
         }
         int32_t osType = DEFAULT_OS_TYPE;
         cJSON* osTypeJson = cJSON_GetObjectItem(extraDataJson, DistributedHardware::PARAM_KEY_OS_TYPE);
-        if (cJSON_IsNumber(osTypeJson)) {
-            osType = static_cast<int32_t>(osTypeJson->valueint);
+        if (!cJSON_IsNumber(osTypeJson)) {
+            HILOGE("osTypeJson is not a number");
+            cJSON_Delete(extraDataJson);
+            return;
         }
+        osType = static_cast<int32_t>(osTypeJson->valueint);
         cJSON_Delete(extraDataJson);
         if (osType != DEFAULT_OS_TYPE) {
             return;

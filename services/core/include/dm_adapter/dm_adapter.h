@@ -32,13 +32,10 @@ public:
     int32_t Init();
     int32_t UnInit();
     int32_t ReInit();
-    void AutoSync(const DistributedHardware::DmDeviceInfo &deviceInfo);
 
 private:
     std::mutex deviceStateCallbackMutex_;
     std::shared_ptr<DistributedHardware::DeviceStateCallback> deviceStateCallback_;
-    std::mutex autoSyncHandlerMutex_;
-    std::shared_ptr<AppExecFwk::EventHandler> autoSyncHandler_;
 class DpDeviceStateCallback : public DistributedHardware::DeviceStateCallback {
     void OnDeviceOnline(const DistributedHardware::DmDeviceInfo &deviceInfo) override;
     void OnDeviceOffline(const DistributedHardware::DmDeviceInfo &deviceInfo) override;

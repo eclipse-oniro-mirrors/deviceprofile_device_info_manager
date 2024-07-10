@@ -147,6 +147,7 @@ constexpr int32_t DP_GENERATE_SWITCH_NOTIFY_FAIL = 98566269;
 constexpr int32_t DP_LOAD_SWITCH_JSON_FAIL = 98566270;
 constexpr int32_t DP_GET_SWITCH_INFO_FAIL = 98566271;
 constexpr int32_t DP_INIT_SWITCH_PROFILE_MANAGER_FAIL = 98566272;
+constexpr int32_t DP_NULLPTR = 98566273;
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_ERRORS_H

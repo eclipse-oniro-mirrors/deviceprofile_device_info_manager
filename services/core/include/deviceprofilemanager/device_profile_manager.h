@@ -63,12 +63,11 @@ public:
     int32_t GetAllCharacteristicProfile(std::vector<CharacteristicProfile>& charProfiles);
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
         sptr<IRemoteObject> syncCompletedCallback);
-    int32_t DeviceOnlineAutoSync(const std::string& peerNetworkId);
     std::vector<DistributedKv::Entry> GetEntriesByKeys(const std::vector<std::string>& keys);
     int32_t SavePutTempCache(std::map<std::string, std::string>& entries);
     bool IsFirstInitDB();
     void ResetFirst();
-    void ClearDataOnDeviceOnline(const std::string& networkId, const std::string& extraData);
+    void FixDataOnDeviceOnline(const std::string& networkId, const std::string& extraData);
 
 private:
     bool LoadDpSyncAdapter();
