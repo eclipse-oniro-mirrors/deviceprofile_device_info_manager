@@ -22,7 +22,6 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
     const std::string TAG = "DMAdapter";
-    const std::string PKGNAME = "deviceprofile";
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DMAdapter);
@@ -37,7 +36,7 @@ int32_t DMAdapter::Init()
             deviceStateCallback_ = std::make_shared<DpDeviceStateCallback>();
         }
         errCode = DistributedHardware::DeviceManager::GetInstance()
-            .RegisterDevStateCallback(PKGNAME, "", deviceStateCallback_);
+            .RegisterDevStateCallback(DP_PKG_NAME, "", deviceStateCallback_);
     }
     HILOGI("RegisterDevStateCallback errCode = %{public}d", errCode);
     return errCode;
@@ -50,7 +49,7 @@ int32_t DMAdapter::UnInit()
     {
         std::lock_guard<std::mutex> autoLock(deviceStateCallbackMutex_);
         if (deviceStateCallback_ != nullptr) {
-            errCode = DistributedHardware::DeviceManager::GetInstance().UnRegisterDevStateCallback(PKGNAME);
+            errCode = DistributedHardware::DeviceManager::GetInstance().UnRegisterDevStateCallback(DP_PKG_NAME);
             deviceStateCallback_ = nullptr;
         }
     }

@@ -39,7 +39,6 @@ public:
     static std::string GetAnonyString(const std::string& value);
     static std::vector<std::string> GetOnlineDevices();
     static std::string GetLocalUdidFromDM();
-    static std::vector<std::string> FilterOnlineDevices(const std::vector<std::string>& deviceList);
     static bool FilterAndGroupOnlineDevices(const std::vector<std::string>& deviceList,
         std::vector<std::string>& nextDevices, std::vector<std::string>& noNextDevices);
     static bool IsNextDevice(const std::string& extraData);

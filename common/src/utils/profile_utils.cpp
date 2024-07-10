@@ -99,30 +99,6 @@ std::string ProfileUtils::GetLocalUdidFromDM()
     return udid;
 }
 
-std::vector<std::string> ProfileUtils::FilterOnlineDevices(const std::vector<std::string>& deviceList)
-{
-    if (deviceList.size() == 0 || deviceList.size() > MAX_DEVICE_SIZE) {
-        HILOGE("This deviceList size is invalid, size: %{public}zu!", deviceList.size());
-        return {};
-    }
-    std::vector<DmDeviceInfo> allOnlineDeviceInfos;
-    int32_t result = DeviceManager::GetInstance().GetTrustedDeviceList(DP_PKG_NAME, "", allOnlineDeviceInfos);
-    if (result != DP_SUCCESS || allOnlineDeviceInfos.empty()) {
-        HILOGE("GetTrustedDeviceList Failed!");
-        return {};
-    }
-    std::vector<std::string> targetDevices;
-    for (const DmDeviceInfo& dmDeviceInfo : allOnlineDeviceInfos) {
-        if (std::find(deviceList.begin(), deviceList.end(), dmDeviceInfo.networkId) == deviceList.end()) {
-            HILOGE("This device is not online, networkId: %{public}s!",
-                   ProfileUtils::GetAnonyString(dmDeviceInfo.networkId).c_str());
-            continue;
-        }
-        targetDevices.push_back(dmDeviceInfo.networkId);
-    }
-    return targetDevices;
-}
-
 bool ProfileUtils::FilterAndGroupOnlineDevices(const std::vector<std::string>& deviceList,
     std::vector<std::string>& nextDevices, std::vector<std::string>& notNextDevices)
 {
@@ -131,7 +107,7 @@ bool ProfileUtils::FilterAndGroupOnlineDevices(const std::vector<std::string>& d
         return false;
     }
     std::vector<DmDeviceInfo> allOnlineDeviceInfos;
-    int32_t result = DeviceManager::GetInstance().GetTrustedDeviceList(PKG_NAME, "", allOnlineDeviceInfos);
+    int32_t result = DeviceManager::GetInstance().GetTrustedDeviceList(DP_PKG_NAME, "", allOnlineDeviceInfos);
     if (result != DP_SUCCESS || allOnlineDeviceInfos.empty()) {
         HILOGE("GetTrustedDeviceList Failed!");
         return false;
