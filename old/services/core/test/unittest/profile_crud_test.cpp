@@ -883,7 +883,7 @@ HWTEST_F(ProfileCrudTest, SyncDeviceProfile_002, TestSize.Level3)
     syncOption.AddDevice("test");
     int result = DistributedDeviceProfileClient::GetInstance().SyncDeviceProfile(syncOption,
         std::make_shared<ProfileEventCallback>());
-    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+    EXPECT_EQ(ERR_DP_INIT_DB_FAILED, result);
 }
 
 /**
