@@ -67,6 +67,7 @@ ohos_unittest("profile_dm_test") {
   sources = [ "unittest/profile_dm_test.cpp" ]
   configs = device_profile_configs
   deps = device_profile_deps
+  deps += [ "${device_profile_service}:distributed_device_profile_svr" ]
   external_deps = device_profile_external_deps
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"

@@ -278,11 +278,14 @@ void DeviceProfileStorageManager::SetServiceType(const std::string& udid,
 int32_t DeviceProfileStorageManager::DeleteDeviceProfile(const std::string& serviceId)
 {
     HITRACE_METER_NAME(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_DELETE_TRACE);
+    if (onlineSyncTbl_ == nullptr) {
+        HILOGE("onlineSyncTbl_ is null");
+        return ERR_DP_INVALID_PARAMS;
+    }
     if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
         HILOGE("kvstore init failed");
         return ERR_DP_INIT_DB_FAILED;
     }
-
     std::unique_lock<std::mutex> autoLock(serviceLock_);
     if (servicesJson_[serviceId] == nullptr) {
         HILOGW("can't find service %{public}s", serviceId.c_str());
@@ -367,6 +370,10 @@ int32_t DeviceProfileStorageManager::RemoveRemoteDeviceProfile()
 int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOptions,
     const sptr<IRemoteObject>& profileEventNotifier)
 {
+    if (onlineSyncTbl_ == nullptr) {
+        HILOGE("onlineSyncTbl_ is null");
+        return ERR_DP_INVALID_PARAMS;
+    }
     if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
         HILOGE("kvstore init failed");
         return ERR_DP_INIT_DB_FAILED;
