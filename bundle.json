@@ -12,7 +12,7 @@
     "component": {
       "name": "device_info_manager",
       "subsystem": "deviceprofile",
-      "features": [ "device_info_manager_feature_coverage = false" ],
+      "features": [ "device_info_manager_feature_coverage" ],
       "adapted_system_type": [ "standard" ],
       "hisysevent_config":[
         "//foundation/deviceprofile/device_info_manager/hisysevent.yaml"
