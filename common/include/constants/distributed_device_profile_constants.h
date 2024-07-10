@@ -136,7 +136,6 @@ const std::string SVR_PREFIX = "svr";
 const std::string CHAR_PREFIX = "char";
 const std::string USER_ID = "user_id";
 const std::string TOKEN_ID = "token_id";
-const std::string PKG_NAME = "DBinderBus_" + std::to_string(getpid());
 const std::string ALL_PROC = "all";
 constexpr int32_t NUM_1 = 1;
 constexpr int32_t NUM_2 = 2;
@@ -144,7 +143,7 @@ constexpr int32_t NUM_3 = 3;
 constexpr uint32_t NUM_1U = 1;
 constexpr uint32_t NUM_8U = 8;
 constexpr uint16_t CUR_SWITCH_LEN = 2;
-const std::string DP_PKG_NAME = "deviceprofile";
+const std::string DP_PKG_NAME = "ohos.deviceprofile";
 const std::string IS_NUMSTRING_RULES = "^[-+]?[0-9]+$";
 /* rdb constants */
 const std::string RDB_PATH = "/data/service/el1/public/database/distributed_device_profile_service/";

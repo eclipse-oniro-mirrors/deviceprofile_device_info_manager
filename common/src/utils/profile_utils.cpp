@@ -76,7 +76,7 @@ std::vector<std::string> ProfileUtils::GetOnlineDevices()
 {
     std::vector<std::string> targetDevices;
     std::vector<DmDeviceInfo> allOnlineDeviceInfos;
-    int32_t result = DeviceManager::GetInstance().GetTrustedDeviceList(PKG_NAME, "", allOnlineDeviceInfos);
+    int32_t result = DeviceManager::GetInstance().GetTrustedDeviceList(DP_PKG_NAME, "", allOnlineDeviceInfos);
     if (result != DP_SUCCESS || allOnlineDeviceInfos.empty()) {
         HILOGE("GetTrustedDeviceList Failed!");
         return {};
@@ -90,7 +90,7 @@ std::vector<std::string> ProfileUtils::GetOnlineDevices()
 std::string ProfileUtils::GetLocalUdidFromDM()
 {
     std::string udid = "";
-    if (DeviceManager::GetInstance().GetLocalDeviceId(PKG_NAME, udid) != DP_SUCCESS) {
+    if (DeviceManager::GetInstance().GetLocalDeviceId(DP_PKG_NAME, udid) != DP_SUCCESS) {
         HILOGE("Get local udid fail from DM!");
         return "";
     }
@@ -104,7 +104,7 @@ std::vector<std::string> ProfileUtils::FilterOnlineDevices(const std::vector<std
         return {};
     }
     std::vector<DmDeviceInfo> allOnlineDeviceInfos;
-    int32_t result = DeviceManager::GetInstance().GetTrustedDeviceList(PKG_NAME, "", allOnlineDeviceInfos);
+    int32_t result = DeviceManager::GetInstance().GetTrustedDeviceList(DP_PKG_NAME, "", allOnlineDeviceInfos);
     if (result != DP_SUCCESS || allOnlineDeviceInfos.empty()) {
         HILOGE("GetTrustedDeviceList Failed!");
         return {};
@@ -660,7 +660,7 @@ bool ProfileUtils::GetLongValue(const ValuesBucket& values, const std::string& p
 bool ProfileUtils::GetUdidByNetworkId(const std::string& networkId, std::string& udid)
 {
     return ((DeviceManager::GetInstance().GetUdidByNetworkId(
-        PKG_NAME, networkId, udid) == 0) ? true : false);
+        DP_PKG_NAME, networkId, udid) == 0) ? true : false);
 }
 
 std::string ProfileUtils::GetDbKeyByProfile(const CharacteristicProfile& profile)

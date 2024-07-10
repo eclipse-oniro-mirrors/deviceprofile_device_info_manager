@@ -37,7 +37,7 @@ using namespace std::chrono_literals;
 
 namespace {
 const std::string TAG = "DeviceProfileStorage";
-const std::string PKG_NAME = "DBinderBus_" + std::to_string(getpid());
+const std::string PKG_NAME = "ohos.deviceprofile";
 constexpr int32_t RETRY_TIMES_GET_KVSTORE = 1;
 }
 
