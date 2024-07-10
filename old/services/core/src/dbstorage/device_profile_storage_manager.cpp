@@ -370,11 +370,7 @@ int32_t DeviceProfileStorageManager::RemoveRemoteDeviceProfile()
 int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOptions,
     const sptr<IRemoteObject>& profileEventNotifier)
 {
-    if (onlineSyncTbl_ == nullptr) {
-        HILOGE("onlineSyncTbl_ is null");
-        return ERR_DP_INVALID_PARAMS;
-    }
-    if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
+    if (onlineSyncTbl_ == nullptr || onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
         HILOGE("kvstore init failed");
         return ERR_DP_INIT_DB_FAILED;
     }
