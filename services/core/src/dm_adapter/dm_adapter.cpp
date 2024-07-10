@@ -14,22 +14,15 @@
  */
 
 #include "dm_adapter.h"
-#include "cJSON.h"
-#include "device_profile_manager.h"
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
-#include "event_handler_factory.h"
-#include "profile_utils.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
     const std::string TAG = "DMAdapter";
-    const std::string AUTO_SYNC_TASK = "autoSyncTask";
-    const int32_t DEFAULT_OS_TYPE = 10;
-    constexpr const char* OS_TYPE_KEY = "OS_TYPE";
-    const std::string PKGNAME = "DMAdapter";
+    const std::string PKGNAME = "deviceprofile";
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DMAdapter);
@@ -38,15 +31,6 @@ int32_t DMAdapter::Init()
 {
     HILOGI("call!");
     int32_t errCode = DP_SUCCESS;
-    {
-        std::lock_guard<std::mutex> lock(autoSyncHandlerMutex_);
-        if (autoSyncHandler_ == nullptr) {
-            autoSyncHandler_ = EventHandlerFactory::GetInstance().GetEventHandler();
-        }
-        if (autoSyncHandler_ == nullptr) {
-            HILOGE("Create EventHandler is failed");
-        }
-    }
     {
         std::lock_guard<std::mutex> autoLock(deviceStateCallbackMutex_);
         if (deviceStateCallback_ == nullptr) {
@@ -63,13 +47,6 @@ int32_t DMAdapter::UnInit()
 {
     HILOGI("call!");
     int32_t errCode = DP_SUCCESS;
-    {
-        std::lock_guard<std::mutex> lock(autoSyncHandlerMutex_);
-        if (autoSyncHandler_ != nullptr) {
-            autoSyncHandler_->RemoveTask(AUTO_SYNC_TASK);
-            autoSyncHandler_ = nullptr;
-        }
-    }
     {
         std::lock_guard<std::mutex> autoLock(deviceStateCallbackMutex_);
         if (deviceStateCallback_ != nullptr) {
@@ -88,50 +65,9 @@ int32_t DMAdapter::ReInit()
     return Init();
 }
 
-void DMAdapter::AutoSync(const DistributedHardware::DmDeviceInfo &deviceInfo)
-{
-    HILOGI("call! networdId=%{public}s", ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
-    if (deviceInfo.extraData.empty()) {
-        HILOGE("extraData is empty!");
-        return;
-    }
-    auto autoSyncTask = [deviceInfo]() {
-        cJSON* extraData = cJSON_Parse(deviceInfo.extraData.c_str());
-        if (!cJSON_IsObject(extraData)) {
-            HILOGE("extraData parse failed");
-            cJSON_Delete(extraData);
-            return;
-        }
-        int32_t osType = DEFAULT_OS_TYPE;
-        cJSON* osTypeJson = cJSON_GetObjectItem(extraData, OS_TYPE_KEY);
-        if (cJSON_IsNumber(osTypeJson)) {
-            osType = static_cast<int32_t>(osTypeJson->valueint);
-        }
-        cJSON_Delete(extraData);
-        HILOGI("osType=%{public}d", osType);
-        if (osType != DEFAULT_OS_TYPE) {
-            int32_t errCode = DeviceProfileManager::GetInstance().DeviceOnlineAutoSync(deviceInfo.networkId);
-            HILOGI("DeviceOnlineAutoSync errCode=%{public}d, networdId=%{public}s", errCode,
-                ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
-        }
-    };
-    {
-        std::lock_guard<std::mutex> lock(autoSyncHandlerMutex_);
-        if (autoSyncHandler_ == nullptr) {
-            HILOGE("Create EventHandler is nullptr");
-            return;
-        }
-        if (!autoSyncHandler_->PostTask(autoSyncTask, AUTO_SYNC_TASK, 0)) {
-            HILOGE("Post autoSyncTask fail!");
-            return;
-        }
-    }
-}
-
 void DMAdapter::DpDeviceStateCallback::OnDeviceOnline(const DistributedHardware::DmDeviceInfo &deviceInfo)
 {
     HILOGI("call!");
-    DMAdapter::GetInstance().AutoSync(deviceInfo);
 }
 
 void DMAdapter::DpDeviceStateCallback::OnDeviceOffline(const DistributedHardware::DmDeviceInfo &deviceInfo)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -61,7 +61,8 @@ private:
     using Func = int32_t(DistributedDeviceProfileStubNew::*)(MessageParcel& data, MessageParcel& reply);
     bool IsInterfaceTokenValid(MessageParcel& data);
     void InitAclAndSubscribe();
-
+    int32_t NotifyEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
+    int32_t NotifyAclEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
 private:
     std::map<uint32_t, Func> funcsMap_;
     std::unordered_set<uint32_t> aclAndSubscribeFuncs_;

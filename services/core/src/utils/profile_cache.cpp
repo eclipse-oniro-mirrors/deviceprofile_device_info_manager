@@ -489,6 +489,10 @@ int32_t ProfileCache::RemoveSyncListener(const std::string& caller)
             return DP_NOT_FOUND_FAIL;
         }
         HILOGI("RemoveSyncListener caller %{public}s!", caller.c_str());
+        if (syncListenerMap_[caller] == nullptr) {
+            HILOGE("this caller syncListener is nullptr, caller : %{public}s", caller.c_str());
+            return DP_NULLPTR;
+        }
         syncListenerMap_[caller]->RemoveDeathRecipient(syncListenerDeathRecipient_);
         syncListenerMap_.erase(caller);
     }

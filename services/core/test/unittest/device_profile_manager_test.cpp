@@ -1393,22 +1393,5 @@ HWTEST_F(DeviceProfileManagerTest, RunloadedFunction002, TestSize.Level1)
     ret = DeviceProfileManager::GetInstance().RunloadedFunction(deviceId, syncCb);
     EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
 }
-
-/**
- * @tc.name: DeviceOnlineAutoSync001
- * @tc.desc: DeviceOnlineAutoSync001
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(DeviceProfileManagerTest, DeviceOnlineAutoSync001, TestSize.Level1)
-{
-    std::string peerNetworkId = "";
-    int32_t ret = DeviceProfileManager::GetInstance().DeviceOnlineAutoSync(peerNetworkId);
-    EXPECT_EQ(ret, DP_INVALID_PARAMS);
-
-    peerNetworkId = ProfileUtils::GetLocalUdidFromDM();
-    ret = DeviceProfileManager::GetInstance().DeviceOnlineAutoSync(peerNetworkId);
-    EXPECT_EQ(ret, DP_INVALID_PARAMS);
-}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
