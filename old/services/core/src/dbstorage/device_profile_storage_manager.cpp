@@ -378,17 +378,14 @@ int32_t DeviceProfileStorageManager::SyncDeviceProfile(const SyncOptions& syncOp
         HILOGE("kvstore init failed");
         return ERR_DP_INIT_DB_FAILED;
     }
-
     if (!CheckSyncOption(syncOptions)) {
         HILOGW("device list has offline device");
         return ERR_DP_INVALID_PARAMS;
     }
-
     int32_t result = NotifySyncStart(profileEventNotifier);
     if (result != ERR_OK) {
         return result;
     }
-
     StartAsyncTrace(HITRACE_TAG_DEVICE_PROFILE, DP_DEVICE_SYNC_TRACE, FIX_TASK_ID);
     auto syncTask = [syncOptions, this]() {
         HILOGI("start sync");
