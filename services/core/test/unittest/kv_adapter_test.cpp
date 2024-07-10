@@ -53,8 +53,8 @@ public:
 void KVAdapterTest::SetUpTestCase(void)
 {
     kvStore = make_shared<KVAdapter>(APP_ID, STORE_ID,
-            make_shared<KvDataChangeListener>(),
-            make_shared<KvSyncCompletedListener>(),
+            make_shared<KvDataChangeListener>(STORE_ID),
+            make_shared<KvSyncCompletedListener>(STORE_ID),
             make_shared<KvDeathRecipient>(STORE_ID),
             DistributedKv::TYPE_DYNAMICAL);
 }
@@ -387,8 +387,8 @@ HWTEST_F(KVAdapterTest, DeleteKvStore001, TestSize.Level1)
 {
     shared_ptr<KVAdapter> kvStore_;
     kvStore_= make_shared<KVAdapter>(APP_ID, STORE_ID,
-            make_shared<KvDataChangeListener>(),
-            make_shared<KvSyncCompletedListener>(),
+            make_shared<KvDataChangeListener>(STORE_ID),
+            make_shared<KvSyncCompletedListener>(STORE_ID),
             make_shared<KvDeathRecipient>(STORE_ID),
             DistributedKv::TYPE_DYNAMICAL);
     int32_t ret = kvStore_->DeleteKvStore();

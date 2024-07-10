@@ -15,6 +15,7 @@
 
 #include "switch_adapter.h"
 
+#include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 #include "kv_data_change_listener.h"
@@ -31,8 +32,7 @@ namespace {
 void SwitchAdapter::Init()
 {
     HILOGI("called");
-    
-    observer_ = std::make_shared<KvDataChangeListener>();
+    observer_ = std::make_shared<KvDataChangeListener>(EMPTY_STRING);
 }
 
 void SwitchAdapter::Uninit() {}

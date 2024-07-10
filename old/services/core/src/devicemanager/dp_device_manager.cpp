@@ -124,6 +124,10 @@ void DpDeviceManager::DpDeviceStateCallback::OnDeviceReady(const DmDeviceInfo &d
 
 void DpDeviceManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
 {
+    if (deviceInfo == nullptr) {
+        HILOGE("deviceInfo is nullptr");
+        return;
+    }
     auto onlineNotifyTask = [this, deviceInfo = deviceInfo]() {
         HILOGI("online networkId = %{public}s",
             DeviceProfileUtils::AnonymizeDeviceId(deviceInfo->GetNetworkId()).c_str());
@@ -135,6 +139,10 @@ void DpDeviceManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
             remoteDeviceInfoMap_[networkId] = deviceInfo;
         }
     };
+    if (devMgrHandler_ == nullptr) {
+        HILOGE("devMgrHandler is nullptr");
+        return;
+    }
     if (!devMgrHandler_->PostTask(onlineNotifyTask)) {
         HILOGE("post task failed");
         return;
@@ -148,6 +156,10 @@ void DpDeviceManager::OnNodeOffline(const std::string& networkId)
         std::lock_guard<std::mutex> autoLock(deviceLock_);
         remoteDeviceInfoMap_.erase(networkId);
     };
+    if (devMgrHandler_ == nullptr) {
+        HILOGE("devMgrHandler is nullptr");
+        return;
+    }
     if (!devMgrHandler_->PostTask(offlineNotifyTask)) {
         HILOGE("post task failed");
         return;
@@ -222,6 +234,10 @@ bool DpDeviceManager::ConnectDeviceManager()
         }
         HILOGI("register %{public}s", (errCode == ERR_OK) ? "success" : "timeout");
     };
+    if (devMgrHandler_ == nullptr) {
+        HILOGE("devMgrHandler is nullptr");
+        return false;
+    }
     if (!devMgrHandler_->PostTask(registerTask)) {
         HILOGE("post task failed");
         return false;
@@ -382,6 +398,10 @@ void DpDeviceManager::GetDeviceIdList(std::list<std::string>& deviceIdList)
     deviceIdList.clear();
     std::lock_guard<std::mutex> autoLock(deviceLock_);
     for (const auto& [_, deviceInfo] : remoteDeviceInfoMap_) {
+        if (deviceInfo == nullptr) {
+            HILOGW("deviceInfo is nullptr");
+            continue;
+        }
         deviceIdList.emplace_back(deviceInfo->GetNetworkId());
     }
 }
@@ -391,6 +411,10 @@ void DpDeviceManager::GetDeviceList(std::list<std::shared_ptr<DeviceInfo>>& devi
     deviceList.clear();
     std::lock_guard<std::mutex> autoLock(deviceLock_);
     for (const auto& [_, deviceInfo] : remoteDeviceInfoMap_) {
+        if (deviceInfo == nullptr) {
+            HILOGW("deviceInfo is nullptr");
+            continue;
+        }
         deviceList.emplace_back(deviceInfo);
     }
 }

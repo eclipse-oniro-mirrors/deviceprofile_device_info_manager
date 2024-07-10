@@ -33,9 +33,10 @@ namespace {
     const std::string ON_SYNC_TASK_ID = "on_sync_task";
 }
 
-KvSyncCompletedListener::KvSyncCompletedListener()
+KvSyncCompletedListener::KvSyncCompletedListener(const std::string& storeId)
 {
     HILOGI("construct!");
+    storeId_ = storeId;
     {
         std::lock_guard<std::mutex> lock(reInitMutex_);
         onSyncHandler_ = EventHandlerFactory::GetInstance().GetEventHandler();
