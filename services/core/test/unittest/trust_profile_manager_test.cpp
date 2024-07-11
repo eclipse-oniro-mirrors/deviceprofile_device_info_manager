@@ -76,7 +76,7 @@ void TrustProfileManagerTest::TearDown()
 
 int TrustProfileManagerTest::ResultSize(std::shared_ptr<ResultSet> &resultSet)
 {
-    if (resultSet->GoToFirstRow() != E_OK && resultSet == nullptr) {
+    if (resultSet->GoToFirstRow() != E_OK) {
         return 0;
     }
     int count;
