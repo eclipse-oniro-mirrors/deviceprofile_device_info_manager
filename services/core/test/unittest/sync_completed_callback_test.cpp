@@ -142,6 +142,7 @@ HWTEST_F(SyncCompletedCallbackStubTest, OnRemoteRequest_003, TestSize.Level3)
 
     sptr<SyncCompletedListener> stub(new SyncCompletedListener());
     sptr<SyncCompletedCallbackProxy> proxy(new SyncCompletedCallbackProxy(stub));
+    ASSERT_NE(proxy, nullptr);
     syncResults.emplace("testdeviceid", SUCCEEDED);
     proxy->OnSyncCompleted(syncResults);
 }
