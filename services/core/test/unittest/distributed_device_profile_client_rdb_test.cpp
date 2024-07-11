@@ -136,7 +136,7 @@ void DistributedDeviceProfileClientRdbTest::TearDown()
 
 int DistributedDeviceProfileClientRdbTest::ResultSize(std::shared_ptr<ResultSet> &resultSet)
 {
-    if (resultSet == nullptr && resultSet->GoToFirstRow() != E_OK) {
+    if (resultSet == nullptr || resultSet->GoToFirstRow() != E_OK) {
         return 0;
     }
     int count;
