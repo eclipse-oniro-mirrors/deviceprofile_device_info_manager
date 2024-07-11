@@ -545,6 +545,9 @@ void DistributedDeviceProfileServiceNew::DelayUnloadTask()
         }
         HILOGI("kill dp svr success!");
     };
+    if (unloadHandler_ == nullptr) {
+        return;
+    }
     unloadHandler_->RemoveTask(UNLOAD_TASK_ID);
     HILOGI("delay unload task post task");
     unloadHandler_->PostTask(task, UNLOAD_TASK_ID, DELAY_TIME);
