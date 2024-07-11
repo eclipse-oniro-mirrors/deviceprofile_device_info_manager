@@ -450,8 +450,8 @@ bool DeviceProfileManager::LoadDpSyncAdapter()
     }
     dpSyncAdapter_ = std::shared_ptr<IDPSyncAdapter>(adapter);
     if (dpSyncAdapter_->Initialize() != DP_SUCCESS) {
-        dlclose(so_handle);
         dpSyncAdapter_ = nullptr;
+        dlclose(so_handle);
         isAdapterSoLoaded_ = false;
         HILOGI("dp sync adapter init failed");
         return false;
