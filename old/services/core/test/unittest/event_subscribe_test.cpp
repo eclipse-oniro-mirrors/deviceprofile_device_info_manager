@@ -29,6 +29,9 @@ using namespace std::chrono_literals;
 using namespace testing;
 using namespace testing::ext;
 
+namespace {
+const int32_t UT_ERROR = -1;
+}
 class EventSubscribeTest : public testing::Test {
 public:
     static void SetUpTestCase();
@@ -117,6 +120,9 @@ int32_t PutFakeSystem()
 int32_t MockSubscribeEvents(const std::shared_ptr<ProfileEventCallback>& eventCb,
     const std::list<std::string>& serviceIds, const std::string& deviceId)
 {
+    if (eventCb == nullptr) {
+        return UT_ERROR;
+    }
     eventCb->SetSubServiceIds(serviceIds);
     ExtraInfo extraInfo;
     extraInfo["deviceId"] = deviceId;
@@ -139,6 +145,9 @@ int32_t MockSubscribeEvents(const std::shared_ptr<ProfileEventCallback>& eventCb
 
 int32_t MockUnsubscribeEvents(const std::shared_ptr<ProfileEventCallback>& eventCb)
 {
+    if (eventCb == nullptr) {
+        return UT_ERROR;
+    }
     std::list<ProfileEvent> profileEvents;
     profileEvents.emplace_back(ProfileEvent::EVENT_PROFILE_CHANGED);
     profileEvents.emplace_back(ProfileEvent::EVENT_SYNC_COMPLETED);
@@ -150,6 +159,9 @@ int32_t MockUnsubscribeEvents(const std::shared_ptr<ProfileEventCallback>& event
 int32_t MockSubscribeEvent(const std::shared_ptr<ProfileEventCallback>& eventCb,
     const std::list<std::string>& serviceIds, const std::string& deviceId)
 {
+    if (eventCb == nullptr) {
+        return UT_ERROR;
+    }
     eventCb->SetSubServiceIds(serviceIds);
     ExtraInfo extraInfo;
     extraInfo["deviceId"] = deviceId;
