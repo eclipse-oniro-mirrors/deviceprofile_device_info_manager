@@ -20,6 +20,7 @@
 #define private public
 #define protected public
 #include "dp_device_manager.h"
+#include "event_handler_factory.h"
 #undef private
 #undef protected
 
@@ -123,6 +124,7 @@ HWTEST_F(ProfileDmTest, TransformDeviceId_001, TestSize.Level3)
  */
 HWTEST_F(ProfileDmTest, Init_001, TestSize.Level3)
 {
+    DistributedDeviceProfile::EventHandlerFactory::GetInstance().Init();
     bool res = DpDeviceManager::GetInstance().Init();
     DpDeviceManager::GetInstance().GetTrustedDeviceList();
     DpDeviceManager::GetInstance().AddLocalDeviceIds();

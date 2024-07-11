@@ -135,6 +135,10 @@ void DpDeviceManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
             remoteDeviceInfoMap_[networkId] = deviceInfo;
         }
     };
+    if (devMgrHandler_ == nullptr) {
+        HILOGE("devMgrHandler_ is nullptr");
+        return;
+    }
     if (!devMgrHandler_->PostTask(onlineNotifyTask)) {
         HILOGE("post task failed");
         return;
@@ -148,6 +152,10 @@ void DpDeviceManager::OnNodeOffline(const std::string& networkId)
         std::lock_guard<std::mutex> autoLock(deviceLock_);
         remoteDeviceInfoMap_.erase(networkId);
     };
+    if (devMgrHandler_ == nullptr) {
+        HILOGE("devMgrHandler_ is nullptr");
+        return;
+    }
     if (!devMgrHandler_->PostTask(offlineNotifyTask)) {
         HILOGE("post task failed");
         return;
@@ -222,6 +230,10 @@ bool DpDeviceManager::ConnectDeviceManager()
         }
         HILOGI("register %{public}s", (errCode == ERR_OK) ? "success" : "timeout");
     };
+    if (devMgrHandler_ == nullptr) {
+        HILOGE("devMgrHandler_ is nullptr");
+        return false;
+    }
     if (!devMgrHandler_->PostTask(registerTask)) {
         HILOGE("post task failed");
         return false;
