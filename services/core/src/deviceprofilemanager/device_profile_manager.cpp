@@ -445,7 +445,13 @@ bool DeviceProfileManager::LoadDpSyncAdapter()
         HILOGI("Create object function is not exist.");
         return false;
     }
-    dpSyncAdapter_ = std::shared_ptr<IDPSyncAdapter>(func());
+    auto adapter = func();
+    if (adapter == nullptr) {
+        dlclose(so_handle);
+        HILOGI("adapter is nullptr");
+        return false;
+    }
+    dpSyncAdapter_ = std::shared_ptr<IDPSyncAdapter>(adapter);
     if (dpSyncAdapter_->Initialize() != DP_SUCCESS) {
         dlclose(so_handle);
         dpSyncAdapter_ = nullptr;
