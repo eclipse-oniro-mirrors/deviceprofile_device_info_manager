@@ -397,12 +397,12 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const DistributedDeviceProfile::
         {
             std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
             if (deviceProfileStore_ == nullptr) {
-                HILOGI("deviceProfileStore is nullptr");
+                HILOGE("deviceProfileStore is nullptr");
                 return DP_SYNC_DEVICE_FAIL;
             }
             int32_t syncResult = deviceProfileStore_->Sync(nextDevices, syncOptions.GetSyncMode());
             if (syncResult != DP_SUCCESS) {
-                HILOGI("SyncDeviceProfile fail, res: %{public}d!", syncResult);
+                HILOGE("SyncDeviceProfile fail, res: %{public}d!", syncResult);
                 return DP_SYNC_DEVICE_FAIL;
             }
         }
