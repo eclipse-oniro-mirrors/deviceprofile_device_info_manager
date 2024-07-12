@@ -69,6 +69,7 @@ HWTEST_F(ProfileEventNotifierProxyTest, OnSyncCompleted_001, TestSize.Level3)
     auto syncCb = std::make_shared<StorageProfileEventCallback>();
     sptr<ProfileEventNotifierStub> stub(new ProfileEventNotifierStub(syncCb));
     sptr<ProfileEventNotifierProxy> proxy(new ProfileEventNotifierProxy(stub));
+    ASSERT_NE(proxy, nullptr);
     SyncResult syncResults;
     proxy->OnSyncCompleted(syncResults);
     EXPECT_EQ(syncCb->result, 0);
@@ -85,6 +86,7 @@ HWTEST_F(ProfileEventNotifierProxyTest, OnSyncCompleted_002, TestSize.Level3)
     auto syncCb = std::make_shared<StorageProfileEventCallback>();
     sptr<ProfileEventNotifierStub> stub(new ProfileEventNotifierStub(syncCb));
     sptr<ProfileEventNotifierProxy> proxy(new ProfileEventNotifierProxy(stub));
+    ASSERT_NE(proxy, nullptr);
     SyncResult syncResults;
     syncResults.emplace("testdeviceid", SUCCEEDED);
     proxy->OnSyncCompleted(syncResults);
@@ -102,6 +104,7 @@ HWTEST_F(ProfileEventNotifierProxyTest, OnProfileChanged_001, TestSize.Level3)
     auto syncCb = std::make_shared<StorageProfileEventCallback>();
     sptr<ProfileEventNotifierStub> stub(new ProfileEventNotifierStub(syncCb));
     sptr<ProfileEventNotifierProxy> proxy(new ProfileEventNotifierProxy(stub));
+    ASSERT_NE(proxy, nullptr);
     ProfileChangeNotification notification;
     proxy->OnProfileChanged(notification);
     EXPECT_EQ(syncCb->result, 0);

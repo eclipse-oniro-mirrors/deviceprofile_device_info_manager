@@ -250,6 +250,7 @@ HWTEST_F(DPSubscribeInfoTest, Stub_001, TestSize.Level1)
     OHOS::sptr<IProfileChangeListener> proxy = OHOS::iface_cast<IProfileChangeListener>(subscribeInfo.GetListener());
     TrustDeviceProfile oldTrustProfile;
     TrustDeviceProfile newTrustProfile;
+    ASSERT_NE(proxy, nullptr);
     int32_t ret = proxy->OnTrustDeviceProfileAdd(oldTrustProfile);
     EXPECT_EQ(ret, DP_SUCCESS);
     ret = proxy->OnTrustDeviceProfileDelete(oldTrustProfile);
