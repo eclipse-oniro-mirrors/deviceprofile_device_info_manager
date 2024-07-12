@@ -78,6 +78,10 @@ bool TrustGroupManager::InitHichainService()
 void TrustGroupManager::InitDataChangeListener()
 {
     dataChangeListener_.onDeviceUnBound = OnDeviceUnBoundAdapter;
+    if (hichainGmInstance_ == nullptr) {
+        HILOGE("hichainGmInstance_ is nullptr");
+        return;
+    }
     if (hichainGmInstance_->regDataChangeListener(AUTH_APPID.c_str(), &dataChangeListener_) != 0) {
         HILOGE("auth RegDataChangeListener failed");
     }

@@ -256,7 +256,10 @@ void DeviceProfileStorageManager::SetServiceType(const std::string& udid,
         }
         return;
     }
-
+    if (onlineSyncTbl_ == nullptr) {
+        HILOGE("onlineSyncTbl is nullptr");
+        return;
+    }
     std::string value;
     std::string key = GenerateKey(udid, SERVICES, KeyType::SERVICE_LIST);
     int32_t result = onlineSyncTbl_->GetDeviceProfile(key, value);
@@ -329,7 +332,7 @@ int32_t DeviceProfileStorageManager::DeleteDeviceProfile(const std::string& serv
 
 int32_t DeviceProfileStorageManager::RemoveUnBoundDeviceProfile(const std::string& udid)
 {
-    if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
+    if (onlineSyncTbl_ == nullptr || onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
         HILOGE("kvstore init failed");
         return ERR_DP_INIT_DB_FAILED;
     }
@@ -354,7 +357,7 @@ int32_t DeviceProfileStorageManager::RemoveUnBoundDeviceProfile(const std::strin
 
 int32_t DeviceProfileStorageManager::RemoveRemoteDeviceProfile()
 {
-    if (onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
+    if (onlineSyncTbl_ == nullptr || onlineSyncTbl_->GetInitStatus() == StorageInitStatus::INIT_FAILED) {
         HILOGE("kvstore init failed");
         return ERR_DP_INIT_DB_FAILED;
     }
@@ -477,7 +480,9 @@ bool DeviceProfileStorageManager::CheckSyncOption(const SyncOptions& syncOptions
     DpDeviceManager::GetInstance().GetDeviceList(onlineDevices);
     std::list<std::string> onlineDeviceIds;
     for (const auto& onlineDevice : onlineDevices) {
-        onlineDeviceIds.emplace_back(onlineDevice->GetNetworkId());
+        if (onlineDevice != nullptr) {
+            onlineDeviceIds.emplace_back(onlineDevice->GetNetworkId());
+        }
     }
 
     // check whether deviceId is online
@@ -509,6 +514,10 @@ void DeviceProfileStorageManager::FlushProfileItems()
 {
     std::string services;
     std::string servicesKey = GenerateKey(localUdid_, SERVICES, KeyType::SERVICE_LIST);
+    if (onlineSyncTbl_ == nullptr) {
+        HILOGE("onlineSyncTbl is nullptr");
+        return;
+    }
     int32_t errCode = onlineSyncTbl_->GetDeviceProfile(servicesKey, services);
     std::unique_lock<std::mutex> autoLock(serviceLock_);
     if (errCode == ERR_OK) {
@@ -543,11 +552,11 @@ void DeviceProfileStorageManager::RegisterCallbacks()
 {
     HILOGI("called");
     int32_t errCode = ERR_OK;
-    if (kvStoreObserver_ != nullptr) {
+    if (onlineSyncTbl_ != nullptr && kvStoreObserver_ != nullptr) {
         errCode = onlineSyncTbl_->SubscribeKvStore(kvStoreObserver_);
         HILOGI("SubscribeKvStore errCode = %{public}d", errCode);
     }
-    if (kvStoreSyncCallback_ != nullptr) {
+    if (onlineSyncTbl_ != nullptr && kvStoreSyncCallback_ != nullptr) {
         errCode = onlineSyncTbl_->RegisterSyncCallback(kvStoreSyncCallback_);
         HILOGI("RegisterSyncCallback errCode = %{public}d", errCode);
     }
@@ -573,6 +582,10 @@ int32_t DeviceProfileStorageManager::UnSubscribeKvStore(const std::shared_ptr<Kv
 {
     std::lock_guard<std::mutex> autoLock(callbackLock_);
     kvStoreObserver_ = nullptr;
+    if (onlineSyncTbl_ == nullptr) {
+        HILOGE("onlineSyncTbl is nullptr");
+        return ERR_DP_INVALID_PARAMS;
+    }
     return onlineSyncTbl_->UnSubscribeKvStore(observer);
 }
 
@@ -590,6 +603,10 @@ int32_t DeviceProfileStorageManager::UnRegisterSyncCallback()
 {
     std::lock_guard<std::mutex> autoLock(callbackLock_);
     kvStoreSyncCallback_ = nullptr;
+    if (onlineSyncTbl_ == nullptr) {
+        HILOGE("onlineSyncTbl is nullptr");
+        return ERR_DP_INVALID_PARAMS;
+    }
     return onlineSyncTbl_->UnRegisterSyncCallback();
 }
 
