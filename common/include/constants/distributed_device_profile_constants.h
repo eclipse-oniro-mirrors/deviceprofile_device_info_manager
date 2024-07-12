@@ -142,7 +142,7 @@ constexpr int32_t NUM_2 = 2;
 constexpr int32_t NUM_3 = 3;
 constexpr uint32_t NUM_1U = 1;
 constexpr uint32_t NUM_8U = 8;
-constexpr uint16_t CUR_SWITCH_LEN = 2;
+constexpr uint16_t CUR_SWITCH_LEN = 3;
 const std::string DP_PKG_NAME = "ohos.deviceprofile";
 const std::string IS_NUMSTRING_RULES = "^[-+]?[0-9]+$";
 /* rdb constants */
