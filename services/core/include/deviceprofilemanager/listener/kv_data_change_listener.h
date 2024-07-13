@@ -27,7 +27,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 class KvDataChangeListener : public DistributedKv::KvStoreObserver {
 public:
-    KvDataChangeListener();
+    KvDataChangeListener(const std::string& storeId);
     ~KvDataChangeListener();
 
     void OnChange(const DistributedKv::ChangeNotification& changeNotification) override;
@@ -45,6 +45,7 @@ private:
         ChangeType changeType);
 private:
     std::mutex dataChangeListenerMutex_;
+    std::string storeId_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

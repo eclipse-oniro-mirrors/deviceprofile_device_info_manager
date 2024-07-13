@@ -776,6 +776,10 @@ int32_t TrustProfileManager::ConvertToTrustDeviceProfile(
 int32_t TrustProfileManager::GetAclProfileByUserIdAndBundleName(std::shared_ptr<ResultSet> resultSet,
     int32_t userId, const std::string& bundleName, std::vector<AccessControlProfile>& profile)
 {
+    if (resultSet == nullptr) {
+        HILOGE("resultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
     while (resultSet->GoToNextRow() == DP_SUCCESS) {
         int32_t columnIndex = COLUMNINDEX_INIT;
         int64_t accesserId = ACCESSERID_INIT;
@@ -812,6 +816,10 @@ int32_t TrustProfileManager::GetAclProfileByUserIdAndBundleName(std::shared_ptr<
 int32_t TrustProfileManager::GetAclProfileByUserIdAndAccountId(std::shared_ptr<ResultSet> resultSet,
     int32_t userId, const std::string& accountId, std::vector<AccessControlProfile>& profile)
 {
+    if (resultSet == nullptr) {
+        HILOGE("resultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
     while (resultSet->GoToNextRow() == DP_SUCCESS) {
         int32_t columnIndex = COLUMNINDEX_INIT;
         int64_t accesserId = ACCESSERID_INIT;
@@ -863,6 +871,10 @@ int32_t TrustProfileManager::GetAclProfileByUserIdAndAccountId(std::shared_ptr<R
 int32_t TrustProfileManager::GetAclProfileByTokenId(std::shared_ptr<ResultSet> resultSet,
     const std::string& trustDeviceId, int64_t tokenId, std::vector<AccessControlProfile>& profile)
 {
+    if (resultSet == nullptr) {
+        HILOGE("resultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
     while (resultSet->GoToNextRow() == DP_SUCCESS) {
         int32_t columnIndex = COLUMNINDEX_INIT;
         int64_t accesserId = ACCESSERID_INIT;
@@ -900,6 +912,10 @@ int32_t TrustProfileManager::GetAclProfileByTokenId(std::shared_ptr<ResultSet> r
 int32_t TrustProfileManager::GetAclProfileByBundleName(std::shared_ptr<ResultSet> resultSet,
     const std::string& bundleName, std::vector<AccessControlProfile>& profile)
 {
+    if (resultSet == nullptr) {
+        HILOGE("resultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
     while (resultSet->GoToNextRow() == DP_SUCCESS) {
         int32_t columnIndex = COLUMNINDEX_INIT;
         int64_t accesserId = ACCESSERID_INIT;

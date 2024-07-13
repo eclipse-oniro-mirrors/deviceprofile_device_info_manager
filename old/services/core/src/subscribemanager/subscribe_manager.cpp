@@ -77,8 +77,12 @@ int32_t SubscribeManager::SubscribeProfileEvents(const std::list<SubscribeInfo>&
             handlersMap_.emplace(profileEvent, handler);
         } else {
             handler = iter->second;
+            if (handler == nullptr || !handler->Init()) {
+                failedEvents.emplace_back(profileEvent);
+                HILOGW("get or init handler for event:%{public}d failed", profileEvent);
+                continue;
+            }
         }
-
         if (handler->Subscribe(subscribeInfo, profileEventNotifier) != ERR_OK) {
             HILOGE("subscribe event:%{public}d failed", profileEvent);
             failedEvents.emplace_back(profileEvent);
@@ -114,7 +118,7 @@ int32_t SubscribeManager::UnsubscribeProfileEvents(const std::list<ProfileEvent>
             continue;
         }
         auto handler = iter->second;
-        if (handler->Unsubscribe(profileEventNotifier) != ERR_OK) {
+        if (handler == nullptr || handler->Unsubscribe(profileEventNotifier) != ERR_OK) {
             HILOGE("unsubscribe event:%{public}d failed", profileEvent);
             failedEvents.emplace_back(profileEvent);
         } else {

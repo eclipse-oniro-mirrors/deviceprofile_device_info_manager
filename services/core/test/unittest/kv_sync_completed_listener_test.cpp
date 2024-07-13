@@ -69,7 +69,7 @@ void KvSyncCompletedListenerTest::TearDown()
  */
 HWTEST_F(KvSyncCompletedListenerTest, KvSyncCompletedListener001, TestSize.Level1)
 {
-    KvSyncCompletedListener KvSyncCompletedListener_;
+    KvSyncCompletedListener KvSyncCompletedListener_("dp_kv_store");
     EventHandlerFactory EventHandlerFactory_;
     EventHandlerFactory_.Init();
     KvSyncCompletedListener_.onSyncHandler_ = EventHandlerFactory_.GetEventHandler();

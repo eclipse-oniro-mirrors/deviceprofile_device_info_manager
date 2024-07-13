@@ -37,9 +37,10 @@ namespace {
     const std::string TAG = "KvDataChangeListener";
 }
 
-KvDataChangeListener::KvDataChangeListener()
+KvDataChangeListener::KvDataChangeListener(const std::string& storeId)
 {
     HILOGI("construct!");
+    storeId_ = storeId;
 }
 
 KvDataChangeListener::~KvDataChangeListener()
@@ -198,9 +199,7 @@ int32_t KvDataChangeListener::GenerateSwitchNotify(const std::string& udid, cons
         HILOGE("NotifyProfileChange failed");
         return DP_GENERATE_SWITCH_NOTIFY_FAIL;
     }
-    HILOGI("NotifyProfileChange, deviceId:%{public}s, serviceName:%{public}s, GetCharacteristicValue:%{public}s",
-        ProfileUtils::GetAnonyString(udid).c_str(), serviceName.c_str(),
-        newSwitchProfile.GetCharacteristicValue().c_str());
+    HILOGI("NotifyProfileChange: %{public}s", newSwitchProfile.dump().c_str());
     return DP_SUCCESS;
 }
 } // namespace DeviceProfile

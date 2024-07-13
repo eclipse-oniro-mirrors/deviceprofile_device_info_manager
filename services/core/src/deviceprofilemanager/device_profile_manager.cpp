@@ -16,6 +16,7 @@
 #include "device_profile_manager.h"
 
 #include <algorithm>
+#include "datetime_ex.h"
 #include <dlfcn.h>
 #include <list>
 #include <thread>
@@ -49,8 +50,9 @@ int32_t DeviceProfileManager::Init()
     int32_t initResult = DP_MANAGER_INIT_FAIL;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        deviceProfileStore_ = std::make_shared<KVAdapter>(APP_ID, STORE_ID, std::make_shared<KvDataChangeListener>(),
-            std::make_shared<KvSyncCompletedListener>(), std::make_shared<KvDeathRecipient>(STORE_ID),
+        deviceProfileStore_ = std::make_shared<KVAdapter>(APP_ID, STORE_ID,
+            std::make_shared<KvDataChangeListener>(STORE_ID),
+            std::make_shared<KvSyncCompletedListener>(STORE_ID), std::make_shared<KvDeathRecipient>(STORE_ID),
             DistributedKv::TYPE_DYNAMICAL);
         initResult = deviceProfileStore_->Init();
         if (initResult != DP_SUCCESS) {
@@ -424,6 +426,7 @@ bool DeviceProfileManager::LoadDpSyncAdapter()
     if (isAdapterSoLoaded_ && (dpSyncAdapter_ != nullptr)) {
         return true;
     }
+    int64_t beginTime = GetTickCount();
     char path[PATH_MAX + 1] = {0x00};
     std::string soName = std::string(LIB_LOAD_PATH) + std::string(LIB_DP_ADAPTER_NAME);
     if ((soName.length() == 0) || (soName.length() > PATH_MAX) || (realpath(soName.c_str(), path) == nullptr)) {
@@ -457,7 +460,8 @@ bool DeviceProfileManager::LoadDpSyncAdapter()
         return false;
     }
     isAdapterSoLoaded_ = true;
-    HILOGI("DeviceProfileManager::LoadDpSyncAdapter sucess");
+    int64_t endTime = GetTickCount();
+    HILOGI("LoadDpSyncAdapter sucess. spend %{public}" PRId64 " ms", endTime - beginTime);
     return true;
 }
 
