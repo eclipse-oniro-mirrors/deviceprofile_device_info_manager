@@ -41,7 +41,6 @@ namespace {
     const std::string STORE_ID = "dp_kv_store";
     const std::string TAG = "DeviceProfileManager";
     const std::string DP_MANAGER_HANDLER = "dp_manager_handler";
-    const int32_t DEFAULT_OS_TYPE = 10;
 }
 
 int32_t DeviceProfileManager::Init()
@@ -384,15 +383,15 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const DistributedDeviceProfile::
         HILOGE("Params is invalid!");
         return DP_INVALID_PARAMS;
     }
-    std::vector<std::string> ohDevices;
-    std::vector<std::string> notOhDevices;
-    ProfileUtils::FilterAndGroupOnlineDevices(syncOptions.GetDeviceList(), ohDevices, notOhDevices);
-    if (ohDevices.empty() && notOhDevices.empty()) {
+    std::vector<std::string> ohBasedDevices;
+    std::vector<std::string> notOHBasedDevices;
+    ProfileUtils::FilterAndGroupOnlineDevices(syncOptions.GetDeviceList(), ohBasedDevices, notOHBasedDevices);
+    if (ohBasedDevices.empty() && notOHBasedDevices.empty()) {
         HILOGE("Params is invalid!");
         return DP_INVALID_PARAMS;
     }
     std::string callerDescriptor = PermissionManager::GetInstance().GetCallerProcName();
-    if (!ohDevices.empty()) {
+    if (!ohBasedDevices.empty()) {
         ProfileCache::GetInstance().AddSyncListener(callerDescriptor, syncCompletedCallback);
         {
             std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
@@ -400,16 +399,16 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const DistributedDeviceProfile::
                 HILOGE("deviceProfileStore is nullptr");
                 return DP_SYNC_DEVICE_FAIL;
             }
-            int32_t syncResult = deviceProfileStore_->Sync(ohDevices, syncOptions.GetSyncMode());
+            int32_t syncResult = deviceProfileStore_->Sync(ohBasedDevices, syncOptions.GetSyncMode());
             if (syncResult != DP_SUCCESS) {
                 HILOGE("SyncDeviceProfile fail, res: %{public}d!", syncResult);
                 return DP_SYNC_DEVICE_FAIL;
             }
         }
     }
-    if (!notOhDevices.empty()) {
-        auto syncTask = [this, notOhDevices, callerDescriptor, syncCompletedCallback]() {
-            SyncWithNotOhDevcie(notOhDevices, callerDescriptor, syncCompletedCallback);
+    if (!notOHBasedDevices.empty()) {
+        auto syncTask = [this, notOHBasedDevices, callerDescriptor, syncCompletedCallback]() {
+            SyncWithNotOHBasedDevice(notOHBasedDevices, callerDescriptor, syncCompletedCallback);
         };
         std::thread(syncTask).detach();
     }
@@ -478,29 +477,29 @@ void DeviceProfileManager::UnloadDpSyncAdapter()
     }
 }
 
-int32_t DeviceProfileManager::SyncWithNotOhDevcie(const std::vector<std::string>& notOhDevices,
+int32_t DeviceProfileManager::SyncWithNotOHBasedDevice(const std::vector<std::string>& notOHBasedDevices,
     const std::string& callerDescriptor, sptr<IRemoteObject> syncCompletedCallback)
 {
     if (!LoadDpSyncAdapter()) {
         HILOGE("dp service adapter load failed.");
-        SyncWithNotOhDevcieFailed(notOhDevices, syncCompletedCallback);
+        SyncWithNotOHBasedDeviceFailed(notOHBasedDevices, syncCompletedCallback);
         return DP_LOAD_SYNC_ADAPTER_FAILED;
     }
-    for (const auto& deviceId : notOhDevices) {
+    for (const auto& deviceId : notOHBasedDevices) {
         if (RunloadedFunction(deviceId, syncCompletedCallback) != DP_SUCCESS) {
-            HILOGE("Sync With NotOhDevcie Failed. deviceId:%{public}s",
+            HILOGE("Sync With NotOHBasedDevice Failed. deviceId:%{public}s",
                 ProfileUtils::GetAnonyString(deviceId).c_str());
-            SyncWithNotOhDevcieFailed({deviceId}, syncCompletedCallback);
+            SyncWithNotOHBasedDeviceFailed({deviceId}, syncCompletedCallback);
         }
     }
     return DP_SUCCESS;
 }
 
-void DeviceProfileManager::SyncWithNotOhDevcieFailed(const std::vector<std::string>& notOhDevices,
+void DeviceProfileManager::SyncWithNotOHBasedDeviceFailed(const std::vector<std::string>& notOHBasedDevices,
     sptr<IRemoteObject> syncCompletedCallback)
 {
     std::map<std::string, SyncStatus> syncResults;
-    for (const auto& deviceId : notOhDevices) {
+    for (const auto& deviceId : notOHBasedDevices) {
         syncResults[deviceId] = SyncStatus::FAILED;
     }
     sptr<ISyncCompletedCallback> syncListenerProxy = iface_cast<ISyncCompletedCallback>(syncCompletedCallback);
@@ -641,7 +640,7 @@ void DeviceProfileManager::FixDataOnDeviceOnline(const std::string& networkId, c
             HILOGE("extraData parse failed");
             return;
         }
-        int32_t osType = DEFAULT_OS_TYPE;
+        int32_t osType = OHOS_TYPE_UNKNOWN;
         cJSON* osTypeJson = cJSON_GetObjectItem(extraDataJson, DistributedHardware::PARAM_KEY_OS_TYPE);
         if (!cJSON_IsNumber(osTypeJson)) {
             HILOGE("osTypeJson is not a number");
@@ -650,7 +649,7 @@ void DeviceProfileManager::FixDataOnDeviceOnline(const std::string& networkId, c
         }
         osType = static_cast<int32_t>(osTypeJson->valueint);
         cJSON_Delete(extraDataJson);
-        if (osType != DEFAULT_OS_TYPE) {
+        if (osType != OHOS_TYPE) {
             return;
         }
         std::string deviceId;

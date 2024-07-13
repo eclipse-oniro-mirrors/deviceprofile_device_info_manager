@@ -33,7 +33,6 @@ const char* OHOS_BOOT_SN = "ohos.boot.sn";
 const char* OHOS_FULL_NAME = "const.ohos.fullname";
 const char* VERSION_SDK = "ro.build.version.sdk";
 const char* UNDEFINED_VALUE = "undefined";
-constexpr int32_t OHOS_TYPE_UNKNOWN = -1;
 constexpr int32_t HO_OS_TYPE = 11;
 constexpr uint32_t API_VERSION_LEN = 10;
 constexpr uint32_t SN_LEN = 32;
@@ -62,7 +61,7 @@ int32_t SystemInfoCollector::GetOsType()
             ProfileUtils::GetAnonyString(std::string(apiVersion)).c_str(),
             ProfileUtils::GetAnonyString(std::string(bootSN)).c_str(),
             ProfileUtils::GetAnonyString(std::string(osFullName)).c_str());
-        return OH_OS_TYPE;
+        return OHOS_TYPE;
     }
     char versionSDK[VERSION_SDK_LEN + 1] = {0};
     GetParameter(VERSION_SDK, UNDEFINED_VALUE, versionSDK, VERSION_SDK_LEN);
