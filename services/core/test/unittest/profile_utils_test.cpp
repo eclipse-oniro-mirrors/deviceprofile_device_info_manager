@@ -153,9 +153,9 @@ HWTEST_F(ProfileUtilsTest, GetOnlineDevices001, TestSize.Level1)
 HWTEST_F(ProfileUtilsTest, FilterAndGroupOnlineDevices001, TestSize.Level1)
 {
     vector<string> deviceList;
-    std::vector<std::string> nextDevices;
-    std::vector<std::string> noNextDevices;
-    bool res = ProfileUtils::FilterAndGroupOnlineDevices(deviceList, nextDevices, noNextDevices);
+    std::vector<std::string> ohDevices;
+    std::vector<std::string> noOhDevices;
+    bool res = ProfileUtils::FilterAndGroupOnlineDevices(deviceList, ohDevices, noOhDevices);
     EXPECT_EQ(false, res);
 }
 
@@ -171,9 +171,9 @@ HWTEST_F(ProfileUtilsTest, FilterAndGroupOnlineDevices002, TestSize.Level1)
     for (int32_t i = 0; i < MAX_DEVICE_SIZE + 5; i++) {
         deviceList.emplace_back("deviceId");
     }
-    std::vector<std::string> nextDevices;
-    std::vector<std::string> noNextDevices;
-    bool res = ProfileUtils::FilterAndGroupOnlineDevices(deviceList, nextDevices, noNextDevices);
+    std::vector<std::string> ohDevices;
+    std::vector<std::string> noOhDevices;
+    bool res = ProfileUtils::FilterAndGroupOnlineDevices(deviceList, ohDevices, noOhDevices);
     EXPECT_EQ(false, res);
 }
 
@@ -189,49 +189,49 @@ HWTEST_F(ProfileUtilsTest, FilterAndGroupOnlineDevices003, TestSize.Level1)
     for (int32_t i = 0; i < 5; i++) {
         deviceList.emplace_back("deviceId");
     }
-    std::vector<std::string> nextDevices;
-    std::vector<std::string> noNextDevices;
-    bool res = ProfileUtils::FilterAndGroupOnlineDevices(deviceList, nextDevices, noNextDevices);
+    std::vector<std::string> ohDevices;
+    std::vector<std::string> noOhDevices;
+    bool res = ProfileUtils::FilterAndGroupOnlineDevices(deviceList, ohDevices, noOhDevices);
     EXPECT_EQ(false, res);
 }
 
 /**
- * @tc.name: IsNextDevice001
- * @tc.desc: IsNextDevice
+ * @tc.name: IsOhDevice001
+ * @tc.desc: IsOhDevice
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProfileUtilsTest, IsNextDevice001, TestSize.Level1)
+HWTEST_F(ProfileUtilsTest, IsOhDevice001, TestSize.Level1)
 {
     std::string extraData;
-    bool res = ProfileUtils::IsNextDevice(extraData);
+    bool res = ProfileUtils::IsOhDevice(extraData);
     EXPECT_EQ(false, res);
 }
 
 /**
- * @tc.name: IsNextDevice002
- * @tc.desc: IsNextDevice failed
+ * @tc.name: IsOhDevice002
+ * @tc.desc: IsOhDevice failed
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProfileUtilsTest, IsNextDevice002, TestSize.Level1)
+HWTEST_F(ProfileUtilsTest, IsOhDevice002, TestSize.Level1)
 {
     std::string extraData = "abc";
-    bool res = ProfileUtils::IsNextDevice(extraData);
+    bool res = ProfileUtils::IsOhDevice(extraData);
     EXPECT_EQ(false, res);
 }
 
 /**
- * @tc.name: IsNextDevice003
- * @tc.desc: IsNextDevice
+ * @tc.name: IsOhDevice003
+ * @tc.desc: IsOhDevice
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProfileUtilsTest, IsNextDevice003, TestSize.Level1)
+HWTEST_F(ProfileUtilsTest, IsOhDevice003, TestSize.Level1)
 {
     std::string osType = DistributedHardware::PARAM_KEY_OS_TYPE;
     std::string extraData = "{\"" + osType + "\":10}";
-    bool res = ProfileUtils::IsNextDevice(extraData);
+    bool res = ProfileUtils::IsOhDevice(extraData);
     EXPECT_EQ(true, res);
 }
 

@@ -34,7 +34,6 @@ const char* OHOS_FULL_NAME = "const.ohos.fullname";
 const char* VERSION_SDK = "ro.build.version.sdk";
 const char* UNDEFINED_VALUE = "undefined";
 constexpr int32_t OHOS_TYPE_UNKNOWN = -1;
-constexpr int32_t OH_OS_TYPE = 10;
 constexpr int32_t HO_OS_TYPE = 11;
 constexpr uint32_t API_VERSION_LEN = 10;
 constexpr uint32_t SN_LEN = 32;

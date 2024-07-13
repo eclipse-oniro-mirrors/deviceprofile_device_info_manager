@@ -384,15 +384,15 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const DistributedDeviceProfile::
         HILOGE("Params is invalid!");
         return DP_INVALID_PARAMS;
     }
-    std::vector<std::string> nextDevices;
-    std::vector<std::string> notNextDevices;
-    ProfileUtils::FilterAndGroupOnlineDevices(syncOptions.GetDeviceList(), nextDevices, notNextDevices);
-    if (nextDevices.empty() && notNextDevices.empty()) {
+    std::vector<std::string> ohDevices;
+    std::vector<std::string> notOhDevices;
+    ProfileUtils::FilterAndGroupOnlineDevices(syncOptions.GetDeviceList(), ohDevices, notOhDevices);
+    if (ohDevices.empty() && notOhDevices.empty()) {
         HILOGE("Params is invalid!");
         return DP_INVALID_PARAMS;
     }
     std::string callerDescriptor = PermissionManager::GetInstance().GetCallerProcName();
-    if (!nextDevices.empty()) {
+    if (!ohDevices.empty()) {
         ProfileCache::GetInstance().AddSyncListener(callerDescriptor, syncCompletedCallback);
         {
             std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
@@ -400,16 +400,16 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const DistributedDeviceProfile::
                 HILOGE("deviceProfileStore is nullptr");
                 return DP_SYNC_DEVICE_FAIL;
             }
-            int32_t syncResult = deviceProfileStore_->Sync(nextDevices, syncOptions.GetSyncMode());
+            int32_t syncResult = deviceProfileStore_->Sync(ohDevices, syncOptions.GetSyncMode());
             if (syncResult != DP_SUCCESS) {
                 HILOGE("SyncDeviceProfile fail, res: %{public}d!", syncResult);
                 return DP_SYNC_DEVICE_FAIL;
             }
         }
     }
-    if (!notNextDevices.empty()) {
-        auto syncTask = [this, notNextDevices, callerDescriptor, syncCompletedCallback]() {
-            SyncWithNotNextDevcie(notNextDevices, callerDescriptor, syncCompletedCallback);
+    if (!notOhDevices.empty()) {
+        auto syncTask = [this, notOhDevices, callerDescriptor, syncCompletedCallback]() {
+            SyncWithNotOhDevcie(notOhDevices, callerDescriptor, syncCompletedCallback);
         };
         std::thread(syncTask).detach();
     }
@@ -478,29 +478,29 @@ void DeviceProfileManager::UnloadDpSyncAdapter()
     }
 }
 
-int32_t DeviceProfileManager::SyncWithNotNextDevcie(const std::vector<std::string>& notNextDevices,
+int32_t DeviceProfileManager::SyncWithNotOhDevcie(const std::vector<std::string>& notOhDevices,
     const std::string& callerDescriptor, sptr<IRemoteObject> syncCompletedCallback)
 {
     if (!LoadDpSyncAdapter()) {
         HILOGE("dp service adapter load failed.");
-        SyncWithNotNextDevcieFailed(notNextDevices, syncCompletedCallback);
+        SyncWithNotOhDevcieFailed(notOhDevices, syncCompletedCallback);
         return DP_LOAD_SYNC_ADAPTER_FAILED;
     }
-    for (const auto& deviceId : notNextDevices) {
+    for (const auto& deviceId : notOhDevices) {
         if (RunloadedFunction(deviceId, syncCompletedCallback) != DP_SUCCESS) {
-            HILOGE("Sync With NotNextDevcie Failed. deviceId:%{public}s",
+            HILOGE("Sync With NotOhDevcie Failed. deviceId:%{public}s",
                 ProfileUtils::GetAnonyString(deviceId).c_str());
-            SyncWithNotNextDevcieFailed({deviceId}, syncCompletedCallback);
+            SyncWithNotOhDevcieFailed({deviceId}, syncCompletedCallback);
         }
     }
     return DP_SUCCESS;
 }
 
-void DeviceProfileManager::SyncWithNotNextDevcieFailed(const std::vector<std::string>& notNextDevices,
+void DeviceProfileManager::SyncWithNotOhDevcieFailed(const std::vector<std::string>& notOhDevices,
     sptr<IRemoteObject> syncCompletedCallback)
 {
     std::map<std::string, SyncStatus> syncResults;
-    for (const auto& deviceId : notNextDevices) {
+    for (const auto& deviceId : notOhDevices) {
         syncResults[deviceId] = SyncStatus::FAILED;
     }
     sptr<ISyncCompletedCallback> syncListenerProxy = iface_cast<ISyncCompletedCallback>(syncCompletedCallback);

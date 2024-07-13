@@ -73,9 +73,9 @@ private:
     bool LoadDpSyncAdapter();
     void UnloadDpSyncAdapter();
     int32_t RunloadedFunction(const std::string& deviceId, sptr<IRemoteObject> syncCompletedCallback);
-    int32_t SyncWithNotNextDevcie(const std::vector<std::string>& notNextDevices, const std::string& callerDescriptor,
+    int32_t SyncWithNotOhDevcie(const std::vector<std::string>& notOhDevices, const std::string& callerDescriptor,
         sptr<IRemoteObject> syncCompletedCallback);
-    void SyncWithNotNextDevcieFailed(const std::vector<std::string>& notNextDevices,
+    void SyncWithNotOhDevcieFailed(const std::vector<std::string>& notOhDevices,
         sptr<IRemoteObject> syncCompletedCallback);
     void AddToPutTempCache(const std::map<std::string, std::string>& values);
     bool isAdapterSoLoaded_ = false;

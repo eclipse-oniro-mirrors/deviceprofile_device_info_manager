@@ -40,8 +40,8 @@ public:
     static std::vector<std::string> GetOnlineDevices();
     static std::string GetLocalUdidFromDM();
     static bool FilterAndGroupOnlineDevices(const std::vector<std::string>& deviceList,
-        std::vector<std::string>& nextDevices, std::vector<std::string>& noNextDevices);
-    static bool IsNextDevice(const std::string& extraData);
+        std::vector<std::string>& ohDevices, std::vector<std::string>& notOhDevices);
+    static bool IsOhDevice(const std::string& extraData);
     static ProfileType GetProfileType(const std::string& key);
     static bool StartsWith(const std::string& str, const std::string prefix);
     static bool IsKeyValid(const std::string& key);
