@@ -1017,6 +1017,16 @@ HWTEST_F(ProfileUtilsTest, IsPropertyValid001, TestSize.Level1)
     int32_t minValue = 0;
     bool res2 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
     EXPECT_EQ(false, res2);
+    
+    uint32_t u32MinValue = 0;
+    uint32_t u32MaxValue = 1;
+    bool res3 = ProfileUtils::IsPropertyValid(propertyMap, property, u32MinValue, u32MaxValue);
+    EXPECT_EQ(false, res3);
+    
+    int64_t i64MinValue = 0;
+    int64_t i64MaxValue = 1;
+    bool res4 = ProfileUtils::IsPropertyValid(propertyMap, property, i64MinValue, i64MaxValue);
+    EXPECT_EQ(false, res4);
 }
 
 /**
@@ -1063,6 +1073,68 @@ HWTEST_F(ProfileUtilsTest, IsPropertyValid003, TestSize.Level1)
     propertyMap[property] = value;
     int32_t maxValue = 10;
     int32_t minValue = 0;
+    bool res1 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(true, res1);
+    
+    maxValue = 0;
+    bool res2 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(false, res2);
+    
+    value = "0";
+    propertyMap[property] = value;
+    bool res3 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(false, res3);
+    
+    propertyMap.erase(property);
+    bool res4 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(false, res4);
+}
+
+/**
+ * @tc.name: IsPropertyValid004
+ * @tc.desc: IsPropertyValid overload 3.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, IsPropertyValid004, TestSize.Level1)
+{
+    map<string, string> propertyMap;
+    string property = "property";
+    string value = "5";
+    propertyMap[property] = value;
+    uint32_t maxValue = 10;
+    uint32_t minValue = 0;
+    bool res1 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(true, res1);
+    
+    maxValue = 0;
+    bool res2 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(false, res2);
+    
+    value = "0";
+    propertyMap[property] = value;
+    bool res3 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(false, res3);
+    
+    propertyMap.erase(property);
+    bool res4 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(false, res4);
+}
+
+/**
+ * @tc.name: IsPropertyValid005
+ * @tc.desc: IsPropertyValid overload 4.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, IsPropertyValid005, TestSize.Level1)
+{
+    map<string, string> propertyMap;
+    string property = "property";
+    string value = "5";
+    propertyMap[property] = value;
+    int64_t maxValue = 10;
+    int64_t minValue = 0;
     bool res1 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
     EXPECT_EQ(true, res1);
     
