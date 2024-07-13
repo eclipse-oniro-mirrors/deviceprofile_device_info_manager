@@ -39,7 +39,9 @@ public:
     static std::string GetAnonyString(const std::string& value);
     static std::vector<std::string> GetOnlineDevices();
     static std::string GetLocalUdidFromDM();
-    static std::vector<std::string> FilterOnlineDevices(const std::vector<std::string>& deviceList);
+    static bool FilterAndGroupOnlineDevices(const std::vector<std::string>& deviceList,
+        std::vector<std::string>& ohBasedDevices, std::vector<std::string>& notOHBasedDevices);
+    static bool IsOHBasedDevice(const std::string& extraData);
     static ProfileType GetProfileType(const std::string& key);
     static bool StartsWith(const std::string& str, const std::string prefix);
     static bool IsKeyValid(const std::string& key);

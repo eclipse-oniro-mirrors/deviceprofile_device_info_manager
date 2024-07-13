@@ -1371,10 +1371,6 @@ HWTEST_F(DeviceProfileManagerTest, RunloadedFunction001, TestSize.Level1)
     string deviceId = "DeviceId";
     int32_t ret = DeviceProfileManager::GetInstance().RunloadedFunction(deviceId, syncCb);
     EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
-
-    DeviceProfileManager::GetInstance().isAdapterSoLoaded_ = true;
-    ret = DeviceProfileManager::GetInstance().RunloadedFunction(deviceId, syncCb);
-    EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
 }
 /**
  * @tc.name: RunloadedFunction002
@@ -1387,10 +1383,6 @@ HWTEST_F(DeviceProfileManagerTest, RunloadedFunction002, TestSize.Level1)
     OHOS::sptr<OHOS::IRemoteObject> syncCb = new(nothrow) SyncCallback();
     string deviceId = ProfileUtils::GetLocalUdidFromDM();
     int32_t ret = DeviceProfileManager::GetInstance().RunloadedFunction(deviceId, syncCb);
-    EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
-
-    DeviceProfileManager::GetInstance().isAdapterSoLoaded_ = true;
-    ret = DeviceProfileManager::GetInstance().RunloadedFunction(deviceId, syncCb);
     EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
 }
 } // namespace DistributedDeviceProfile

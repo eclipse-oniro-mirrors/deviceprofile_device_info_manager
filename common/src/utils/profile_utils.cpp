@@ -19,7 +19,9 @@
 #include <locale>
 #include <regex>
 
+#include "cJSON.h"
 #include "device_manager.h"
+#include "dm_constants.h"
 #include "rdb_errno.h"
 
 #include "content_sensor_manager_utils.h"
@@ -97,28 +99,54 @@ std::string ProfileUtils::GetLocalUdidFromDM()
     return udid;
 }
 
-std::vector<std::string> ProfileUtils::FilterOnlineDevices(const std::vector<std::string>& deviceList)
+bool ProfileUtils::FilterAndGroupOnlineDevices(const std::vector<std::string>& deviceList,
+    std::vector<std::string>& ohBasedDevices, std::vector<std::string>& notOHBasedDevices)
 {
     if (deviceList.size() == 0 || deviceList.size() > MAX_DEVICE_SIZE) {
         HILOGE("This deviceList size is invalid, size: %{public}zu!", deviceList.size());
-        return {};
+        return false;
     }
     std::vector<DmDeviceInfo> allOnlineDeviceInfos;
     int32_t result = DeviceManager::GetInstance().GetTrustedDeviceList(DP_PKG_NAME, "", allOnlineDeviceInfos);
     if (result != DP_SUCCESS || allOnlineDeviceInfos.empty()) {
         HILOGE("GetTrustedDeviceList Failed!");
-        return {};
+        return false;
     }
-    std::vector<std::string> targetDevices;
     for (const DmDeviceInfo& dmDeviceInfo : allOnlineDeviceInfos) {
         if (std::find(deviceList.begin(), deviceList.end(), dmDeviceInfo.networkId) == deviceList.end()) {
-            HILOGE("This device is not online, networkId: %{public}s!",
-                   ProfileUtils::GetAnonyString(dmDeviceInfo.networkId).c_str());
             continue;
         }
-        targetDevices.push_back(dmDeviceInfo.networkId);
+        if (dmDeviceInfo.extraData.empty()) {
+            HILOGW("extraData is empty! networkId:%{public}s", GetAnonyString(dmDeviceInfo.networkId).c_str());
+            continue;
+        }
+        if (IsOHBasedDevice(dmDeviceInfo.extraData)) {
+            ohBasedDevices.push_back(dmDeviceInfo.networkId);
+        } else {
+            notOHBasedDevices.push_back(dmDeviceInfo.networkId);
+        }
     }
-    return targetDevices;
+    return true;
+}
+
+bool ProfileUtils::IsOHBasedDevice(const std::string& extraData)
+{
+    if (extraData.empty()) {
+        HILOGE("extraData is empty!");
+        return false;
+    }
+    cJSON* extraDataJson = cJSON_Parse(extraData.c_str());
+    if (extraDataJson == NULL) {
+        HILOGE("extraData parse failed");
+        return false;
+    }
+    int32_t osType = OHOS_TYPE_UNKNOWN;
+    cJSON* osTypeJson = cJSON_GetObjectItem(extraDataJson, DistributedHardware::PARAM_KEY_OS_TYPE);
+    if (cJSON_IsNumber(osTypeJson)) {
+        osType = static_cast<int32_t>(osTypeJson->valueint);
+    }
+    cJSON_Delete(extraDataJson);
+    return osType == OHOS_TYPE;
 }
 
 ProfileType ProfileUtils::GetProfileType(const std::string& key)
