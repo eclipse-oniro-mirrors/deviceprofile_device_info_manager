@@ -142,6 +142,9 @@ ErrCode DpShellCommand::GetDeviceCommand()
         return ret;
     }
     for (int32_t i = 0; i < infoNum; i++) {
+        if (info == nullptr) {
+            continue;
+        }
         resultReceiver_.append("networkId: " + std::string(info->networkId)
             + " deviceName:" + std::string(info->deviceName) + "\n");
         info++;
@@ -342,7 +345,9 @@ int32_t DpShellCommand::HandleNormalOption(int option, std::string& deviceId,
     int32_t result = ERR_OK;
     switch (option) {
         case 'h': {
-            HILOGI("'dp query' %{public}s", argv_[optind - 1]);
+            if (optind - 1 < argc_) {
+                HILOGI("'dp query' %{public}s", argv_[optind - 1]);
+            }
             result = OHOS::ERR_INVALID_VALUE;
             break;
         }
@@ -388,7 +393,9 @@ int32_t DpShellCommand::HandleSyncOption(int option, std::string& mode, std::lis
     int32_t result = ERR_OK;
     switch (option) {
         case 'h': {
-            HILOGI("'dp sync' %{public}s", argv_[optind - 1]);
+            if (optind - 1 < argc_) {
+                HILOGI("'dp sync' %{public}s", argv_[optind - 1]);
+            }
             result = OHOS::ERR_INVALID_VALUE;
             break;
         }
@@ -430,7 +437,9 @@ int32_t DpShellCommand::HandleSubscribeOption(int option, std::string& deviceId,
     int32_t result = ERR_OK;
     switch (option) {
         case 'h': {
-            HILOGI("'dp subscribe' %{public}s", argv_[optind - 1]);
+            if (optind - 1 < argc_) {
+                HILOGI("'dp subscribe' %{public}s", argv_[optind - 1]);
+            }
             result = OHOS::ERR_INVALID_VALUE;
             break;
         }
