@@ -84,7 +84,7 @@ int32_t RdbAdapter::Put(int64_t& outRowId, const std::string& table, const Value
             return DP_RDB_DB_PTR_NULL;
         }
         if (store_->Insert(outRowId, table, values) != E_OK) {
-            HILOGE("rdbAdapter put failed");
+            HILOGE("rdbAdapter put failed.");
             return DP_RDBADAPTER_PUT_FAIL;
         };
     }
