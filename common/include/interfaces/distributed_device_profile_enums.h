@@ -55,7 +55,8 @@ enum class DPInterfaceCode : uint32_t {
     ON_CHAR_PROFILE_ADD = 37,
     ON_CHAR_PROFILE_UPDATE = 38,
     ON_CHAR_PROFILE_DELETE = 39,
-    MAX = 40
+    SUBSCRIBE_DEVICE_PROFILE_INITED = 40,
+    MAX = 41
 };
 
 enum class DeviceIdType : uint32_t {

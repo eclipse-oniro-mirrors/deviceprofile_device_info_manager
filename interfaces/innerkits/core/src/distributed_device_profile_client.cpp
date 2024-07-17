@@ -452,6 +452,16 @@ void DistributedDeviceProfileClient::StartThreadSendSubscribeInfos()
     std::thread(&DistributedDeviceProfileClient::SendSubscribeInfosToService, this).detach();
 }
 
+int32_t DistributedDeviceProfileClient::SubscribeDeviceProfileInited(int32_t saId, 
+    sptr<IDpInitedCallback> dpInitedCallback) {
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->SubscribeDeviceProfileInited(saId, dpInitedCallback);
+}
+
 void DistributedDeviceProfileClient::SystemAbilityListener::OnRemoveSystemAbility(int32_t systemAbilityId,
     const std::string &deviceId)
 {

@@ -336,5 +336,18 @@ int32_t DistributedDeviceProfileProxy::SendSubscribeInfos(std::map<std::string, 
     SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::SEND_SUBSCRIBE_INFOS), data, reply);
     return DP_SUCCESS;
 }
+
+int32_t DistributedDeviceProfileProxy::SubscribeDeviceProfileInited(int32_t saId,
+    sptr<IDpInitedCallback> dpInitedCallback) {
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    WRITE_HELPER(data, Int32, saId);
+    WRITE_HELPER(data, RemoteObject, dpInitedCallback);
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE_INITED), data, reply);
+    return DP_SUCCESS;
+}
 } // namespace DeviceProfile
 } // namespace OHOS

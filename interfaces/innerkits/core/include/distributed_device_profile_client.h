@@ -27,6 +27,7 @@
 #include <condition_variable>
 #include "i_profile_change_listener.h"
 #include "i_distributed_device_profile.h"
+#include "i_dp_inited_callback.h"
 #include "iremote_object.h"
 #include "refbase.h"
 #include "single_instance.h"
@@ -65,6 +66,7 @@ public:
     int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo);
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo);
     int32_t SyncDeviceProfile(const DpSyncOptions& syncOptions, sptr<ISyncCompletedCallback> syncCb);
+    int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IDpInitedCallback> dpInitedCallback);
 
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
     void LoadSystemAbilityFail();

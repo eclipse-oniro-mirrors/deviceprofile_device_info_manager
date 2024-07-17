@@ -22,6 +22,7 @@
 #include <stdint.h>
 
 #include "i_distributed_device_profile.h"
+#include "i_dp_inited_callback.h"
 #include "iremote_broker.h"
 #include "iremote_proxy.h"
 #include "refbase.h"
@@ -59,6 +60,7 @@ public:
     int32_t DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
         const std::string& characteristicId) override;
     int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
+    int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IDpInitedCallback> dpInitedCallback) override;
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t SyncDeviceProfile(const DpSyncOptions& syncOptions, sptr<IRemoteObject> syncCompletedCallback) override;
     int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) override;

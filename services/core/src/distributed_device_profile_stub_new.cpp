@@ -73,6 +73,8 @@ DistributedDeviceProfileStubNew::DistributedDeviceProfileStubNew()
         &DistributedDeviceProfileStubNew::SyncDeviceProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SEND_SUBSCRIBE_INFOS)] =
             &DistributedDeviceProfileStubNew::SendSubscribeInfosInner;
+    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE_INITED)] =
+            &DistributedDeviceProfileStubNew::SubscribeDeviceProfileInitedInner;
     InitAclAndSubscribe();
 }
 
@@ -510,6 +512,18 @@ int32_t DistributedDeviceProfileStubNew::SendSubscribeInfosInner(MessageParcel& 
         return ERR_FLATTEN_OBJECT;
     }
     return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::SubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply)
+{
+    int32_t saId = -1;
+    READ_HELPER(data, Int32, saId);
+    sptr<IRemoteObject> dpInitedCallback = data.ReadRemoteObject();
+    int32_t ret = SubscribeDeviceProfileInited(saId, dpInitedCallback);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
 }
 } // namespace DeviceProfile
 } // namespace OHOS

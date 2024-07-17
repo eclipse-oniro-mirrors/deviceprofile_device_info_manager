@@ -54,6 +54,7 @@ public:
     int32_t UnSubscribeDeviceProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t SyncDeviceProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t SendSubscribeInfosInner(MessageParcel& data, MessageParcel& reply);
+    int32_t SubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply);
     virtual void DelayUnloadTask() = 0;
     virtual bool IsInited() = 0;
 

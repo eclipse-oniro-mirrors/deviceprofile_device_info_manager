@@ -755,5 +755,9 @@ void DistributedDeviceProfileServiceNew::ClearProfileCache()
         switchProfileMap_.clear();
     }
 }
+
+int32_t DistributedDeviceProfileServiceNew::SubscribeDeviceProfileInited(int32_t saId,
+    sptr <IDpInitedCallback> dpInitedCallback) {
+}
 } // namespace DeviceProfile
 } // namespace OHOS
