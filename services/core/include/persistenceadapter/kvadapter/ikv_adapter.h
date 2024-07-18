@@ -36,6 +36,8 @@ public:
     virtual int32_t Get(const std::string& key, std::string& value) = 0;
     virtual int32_t GetByPrefix(const std::string& keyPrefix, std::map<std::string, std::string>& values) = 0;
     virtual int32_t Sync(const std::vector<std::string>& deviceList, SyncMode syncMode) = 0;
+    virtual int32_t GetDeviceEntries(const std::string& uuid, std::map<std::string, std::string>& values) = 0;
+    virtual int32_t DeleteBatch(const std::vector<std::string>& keys) = 0;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

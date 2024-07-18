@@ -687,8 +687,12 @@ bool ProfileUtils::GetLongValue(const ValuesBucket& values, const std::string& p
 
 bool ProfileUtils::GetUdidByNetworkId(const std::string& networkId, std::string& udid)
 {
-    return ((DeviceManager::GetInstance().GetUdidByNetworkId(
-        DP_PKG_NAME, networkId, udid) == 0) ? true : false);
+    return ((DeviceManager::GetInstance().GetUdidByNetworkId(DP_PKG_NAME, networkId, udid) == 0) ? true : false);
+}
+
+bool ProfileUtils::GetUuidByNetworkId(const std::string& networkId, std::string& uuid)
+{
+    return ((DeviceManager::GetInstance().GetUuidByNetworkId(DP_PKG_NAME, networkId, uuid) == 0) ? true : false);
 }
 
 std::string ProfileUtils::GetDbKeyByProfile(const CharacteristicProfile& profile)

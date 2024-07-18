@@ -22,6 +22,7 @@
 #include <mutex>
 #include <vector>
 
+#include "dm_device_info.h"
 #include "iremote_object.h"
 
 #include "characteristic_profile.h"
@@ -67,7 +68,7 @@ public:
     int32_t SavePutTempCache(std::map<std::string, std::string>& entries);
     bool IsFirstInitDB();
     void ResetFirst();
-    void FixDataOnDeviceOnline(const std::string& networkId, const std::string& extraData);
+    void FixDataOnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
 
 private:
     bool LoadDpSyncAdapter();
@@ -78,6 +79,7 @@ private:
     void SyncWithNotOHBasedDeviceFailed(const std::vector<std::string>& notOHBasedDevices,
         sptr<IRemoteObject> syncCompletedCallback);
     void AddToPutTempCache(const std::map<std::string, std::string>& values);
+    void FixRemoteData(const std::string& remoteUdid, const std::string& localUuid);
     bool isAdapterSoLoaded_ = false;
     std::mutex isAdapterLoadLock_;
     std::mutex dynamicStoreMutex_;
