@@ -637,55 +637,54 @@ void DeviceProfileManager::ResetFirst()
     isFirst_.store(false);
 }
 
-void DeviceProfileManager::FixDataOnDeviceOnline(const std::string& networkId, const std::string& extraData)
+void DeviceProfileManager::FixDataOnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo)
 {
-    HILOGI("networkId:%{public}s", ProfileUtils::GetAnonyString(networkId).c_str());
-    if (networkId.empty() || extraData.empty()) {
+    std::string remoteNetworkId = deviceInfo.networkId;
+    if (remoteNetworkId.empty() || deviceInfo.extraData.empty()) {
         HILOGE("networkId or extraData is empty!");
         return;
     }
-    auto clearDataTask = [this, networkId, extraData]() {
-        cJSON* extraDataJson = cJSON_Parse(extraData.c_str());
-        if (extraDataJson == NULL) {
-            HILOGE("extraData parse failed");
+    if (!ProfileUtils::IsOHBasedDevice(deviceInfo.extraData)) {
+        HILOGE("device is not ohbase. networkId=%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+        return;
+    }
+    auto task = [this, deviceInfo]() {
+        std::string remoteUdid;
+        if (!ProfileUtils::GetUdidByNetworkId(deviceInfo.networkId, remoteUdid) || remoteUdid.empty()) {
+            HILOGE("Get remote deviceId failed. networkId=%{public}s",
+                ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
             return;
         }
-        int32_t osType = OHOS_TYPE_UNKNOWN;
-        cJSON* osTypeJson = cJSON_GetObjectItem(extraDataJson, DistributedHardware::PARAM_KEY_OS_TYPE);
-        if (!cJSON_IsNumber(osTypeJson)) {
-            HILOGE("osTypeJson is not a number");
-            cJSON_Delete(extraDataJson);
+        std::string localUdid = ProfileCache::GetInstance().GetLocalUdid();
+        if (localUdid.empty()) {
+            HILOGE("Get local deviceId failed.");
             return;
         }
-        osType = static_cast<int32_t>(osTypeJson->valueint);
-        cJSON_Delete(extraDataJson);
-        if (osType != OHOS_TYPE) {
+        std::map<std::string, std::string> values;
+        std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("dynamicProfileStore is nullptr!");
             return;
         }
-        std::string deviceId;
-        if (!ProfileUtils::GetUdidByNetworkId(networkId, deviceId) || deviceId.empty()) {
-            HILOGE("GetUdidByNetworkId failed");
+        if (deviceProfileStore_->GetDeviceEntries(localUdid, values) != DP_SUCCESS) {
+            HILOGE("GetDeviceEntries failed, localUdid=%{public}s", ProfileUtils::GetAnonyString(localUdid).c_str());
             return;
         }
-        DeviceProfile deviceProfile;
-        if (GetDeviceProfile(deviceId, deviceProfile) != DP_SUCCESS || osType == deviceProfile.GetOsType()) {
-            return;
-        }
-        std::string key = ProfileUtils::GenerateDBKey(ProfileUtils::GenerateDeviceProfileKey(deviceId), OS_TYPE);
-        std::string value = std::to_string(osType);
-        {
-            std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-            if (deviceProfileStore_ == nullptr) {
-                HILOGE("dynamicProfileStore is nullptr!");
-                return;
+        std::vector<std::string> delKeys;
+        for (const auto& [key, _] : values) {
+            if (key.find(remoteUdid) != std::string::npos) {
+                delKeys.emplace_back(key);
             }
-            if (deviceProfileStore_->Put(key, value) != DP_SUCCESS) {
-                HILOGE("Put failed!");
-                return;
-            }
+        }
+        if (delKeys.empty()) {
+            return;
+        }
+        if (deviceProfileStore_->DeleteBatch(delKeys) != DP_SUCCESS) {
+            HILOGE("DeleteBatch failed, remoteUdid=%{public}s", ProfileUtils::GetAnonyString(remoteUdid).c_str());
+            return;
         }
     };
-    std::thread(clearDataTask).detach();
+    std::thread(task).detach();
 }
 } // namespace DeviceProfile
 } // namespace OHOS

@@ -34,6 +34,7 @@ namespace {
     constexpr int32_t INIT_RETRY_SLEEP_INTERVAL = 200 * 1000; // 500ms
     const std::string DATABASE_DIR = "/data/service/el1/public/database/distributed_device_profile_service";
     const std::string TAG = "KVAdapter";
+    constexpr uint32_t MAX_BATCH_SIZE = 128;
 }
 
 KVAdapter::KVAdapter(const std::string &appId, const std::string &storeId,
@@ -325,6 +326,68 @@ int32_t KVAdapter::Sync(const std::vector<std::string>& deviceList, SyncMode syn
         if (status != DistributedKv::Status::SUCCESS) {
             HILOGE("Sync fail!");
             return DP_KV_SYNC_FAIL;
+        }
+    }
+    return DP_SUCCESS;
+}
+
+int32_t KVAdapter::GetDeviceEntries(const std::string& udid, std::map<std::string, std::string>& values)
+{
+    if (udid.empty()) {
+        HILOGE("udid is invalid!");
+        return DP_INVALID_PARAMS;
+    }
+    std::vector<DistributedKv::Entry> entries;
+    {
+        std::lock_guard<std::mutex> lock(kvAdapterMutex_);
+        if (kvStorePtr_ == nullptr) {
+            HILOGE("kvStorePtr is nullptr!");
+            return DP_KV_DB_PTR_NULL;
+        }
+        DistributedKv::Status status = kvStorePtr_->GetDeviceEntries(udid, entries);
+        if (status != DistributedKv::Status::SUCCESS) {
+            HILOGE("GetDeviceEntries fail! udid=%{public}s", ProfileUtils::GetAnonyString(udid).c_str());
+            return DP_GET_KV_DB_FAIL;
+        }
+    }
+    for (const auto& item : entries) {
+        values[item.key.ToString()] = item.value.ToString();
+    }
+    return DP_SUCCESS;
+}
+
+int32_t KVAdapter::DeleteBatch(const std::vector<std::string>& keys)
+{
+    if (keys.empty() || keys.size() > MAX_PROFILE_SIZE) {
+        HILOGE("keys size(%{public}zu) is invalid!", keys.size());
+        return DP_INVALID_PARAMS;
+    }
+
+    uint32_t keysSize = static_cast<uint32_t>(keys.size());
+    std::vector<std::vector<DistributedKv::Key>> delKeyBatches;
+    for (uint32_t i = 0; i < keysSize; i += MAX_BATCH_SIZE) {
+        uint32_t end = (i + MAX_BATCH_SIZE) > keysSize ? keysSize : (i + MAX_BATCH_SIZE);
+        auto batch = std::vector<std::string>(keys.begin() + i, keys.begin() + end);
+        std::vector<DistributedKv::Key> delKeys;
+        for (auto item : batch) {
+            DistributedKv::Key key(item);
+            delKeys.emplace_back(key);
+        }
+        delKeyBatches.emplace_back(delKeys);
+    }
+
+    {
+        std::lock_guard<std::mutex> lock(kvAdapterMutex_);
+        if (kvStorePtr_ == nullptr) {
+            HILOGE("kvStorePtr is nullptr!");
+            return DP_KV_DB_PTR_NULL;
+        }
+        for (auto delKeys : delKeyBatches) {
+            DistributedKv::Status status = kvStorePtr_->DeleteBatch(delKeys);
+            if (status != DistributedKv::Status::SUCCESS) {
+                HILOGE("DeleteBatch failed!");
+                return DP_DEL_KV_DB_FAIL;
+            }
         }
     }
     return DP_SUCCESS;
