@@ -403,6 +403,17 @@ ohos_unittest("switch_profile_manager_test") {
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
 }
+
+ohos_unittest("trust_Device_Profile_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/trust_device_profile_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 group("unittest") {
   testonly = true
   deps = [
@@ -440,5 +451,6 @@ group("unittest") {
     ":sync_completed_callback_test",
     ":sync_options_new_test",
     ":sync_subscriber_death_recipient_test",
+    ":trust_Device_Profile_test",
   ]
 }
