@@ -324,7 +324,6 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfile(const Chara
         return AddCharProfilesToCache({ charProfile });
     }
     if (charProfile.GetCharacteristicKey() == SWITCH_STATUS) {
-        HILOGI("CheckCallerPermission success interface SwitchProfileManager::PutCharacteristicProfile");
         int32_t switchRet = SwitchProfileManager::GetInstance().PutCharacteristicProfile(charProfile);
         DpRadarHelper::GetInstance().ReportPutCharProfile(switchRet, charProfile);
         return switchRet;
