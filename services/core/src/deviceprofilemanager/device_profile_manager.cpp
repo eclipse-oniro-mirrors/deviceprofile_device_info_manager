@@ -637,66 +637,94 @@ void DeviceProfileManager::ResetFirst()
     isFirst_.store(false);
 }
 
+void DeviceProfileManager::OnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo)
+{
+    FixDataOnDeviceOnline(deviceInfo);
+    NotifyNotOHBaseP2pOnline(deviceInfo);
+}
+
 void DeviceProfileManager::FixDataOnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo)
 {
     std::string remoteNetworkId = deviceInfo.networkId;
-    HILOGI("networkId:%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
     if (remoteNetworkId.empty() || deviceInfo.extraData.empty()) {
         HILOGE("networkId or extraData is empty!");
         return;
     }
+    if (!ProfileUtils::IsOHBasedDevice(deviceInfo.extraData)) {
+        HILOGE("device is not ohbase. networkId=%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+        return;
+    }
     auto task = [this, deviceInfo]() {
-        if (!ProfileUtils::IsOHBasedDevice(deviceInfo.extraData)) {
-            HILOGE("device is not ohbase. networkId=%{public}s",
-                ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
-            return;
-        }
         std::string remoteUdid;
         if (!ProfileUtils::GetUdidByNetworkId(deviceInfo.networkId, remoteUdid) || remoteUdid.empty()) {
             HILOGE("Get remote deviceId failed. networkId=%{public}s",
                 ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
             return;
         }
-        std::string localNetworkId = ProfileCache::GetInstance().GetLocalNetworkId();
-        if (localNetworkId.empty()) {
-            HILOGE("Get local networkId failed");
+        std::string localUdid = ProfileCache::GetInstance().GetLocalUdid();
+        if (localUdid.empty()) {
+            HILOGE("Get local deviceId failed.");
             return;
         }
-        std::string localUuid;
-        if (!ProfileUtils::GetUuidByNetworkId(localNetworkId, localUuid) || localUuid.empty()) {
-            HILOGE("Get local udid failed. networkId=%{public}s", ProfileUtils::GetAnonyString(localNetworkId).c_str());
+        std::map<std::string, std::string> values;
+        std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("dynamicProfileStore is nullptr!");
             return;
         }
-        FixRemoteData(remoteUdid, localUuid);
+        if (deviceProfileStore_->GetDeviceEntries(localUdid, values) != DP_SUCCESS) {
+            HILOGE("GetDeviceEntries failed, localUdid=%{public}s", ProfileUtils::GetAnonyString(localUdid).c_str());
+            return;
+        }
+        std::vector<std::string> delKeys;
+        for (const auto& [key, _] : values) {
+            if (key.find(remoteUdid) != std::string::npos) {
+                delKeys.emplace_back(key);
+            }
+        }
+        if (delKeys.empty()) {
+            return;
+        }
+        if (deviceProfileStore_->DeleteBatch(delKeys) != DP_SUCCESS) {
+            HILOGE("DeleteBatch failed, remoteUdid=%{public}s", ProfileUtils::GetAnonyString(remoteUdid).c_str());
+            return;
+        }
     };
     std::thread(task).detach();
 }
 
-void DeviceProfileManager::FixRemoteData(const std::string& remoteUdid, const std::string& localUuid)
+void DeviceProfileManager::NotifyNotOHBaseP2pOnline(const DistributedHardware::DmDeviceInfo deviceInfo)
 {
-    std::map<std::string, std::string> values;
-    std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-    if (deviceProfileStore_ == nullptr) {
-        HILOGE("dynamicProfileStore is nullptr!");
+    std::string remoteNetworkId = deviceInfo.networkId;
+    HILOGI("networkId:%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+    if (remoteNetworkId.empty()) {
+        HILOGE("networkId or extraData is empty!");
         return;
     }
-    if (deviceProfileStore_->GetDeviceEntries(localUuid, values) != DP_SUCCESS) {
-        HILOGE("GetDeviceEntries failed, localUuid=%{public}s", ProfileUtils::GetAnonyString(localUuid).c_str());
+    if (ProfileUtils::IsOHBasedDevice(deviceInfo.extraData)) {
+        HILOGI("device is ohbase. remoteNetworkId=%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
         return;
     }
-    std::vector<std::string> delKeys;
-    for (const auto& [key, _] : values) {
-        if (key.find(remoteUdid) != std::string::npos) {
-            delKeys.emplace_back(key);
+    if (!ProfileUtils::IsP2p(static_cast<int32_t>(deviceInfo.authForm))) {
+        HILOGI("is not point 2 point. remoteNetworkId=%{public}s",
+            ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+        return;
+    }
+    auto task = [this, remoteNetworkId]() {
+        std::string remoteUdid;
+        if (!ProfileUtils::GetUdidByNetworkId(remoteNetworkId, remoteUdid) || remoteUdid.empty()) {
+            HILOGE("Get remote deviceId failed. remoteNetworkId=%{public}s",
+                ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+            return;
         }
-    }
-    if (delKeys.empty()) {
-        return;
-    }
-    if (deviceProfileStore_->DeleteBatch(delKeys) != DP_SUCCESS) {
-        HILOGE("DeleteBatch failed, remoteUdid=%{public}s", ProfileUtils::GetAnonyString(remoteUdid).c_str());
-        return;
-    }
+        std::lock_guard<std::mutex> lock(isAdapterLoadLock_);
+        if (dpSyncAdapter_ == nullptr) {
+            HILOGE("dpSyncAdapter is nullptr.");
+            return;
+        }
+        dpSyncAdapter_->NotOHBaseDeviceOnline(remoteUdid, remoteNetworkId, true);
+    };
+    std::thread(task).detach();
 }
 } // namespace DeviceProfile
 } // namespace OHOS

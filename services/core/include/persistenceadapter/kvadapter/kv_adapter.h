@@ -50,7 +50,7 @@ public:
     int32_t Get(const std::string& key, std::string& value) override;
     int32_t GetByPrefix(const std::string& keyPrefix, std::map<std::string, std::string>& values) override;
     int32_t Sync(const std::vector<std::string>& deviceList, SyncMode syncMode) override;
-    int32_t GetDeviceEntries(const std::string& uuid, std::map<std::string, std::string>& values) override;
+    int32_t GetDeviceEntries(const std::string& udid, std::map<std::string, std::string>& values) override;
     int32_t DeleteBatch(const std::vector<std::string>& keys) override;
     int32_t DeleteKvStore();
 

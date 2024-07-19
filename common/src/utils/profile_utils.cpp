@@ -149,6 +149,15 @@ bool ProfileUtils::IsOHBasedDevice(const std::string& extraData)
     return osType == OHOS_TYPE;
 }
 
+bool ProfileUtils::IsP2p(const int32_t authForm)
+{
+    if (authForm == static_cast<int32_t>(DistributedHardware::DmAuthForm::INVALID_TYPE) ||
+        authForm == static_cast<int32_t>(DistributedHardware::DmAuthForm::IDENTICAL_ACCOUNT)) {
+        return false;
+    }
+    return true;
+}
+
 ProfileType ProfileUtils::GetProfileType(const std::string& key)
 {
     if (key.length() == 0 || key.length() > MAX_STRING_LEN) {

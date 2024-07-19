@@ -20,11 +20,6 @@
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
-class IDPSyncListener {
-public:
-    virtual ~IDPSyncListener() = default;
-    virtual void SyncCompleted(const SyncResult& syncResults) = 0;
-};
 class IDPSyncAdapter {
 public:
     virtual ~IDPSyncAdapter() = default;
@@ -33,6 +28,10 @@ public:
     virtual int32_t DetectRemoteDPVersion(const std::string& peerDevId) = 0;
     virtual int32_t SyncProfile(const std::list<std::string>& deviceIdList,
         const sptr<IRemoteObject> syncCompletedCallback) = 0;
+    virtual int32_t NotOHBaseDeviceOnline(const std::string& peerUdid, const std::string& peerNetworkId,
+        bool isP2p) = 0;
+    virtual int32_t SyncProfile(const std::string& peerUdid, const std::string& peerNetworkId,
+        const sptr<IRemoteObject> syncCb, bool isP2p) = 0;
 };
 using CreateDPSyncAdapterFuncPtr = IDPSyncAdapter *(*)(void);
 } // namespace DeviceProfile
