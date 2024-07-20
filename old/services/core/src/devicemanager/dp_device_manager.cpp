@@ -100,8 +100,7 @@ void DpDeviceManager::DpDeviceStateCallback::OnDeviceOnline(const DmDeviceInfo &
     DistributedDeviceProfileService::GetInstance().DeviceOnline();
     std::string networkId = deviceInfo.networkId;
     DistributedDeviceProfile::ProfileCache::GetInstance().OnNodeOnline(networkId);
-    DistributedDeviceProfile::DeviceProfileManager::GetInstance().FixDataOnDeviceOnline(
-        deviceInfo.networkId, deviceInfo.extraData);
+    DistributedDeviceProfile::DeviceProfileManager::GetInstance().FixDataOnDeviceOnline(deviceInfo);
 }
 
 void DpDeviceManager::DpDeviceStateCallback::OnDeviceOffline(const DmDeviceInfo &deviceInfo)

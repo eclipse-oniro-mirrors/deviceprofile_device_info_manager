@@ -90,6 +90,7 @@ public:
     static bool GetStringValue(const ValuesBucket& values, const std::string& property, std::string& value);
     static bool GetLongValue(const ValuesBucket& values, const std::string& property, int64_t& value);
     static bool GetUdidByNetworkId(const std::string& networkId, std::string& udid);
+    static bool GetUuidByNetworkId(const std::string& networkId, std::string& uuid);
     static bool IsNumStr(const std::string& inString);
 };
 } // namespace DistributedDeviceProfile
