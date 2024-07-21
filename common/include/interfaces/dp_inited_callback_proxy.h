@@ -16,6 +16,7 @@
 #ifndef OHOS_DP_DP_INITED_CALLBCK_PROXY_H
 #define OHOS_DP_DP_INITED_CALLBCK_PROXY_H
 
+#include <cstdint>
 #include "i_dp_inited_callback.h"
 #include "distributed_device_profile_enums.h"
 #include "iremote_broker.h"
@@ -30,7 +31,7 @@ public:
         : IRemoteProxy<IDpInitedCallback>(impl) {}
     ~DpInitedCallbackProxy() = default;
 
-    void OnDpInited() override;
+    int32_t OnDpInited() override;
 
 private:
     static inline BrokerDelegator<SyncCompletedCallbackProxy> delegator_;

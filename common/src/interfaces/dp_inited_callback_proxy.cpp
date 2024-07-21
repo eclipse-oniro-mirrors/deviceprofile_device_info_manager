@@ -25,23 +25,17 @@ namespace {
     const std::string TAG = "DpInitedCallbackProxy";
 }
 
-void DpInitedCallbackProxy::OnDpInited() {
+int32_t DpInitedCallbackProxy::OnDpInited() {
     sptr<IRemoteObject> remote = nullptr;
     GET_REMOTE_OBJECT(remote);
     MessageParcel data;
-    WRITE_CHANGE_LISTENER_TOKEN(data);
-    if (!oldProfile.Marshalling(data)) {
-        HILOGE("write reply failed!");
-        return ERR_FLATTEN_OBJECT;
-    }
-    if (!newProfile.Marshalling(data)) {
-        HILOGE("write reply failed!");
+    if (!data.WriteInterfaceToken(IDpInitedCallback::GetDescriptor())) {
+        HILOGE("write descriptor failed");
         return ERR_FLATTEN_OBJECT;
     }
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_UPDATE), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_INITED), data, reply);
     return DP_SUCCESS;
-
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

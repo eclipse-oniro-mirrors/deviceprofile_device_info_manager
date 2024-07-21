@@ -17,7 +17,7 @@
 #define OHOS_DP_DP_INITED_CALLBCK_STUB_H
 
 #include <mutex>
-#include "i_sync_completed_callback.h"
+#include "i_dp_inited_callback.h"
 #include "distributed_device_profile_enums.h"
 #include "distributed_device_profile_errors.h"
 #include "iremote_stub.h"
@@ -35,11 +35,8 @@ public:
         MessageOption &option) override;
 
 private:
-    int32_t OnDpInited(MessageParcel &data, MessageParcel &reply);
-
-private:
-    std::mutex syncCallbackMutex_;
-    std::shared_ptr<ISyncCompletedCallback> syncCompletedCallback_ = nullptr;
+    int32_t OnDpInitedInner(MessageParcel &data, MessageParcel &reply);
+    
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

@@ -75,6 +75,8 @@ DistributedDeviceProfileStubNew::DistributedDeviceProfileStubNew()
             &DistributedDeviceProfileStubNew::SendSubscribeInfosInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE_INITED)] =
             &DistributedDeviceProfileStubNew::SubscribeDeviceProfileInitedInner;
+    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE_INITED)] =
+            &DistributedDeviceProfileStubNew::UnSubscribeDeviceProfileInitedInner;
     InitAclAndSubscribe();
 }
 
@@ -520,6 +522,17 @@ int32_t DistributedDeviceProfileStubNew::SubscribeDeviceProfileInitedInner(Messa
     READ_HELPER(data, Int32, saId);
     sptr<IRemoteObject> dpInitedCallback = data.ReadRemoteObject();
     int32_t ret = SubscribeDeviceProfileInited(saId, dpInitedCallback);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+}
+
+int32_t DistributedDeviceProfileStubNew::UnSubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply)
+{
+    int32_t saId = -1;
+    READ_HELPER(data, Int32, saId);
+    int32_t ret = UnSubscribeDeviceProfileInited(saId);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;

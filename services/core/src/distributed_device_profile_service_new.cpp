@@ -119,6 +119,7 @@ int32_t DistributedDeviceProfileServiceNew::PostInit()
     SaveDynamicProfilesFromTempCache();
     isInited_ = true;
     HILOGI("PostInit finish");
+    NotifyDeviceProfileInited();
     return DP_SUCCESS;
 }
 
@@ -758,6 +759,36 @@ void DistributedDeviceProfileServiceNew::ClearProfileCache()
 
 int32_t DistributedDeviceProfileServiceNew::SubscribeDeviceProfileInited(int32_t saId,
     sptr <IDpInitedCallback> dpInitedCallback) {
+    if (dpInitedCallback == nullptr) {
+        HILOGE("dpInitedCallback is nullptr");
+        return DP_INVALID_PARAM;
+    }
+    if(isInited_.load()) {
+        HILOGI("dpInitedCallback is already inited");
+        sptr<IDpInitedCallback> callbackProxy = iface_cast<IDpInitedCallback>(dpInitedCallback);
+        if (callbackProxy == nullptr) {
+            HILOGE("Cast to IDpInitedCallback failed!");
+        }
+        callbackProxy->OnDpInited();
+    }
+    dpInitedCallbackMap_[saId] = dpInitedCallback;
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileServiceNew::UnSubscribeDeviceProfileInited(int32_t saId) {
+    dpInitedCallbackMap_.erase(saId);
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileServiceNew::NotifyDeviceProfileInited() {
+    for (const auto& [saId, callback] : dpInitedCallbackMap_) {
+        sptr<IDpInitedCallback> callbackProxy = iface_cast<IDpInitedCallback>(callback);
+        if (callbackProxy == nullptr) {
+            HILOGE("Cast to IDpInitedCallback failed!");
+            continue;
+        }
+        callbackProxy->OnDpInited();
+    }
 }
 } // namespace DeviceProfile
 } // namespace OHOS

@@ -452,6 +452,19 @@ void DistributedDeviceProfileClient::StartThreadSendSubscribeInfos()
     std::thread(&DistributedDeviceProfileClient::SendSubscribeInfosToService, this).detach();
 }
 
+void DistributedDeviceProfileClient::ReSubscribeDeviceProfileInited()
+{
+    HILOGI("Retry subscribe dp inited in proxy to service!");
+    if (dpInitedCallback_ == nullptr) {
+        HILOGI("not use Retry subscribe dp inited");
+        return;
+    }
+    auto autoTask = [this] () {
+        SubscribeDeviceProfileInited(saId_, dpInitedCallback_);
+    };
+    std::thread(autoTask).detach();
+}
+
 int32_t DistributedDeviceProfileClient::SubscribeDeviceProfileInited(int32_t saId, 
     sptr<IDpInitedCallback> dpInitedCallback) {
     auto dpService = GetDeviceProfileService();
@@ -459,7 +472,19 @@ int32_t DistributedDeviceProfileClient::SubscribeDeviceProfileInited(int32_t saI
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
+    saId_ = saId;
+    dpInitedCallback_ = dpInitedCallback;
     return dpService->SubscribeDeviceProfileInited(saId, dpInitedCallback);
+}
+
+int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfileInited(int32_t saId) {
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    dpInitedCallback_ = nullptr;
+    return dpService->UnSubscribeDeviceProfileInited(saId);
 }
 
 void DistributedDeviceProfileClient::SystemAbilityListener::OnRemoveSystemAbility(int32_t systemAbilityId,
@@ -473,6 +498,7 @@ void DistributedDeviceProfileClient::SystemAbilityListener::OnAddSystemAbility(i
 {
     HILOGI("dp sa started, start thread for send subscribeInfos");
     DistributedDeviceProfileClient::GetInstance().StartThreadSendSubscribeInfos();
+    DistributedDeviceProfileClient::GetInstance().ReSubscribeDeviceProfileInited();
 }
 } // namespace DeviceProfile
 } // namespace OHOS
