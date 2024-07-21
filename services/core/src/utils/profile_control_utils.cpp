@@ -345,7 +345,6 @@ int32_t ProfileControlUtils::RefreshLocalSwitchProfile(const std::string& appId)
 int32_t ProfileControlUtils::GetSwitchCharacteristicProfile(const std::string& appId, const std::string& deviceId,
     const std::string& serviceName, const std::string& characteristicKey, CharacteristicProfile& charProfile)
 {
-    HILOGI("call!");
     if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsKeyValid(serviceName) ||
         !ProfileUtils::IsKeyValid(characteristicKey) || appId.empty()) {
         HILOGE("params are invalid!");

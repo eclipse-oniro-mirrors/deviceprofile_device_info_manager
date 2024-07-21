@@ -96,7 +96,6 @@ int32_t SwitchProfileManager::PutCharacteristicProfileBatch(const std::vector<Ch
 int32_t SwitchProfileManager::GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
     const std::string& characteristicKey, CharacteristicProfile& charProfile)
 {
-    HILOGI("call!");
     int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(switchProfileMutex_);
@@ -107,7 +106,6 @@ int32_t SwitchProfileManager::GetCharacteristicProfile(const std::string& device
         HILOGE("GetSwitchCharacteristicProfile fail, reason: %{public}d!", res);
         return res;
     }
-    HILOGI("GetSwitchCharacteristicProfile success");
     return DP_SUCCESS;
 }
 

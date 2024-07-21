@@ -368,7 +368,6 @@ int32_t DistributedDeviceProfileClient::SyncDeviceProfile(const DpSyncOptions& s
 
 sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfileService()
 {
-    HILOGI("call!");
     {
         std::lock_guard<std::mutex> lock(serviceLock_);
         if (dpProxy_ != nullptr) {

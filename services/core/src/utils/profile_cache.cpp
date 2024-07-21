@@ -672,7 +672,6 @@ void ProfileCache::OnNodeOffline(const std::string& peerNetworkId)
 
 bool ProfileCache::IsLocalOrOnlineDevice(const std::string& deviceId)
 {
-    HILOGI("call!");
     if (deviceId == GetLocalUdid()) {
         HILOGI("%{public}s is localDevice", ProfileUtils::GetAnonyString(deviceId).c_str());
         return true;

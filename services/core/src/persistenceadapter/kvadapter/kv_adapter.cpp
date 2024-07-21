@@ -331,10 +331,10 @@ int32_t KVAdapter::Sync(const std::vector<std::string>& deviceList, SyncMode syn
     return DP_SUCCESS;
 }
 
-int32_t KVAdapter::GetDeviceEntries(const std::string& uuid, std::map<std::string, std::string>& values)
+int32_t KVAdapter::GetDeviceEntries(const std::string& udid, std::map<std::string, std::string>& values)
 {
-    if (uuid.empty()) {
-        HILOGE("uuid is invalid!");
+    if (udid.empty()) {
+        HILOGE("udid is invalid!");
         return DP_INVALID_PARAMS;
     }
     std::vector<DistributedKv::Entry> entries;
@@ -344,9 +344,9 @@ int32_t KVAdapter::GetDeviceEntries(const std::string& uuid, std::map<std::strin
             HILOGE("kvStorePtr is nullptr!");
             return DP_KV_DB_PTR_NULL;
         }
-        DistributedKv::Status status = kvStorePtr_->GetDeviceEntries(uuid, entries);
+        DistributedKv::Status status = kvStorePtr_->GetDeviceEntries(udid, entries);
         if (status != DistributedKv::Status::SUCCESS) {
-            HILOGE("GetDeviceEntries fail! uuid=%{public}s", ProfileUtils::GetAnonyString(uuid).c_str());
+            HILOGE("GetDeviceEntries fail! udid=%{public}s", ProfileUtils::GetAnonyString(udid).c_str());
             return DP_GET_KV_DB_FAIL;
         }
     }

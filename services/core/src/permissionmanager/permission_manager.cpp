@@ -194,7 +194,6 @@ bool PermissionManager::CheckCallerPermission()
     }
     stageRes = static_cast<int32_t>(StageRes::STAGE_SUCC);
     DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes);
-    HILOGI("CheckCallerPermission success callProc %{public}s!", callProcName.c_str());
     return true;
 }
 
@@ -232,7 +231,6 @@ std::string PermissionManager::GetCallerProcName()
     NativeTokenInfo nativeTokenInfo;
     auto tokenID = IPCSkeleton::GetCallingTokenID();
     auto errCode = AccessTokenKit::GetNativeTokenInfo(tokenID, nativeTokenInfo);
-    HILOGI("get token info errCode = %{public}d", errCode);
     std::string procName;
     if (errCode == EOK) {
         procName = std::move(nativeTokenInfo.processName);
