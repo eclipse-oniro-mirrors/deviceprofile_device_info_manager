@@ -56,7 +56,11 @@ int32_t DpInitedCallbackStub::OnDpInitedInner(MessageParcel& data, MessageParcel
 {
     (void)data;
     HILOGI("called");
-    OnDpInited();
+    int32_t ret = OnDpInited();
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
     return DP_SUCCESS;
 }
 } // namespace DistributedDeviceProfile

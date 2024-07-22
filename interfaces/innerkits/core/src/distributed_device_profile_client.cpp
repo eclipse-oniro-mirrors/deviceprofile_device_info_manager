@@ -473,6 +473,14 @@ int32_t DistributedDeviceProfileClient::SubscribeDeviceProfileInited(int32_t saI
         HILOGE("Get dp service failed");
         return DP_SUBSCRIBE_INITED_FALI;
     }
+    if (saId <= 0 || saId > MAX_SAID) {
+        HILOGE("saId is invalid, saId:%{public}d", saId);
+        return DP_INVALID_PARAM;
+    }
+    if (initedCb == nullptr) {
+        HILOGE("initedCb is nullptr!");
+        return DP_INVALID_PARAM;
+    }
     saId_ = saId;
     dpInitedCallback_ = initedCb;
     sptr<IRemoteObject> dpInitedCallback = initedCb->AsObject();
@@ -489,6 +497,10 @@ int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfileInited(int32_t s
     if (dpService == nullptr) {
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
+    }
+    if (saId <= 0 || saId > MAX_SAID) {
+        HILOGE("saId is invalid, saId:%{public}d", saId);
+        return DP_INVALID_PARAM;
     }
     dpInitedCallback_ = nullptr;
     return dpService->UnSubscribeDeviceProfileInited(saId);

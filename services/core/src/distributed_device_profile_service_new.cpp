@@ -764,8 +764,12 @@ int32_t DistributedDeviceProfileServiceNew::SubscribeDeviceProfileInited(int32_t
         HILOGE("dpInitedCallback is nullptr");
         return DP_INVALID_PARAM;
     }
+    if (saId <= 0 || saId > MAX_SAID) {
+        HILOGE("saId is invalid, saId:%{public}d", saId);
+        return DP_INVALID_PARAM;
+    }
     if (isInited_.load()) {
-        HILOGI("dpInitedCallback is already inited");
+        HILOGI("deviceProfile service is already inited");
         sptr<IDpInitedCallback> callbackProxy = iface_cast<IDpInitedCallback>(dpInitedCallback);
         if (callbackProxy == nullptr) {
             HILOGE("Cast to IDpInitedCallback failed!");

@@ -521,6 +521,10 @@ int32_t DistributedDeviceProfileStubNew::SubscribeDeviceProfileInitedInner(Messa
     int32_t saId = -1;
     READ_HELPER(data, Int32, saId);
     sptr<IRemoteObject> dpInitedCallback = data.ReadRemoteObject();
+    if (dpInitedCallback == nullptr) {
+        HILOGE("read remoteObject failed!");
+        return ERR_FLATTEN_OBJECT;
+    }
     int32_t ret = SubscribeDeviceProfileInited(saId, dpInitedCallback);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
