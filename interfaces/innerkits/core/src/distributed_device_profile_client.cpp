@@ -465,7 +465,7 @@ void DistributedDeviceProfileClient::ReSubscribeDeviceProfileInited()
     std::thread(autoTask).detach();
 }
 
-int32_t DistributedDeviceProfileClient::SubscribeDeviceProfileInited(int32_t saId, 
+int32_t DistributedDeviceProfileClient::SubscribeDeviceProfileInited(int32_t saId,
     sptr<IDpInitedCallback> initedCb)
 {
     auto dpService = GetDeviceProfileService();
