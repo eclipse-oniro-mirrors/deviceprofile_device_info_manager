@@ -466,14 +466,19 @@ void DistributedDeviceProfileClient::ReSubscribeDeviceProfileInited()
 }
 
 int32_t DistributedDeviceProfileClient::SubscribeDeviceProfileInited(int32_t saId, 
-    sptr<IDpInitedCallback> dpInitedCallback) {
+    sptr<IDpInitedCallback> initedCb) {
     auto dpService = GetDeviceProfileService();
     if (dpService == nullptr) {
         HILOGE("Get dp service failed");
-        return DP_GET_SERVICE_FAILED;
+        return DP_SUBSCRIBE_INITED_FALI;
     }
     saId_ = saId;
-    dpInitedCallback_ = dpInitedCallback;
+    dpInitedCallback_ = initedCb;
+    sptr<IRemoteObject> dpInitedCallback = initedCb->AsObject();
+    if (dpInitedCallback == nullptr) {
+        HILOGE("SyncCb ipc cast fail!");
+        return DP_SUBSCRIBE_INITED_FALI;
+    }
     return dpService->SubscribeDeviceProfileInited(saId, dpInitedCallback);
 }
 

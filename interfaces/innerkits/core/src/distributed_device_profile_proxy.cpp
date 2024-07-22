@@ -338,7 +338,7 @@ int32_t DistributedDeviceProfileProxy::SendSubscribeInfos(std::map<std::string, 
 }
 
 int32_t DistributedDeviceProfileProxy::SubscribeDeviceProfileInited(int32_t saId,
-    sptr<IDpInitedCallback> dpInitedCallback) {
+    sptr<IRemoteObject> dpInitedCallback) {
     sptr<IRemoteObject> remote = nullptr;
     GET_REMOTE_OBJECT(remote);
     MessageParcel data;

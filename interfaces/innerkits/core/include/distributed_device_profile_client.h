@@ -66,7 +66,7 @@ public:
     int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo);
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo);
     int32_t SyncDeviceProfile(const DpSyncOptions& syncOptions, sptr<ISyncCompletedCallback> syncCb);
-    int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IDpInitedCallback> dpInitedCallback);
+    int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IDpInitedCallback> initedCb);
     int32_t UnSubscribeDeviceProfileInited(int32_t saId);
 
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);

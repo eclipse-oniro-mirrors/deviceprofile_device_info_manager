@@ -526,6 +526,7 @@ int32_t DistributedDeviceProfileStubNew::SubscribeDeviceProfileInitedInner(Messa
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
     }
+    return DP_SUCCESS;
 }
 
 int32_t DistributedDeviceProfileStubNew::UnSubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply)
@@ -537,6 +538,7 @@ int32_t DistributedDeviceProfileStubNew::UnSubscribeDeviceProfileInitedInner(Mes
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
     }
+    return DP_SUCCESS;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-#include "distributed_device_profi le_errors.h"
 #include "distributed_device_profile_log.h"
 #include "ipc_utils.h"
 #include "message_parcel.h"

@@ -27,7 +27,7 @@ public:
     DECLARE_INTERFACE_DESCRIPTOR(u"OHOS.DeviceProfile.IDpInitedCallback");
     IDpInitedCallback() = default;
     virtual ~IDpInitedCallback() = default;
-    virtual void OnDpInited() = 0;
+    virtual int32_t OnDpInited() = 0;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

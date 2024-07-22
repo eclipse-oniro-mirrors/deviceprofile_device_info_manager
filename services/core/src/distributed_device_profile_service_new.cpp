@@ -758,7 +758,7 @@ void DistributedDeviceProfileServiceNew::ClearProfileCache()
 }
 
 int32_t DistributedDeviceProfileServiceNew::SubscribeDeviceProfileInited(int32_t saId,
-    sptr <IDpInitedCallback> dpInitedCallback) {
+    sptr <IRemoteObject> dpInitedCallback) {
     if (dpInitedCallback == nullptr) {
         HILOGE("dpInitedCallback is nullptr");
         return DP_INVALID_PARAM;
@@ -789,6 +789,7 @@ int32_t DistributedDeviceProfileServiceNew::NotifyDeviceProfileInited() {
         }
         callbackProxy->OnDpInited();
     }
+    return DP_SUCCESS;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

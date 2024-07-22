@@ -34,7 +34,7 @@ public:
     int32_t OnDpInited() override;
 
 private:
-    static inline BrokerDelegator<SyncCompletedCallbackProxy> delegator_;
+    static inline BrokerDelegator<DpInitedCallbackProxy> delegator_;
 };
 }  // namespace DistributedDeviceProfile
 }  // namespace OHOS
