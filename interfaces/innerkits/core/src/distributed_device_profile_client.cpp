@@ -466,7 +466,8 @@ void DistributedDeviceProfileClient::ReSubscribeDeviceProfileInited()
 }
 
 int32_t DistributedDeviceProfileClient::SubscribeDeviceProfileInited(int32_t saId, 
-    sptr<IDpInitedCallback> initedCb) {
+    sptr<IDpInitedCallback> initedCb)
+{
     auto dpService = GetDeviceProfileService();
     if (dpService == nullptr) {
         HILOGE("Get dp service failed");
@@ -482,7 +483,8 @@ int32_t DistributedDeviceProfileClient::SubscribeDeviceProfileInited(int32_t saI
     return dpService->SubscribeDeviceProfileInited(saId, dpInitedCallback);
 }
 
-int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfileInited(int32_t saId) {
+int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfileInited(int32_t saId)
+{
     auto dpService = GetDeviceProfileService();
     if (dpService == nullptr) {
         HILOGE("Get dp service failed");

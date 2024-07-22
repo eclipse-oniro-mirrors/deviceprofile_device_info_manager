@@ -36,7 +36,6 @@ public:
 
 private:
     int32_t OnDpInitedInner(MessageParcel &data, MessageParcel &reply);
-    
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

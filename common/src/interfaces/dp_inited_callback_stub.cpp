@@ -25,16 +25,19 @@ namespace {
     const std::string TAG = "DpInitedCallbackStub";
 }
 
-DpInitedCallbackStub::DpInitedCallbackStub() {
+DpInitedCallbackStub::DpInitedCallbackStub()
+{
     HILOGI("constructor!");
 }
 
-DpInitedCallbackStub::~DpInitedCallbackStub() {
+DpInitedCallbackStub::~DpInitedCallbackStub()
+{
     HILOGI("destruct!");
 }
 
 int32_t DpInitedCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel& data,
-    MessageParcel& reply, MessageOption& option) {
+    MessageParcel& reply, MessageOption& option)
+{
     HILOGI("Code = %{public}u", code);
     std::u16string descriptor = DpInitedCallbackStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
@@ -49,7 +52,8 @@ int32_t DpInitedCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel& data
     return OnDpInitedInner(data, reply);
 }
 
-int32_t DpInitedCallbackStub::OnDpInitedInner(MessageParcel& data, MessageParcel& reply) {
+int32_t DpInitedCallbackStub::OnDpInitedInner(MessageParcel& data, MessageParcel& reply)
+{
     (void)data;
     HILOGI("called");
     OnDpInited();

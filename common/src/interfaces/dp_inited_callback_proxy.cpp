@@ -25,7 +25,8 @@ namespace {
     const std::string TAG = "DpInitedCallbackProxy";
 }
 
-int32_t DpInitedCallbackProxy::OnDpInited() {
+int32_t DpInitedCallbackProxy::OnDpInited()
+{
     sptr<IRemoteObject> remote = nullptr;
     GET_REMOTE_OBJECT(remote);
     MessageParcel data;

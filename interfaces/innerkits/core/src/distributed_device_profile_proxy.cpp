@@ -338,7 +338,8 @@ int32_t DistributedDeviceProfileProxy::SendSubscribeInfos(std::map<std::string, 
 }
 
 int32_t DistributedDeviceProfileProxy::SubscribeDeviceProfileInited(int32_t saId,
-    sptr<IRemoteObject> dpInitedCallback) {
+    sptr<IRemoteObject> dpInitedCallback)
+{
     sptr<IRemoteObject> remote = nullptr;
     GET_REMOTE_OBJECT(remote);
     MessageParcel data;
@@ -350,7 +351,8 @@ int32_t DistributedDeviceProfileProxy::SubscribeDeviceProfileInited(int32_t saId
     return DP_SUCCESS;
 }
 
-int32_t OHOS::DistributedDeviceProfile::DistributedDeviceProfileProxy::UnSubscribeDeviceProfileInited(int32_t saId) {
+int32_t OHOS::DistributedDeviceProfile::DistributedDeviceProfileProxy::UnSubscribeDeviceProfileInited(int32_t saId)
+{
     sptr<IRemoteObject> remote = nullptr;
     GET_REMOTE_OBJECT(remote);
     MessageParcel data;

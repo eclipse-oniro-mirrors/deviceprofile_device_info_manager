@@ -758,12 +758,13 @@ void DistributedDeviceProfileServiceNew::ClearProfileCache()
 }
 
 int32_t DistributedDeviceProfileServiceNew::SubscribeDeviceProfileInited(int32_t saId,
-    sptr <IRemoteObject> dpInitedCallback) {
+    sptr <IRemoteObject> dpInitedCallback)
+{
     if (dpInitedCallback == nullptr) {
         HILOGE("dpInitedCallback is nullptr");
         return DP_INVALID_PARAM;
     }
-    if(isInited_.load()) {
+    if (isInited_.load()) {
         HILOGI("dpInitedCallback is already inited");
         sptr<IDpInitedCallback> callbackProxy = iface_cast<IDpInitedCallback>(dpInitedCallback);
         if (callbackProxy == nullptr) {
@@ -775,12 +776,14 @@ int32_t DistributedDeviceProfileServiceNew::SubscribeDeviceProfileInited(int32_t
     return DP_SUCCESS;
 }
 
-int32_t DistributedDeviceProfileServiceNew::UnSubscribeDeviceProfileInited(int32_t saId) {
+int32_t DistributedDeviceProfileServiceNew::UnSubscribeDeviceProfileInited(int32_t saId)
+{
     dpInitedCallbackMap_.erase(saId);
     return DP_SUCCESS;
 }
 
-int32_t DistributedDeviceProfileServiceNew::NotifyDeviceProfileInited() {
+int32_t DistributedDeviceProfileServiceNew::NotifyDeviceProfileInited()
+{
     for (const auto& [saId, callback] : dpInitedCallbackMap_) {
         sptr<IDpInitedCallback> callbackProxy = iface_cast<IDpInitedCallback>(callback);
         if (callbackProxy == nullptr) {
