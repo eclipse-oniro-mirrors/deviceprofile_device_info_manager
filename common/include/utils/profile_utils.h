@@ -42,6 +42,7 @@ public:
     static bool FilterAndGroupOnlineDevices(const std::vector<std::string>& deviceList,
         std::vector<std::string>& ohBasedDevices, std::vector<std::string>& notOHBasedDevices);
     static bool IsOHBasedDevice(const std::string& extraData);
+    static bool IsP2p(const int32_t authForm);
     static ProfileType GetProfileType(const std::string& key);
     static bool StartsWith(const std::string& str, const std::string prefix);
     static bool IsKeyValid(const std::string& key);

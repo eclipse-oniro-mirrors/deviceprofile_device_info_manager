@@ -638,6 +638,12 @@ void DeviceProfileManager::ResetFirst()
     isFirst_.store(false);
 }
 
+void DeviceProfileManager::OnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo)
+{
+    FixDataOnDeviceOnline(deviceInfo);
+    NotifyNotOHBaseP2pOnline(deviceInfo);
+}
+
 void DeviceProfileManager::FixDataOnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo)
 {
     std::string remoteNetworkId = deviceInfo.networkId;
@@ -684,6 +690,40 @@ void DeviceProfileManager::FixDataOnDeviceOnline(const DistributedHardware::DmDe
             HILOGE("DeleteBatch failed, remoteUdid=%{public}s", ProfileUtils::GetAnonyString(remoteUdid).c_str());
             return;
         }
+    };
+    std::thread(task).detach();
+}
+
+void DeviceProfileManager::NotifyNotOHBaseP2pOnline(const DistributedHardware::DmDeviceInfo deviceInfo)
+{
+    std::string remoteNetworkId = deviceInfo.networkId;
+    HILOGI("networkId:%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+    if (remoteNetworkId.empty()) {
+        HILOGE("networkId or extraData is empty!");
+        return;
+    }
+    if (ProfileUtils::IsOHBasedDevice(deviceInfo.extraData)) {
+        HILOGI("device is ohbase. remoteNetworkId=%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+        return;
+    }
+    if (!ProfileUtils::IsP2p(static_cast<int32_t>(deviceInfo.authForm))) {
+        HILOGI("is not point 2 point. remoteNetworkId=%{public}s",
+            ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+        return;
+    }
+    auto task = [this, remoteNetworkId]() {
+        std::string remoteUdid;
+        if (!ProfileUtils::GetUdidByNetworkId(remoteNetworkId, remoteUdid) || remoteUdid.empty()) {
+            HILOGE("Get remote deviceId failed. remoteNetworkId=%{public}s",
+                ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+            return;
+        }
+        std::lock_guard<std::mutex> lock(isAdapterLoadLock_);
+        if (dpSyncAdapter_ == nullptr) {
+            HILOGE("dpSyncAdapter is nullptr.");
+            return;
+        }
+        dpSyncAdapter_->NotOHBaseDeviceOnline(remoteUdid, remoteNetworkId, true);
     };
     std::thread(task).detach();
 }
