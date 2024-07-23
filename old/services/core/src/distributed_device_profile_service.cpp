@@ -53,6 +53,7 @@ const std::string NAME = "name";
 const std::string INIT_TASK_ID = "CheckAndInitDP";
 constexpr int32_t DELAY_TIME = 180000;
 constexpr int32_t UNLOAD_IMMEDIATELY = 0;
+constexpr int32_t DP_IPC_THREAD_NUM = 32;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileService);
@@ -266,6 +267,7 @@ void DistributedDeviceProfileService::OnStart(const SystemAbilityOnDemandReason&
         HILOGE("publish SA failed");
         return;
     }
+    IPCSkeleton::SetMaxWorkThreadNum(DP_IPC_THREAD_NUM);
     HILOGI("start reason %{public}s", startReason.GetName().c_str());
     DelayUnloadTask();
 }
