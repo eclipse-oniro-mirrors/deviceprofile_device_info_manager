@@ -460,7 +460,12 @@ void DistributedDeviceProfileClient::ReSubscribeDeviceProfileInited()
         return;
     }
     auto autoTask = [this] () {
-        SubscribeDeviceProfileInited(saId_, dpInitedCallback_);
+        int32_t ret = SubscribeDeviceProfileInited(saId_, dpInitedCallback_);
+        if (ret != DP_SUCCESS) {
+            HILOGE("Retry subscribe dp inited failed");
+        } else {
+            HILOGI("Retry subscribe dp inited succeed");
+        }
     };
     std::thread(autoTask).detach();
 }
@@ -468,6 +473,7 @@ void DistributedDeviceProfileClient::ReSubscribeDeviceProfileInited()
 int32_t DistributedDeviceProfileClient::SubscribeDeviceProfileInited(int32_t saId,
     sptr<IDpInitedCallback> initedCb)
 {
+    HILOGI("enter");
     auto dpService = GetDeviceProfileService();
     if (dpService == nullptr) {
         HILOGE("Get dp service failed");
@@ -481,18 +487,28 @@ int32_t DistributedDeviceProfileClient::SubscribeDeviceProfileInited(int32_t saI
         HILOGE("initedCb is nullptr!");
         return DP_INVALID_PARAM;
     }
-    saId_ = saId;
-    dpInitedCallback_ = initedCb;
+    {
+        std::lock_guard<std::mutex> lock(serviceLock_);
+        saId_ = saId;
+        dpInitedCallback_ = initedCb;
+    }
     sptr<IRemoteObject> dpInitedCallback = initedCb->AsObject();
     if (dpInitedCallback == nullptr) {
         HILOGE("SyncCb ipc cast fail!");
         return DP_SUBSCRIBE_INITED_FALI;
     }
-    return dpService->SubscribeDeviceProfileInited(saId, dpInitedCallback);
+    int32_t ret = dpService->SubscribeDeviceProfileInited(saId, dpInitedCallback);
+    if (ret != DP_SUCCESS) {
+        HILOGE("Subscribe DP Inited failed!");
+        return ret;
+    }
+    HILOGI("Subscribe DP Inited succeed!");
+    return DP_SUCCESS;
 }
 
 int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfileInited(int32_t saId)
 {
+    HILOGI("enter");
     auto dpService = GetDeviceProfileService();
     if (dpService == nullptr) {
         HILOGE("Get dp service failed");
@@ -502,8 +518,17 @@ int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfileInited(int32_t s
         HILOGE("saId is invalid, saId:%{public}d", saId);
         return DP_INVALID_PARAM;
     }
-    dpInitedCallback_ = nullptr;
-    return dpService->UnSubscribeDeviceProfileInited(saId);
+    {
+        std::lock_guard<std::mutex> lock(serviceLock_);
+        dpInitedCallback_ = nullptr;
+    }
+    int32_t ret = dpService->UnSubscribeDeviceProfileInited(saId);
+    if (ret != DP_SUCCESS) {
+        HILOGE("Unsubscribe DP Inited failed!");
+        return ret;
+    }
+    HILOGI("Unsubscribe DP Inited succeed!");
+    return DP_SUCCESS;
 }
 
 void DistributedDeviceProfileClient::SystemAbilityListener::OnRemoveSystemAbility(int32_t systemAbilityId,

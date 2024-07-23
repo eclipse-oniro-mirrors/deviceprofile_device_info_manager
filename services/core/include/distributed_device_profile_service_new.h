@@ -95,6 +95,7 @@ private:
     std::atomic<bool> isInited_{false};
     std::mutex dynamicProfileMapMtx_;
     std::map<std::string, std::string> dynamicProfileMap_;
+    std::mutex dpInitedCallbackMapMtx_;
     std::map<int32_t, sptr<IRemoteObject>> dpInitedCallbackMap_;
     std::mutex switchProfileMapMtx_;
     std::map<std::string, CharacteristicProfile> switchProfileMap_;

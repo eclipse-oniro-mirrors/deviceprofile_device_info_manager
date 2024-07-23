@@ -776,18 +776,21 @@ int32_t DistributedDeviceProfileServiceNew::SubscribeDeviceProfileInited(int32_t
         }
         callbackProxy->OnDpInited();
     }
+    std::lock_guard<std::mutex> lock(dpInitedCallbackMapMtx_);
     dpInitedCallbackMap_[saId] = dpInitedCallback;
     return DP_SUCCESS;
 }
 
 int32_t DistributedDeviceProfileServiceNew::UnSubscribeDeviceProfileInited(int32_t saId)
 {
+    std::lock_guard<std::mutex> lock(dpInitedCallbackMapMtx_);
     dpInitedCallbackMap_.erase(saId);
     return DP_SUCCESS;
 }
 
 int32_t DistributedDeviceProfileServiceNew::NotifyDeviceProfileInited()
 {
+    std::lock_guard<std::mutex> lock(dpInitedCallbackMapMtx_);
     for (const auto& [saId, callback] : dpInitedCallbackMap_) {
         sptr<IDpInitedCallback> callbackProxy = iface_cast<IDpInitedCallback>(callback);
         if (callbackProxy == nullptr) {
