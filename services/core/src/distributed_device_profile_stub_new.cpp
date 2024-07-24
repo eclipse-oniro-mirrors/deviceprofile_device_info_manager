@@ -96,6 +96,8 @@ void DistributedDeviceProfileStubNew::InitAclAndSubscribe()
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE_BATCH));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE_BATCH));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE_INITED));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE_INITED));
 }
 
 DistributedDeviceProfileStubNew::~DistributedDeviceProfileStubNew()
@@ -141,6 +143,10 @@ int32_t DistributedDeviceProfileStubNew::NotifyAclEventInner(uint32_t code, Mess
             return PutCharacteristicProfileInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE_BATCH):
             return PutCharacteristicProfileBatchInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE_INITED):
+            return SubscribeDeviceProfileInitedInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE_INITED):
+            return UnSubscribeDeviceProfileInitedInner(data, reply);
         default:
             HILOGE("unknown request code, please check, code = %{public}u", code);
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);

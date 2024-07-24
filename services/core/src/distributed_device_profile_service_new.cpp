@@ -760,6 +760,10 @@ void DistributedDeviceProfileServiceNew::ClearProfileCache()
 int32_t DistributedDeviceProfileServiceNew::SubscribeDeviceProfileInited(int32_t saId,
     sptr <IRemoteObject> dpInitedCallback)
 {
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("this caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
     if (dpInitedCallback == nullptr) {
         HILOGE("dpInitedCallback is nullptr");
         return DP_INVALID_PARAM;
@@ -783,6 +787,10 @@ int32_t DistributedDeviceProfileServiceNew::SubscribeDeviceProfileInited(int32_t
 
 int32_t DistributedDeviceProfileServiceNew::UnSubscribeDeviceProfileInited(int32_t saId)
 {
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("this caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
     std::lock_guard<std::mutex> lock(dpInitedCallbackMapMtx_);
     dpInitedCallbackMap_.erase(saId);
     return DP_SUCCESS;
