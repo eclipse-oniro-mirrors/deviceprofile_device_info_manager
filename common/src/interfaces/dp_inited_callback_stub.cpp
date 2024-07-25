@@ -18,7 +18,6 @@
 #include "message_parcel.h"
 #include "dp_inited_callback_stub.h"
 
-
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {

@@ -473,7 +473,7 @@ void DistributedDeviceProfileClient::ReSubscribeDeviceProfileInited()
 int32_t DistributedDeviceProfileClient::SubscribeDeviceProfileInited(int32_t saId,
     sptr<IDpInitedCallback> initedCb)
 {
-    HILOGI("enter");
+    HILOGI("enter, saId:%{public}d", saId);
     SubscribeDeviceProfileSA();
     auto dpService = GetDeviceProfileService();
     if (dpService == nullptr) {
