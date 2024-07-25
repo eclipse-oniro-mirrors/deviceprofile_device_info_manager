@@ -73,10 +73,6 @@ DistributedDeviceProfileStubNew::DistributedDeviceProfileStubNew()
         &DistributedDeviceProfileStubNew::SyncDeviceProfileInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SEND_SUBSCRIBE_INFOS)] =
             &DistributedDeviceProfileStubNew::SendSubscribeInfosInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE_INITED)] =
-            &DistributedDeviceProfileStubNew::SubscribeDeviceProfileInitedInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE_INITED)] =
-            &DistributedDeviceProfileStubNew::UnSubscribeDeviceProfileInitedInner;
     InitAclAndSubscribe();
 }
 

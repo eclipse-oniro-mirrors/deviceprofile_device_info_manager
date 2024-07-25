@@ -31,11 +31,11 @@ public:
     DpInitedCallbackStub();
     ~DpInitedCallbackStub();
 
-    virtual int32_t OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
-        MessageOption &option) override;
+    virtual int32_t OnRemoteRequest(uint32_t code, MessageParcel& data, MessageParcel& reply,
+        MessageOption& option) override;
 
 private:
-    int32_t OnDpInitedInner(MessageParcel &data, MessageParcel &reply);
+    int32_t OnDpInitedInner(MessageParcel& data, MessageParcel& reply);
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
