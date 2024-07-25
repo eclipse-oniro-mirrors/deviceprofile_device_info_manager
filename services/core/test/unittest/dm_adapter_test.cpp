@@ -30,6 +30,7 @@ namespace DistributedDeviceProfile {
 using namespace std;
 namespace {
     const std::string TAG = "DMAdapterTest";
+    const int32_t ERR_DM_IPC_SEND_REQUEST_FAILED = 96929756;
 }
 class DMAdapterTest : public testing::Test {
 public:
@@ -65,7 +66,7 @@ HWTEST_F(DMAdapterTest, Init001, TestSize.Level1)
 {
     DMAdapter::GetInstance().deviceStateCallback_ = nullptr;
     int32_t ret = DMAdapter::GetInstance().Init();
-    EXPECT_EQ(-20014, ret);
+    EXPECT_EQ(ERR_DM_IPC_SEND_REQUEST_FAILED, ret);
 }
 
 /*
@@ -78,7 +79,7 @@ HWTEST_F(DMAdapterTest, Init002, TestSize.Level1)
 {
     DMAdapter::GetInstance().deviceStateCallback_ = std::make_shared<DMAdapter::DpDeviceStateCallback>();
     int32_t ret = DMAdapter::GetInstance().Init();
-    EXPECT_EQ(-20014, ret);
+    EXPECT_EQ(ERR_DM_IPC_SEND_REQUEST_FAILED, ret);
 }
 
 /*
@@ -104,7 +105,7 @@ HWTEST_F(DMAdapterTest, UnInit002, TestSize.Level1)
 {
     DMAdapter::GetInstance().deviceStateCallback_ = std::make_shared<DMAdapter::DpDeviceStateCallback>();
     int32_t ret = DMAdapter::GetInstance().Init();
-    EXPECT_EQ(-20014, ret);
+    EXPECT_EQ(ERR_DM_IPC_SEND_REQUEST_FAILED, ret);
 }
 
 /*
@@ -116,7 +117,7 @@ HWTEST_F(DMAdapterTest, UnInit002, TestSize.Level1)
 HWTEST_F(DMAdapterTest, ReInit001, TestSize.Level1)
 {
     int32_t ret = DMAdapter::GetInstance().ReInit();
-    EXPECT_EQ(-20014, ret);
+    EXPECT_EQ(ERR_DM_IPC_SEND_REQUEST_FAILED, ret);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
