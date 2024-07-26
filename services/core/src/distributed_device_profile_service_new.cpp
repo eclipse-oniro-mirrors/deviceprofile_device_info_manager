@@ -414,20 +414,20 @@ int32_t DistributedDeviceProfileServiceNew::GetCharacteristicProfile(const std::
         return DP_PERMISSION_DENIED;
     }
     if (characteristicKey == SWITCH_STATUS) {
-        HILOGI("CheckCallerPermission success interface SwitchProfileManager::GetCharacteristicProfile");
+        HILOGD("CheckCallerPermission success interface SwitchProfileManager::GetCharacteristicProfile");
         int32_t switchRet = SwitchProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
             characteristicKey, charProfile);
         DpRadarHelper::GetInstance().ReportGetCharProfile(switchRet, deviceId, charProfile);
         return switchRet;
     }
     if (characteristicKey == STATIC_CHARACTERISTIC_KEY) {
-        HILOGI("CheckCallerPermission success interface StaticProfileManager::GetCharacteristicProfile");
+        HILOGD("CheckCallerPermission success interface StaticProfileManager::GetCharacteristicProfile");
         int32_t staticRet = StaticProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
             characteristicKey, charProfile);
         DpRadarHelper::GetInstance().ReportGetCharProfile(staticRet, deviceId, charProfile);
         return staticRet;
     }
-    HILOGI("CheckCallerPermission success interface DeviceProfileManager::GetCharacteristicProfile");
+    HILOGD("CheckCallerPermission success interface DeviceProfileManager::GetCharacteristicProfile");
     int32_t ret = DeviceProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
         characteristicKey, charProfile);
     DpRadarHelper::GetInstance().ReportGetCharProfile(ret, deviceId, charProfile);

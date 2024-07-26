@@ -233,7 +233,7 @@ int32_t ProfileCache::GetCharacteristicProfile(const std::string& deviceId, cons
         std::lock_guard<std::mutex> lock(charProfileMutex_);
         std::string charProfileKey = ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, charKey);
         if (charProfileMap_.find(charProfileKey) == charProfileMap_.end()) {
-            HILOGI("ProfileKey is not found in charProfileMap!");
+            HILOGD("ProfileKey is not found in charProfileMap!");
             return DP_NOT_FOUND_FAIL;
         }
         charProfile = charProfileMap_[charProfileKey];
@@ -590,7 +590,7 @@ int32_t ProfileCache::SetSwitchByProfile(const CharacteristicProfile& charProfil
 bool ProfileCache::IsSwitchValid(const CharacteristicProfile& charProfile,
     const std::unordered_map<std::string, SwitchFlag>& switchServiceMap, const std::string& operate)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (charProfile.GetCharacteristicKey() != SWITCH_STATUS || switchServiceMap.empty()) {
         HILOGE("params invalid");
         return false;
@@ -687,7 +687,7 @@ bool ProfileCache::IsLocalOrOnlineDevice(const std::string& deviceId)
 
 int32_t ProfileCache::GetNetWorkIdByUdid(const std::string& udid, std::string& networkId)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (udid.empty()) {
         HILOGE("UDID is empty");
         return DP_INVALID_PARAMS;

@@ -228,7 +228,7 @@ int32_t DistributedDeviceProfileService::Dump(int32_t fd, const std::vector<std:
 void DistributedDeviceProfileService::DelayUnloadTask()
 {
     auto task = [this]() {
-        HILOGI("do unload task");
+        HILOGD("do unload task");
         auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
         if (samgrProxy == nullptr) {
             HILOGE("get samgr failed");
