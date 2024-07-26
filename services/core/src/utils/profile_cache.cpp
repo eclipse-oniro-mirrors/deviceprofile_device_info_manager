@@ -590,7 +590,7 @@ int32_t ProfileCache::SetSwitchByProfile(const CharacteristicProfile& charProfil
 bool ProfileCache::IsSwitchValid(const CharacteristicProfile& charProfile,
     const std::unordered_map<std::string, SwitchFlag>& switchServiceMap, const std::string& operate)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (charProfile.GetCharacteristicKey() != SWITCH_STATUS || switchServiceMap.empty()) {
         HILOGE("params invalid");
         return false;
