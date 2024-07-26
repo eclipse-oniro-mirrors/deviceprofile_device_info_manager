@@ -420,13 +420,13 @@ int32_t DistributedDeviceProfileServiceNew::GetCharacteristicProfile(const std::
         return switchRet;
     }
     if (characteristicKey == STATIC_CHARACTERISTIC_KEY) {
-        HILOGI("CheckCallerPermission success interface StaticProfileManager::GetCharacteristicProfile");
+        HILOGD("CheckCallerPermission success interface StaticProfileManager::GetCharacteristicProfile");
         int32_t staticRet = StaticProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
             characteristicKey, charProfile);
         DpRadarHelper::GetInstance().ReportGetCharProfile(staticRet, deviceId, charProfile);
         return staticRet;
     }
-    HILOGI("CheckCallerPermission success interface DeviceProfileManager::GetCharacteristicProfile");
+    HILOGD("CheckCallerPermission success interface DeviceProfileManager::GetCharacteristicProfile");
     int32_t ret = DeviceProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
         characteristicKey, charProfile);
     DpRadarHelper::GetInstance().ReportGetCharProfile(ret, deviceId, charProfile);
