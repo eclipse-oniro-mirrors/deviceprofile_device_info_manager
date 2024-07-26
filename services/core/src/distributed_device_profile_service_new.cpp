@@ -413,7 +413,7 @@ int32_t DistributedDeviceProfileServiceNew::GetCharacteristicProfile(const std::
         return DP_PERMISSION_DENIED;
     }
     if (characteristicKey == SWITCH_STATUS) {
-        HILOGI("CheckCallerPermission success interface SwitchProfileManager::GetCharacteristicProfile");
+        HILOGD("CheckCallerPermission success interface SwitchProfileManager::GetCharacteristicProfile");
         int32_t switchRet = SwitchProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
             characteristicKey, charProfile);
         DpRadarHelper::GetInstance().ReportGetCharProfile(switchRet, deviceId, charProfile);
