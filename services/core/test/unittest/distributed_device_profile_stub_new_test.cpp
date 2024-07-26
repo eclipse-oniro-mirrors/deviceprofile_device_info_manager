@@ -56,6 +56,8 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
         const std::string& characteristicId) override;
     int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
+    int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IRemoteObject> dpInitedCallback) override;
+    int32_t UnSubscribeDeviceProfileInited(int32_t saId) override;
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
         sptr<IRemoteObject> syncCompletedCallback) override;
     int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) override;
@@ -200,6 +202,18 @@ int32_t MockDistributedDeviceProfileStubNew::SubscribeDeviceProfile(const Subscr
 int32_t MockDistributedDeviceProfileStubNew::UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)
 {
     (void)subscribeInfo;
+    return 0;
+}
+int32_t MockDistributedDeviceProfileStubNew::SubscribeDeviceProfileInited(int32_t saId,
+    sptr<IRemoteObject> dpInitedCallback)
+{
+    (void)saId;
+    (void)dpInitedCallback;
+    return 0;
+}
+int32_t MockDistributedDeviceProfileStubNew::UnSubscribeDeviceProfileInited(int32_t saId)
+{
+    (void)saId;
     return 0;
 }
 int32_t MockDistributedDeviceProfileStubNew::SyncDeviceProfile(

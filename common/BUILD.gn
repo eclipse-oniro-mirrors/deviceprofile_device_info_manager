@@ -42,6 +42,8 @@ ohos_shared_library("distributed_device_profile_common") {
     "src/interfaces/accesser.cpp",
     "src/interfaces/characteristic_profile.cpp",
     "src/interfaces/device_profile.cpp",
+    "src/interfaces/dp_inited_callback_proxy.cpp",
+    "src/interfaces/dp_inited_callback_stub.cpp",
     "src/interfaces/dp_subscribe_info.cpp",
     "src/interfaces/dp_sync_options.cpp",
     "src/interfaces/profile_change_listener_proxy.cpp",

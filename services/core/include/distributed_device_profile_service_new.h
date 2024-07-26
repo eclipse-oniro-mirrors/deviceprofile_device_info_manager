@@ -21,6 +21,7 @@
 #include <mutex>
 #include <unordered_set>
 #include "distributed_device_profile_stub_new.h"
+#include "i_dp_inited_callback.h"
 #include "event_handler.h"
 #include "event_runner.h"
 #include "single_instance.h"
@@ -64,6 +65,8 @@ public:
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
         sptr<IRemoteObject> syncCompletedCallback) override;
+    int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IRemoteObject> dpInitedCallback) override;
+    int32_t UnSubscribeDeviceProfileInited(int32_t saId) override;
     int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) override;
     int32_t Dump(int32_t fd, const std::vector<std::u16string>& args) override;
     void DelayUnloadTask() override;
@@ -82,6 +85,7 @@ private:
     int32_t AddCharProfilesToCache(const std::vector<CharacteristicProfile>& charProfiles);
     int32_t SaveSwitchProfilesFromTempCache();
     int32_t SaveDynamicProfilesFromTempCache();
+    int32_t NotifyDeviceProfileInited();
     void GetDynamicProfilesFromTempCache(std::map<std::string, std::string>& entries);
     void ClearProfileCache();
 
@@ -91,6 +95,8 @@ private:
     std::atomic<bool> isInited_{false};
     std::mutex dynamicProfileMapMtx_;
     std::map<std::string, std::string> dynamicProfileMap_;
+    std::mutex dpInitedCallbackMapMtx_;
+    std::map<int32_t, sptr<IRemoteObject>> dpInitedCallbackMap_;
     std::mutex switchProfileMapMtx_;
     std::map<std::string, CharacteristicProfile> switchProfileMap_;
     std::mutex depSaIdsMtx_;

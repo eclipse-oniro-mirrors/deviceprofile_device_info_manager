@@ -174,6 +174,7 @@ constexpr int32_t DELETEROWS_INIT = -1;
 constexpr int32_t DELETE_ACCESSER_CONDITION = 1;
 constexpr int32_t DELETE_ACCESSEE_CONDITION = 1;
 constexpr int32_t DELETE_TRUST_CONDITION = 0;
+constexpr int32_t MAX_SAID = 16777215;
 constexpr int64_t ROWID_INIT = -1;
 constexpr int64_t ACCESSERID_INIT = -1;
 constexpr int64_t ACCESSEEID_INIT = -1;

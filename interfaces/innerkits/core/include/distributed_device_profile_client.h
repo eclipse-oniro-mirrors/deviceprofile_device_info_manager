@@ -27,6 +27,7 @@
 #include <condition_variable>
 #include "i_profile_change_listener.h"
 #include "i_distributed_device_profile.h"
+#include "i_dp_inited_callback.h"
 #include "iremote_object.h"
 #include "refbase.h"
 #include "single_instance.h"
@@ -65,6 +66,8 @@ public:
     int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo);
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo);
     int32_t SyncDeviceProfile(const DpSyncOptions& syncOptions, sptr<ISyncCompletedCallback> syncCb);
+    int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IDpInitedCallback> initedCb);
+    int32_t UnSubscribeDeviceProfileInited(int32_t saId);
 
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
     void LoadSystemAbilityFail();
@@ -83,11 +86,14 @@ private:
     void OnServiceDied(const sptr<IRemoteObject>& remote);
     void SubscribeDeviceProfileSA();
     void StartThreadSendSubscribeInfos();
+    void ReSubscribeDeviceProfileInited();
 
     class DeviceProfileDeathRecipient : public IRemoteObject::DeathRecipient {
     public:
         void OnRemoteDied(const wptr<IRemoteObject>& remote);
     };
+    int32_t saId_ = 0;
+    sptr<IDpInitedCallback> dpInitedCallback_ = nullptr;
     std::condition_variable proxyConVar_;
     std::mutex serviceLock_;
     sptr<IDistributedDeviceProfile> dpProxy_ = nullptr;

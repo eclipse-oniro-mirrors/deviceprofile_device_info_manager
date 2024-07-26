@@ -119,6 +119,7 @@ int32_t DistributedDeviceProfileServiceNew::PostInit()
     SaveDynamicProfilesFromTempCache();
     isInited_ = true;
     HILOGI("PostInit finish");
+    NotifyDeviceProfileInited();
     return DP_SUCCESS;
 }
 
@@ -753,6 +754,59 @@ void DistributedDeviceProfileServiceNew::ClearProfileCache()
         std::lock_guard<std::mutex> lock(switchProfileMapMtx_);
         switchProfileMap_.clear();
     }
+}
+
+int32_t DistributedDeviceProfileServiceNew::SubscribeDeviceProfileInited(int32_t saId,
+    sptr <IRemoteObject> dpInitedCallback)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("this caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    if (dpInitedCallback == nullptr) {
+        HILOGE("dpInitedCallback is nullptr");
+        return DP_INVALID_PARAM;
+    }
+    if (saId <= 0 || saId > MAX_SAID) {
+        HILOGE("saId is invalid, saId:%{public}d", saId);
+        return DP_INVALID_PARAM;
+    }
+    if (isInited_.load()) {
+        HILOGI("deviceProfile service is already inited");
+        sptr<IDpInitedCallback> callbackProxy = iface_cast<IDpInitedCallback>(dpInitedCallback);
+        if (callbackProxy == nullptr) {
+            HILOGE("Cast to IDpInitedCallback failed!");
+        }
+        callbackProxy->OnDpInited();
+    }
+    std::lock_guard<std::mutex> lock(dpInitedCallbackMapMtx_);
+    dpInitedCallbackMap_[saId] = dpInitedCallback;
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileServiceNew::UnSubscribeDeviceProfileInited(int32_t saId)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("this caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    std::lock_guard<std::mutex> lock(dpInitedCallbackMapMtx_);
+    dpInitedCallbackMap_.erase(saId);
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileServiceNew::NotifyDeviceProfileInited()
+{
+    std::lock_guard<std::mutex> lock(dpInitedCallbackMapMtx_);
+    for (const auto& [saId, callback] : dpInitedCallbackMap_) {
+        sptr<IDpInitedCallback> callbackProxy = iface_cast<IDpInitedCallback>(callback);
+        if (callbackProxy == nullptr) {
+            HILOGE("Cast to IDpInitedCallback failed!");
+            continue;
+        }
+        callbackProxy->OnDpInited();
+    }
+    return DP_SUCCESS;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

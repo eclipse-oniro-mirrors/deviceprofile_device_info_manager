@@ -92,6 +92,8 @@ void DistributedDeviceProfileStubNew::InitAclAndSubscribe()
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE_BATCH));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE_BATCH));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE_INITED));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE_INITED));
 }
 
 DistributedDeviceProfileStubNew::~DistributedDeviceProfileStubNew()
@@ -137,6 +139,10 @@ int32_t DistributedDeviceProfileStubNew::NotifyAclEventInner(uint32_t code, Mess
             return PutCharacteristicProfileInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE_BATCH):
             return PutCharacteristicProfileBatchInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE_INITED):
+            return SubscribeDeviceProfileInitedInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE_INITED):
+            return UnSubscribeDeviceProfileInitedInner(data, reply);
         default:
             HILOGE("unknown request code, please check, code = %{public}u", code);
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
@@ -505,6 +511,35 @@ int32_t DistributedDeviceProfileStubNew::SendSubscribeInfosInner(MessageParcel& 
         return DP_READ_PARCEL_FAIL;
     }
     int32_t ret = SendSubscribeInfos(listenerMap);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::SubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply)
+{
+    int32_t saId = -1;
+    READ_HELPER(data, Int32, saId);
+    sptr<IRemoteObject> dpInitedCallback = data.ReadRemoteObject();
+    if (dpInitedCallback == nullptr) {
+        HILOGE("read remoteObject failed!");
+        return ERR_FLATTEN_OBJECT;
+    }
+    int32_t ret = SubscribeDeviceProfileInited(saId, dpInitedCallback);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::UnSubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply)
+{
+    int32_t saId = -1;
+    READ_HELPER(data, Int32, saId);
+    int32_t ret = UnSubscribeDeviceProfileInited(saId);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
