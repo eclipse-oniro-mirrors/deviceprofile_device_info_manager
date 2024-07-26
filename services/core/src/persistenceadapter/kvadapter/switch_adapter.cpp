@@ -58,7 +58,7 @@ int32_t SwitchAdapter::PutSwitch(const std::string& appId, uint32_t value, uint1
 int32_t SwitchAdapter::GetSwitch(const std::string& appId, const std::string& networkId,
     uint32_t& value, uint32_t& switchLength)
 {
-    HILOGI("called");
+    HILOGD("called");
     if (appId.empty() || networkId.empty()) {
         HILOGE("params are invalid");
         return DP_INVALID_PARAMS;
