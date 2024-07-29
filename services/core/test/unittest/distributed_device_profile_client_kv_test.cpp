@@ -23,6 +23,8 @@
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_enums.h"
+#include "dp_inited_callback_stub.h"
+#include "dp_inited_callback_proxy.h"
 #include "device_profile.h"
 #include "service_profile.h"
 #include "dp_subscribe_info.h"
@@ -111,6 +113,28 @@ public:
     }
     int32_t OnCharacteristicProfileUpdate(const CharacteristicProfile &oldProfile,
                                           const CharacteristicProfile &newProfile)
+    {
+        return 0;
+    }
+};
+
+class DpInitedCallback : public DpInitedCallbackStub {
+public:
+    DpInitedCallback()
+    {
+    }
+    ~DpInitedCallback()
+    {
+    }
+    int32_t OnDpInited()
+    {
+        return 0;
+    }
+};
+
+class MockDpInitedCallbackStub : public DpInitedCallbackStub {
+public:
+    int32_t OnDpInited()
     {
         return 0;
     }
@@ -414,6 +438,144 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, OnServiceDied001, TestSize.Level1
     OHOS::sptr<OHOS::IRemoteObject> remote = nullptr;
     DistributedDeviceProfileClient::GetInstance().OnServiceDied(remote);
     EXPECT_EQ(nullptr, DistributedDeviceProfileClient::GetInstance().dpProxy_);
+}
+
+/**
+ * @tc.name: SubscribeDeviceProfileInited_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfileInited_001, TestSize.Level1)
+{
+    OHOS::sptr<IDpInitedCallback> initedCb = new(nothrow) DpInitedCallback();
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfileInited(1000, initedCb);
+    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+}
+
+/**
+ * @tc.name: SubscribeDeviceProfileInited_002
+ * @tc.desc: saId < 0
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfileInited_002, TestSize.Level1)
+{
+    OHOS::sptr<IDpInitedCallback> initedCb = new(nothrow) DpInitedCallback();
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfileInited(-1, initedCb);
+    EXPECT_EQ(ret, DP_INVALID_PARAM);
+}
+
+/**
+ * @tc.name: SubscribeDeviceProfileInited_003
+ * @tc.desc: saId > MAX_SAID
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfileInited_003, TestSize.Level1)
+{
+    OHOS::sptr<IDpInitedCallback> initedCb = new(nothrow) DpInitedCallback();
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfileInited(MAX_SAID + 1, initedCb);
+    EXPECT_EQ(ret, DP_INVALID_PARAM);
+}
+
+/**
+ * @tc.name: SubscribeDeviceProfileInited_004
+ * @tc.desc: initedCb == nullptr
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfileInited_004, TestSize.Level1)
+{
+    OHOS::sptr<IDpInitedCallback> initedCb = nullptr;
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfileInited(MAX_SAID + 1, initedCb);
+    EXPECT_EQ(ret, DP_INVALID_PARAM);
+}
+
+/**
+ * @tc.name: UnSubscribeDeviceProfileInited_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfileInited_001, TestSize.Level1)
+{
+    DistributedDeviceProfileClient::GetInstance().dpInitedCallback_ = new(nothrow) DpInitedCallback();
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().UnSubscribeDeviceProfileInited(1000);
+    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+}
+
+/**
+ * @tc.name: UnSubscribeDeviceProfileInited_002
+ * @tc.desc: dpInitedCallback_ == nullptr
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfileInited_002, TestSize.Level1)
+{
+    DistributedDeviceProfileClient::GetInstance().dpInitedCallback_ = nullptr;
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().UnSubscribeDeviceProfileInited(1000);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: UnSubscribeDeviceProfileInited_003
+ * @tc.desc: saId < 0
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfileInited_003, TestSize.Level1)
+{
+    DistributedDeviceProfileClient::GetInstance().dpInitedCallback_ = new(nothrow) DpInitedCallback();
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().UnSubscribeDeviceProfileInited(-1);
+    EXPECT_EQ(ret, DP_INVALID_PARAM);
+}
+
+/**
+ * @tc.name: UnSubscribeDeviceProfileInited_004
+ * @tc.desc: saId > MAX_SAID
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfileInited_004, TestSize.Level1)
+{
+    DistributedDeviceProfileClient::GetInstance().dpInitedCallback_ = new(nothrow) DpInitedCallback();
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().UnSubscribeDeviceProfileInited(MAX_SAID + 1);
+    EXPECT_EQ(ret, DP_INVALID_PARAM);
+}
+
+/**
+ * @tc.name: DpinitedCallback001
+ * @tc.desc: DP_SUCCESS
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, DpinitedCallback001, TestSize.Level1)
+{
+    std::shared_ptr<DpInitedCallbackStub> DpinitedCallbackStub_ = std::make_shared<MockDpInitedCallbackStub>();
+    MessageParcel data;
+    MessageParcel reply;
+    DpInitedCallbackProxy proxy(nullptr);
+    proxy.OnDpInited();
+    int32_t ret = DpinitedCallbackStub_->OnDpInitedInner(data, reply);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+/**
+ * @tc.name: OnRemoteRequest_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, OnRemoteRequest_001, TestSize.Level0)
+{
+    std::shared_ptr<DpInitedCallbackStub> DpinitedCallbackStub_ = std::make_shared<MockDpInitedCallbackStub>();
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_INITED);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = DpinitedCallbackStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(DP_INTERFACE_CHECK_FAILED, ret);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
