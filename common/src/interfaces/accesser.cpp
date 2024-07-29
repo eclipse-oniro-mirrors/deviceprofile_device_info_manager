@@ -165,7 +165,7 @@ std::string Accesser::dump() const
     }
     std::string jsonStr = jsonChars;
     cJSON_Delete(json);
-    free(jsonChars);
+    cJSON_free(jsonChars);
     return jsonStr;
 }
 } // namespace DistributedDeviceProfile

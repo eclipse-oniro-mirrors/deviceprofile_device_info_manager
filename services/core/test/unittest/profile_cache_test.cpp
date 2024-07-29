@@ -428,14 +428,14 @@ HWTEST_F(ProfileCacheTest, AddSyncListener001, TestSize.Level1)
     ProfileCache::GetInstance().UnInit();
     ProfileCache::GetInstance().Init();
     string caller = "caller";
-    OHOS::sptr<OHOS::IRemoteObject> syncListener = new(nothrow) SyncCallback();
+    OHOS::sptr<OHOS::IRemoteObject> syncListener = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
     
     int32_t ret1 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
     EXPECT_EQ(DP_SUCCESS, ret1);
     
     for (int32_t i = 0; i < MAX_LISTENER_SIZE + 5; i++) {
         string caller = "caller" + std::to_string(i);
-        OHOS::sptr<OHOS::IRemoteObject> syncListener1 = new(nothrow) SyncCallback();
+        OHOS::sptr<OHOS::IRemoteObject> syncListener1 = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
         ProfileCache::GetInstance().syncListenerMap_[caller] = syncListener1;
     }
     int32_t ret2 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
@@ -472,7 +472,7 @@ HWTEST_F(ProfileCacheTest, RemoveSyncListeners001, TestSize.Level1)
     ProfileCache::GetInstance().syncListenerMap_.clear();
 
     string caller = "caller";
-    OHOS::sptr<OHOS::IRemoteObject> syncListener = new(nothrow) SyncCallback();
+    OHOS::sptr<OHOS::IRemoteObject> syncListener = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
     
     int32_t ret1 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
     EXPECT_EQ(DP_SUCCESS, ret1);
@@ -506,7 +506,7 @@ HWTEST_F(ProfileCacheTest, RemoveSyncListener001, TestSize.Level1)
     ProfileCache::GetInstance().syncListenerMap_.clear();
 
     string caller = "caller";
-    OHOS::sptr<OHOS::IRemoteObject> syncListener = new(nothrow) SyncCallback();
+    OHOS::sptr<OHOS::IRemoteObject> syncListener = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
     
     int32_t ret1 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
     EXPECT_EQ(DP_SUCCESS, ret1);
@@ -544,7 +544,7 @@ HWTEST_F(ProfileCacheTest, RemoveSyncListener002, TestSize.Level1)
     ProfileCache::GetInstance().syncListenerMap_.clear();
 
     string caller = "caller";
-    OHOS::sptr<OHOS::IRemoteObject> syncListener = new(nothrow) SyncCallback();
+    OHOS::sptr<OHOS::IRemoteObject> syncListener = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
     
     int32_t ret1 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
     EXPECT_EQ(DP_SUCCESS, ret1);

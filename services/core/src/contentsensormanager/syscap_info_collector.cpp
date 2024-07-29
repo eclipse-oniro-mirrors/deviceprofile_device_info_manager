@@ -60,11 +60,13 @@ bool SyscapInfoCollector::ConvertToProfile(DeviceProfile &profile)
     char* privateBuffer = nullptr;
     int32_t privateBufferLen;
     if (!EncodePrivateSyscap(&privateBuffer, &privateBufferLen)) {
+        cJSON_Delete(jsonData);
         HILOGE("EncodePrivateSyscap failed");
         return false;
     }
     if (privateBufferLen + PCID_MAIN_BYTES > MAX_DATALEN) {
         free(privateBuffer);
+        cJSON_Delete(jsonData);
         HILOGI("syscap data length too long");
         return false;
     }
@@ -93,7 +95,14 @@ bool SyscapInfoCollector::AddOsSyscapToJson(cJSON* const jsonData, const std::ve
         return false;
     }
     for (const auto& value : osSyscapData) {
-        cJSON_AddItemToArray(osSyscapJsonData, cJSON_CreateNumber(value));
+        cJSON* jsonArrItem = cJSON_CreateNumber(value);
+        if (jsonArrItem == NULL) {
+            continue;
+        }
+        if (!cJSON_AddItemToArray(osSyscapJsonData, jsonArrItem)) {
+            cJSON_Delete(jsonArrItem);
+            continue;
+        }
     }
     int32_t size = static_cast<int32_t>(osSyscapData.size());
     int32_t jsonArraySize = static_cast<int32_t>(cJSON_GetArraySize(osSyscapJsonData));
@@ -128,7 +137,7 @@ bool SyscapInfoCollector::GenJsonStr(const cJSON* const jsonData, std::string& j
         return false;
     }
     jsonStr = jsonChars;
-    free(jsonChars);
+    cJSON_free(jsonChars);
     return true;
 }
 } // namespace DeviceProfile

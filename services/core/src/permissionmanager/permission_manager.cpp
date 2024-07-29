@@ -126,7 +126,7 @@ int32_t PermissionManager::ParsePermissionJson(const cJSON* const permissionJson
         HILOGW("cJSON formatted to string failed!");
     } else {
         HILOGI("permission json %{public}s parse success!", jsonChars);
-        free(jsonChars);
+        cJSON_free(jsonChars);
     }
     return DP_SUCCESS;
 }

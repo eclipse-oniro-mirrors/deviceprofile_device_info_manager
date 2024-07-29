@@ -73,7 +73,7 @@ bool DmsInfoCollector::ConvertToProfile(std::vector<CharacteristicProfile>& char
     std::string jsonStr = jsonChars;
     charProfile.SetCharacteristicValue(jsonStr);
     cJSON_Delete(jsonData);
-    free(jsonChars);
+    cJSON_free(jsonChars);
     charProfileList.push_back(charProfile);
     return true;
 }

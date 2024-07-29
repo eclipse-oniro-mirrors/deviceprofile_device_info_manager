@@ -351,7 +351,8 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfile001, TestSi
         ProfileChangeType::SERVICE_PROFILE_UPDATE,
         ProfileChangeType::SERVICE_PROFILE_DELETE
     };
-    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener = new(nothrow) SubscribeDPChangeListener;
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfile(subscribeInfo);
@@ -373,7 +374,8 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfile001, Test
             ProfileChangeType::SERVICE_PROFILE_UPDATE,
             ProfileChangeType::SERVICE_PROFILE_DELETE
     };
-    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener = new(nothrow) SubscribeDPChangeListener;
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);

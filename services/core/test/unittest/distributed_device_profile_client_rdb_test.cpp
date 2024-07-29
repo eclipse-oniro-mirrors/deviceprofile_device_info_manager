@@ -117,7 +117,9 @@ void DistributedDeviceProfileClientRdbTest::SetUpTestCase()
     std::string subscribekey = "trust_device_profile";
     std::unordered_set<ProfileChangeType> subscribeTypes = {ProfileChangeType::TRUST_DEVICE_PROFILE_ADD,
         ProfileChangeType::TRUST_DEVICE_PROFILE_UPDATE, ProfileChangeType::TRUST_DEVICE_PROFILE_DELETE};
-    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener = new(std::nothrow) SubscribeDPChangeListener;
+        
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
     SubscribeInfo subscribeInfo(saId, subscribekey, subscribeTypes, subscribeDPChangeListener);
     DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfile(subscribeInfo);
 }

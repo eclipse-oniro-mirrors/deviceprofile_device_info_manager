@@ -85,9 +85,18 @@ std::string DpSyncOptions::dump() const
         cJSON_Delete(jsonArr);
     } else {
         for (const auto& deviceId : syncDeviceIds_) {
-            cJSON_AddItemToArray(jsonArr, cJSON_CreateString(deviceId.c_str()));
+            cJSON* jsonArrItem = cJSON_CreateString(deviceId.c_str());
+            if (jsonArrItem == NULL) {
+                continue;
+            }
+            if (!cJSON_AddItemToArray(jsonArr, jsonArrItem)) {
+                cJSON_Delete(jsonArrItem);
+                continue;
+            }
         }
-        cJSON_AddItemToObject(json, SYNC_DEVICE_IDS.c_str(), jsonArr);
+        if (!cJSON_AddItemToObject(json, SYNC_DEVICE_IDS.c_str(), jsonArr)) {
+            cJSON_Delete(jsonArr);
+        }
     }
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
@@ -97,7 +106,7 @@ std::string DpSyncOptions::dump() const
     }
     std::string jsonStr = jsonChars;
     cJSON_Delete(json);
-    free(jsonChars);
+    cJSON_free(jsonChars);
     return jsonStr;
 }
 } // namespace DistributedDeviceProfile

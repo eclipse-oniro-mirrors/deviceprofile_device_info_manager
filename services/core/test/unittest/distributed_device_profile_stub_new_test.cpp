@@ -266,7 +266,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, OnRemoteRequest_001, TestSize.Leve
     MessageParcel reply;
     MessageOption option;
     int32_t ret = ProfileStub_->OnRemoteRequest(code, data, reply, option);
-    EXPECT_EQ(DP_INVALID_PARAMS, ret);
+    EXPECT_EQ(DP_INTERFACE_CHECK_FAILED, ret);
 }
 
 /**

@@ -344,6 +344,7 @@ HWTEST_F(StaticCapabilityLoaderTest, GetStaticInfoByVersion_004, TestSize.Level1
         GetInstance().GetStaticInfoByVersion(deviceId, staticCapability,
         staticInfoJson, staticVersion, charProfiles);
     EXPECT_EQ(ret, DP_GET_STATIC_INFO_FAIL);
+    cJSON_free(staticInfoJson);
 }
 
 /*

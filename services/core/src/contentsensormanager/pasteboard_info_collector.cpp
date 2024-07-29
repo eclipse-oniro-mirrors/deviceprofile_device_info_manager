@@ -84,7 +84,7 @@ bool PasteboardInfoCollector::ConvertToProfile(std::vector<CharacteristicProfile
     std::string jsonStr = jsonChars;
     charProfile.SetCharacteristicValue(jsonStr);
     cJSON_Delete(jsonData);
-    free(jsonChars);
+    cJSON_free(jsonChars);
     charProfileList.push_back(charProfile);
     return true;
 }

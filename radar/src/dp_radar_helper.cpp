@@ -1077,7 +1077,11 @@ std::string DpRadarHelper::GetPeerUdidList(const std::vector<TrustDeviceProfile>
         cJSON_Delete(deviceInfoJson);
         return "";
     }
-    cJSON_AddItemToObject(deviceInfoJson, "PEER_UDID_LIST", peerUdidList);
+    if (!cJSON_AddItemToObject(deviceInfoJson, "PEER_UDID_LIST", peerUdidList)) {
+        cJSON_Delete(peerUdidList);
+        cJSON_Delete(deviceInfoJson);
+        return "";
+    }
     for (size_t i = 0; i < trustDeviceProfiles.size(); i++) {
         std::string udid = GetPeerUdid(trustDeviceProfiles[i].GetDeviceId());
         cJSON* object = cJSON_CreateString(udid.c_str());
@@ -1085,7 +1089,11 @@ std::string DpRadarHelper::GetPeerUdidList(const std::vector<TrustDeviceProfile>
             cJSON_Delete(deviceInfoJson);
             return "";
         }
-        cJSON_AddItemToArray(peerUdidList, object);
+        if (!cJSON_AddItemToArray(peerUdidList, object)) {
+            cJSON_Delete(object);
+            cJSON_Delete(deviceInfoJson);
+            return "";
+        }
     }
     char *peerDevUdidStr = cJSON_PrintUnformatted(deviceInfoJson);
     if (peerDevUdidStr == nullptr) {
@@ -1112,7 +1120,11 @@ std::string DpRadarHelper::GetPeerUdidList(const std::vector<AccessControlProfil
         cJSON_Delete(deviceInfoJson);
         return "";
     }
-    cJSON_AddItemToObject(deviceInfoJson, "PEER_UDID_LIST", peerUdidList);
+    if (!cJSON_AddItemToObject(deviceInfoJson, "PEER_UDID_LIST", peerUdidList)) {
+        cJSON_Delete(peerUdidList);
+        cJSON_Delete(deviceInfoJson);
+        return "";
+    }
     for (size_t i = 0; i < accessControlProfiles.size(); i++) {
         std::string udid = GetPeerUdid(accessControlProfiles[i].GetAccessee().GetAccesseeDeviceId());
         cJSON* object = cJSON_CreateString(udid.c_str());
@@ -1120,7 +1132,11 @@ std::string DpRadarHelper::GetPeerUdidList(const std::vector<AccessControlProfil
             cJSON_Delete(deviceInfoJson);
             return "";
         }
-        cJSON_AddItemToArray(peerUdidList, object);
+        if (!cJSON_AddItemToArray(peerUdidList, object)) {
+            cJSON_Delete(object);
+            cJSON_Delete(deviceInfoJson);
+            return "";
+        }
     }
     char *peerDevUdidStr = cJSON_PrintUnformatted(deviceInfoJson);
     if (peerDevUdidStr == nullptr) {
@@ -1147,7 +1163,11 @@ std::string DpRadarHelper::GetPeerUdidList(const std::vector<ServiceProfile>& se
         cJSON_Delete(deviceInfoJson);
         return "";
     }
-    cJSON_AddItemToObject(deviceInfoJson, "PEER_UDID_LIST", peerUdidList);
+    if (!cJSON_AddItemToObject(deviceInfoJson, "PEER_UDID_LIST", peerUdidList)) {
+        cJSON_Delete(peerUdidList);
+        cJSON_Delete(deviceInfoJson);
+        return "";
+    }
     for (size_t i = 0; i < serviceProfiles.size(); i++) {
         std::string udid = GetPeerUdid(serviceProfiles[i].GetDeviceId());
         cJSON* object = cJSON_CreateString(udid.c_str());
@@ -1155,7 +1175,11 @@ std::string DpRadarHelper::GetPeerUdidList(const std::vector<ServiceProfile>& se
             cJSON_Delete(deviceInfoJson);
             return "";
         }
-        cJSON_AddItemToArray(peerUdidList, object);
+        if (!cJSON_AddItemToArray(peerUdidList, object)) {
+            cJSON_Delete(object);
+            cJSON_Delete(deviceInfoJson);
+            return "";
+        }
     }
     char *peerDevUdidStr = cJSON_PrintUnformatted(deviceInfoJson);
     if (peerDevUdidStr == nullptr) {
@@ -1182,7 +1206,11 @@ std::string DpRadarHelper::GetPeerUdidList(const std::vector<CharacteristicProfi
         cJSON_Delete(deviceInfoJson);
         return "";
     }
-    cJSON_AddItemToObject(deviceInfoJson, "PEER_UDID_LIST", peerUdidList);
+    if (!cJSON_AddItemToObject(deviceInfoJson, "PEER_UDID_LIST", peerUdidList)) {
+        cJSON_Delete(peerUdidList);
+        cJSON_Delete(deviceInfoJson);
+        return "";
+    }
     for (size_t i = 0; i < characteristicProfiles.size(); i++) {
         std::string udid = GetPeerUdid(characteristicProfiles[i].GetDeviceId());
         cJSON* object = cJSON_CreateString(udid.c_str());
@@ -1190,7 +1218,11 @@ std::string DpRadarHelper::GetPeerUdidList(const std::vector<CharacteristicProfi
             cJSON_Delete(deviceInfoJson);
             return "";
         }
-        cJSON_AddItemToArray(peerUdidList, object);
+        if (!cJSON_AddItemToArray(peerUdidList, object)) {
+            cJSON_Delete(object);
+            cJSON_Delete(deviceInfoJson);
+            return "";
+        }
     }
     char *peerDevUdidStr = cJSON_PrintUnformatted(deviceInfoJson);
     if (peerDevUdidStr == nullptr) {
