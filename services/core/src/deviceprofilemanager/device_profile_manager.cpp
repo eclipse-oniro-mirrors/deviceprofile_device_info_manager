@@ -426,12 +426,13 @@ bool DeviceProfileManager::LoadDpSyncAdapter()
         return true;
     }
     int64_t beginTime = GetTickCount();
+    char path[PATH_MAX + 1] = {0x00};
     std::string soName = std::string(LIB_DP_ADAPTER_NAME);
-    if ((soName.length() == 0) || (soName.length() > PATH_MAX)) {
+    if ((soName.length() == 0) || (soName.length() > PATH_MAX) || (realpath(soName.c_str(), path) == nullptr)) {
         HILOGI("File %{public}s canonicalization failed", soName.c_str());
         return false;
     }
-    void *so_handle = dlopen(soName.c_str(), RTLD_NOW);
+    void *so_handle = dlopen(path, RTLD_NOW);
     if (so_handle == nullptr) {
         HILOGI("load dp sync adapter so %{public}s failed", soName.c_str());
         return false;
@@ -472,12 +473,14 @@ void DeviceProfileManager::UnloadDpSyncAdapter()
         dpSyncAdapter_->Release();
     }
     dpSyncAdapter_ = nullptr;
+    char path[PATH_MAX + 1] = {0x00};
     std::string soPathName = std::string(LIB_DP_ADAPTER_NAME);
-    if ((soPathName.length() == 0) || (soPathName.length() > PATH_MAX)) {
+    if ((soPathName.length() == 0) || (soPathName.length() > PATH_MAX) ||
+        (realpath(soPathName.c_str(), path) == nullptr)) {
         HILOGI("File %{public}s canonicalization failed", soPathName.c_str());
         return;
     }
-    void *so_handle = dlopen(soPathName.c_str(), RTLD_NOW | RTLD_NOLOAD);
+    void *so_handle = dlopen(path, RTLD_NOW | RTLD_NOLOAD);
     if (so_handle != nullptr) {
         HILOGI("dp sync adapter so_handle is not nullptr.");
         dlclose(so_handle);
