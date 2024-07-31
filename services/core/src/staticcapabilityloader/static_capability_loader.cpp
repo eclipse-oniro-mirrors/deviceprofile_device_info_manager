@@ -443,7 +443,7 @@ bool StaticCapabilityLoader::GetStaticCapabilityValue(const std::string& handler
     HILOGI("call!");
     char targetPath[PATH_MAX + 1] = {0x00};
     if (handlerLoc.length() == 0 || handlerLoc.length() > PATH_MAX ||
-        realpath((handlerLoc).c_str(), targetPath) == nullptr) {
+        realpath(handlerLoc.c_str(), targetPath) == nullptr) {
         HILOGE("File canonicalization failed!");
         return false;
     }
