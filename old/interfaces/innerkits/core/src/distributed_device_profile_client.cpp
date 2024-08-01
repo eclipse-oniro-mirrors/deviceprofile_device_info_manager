@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -57,7 +57,7 @@ IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileClient);
 bool DistributedDeviceProfileClient::LoadDeviceProfileService()
 {
     std::unique_lock<std::mutex> lock(serviceLock_);
-    sptr<DeviceProfileLoadCallback> loadCallback = new DeviceProfileLoadCallback();
+    sptr<DeviceProfileLoadCallback> loadCallback = sptr<DeviceProfileLoadCallback>(new DeviceProfileLoadCallback());
     if (loadCallback == nullptr) {
         HILOGE("loadCallback is nullptr.");
         return false;

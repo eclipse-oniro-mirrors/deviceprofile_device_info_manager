@@ -158,9 +158,19 @@ std::string SubscribeInfo::dump() const
         cJSON_Delete(jsonArr);
     } else {
         for (const auto &subChangeType : subscribeChangeTypes_) {
-            cJSON_AddItemToArray(jsonArr, cJSON_CreateNumber(static_cast<int32_t>(subChangeType)));
+            cJSON* jsonArrItem = cJSON_CreateNumber(static_cast<int32_t>(subChangeType));
+            if (jsonArrItem == NULL) {
+                continue;
+            }
+            if (!cJSON_AddItemToArray(jsonArr, jsonArrItem)) {
+                cJSON_Delete(jsonArrItem);
+                continue;
+            }
         }
-        cJSON_AddItemToObject(json, SUBSCRIBE_CHANGE_TYPES.c_str(), jsonArr);
+        if (!cJSON_AddItemToObject(json, SUBSCRIBE_CHANGE_TYPES.c_str(), jsonArr)) {
+            HILOGE("cJSON formatted to string failed!");
+            cJSON_Delete(jsonArr);
+        }
     }
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
@@ -170,7 +180,7 @@ std::string SubscribeInfo::dump() const
     }
     std::string jsonStr = jsonChars;
     cJSON_Delete(json);
-    free(jsonChars);
+    cJSON_free(jsonChars);
     return jsonStr;
 }
 } // namespace DistributedDeviceProfile

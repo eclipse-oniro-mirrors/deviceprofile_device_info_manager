@@ -84,6 +84,7 @@ void DeviceProfileManagerTest::SetUp()
     SetSelfTokenID(tokenId);
     OHOS::Security::AccessToken::AccessTokenKit::ReloadNativeTokenInfo();
     DeviceProfileManager::GetInstance().Init();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
 }
 
 void DeviceProfileManagerTest::TearDown() {
@@ -106,6 +107,7 @@ HWTEST_F(DeviceProfileManagerTest, Init001, TestSize.Level1)
     DeviceProfileManager::GetInstance().UnInit();
     int32_t ret = DeviceProfileManager::GetInstance().Init();
     EXPECT_EQ(ret, DP_SUCCESS);
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
 }
 
 /**
@@ -119,6 +121,7 @@ HWTEST_F(DeviceProfileManagerTest, UnInit001, TestSize.Level1)
     int32_t ret = DeviceProfileManager::GetInstance().UnInit();
     EXPECT_EQ(ret, DP_SUCCESS);
     DeviceProfileManager::GetInstance().Init();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
 }
 
 /**
@@ -248,7 +251,6 @@ HWTEST_F(DeviceProfileManagerTest, PutDeviceProfile004, TestSize.Level1)
     DeviceProfileManager::GetInstance().deviceProfileStore_ = nullptr;
     int32_t ret = DeviceProfileManager::GetInstance().PutDeviceProfile(deviceProfile10);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
-    DeviceProfileManager::GetInstance().Init();
 }
 
 /**
@@ -274,9 +276,11 @@ HWTEST_F(DeviceProfileManagerTest, PutDeviceProfile005, TestSize.Level1)
     deviceProfile11.SetOsType(1);
 
     DeviceProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
     int32_t ret = DeviceProfileManager::GetInstance().PutDeviceProfile(deviceProfile11);
     EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
     DeviceProfileManager::GetInstance().Init();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
 }
 
 /**
@@ -372,9 +376,11 @@ HWTEST_F(DeviceProfileManagerTest, PutServiceProfile005, TestSize.Level1)
     serviceProfile11.SetServiceType("serviceType11");
 
     DeviceProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
     int32_t ret = DeviceProfileManager::GetInstance().PutServiceProfile(serviceProfile11);
     EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
     DeviceProfileManager::GetInstance().Init();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
 }
 
 /**
@@ -528,9 +534,11 @@ HWTEST_F(DeviceProfileManagerTest, PutCharacteristicProfile005, TestSize.Level1)
     charProfile11.SetCharacteristicValue("characteristicValue11");
 
     DeviceProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
     int32_t ret = DeviceProfileManager::GetInstance().PutCharacteristicProfile(charProfile11);
     EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
     DeviceProfileManager::GetInstance().Init();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
 }
 
 /**
@@ -672,10 +680,12 @@ HWTEST_F(DeviceProfileManagerTest, GetDeviceProfile004, TestSize.Level1)
 {
     string deviceId = "#anything13";
     DeviceProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
     DeviceProfile outDeviceProfile;
     int32_t ret = DeviceProfileManager::GetInstance().GetDeviceProfile(deviceId, outDeviceProfile);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
     DeviceProfileManager::GetInstance().Init();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
 }
 
 /**
@@ -752,10 +762,12 @@ HWTEST_F(DeviceProfileManagerTest, GetServiceProfile004, TestSize.Level1)
     string deviceId = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
     string serviceName = "serviceName13";
     DeviceProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
     ServiceProfile outServiceProfile;
     int32_t ret = DeviceProfileManager::GetInstance().GetServiceProfile(deviceId, serviceName, outServiceProfile);
     EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
     DeviceProfileManager::GetInstance().Init();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
 }
 
 /**
@@ -843,11 +855,13 @@ HWTEST_F(DeviceProfileManagerTest, GetCharacteristicProfile004, TestSize.Level1)
     string serviceName = "serviceName13";
     string characteristicKey = "characteristicKey13";
     DeviceProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
     CharacteristicProfile outCharProfile;
     int32_t ret = DeviceProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
         characteristicKey, outCharProfile);
     EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
     DeviceProfileManager::GetInstance().Init();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
 }
 
 /**
@@ -918,9 +932,11 @@ HWTEST_F(DeviceProfileManagerTest, DeleteServiceProfile004, TestSize.Level1)
     string deviceId = "deviceId15";
     string serviceName = "serviceName15";
     DeviceProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
     int32_t ret = DeviceProfileManager::GetInstance().DeleteServiceProfile(deviceId, serviceName);
     EXPECT_EQ(ret, DP_DEL_KV_DB_FAIL);
     DeviceProfileManager::GetInstance().Init();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
 }
 
 /**
@@ -1001,10 +1017,12 @@ HWTEST_F(DeviceProfileManagerTest, DeleteCharacteristicProfile004, TestSize.Leve
     string serviceName = "serviceName15";
     string characteristicKey = "characteristicKey15";
     DeviceProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
     int32_t ret = DeviceProfileManager::GetInstance().DeleteCharacteristicProfile(deviceId, serviceName,
         characteristicKey);
     EXPECT_EQ(ret, DP_DEL_KV_DB_FAIL);
     DeviceProfileManager::GetInstance().Init();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
 }
 
 /**
@@ -1044,10 +1062,12 @@ HWTEST_F(DeviceProfileManagerTest, GetAllDeviceProfile002, TestSize.Level1)
 HWTEST_F(DeviceProfileManagerTest, GetAllDeviceProfile003, TestSize.Level1)
 {
     DeviceProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
     vector<DeviceProfile> deviceProfiles;
     int32_t ret = DeviceProfileManager::GetInstance().GetAllDeviceProfile(deviceProfiles);
     EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
     DeviceProfileManager::GetInstance().Init();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
 }
 
 /**
@@ -1087,10 +1107,12 @@ HWTEST_F(DeviceProfileManagerTest, GetAllServiceProfile002, TestSize.Level1)
 HWTEST_F(DeviceProfileManagerTest, GetAllServiceProfile003, TestSize.Level1)
 {
     DeviceProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
     vector<ServiceProfile> serviceProfiles;
     int32_t ret = DeviceProfileManager::GetInstance().GetAllServiceProfile(serviceProfiles);
     EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
     DeviceProfileManager::GetInstance().Init();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
 }
 
 /**
@@ -1130,10 +1152,12 @@ HWTEST_F(DeviceProfileManagerTest, GetAllCharacteristicProfile002, TestSize.Leve
 HWTEST_F(DeviceProfileManagerTest, GetAllCharacteristicProfile003, TestSize.Level1)
 {
     DeviceProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
     vector<CharacteristicProfile> charProfiles;
     int32_t ret = DeviceProfileManager::GetInstance().GetAllCharacteristicProfile(charProfiles);
     EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
     DeviceProfileManager::GetInstance().Init();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
 }
 
 /**
@@ -1164,7 +1188,7 @@ HWTEST_F(DeviceProfileManagerTest, SyncDeviceProfile001, TestSize.Level1)
 HWTEST_F(DeviceProfileManagerTest, SyncDeviceProfile002, TestSize.Level1)
 {
     DistributedDeviceProfile::DpSyncOptions syncOptions;
-    OHOS::sptr<OHOS::IRemoteObject> syncCb = new(nothrow) SyncCallback();
+    OHOS::sptr<OHOS::IRemoteObject> syncCb = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
 
     syncOptions.AddDevice("deviceId1");
     syncOptions.AddDevice("deviceId2");
@@ -1367,7 +1391,7 @@ HWTEST_F(DeviceProfileManagerTest, GetInKvDB001, TestSize.Level1)
  */
 HWTEST_F(DeviceProfileManagerTest, RunloadedFunction001, TestSize.Level1)
 {
-    OHOS::sptr<OHOS::IRemoteObject> syncCb = new(nothrow) SyncCallback();
+    OHOS::sptr<OHOS::IRemoteObject> syncCb = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
     string deviceId = "DeviceId";
     int32_t ret = DeviceProfileManager::GetInstance().RunloadedFunction(deviceId, syncCb);
     EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
@@ -1380,7 +1404,7 @@ HWTEST_F(DeviceProfileManagerTest, RunloadedFunction001, TestSize.Level1)
  */
 HWTEST_F(DeviceProfileManagerTest, RunloadedFunction002, TestSize.Level1)
 {
-    OHOS::sptr<OHOS::IRemoteObject> syncCb = new(nothrow) SyncCallback();
+    OHOS::sptr<OHOS::IRemoteObject> syncCb = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
     string deviceId = ProfileUtils::GetLocalUdidFromDM();
     int32_t ret = DeviceProfileManager::GetInstance().RunloadedFunction(deviceId, syncCb);
     EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);

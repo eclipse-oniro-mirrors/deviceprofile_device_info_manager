@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -149,7 +149,8 @@ HWTEST_F(SubscribeProfileManagerTest, SubscribeDeviceProfile_001, TestSize.Level
         ProfileChangeType::DEVICE_PROFILE_UPDATE,
         ProfileChangeType::DEVICE_PROFILE_DELETE,
     };
-    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener = new(nothrow) SubscribeDPChangeListener;
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
     
     int32_t errCode = SubscribeProfileManager::GetInstance().SubscribeDeviceProfile(subscribeInfo);
@@ -377,7 +378,8 @@ HWTEST_F(SubscribeProfileManagerTest, UnSubscribeDeviceProfile001, TestSize.Leve
         ProfileChangeType::DEVICE_PROFILE_UPDATE,
         ProfileChangeType::DEVICE_PROFILE_DELETE,
     };
-    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener = new(nothrow) SubscribeDPChangeListener;
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
     
     int32_t errCode = SubscribeProfileManager::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
@@ -597,7 +599,8 @@ HWTEST_F(SubscribeProfileManagerTest, SubscribeDeviceProfile_003, TestSize.Level
     string subscribeKey = "subscribeKey";
     int32_t saId = 4801;
     unordered_set<ProfileChangeType> subscribeTypes = {};
-    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener = new(nothrow) SubscribeDPChangeListener;
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
     
     int32_t errCode = SubscribeProfileManager::GetInstance().SubscribeDeviceProfile(subscribeInfo);
