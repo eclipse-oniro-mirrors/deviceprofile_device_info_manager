@@ -776,7 +776,6 @@ int32_t DistributedDeviceProfileServiceNew::SubscribeDeviceProfileInited(int32_t
         sptr<IDpInitedCallback> callbackProxy = iface_cast<IDpInitedCallback>(dpInitedCallback);
         if (callbackProxy == nullptr) {
             HILOGE("Cast to IDpInitedCallback failed!");
-            return DP_NULLPTR;
         }
         callbackProxy->OnDpInited();
     }
