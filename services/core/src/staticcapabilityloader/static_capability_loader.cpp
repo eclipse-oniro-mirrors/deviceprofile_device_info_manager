@@ -442,16 +442,11 @@ bool StaticCapabilityLoader::GetStaticCapabilityValue(const std::string& handler
 {
     HILOGI("call!");
     char targetPath[PATH_MAX + 1] = {0x00};
-    std::string libPath(LIB_LOAD_PATH);
-    if (handlerLoc == DMS_HANDLER_LOC) {
-        libPath = DMS_LIB_LOAD_PATH;
-    }
-    if (handlerLoc.length() == 0 || (libPath.length() + handlerLoc.length()) > PATH_MAX ||
-        realpath((libPath + handlerLoc).c_str(), targetPath) == nullptr) {
+    if (handlerLoc.length() == 0 || handlerLoc.length() > PATH_MAX) {
         HILOGE("File canonicalization failed!");
         return false;
     }
-    void *so_handler = dlopen(targetPath, RTLD_LAZY | RTLD_NODELETE);
+    void *so_handler = dlopen(handlerLoc.c_str(), RTLD_LAZY | RTLD_NODELETE);
     if (so_handler == nullptr) {
         HILOGE("%{public}s handler load failed, failed reason : %{public}s", targetPath, dlerror());
         return false;

@@ -450,7 +450,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, OnServiceDied001, TestSize.Level1
  */
 HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfileInited_001, TestSize.Level1)
 {
-    OHOS::sptr<IDpInitedCallback> initedCb = new(nothrow) DpInitedCallback();
+    OHOS::sptr<IDpInitedCallback> initedCb = sptr<IDpInitedCallback>(new DpInitedCallback());
     int32_t ret = DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfileInited(1000, initedCb);
     EXPECT_EQ(ret, DP_PERMISSION_DENIED);
 }
@@ -463,7 +463,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfileInited_001,
  */
 HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfileInited_002, TestSize.Level1)
 {
-    OHOS::sptr<IDpInitedCallback> initedCb = new(nothrow) DpInitedCallback();
+    OHOS::sptr<IDpInitedCallback> initedCb = sptr<IDpInitedCallback>(new DpInitedCallback());
     int32_t ret = DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfileInited(-1, initedCb);
     EXPECT_EQ(ret, DP_INVALID_PARAM);
 }
@@ -476,7 +476,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfileInited_002,
  */
 HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfileInited_003, TestSize.Level1)
 {
-    OHOS::sptr<IDpInitedCallback> initedCb = new(nothrow) DpInitedCallback();
+    OHOS::sptr<IDpInitedCallback> initedCb = sptr<IDpInitedCallback>(new DpInitedCallback());
     int32_t ret = DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfileInited(MAX_SAID + 1, initedCb);
     EXPECT_EQ(ret, DP_INVALID_PARAM);
 }
@@ -502,7 +502,8 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfileInited_004,
  */
 HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfileInited_001, TestSize.Level1)
 {
-    DistributedDeviceProfileClient::GetInstance().dpInitedCallback_ = new(nothrow) DpInitedCallback();
+    OHOS::sptr<IDpInitedCallback> initedCb = sptr<IDpInitedCallback>(new DpInitedCallback());
+    DistributedDeviceProfileClient::GetInstance().dpInitedCallback_ = initedCb;
     int32_t ret = DistributedDeviceProfileClient::GetInstance().UnSubscribeDeviceProfileInited(1000);
     EXPECT_EQ(ret, DP_PERMISSION_DENIED);
 }
@@ -528,7 +529,8 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfileInited_00
  */
 HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfileInited_003, TestSize.Level1)
 {
-    DistributedDeviceProfileClient::GetInstance().dpInitedCallback_ = new(nothrow) DpInitedCallback();
+    OHOS::sptr<IDpInitedCallback> initedCb = sptr<IDpInitedCallback>(new DpInitedCallback());
+    DistributedDeviceProfileClient::GetInstance().dpInitedCallback_ = initedCb;
     int32_t ret = DistributedDeviceProfileClient::GetInstance().UnSubscribeDeviceProfileInited(-1);
     EXPECT_EQ(ret, DP_INVALID_PARAM);
 }
@@ -541,7 +543,8 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfileInited_00
  */
 HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfileInited_004, TestSize.Level1)
 {
-    DistributedDeviceProfileClient::GetInstance().dpInitedCallback_ = new(nothrow) DpInitedCallback();
+    OHOS::sptr<IDpInitedCallback> initedCb = sptr<IDpInitedCallback>(new DpInitedCallback());
+    DistributedDeviceProfileClient::GetInstance().dpInitedCallback_ = initedCb;
     int32_t ret = DistributedDeviceProfileClient::GetInstance().UnSubscribeDeviceProfileInited(MAX_SAID + 1);
     EXPECT_EQ(ret, DP_INVALID_PARAM);
 }

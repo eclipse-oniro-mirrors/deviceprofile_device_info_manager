@@ -772,10 +772,11 @@ int32_t DistributedDeviceProfileServiceNew::SubscribeDeviceProfileInited(int32_t
         return DP_INVALID_PARAM;
     }
     if (isInited_.load()) {
-        HILOGI("deviceProfile service is already inited");
+        HILOGI("deviceProfile service is already inited.");
         sptr<IDpInitedCallback> callbackProxy = iface_cast<IDpInitedCallback>(dpInitedCallback);
         if (callbackProxy == nullptr) {
             HILOGE("Cast to IDpInitedCallback failed!");
+            return DP_NULLPTR;
         }
         callbackProxy->OnDpInited();
     }
