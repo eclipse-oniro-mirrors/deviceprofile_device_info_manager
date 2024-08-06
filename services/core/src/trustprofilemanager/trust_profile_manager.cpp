@@ -371,7 +371,7 @@ int32_t TrustProfileManager::GetAccessControlProfileByTokenId(int64_t tokenId,
         HILOGE("GetAccessControlProfileByTokenId::trustDeviceId is invalid");
         return DP_INVALID_PARAMS;
     }
-    HILOGI("Params, tokenId : %{public}ld, trustDeviceId : %{public}s, status : %{public}d",
+    HILOGI("Params, tokenId : %{public}" PRId64 ", trustDeviceId : %{public}s, status : %{public}d",
         tokenId, ProfileUtils::GetAnonyString(trustDeviceId).c_str(), status);
     std::shared_ptr<ResultSet> resultSet =
         GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_STATUS,
@@ -1805,7 +1805,7 @@ int32_t TrustProfileManager::DeleteAccesserCheck(int64_t accesserId)
             return DP_DELETE_ACCESSER_PROFILE_FAIL;
         }
     }
-    HILOGI("DeleteAccesserId : %{public}ld", accesserId);
+    HILOGI("DeleteAccesserId : %{public}" PRId64, accesserId);
     return DP_SUCCESS;
 }
 
@@ -1923,7 +1923,7 @@ int32_t TrustProfileManager::DeleteAccesseeCheck(int64_t accesseeId)
             return DP_DELETE_ACCESSEE_PROFILE_FAIL;
         }
     }
-    HILOGI("DeleteAccesseeId : %{public}ld", accesseeId);
+    HILOGI("DeleteAccesseeId : %{public}" PRId64, accesseeId);
     return DP_SUCCESS;
 }
 
