@@ -152,7 +152,7 @@ std::string Accesser::dump() const
     cJSON_AddNumberToObject(json, ACCESSER_ID.c_str(), accesserId_);
     cJSON_AddStringToObject(json, ACCESSER_DEVICE_ID.c_str(),
         ProfileUtils::GetAnonyString(accesserDeviceId_).c_str());
-    cJSON_AddNumberToObject(json, ACCESSER_USER_ID.c_str(),
+    cJSON_AddStringToObject(json, ACCESSER_USER_ID.c_str(),
         ProfileUtils::GetAnonyString(std::to_string(accesserUserId_)).c_str());
     cJSON_AddStringToObject(json, ACCESSER_ACCOUNT_ID.c_str(),
         ProfileUtils::GetAnonyString(accesserAccountId_).c_str());
