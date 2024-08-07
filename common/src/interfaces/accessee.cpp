@@ -150,9 +150,12 @@ std::string Accessee::dump() const
         return EMPTY_STRING;
     }
     cJSON_AddNumberToObject(json, ACCESSEE_ID.c_str(), accesseeId_);
-    cJSON_AddStringToObject(json, ACCESSEE_DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(accesseeDeviceId_).c_str());
-    cJSON_AddNumberToObject(json, ACCESSEE_USER_ID.c_str(), accesseeUserId_);
-    cJSON_AddStringToObject(json, ACCESSEE_ACCOUNT_ID.c_str(), accesseeAccountId_.c_str());
+    cJSON_AddStringToObject(json, ACCESSEE_DEVICE_ID.c_str(),
+        ProfileUtils::GetAnonyString(accesseeDeviceId_).c_str());
+    cJSON_AddStringToObject(json, ACCESSEE_USER_ID.c_str(),
+        ProfileUtils::GetAnonyString(std::to_string(accesseeUserId_)).c_str());
+    cJSON_AddStringToObject(json, ACCESSEE_ACCOUNT_ID.c_str(),
+        ProfileUtils::GetAnonyString(accesseeAccountId_).c_str());
     cJSON_AddNumberToObject(json, ACCESSEE_TOKEN_ID.c_str(), accesseeTokenId_);
     cJSON_AddStringToObject(json, ACCESSEE_BUNDLE_NAME.c_str(), accesseeBundleName_.c_str());
     cJSON_AddStringToObject(json, ACCESSEE_HAP_SIGNATURE.c_str(), accesseeHapSignature_.c_str());
