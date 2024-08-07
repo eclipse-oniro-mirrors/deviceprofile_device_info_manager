@@ -745,7 +745,7 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_001, TestSize.Level3)
     }
     if (!jsonObject[CHARACTER_OS_SYSCAP].is_array()) {
         DTEST_LOG << "not array type" << std::endl;
-        return false;
+        return;
     }
     std::vector<int> values = jsonObject[CHARACTER_OS_SYSCAP].get<std::vector<int>>();
     int intValues[PCID_MAIN_INTS];
