@@ -739,7 +739,14 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_001, TestSize.Level3)
         DTEST_LOG << "json parse faild" << std::endl;
         return;
     }
-
+    if (!jsonObject.contains(CHARACTER_OS_SYSCAP)) {
+        DTEST_LOG << "can't find entry for CHARACTER_OS_SYSCAP" << std::endl;
+        return;
+    }
+    if (!jsonObject[CHARACTER_OS_SYSCAP].is_array()) {
+        DTEST_LOG << "not array type" << std::endl;
+        return false;
+    }
     std::vector<int> values = jsonObject[CHARACTER_OS_SYSCAP].get<std::vector<int>>();
     int intValues[PCID_MAIN_INTS];
     int i = 0;
