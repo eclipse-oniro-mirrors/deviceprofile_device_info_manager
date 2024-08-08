@@ -152,7 +152,7 @@ std::string SubscribeInfo::dump() const
         return EMPTY_STRING;
     }
     cJSON_AddNumberToObject(json, SA_ID.c_str(), saId_);
-    cJSON_AddStringToObject(json, SUBSCRIBE_KEY.c_str(), subscribeKey_.c_str());
+    cJSON_AddStringToObject(json, SUBSCRIBE_KEY.c_str(), ProfileUtils::GetAnonyString(subscribeKey_).c_str());
     cJSON* jsonArr = cJSON_CreateArray();
     if (!cJSON_IsArray(jsonArr)) {
         cJSON_Delete(jsonArr);
