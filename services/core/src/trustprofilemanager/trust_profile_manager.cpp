@@ -419,13 +419,22 @@ int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId,
         resultSet->Close();
         return DP_NOT_FIND_DATA;
     }
-    int32_t ret = this->GetAclProfileByUserIdAndAccountId(
-        resultSet, userId, accountId, profile);
-    resultSet->Close();
-    if (ret != DP_SUCCESS) {
-        HILOGE("GetAccessControlProfile::GetAclProfileByUserIdAndAccountId faild");
-        return ret;
+    while (resultSet->GoToNextRow() == DP_SUCCESS) {
+        int32_t columnIndex = COLUMNINDEX_INIT;
+        int64_t accesserId = ACCESSERID_INIT;
+        resultSet->GetColumnIndex(ACCESSER_ID, columnIndex);
+        resultSet->GetLong(columnIndex, accesserId);
+        int64_t accesseeId = ACCESSEEID_INIT;
+        resultSet->GetColumnIndex(ACCESSEE_ID, columnIndex);
+        resultSet->GetLong(columnIndex, accesseeId);
+        int32_t ret = this->GetAclProfileByUserIdAndAccountId(
+            resultSet, accesserId, accesseeId, userId, accountId, profile);
+        if (ret != DP_SUCCESS) {
+            HILOGE("GetAccessControlProfile::GetAclProfileByUserIdAndAccountId faild");
+            return ret;
+        }
     }
+    resultSet->Close();
     if (profile.empty()) {
         HILOGE("GetAccessControlProfile::by userId accountId not find data");
         return DP_NOT_FIND_DATA;
@@ -814,66 +823,52 @@ int32_t TrustProfileManager::GetAclProfileByUserIdAndBundleName(std::shared_ptr<
     return DP_SUCCESS;
 }
 
-int32_t TrustProfileManager::GetAclProfileByUserIdAndAccountId(std::shared_ptr<ResultSet> resultSet,
-    int32_t userId, const std::string& accountId, std::vector<AccessControlProfile>& profile)
+int32_t TrustProfileManager::GetAclProfileByUserIdAndAccountId(std::shared_ptr<ResultSet> resultSet, int64_t accesserId,
+    int64_t accesseeId, int32_t userId, const std::string& accountId, std::vector<AccessControlProfile>& profile)
 {
-    if (resultSet == nullptr) {
-        HILOGE("resultSet is nullptr");
+    std::shared_ptr<ResultSet> accesserResultSet =
+        GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERUSERID_ACCESSERACCOUNTID,
+        std::vector<ValueObject>{ ValueObject(accesserId), ValueObject(userId), ValueObject(accountId) });
+    if (accesserResultSet == nullptr) {
+        HILOGE("GetAclProfileByUserIdAndAccountId::accesserResultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
-    while (resultSet->GoToNextRow() == DP_SUCCESS) {
-        int32_t columnIndex = COLUMNINDEX_INIT;
-        int64_t accesserId = ACCESSERID_INIT;
-        resultSet->GetColumnIndex(ACCESSER_ID, columnIndex);
-        resultSet->GetLong(columnIndex, accesserId);
-        int64_t accesseeId = ACCESSEEID_INIT;
-        resultSet->GetColumnIndex(ACCESSEE_ID, columnIndex);
-        resultSet->GetLong(columnIndex, accesseeId);
-
-        std::shared_ptr<ResultSet> accesserResultSet =
-            GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERUSERID_ACCESSERACCOUNTID,
-            std::vector<ValueObject>{ ValueObject(accesserId), ValueObject(userId), ValueObject(accountId) });
-        if (accesserResultSet == nullptr) {
-            HILOGE("GetAclProfileByUserIdAndAccountId::accesserResultSet is nullptr");
-            return DP_GET_RESULTSET_FAIL;
-        }
-        int32_t rowCount = ROWCOUNT_INIT;
-        accesserResultSet->GetRowCount(rowCount);
-        if (rowCount != 0) {
-            std::shared_ptr<ResultSet> accesseeResultSet =
-                GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID,
-                std::vector<ValueObject>{ ValueObject(accesseeId) });
-            if (accesseeResultSet == nullptr) {
-                HILOGE("GetAclProfileByUserIdAndAccountId::accesseeResultSet is nullptr");
-                return DP_GET_RESULTSET_FAIL;
-            }
-            this->ConvertToAccessControlProfiles(resultSet, accesserResultSet, accesseeResultSet, profile);
-            accesserResultSet->Close();
-            accesseeResultSet->Close();
-            continue;
-        }
-        accesserResultSet->Close();
-
+    int32_t rowCount = ROWCOUNT_INIT;
+    accesserResultSet->GetRowCount(rowCount);
+    if (rowCount != 0) {
         std::shared_ptr<ResultSet> accesseeResultSet =
-            GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEUSEEID_ACCESSEEACCOUNTID,
-            std::vector<ValueObject>{ ValueObject(accesseeId), ValueObject(userId), ValueObject(accountId) });
+            GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID,
+            std::vector<ValueObject>{ ValueObject(accesseeId) });
         if (accesseeResultSet == nullptr) {
             HILOGE("GetAclProfileByUserIdAndAccountId::accesseeResultSet is nullptr");
             return DP_GET_RESULTSET_FAIL;
         }
-        accesseeResultSet->GetRowCount(rowCount);
-        if (rowCount != 0) {
-            accesserResultSet = GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERID,
-                std::vector<ValueObject>{ ValueObject(accesserId) });
-            if (accesserResultSet == nullptr) {
-                HILOGE("GetAclProfileByUserIdAndAccountId::accesserResultSet is nullptr");
-                return DP_GET_RESULTSET_FAIL;
-            }
-            this->ConvertToAccessControlProfiles(resultSet, accesserResultSet, accesseeResultSet, profile);
-            accesserResultSet->Close();
-        }
+        this->ConvertToAccessControlProfiles(resultSet, accesserResultSet, accesseeResultSet, profile);
+        accesserResultSet->Close();
         accesseeResultSet->Close();
+        return DP_SUCCESS;
     }
+    accesserResultSet->Close();
+
+    std::shared_ptr<ResultSet> accesseeResultSet =
+        GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEUSEEID_ACCESSEEACCOUNTID,
+        std::vector<ValueObject>{ ValueObject(accesseeId), ValueObject(userId), ValueObject(accountId) });
+    if (accesseeResultSet == nullptr) {
+        HILOGE("GetAclProfileByUserIdAndAccountId::accesseeResultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    accesseeResultSet->GetRowCount(rowCount);
+    if (rowCount != 0) {
+        accesserResultSet = GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERID,
+            std::vector<ValueObject>{ ValueObject(accesserId) });
+        if (accesserResultSet == nullptr) {
+            HILOGE("GetAclProfileByUserIdAndAccountId::accesserResultSet is nullptr");
+            return DP_GET_RESULTSET_FAIL;
+        }
+        this->ConvertToAccessControlProfiles(resultSet, accesserResultSet, accesseeResultSet, profile);
+        accesserResultSet->Close();
+    }
+    accesseeResultSet->Close();
     return DP_SUCCESS;
 }
 
