@@ -275,6 +275,10 @@ bool AuthorityManager::CheckSpecificServiceAuth(const nlohmann::json& specificSv
         return false;
     }
     auto& authValJson = specificSvcsJson[serviceId];
+    if (!authValJson.is_number_unsigned()) {
+        HILOGE("not number type");
+        return false;
+    }
     return ((authValJson.get<uint32_t>() & authVal) != 0);
 }
 
@@ -284,6 +288,10 @@ bool AuthorityManager::CheckPrefixServiceAuth(const nlohmann::json& prefixSvcsJs
     for (auto& [prefixSvcId, authValJson] : prefixSvcsJson.items()) {
         if ((serviceId.compare(0, prefixSvcId.size(), prefixSvcId) == 0)) {
             HILOGI("service:%{public}s, prefix:%{public}s", serviceId.c_str(), prefixSvcId.c_str());
+            if (!authValJson.is_number_unsigned()) {
+                HILOGE("not number type");
+                return false;
+            }
             return ((authValJson.get<uint32_t>() & authVal) != 0);
         }
     }

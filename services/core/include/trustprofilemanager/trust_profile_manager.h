@@ -72,8 +72,8 @@ private:
         TrustDeviceProfile& trustDeviceProfile);
     int32_t GetAclProfileByUserIdAndBundleName(std::shared_ptr<ResultSet> resultSet,
         int32_t userId, const std::string& bundleName, std::vector<AccessControlProfile>& profile);
-    int32_t GetAclProfileByUserIdAndAccountId(std::shared_ptr<ResultSet> resultSet,
-        int32_t userId, const std::string& accountId, std::vector<AccessControlProfile>& profile);
+    int32_t GetAclProfileByUserIdAndAccountId(std::shared_ptr<ResultSet> resultSet, int64_t accesserId,
+        int64_t accesseeId, int32_t userId, const std::string& accountId, std::vector<AccessControlProfile>& profile);
     int32_t GetAclProfileByTokenId(std::shared_ptr<ResultSet> resultSet, const std::string& trustDeviceId,
         int64_t tokenId, std::vector<AccessControlProfile>& profile);
     int32_t GetAclProfileByBundleName(std::shared_ptr<ResultSet> resultSet,

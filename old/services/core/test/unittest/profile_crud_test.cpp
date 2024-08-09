@@ -725,13 +725,11 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_001, TestSize.Level3)
         DTEST_LOG << "device profile service is nullptr" << std::endl;
         return;
     }
-
     ServiceCharacteristicProfile profile;
     profile.SetServiceId(SERVICE_ID);
     profile.SetServiceType(SERVICE_TYPE);
     int32_t result = DistributedDeviceProfileClient::GetInstance().GetDeviceProfile("", SERVICE_ID, profile);
     EXPECT_EQ(ERR_DP_PERMISSION_DENIED, result);
-
     std::string jsonData = profile.GetCharacteristicProfileJson();
     DTEST_LOG << "jsonData:" << jsonData << std::endl;
     nlohmann::json jsonObject = nlohmann::json::parse(jsonData, nullptr, false);
@@ -739,14 +737,16 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_001, TestSize.Level3)
         DTEST_LOG << "json parse faild" << std::endl;
         return;
     }
-
+    if (!jsonObject.contains(CHARACTER_OS_SYSCAP) || !jsonObject[CHARACTER_OS_SYSCAP].is_array()) {
+        DTEST_LOG << "can't find entry for CHARACTER_OS_SYSCAP or not array type" << std::endl;
+        return;
+    }
     std::vector<int> values = jsonObject[CHARACTER_OS_SYSCAP].get<std::vector<int>>();
     int intValues[PCID_MAIN_INTS];
     int i = 0;
     for (int value : values) {
         intValues[i++] = value;
     }
-
     char (*osOutput)[SINGLE_SYSCAP_LEN] = nullptr;
     int32_t length;
     if (!DecodeOsSyscap((char *)intValues, &osOutput, &length)) {
@@ -756,7 +756,6 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_001, TestSize.Level3)
     for (int i = 0; i < length; i++) {
         DTEST_LOG << "OsSyscap: " << *(osOutput + i) << std::endl;
     }
-
     std::string capabilities = jsonObject[CHARACTER_PRIVATE_SYSCAP];
     char (*priOutput)[SINGLE_SYSCAP_LEN] = nullptr;
     if (!DecodePrivateSyscap((char *)capabilities.c_str(), &priOutput, &length)) {
