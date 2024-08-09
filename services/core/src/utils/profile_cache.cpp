@@ -178,7 +178,7 @@ int32_t ProfileCache::AddStaticCharProfileBatch(
     const std::unordered_map<std::string, CharacteristicProfile>& charProfiles)
 {
     for (const auto& item : charProfiles) {
-        HILOGI("AddStaticCharProfileBatch %{public}s!", item.second.dump().c_str());
+        HILOGD("%{public}s!", item.second.dump().c_str());
         ProfileCache::AddStaticCharProfile(item.second);
     }
     return DP_SUCCESS;
@@ -383,7 +383,7 @@ int32_t ProfileCache::RefreshProfileCache()
     StaticProfileManager::GetInstance().GetAllCharacteristicProfile(charProfiles);
     RefreshCharProfileCache(charProfiles);
     int64_t endTime = GetTickCount();
-    HILOGI("RefreshProfileCache, spend %{public}" PRId64 " ms", endTime - beginTime);
+    HILOGI("spend %{public}" PRId64 " ms", endTime - beginTime);
     return DP_SUCCESS;
 }
 
@@ -416,7 +416,7 @@ int32_t ProfileCache::RefreshStaticProfileCache(const std::unordered_map<std::st
         std::lock_guard<std::mutex> lock(charProfileMutex_);
         charProfileMap_.clear();
         for (const auto& staticProfileItem : staticProfiles) {
-            HILOGI("RefreshStaticProfileCache profile: %{public}s!", staticProfileItem.second.dump().c_str());
+            HILOGD("profile: %{public}s!", staticProfileItem.second.dump().c_str());
             charProfileMap_[staticProfileItem.first] = staticProfileItem.second;
         }
     }
@@ -435,7 +435,7 @@ int32_t ProfileCache::AddSyncListener(const std::string& caller, sptr<IRemoteObj
             HILOGE("syncListenerMap is exceed max listenerSize!");
             return DP_EXCEED_MAX_SIZE_FAIL;
         }
-        HILOGI("AddSyncListener caller %{public}s!", caller.c_str());
+        HILOGI("caller %{public}s!", caller.c_str());
         syncListener->AddDeathRecipient(syncListenerDeathRecipient_);
         syncListenerMap_[caller] = syncListener;
     }
@@ -465,7 +465,7 @@ int32_t ProfileCache::RemoveSyncListeners(std::map<std::string, sptr<IRemoteObje
                 if (iter->second != nullptr) {
                     iter->second->RemoveDeathRecipient(syncListenerDeathRecipient_);
                 }
-                HILOGI("RemoveSyncListener caller %{public}s!", iter->first.c_str());
+                HILOGI("caller %{public}s!", iter->first.c_str());
                 iter = syncListenerMap_.erase(iter);
             } else {
                 iter++;
@@ -488,7 +488,7 @@ int32_t ProfileCache::RemoveSyncListener(const std::string& caller)
             HILOGE("Can not find this listener!");
             return DP_NOT_FOUND_FAIL;
         }
-        HILOGI("RemoveSyncListener caller %{public}s!", caller.c_str());
+        HILOGI("caller %{public}s!", caller.c_str());
         if (syncListenerMap_[caller] == nullptr) {
             HILOGE("this caller syncListener is nullptr, caller : %{public}s", caller.c_str());
             return DP_NULLPTR;
@@ -516,7 +516,7 @@ int32_t ProfileCache::RemoveSyncListener(sptr<IRemoteObject> syncListener)
             HILOGE("syncListener is not exist!");
             return DP_NOT_FOUND_FAIL;
         }
-        HILOGI("RemoveSyncListener remote procName = %{public}s", iter->first.c_str());
+        HILOGI("remote procName = %{public}s", iter->first.c_str());
         if (iter->second != nullptr) {
             iter->second->RemoveDeathRecipient(syncListenerDeathRecipient_);
         }
@@ -552,14 +552,13 @@ int32_t ProfileCache::SetSwitchByProfileBatch(const std::vector<CharacteristicPr
         uint32_t value = static_cast<uint32_t>(std::stoi(item.GetCharacteristicValue()));
         if (value != 0) {
             outSwitch |= mask;
-            HILOGI("SetSwitchByProfileBatch service: %{public}s, switch on, currentSwitch: %{public}d",
+            HILOGI("service: %{public}s, switch on, currentSwitch: %{public}d",
                 ProfileUtils::GetAnonyString(item.GetServiceName()).c_str(), outSwitch);
         } else {
             outSwitch &= ~mask;
-            HILOGI("SetSwitchByProfileBatch service: %{public}s, switch off, currentSwitch: %{public}d",
+            HILOGI("service: %{public}s, switch off, currentSwitch: %{public}d",
                 ProfileUtils::GetAnonyString(item.GetServiceName()).c_str(), outSwitch);
         }
-        HILOGI("SetSwitchByProfileBatch success, currentSwitch: %{public}d", outSwitch);
     }
     return DP_SUCCESS;
 }
@@ -622,11 +621,7 @@ int32_t ProfileCache::SetSwitchProfile(CharacteristicProfile& charProfile, uint3
     uint32_t mask = NUM_1U << static_cast<int32_t>(service->second);
     charProfile.SetCharacteristicValue(std::to_string((((switchValue & mask) >>
         (static_cast<int32_t>(service->second))))));
-    HILOGI("SetSwitchProfile success, serviceName: %{public}s, switch: %{public}s",
-        charProfile.GetServiceName().c_str(), charProfile.GetCharacteristicValue().c_str());
-
     if (charProfile.GetDeviceId() == GetLocalUdid()) {
-        HILOGI("%{public}s is localDevice", ProfileUtils::GetAnonyString(GetLocalUdid()).c_str());
         std::lock_guard<std::mutex> lock(switchMutex_);
         curLocalSwitch_ = switchValue;
     }
@@ -695,7 +690,7 @@ int32_t ProfileCache::GetNetWorkIdByUdid(const std::string& udid, std::string& n
     
     if (udid == GetLocalUdid()) {
         networkId = GetLocalNetworkId();
-        HILOGI("GetNetWorkIdByUdid success, networkId is localNetworkid: %{public}s",
+        HILOGI("success, networkId is localNetworkid: %{public}s",
             ProfileUtils::GetAnonyString(networkId).c_str());
         return DP_SUCCESS;
     }
@@ -705,7 +700,7 @@ int32_t ProfileCache::GetNetWorkIdByUdid(const std::string& udid, std::string& n
         return DP_GET_NETWORKID_BY_UDID_FAIL;
     }
     networkId = onlineDevMap_[udid];
-    HILOGI("GetNetWorkIdByUdid success, networkId: %{public}s", ProfileUtils::GetAnonyString(networkId).c_str());
+    HILOGI("success, networkId: %{public}s", ProfileUtils::GetAnonyString(networkId).c_str());
     return DP_SUCCESS;
 }
 
@@ -717,7 +712,7 @@ int32_t ProfileCache::GetUdidByNetWorkId(const std::string& networkId, std::stri
     }
     if (GetLocalNetworkId() == networkId) {
         udid = GetLocalUdid();
-        HILOGI("networkId is local");
+        HILOGD("networkId is local");
         return DP_SUCCESS;
     }
     std::lock_guard<std::mutex> lock(onlineDeviceLock_);
