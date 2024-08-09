@@ -174,7 +174,7 @@ int32_t ProfileControlUtils::PutSwitchCharacteristicProfileBatch(const std::stri
             HILOGW("this profile is exist! charProfile: %{public}s", item.dump().c_str());
             continue;
         }
-        HILOGI("PutCharacteristicProfile, charProfile: %{public}s!", item.dump().c_str());
+        HILOGI("charProfile: %{public}s!", item.dump().c_str());
         res = ProfileCache::GetInstance().SetSwitchByProfile(item, SWITCH_SERVICE_MAP, newSwitch);
         if (res != DP_SUCCESS) {
             HILOGW("set switch profile failed: %{public}d", res);
@@ -326,7 +326,7 @@ int32_t ProfileControlUtils::RefreshLocalSwitchProfile(const std::string& appId)
     HILOGI("GetSwitch, newSwitch: %{public}d", newSwitch);
     for (int32_t i = static_cast<int32_t>(SwitchFlag::SWITCH_FLAG_MIN) + static_cast<int32_t>(NUM_1U);
         i < static_cast<int32_t>(SwitchFlag::SWITCH_FLAG_MAX); ++i) {
-        HILOGI("Find Switch, idx: %{public}d", i);
+        HILOGD("Find Switch, idx: %{public}d", i);
         std::string itemSwitchValue = std::to_string((newSwitch >> i) & NUM_1);
         std::string serviceName;
         res = ProfileCache::GetInstance().GetServiceNameByPos(i, SWITCH_SERVICE_MAP, serviceName);
