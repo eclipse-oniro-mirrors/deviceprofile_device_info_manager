@@ -197,7 +197,7 @@ int32_t KVAdapter::Delete(const std::string& key)
 
 int32_t KVAdapter::Get(const std::string& key, std::string& value)
 {
-    HILOGI("Get data by key: %{public}s", ProfileUtils::GetDbKeyAnonyString(key).c_str());
+    HILOGD("key: %{public}s", ProfileUtils::GetDbKeyAnonyString(key).c_str());
     DistributedKv::Key kvKey(key);
     DistributedKv::Value kvValue;
     DistributedKv::Status status;
@@ -219,7 +219,7 @@ int32_t KVAdapter::Get(const std::string& key, std::string& value)
 
 int32_t KVAdapter::GetByPrefix(const std::string& keyPrefix, std::map<std::string, std::string>& values)
 {
-    HILOGI("Get data by key prefix: %{public}s", ProfileUtils::GetDbKeyAnonyString(keyPrefix).c_str());
+    HILOGD("key prefix: %{public}s", ProfileUtils::GetDbKeyAnonyString(keyPrefix).c_str());
     std::lock_guard<std::mutex> lock(kvAdapterMutex_);
     if (kvStorePtr_ == nullptr) {
         HILOGE("kvStoragePtr_ is null");
