@@ -67,7 +67,7 @@ void KvDataChangeListener::OnChange(const DistributedKv::ChangeNotification& cha
 
 void KvDataChangeListener::OnChange(const DistributedKv::DataOrigin& origin, Keys&& keys)
 {
-    HILOGD("DB data OnChange);
+    HILOGD("DB data OnChange");
     std::vector<DistributedKv::Entry> insertRecords = DeviceProfileManager::GetInstance()
         .GetEntriesByKeys(keys[ChangeOp::OP_INSERT]);
     if (!insertRecords.empty() && insertRecords.size() <= MAX_DB_RECORD_SIZE) {
