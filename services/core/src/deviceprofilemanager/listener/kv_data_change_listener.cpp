@@ -93,7 +93,7 @@ void KvDataChangeListener::OnChange(const DistributedKv::DataOrigin& origin, Key
 
 void KvDataChangeListener::OnSwitchChange(const DistributedKv::SwitchNotification &notification)
 {
-    HILOGI("Switch data change, deviceId: %{public}s", ProfileUtils.GetAnonyString(notification.deviceId).c_str());
+    HILOGI("Switch data change, deviceId: %{public}s", ProfileUtils::GetAnonyString(notification.deviceId).c_str());
     if (notification.deviceId.empty()) {
         HILOGE("params are valid");
         return;
