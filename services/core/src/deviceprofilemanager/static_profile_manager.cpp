@@ -81,7 +81,7 @@ int32_t StaticProfileManager::ReInit()
 
 int32_t StaticProfileManager::PutCharacteristicProfile(const CharacteristicProfile& charProfile)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     int32_t putResult = DP_PUT_CHARACTERISTIC_CACHE_ERR;
     {
         std::lock_guard<std::mutex> lock(staticStoreMutex_);
@@ -94,17 +94,17 @@ int32_t StaticProfileManager::PutCharacteristicProfile(const CharacteristicProfi
 int32_t StaticProfileManager::GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
     const std::string& characteristicKey, CharacteristicProfile& charProfile)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsKeyValid(serviceName) ||
         !ProfileUtils::IsKeyValid(characteristicKey)) {
         HILOGE("Params are invalid!");
         return DP_INVALID_PARAMS;
     }
-    HILOGI("GetCharacteristicProfile, deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
+    HILOGD("deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
         ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
     if (ProfileCache::GetInstance().GetStaticCharacteristicProfile(deviceId, serviceName, characteristicKey,
         charProfile) == DP_SUCCESS) {
-        HILOGI("GetCharProfile in cache, profile: %{public}s!", charProfile.dump().c_str());
+        HILOGI("profile: %{public}s!", charProfile.dump().c_str());
         return DP_SUCCESS;
     }
     CharacteristicProfile staticCapabilityProfile;
@@ -118,7 +118,7 @@ int32_t StaticProfileManager::GetCharacteristicProfile(const std::string& device
         HILOGE("GetCharacteristicProfile fail, reason: %{public}d!", getResult);
         return getResult;
     }
-    HILOGI("staticCapabilityProfile : %{public}s", staticCapabilityProfile.dump().c_str());
+    HILOGI("profile : %{public}s", staticCapabilityProfile.dump().c_str());
     std::unordered_map<std::string, CharacteristicProfile> staticInfoProfiles;
     int generateProfileResult = GenerateStaticInfoProfile(staticCapabilityProfile, staticInfoProfiles);
     if (generateProfileResult != DP_SUCCESS) {
@@ -139,14 +139,14 @@ int32_t StaticProfileManager::GetCharacteristicProfile(const std::string& device
 int32_t StaticProfileManager::GetAllCharacteristicProfile(
     std::vector<CharacteristicProfile>& staticCapabilityProfiles)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     int32_t getAllResult = DP_GET_KV_DB_FAIL;
     {
         std::lock_guard<std::mutex> lock(staticStoreMutex_);
         getAllResult = ProfileControlUtils::GetAllCharacteristicProfile(staticProfileStore_, staticCapabilityProfiles);
     }
     if (getAllResult != DP_SUCCESS) {
-        HILOGE("StaticProfileManager GetAllCharacteristicProfile fail, reason: %{public}d!", getAllResult);
+        HILOGE("GetAllCharacteristicProfile fail, reason: %{public}d!", getAllResult);
         return getAllResult;
     }
     return DP_SUCCESS;
@@ -155,7 +155,7 @@ int32_t StaticProfileManager::GetAllCharacteristicProfile(
 int32_t StaticProfileManager::GenerateStaticInfoProfile(const CharacteristicProfile& staticCapabilityProfile,
     std::unordered_map<std::string, CharacteristicProfile>& staticInfoProfiles)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     std::string charValue = staticCapabilityProfile.GetCharacteristicValue();
     cJSON* charValueJson = cJSON_Parse(charValue.c_str());
     if (!cJSON_IsObject(charValueJson)) {

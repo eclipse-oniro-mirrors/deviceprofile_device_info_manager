@@ -179,7 +179,7 @@ int32_t DistributedDeviceProfileServiceNew::UnInit()
 
 int32_t DistributedDeviceProfileServiceNew::CreateUnloadHandler()
 {
-    HILOGI("call!");
+    HILOGD("call!");
     std::lock_guard<std::mutex> lock(unloadMutex_);
     if (unloadHandler_ == nullptr) {
         unloadHandler_ = EventHandlerFactory::GetInstance().GetEventHandler();
@@ -193,7 +193,7 @@ int32_t DistributedDeviceProfileServiceNew::CreateUnloadHandler()
 
 int32_t DistributedDeviceProfileServiceNew::DestroyUnloadHandler()
 {
-    HILOGI("call!");
+    HILOGD("call!");
     std::lock_guard<std::mutex> lock(unloadMutex_);
     if (unloadHandler_ == nullptr) {
         HILOGE("UnloadHandler is nullptr!");
@@ -291,7 +291,7 @@ int32_t DistributedDeviceProfileServiceNew::PutServiceProfile(const ServiceProfi
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    HILOGI("CheckCallerPermission success interface PutServiceProfile");
+    HILOGD("CheckCallerPermission success interface PutServiceProfile");
     if (!IsInited()) {
         return AddSvrProfilesToCache({ serviceProfile });
     }
@@ -306,7 +306,7 @@ int32_t DistributedDeviceProfileServiceNew::PutServiceProfileBatch(const std::ve
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    HILOGI("CheckCallerPermission success interface PutServiceProfileBatch");
+    HILOGD("CheckCallerPermission success interface PutServiceProfileBatch");
     if (!IsInited()) {
         return AddSvrProfilesToCache(serviceProfiles);
     }
@@ -329,7 +329,7 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfile(const Chara
         DpRadarHelper::GetInstance().ReportPutCharProfile(switchRet, charProfile);
         return switchRet;
     }
-    HILOGI("CheckCallerPermission success interface DeviceProfileManager::PutCharacteristicProfile");
+    HILOGD("CheckCallerPermission success interface DeviceProfileManager::PutCharacteristicProfile");
     int32_t ret = DeviceProfileManager::GetInstance().PutCharacteristicProfile(charProfile);
     DpRadarHelper::GetInstance().ReportPutCharProfile(ret, charProfile);
     return ret;
@@ -377,7 +377,7 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfileBatch(
     if (switchRes != DP_SUCCESS || dynamicRes != DP_SUCCESS) {
         return DP_PUT_CHAR_BATCH_FAIL;
     }
-    HILOGI("PutCharacteristicProfileBatch success ");
+    HILOGD("PutCharacteristicProfileBatch success ");
     return DP_SUCCESS;
 }
 
@@ -387,7 +387,7 @@ int32_t DistributedDeviceProfileServiceNew::GetDeviceProfile(const std::string& 
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    HILOGI("CheckCallerPermission success interface GetDeviceProfile");
+    HILOGD("CheckCallerPermission success interface GetDeviceProfile");
     int32_t ret = DeviceProfileManager::GetInstance().GetDeviceProfile(deviceId, deviceProfile);
     DpRadarHelper::GetInstance().ReportGetDeviceProfile(ret, deviceId, deviceProfile);
     return ret;
@@ -400,7 +400,7 @@ int32_t DistributedDeviceProfileServiceNew::GetServiceProfile(const std::string&
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    HILOGI("CheckCallerPermission success interface GetServiceProfile");
+    HILOGD("CheckCallerPermission success interface GetServiceProfile");
     int32_t ret = DeviceProfileManager::GetInstance().GetServiceProfile(deviceId, serviceName, serviceProfile);
     DpRadarHelper::GetInstance().ReportGetServiceProfile(ret, deviceId, serviceProfile);
     return ret;
@@ -441,7 +441,7 @@ int32_t DistributedDeviceProfileServiceNew::DeleteServiceProfile(const std::stri
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    HILOGI("CheckCallerPermission success interface DeleteServiceProfile");
+    HILOGD("CheckCallerPermission success interface DeleteServiceProfile");
     int32_t ret = DeviceProfileManager::GetInstance().DeleteServiceProfile(deviceId, serviceName);
     DpRadarHelper::GetInstance().ReportDeleteServiceProfile(ret, deviceId);
     return ret;
@@ -454,7 +454,7 @@ int32_t DistributedDeviceProfileServiceNew::DeleteCharacteristicProfile(const st
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    HILOGI("CheckCallerPermission success interface DeleteCharacteristicProfile");
+    HILOGD("CheckCallerPermission success interface DeleteCharacteristicProfile");
     int32_t ret = DeviceProfileManager::GetInstance().DeleteCharacteristicProfile(deviceId, serviceName,
         characteristicKey);
     DpRadarHelper::GetInstance().ReportDeleteCharProfile(ret, deviceId);
@@ -467,7 +467,7 @@ int32_t DistributedDeviceProfileServiceNew::SubscribeDeviceProfile(const Subscri
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    HILOGI("CheckCallerPermission success interface SubscribeDeviceProfile");
+    HILOGD("CheckCallerPermission success interface SubscribeDeviceProfile");
     int32_t ret = SubscribeProfileManager::GetInstance().SubscribeDeviceProfile(subscriberInfo);
     DpRadarHelper::GetInstance().ReportSubscribeDeviceProfile(ret, subscriberInfo);
     return ret;
@@ -479,7 +479,7 @@ int32_t DistributedDeviceProfileServiceNew::UnSubscribeDeviceProfile(const Subsc
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    HILOGI("CheckCallerPermission success interface UnSubscribeDeviceProfile");
+    HILOGD("CheckCallerPermission success interface UnSubscribeDeviceProfile");
     int32_t ret = SubscribeProfileManager::GetInstance().UnSubscribeDeviceProfile(subscriberInfo);
     DpRadarHelper::GetInstance().ReportUnSubscribeDeviceProfile(ret, subscriberInfo);
     return ret;
@@ -492,7 +492,7 @@ int32_t DistributedDeviceProfileServiceNew::SyncDeviceProfile(
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    HILOGI("CheckCallerSyncPermission success interface SyncDeviceProfile");
+    HILOGD("CheckCallerSyncPermission success interface SyncDeviceProfile");
     int32_t ret = DeviceProfileManager::GetInstance().SyncDeviceProfile(syncOptions, syncCompletedCallback);
     DpRadarHelper::GetInstance().ReportSyncDeviceProfile(ret);
     return ret;

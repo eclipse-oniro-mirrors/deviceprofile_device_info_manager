@@ -48,7 +48,7 @@ int32_t StaticCapabilityLoader::UnInit()
 
 int32_t StaticCapabilityLoader::LoadStaticCapability(std::string& staticCapability)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     std::string fileContent = "";
     int32_t loadJsonResult = LoadJsonFile(STATIC_CAPABILITY_PATH, fileContent);
     if (loadJsonResult != DP_SUCCESS) {
@@ -67,14 +67,14 @@ int32_t StaticCapabilityLoader::LoadStaticCapability(std::string& staticCapabili
         cJSON_Delete(staticCapabilityJson);
         return getCapResult;
     }
-    HILOGI("LoadStaticCapability success!");
+    HILOGI("success!");
     cJSON_Delete(staticCapabilityJson);
     return DP_SUCCESS;
 }
 
 int32_t StaticCapabilityLoader::LoadJsonFile(const std::string& filePath, std::string& fileContent)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (filePath.empty() || filePath.size() > MAX_STRING_LEN) {
         HILOGE("filePath is invalid!");
         return DP_INVALID_PARAM;
@@ -103,7 +103,7 @@ int32_t StaticCapabilityLoader::LoadJsonFile(const std::string& filePath, std::s
 int32_t StaticCapabilityLoader::GetStaticCapability(const cJSON* const staticCapabilityJson,
     std::string& staticCapability)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (!cJSON_IsObject(staticCapabilityJson)) {
         HILOGE("staticInfoJson is json object!");
         return DP_INVALID_PARAM;
@@ -126,7 +126,7 @@ int32_t StaticCapabilityLoader::GetStaticCapability(const cJSON* const staticCap
 int32_t StaticCapabilityLoader::GetStaticInfo(const cJSON* const staticInfoJson, const std::string& staticCapability,
     std::string& staticVersion, std::unordered_map<std::string, CharacteristicProfile>& charProfiles)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (!cJSON_IsObject(staticInfoJson)) {
         HILOGE("staticInfoJson is json object!");
         return DP_INVALID_PARAM;
@@ -146,7 +146,7 @@ int32_t StaticCapabilityLoader::GetStaticInfoByVersion(const std::string& device
     const std::string& staticCapability, const cJSON* const staticInfoJson,
     const std::string& staticVersion, std::unordered_map<std::string, CharacteristicProfile>& charProfiles)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (deviceId.empty() || deviceId.size() > MAX_STRING_LEN) {
         HILOGE("deviceId is invalid!");
         return DP_INVALID_PARAM;
@@ -170,7 +170,7 @@ int32_t StaticCapabilityLoader::GetStaticInfoByVersion(const std::string& device
 
 cJSON* StaticCapabilityLoader::GetLatestStaticInfoJson(const cJSON* const staticInfoJson)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (!cJSON_IsObject(staticInfoJson)) {
         HILOGE("staticInfoJson is not object!");
         return NULL;
@@ -191,7 +191,7 @@ cJSON* StaticCapabilityLoader::GetLatestStaticInfoJson(const cJSON* const static
 cJSON* StaticCapabilityLoader::GetStaticInfoJsonByVersion(const cJSON* const staticInfoJson,
     const std::string& staticVersion)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (!cJSON_IsObject(staticInfoJson)) {
         HILOGE("staticInfoJson is not object!");
         return NULL;
@@ -233,7 +233,7 @@ cJSON* StaticCapabilityLoader::GetStaticInfoJsonByVersion(const cJSON* const sta
 
 int32_t StaticCapabilityLoader::GetStaticVersion(const cJSON* const lastStaticInfo, std::string& staticVersion)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (!cJSON_IsObject(lastStaticInfo)) {
         HILOGE("LastStaticInfoItem is not object!");
         return DP_GET_STATIC_INFO_FAIL;
@@ -250,7 +250,7 @@ int32_t StaticCapabilityLoader::GetStaticVersion(const cJSON* const lastStaticIn
 int32_t StaticCapabilityLoader::GenerateStaticProfiles(const std::string& deviceId, const std::string& staticCapability,
     const cJSON* const staticInfoJson, std::unordered_map<std::string, CharacteristicProfile>& charProfiles)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (deviceId.empty() || deviceId.size() > MAX_STRING_LEN) {
         HILOGE("deviceId is invalid!");
         return DP_INVALID_PARAM;
@@ -303,7 +303,7 @@ int32_t StaticCapabilityLoader::GenerateStaticProfiles(const std::string& device
 int32_t StaticCapabilityLoader::LoadStaticInfo(const std::string& staticCapability, std::string& staticVersion,
     std::unordered_map<std::string, CharacteristicProfile>& charProfiles)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (staticCapability.empty() || staticCapability.size() > MAX_STRING_LEN) {
         HILOGE("staticCapability is invalid!");
         return DP_INVALID_PARAM;
@@ -326,7 +326,7 @@ int32_t StaticCapabilityLoader::LoadStaticInfo(const std::string& staticCapabili
         cJSON_Delete(staticInfoJson);
         return getInfoResult;
     }
-    HILOGI("LoadStaticCapability success!");
+    HILOGI("success!");
     cJSON_Delete(staticInfoJson);
     return DP_SUCCESS;
 }
@@ -334,7 +334,7 @@ int32_t StaticCapabilityLoader::LoadStaticInfo(const std::string& staticCapabili
 int32_t StaticCapabilityLoader::LoadStaticProfiles(const std::string& deviceId, const std::string& staticCapability,
     const std::string& staticVersion, std::unordered_map<std::string, CharacteristicProfile>& charProfiles)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (deviceId.empty() || deviceId.size() > MAX_STRING_LEN) {
         HILOGE("deviceId is invalid!");
         return DP_INVALID_PARAM;
@@ -366,7 +366,7 @@ int32_t StaticCapabilityLoader::LoadStaticProfiles(const std::string& deviceId, 
         cJSON_Delete(staticInfoJson);
         return getInfoResult;
     }
-    HILOGI("LoadStaticCapability success!");
+    HILOGI("success!");
     cJSON_Delete(staticInfoJson);
     return DP_SUCCESS;
 }
@@ -384,7 +384,7 @@ void StaticCapabilityLoader::InitStaticCapability(int32_t size, std::string& sta
 void StaticCapabilityLoader::SetStaticCapability(const cJSON* const staticCapabilityItems,
     std::string& staticCapability)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (!cJSON_IsArray(staticCapabilityItems)) {
         HILOGE("staticCapabilityItems is not json array!");
         return;
@@ -414,7 +414,7 @@ void StaticCapabilityLoader::SetStaticCapability(const cJSON* const staticCapabi
 void StaticCapabilityLoader::SetStaticCapabilityFlag(const std::string& handlerName, const std::string& handlerLoc,
     std::string& staticCapability)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (handlerName.empty() || handlerName.size() > MAX_STRING_LEN) {
         HILOGE("handlerName is invalid!");
         return;
@@ -434,13 +434,12 @@ void StaticCapabilityLoader::SetStaticCapabilityFlag(const std::string& handlerN
     }
     char capabilityValue = GetStaticCapabilityValue(handlerLoc) ? SUPPORT_STATIC_VAL : NOT_SUPPORT_STATIC_VAL;
     staticCapability[capabilityFlag] = capabilityValue;
-    HILOGI("SetStaticCapabilityFlag handlerName: %{public}s, staticCapability: %{public}c", handlerName.c_str(),
-        capabilityValue);
+    HILOGI("handlerName: %{public}s, staticCapability: %{public}c", handlerName.c_str(), capabilityValue);
 }
 
 bool StaticCapabilityLoader::GetStaticCapabilityValue(const std::string& handlerLoc)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     char targetPath[PATH_MAX + 1] = {0x00};
     if (handlerLoc.length() == 0 || handlerLoc.length() > PATH_MAX) {
         HILOGE("File canonicalization failed!");
@@ -464,7 +463,7 @@ bool StaticCapabilityLoader::GetStaticCapabilityValue(const std::string& handler
 }
 bool StaticCapabilityLoader::HasStaticCapability(const std::string& serviceId, const std::string& staticCapability)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     int32_t capabilityFlag = static_cast<int32_t>(CAPABILITY_FLAG_MAP.at(serviceId));
     if (capabilityFlag >= static_cast<int32_t>(staticCapability.size())) {
         HILOGE("HasStaticCapability fail, capabilityFlag is out of range, serviceId: %{public}s",
@@ -476,7 +475,7 @@ bool StaticCapabilityLoader::HasStaticCapability(const std::string& serviceId, c
 
 bool StaticCapabilityLoader::StaticVersionCheck(const std::string& peerVersion, const std::string& localVersion)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (peerVersion == localVersion) {
         HILOGI("staticVersion equal");
         return true;

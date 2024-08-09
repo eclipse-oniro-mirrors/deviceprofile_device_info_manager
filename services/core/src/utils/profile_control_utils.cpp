@@ -31,7 +31,7 @@ namespace {
 }
 int32_t ProfileControlUtils::PutDeviceProfile(std::shared_ptr<IKVAdapter> kvStore, const DeviceProfile& deviceProfile)
 {
-    HILOGI("PutDeviceProfile : %{public}s!", deviceProfile.AnnoymizeDump().c_str());
+    HILOGI("DeviceProfile : %{public}s!", deviceProfile.AnnoymizeDump().c_str());
     if (kvStore == nullptr) {
         HILOGE("kvStore is nullptr!");
         return DP_INVALID_PARAMS;
@@ -57,7 +57,7 @@ int32_t ProfileControlUtils::PutDeviceProfile(std::shared_ptr<IKVAdapter> kvStor
 int32_t ProfileControlUtils::PutServiceProfile(std::shared_ptr<IKVAdapter> kvStore,
     const ServiceProfile& serviceProfile)
 {
-    HILOGI("PutServiceProfile : %{public}s!", serviceProfile.dump().c_str());
+    HILOGI("ServiceProfile : %{public}s!", serviceProfile.dump().c_str());
     if (kvStore == nullptr) {
         HILOGE("kvStore is nullptr!");
         return DP_INVALID_PARAMS;
@@ -83,7 +83,7 @@ int32_t ProfileControlUtils::PutServiceProfile(std::shared_ptr<IKVAdapter> kvSto
 int32_t ProfileControlUtils::PutServiceProfileBatch(std::shared_ptr<IKVAdapter> kvStore,
     const std::vector<ServiceProfile>& serviceProfiles)
 {
-    HILOGI("PutServiceProfileBatch call!");
+    HILOGD("PutServiceProfileBatch call!");
     for (const auto& serviceProfile : serviceProfiles) {
         int32_t putServiceResult = PutServiceProfile(kvStore, serviceProfile);
         if (putServiceResult != DP_SUCCESS) {
@@ -98,7 +98,7 @@ int32_t ProfileControlUtils::PutServiceProfileBatch(std::shared_ptr<IKVAdapter> 
 int32_t ProfileControlUtils::PutCharacteristicProfile(std::shared_ptr<IKVAdapter> kvStore,
     const CharacteristicProfile& charProfile)
 {
-    HILOGI("PutCharacteristicProfile : %{public}s!", charProfile.dump().c_str());
+    HILOGI("Profile : %{public}s!", charProfile.dump().c_str());
     if (kvStore == nullptr) {
         HILOGE("kvStore is nullptr!");
         return DP_INVALID_PARAMS;
@@ -125,7 +125,7 @@ int32_t ProfileControlUtils::PutCharacteristicProfile(std::shared_ptr<IKVAdapter
 int32_t ProfileControlUtils::PutSwitchCharacteristicProfile(const std::string& appId,
     const CharacteristicProfile& charProfile)
 {
-    HILOGI("PutSwitchCharacteristicProfile : %{public}s!", charProfile.dump().c_str());
+    HILOGI("Profile : %{public}s!", charProfile.dump().c_str());
     if (!ProfileUtils::IsCharProfileValid(charProfile)) {
         HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;
@@ -174,7 +174,7 @@ int32_t ProfileControlUtils::PutSwitchCharacteristicProfileBatch(const std::stri
             HILOGW("this profile is exist! charProfile: %{public}s", item.dump().c_str());
             continue;
         }
-        HILOGI("PutCharacteristicProfile, charProfile: %{public}s!", item.dump().c_str());
+        HILOGI("charProfile: %{public}s!", item.dump().c_str());
         res = ProfileCache::GetInstance().SetSwitchByProfile(item, SWITCH_SERVICE_MAP, newSwitch);
         if (res != DP_SUCCESS) {
             HILOGW("set switch profile failed: %{public}d", res);
@@ -196,7 +196,7 @@ int32_t ProfileControlUtils::PutSwitchCharacteristicProfileBatch(const std::stri
 int32_t ProfileControlUtils::PutCharacteristicProfileBatch(std::shared_ptr<IKVAdapter> kvStore,
     const std::vector<CharacteristicProfile>& charProfiles)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     for (const auto& charProfile : charProfiles) {
         int32_t putCharacteristicResult = PutCharacteristicProfile(kvStore, charProfile);
         if (putCharacteristicResult != DP_SUCCESS) {
@@ -211,7 +211,7 @@ int32_t ProfileControlUtils::PutCharacteristicProfileBatch(std::shared_ptr<IKVAd
 int32_t ProfileControlUtils::GetDeviceProfile(std::shared_ptr<IKVAdapter> kvStore, const std::string& deviceId,
     DeviceProfile& deviceProfile)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (kvStore == nullptr) {
         HILOGE("kvStore is nullptr!");
         return DP_INVALID_PARAMS;
@@ -232,14 +232,14 @@ int32_t ProfileControlUtils::GetDeviceProfile(std::shared_ptr<IKVAdapter> kvStor
         return DP_GET_KV_DB_FAIL;
     }
     ProfileUtils::EntriesToDeviceProfile(values, deviceProfile);
-    HILOGI("GetDeviceProfile in db : %{public}s!", deviceProfile.AnnoymizeDump().c_str());
+    HILOGD("GetDeviceProfile in db : %{public}s!", deviceProfile.AnnoymizeDump().c_str());
     return DP_SUCCESS;
 }
 
 int32_t ProfileControlUtils::GetServiceProfile(std::shared_ptr<IKVAdapter> kvStore, const std::string& deviceId,
     const std::string& serviceName, ServiceProfile& serviceProfile)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (kvStore == nullptr) {
         HILOGE("kvStore is nullptr!");
         return DP_INVALID_PARAMS;
@@ -248,7 +248,7 @@ int32_t ProfileControlUtils::GetServiceProfile(std::shared_ptr<IKVAdapter> kvSto
         HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;
     }
-    HILOGI("PutDeviceProfile, deviceId: %{public}s, serviceName: %{public}s!",
+    HILOGI("deviceId: %{public}s, serviceName: %{public}s!",
         ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str());
     if (ProfileCache::GetInstance().GetServiceProfile(deviceId, serviceName, serviceProfile) == DP_SUCCESS) {
         HILOGI("GetServiceProfile in cache!");
@@ -261,14 +261,14 @@ int32_t ProfileControlUtils::GetServiceProfile(std::shared_ptr<IKVAdapter> kvSto
         return DP_GET_KV_DB_FAIL;
     }
     ProfileUtils::EntriesToServiceProfile(values, serviceProfile);
-    HILOGI("GetServiceProfile in db : %{public}s!", serviceProfile.dump().c_str());
+    HILOGD("GetServiceProfile in db : %{public}s!", serviceProfile.dump().c_str());
     return DP_SUCCESS;
 }
 
 int32_t ProfileControlUtils::GetCharacteristicProfile(std::shared_ptr<IKVAdapter> kvStore, const std::string& deviceId,
     const std::string& serviceName, const std::string& characteristicKey, CharacteristicProfile& charProfile)
 {
-    HILOGI("GetCharacteristicProfile, deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
+    HILOGI("deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
         ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
     if (kvStore == nullptr) {
         HILOGE("kvStore is nullptr!");
@@ -291,13 +291,13 @@ int32_t ProfileControlUtils::GetCharacteristicProfile(std::shared_ptr<IKVAdapter
         return DP_GET_KV_DB_FAIL;
     }
     ProfileUtils::EntriesToCharProfile(values, charProfile);
-    HILOGI("GetCharacteristicProfile in db : %{public}s!", charProfile.dump().c_str());
+    HILOGD("GetCharacteristicProfile in db : %{public}s!", charProfile.dump().c_str());
     return DP_SUCCESS;
 }
 
 int32_t ProfileControlUtils::RefreshLocalSwitchProfile(const std::string& appId)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     std::string localNetwork = ProfileCache::GetInstance().GetLocalNetworkId();
     std::string localUdid = ProfileCache::GetInstance().GetLocalUdid();
     if (localNetwork.empty() || localUdid.empty() || appId.empty()) {
@@ -314,7 +314,7 @@ int32_t ProfileControlUtils::RefreshLocalSwitchProfile(const std::string& appId)
     HILOGI("GetSwitch, newSwitch: %{public}d", newSwitch);
     for (int32_t i = static_cast<int32_t>(SwitchFlag::SWITCH_FLAG_MIN) + static_cast<int32_t>(NUM_1U);
         i < static_cast<int32_t>(SwitchFlag::SWITCH_FLAG_MAX); ++i) {
-        HILOGI("Find Switch, idx: %{public}d", i);
+        HILOGD("Find Switch, idx: %{public}d", i);
         std::string itemSwitchValue = std::to_string((newSwitch >> i) & NUM_1);
         std::string serviceName;
         res = ProfileCache::GetInstance().GetServiceNameByPos(i, SWITCH_SERVICE_MAP, serviceName);
@@ -338,7 +338,7 @@ int32_t ProfileControlUtils::GetSwitchCharacteristicProfile(const std::string& a
         HILOGE("params are invalid!");
         return DP_INVALID_PARAMS;
     }
-    HILOGI("GetCharacteristicProfile, deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
+    HILOGI("deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
         ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
     if (ProfileCache::GetInstance().GetCharacteristicProfile(deviceId, serviceName, characteristicKey, charProfile)
         == DP_SUCCESS) {
@@ -372,7 +372,7 @@ int32_t ProfileControlUtils::GetSwitchCharacteristicProfile(const std::string& a
         HILOGE("GetSwitchCharacteristicProfile SetSwitchProfile failed, res: %{public}d", res);
         return DP_GET_KV_DB_FAIL;
     }
-    HILOGI("GetSwitchCharacteristicProfile success : %{public}s!", charProfile.dump().c_str());
+    HILOGI("success : %{public}s!", charProfile.dump().c_str());
     ProfileCache::GetInstance().AddCharProfile(charProfile);
     return DP_SUCCESS;
 }
@@ -380,7 +380,7 @@ int32_t ProfileControlUtils::GetSwitchCharacteristicProfile(const std::string& a
 int32_t ProfileControlUtils::DeleteServiceProfile(std::shared_ptr<IKVAdapter> kvStore, const std::string& deviceId,
     const std::string& serviceName)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (kvStore == nullptr) {
         HILOGE("kvStore is nullptr!");
         return DP_INVALID_PARAMS;
@@ -390,7 +390,7 @@ int32_t ProfileControlUtils::DeleteServiceProfile(std::shared_ptr<IKVAdapter> kv
         HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;
     }
-    HILOGI("DeleteServiceProfile, deviceId: %{public}s, serviceName: %{public}s!",
+    HILOGI("deviceId: %{public}s, serviceName: %{public}s!",
         ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str());
 
     std::string profileKeyPrefix = ProfileUtils::GenerateServiceProfileKey(deviceId, serviceName);
@@ -415,7 +415,7 @@ int32_t ProfileControlUtils::DeleteCharacteristicProfile(std::shared_ptr<IKVAdap
         HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;
     }
-    HILOGI("DeleteCharacteristicProfile, deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
+    HILOGI("deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
         ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
     std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, characteristicKey);
     if (kvStore->DeleteByPrefix(profileKeyPrefix) != DP_SUCCESS) {
@@ -429,7 +429,7 @@ int32_t ProfileControlUtils::DeleteCharacteristicProfile(std::shared_ptr<IKVAdap
 int32_t ProfileControlUtils::GetAllDeviceProfile(std::shared_ptr<IKVAdapter> kvStore,
     std::vector<DeviceProfile>& deviceProfiles)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     std::map<std::string, std::string> values;
     if (kvStore == nullptr) {
         HILOGE("kvStore is nullptr!");
@@ -457,7 +457,7 @@ int32_t ProfileControlUtils::GetAllDeviceProfile(std::shared_ptr<IKVAdapter> kvS
 int32_t ProfileControlUtils::GetAllServiceProfile(std::shared_ptr<IKVAdapter> kvStore,
     std::vector<ServiceProfile>& serviceProfiles)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     std::map<std::string, std::string> values;
     if (kvStore == nullptr) {
         HILOGE("kvStore is nullptr!");
@@ -485,7 +485,7 @@ int32_t ProfileControlUtils::GetAllServiceProfile(std::shared_ptr<IKVAdapter> kv
 int32_t ProfileControlUtils::GetAllCharacteristicProfile(std::shared_ptr<IKVAdapter> kvStore,
     std::vector<CharacteristicProfile>& charProfiles)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     std::map<std::string, std::string> values;
     if (kvStore == nullptr) {
         HILOGE("kvStore is nullptr!");

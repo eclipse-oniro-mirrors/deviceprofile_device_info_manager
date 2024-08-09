@@ -49,7 +49,7 @@ int32_t EventHandlerFactory::UnInit()
 
 std::shared_ptr<AppExecFwk::EventHandler> EventHandlerFactory::GetEventHandler()
 {
-    HILOGI("call!");
+    HILOGD("call!");
     std::lock_guard<std::mutex> lock(eventHandlerMutex_);
     return eventHandler_;
 }
