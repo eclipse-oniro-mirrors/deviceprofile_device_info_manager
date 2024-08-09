@@ -125,7 +125,7 @@ int32_t PermissionManager::ParsePermissionJson(const cJSON* const permissionJson
     if (jsonChars == NULL) {
         HILOGW("cJSON formatted to string failed!");
     } else {
-        HILOGI("permission json %{public}s parse success!", jsonChars);
+        HILOGD("permission json %{public}s parse success!", jsonChars);
         cJSON_free(jsonChars);
     }
     return DP_SUCCESS;
@@ -140,7 +140,7 @@ bool PermissionManager::CheckInterfacePermission(const std::string& interfaceNam
         permittedProcNames = permissionMap_[interfaceName];
     }
     bool checkResult =  (permittedProcNames.count(callProcName) != 0 || permittedProcNames.count(ALL_PROC) != 0);
-    HILOGI("Permission success interface %{public}s callProc %{public}s!", interfaceName.c_str(), callProcName.c_str());
+    HILOGI("success interface %{public}s callProc %{public}s!", interfaceName.c_str(), callProcName.c_str());
     return checkResult;
 }
 
@@ -215,13 +215,13 @@ bool PermissionManager::CheckCallerSyncPermission()
     std::string callProcName = GetCallerProcName();
     int32_t ret = AccessTokenKit::VerifyAccessToken(tokenID, DP_SERVICE_SYNC_PERMISSION);
     if (ret != PermissionState::PERMISSION_GRANTED) {
-        HILOGE("CheckCallerSyncPermission failed callProc %{public}s!", callProcName.c_str());
+        HILOGE("failed callProc %{public}s!", callProcName.c_str());
         DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes);
         return false;
     }
     stageRes = static_cast<int32_t>(StageRes::STAGE_SUCC);
     DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes);
-    HILOGI("CheckCallerSyncPermission success callProc %{public}s!", callProcName.c_str());
+    HILOGI("success callProc %{public}s!", callProcName.c_str());
     return true;
 }
 
@@ -234,7 +234,7 @@ std::string PermissionManager::GetCallerProcName()
     std::string procName;
     if (errCode == EOK) {
         procName = std::move(nativeTokenInfo.processName);
-        HILOGI("procName:%{public}s", procName.c_str());
+        HILOGD("procName:%{public}s", procName.c_str());
     }
     return procName;
 }

@@ -39,18 +39,18 @@ namespace {
 
 KvDataChangeListener::KvDataChangeListener(const std::string& storeId)
 {
-    HILOGI("construct!");
+    HILOGD("construct!");
     storeId_ = storeId;
 }
 
 KvDataChangeListener::~KvDataChangeListener()
 {
-    HILOGI("destruct!");
+    HILOGD("destruct!");
 }
 
 void KvDataChangeListener::OnChange(const DistributedKv::ChangeNotification& changeNotification)
 {
-    HILOGI("KvDataChangeListener: DB data OnChange");
+    HILOGI("DB data OnChange");
     if (!changeNotification.GetInsertEntries().empty() &&
         changeNotification.GetInsertEntries().size() <= MAX_DB_RECORD_SIZE) {
         HandleAddChange(changeNotification.GetInsertEntries());
@@ -93,7 +93,7 @@ void KvDataChangeListener::OnChange(const DistributedKv::DataOrigin& origin, Key
 
 void KvDataChangeListener::OnSwitchChange(const DistributedKv::SwitchNotification &notification)
 {
-    HILOGI("KvDataChangeListener: DB data OnSwitchChange");
+    HILOGI("Switch data change");
     if (notification.deviceId.empty()) {
         HILOGE("params are valid");
         return;
@@ -103,7 +103,7 @@ void KvDataChangeListener::OnSwitchChange(const DistributedKv::SwitchNotificatio
     std::string udid;
     int32_t res = ProfileCache::GetInstance().GetUdidByNetWorkId(netWorkId, udid);
     if (res != DP_SUCCESS || udid.empty()) {
-        HILOGE("KvDataChangeListener: get udid fail, netWorkId is invalid: %{public}s",
+        HILOGE("get udid fail, netWorkId is invalid: %{public}s",
             ProfileUtils::GetAnonyString(netWorkId).c_str());
         return;
     }
@@ -145,8 +145,7 @@ void KvDataChangeListener::HandleDeleteChange(const std::vector<DistributedKv::E
 
 void KvDataChangeListener::HandleSwitchUpdateChange(const std::string udid, uint32_t switchValue)
 {
-    HILOGI("Handle kv switch data update change!, udid: %{public}s, switch: %{public}u",
-        ProfileUtils::GetAnonyString(udid).c_str(), switchValue);
+    HILOGI("udid: %{public}s, switch: %{public}u", ProfileUtils::GetAnonyString(udid).c_str(), switchValue);
     std::string serviceName;
 
     // std::lock_guard<std::mutex> lock(dataChangeListenerMutex_);
@@ -166,7 +165,7 @@ void KvDataChangeListener::HandleSwitchUpdateChange(const std::string udid, uint
         }
         if (udid == ProfileCache::GetInstance().GetLocalUdid()) {
             ProfileCache::GetInstance().SetCurSwitch(switchValue);
-            HILOGI("update curLocalSwitch: %{public}d", ProfileCache::GetInstance().GetSwitch());
+            HILOGD("update curLocalSwitch: %{public}d", ProfileCache::GetInstance().GetSwitch());
         }
     }
 }
@@ -181,7 +180,7 @@ int32_t KvDataChangeListener::GenerateSwitchNotify(const std::string& udid, cons
         HILOGE("Params are invalid!");
         return DP_INVALID_PARAMS;
     }
-    
+
     CharacteristicProfile newSwitchProfile = {udid, serviceName, characteristicProfileKey,
         characteristicProfileValue};
     HILOGI("Gen SwitchProfile :%{public}s", newSwitchProfile.dump().c_str());
@@ -199,7 +198,6 @@ int32_t KvDataChangeListener::GenerateSwitchNotify(const std::string& udid, cons
         HILOGE("NotifyProfileChange failed");
         return DP_GENERATE_SWITCH_NOTIFY_FAIL;
     }
-    HILOGI("NotifyProfileChange: %{public}s", newSwitchProfile.dump().c_str());
     return DP_SUCCESS;
 }
 } // namespace DeviceProfile

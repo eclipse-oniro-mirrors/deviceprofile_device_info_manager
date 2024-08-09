@@ -35,7 +35,7 @@ namespace {
 
 KvSyncCompletedListener::KvSyncCompletedListener(const std::string& storeId)
 {
-    HILOGI("construct!");
+    HILOGD("construct!");
     storeId_ = storeId;
     {
         std::lock_guard<std::mutex> lock(reInitMutex_);
@@ -45,7 +45,7 @@ KvSyncCompletedListener::KvSyncCompletedListener(const std::string& storeId)
 
 KvSyncCompletedListener::~KvSyncCompletedListener()
 {
-    HILOGI("destruct!");
+    HILOGD("destruct!");
     {
         std::lock_guard<std::mutex> lock(reInitMutex_);
         if (onSyncHandler_ == nullptr) {
@@ -59,7 +59,7 @@ KvSyncCompletedListener::~KvSyncCompletedListener()
 
 void KvSyncCompletedListener::SyncCompleted(const std::map<std::string, DistributedKv::Status>& results)
 {
-    HILOGI("called!");
+    HILOGD("called!");
 
     SyncResults syncResults;
     for (const auto& [deviceId, status] : results) {
@@ -98,7 +98,7 @@ void KvSyncCompletedListener::NotifySyncCompleted(const SyncResults& syncResults
     }
     ProfileCache::GetInstance().RemoveSyncListeners(syncListeners);
     int64_t endTime = GetTickCount();
-    HILOGI("NotifySyncCompleted, spend %{public}" PRId64 " ms", endTime - beginTime);
+    HILOGI("spend %{public}" PRId64 " ms", endTime - beginTime);
 }
 } // namespace DeviceProfile
 } // namespace OHOS

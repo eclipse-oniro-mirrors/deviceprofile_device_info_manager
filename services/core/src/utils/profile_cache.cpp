@@ -444,7 +444,7 @@ int32_t ProfileCache::AddSyncListener(const std::string& caller, sptr<IRemoteObj
 
 int32_t ProfileCache::GetSyncListeners(std::map<std::string, sptr<IRemoteObject>>& syncListeners)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     {
         std::lock_guard<std::mutex> lock(syncListenerMutex_);
         for (const auto& item : syncListenerMap_) {
@@ -456,7 +456,7 @@ int32_t ProfileCache::GetSyncListeners(std::map<std::string, sptr<IRemoteObject>
 
 int32_t ProfileCache::RemoveSyncListeners(std::map<std::string, sptr<IRemoteObject>> syncListeners)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     {
         std::lock_guard<std::mutex> lock(syncListenerMutex_);
         auto iter = syncListenerMap_.begin();
@@ -477,7 +477,7 @@ int32_t ProfileCache::RemoveSyncListeners(std::map<std::string, sptr<IRemoteObje
 
 int32_t ProfileCache::RemoveSyncListener(const std::string& caller)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (caller.empty() || caller.size() > MAX_STRING_LEN) {
         HILOGE("descriptor is invalid!");
         return DP_INVALID_PARAMS;
@@ -501,7 +501,7 @@ int32_t ProfileCache::RemoveSyncListener(const std::string& caller)
 
 int32_t ProfileCache::RemoveSyncListener(sptr<IRemoteObject> syncListener)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (syncListener == nullptr) {
         HILOGE("syncListener is nullptr!");
         return DP_INVALID_PARAMS;
@@ -527,7 +527,7 @@ int32_t ProfileCache::RemoveSyncListener(sptr<IRemoteObject> syncListener)
 
 uint32_t ProfileCache::GetSwitch()
 {
-    HILOGI("call!");
+    HILOGD("call!");
     std::lock_guard<std::mutex> lock(switchMutex_);
     return curLocalSwitch_;
 }
@@ -535,7 +535,7 @@ uint32_t ProfileCache::GetSwitch()
 int32_t ProfileCache::SetSwitchByProfileBatch(const std::vector<CharacteristicProfile>& charProfiles,
     const std::unordered_map<std::string, SwitchFlag>& switchServiceMap, uint32_t& outSwitch)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (charProfiles.empty()) {
         HILOGE("charProfiles is empty");
         return DP_INVALID_PARAMS;
@@ -567,7 +567,7 @@ int32_t ProfileCache::SetSwitchByProfileBatch(const std::vector<CharacteristicPr
 int32_t ProfileCache::SetSwitchByProfile(const CharacteristicProfile& charProfile,
     const std::unordered_map<std::string, SwitchFlag>& switchServiceMap, uint32_t& outSwitch)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (!IsSwitchValid(charProfile, switchServiceMap, SWITCH_OPERATE_PUT)) {
         HILOGE("SetSwitch params invalid");
         return DP_INVALID_PARAMS;
@@ -613,7 +613,7 @@ bool ProfileCache::IsSwitchValid(const CharacteristicProfile& charProfile,
 
 int32_t ProfileCache::SetSwitchProfile(CharacteristicProfile& charProfile, uint32_t switchValue)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     if (!IsSwitchValid(charProfile, SWITCH_SERVICE_MAP, SWITCH_OPERATE_GET)) {
         HILOGE("SetSwitchProfile params invalid");
         return DP_INVALID_PARAMS;
@@ -642,7 +642,7 @@ void ProfileCache::SetCurSwitch(uint32_t newSwitch)
 
 void ProfileCache::OnNodeOnline(const std::string& peerNetworkId)
 {
-    HILOGI("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
+    HILOGD("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
     std::string udid = EMPTY_STRING;
     if (!ProfileUtils::GetUdidByNetworkId(peerNetworkId, udid)) {
         HILOGE("get udid by networkId failed");
@@ -657,7 +657,7 @@ void ProfileCache::OnNodeOnline(const std::string& peerNetworkId)
 
 void ProfileCache::OnNodeOffline(const std::string& peerNetworkId)
 {
-    HILOGI("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
+    HILOGD("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
     std::string udid = EMPTY_STRING;
     if (!ProfileUtils::GetUdidByNetworkId(peerNetworkId, udid)) {
         HILOGE("get udid by networkId failed");
@@ -733,8 +733,6 @@ int32_t ProfileCache::GetUdidByNetWorkId(const std::string& networkId, std::stri
         return DP_GET_UDID_BY_NETWORKID_FAIL;
     }
     onlineDevMap_[udid] = networkId;
-    HILOGI("GetUdidByNetworkId success");
-    HILOGE("GetUdidByNetWorkId failed");
     return DP_SUCCESS;
 }
 

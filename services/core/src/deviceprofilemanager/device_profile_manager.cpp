@@ -101,7 +101,7 @@ int32_t DeviceProfileManager::ReInit()
 
 int32_t DeviceProfileManager::PutDeviceProfile(const DeviceProfile& deviceProfile)
 {
-    HILOGI("call! deviceProfile: %{public}s", deviceProfile.AnnoymizeDump().c_str());
+    HILOGI("deviceProfile: %{public}s", deviceProfile.AnnoymizeDump().c_str());
     if (!ProfileUtils::IsDevProfileValid(deviceProfile)) {
         HILOGE("the profile is invalid! deviceProfile: %{public}s", deviceProfile.AnnoymizeDump().c_str());
         return DP_INVALID_PARAMS;
@@ -123,13 +123,13 @@ int32_t DeviceProfileManager::PutDeviceProfile(const DeviceProfile& deviceProfil
             return DP_PUT_KV_DB_FAIL;
         }
     }
-    HILOGI("PutDeviceProfile success");
+    HILOGD("PutDeviceProfile success");
     return DP_SUCCESS;
 }
 
 int32_t DeviceProfileManager::PutServiceProfile(const ServiceProfile& serviceProfile)
 {
-    HILOGI("call! serviceProfile: %{public}s", serviceProfile.dump().c_str());
+    HILOGI("serviceProfile: %{public}s", serviceProfile.dump().c_str());
     if (!ProfileUtils::IsSvrProfileValid(serviceProfile)) {
         HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;
@@ -151,13 +151,13 @@ int32_t DeviceProfileManager::PutServiceProfile(const ServiceProfile& servicePro
             return DP_PUT_KV_DB_FAIL;
         }
     }
-    HILOGI("PutServiceProfile success");
+    HILOGD("PutServiceProfile success");
     return DP_SUCCESS;
 }
 
 int32_t DeviceProfileManager::PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     std::map<std::string, std::string> entries;
     for (const auto& serviceProfile : serviceProfiles) {
         if (!ProfileUtils::IsSvrProfileValid(serviceProfile)) {
@@ -181,13 +181,13 @@ int32_t DeviceProfileManager::PutServiceProfileBatch(const std::vector<ServicePr
             return DP_PUT_KV_DB_FAIL;
         }
     }
-    HILOGI("PutServiceProfileBatch success");
+    HILOGD("PutServiceProfileBatch success");
     return DP_SUCCESS;
 }
 
 int32_t DeviceProfileManager::PutCharacteristicProfile(const CharacteristicProfile& charProfile)
 {
-    HILOGI("call! charProfile: %{public}s", charProfile.dump().c_str());
+    HILOGI("charProfile: %{public}s", charProfile.dump().c_str());
     if (!ProfileUtils::IsCharProfileValid(charProfile)) {
         HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;
@@ -209,13 +209,13 @@ int32_t DeviceProfileManager::PutCharacteristicProfile(const CharacteristicProfi
             return DP_PUT_KV_DB_FAIL;
         }
     }
-    HILOGI("PutCharacteristicProfile success");
+    HILOGD("PutCharacteristicProfile success");
     return DP_SUCCESS;
 }
 
 int32_t DeviceProfileManager::PutCharacteristicProfileBatch(const std::vector<CharacteristicProfile>& charProfiles)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     std::map<std::string, std::string> entries;
     for (const auto& charProfile : charProfiles) {
         if (!ProfileUtils::IsCharProfileValid(charProfile)) {
@@ -239,13 +239,13 @@ int32_t DeviceProfileManager::PutCharacteristicProfileBatch(const std::vector<Ch
             return DP_PUT_KV_DB_FAIL;
         }
     }
-    HILOGI("PutCharacteristicProfileBatch success");
+    HILOGD("PutCharacteristicProfileBatch success");
     return DP_SUCCESS;
 }
 
 int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
@@ -255,14 +255,14 @@ int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, Devi
         HILOGE("GetDeviceProfile fail, reason: %{public}d!", res);
         return res;
     }
-    HILOGI("GetDeviceProfile success");
+    HILOGD("GetDeviceProfile success");
     return DP_SUCCESS;
 }
 
 int32_t DeviceProfileManager::GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
     ServiceProfile& serviceProfile)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
@@ -273,14 +273,14 @@ int32_t DeviceProfileManager::GetServiceProfile(const std::string& deviceId, con
         HILOGE("GetServiceProfile fail, reason: %{public}d!", res);
         return res;
     }
-    HILOGI("GetServiceProfile success");
+    HILOGD("GetServiceProfile success");
     return DP_SUCCESS;
 }
 
 int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
     const std::string& characteristicKey, CharacteristicProfile& charProfile)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
@@ -291,13 +291,13 @@ int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& device
         HILOGE("GetCharacteristicProfile fail, reason: %{public}d!", res);
         return res;
     }
-    HILOGI("GetCharacteristicProfile success");
+    HILOGD("GetCharacteristicProfile success");
     return DP_SUCCESS;
 }
 
 int32_t DeviceProfileManager::DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
@@ -307,14 +307,14 @@ int32_t DeviceProfileManager::DeleteServiceProfile(const std::string& deviceId, 
         HILOGE("DeleteServiceProfile fail, reason: %{public}d!", res);
         return res;
     }
-    HILOGI("DeleteServiceProfile success");
+    HILOGD("DeleteServiceProfile success");
     return DP_SUCCESS;
 }
 
 int32_t DeviceProfileManager::DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
     const std::string& characteristicKey)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
@@ -325,13 +325,13 @@ int32_t DeviceProfileManager::DeleteCharacteristicProfile(const std::string& dev
         HILOGE("DeleteCharacteristicProfile fail, reason: %{public}d!", res);
         return res;
     }
-    HILOGI("DeleteCharacteristicProfile success");
+    HILOGD("DeleteCharacteristicProfile success");
     return DP_SUCCESS;
 }
 
 int32_t DeviceProfileManager::GetAllDeviceProfile(std::vector<DeviceProfile>& deviceProfiles)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
@@ -341,13 +341,13 @@ int32_t DeviceProfileManager::GetAllDeviceProfile(std::vector<DeviceProfile>& de
         HILOGE("GetAllDeviceProfile fail, reason: %{public}d!", res);
         return res;
     }
-    HILOGI("GetAllDeviceProfile success");
+    HILOGD("GetAllDeviceProfile success");
     return DP_SUCCESS;
 }
 
 int32_t DeviceProfileManager::GetAllServiceProfile(std::vector<ServiceProfile>& serviceProfiles)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
@@ -357,13 +357,13 @@ int32_t DeviceProfileManager::GetAllServiceProfile(std::vector<ServiceProfile>& 
         HILOGE("serviceProfiles fail, reason: %{public}d!", res);
         return res;
     }
-    HILOGI("serviceProfiles success");
+    HILOGD("serviceProfiles success");
     return DP_SUCCESS;
 }
 
 int32_t DeviceProfileManager::GetAllCharacteristicProfile(std::vector<CharacteristicProfile>& charProfiles)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
@@ -373,7 +373,7 @@ int32_t DeviceProfileManager::GetAllCharacteristicProfile(std::vector<Characteri
         HILOGE("GetAllCharacteristicProfile fail, reason: %{public}d!", res);
         return res;
     }
-    HILOGI("GetAllCharacteristicProfile success");
+    HILOGD("GetAllCharacteristicProfile success");
     return DP_SUCCESS;
 }
 
@@ -420,7 +420,7 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const DistributedDeviceProfile::
 
 bool DeviceProfileManager::LoadDpSyncAdapter()
 {
-    HILOGI("DeviceProfileManager::LoadDpSyncAdapter start.");
+    HILOGI("start.");
     std::lock_guard<std::mutex> lock(isAdapterLoadLock_);
     if (isAdapterSoLoaded_ && (dpSyncAdapter_ != nullptr)) {
         return true;
@@ -428,7 +428,7 @@ bool DeviceProfileManager::LoadDpSyncAdapter()
     int64_t beginTime = GetTickCount();
     std::string soName = std::string(LIB_DP_ADAPTER_NAME);
     if ((soName.length() == 0) || (soName.length() > PATH_MAX)) {
-        HILOGI("File %{public}s canonicalization failed", soName.c_str());
+        HILOGE("File %{public}s canonicalization failed", soName.c_str());
         return false;
     }
     void *so_handle = dlopen(soName.c_str(), RTLD_NOW | RTLD_NOLOAD);
@@ -436,20 +436,20 @@ bool DeviceProfileManager::LoadDpSyncAdapter()
         so_handle = dlopen(soName.c_str(), RTLD_NOW);
     }
     if (so_handle == nullptr) {
-        HILOGI("load dp sync adapter so %{public}s failed", soName.c_str());
+        HILOGE("load dp sync adapter so %{public}s failed", soName.c_str());
         return false;
     }
     dlerror();
     auto func = (CreateDPSyncAdapterFuncPtr)dlsym(so_handle, "CreateDPSyncAdaptertObject");
     if (dlerror() != nullptr || func == nullptr) {
         dlclose(so_handle);
-        HILOGI("Create object function is not exist.");
+        HILOGE("Create object function is not exist.");
         return false;
     }
     auto adapter = func();
     if (adapter == nullptr) {
         dlclose(so_handle);
-        HILOGI("adapter is nullptr");
+        HILOGE("adapter is nullptr");
         return false;
     }
     dpSyncAdapter_ = std::shared_ptr<IDPSyncAdapter>(adapter);
@@ -457,18 +457,18 @@ bool DeviceProfileManager::LoadDpSyncAdapter()
         dpSyncAdapter_->Release();
         dpSyncAdapter_ = nullptr;
         isAdapterSoLoaded_ = false;
-        HILOGI("dp sync adapter init failed");
+        HILOGE("dp sync adapter init failed");
         return false;
     }
     isAdapterSoLoaded_ = true;
     int64_t endTime = GetTickCount();
-    HILOGI("LoadDpSyncAdapter sucess. spend %{public}" PRId64 " ms", endTime - beginTime);
+    HILOGI("sucess. spend %{public}" PRId64 " ms", endTime - beginTime);
     return true;
 }
 
 void DeviceProfileManager::UnloadDpSyncAdapter()
 {
-    HILOGI("DeviceProfileManager::UnloadDpSyncAdapter start.");
+    HILOGD("start.");
     std::lock_guard<std::mutex> lock(isAdapterLoadLock_);
     if (dpSyncAdapter_ != nullptr) {
         dpSyncAdapter_->Release();
@@ -476,7 +476,7 @@ void DeviceProfileManager::UnloadDpSyncAdapter()
     dpSyncAdapter_ = nullptr;
     std::string soPathName = std::string(LIB_DP_ADAPTER_NAME);
     if ((soPathName.length() == 0) || (soPathName.length() > PATH_MAX)) {
-        HILOGI("File %{public}s canonicalization failed", soPathName.c_str());
+        HILOGE("File %{public}s canonicalization failed", soPathName.c_str());
         return;
     }
     void *so_handle = dlopen(soPathName.c_str(), RTLD_NOW | RTLD_NOLOAD);
@@ -542,7 +542,7 @@ int32_t DeviceProfileManager::RunloadedFunction(const std::string& deviceId, spt
 
 std::vector<DistributedKv::Entry> DeviceProfileManager::GetEntriesByKeys(const std::vector<std::string>& keys)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     std::vector<DistributedKv::Entry> entries;
     if (keys.empty()) {
         HILOGE("keys empty.");

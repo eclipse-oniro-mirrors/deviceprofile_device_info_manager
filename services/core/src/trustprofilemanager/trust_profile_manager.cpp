@@ -1961,6 +1961,5 @@ int32_t TrustProfileManager::DeleteTrustDeviceCheck(const AccessControlProfile& 
     }
     return DP_SUCCESS;
 }
-
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

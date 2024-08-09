@@ -32,7 +32,7 @@ namespace {
 
 KvDeathRecipient::KvDeathRecipient(const std::string& storeId)
 {
-    HILOGI("construct!");
+    HILOGD("construct!");
     storeId_ = storeId;
     {
         std::lock_guard<std::mutex> lock(reInitMutex_);
@@ -42,7 +42,7 @@ KvDeathRecipient::KvDeathRecipient(const std::string& storeId)
 
 KvDeathRecipient::~KvDeathRecipient()
 {
-    HILOGI("destruct!");
+    HILOGD("destruct!");
     {
         std::lock_guard<std::mutex> lock(reInitMutex_);
         if (reInitHandler_ == nullptr) {

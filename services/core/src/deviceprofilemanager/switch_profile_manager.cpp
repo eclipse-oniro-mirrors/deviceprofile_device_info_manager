@@ -63,7 +63,7 @@ int32_t SwitchProfileManager::ReInit()
 
 int32_t SwitchProfileManager::PutCharacteristicProfile(const CharacteristicProfile& charProfile)
 {
-    HILOGI("PutSwitchCharacteristicProfile : %{public}s!", charProfile.dump().c_str());
+    HILOGI("Profile : %{public}s!", charProfile.dump().c_str());
     int32_t res = DP_SUCCESS;
     {
         std::lock_guard<std::mutex> lock(switchProfileMutex_);
@@ -73,7 +73,7 @@ int32_t SwitchProfileManager::PutCharacteristicProfile(const CharacteristicProfi
         HILOGE("PutCharacteristicProfile fail, reason: %{public}d!", res);
         return res;
     }
-    HILOGI("PutCharacteristicProfile success");
+    HILOGD("PutCharacteristicProfile success");
     return DP_SUCCESS;
 }
 
@@ -89,7 +89,7 @@ int32_t SwitchProfileManager::PutCharacteristicProfileBatch(const std::vector<Ch
         HILOGE("fail, reason: %{public}d!", res);
         return res;
     }
-    HILOGI("success");
+    HILOGD("success");
     return DP_SUCCESS;
 }
 
@@ -111,13 +111,13 @@ int32_t SwitchProfileManager::GetCharacteristicProfile(const std::string& device
 
 int32_t SwitchProfileManager::RefreshLocalSwitchProfile()
 {
-    HILOGI("call!");
+    HILOGD("call!");
     int32_t res = ProfileControlUtils::RefreshLocalSwitchProfile(APP_ID);
     if (res != DP_SUCCESS) {
         HILOGE("RefreshLocalSwitchProfile fail, reason: %{public}d!", res);
         return res;
     }
-    HILOGI("GetSwitchCharacteristicProfile success");
+    HILOGD("GetSwitchCharacteristicProfile success");
     return DP_SUCCESS;
 }
 

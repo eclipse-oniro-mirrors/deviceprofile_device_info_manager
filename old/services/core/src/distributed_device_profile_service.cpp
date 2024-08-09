@@ -308,7 +308,7 @@ void DistributedDeviceProfileService::OnAddSystemAbility(int32_t systemAbilityId
 
 bool DistributedDeviceProfileService::DoBusinessInit()
 {
-    HILOGI("called");
+    HILOGD("called");
     if (!DpDeviceManager::GetInstance().Init()) {
         HILOGE("DeviceManager init failed");
         return false;

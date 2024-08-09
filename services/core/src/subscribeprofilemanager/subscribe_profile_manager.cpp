@@ -100,7 +100,7 @@ int32_t SubscribeProfileManager::NotifyProfileChange(ProfileType profileType, Ch
 
 int32_t SubscribeProfileManager::NotifyTrustDeviceProfileAdd(const TrustDeviceProfile& trustDeviceProfile)
 {
-    HILOGI("NotifyTrustDeviceProfileAdd : %{public}s!", trustDeviceProfile.dump().c_str());
+    HILOGI("%{public}s!", trustDeviceProfile.dump().c_str());
     auto subscriberInfos = GetSubscribeInfos(SUBSCRIBE_TRUST_DEVICE_PROFILE);
     for (const auto& subscriberInfo : subscriberInfos) {
         sptr<IProfileChangeListener> listenerProxy = iface_cast<IProfileChangeListener>(subscriberInfo.GetListener());
@@ -118,7 +118,7 @@ int32_t SubscribeProfileManager::NotifyTrustDeviceProfileAdd(const TrustDevicePr
 int32_t SubscribeProfileManager::NotifyTrustDeviceProfileUpdate(const TrustDeviceProfile& oldDeviceProfile,
     const TrustDeviceProfile& newDeviceProfile)
 {
-    HILOGI("NotifyTrustDeviceProfileUpdate : %{public}s!", newDeviceProfile.dump().c_str());
+    HILOGI("%{public}s!", newDeviceProfile.dump().c_str());
     auto subscriberInfos = GetSubscribeInfos(SUBSCRIBE_TRUST_DEVICE_PROFILE);
     for (const auto& subscriberInfo : subscriberInfos) {
         sptr<IProfileChangeListener> listenerProxy = iface_cast<IProfileChangeListener>(subscriberInfo.GetListener());
@@ -135,7 +135,7 @@ int32_t SubscribeProfileManager::NotifyTrustDeviceProfileUpdate(const TrustDevic
 
 int32_t SubscribeProfileManager::NotifyTrustDeviceProfileDelete(const TrustDeviceProfile& trustDeviceProfile)
 {
-    HILOGI("NotifyTrustDeviceProfileDelete : %{public}s!", trustDeviceProfile.dump().c_str());
+    HILOGI("%{public}s!", trustDeviceProfile.dump().c_str());
     auto subscriberInfos = GetSubscribeInfos(SUBSCRIBE_TRUST_DEVICE_PROFILE);
     for (const auto& subscriberInfo : subscriberInfos) {
         sptr<IProfileChangeListener> listenerProxy = iface_cast<IProfileChangeListener>(subscriberInfo.GetListener());
@@ -152,7 +152,7 @@ int32_t SubscribeProfileManager::NotifyTrustDeviceProfileDelete(const TrustDevic
 
 int32_t SubscribeProfileManager::SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)
 {
-    HILOGI("SubscribeDeviceProfile, saId: %{public}d!, subscribeKey: %{public}s", subscribeInfo.GetSaId(),
+    HILOGI("saId: %{public}d!, subscribeKey: %{public}s", subscribeInfo.GetSaId(),
         ProfileUtils::GetDbKeyAnonyString(subscribeInfo.GetSubscribeKey()).c_str());
     {
         std::lock_guard<std::mutex> lock(subscribeMutex_);
@@ -177,7 +177,7 @@ int32_t SubscribeProfileManager::SubscribeDeviceProfile(const SubscribeInfo& sub
 
 int32_t SubscribeProfileManager::SubscribeDeviceProfile(std::map<std::string, SubscribeInfo> subscribeInfos)
 {
-    HILOGI("call!");
+    HILOGD("call!");
     for (auto item : subscribeInfos) {
         SubscribeDeviceProfile(item.second);
     }
@@ -186,7 +186,7 @@ int32_t SubscribeProfileManager::SubscribeDeviceProfile(std::map<std::string, Su
 
 int32_t SubscribeProfileManager::UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)
 {
-    HILOGI("UnSubscribeDeviceProfile, saId: %{public}d!, subscribeKey: %{public}s", subscribeInfo.GetSaId(),
+    HILOGI("saId: %{public}d!, subscribeKey: %{public}s", subscribeInfo.GetSaId(),
         ProfileUtils::GetDbKeyAnonyString(subscribeInfo.GetSubscribeKey()).c_str());
     {
         std::lock_guard<std::mutex> lock(subscribeMutex_);
@@ -202,7 +202,7 @@ int32_t SubscribeProfileManager::NotifyDeviceProfileAdd(const std::string& dbKey
     DeviceProfile deviceProfile;
     deviceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
     ProfileUtils::EntriesToDeviceProfile(values, deviceProfile);
-    HILOGI("NotifyDeviceProfileAdd : %{public}s!", deviceProfile.AnnoymizeDump().c_str());
+    HILOGI("%{public}s!", deviceProfile.AnnoymizeDump().c_str());
     auto subscriberInfos = GetSubscribeInfos(dbKey);
     for (const auto& subscriberInfo : subscriberInfos) {
         sptr<IProfileChangeListener> listenerProxy = iface_cast<IProfileChangeListener>(subscriberInfo.GetListener());
@@ -224,7 +224,7 @@ int32_t SubscribeProfileManager::NotifyDeviceProfileUpdate(const std::string& db
     DeviceProfile newDeviceProfile;
     newDeviceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
     ProfileUtils::EntriesToDeviceProfile(values, newDeviceProfile);
-    HILOGI("NotifyDeviceProfileUpdate : %{public}s!", newDeviceProfile.AnnoymizeDump().c_str());
+    HILOGI("%{public}s!", newDeviceProfile.AnnoymizeDump().c_str());
     DeviceProfile oldDeviceProfile;
     ProfileCache::GetInstance().GetDeviceProfile(ProfileUtils::GetDeviceIdByDBKey(dbKey), oldDeviceProfile);
     auto subscriberInfos = GetSubscribeInfos(dbKey);
@@ -248,7 +248,7 @@ int32_t SubscribeProfileManager::NotifyDeviceProfileDelete(const std::string& db
     DeviceProfile deviceProfile;
     deviceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
     ProfileUtils::EntriesToDeviceProfile(values, deviceProfile);
-    HILOGI("NotifyDeviceProfileDelete : %{public}s!", deviceProfile.AnnoymizeDump().c_str());
+    HILOGI("%{public}s!", deviceProfile.AnnoymizeDump().c_str());
     auto subscriberInfos = GetSubscribeInfos(dbKey);
     for (const auto& subscriberInfo : subscriberInfos) {
         sptr<IProfileChangeListener> listenerProxy = iface_cast<IProfileChangeListener>(subscriberInfo.GetListener());
@@ -271,7 +271,7 @@ int32_t SubscribeProfileManager::NotifyServiceProfileAdd(const std::string& dbKe
     serviceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
     serviceProfile.SetServiceName(ProfileUtils::GetServiceNameByDBKey(dbKey));
     ProfileUtils::EntriesToServiceProfile(values, serviceProfile);
-    HILOGI("NotifyServiceProfileAdd : %{public}s!", serviceProfile.dump().c_str());
+    HILOGI("%{public}s!", serviceProfile.dump().c_str());
     auto subscriberInfos = GetSubscribeInfos(dbKey);
     for (const auto& subscriberInfo : subscriberInfos) {
         sptr<IProfileChangeListener> listenerProxy = iface_cast<IProfileChangeListener>(subscriberInfo.GetListener());
@@ -294,7 +294,7 @@ int32_t SubscribeProfileManager::NotifyServiceProfileUpdate(const std::string& d
     newServiceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
     newServiceProfile.SetServiceName(ProfileUtils::GetServiceNameByDBKey(dbKey));
     ProfileUtils::EntriesToServiceProfile(values, newServiceProfile);
-    HILOGI("NotifyServiceProfileUpdate : %{public}s!", newServiceProfile.dump().c_str());
+    HILOGI("%{public}s!", newServiceProfile.dump().c_str());
     auto subscriberInfos = GetSubscribeInfos(dbKey);
     ServiceProfile oldServiceProfile;
     ProfileCache::GetInstance().GetServiceProfile(ProfileUtils::GetDeviceIdByDBKey(dbKey),
@@ -320,7 +320,7 @@ int32_t SubscribeProfileManager::NotifyServiceProfileDelete(const std::string& d
     serviceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
     serviceProfile.SetServiceName(ProfileUtils::GetServiceNameByDBKey(dbKey));
     ProfileUtils::EntriesToServiceProfile(values, serviceProfile);
-    HILOGI("NotifyServiceProfileDelete : %{public}s!", serviceProfile.dump().c_str());
+    HILOGI("%{public}s!", serviceProfile.dump().c_str());
     auto subscriberInfos = GetSubscribeInfos(dbKey);
     for (const auto& subscriberInfo : subscriberInfos) {
         sptr<IProfileChangeListener> listenerProxy = iface_cast<IProfileChangeListener>(subscriberInfo.GetListener());
@@ -344,7 +344,7 @@ int32_t SubscribeProfileManager::NotifyCharProfileAdd(const std::string& dbKey, 
     charProfile.SetServiceName(ProfileUtils::GetServiceNameByDBKey(dbKey));
     charProfile.SetCharacteristicKey(ProfileUtils::GetCharKeyByDBKey(dbKey));
     ProfileUtils::EntriesToCharProfile(values, charProfile);
-    HILOGI("NotifyCharProfileAdd : %{public}s!", charProfile.dump().c_str());
+    HILOGI("%{public}s!", charProfile.dump().c_str());
     auto subscriberInfos = GetSubscribeInfos(dbKey);
     for (const auto& subscriberInfo : subscriberInfos) {
         sptr<IProfileChangeListener> listenerProxy = iface_cast<IProfileChangeListener>(subscriberInfo.GetListener());
@@ -368,7 +368,7 @@ int32_t SubscribeProfileManager::NotifyCharProfileUpdate(const std::string& dbKe
     newCharProfile.SetServiceName(ProfileUtils::GetServiceNameByDBKey(dbKey));
     newCharProfile.SetCharacteristicKey(ProfileUtils::GetCharKeyByDBKey(dbKey));
     ProfileUtils::EntriesToCharProfile(values, newCharProfile);
-    HILOGI("NotifyCharProfileUpdate : %{public}s!", newCharProfile.dump().c_str());
+    HILOGI("%{public}s!", newCharProfile.dump().c_str());
     auto subscriberInfos = GetSubscribeInfos(dbKey);
     CharacteristicProfile oldCharProfile;
     ProfileCache::GetInstance().GetCharacteristicProfile(ProfileUtils::GetDeviceIdByDBKey(dbKey),
@@ -395,7 +395,7 @@ int32_t SubscribeProfileManager::NotifyCharProfileDelete(const std::string& dbKe
     charProfile.SetServiceName(ProfileUtils::GetServiceNameByDBKey(dbKey));
     charProfile.SetCharacteristicKey(ProfileUtils::GetCharKeyByDBKey(dbKey));
     ProfileUtils::EntriesToCharProfile(values, charProfile);
-    HILOGI("NotifyCharProfileDelete : %{public}s!", charProfile.dump().c_str());
+    HILOGI("%{public}s!", charProfile.dump().c_str());
     auto subscriberInfos = GetSubscribeInfos(dbKey);
     for (const auto& subscriberInfo : subscriberInfos) {
         sptr<IProfileChangeListener> listenerProxy = iface_cast<IProfileChangeListener>(subscriberInfo.GetListener());

@@ -212,8 +212,7 @@ bool DistributedDeviceProfileStub::EnforceInterfaceToken(MessageParcel& data)
 int32_t DistributedDeviceProfileStub::OnRemoteRequest(uint32_t code, MessageParcel& data,
     MessageParcel& reply, MessageOption& option)
 {
-    HILOGI("code = %{public}u, flags = %{public}d, CallingPid = %{public}u", code, option.GetFlags(),
-        IPCSkeleton::GetCallingPid());
+    HILOGI("code = %{public}u, CallingPid = %{public}u", code, IPCSkeleton::GetCallingPid());
     DelayUnloadTask();
     if (!EnforceInterfaceToken(data)) {
         HILOGE("check interface token failed");

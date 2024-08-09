@@ -27,17 +27,17 @@ namespace {
 
 SyncSubscriberDeathRecipient::SyncSubscriberDeathRecipient()
 {
-    HILOGI("construct!");
+    HILOGD("construct!");
 }
 
 SyncSubscriberDeathRecipient::~SyncSubscriberDeathRecipient()
 {
-    HILOGI("destruct!");
+    HILOGD("destruct!");
 }
 
 void SyncSubscriberDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
 {
-    HILOGI("called");
+    HILOGD("called");
     if (remote == nullptr) {
         HILOGE("remote is nullptr!");
         return;
