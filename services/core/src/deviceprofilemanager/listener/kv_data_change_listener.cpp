@@ -67,7 +67,7 @@ void KvDataChangeListener::OnChange(const DistributedKv::ChangeNotification& cha
 
 void KvDataChangeListener::OnChange(const DistributedKv::DataOrigin& origin, Keys&& keys)
 {
-    HILOGI("Cloud data change. store=%{public}s", origin.store.c_str());
+    HILOGD("DB data OnChange);
     std::vector<DistributedKv::Entry> insertRecords = DeviceProfileManager::GetInstance()
         .GetEntriesByKeys(keys[ChangeOp::OP_INSERT]);
     if (!insertRecords.empty() && insertRecords.size() <= MAX_DB_RECORD_SIZE) {
@@ -93,7 +93,7 @@ void KvDataChangeListener::OnChange(const DistributedKv::DataOrigin& origin, Key
 
 void KvDataChangeListener::OnSwitchChange(const DistributedKv::SwitchNotification &notification)
 {
-    HILOGI("Switch data change");
+    HILOGI("Switch data change, deviceId: %{public}s", ProfileUtils.GetAnonyString(notification.deviceId).c_str());
     if (notification.deviceId.empty()) {
         HILOGE("params are valid");
         return;
@@ -103,7 +103,7 @@ void KvDataChangeListener::OnSwitchChange(const DistributedKv::SwitchNotificatio
     std::string udid;
     int32_t res = ProfileCache::GetInstance().GetUdidByNetWorkId(netWorkId, udid);
     if (res != DP_SUCCESS || udid.empty()) {
-        HILOGE("get udid fail, netWorkId is invalid: %{public}s",
+        HILOGD("get udid fail, netWorkId is invalid: %{public}s",
             ProfileUtils::GetAnonyString(netWorkId).c_str());
         return;
     }
@@ -112,7 +112,7 @@ void KvDataChangeListener::OnSwitchChange(const DistributedKv::SwitchNotificatio
 
 void KvDataChangeListener::HandleAddChange(const std::vector<DistributedKv::Entry>& insertRecords)
 {
-    HILOGI("Handle kv data add change!");
+    HILOGD("Handle kv data add change!");
     for (const auto& item : insertRecords) {
         std::string dbKey = item.key.ToString();
         std::string dbValue = item.value.ToString();
@@ -123,7 +123,7 @@ void KvDataChangeListener::HandleAddChange(const std::vector<DistributedKv::Entr
 
 void KvDataChangeListener::HandleUpdateChange(const std::vector<DistributedKv::Entry>& updateRecords)
 {
-    HILOGI("Handle kv data update change!");
+    HILOGD("Handle kv data update change!");
     for (const auto& item : updateRecords) {
         std::string dbKey = item.key.ToString();
         std::string dbValue = item.value.ToString();
@@ -134,7 +134,7 @@ void KvDataChangeListener::HandleUpdateChange(const std::vector<DistributedKv::E
 
 void KvDataChangeListener::HandleDeleteChange(const std::vector<DistributedKv::Entry>& deleteRecords)
 {
-    HILOGI("Handle kv data delete change!");
+    HILOGD("Handle kv data delete change!");
     for (const auto& item : deleteRecords) {
         std::string dbKey = item.key.ToString();
         std::string dbValue = item.value.ToString();
