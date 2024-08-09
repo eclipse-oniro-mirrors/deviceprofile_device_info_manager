@@ -696,17 +696,17 @@ void DeviceProfileManager::FixDataOnDeviceOnline(const DistributedHardware::DmDe
 void DeviceProfileManager::NotifyNotOHBaseP2pOnline(const DistributedHardware::DmDeviceInfo deviceInfo)
 {
     std::string remoteNetworkId = deviceInfo.networkId;
-    HILOGI("networkId:%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+    HILOGD("networkId:%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
     if (remoteNetworkId.empty()) {
         HILOGE("networkId or extraData is empty!");
         return;
     }
     if (ProfileUtils::IsOHBasedDevice(deviceInfo.extraData)) {
-        HILOGI("device is ohbase. remoteNetworkId=%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+        HILOGD("device is ohbase. remoteNetworkId=%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
         return;
     }
     if (!ProfileUtils::IsP2p(static_cast<int32_t>(deviceInfo.authForm))) {
-        HILOGI("is not point 2 point. remoteNetworkId=%{public}s",
+        HILOGD("is not point 2 point. remoteNetworkId=%{public}s",
             ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
         return;
     }
