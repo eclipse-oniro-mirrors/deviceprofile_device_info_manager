@@ -87,7 +87,7 @@ sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::LoadDeviceProfil
 
 void DistributedDeviceProfileClient::LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject)
 {
-    HILOGI("DistributedDeviceProfileClient FinishStartSA");
+    HILOGI("FinishStartSA");
     int32_t stageRes = static_cast<int32_t>(StageRes::STAGE_SUCC);
     DpRadarHelper::GetInstance().ReportLoadDpSaCb(stageRes);
     std::lock_guard<std::mutex> lock(serviceLock_);
