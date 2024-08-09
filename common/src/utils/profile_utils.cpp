@@ -153,7 +153,7 @@ bool ProfileUtils::IsP2p(const int32_t authForm)
 {
     if (authForm == static_cast<int32_t>(DistributedHardware::DmAuthForm::INVALID_TYPE) ||
         authForm == static_cast<int32_t>(DistributedHardware::DmAuthForm::IDENTICAL_ACCOUNT)) {
-        HILOGI("authForm: %{public}d!", authForm);
+        HILOGD("authForm: %{public}d!", authForm);
         return false;
     }
     return true;
