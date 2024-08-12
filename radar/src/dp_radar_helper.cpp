@@ -59,7 +59,7 @@ void DpRadarHelper::ReportCheckDpSa(int32_t stageRes)
             "ERROR_CODE", DP_LOAD_SERVICE_ERR);
     }
     if (res != ERR_OK) {
-        HILOGE("ReportCheckDpSa fail");
+        HILOGE("failed");
     }
     return;
 }
@@ -93,7 +93,7 @@ void DpRadarHelper::ReportLoadDpSa(int32_t stageRes)
             "ERROR_CODE", DP_LOAD_SERVICE_ERR);
     }
     if (res != ERR_OK) {
-        HILOGE("ReportLoadDpSa failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -127,7 +127,7 @@ void DpRadarHelper::ReportLoadDpSaCb(int32_t stageRes)
             "ERROR_CODE", DP_LOAD_SERVICE_ERR);
     }
     if (res != ERR_OK) {
-        HILOGE("ReportLoadDpSaCb failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -160,7 +160,7 @@ void DpRadarHelper::ReportSaCheckAuth(int32_t stageRes)
             "ERROR_CODE", ERR_PERMISSION_DENIED);
     }
     if (res != ERR_OK) {
-        HILOGE("ReportSaCheckAuth failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -203,7 +203,7 @@ void DpRadarHelper::ReportPutAclProfile(int32_t errCode, const AccessControlProf
             "EXTRA_INFO", accessControlProfile.dump());
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportPutAclProfile failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -246,7 +246,7 @@ void DpRadarHelper::ReportUpdateAclProfile(int32_t errCode, const AccessControlP
             "EXTRA_INFO", accessControlProfile.dump());
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportUpdateAclProfile failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -290,7 +290,7 @@ void DpRadarHelper::ReportGetTrustProfile(int32_t errCode, const std::string& de
             "EXTRA_INFO", trustDeviceProfile.dump());
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportGetTrustProfile failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -341,7 +341,7 @@ void DpRadarHelper::ReportGetAllTrustProfile(int32_t errCode, std::vector<TrustD
             "EXTRA_INFO", extraInfo);
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportGetAllTrustProfile failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -392,7 +392,7 @@ void DpRadarHelper::ReportGetAclProfile(int32_t errCode, std::vector<AccessContr
             "EXTRA_INFO", extraInfo);
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportGetAclProfile failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -443,7 +443,7 @@ void DpRadarHelper::ReportGetAllAclProfile(int32_t errCode, std::vector<AccessCo
             "EXTRA_INFO", extraInfo);
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportGetAllAclProfile failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -482,7 +482,7 @@ void DpRadarHelper::ReportDeleteAclProfile(int32_t errCode)
             "ERROR_CODE", errCode);
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportDeleteAclProfile failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -525,7 +525,7 @@ void DpRadarHelper::ReportPutServiceProfile(int32_t errCode, const ServiceProfil
             "EXTRA_INFO", serviceProfile.dump());
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportPutServiceProfile failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -576,7 +576,7 @@ void DpRadarHelper::ReportPutServiceProfileBatch(int32_t errCode, const std::vec
             "EXTRA_INFO", extraInfo);
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportPutServiceProfileBatch failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -619,7 +619,7 @@ void DpRadarHelper::ReportPutCharProfile(int32_t errCode, const CharacteristicPr
             "EXTRA_INFO", characteristicProfile.dump());
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportPutCharProfile failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -671,7 +671,7 @@ void DpRadarHelper::ReportPutCharProfileBatch(int32_t errCode,
             "EXTRA_INFO", extraInfo);
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportPutCharProfileBatch failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -714,7 +714,7 @@ void DpRadarHelper::ReportGetDeviceProfile(int32_t errCode, const std::string& d
             "EXTRA_INFO", deviceProfile.dump());
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportGetDeviceProfile failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -758,7 +758,7 @@ void DpRadarHelper::ReportGetServiceProfile(int32_t errCode,
             "EXTRA_INFO", serviceProfile.dump());
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportGetServiceProfile failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -802,7 +802,7 @@ void DpRadarHelper::ReportGetCharProfile(int32_t errCode,
             "EXTRA_INFO", characteristicProfile.dump());
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportGetCharProfile failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -843,7 +843,7 @@ void DpRadarHelper::ReportDeleteServiceProfile(int32_t errCode, const std::strin
             "ERROR_CODE", errCode);
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportDeleteServiceProfile failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -884,7 +884,7 @@ void DpRadarHelper::ReportDeleteCharProfile(int32_t errCode, const std::string& 
             "ERROR_CODE", errCode);
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportDeleteCharProfile failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -925,7 +925,7 @@ void DpRadarHelper::ReportSubscribeDeviceProfile(int32_t errCode, const Subscrib
             "EXTRA_INFO", subscribeInfo.dump());
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportSubscribeDeviceProfile failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -966,7 +966,7 @@ void DpRadarHelper::ReportUnSubscribeDeviceProfile(int32_t errCode, const Subscr
             "EXTRA_INFO", subscribeInfo.dump());
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportUnSubscribeDeviceProfile failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -1007,7 +1007,7 @@ void DpRadarHelper::ReportSyncDeviceProfile(int32_t errCode)
             "ERROR_CODE", errCode);
     }
     if (res != DP_SUCCESS) {
-        HILOGE("ReportSyncDeviceProfile failed");
+        HILOGE("failed");
     }
     return;
 }
@@ -1058,7 +1058,7 @@ void DpRadarHelper::ReportNotifyProfileChange(int32_t code)
         "LOCAL_UDID", GetLocalUdid(),
         "TO_CALL_PKG", RDB_NAME);
     if (res != DP_SUCCESS) {
-        HILOGE("ReportNotifyProfileChange failed");
+        HILOGE("failed");
     }
     return;
 }
