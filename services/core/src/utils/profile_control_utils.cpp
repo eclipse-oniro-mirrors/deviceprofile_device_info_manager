@@ -220,10 +220,6 @@ int32_t ProfileControlUtils::GetDeviceProfile(std::shared_ptr<IKVAdapter> kvStor
         HILOGE("the profile is invalid!");
         return DP_INVALID_PARAMS;
     }
-    if (!ProfileCache::GetInstance().IsLocalOrOnlineDevice(deviceId)) {
-        HILOGE("the profile is offline or is not a local device.");
-        return DP_INVALID_PARAMS;
-    }
     HILOGI("GetDeviceProfile, deviceId: %{public}s!", ProfileUtils::GetAnonyString(deviceId).c_str());
     if (ProfileCache::GetInstance().GetDeviceProfile(deviceId, deviceProfile) == DP_SUCCESS) {
         HILOGI("GetDeviceProfile in cache!");
@@ -250,10 +246,6 @@ int32_t ProfileControlUtils::GetServiceProfile(std::shared_ptr<IKVAdapter> kvSto
     }
     if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsKeyValid(serviceName)) {
         HILOGE("the profile is invalid!");
-        return DP_INVALID_PARAMS;
-    }
-    if (!ProfileCache::GetInstance().IsLocalOrOnlineDevice(deviceId)) {
-        HILOGE("the profile is offline or is not a local device.");
         return DP_INVALID_PARAMS;
     }
     HILOGI("PutDeviceProfile, deviceId: %{public}s, serviceName: %{public}s!",
@@ -285,10 +277,6 @@ int32_t ProfileControlUtils::GetCharacteristicProfile(std::shared_ptr<IKVAdapter
     if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsKeyValid(serviceName) ||
         !ProfileUtils::IsKeyValid(characteristicKey)) {
         HILOGE("the profile is invalid!");
-        return DP_INVALID_PARAMS;
-    }
-    if (!ProfileCache::GetInstance().IsLocalOrOnlineDevice(deviceId)) {
-        HILOGE("the profile is offline or is not a local device.");
         return DP_INVALID_PARAMS;
     }
     if (ProfileCache::GetInstance().GetCharacteristicProfile(deviceId, serviceName, characteristicKey, charProfile)
@@ -348,10 +336,6 @@ int32_t ProfileControlUtils::GetSwitchCharacteristicProfile(const std::string& a
     if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsKeyValid(serviceName) ||
         !ProfileUtils::IsKeyValid(characteristicKey) || appId.empty()) {
         HILOGE("params are invalid!");
-        return DP_INVALID_PARAMS;
-    }
-    if (!ProfileCache::GetInstance().IsLocalOrOnlineDevice(deviceId)) {
-        HILOGE("the profile is offline or is not a local device.");
         return DP_INVALID_PARAMS;
     }
     HILOGI("GetCharacteristicProfile, deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
