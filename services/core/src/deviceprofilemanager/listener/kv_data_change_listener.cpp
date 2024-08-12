@@ -35,6 +35,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
     const std::string TAG = "KvDataChangeListener";
+    const std::string STATIC_STORE_ID = "dp_kv_static_store";
 }
 
 KvDataChangeListener::KvDataChangeListener(const std::string& storeId)
@@ -50,7 +51,10 @@ KvDataChangeListener::~KvDataChangeListener()
 
 void KvDataChangeListener::OnChange(const DistributedKv::ChangeNotification& changeNotification)
 {
-    HILOGI("DB data OnChange");
+    HILOGI("storeId=%{public}s", storeId_.c_str());
+    if (storeId_ == STATIC_STORE_ID) {
+        return;
+    }
     if (!changeNotification.GetInsertEntries().empty() &&
         changeNotification.GetInsertEntries().size() <= MAX_DB_RECORD_SIZE) {
         HandleAddChange(changeNotification.GetInsertEntries());
@@ -67,7 +71,10 @@ void KvDataChangeListener::OnChange(const DistributedKv::ChangeNotification& cha
 
 void KvDataChangeListener::OnChange(const DistributedKv::DataOrigin& origin, Keys&& keys)
 {
-    HILOGD("DB data OnChange");
+    HILOGI("Cloud data Change. store=%{public}s", origin.store.c_str());
+    if (origin.store == STATIC_STORE_ID) {
+        return;
+    }
     std::vector<DistributedKv::Entry> insertRecords = DeviceProfileManager::GetInstance()
         .GetEntriesByKeys(keys[ChangeOp::OP_INSERT]);
     if (!insertRecords.empty() && insertRecords.size() <= MAX_DB_RECORD_SIZE) {

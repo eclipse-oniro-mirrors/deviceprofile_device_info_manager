@@ -453,7 +453,7 @@ void DistributedDeviceProfileClient::StartThreadSendSubscribeInfos()
 void DistributedDeviceProfileClient::ReSubscribeDeviceProfileInited()
 {
     if (dpInitedCallback_ == nullptr) {
-        HILOGD("not use Retry subscribe dp inited");
+        HILOGE("not use Retry subscribe dp inited");
         return;
     }
     auto autoTask = [this] () {
@@ -508,7 +508,7 @@ int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfileInited(int32_t s
 {
     HILOGI("enter");
     if (dpInitedCallback_ == nullptr) {
-        HILOGD("not subscribe dp inited, no need unsubscribe dp inited");
+        HILOGE("not subscribe dp inited, no need unsubscribe dp inited");
         return DP_SUCCESS;
     }
     SubscribeDeviceProfileSA();
