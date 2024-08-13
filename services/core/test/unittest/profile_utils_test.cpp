@@ -440,6 +440,56 @@ HWTEST_F(ProfileUtilsTest, AccessControlProfileTranslateEntries001, TestSize.Lev
     EXPECT_EQ("123456", outProfile.GetTrustDeviceId());
 }
 
+HWTEST_F(ProfileUtilsTest, AccessControlProfileTranslateEntries002, TestSize.Level1)
+{
+    Accesser accesser;
+    accesser.SetAccesserDeviceId("acer2");
+    accesser.SetAccesserUserId(11);
+    accesser.SetAccesserAccountId("a2");
+    accesser.SetAccesserTokenId(111);
+    accesser.SetAccesserBundleName("b2");
+    accesser.SetAccesserHapSignature("h2");
+    accesser.SetAccesserBindLevel(1);
+    
+    Accessee accessee;
+    accessee.SetAccesseeDeviceId("acee2");
+    accessee.SetAccesseeUserId(22);
+    accessee.SetAccesseeAccountId("a2");
+    accessee.SetAccesseeTokenId(222);
+    accessee.SetAccesseeBundleName("bb2");
+    accessee.SetAccesseeHapSignature("h2");
+    accessee.SetAccesseeBindLevel(1);
+    
+    AccessControlProfile profile;
+    profile.SetTrustDeviceId("1234567");
+    profile.SetSessionKey("key1");
+    profile.SetBindType(1);
+    profile.SetAuthenticationType(1);
+    profile.SetDeviceIdType(1);
+    profile.SetDeviceIdHash("abcd");
+    profile.SetStatus(0);
+    profile.SetValidPeriod(1);
+    profile.SetLastAuthTime(5);
+    profile.SetBindLevel(0);
+    
+    profile.SetAccesser(accesser);
+    profile.SetAccessee(accessee);
+    
+    ValuesBucket values;
+    ValueObject valueObject;
+    string strValue = "";
+    int32_t res1 = ProfileUtils::AccessControlProfileToEntries(profile, values);
+    EXPECT_EQ(DP_SUCCESS, res1);
+    values.GetObject(TRUST_DEVICE_ID, valueObject);
+    valueObject.GetString(strValue);
+    EXPECT_EQ("1234567", strValue);
+    
+    AccessControlProfile outProfile;
+    int32_t res2 = ProfileUtils::EntriesToAccessControlProfile(values, outProfile);
+    EXPECT_EQ(DP_SUCCESS, res2);
+    EXPECT_EQ("1234567", outProfile.GetTrustDeviceId());
+}
+
 /**
  * @tc.name: AccesserTranslateEntries001
  * @tc.desc: AccesserToEntries and EntriesToAccesser.
@@ -596,6 +646,106 @@ HWTEST_F(ProfileUtilsTest, ServiceProfileTranslateEntries001, TestSize.Level1)
     int32_t res2 = ProfileUtils::EntriesToServiceProfile(entries, outServiceProfile);
     EXPECT_EQ(DP_SUCCESS, res2);
     EXPECT_EQ("deviceId", outServiceProfile.GetDeviceId());
+}
+
+HWTEST_F(ProfileUtilsTest, AccesserTranslateEntries002, TestSize.Level1)
+{
+    Accesser accesser;
+    accesser.SetAccesserDeviceId("acer2");
+    accesser.SetAccesserUserId(11);
+    accesser.SetAccesserAccountId("a1");
+    accesser.SetAccesserTokenId(111);
+    accesser.SetAccesserBundleName("b1");
+    accesser.SetAccesserHapSignature("h1");
+    accesser.SetAccesserBindLevel(1);
+    
+    Accessee accessee;
+    accessee.SetAccesseeDeviceId("acee2");
+    accessee.SetAccesseeUserId(22);
+    accessee.SetAccesseeAccountId("a1");
+    accessee.SetAccesseeTokenId(222);
+    accessee.SetAccesseeBundleName("bb1");
+    accessee.SetAccesseeHapSignature("h1");
+    accessee.SetAccesseeBindLevel(1);
+
+    AccessControlProfile profile;
+    profile.SetTrustDeviceId("123456");
+    profile.SetSessionKey("key1");
+    profile.SetBindType(1);
+    profile.SetAuthenticationType(1);
+    profile.SetDeviceIdType(1);
+    profile.SetDeviceIdHash("abcd");
+    profile.SetStatus(0);
+    profile.SetValidPeriod(1);
+    profile.SetLastAuthTime(5);
+    profile.SetBindLevel(0);
+    
+    profile.SetAccesser(accesser);
+    profile.SetAccessee(accessee);
+    
+    ValuesBucket values;
+    ValueObject valueObject;
+    string strValue = "";
+    int32_t res1 = ProfileUtils::AccesserToEntries(profile, values);
+    EXPECT_EQ(DP_SUCCESS, res1);
+    values.GetObject(ACCESSER_DEVICE_ID, valueObject);
+    valueObject.GetString(strValue);
+    EXPECT_EQ("acer2", strValue);
+    
+    Accesser outAccesser;
+    int32_t res2 = ProfileUtils::EntriesToAccesser(values, outAccesser);
+    EXPECT_EQ(DP_SUCCESS, res2);
+    EXPECT_EQ("acer2", outAccesser.GetAccesserDeviceId());
+}
+
+HWTEST_F(ProfileUtilsTest, AccesseeTranslateEntries002, TestSize.Level1)
+{
+    Accesser accesser;
+    accesser.SetAccesserDeviceId("acer2");
+    accesser.SetAccesserUserId(11);
+    accesser.SetAccesserAccountId("a1");
+    accesser.SetAccesserTokenId(111);
+    accesser.SetAccesserBundleName("b1");
+    accesser.SetAccesserHapSignature("h1");
+    accesser.SetAccesserBindLevel(1);
+    
+    Accessee accessee;
+    accessee.SetAccesseeDeviceId("acee2");
+    accessee.SetAccesseeUserId(22);
+    accessee.SetAccesseeAccountId("a1");
+    accessee.SetAccesseeTokenId(222);
+    accessee.SetAccesseeBundleName("bb1");
+    accessee.SetAccesseeHapSignature("h1");
+    accessee.SetAccesseeBindLevel(1);
+    
+    AccessControlProfile profile;
+    profile.SetTrustDeviceId("123456");
+    profile.SetSessionKey("key1");
+    profile.SetBindType(1);
+    profile.SetAuthenticationType(1);
+    profile.SetDeviceIdType(1);
+    profile.SetDeviceIdHash("abcd");
+    profile.SetStatus(0);
+    profile.SetValidPeriod(1);
+    profile.SetLastAuthTime(5);
+    profile.SetBindLevel(0);
+    
+    profile.SetAccesser(accesser);
+    profile.SetAccessee(accessee);
+    
+    ValuesBucket values;
+    ValueObject valueObject;
+    string strValue = "";
+    int32_t res1 = ProfileUtils::AccesseeToEntries(profile, values);
+    EXPECT_EQ(DP_SUCCESS, res1);
+    values.GetObject(ACCESSEE_DEVICE_ID, valueObject);
+    valueObject.GetString(strValue);
+    EXPECT_EQ("acee2", strValue);
+    
+    Accessee outAccessee;
+    int32_t res2 = ProfileUtils::EntriesToAccessee(values, outAccessee);
+    EXPECT_EQ(DP_SUCCESS, res2);
+    EXPECT_EQ("acee2", outAccessee.GetAccesseeDeviceId());
 }
 
 /**
