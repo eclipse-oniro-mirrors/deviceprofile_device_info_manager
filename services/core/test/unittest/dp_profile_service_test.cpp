@@ -29,6 +29,8 @@
 #include "subscribe_profile_manager.h"
 #include "event_handler_factory.h"
 #include "distributed_device_profile_constants.h"
+#include "dp_inited_callback_stub.h"
+#include "i_dp_inited_callback.h"
 #undef private
 #undef protected
 
@@ -83,6 +85,20 @@ void DpProfileServiceTest::TearDown()
 {
 }
 
+class DpInitedCallback : public DpInitedCallbackStub {
+public:
+    DpInitedCallback()
+    {
+    }
+    ~DpInitedCallback()
+    {
+    }
+    int32_t OnDpInited()
+    {
+        return 0;
+    }
+};
+
 HWTEST_F(DpProfileServiceTest, Init_001, TestSize.Level1)
 {
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().Init();
@@ -117,6 +133,7 @@ HWTEST_F(DpProfileServiceTest, PutAccessControlProfile_001, TestSize.Level1)
     AccessControlProfile accessControlProfile;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutAccessControlProfile(accessControlProfile);
     EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+    DistributedDeviceProfileServiceNew::GetInstance().DelayUnloadTask();
 }
 
 HWTEST_F(DpProfileServiceTest, UpdateAccessControlProfile_001, TestSize.Level1)
@@ -277,6 +294,21 @@ HWTEST_F(DpProfileServiceTest, Dump_001, TestSize.Level1)
     std::vector<std::u16string> args;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().Dump(fd, args);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, SubscribeDeviceProfileInited_001, TestSize.Level1)
+{
+    int32_t saId = 1000;
+    OHOS::sptr<IRemoteObject> initedCb = sptr<IRemoteObject>(new DpInitedCallback());
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().SubscribeDeviceProfileInited(saId, initedCb);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, UnSubscribeDeviceProfileInited_001, TestSize.Level1)
+{
+    int32_t saId = 1000;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().UnSubscribeDeviceProfileInited(saId);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
 }
 }
 }
