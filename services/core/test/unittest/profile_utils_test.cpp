@@ -1700,7 +1700,7 @@ HWTEST_F(ProfileUtilsTest, EntriesToCharProfile002, TestSize.Level1)
 
 /**
  * @tc.name: GetDbKeyByProfile001
- * @tc.desc: 
+ * @tc.desc:
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1732,14 +1732,14 @@ HWTEST_F(ProfileUtilsTest, GetDbKeyByProfile001, TestSize.Level1)
 
 /**
  * @tc.name: IsNumStr001
- * @tc.desc: 
+ * @tc.desc:
  * @tc.type: FUNC
  * @tc.require:
  */
 HWTEST_F(ProfileUtilsTest, IsNumStr001, TestSize.Level1)
 {
     bool isNumStr = ProfileUtils::IsNumStr("");
-    EXPECT_EQ(isNumStr,false);
+    EXPECT_EQ(isNumStr, false);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
