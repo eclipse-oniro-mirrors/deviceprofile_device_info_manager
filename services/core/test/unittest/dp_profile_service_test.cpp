@@ -134,7 +134,6 @@ HWTEST_F(DpProfileServiceTest, PutAccessControlProfile_001, TestSize.Level1)
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutAccessControlProfile(accessControlProfile);
     EXPECT_EQ(DP_PERMISSION_DENIED, ret);
     DistributedDeviceProfileServiceNew::GetInstance().DelayUnloadTask();
-    
 }
 
 HWTEST_F(DpProfileServiceTest, UpdateAccessControlProfile_001, TestSize.Level1)
