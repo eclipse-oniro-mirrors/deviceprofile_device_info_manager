@@ -772,6 +772,7 @@ HWTEST_F(SubscribeProfileManagerTest, NotifyCharProfileDelete_003, TestSize.Leve
     int32_t errCode = SubscribeProfileManager::GetInstance().NotifyCharProfileDelete(dbKey, dbValue);
     EXPECT_EQ(errCode, DP_SUCCESS);
 }
+
 /*
  * @tc.name: NotifyProfileChange_003
  * @tc.desc: Normal testCase of NotifyDeviceProfileAdd for CRUD
