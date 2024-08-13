@@ -1300,6 +1300,12 @@ HWTEST_F(ProfileUtilsTest, IsPropertyValid005, TestSize.Level1)
     propertyMap.erase(property);
     bool res4 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
     EXPECT_EQ(false, res4);
+
+    property = "property1";
+    value = "";
+    propertyMap[property] = value;
+    bool res5 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
+    EXPECT_EQ(false, res5);
 }
 
 /**
@@ -1690,6 +1696,50 @@ HWTEST_F(ProfileUtilsTest, EntriesToCharProfile002, TestSize.Level1)
     }
     int32_t ret2 = ProfileUtils::EntriesToCharProfile(values, profile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret2);
+}
+
+/**
+ * @tc.name: GetDbKeyByProfile001
+ * @tc.desc: 
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, GetDbKeyByProfile001, TestSize.Level1)
+{
+    CharacteristicProfile charProfile;
+    charProfile.SetDeviceId("deviceId");
+    charProfile.SetServiceName("serviceName");
+    charProfile.SetCharacteristicKey("characteristicKey");
+    charProfile.SetCharacteristicValue("characteristicValue");
+    string dbKey = "";
+    string succDbkey = "char#deviceId#serviceName#characteristicKey#characteristicValue";
+    string failDbkey = "";
+    dbKey = ProfileUtils::GetDbKeyByProfile(charProfile);
+    EXPECT_EQ(dbKey, succDbkey);
+
+    charProfile.SetCharacteristicKey("");
+    dbKey = ProfileUtils::GetDbKeyByProfile(charProfile);
+    EXPECT_EQ(dbKey, failDbkey);
+    
+    charProfile.SetServiceName("");
+    dbKey = ProfileUtils::GetDbKeyByProfile(charProfile);
+    EXPECT_EQ(dbKey, failDbkey);
+    
+    charProfile.SetDeviceId("");
+    dbKey = ProfileUtils::GetDbKeyByProfile(charProfile);
+    EXPECT_EQ(dbKey, failDbkey);
+}
+
+/**
+ * @tc.name: IsNumStr001
+ * @tc.desc: 
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileUtilsTest, IsNumStr001, TestSize.Level1)
+{
+    bool isNumStr = ProfileUtils::IsNumStr("");
+    EXPECT_EQ(isNumStr,false);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
