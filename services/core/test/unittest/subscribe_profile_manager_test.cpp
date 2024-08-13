@@ -772,6 +772,154 @@ HWTEST_F(SubscribeProfileManagerTest, NotifyCharProfileDelete_003, TestSize.Leve
     int32_t errCode = SubscribeProfileManager::GetInstance().NotifyCharProfileDelete(dbKey, dbValue);
     EXPECT_EQ(errCode, DP_SUCCESS);
 }
+/*
+ * @tc.name: NotifyProfileChange_003
+ * @tc.desc: Normal testCase of NotifyDeviceProfileAdd for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyProfileChange_003, TestSize.Level1)
+{
+    std::string dbKey = "";
+    std::string dbValue = "";
+    int32_t errCode = SubscribeProfileManager::GetInstance().
+        NotifyProfileChange(ProfileType::DEVICE_PROFILE, ChangeType::ADD, dbKey, dbValue);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
 
+/*
+ * @tc.name: NotifyProfileChange_004
+ * @tc.desc: Normal testCase of NotifyDeviceProfileAdd for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyProfileChange_004, TestSize.Level1)
+{
+    std::string dbKey = "";
+    std::string dbValue = "";
+    int32_t errCode = SubscribeProfileManager::GetInstance().
+        NotifyProfileChange(ProfileType::DEVICE_PROFILE, ChangeType::UPDATE, dbKey, dbValue);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyProfileChange_005
+ * @tc.desc: Normal testCase of NotifyDeviceProfileAdd for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyProfileChange_005, TestSize.Level1)
+{
+    std::string dbKey = "";
+    std::string dbValue = "";
+    int32_t errCode = SubscribeProfileManager::GetInstance().
+        NotifyProfileChange(ProfileType::DEVICE_PROFILE, ChangeType::DELETE, dbKey, dbValue);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyProfileChange_006
+ * @tc.desc: Normal testCase of NotifyDeviceProfileAdd for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyProfileChange_006, TestSize.Level1)
+{
+    std::string dbKey = "";
+    std::string dbValue = "";
+    int32_t errCode = SubscribeProfileManager::GetInstance().
+        NotifyProfileChange(ProfileType::SERVICE_PROFILE, ChangeType::ADD, dbKey, dbValue);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyProfileChange_007
+ * @tc.desc: Normal testCase of NotifyDeviceProfileAdd for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyProfileChange_007, TestSize.Level1)
+{
+    std::string dbKey = "";
+    std::string dbValue = "";
+    int32_t errCode = SubscribeProfileManager::GetInstance().
+        NotifyProfileChange(ProfileType::SERVICE_PROFILE, ChangeType::UPDATE, dbKey, dbValue);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyProfileChange_008
+ * @tc.desc: Normal testCase of NotifyDeviceProfileAdd for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyProfileChange_008, TestSize.Level1)
+{
+    std::string dbKey = "";
+    std::string dbValue = "";
+    int32_t errCode = SubscribeProfileManager::GetInstance().
+        NotifyProfileChange(ProfileType::SERVICE_PROFILE, ChangeType::DELETE, dbKey, dbValue);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyProfileChange_009
+ * @tc.desc: Normal testCase of NotifyDeviceProfileAdd for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyProfileChange_009, TestSize.Level1)
+{
+    std::string dbKey = "";
+    std::string dbValue = "";
+    int32_t errCode = SubscribeProfileManager::GetInstance().
+        NotifyProfileChange(ProfileType::CHAR_PROFILE, ChangeType::ADD, dbKey, dbValue);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyProfileChange_010
+ * @tc.desc: Normal testCase of NotifyDeviceProfileAdd for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyProfileChange_010, TestSize.Level1)
+{
+    std::string dbKey = "";
+    std::string dbValue = "";
+    int32_t errCode = SubscribeProfileManager::GetInstance().
+        NotifyProfileChange(ProfileType::CHAR_PROFILE, ChangeType::UPDATE, dbKey, dbValue);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyProfileChange_011
+ * @tc.desc: Normal testCase of NotifyDeviceProfileAdd for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyProfileChange_011, TestSize.Level1)
+{
+    std::string dbKey = "";
+    std::string dbValue = "";
+    int32_t errCode = SubscribeProfileManager::GetInstance().
+        NotifyProfileChange(ProfileType::CHAR_PROFILE, ChangeType::DELETE, dbKey, dbValue);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyProfileChange_012
+ * @tc.desc: Normal testCase of NotifyDeviceProfileAdd for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyProfileChange_012, TestSize.Level1)
+{
+    std::string dbKey = "";
+    std::string dbValue = "";
+    int32_t errCode = SubscribeProfileManager::GetInstance().
+        NotifyProfileChange(ProfileType::CHAR_PROFILE, ChangeType::CHANGE_TYPE_MIN, dbKey, dbValue);
+    EXPECT_EQ(errCode, DP_INVALID_PARAMS);
+}
 }
 }
