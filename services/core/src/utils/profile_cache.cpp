@@ -40,8 +40,8 @@ namespace {
 int32_t ProfileCache::Init()
 {
     HILOGI("call!");
-    RefreshProfileCache();
     ContentSensorManagerUtils::GetInstance().ObtainDeviceDataSyncMode();
+    RefreshProfileCache();
     syncListenerDeathRecipient_ = sptr<IRemoteObject::DeathRecipient>(new SyncSubscriberDeathRecipient);
     std::vector<DistributedHardware::DmDeviceInfo> allOnlineDeviceInfo;
     int32_t res =
