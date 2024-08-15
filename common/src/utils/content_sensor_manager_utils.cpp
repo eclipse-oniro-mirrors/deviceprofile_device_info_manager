@@ -13,9 +13,12 @@
  * limitations under the License.
  */
 
-#include <cstring>
 #include "content_sensor_manager_utils.h"
+
+#include <cstring>
+
 #include "parameter.h"
+
 #include "distributed_device_profile_log.h"
 
 namespace OHOS {

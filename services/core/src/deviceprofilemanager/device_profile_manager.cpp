@@ -644,7 +644,7 @@ void DeviceProfileManager::OnDeviceOnline(const DistributedHardware::DmDeviceInf
     FixDataOnDeviceOnline(deviceInfo);
     NotifyNotOHBaseP2pOnline(deviceInfo);
     if (ContentSensorManagerUtils::GetInstance().IsDeviceE2ESync()) {
-        HILOGI("need E2ESync!");
+        HILOGI("need E2ESync, networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
         E2ESyncDynamicProfile(deviceInfo);
         StaticProfileManager::GetInstance().E2ESyncStaticProfile(deviceInfo);
     }
