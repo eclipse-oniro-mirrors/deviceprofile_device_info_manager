@@ -170,7 +170,7 @@ void ContentSensorManagerUtils::ObtainDeviceDataSyncMode()
         HILOGI("Determining the e2e device succeeded.");
         return;
     }
-    HILOGI("Determining the e2e device failed.");
+    HILOGW("Determining not is e2e device");
 }
 
 bool ContentSensorManagerUtils::IsDeviceE2ESync()

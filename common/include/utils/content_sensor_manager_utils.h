@@ -16,9 +16,9 @@
 #ifndef OHOS_DP_CONTENT_SENSOR_MANAGER_UTILS_H
 #define OHOS_DP_CONTENT_SENSOR_MANAGER_UTILS_H
 
-#include <string>
-#include <mutex>
 #include <atomic>
+#include <mutex>
+#include <string>
 #include "single_instance.h"
 
 namespace OHOS {

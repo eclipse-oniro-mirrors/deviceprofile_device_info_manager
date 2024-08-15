@@ -745,7 +745,7 @@ void DeviceProfileManager::E2ESyncDynamicProfile(const DistributedHardware::DmDe
             return;
         }
         if (!ProfileUtils::IsOHBasedDevice(deviceInfo.extraData)) {
-            HILOGI("device not is ohbase. remoteNetworkId=%{public}s",
+            HILOGI("device is not ohbase. remoteNetworkId=%{public}s",
                 ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
             return;
         }
