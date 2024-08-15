@@ -18,6 +18,7 @@
 
 #include <string>
 #include <mutex>
+#include <atomic>
 #include "single_instance.h"
 
 namespace OHOS {
@@ -33,6 +34,8 @@ public:
     std::string ObtainOsFullName();
     std::string ObtainDisplayVersion();
     std::string ObtainLocalUdid();
+    void ObtainDeviceDataSyncMode();
+    bool IsDeviceE2ESync();
 
 private:
     std::string deviceModel_ = "";
@@ -43,6 +46,7 @@ private:
     std::string osFullName_ = "";
     std::string displayVersion_ = "";
     std::string localUdid_ = "";
+    std::atomic<bool> isDeviceE2ESync_ {false};
     std::mutex csMutex_;
 };
 }
