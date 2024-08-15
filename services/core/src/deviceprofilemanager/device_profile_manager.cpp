@@ -436,6 +436,9 @@ bool DeviceProfileManager::LoadDpSyncAdapter()
         so_handle = dlopen(soName.c_str(), RTLD_NOW);
     }
     if (so_handle == nullptr) {
+        so_handle = dlopen(soName.c_str(), RTLD_NOW);
+    }
+    if (so_handle == nullptr) {
         HILOGE("load dp sync adapter so %{public}s failed", soName.c_str());
         return false;
     }
