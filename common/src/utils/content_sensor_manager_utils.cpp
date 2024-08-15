@@ -29,7 +29,7 @@ namespace {
     const char* UNDEFINED_VALUE = "undefined";
     const char* SYNC_TYPE_E2E = "1";
     constexpr int32_t DEVICE_UUID_LENGTH = 65;
-    constexpr int32_t IT_BOOK_PARAM_LEN = 128;
+    constexpr int32_t SYS_SETTINGS_DATA_SYNC_PARAM_LEN = 128;
 }
 IMPLEMENT_SINGLE_INSTANCE(ContentSensorManagerUtils);
 std::string ContentSensorManagerUtils::ObtainProductModel()
@@ -166,14 +166,15 @@ std::string ContentSensorManagerUtils::ObtainLocalUdid()
 
 void ContentSensorManagerUtils::ObtainDeviceDataSyncMode()
 {
-    char isITBookparam[IT_BOOK_PARAM_LEN + 1] = {0};
-    int ret = GetParameter(SYS_SETTINGS_DATA_SYNC, UNDEFINED_VALUE, isITBookparam, IT_BOOK_PARAM_LEN);
-    if (ret > 0 && strncmp(isITBookparam, SYNC_TYPE_E2E, strlen(SYNC_TYPE_E2E)) == 0) {
+    char isE2EDeviceParam[SYS_SETTINGS_DATA_SYNC_PARAM_LEN + 1] = {0};
+    int ret = GetParameter(SYS_SETTINGS_DATA_SYNC, UNDEFINED_VALUE, isE2EDeviceParam,
+        SYS_SETTINGS_DATA_SYNC_PARAM_LEN);
+    if (ret > 0 && strncmp(isE2EDeviceParam, SYNC_TYPE_E2E, strlen(SYNC_TYPE_E2E)) == 0) {
         isDeviceE2ESync_.store(true);
         HILOGI("Determining the e2e device succeeded.");
         return;
     }
-    HILOGW("Determining not is e2e device");
+    HILOGW("Determining is not e2e device");
 }
 
 bool ContentSensorManagerUtils::IsDeviceE2ESync()
