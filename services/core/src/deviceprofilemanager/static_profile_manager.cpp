@@ -23,6 +23,7 @@
 
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
+#include "event_handler_factory.h"
 #include "kv_data_change_listener.h"
 #include "kv_store_death_recipient.h"
 #include "kv_sync_completed_listener.h"
@@ -30,6 +31,7 @@
 #include "profile_cache.h"
 #include "profile_control_utils.h"
 #include "profile_utils.h"
+#include "permission_manager.h"
 #include "static_capability_loader.h"
 
 namespace OHOS {
@@ -182,6 +184,40 @@ int32_t StaticProfileManager::GenerateStaticInfoProfile(const CharacteristicProf
     StaticCapabilityLoader::GetInstance().LoadStaticProfiles(staticCapabilityProfile.GetDeviceId(),
         staticCapabilityValue, staticCapabilityVersion, staticInfoProfiles);
     return DP_SUCCESS;
+}
+
+void StaticProfileManager::E2ESyncStaticProfile(const DistributedHardware::DmDeviceInfo deviceInfo)
+{
+    HILOGD("call!");
+    auto task = [this, deviceInfo]() {
+        std::string remoteNetworkId = deviceInfo.networkId;
+        HILOGD("networkId:%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+        if (remoteNetworkId.empty()) {
+            HILOGE("networkId or extraData is empty!");
+            return;
+        }
+        if (!ProfileUtils::IsOHBasedDevice(deviceInfo.extraData)) {
+            HILOGI("device is not ohbase. remoteNetworkId=%{public}s",
+                ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+            return;
+        }
+        std::lock_guard<std::mutex> lock(staticStoreMutex_);
+        if (staticProfileStore_ == nullptr) {
+            HILOGE("staticProfileStore is nullptr");
+            return;
+        }
+        int32_t syncResult = staticProfileStore_->Sync({remoteNetworkId}, SyncMode::PUSH_PULL);
+        if (syncResult != DP_SUCCESS) {
+            HILOGE("E2ESyncStaticProfile fail, res: %{public}d!", syncResult);
+            return;
+        }
+        HILOGI("E2ESyncStaticProfile success!");
+    };
+    auto handler = EventHandlerFactory::GetInstance().GetEventHandler();
+    if (handler == nullptr || !handler->PostTask(task)) {
+        HILOGE("Post E2ESyncStaticProfile task fail!");
+        return;
+    }
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
