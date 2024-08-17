@@ -87,7 +87,7 @@ sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::LoadDeviceProfil
 
 void DistributedDeviceProfileClient::LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject)
 {
-    HILOGI("DistributedDeviceProfileClient FinishStartSA");
+    HILOGI("FinishStartSA");
     int32_t stageRes = static_cast<int32_t>(StageRes::STAGE_SUCC);
     DpRadarHelper::GetInstance().ReportLoadDpSaCb(stageRes);
     std::lock_guard<std::mutex> lock(serviceLock_);
@@ -317,7 +317,6 @@ int32_t DistributedDeviceProfileClient::SubscribeDeviceProfile(const SubscribeIn
     }
     {
         std::lock_guard<std::mutex> lock(serviceLock_);
-        HILOGI("subscribeInfos_.size is %{public}zu", subscribeInfos_.size());
         if (subscribeInfos_.size() > MAX_LISTENER_SIZE) {
             HILOGE("ProfileChangeListeners size is invalid!size: %{public}zu!", subscribeInfos_.size());
             return DP_EXCEED_MAX_SIZE_FAIL;
@@ -385,7 +384,7 @@ sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfile
             DpRadarHelper::GetInstance().ReportCheckDpSa(stageRes);
         }
         if (object != nullptr) {
-            HILOGI("get service succeeded");
+            HILOGD("get service succeeded");
             if (dpDeathRecipient_ == nullptr) {
                 dpDeathRecipient_ = sptr<IRemoteObject::DeathRecipient>(new DeviceProfileDeathRecipient);
             }
@@ -442,7 +441,7 @@ void DistributedDeviceProfileClient::SubscribeDeviceProfileSA()
         HILOGE("subscribe dp sa failed! ret %{public}d.", ret);
         return;
     }
-    HILOGI("subscribe dp sa success");
+    HILOGD("subscribe dp sa success");
 }
 
 void DistributedDeviceProfileClient::StartThreadSendSubscribeInfos()
@@ -453,9 +452,8 @@ void DistributedDeviceProfileClient::StartThreadSendSubscribeInfos()
 
 void DistributedDeviceProfileClient::ReSubscribeDeviceProfileInited()
 {
-    HILOGI("Retry subscribe dp inited in proxy to service!");
     if (dpInitedCallback_ == nullptr) {
-        HILOGI("not use Retry subscribe dp inited");
+        HILOGE("not use Retry subscribe dp inited");
         return;
     }
     auto autoTask = [this] () {
@@ -463,7 +461,7 @@ void DistributedDeviceProfileClient::ReSubscribeDeviceProfileInited()
         if (ret != DP_SUCCESS) {
             HILOGE("Retry subscribe dp inited failed");
         } else {
-            HILOGI("Retry subscribe dp inited succeed");
+            HILOGD("Retry subscribe dp inited succeed");
         }
     };
     std::thread(autoTask).detach();
@@ -502,7 +500,7 @@ int32_t DistributedDeviceProfileClient::SubscribeDeviceProfileInited(int32_t saI
         saId_ = saId;
         dpInitedCallback_ = initedCb;
     }
-    HILOGI("Subscribe DP Inited succeed!");
+    HILOGD("Subscribe DP Inited succeed!");
     return DP_SUCCESS;
 }
 
@@ -510,7 +508,7 @@ int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfileInited(int32_t s
 {
     HILOGI("enter");
     if (dpInitedCallback_ == nullptr) {
-        HILOGI("not subscribe dp inited, no need unsubscribe dp inited");
+        HILOGE("not subscribe dp inited, no need unsubscribe dp inited");
         return DP_SUCCESS;
     }
     SubscribeDeviceProfileSA();
@@ -532,20 +530,20 @@ int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfileInited(int32_t s
         }
         dpInitedCallback_ = nullptr;
     }
-    HILOGI("Unsubscribe DP Inited succeed!");
+    HILOGD("Unsubscribe DP Inited succeed!");
     return DP_SUCCESS;
 }
 
 void DistributedDeviceProfileClient::SystemAbilityListener::OnRemoveSystemAbility(int32_t systemAbilityId,
     const std::string &deviceId)
 {
-    HILOGI("dp sa removed");
+    HILOGD("dp sa removed");
 }
 
 void DistributedDeviceProfileClient::SystemAbilityListener::OnAddSystemAbility(int32_t systemAbilityId,
     const std::string &deviceId)
 {
-    HILOGI("dp sa started, start thread for send subscribeInfos and reSubscribeDeviceProfileInited");
+    HILOGI("dp sa started");
     DistributedDeviceProfileClient::GetInstance().StartThreadSendSubscribeInfos();
     DistributedDeviceProfileClient::GetInstance().ReSubscribeDeviceProfileInited();
 }

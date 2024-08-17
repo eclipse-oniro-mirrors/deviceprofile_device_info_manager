@@ -39,7 +39,7 @@ void SwitchAdapter::Uninit() {}
 
 int32_t SwitchAdapter::PutSwitch(const std::string& appId, uint32_t value, uint16_t length)
 {
-    HILOGI("called");
+    HILOGD("called");
     if (appId.empty()) {
         HILOGE("params are invalid");
         return DP_INVALID_PARAMS;

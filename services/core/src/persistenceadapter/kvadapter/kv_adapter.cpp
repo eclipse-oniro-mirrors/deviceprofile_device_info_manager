@@ -49,12 +49,12 @@ KVAdapter::KVAdapter(const std::string &appId, const std::string &storeId,
     this->syncCompletedListener_= syncCompletedListener;
     this->deathRecipient_ = deathListener;
     this->dataType_ = dataType;
-    HILOGI("KVAdapter Constructor Success, appId: %{public}s, storeId: %{public}s", appId.c_str(), storeId.c_str());
+    HILOGD("KVAdapter Constructor Success, appId: %{public}s, storeId: %{public}s", appId.c_str(), storeId.c_str());
 }
 
 KVAdapter::~KVAdapter()
 {
-    HILOGI("KVAdapter Destruction!");
+    HILOGD("KVAdapter Destruction!");
 }
 
 int32_t KVAdapter::Init()
@@ -191,13 +191,13 @@ int32_t KVAdapter::Delete(const std::string& key)
         HILOGE("Delete kv by key failed!");
         return DP_DEL_KV_DB_FAIL;
     }
-    HILOGI("Delete kv by key success!");
+    HILOGD("Delete kv by key success!");
     return DP_SUCCESS;
 }
 
 int32_t KVAdapter::Get(const std::string& key, std::string& value)
 {
-    HILOGI("Get data by key: %{public}s", ProfileUtils::GetDbKeyAnonyString(key).c_str());
+    HILOGD("key: %{public}s", ProfileUtils::GetDbKeyAnonyString(key).c_str());
     DistributedKv::Key kvKey(key);
     DistributedKv::Value kvValue;
     DistributedKv::Status status;
@@ -219,7 +219,7 @@ int32_t KVAdapter::Get(const std::string& key, std::string& value)
 
 int32_t KVAdapter::GetByPrefix(const std::string& keyPrefix, std::map<std::string, std::string>& values)
 {
-    HILOGI("Get data by key prefix: %{public}s", ProfileUtils::GetDbKeyAnonyString(keyPrefix).c_str());
+    HILOGD("key prefix: %{public}s", ProfileUtils::GetDbKeyAnonyString(keyPrefix).c_str());
     std::lock_guard<std::mutex> lock(kvAdapterMutex_);
     if (kvStorePtr_ == nullptr) {
         HILOGE("kvStoragePtr_ is null");
@@ -246,7 +246,7 @@ int32_t KVAdapter::GetByPrefix(const std::string& keyPrefix, std::map<std::strin
 
 int32_t KVAdapter::DeleteByPrefix(const std::string& keyPrefix)
 {
-    HILOGI("call");
+    HILOGI("delete by key prefix: %{public}s", ProfileUtils::GetDbKeyAnonyString(keyPrefix).c_str());
     std::lock_guard<std::mutex> lock(kvAdapterMutex_);
     if (kvStorePtr_ == nullptr) {
         HILOGE("kvStoragePtr_ is null");
@@ -307,7 +307,7 @@ int32_t KVAdapter::DeleteKvStorePtr()
 
 int32_t KVAdapter::Sync(const std::vector<std::string>& deviceList, SyncMode syncMode)
 {
-    HILOGI("Sync!");
+    HILOGD("Sync!");
     {
         std::lock_guard<std::mutex> lock(kvAdapterMutex_);
         if (kvStorePtr_ == nullptr) {
