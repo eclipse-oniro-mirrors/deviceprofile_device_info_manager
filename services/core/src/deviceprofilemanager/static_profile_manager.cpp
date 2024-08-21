@@ -161,7 +161,7 @@ int32_t StaticProfileManager::GenerateStaticInfoProfile(const CharacteristicProf
     std::string charValue = staticCapabilityProfile.GetCharacteristicValue();
     cJSON* charValueJson = cJSON_Parse(charValue.c_str());
     if (!cJSON_IsObject(charValueJson)) {
-        HILOGE("cJSON_Parse fail! charValue : %{public}s", charValue.c_str());
+        HILOGE("cJSON_Parse fail! charValue : %{public}s", ProfileUtils::GetAnonyString(charValue).c_str());
         cJSON_Delete(charValueJson);
         return DP_PARSE_STATIC_CAP_FAIL;
     }
