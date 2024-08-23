@@ -81,6 +81,7 @@ private:
     void AddToPutTempCache(const std::map<std::string, std::string>& values);
     void FixDataOnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
     void NotifyNotOHBaseP2pOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
+    void E2ESyncDynamicProfile(const DistributedHardware::DmDeviceInfo deviceInfo);
     bool isAdapterSoLoaded_ = false;
     std::mutex isAdapterLoadLock_;
     std::mutex dynamicStoreMutex_;

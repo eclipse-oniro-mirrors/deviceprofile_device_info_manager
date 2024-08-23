@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,8 +16,9 @@
 #ifndef OHOS_DP_CONTENT_SENSOR_MANAGER_UTILS_H
 #define OHOS_DP_CONTENT_SENSOR_MANAGER_UTILS_H
 
-#include <string>
+#include <atomic>
 #include <mutex>
+#include <string>
 #include "single_instance.h"
 
 namespace OHOS {
@@ -33,6 +34,8 @@ public:
     std::string ObtainOsFullName();
     std::string ObtainDisplayVersion();
     std::string ObtainLocalUdid();
+    void ObtainDeviceDataSyncMode();
+    bool IsDeviceE2ESync();
 
 private:
     std::string deviceModel_ = "";
@@ -43,6 +46,7 @@ private:
     std::string osFullName_ = "";
     std::string displayVersion_ = "";
     std::string localUdid_ = "";
+    std::atomic<bool> isDeviceE2ESync_ {false};
     std::mutex csMutex_;
 };
 }
