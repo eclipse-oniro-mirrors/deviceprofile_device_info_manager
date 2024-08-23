@@ -14,14 +14,22 @@
  */
 
 #include "content_sensor_manager_utils.h"
+
+#include <cstring>
+
 #include "parameter.h"
+
 #include "distributed_device_profile_log.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
     const std::string TAG = "ContentSensorManagerUtils";
+    const char* SYS_SETTINGS_DATA_SYNC = "persist.distributed_scene.sys_settings_data_sync";
+    const char* UNDEFINED_VALUE = "undefined";
+    const char* SYNC_TYPE_E2E = "1";
     constexpr int32_t DEVICE_UUID_LENGTH = 65;
+    constexpr int32_t SYS_SETTINGS_DATA_SYNC_PARAM_LEN = 128;
 }
 IMPLEMENT_SINGLE_INSTANCE(ContentSensorManagerUtils);
 std::string ContentSensorManagerUtils::ObtainProductModel()
@@ -154,6 +162,24 @@ std::string ContentSensorManagerUtils::ObtainLocalUdid()
     GetDevUdid(localUdidTemp, DEVICE_UUID_LENGTH);
     localUdid_ = localUdidTemp;
     return localUdid_;
+}
+
+void ContentSensorManagerUtils::ObtainDeviceDataSyncMode()
+{
+    char isE2EDeviceParam[SYS_SETTINGS_DATA_SYNC_PARAM_LEN + 1] = {0};
+    int ret = GetParameter(SYS_SETTINGS_DATA_SYNC, UNDEFINED_VALUE, isE2EDeviceParam,
+        SYS_SETTINGS_DATA_SYNC_PARAM_LEN);
+    if (ret > 0 && strncmp(isE2EDeviceParam, SYNC_TYPE_E2E, strlen(SYNC_TYPE_E2E)) == 0) {
+        isDeviceE2ESync_.store(true);
+        HILOGI("Determining the e2e device succeeded.");
+        return;
+    }
+    HILOGW("Determining is not e2e device");
+}
+
+bool ContentSensorManagerUtils::IsDeviceE2ESync()
+{
+    return isDeviceE2ESync_.load();
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

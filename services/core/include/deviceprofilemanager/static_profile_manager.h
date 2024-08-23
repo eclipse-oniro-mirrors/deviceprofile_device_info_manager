@@ -17,6 +17,7 @@
 #define OHOS_DP_STATIC_PROFILE_MANAGER_H
 
 #include "characteristic_profile.h"
+#include "dm_device_info.h"
 #include "kv_adapter.h"
 #include "single_instance.h"
 
@@ -33,6 +34,7 @@ public:
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
         const std::string& characteristicKey, CharacteristicProfile& charProfile);
     int32_t GetAllCharacteristicProfile(std::vector<CharacteristicProfile>& staticCapabilityProfiles);
+    void E2ESyncStaticProfile(const DistributedHardware::DmDeviceInfo deviceInfo);
 
 private:
     int32_t GenerateStaticInfoProfile(const CharacteristicProfile& staticCapabilityProfile,

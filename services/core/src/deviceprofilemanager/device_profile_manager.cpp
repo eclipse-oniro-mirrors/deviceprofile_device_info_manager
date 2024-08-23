@@ -16,22 +16,24 @@
 #include "device_profile_manager.h"
 
 #include <algorithm>
-#include "datetime_ex.h"
 #include <dlfcn.h>
 #include <list>
 #include <thread>
 
+#include "datetime_ex.h"
 #include "dm_constants.h"
 
 #include "content_sensor_manager_utils.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
+#include "event_handler_factory.h"
 #include "i_sync_completed_callback.h"
 #include "kv_adapter.h"
 #include "permission_manager.h"
-#include "profile_utils.h"
 #include "profile_cache.h"
 #include "profile_control_utils.h"
+#include "profile_utils.h"
+#include "static_profile_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -641,6 +643,11 @@ void DeviceProfileManager::OnDeviceOnline(const DistributedHardware::DmDeviceInf
 {
     FixDataOnDeviceOnline(deviceInfo);
     NotifyNotOHBaseP2pOnline(deviceInfo);
+    if (ContentSensorManagerUtils::GetInstance().IsDeviceE2ESync()) {
+        HILOGI("need E2ESync, networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
+        E2ESyncDynamicProfile(deviceInfo);
+        StaticProfileManager::GetInstance().E2ESyncStaticProfile(deviceInfo);
+    }
 }
 
 void DeviceProfileManager::FixDataOnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo)
@@ -725,6 +732,40 @@ void DeviceProfileManager::NotifyNotOHBaseP2pOnline(const DistributedHardware::D
         dpSyncAdapter_->NotOHBaseDeviceOnline(remoteUdid, remoteNetworkId, true);
     };
     std::thread(task).detach();
+}
+
+void DeviceProfileManager::E2ESyncDynamicProfile(const DistributedHardware::DmDeviceInfo deviceInfo)
+{
+    HILOGD("call!");
+    auto task = [this, deviceInfo]() {
+        std::string remoteNetworkId = deviceInfo.networkId;
+        HILOGD("networkId:%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+        if (remoteNetworkId.empty()) {
+            HILOGE("networkId or extraData is empty!");
+            return;
+        }
+        if (!ProfileUtils::IsOHBasedDevice(deviceInfo.extraData)) {
+            HILOGI("device is not ohbase. remoteNetworkId=%{public}s",
+                ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+            return;
+        }
+        std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
+        if (deviceProfileStore_ == nullptr) {
+            HILOGE("deviceProfileStore is nullptr");
+            return;
+        }
+        int32_t syncResult = deviceProfileStore_->Sync({remoteNetworkId}, SyncMode::PUSH_PULL);
+        if (syncResult != DP_SUCCESS) {
+            HILOGE("E2ESyncDynamicProfile fail, res: %{public}d!", syncResult);
+            return;
+        }
+        HILOGI("E2ESyncDynamicProfile success!");
+    };
+    auto handler = EventHandlerFactory::GetInstance().GetEventHandler();
+    if (handler == nullptr || !handler->PostTask(task)) {
+        HILOGE("Post E2ESyncDynamicProfile task fail!");
+        return;
+    }
 }
 } // namespace DeviceProfile
 } // namespace OHOS
