@@ -284,11 +284,21 @@ int32_t ProfileControlUtils::GetCharacteristicProfile(std::shared_ptr<IKVAdapter
         HILOGI("GetCharProfile in cache!");
         return DP_SUCCESS;
     }
-    std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, characteristicKey);
     std::map<std::string, std::string> values;
-    if (kvStore->GetByPrefix(profileKeyPrefix, values) != DP_SUCCESS) {
-        HILOGE("Get data fail!");
-        return DP_GET_KV_DB_FAIL;
+    if (ProfileUtils::IsNeedAddOhSuffix(serviceName, true)) {
+        std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId,
+            ProfileUtils::AddOhSuffix(serviceName, true), characteristicKey);
+        if (kvStore->GetByPrefix(profileKeyPrefix, values) != DP_SUCCESS) {
+            HILOGE("Get data fail!");
+            return DP_GET_KV_DB_FAIL;
+        }
+    }
+    if (values.empty()) {
+        std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, characteristicKey);
+        if (kvStore->GetByPrefix(profileKeyPrefix, values) != DP_SUCCESS) {
+            HILOGE("Get data fail!");
+            return DP_GET_KV_DB_FAIL;
+        }
     }
     ProfileUtils::EntriesToCharProfile(values, charProfile);
     HILOGD("GetCharacteristicProfile in db : %{public}s!", charProfile.dump().c_str());
@@ -312,7 +322,7 @@ int32_t ProfileControlUtils::RefreshLocalSwitchProfile(const std::string& appId)
         return DP_GET_KV_DB_FAIL;
     }
     HILOGI("GetSwitch, newSwitch: %{public}d", newSwitch);
-    for (int32_t i = static_cast<int32_t>(SwitchFlag::SWITCH_FLAG_MIN) + static_cast<int32_t>(NUM_1U);
+    for (int32_t i = static_cast<int32_t>(SwitchFlag::SWITCH_FLAG_MIN) + NUM_1;
         i < static_cast<int32_t>(SwitchFlag::SWITCH_FLAG_MAX); ++i) {
         HILOGD("Find Switch, idx: %{public}d", i);
         std::string itemSwitchValue = std::to_string((newSwitch >> i) & NUM_1);
@@ -417,6 +427,14 @@ int32_t ProfileControlUtils::DeleteCharacteristicProfile(std::shared_ptr<IKVAdap
     }
     HILOGI("deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
         ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
+    if (ProfileUtils::IsNeedAddOhSuffix(serviceName, true)) {
+        std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId,
+            ProfileUtils::AddOhSuffix(serviceName, true), characteristicKey);
+        if (kvStore->DeleteByPrefix(profileKeyPrefix) != DP_SUCCESS) {
+            HILOGE("DeleteCharacteristicProfile fail!");
+            return DP_GET_KV_DB_FAIL;
+        }
+    }
     std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, characteristicKey);
     if (kvStore->DeleteByPrefix(profileKeyPrefix) != DP_SUCCESS) {
         HILOGE("DeleteCharacteristicProfile fail!");

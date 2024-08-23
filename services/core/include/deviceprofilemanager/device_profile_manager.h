@@ -80,6 +80,13 @@ private:
         sptr<IRemoteObject> syncCompletedCallback);
     void AddToPutTempCache(const std::map<std::string, std::string>& values);
     void FixDataOnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
+    int32_t DeleteBatchByKeys(const std::vector<std::string>& delKeys);
+    int32_t GetProfilesByOwner(const std::string& uuid, std::map<std::string, std::string>& entries);
+    int32_t GetProfilesByKeyPrefix(const std::string& udid, std::map<std::string, std::string>& entries);
+    // Clear residual data of non-OH devices on the cloud
+    void CleanDataOnCloudOfNonOH(const std::string& networkId);
+    // Clear residual data of OHBase devices on the cloud
+    void CleanDataOnCloudOfOHBase(const std::string& networkId);
     void NotifyNotOHBaseP2pOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
     void E2ESyncDynamicProfile(const DistributedHardware::DmDeviceInfo deviceInfo);
     bool isAdapterSoLoaded_ = false;

@@ -351,7 +351,11 @@ int32_t KVAdapter::GetDeviceEntries(const std::string& udid, std::map<std::strin
         }
     }
     for (const auto& item : entries) {
-        values[item.key.ToString()] = item.value.ToString();
+        auto key = item.key.ToString();
+        if (key.empty()) {
+            continue;
+        }
+        values[key] = item.value.ToString();
     }
     return DP_SUCCESS;
 }

@@ -15,6 +15,7 @@
 
 #include "listener/kv_data_change_listener.h"
 
+#include <algorithm>
 #include <cinttypes>
 
 #include "datetime_ex.h"
@@ -98,7 +99,7 @@ void KvDataChangeListener::OnChange(const DistributedKv::DataOrigin& origin, Key
     }
 }
 
-void KvDataChangeListener::OnSwitchChange(const DistributedKv::SwitchNotification &notification)
+void KvDataChangeListener::OnSwitchChange(const DistributedKv::SwitchNotification& notification)
 {
     HILOGI("Switch data change, deviceId: %{public}s", ProfileUtils::GetAnonyString(notification.deviceId).c_str());
     if (notification.deviceId.empty()) {
@@ -117,12 +118,53 @@ void KvDataChangeListener::OnSwitchChange(const DistributedKv::SwitchNotificatio
     HandleSwitchUpdateChange(udid, notification.data.value);
 }
 
+void KvDataChangeListener::FilterEntries(const std::vector<DistributedKv::Entry>& records,
+    std::map<std::string, std::string>& entriesMap, bool isDelete)
+{
+    std::map<std::string, std::string> ohSuffix2NonMaps;
+    std::map<std::string, std::string> non2OhSuffixMaps;
+    for (const auto& item : records) {
+        std::string dbKey = item.key.ToString();
+        std::vector<std::string> res;
+        if (ProfileUtils::SplitString(dbKey, SEPARATOR, res) != DP_SUCCESS || res.size() < NUM_3 ||
+            res.back() == CHARACTERISTIC_KEY) {
+            continue;
+        }
+        if (res.front() != DEV_PREFIX && res.front() != SVR_PREFIX && res.front() != CHAR_PREFIX) {
+            continue;
+        }
+        if (ProfileUtils::EndsWith(res[NUM_2], OH_PROFILE_SUFFIX)) {
+            res[NUM_2] = ProfileUtils::RemoveOhSuffix(res[NUM_2]);
+            ohSuffix2NonMaps[dbKey] = ProfileUtils::JoinString(res, SEPARATOR);
+        }
+        if (ProfileUtils::IsNeedAddOhSuffix(res[NUM_2], res.front() == SVR_PREFIX)) {
+            res[NUM_2] = ProfileUtils::AddOhSuffix(res[NUM_2], res.front() == SVR_PREFIX);
+            non2OhSuffixMaps[dbKey] = ProfileUtils::JoinString(res, SEPARATOR);
+        }
+        entriesMap[dbKey] = item.value.ToString();
+    }
+    for (const auto& [key, value] : ohSuffix2NonMaps) {
+        entriesMap.erase(value);
+        non2OhSuffixMaps.erase(key);
+    }
+    if (isDelete) { return; }
+    if (non2OhSuffixMaps.empty()) { return; }
+    std::vector<std::string> keys;
+    std::transform(non2OhSuffixMaps.begin(), non2OhSuffixMaps.end(),
+        std::back_inserter(keys), [](const auto& pair) { return pair.second; });
+    std::vector<DistributedKv::Entry> entries = DeviceProfileManager::GetInstance().GetEntriesByKeys(keys);
+    if (entries.empty()) { return; }
+    for (const auto& item : entries) {
+        entriesMap.erase(non2OhSuffixMaps[item.key.ToString()]);
+    }
+}
+
 void KvDataChangeListener::HandleAddChange(const std::vector<DistributedKv::Entry>& insertRecords)
 {
     HILOGD("Handle kv data add change!");
-    for (const auto& item : insertRecords) {
-        std::string dbKey = item.key.ToString();
-        std::string dbValue = item.value.ToString();
+    std::map<std::string, std::string> entries;
+    FilterEntries(insertRecords, entries, false);
+    for (const auto& [dbKey, dbValue] : entries) {
         ProfileType profileType = ProfileUtils::GetProfileType(dbKey);
         SubscribeProfileManager::GetInstance().NotifyProfileChange(profileType, ChangeType::ADD, dbKey, dbValue);
     }
@@ -131,9 +173,9 @@ void KvDataChangeListener::HandleAddChange(const std::vector<DistributedKv::Entr
 void KvDataChangeListener::HandleUpdateChange(const std::vector<DistributedKv::Entry>& updateRecords)
 {
     HILOGD("Handle kv data update change!");
-    for (const auto& item : updateRecords) {
-        std::string dbKey = item.key.ToString();
-        std::string dbValue = item.value.ToString();
+    std::map<std::string, std::string> entries;
+    FilterEntries(updateRecords, entries, false);
+    for (const auto& [dbKey, dbValue] : entries) {
         ProfileType profileType = ProfileUtils::GetProfileType(dbKey);
         SubscribeProfileManager::GetInstance().NotifyProfileChange(profileType, ChangeType::UPDATE, dbKey, dbValue);
     }
@@ -142,9 +184,9 @@ void KvDataChangeListener::HandleUpdateChange(const std::vector<DistributedKv::E
 void KvDataChangeListener::HandleDeleteChange(const std::vector<DistributedKv::Entry>& deleteRecords)
 {
     HILOGD("Handle kv data delete change!");
-    for (const auto& item : deleteRecords) {
-        std::string dbKey = item.key.ToString();
-        std::string dbValue = item.value.ToString();
+    std::map<std::string, std::string> entries;
+    FilterEntries(deleteRecords, entries, true);
+    for (const auto& [dbKey, dbValue] : entries) {
         ProfileType profileType = ProfileUtils::GetProfileType(dbKey);
         SubscribeProfileManager::GetInstance().NotifyProfileChange(profileType, ChangeType::DELETE, dbKey, dbValue);
     }
@@ -155,8 +197,7 @@ void KvDataChangeListener::HandleSwitchUpdateChange(const std::string udid, uint
     HILOGI("udid: %{public}s, switch: %{public}u", ProfileUtils::GetAnonyString(udid).c_str(), switchValue);
     std::string serviceName;
 
-    // std::lock_guard<std::mutex> lock(dataChangeListenerMutex_);
-    for (int32_t i = (int32_t)SwitchFlag::SWITCH_FLAG_MIN + (int32_t)NUM_1U;
+    for (int32_t i = (int32_t)SwitchFlag::SWITCH_FLAG_MIN + NUM_1;
         i < (int32_t)SwitchFlag::SWITCH_FLAG_MAX; ++i) {
         std::string itemSwitchValue = std::to_string((switchValue >> i) & NUM_1);
         int32_t res = ProfileCache::GetInstance().GetServiceNameByPos(i, SWITCH_SERVICE_MAP, serviceName);
