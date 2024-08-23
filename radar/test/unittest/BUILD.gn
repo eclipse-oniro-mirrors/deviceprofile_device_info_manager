@@ -26,8 +26,8 @@ device_profile_deps = [
 ]
 
 device_profile_external_deps = [
-  "hisysevent:libhisysevent",
   "googletest:gtest_main",
+  "hisysevent:libhisysevent",
 ]
 
 ohos_unittest("dp_radar_helper_test_new") {
