@@ -29,10 +29,7 @@ ohos_unittest("ProfileChangeListenerStubTest") {
 
   sources = [ "profile_change_listener_stub_test.cpp" ]
 
-  deps = [
-    "${device_profile_common}:distributed_device_profile_common",
-    "//third_party/googletest:gtest_main",
-  ]
+  deps = [ "${device_profile_common}:distributed_device_profile_common" ]
 
   defines = [
     "HI_LOG_ENABLE",
@@ -47,6 +44,7 @@ ohos_unittest("ProfileChangeListenerStubTest") {
     "device_manager:devicemanagersdk",
     "dmsfwk:common_sdk",
     "eventhandler:libeventhandler",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",

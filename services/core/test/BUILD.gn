@@ -34,7 +34,6 @@ device_profile_deps = [
   "${device_profile_common}:distributed_device_profile_common",
   "${device_profile_innerkits}:distributed_device_profile_sdk",
   "${device_profile_service}:distributed_device_profile_svr",
-  "//third_party/googletest:gtest_main",
 ]
 
 device_profile_external_deps = [
@@ -48,6 +47,7 @@ device_profile_external_deps = [
   "device_manager:devicemanagersdk",
   "dmsfwk:common_sdk",
   "eventhandler:libeventhandler",
+  "googletest:gtest_main",
   "hilog:libhilog",
   "hisysevent:libhisysevent",
   "hitrace:hitrace_meter",
