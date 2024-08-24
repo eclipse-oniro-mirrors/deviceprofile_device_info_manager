@@ -183,12 +183,12 @@ ProfileType ProfileUtils::GetProfileType(const std::string& key)
     return profileType;
 }
 
-bool ProfileUtils::StartsWith(const std::string& str, const std::string prefix)
+bool ProfileUtils::StartsWith(const std::string& str, const std::string& prefix)
 {
     return (str.find(prefix, 0) == 0);
 }
 
-bool ProfileUtils::EndsWith(const std::string& str, const std::string suffix)
+bool ProfileUtils::EndsWith(const std::string& str, const std::string& suffix)
 {
     if (str.length() < suffix.length()) {
         return false;

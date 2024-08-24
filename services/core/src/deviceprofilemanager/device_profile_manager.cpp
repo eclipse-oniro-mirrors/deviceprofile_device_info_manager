@@ -659,6 +659,17 @@ void DeviceProfileManager::FixDataOnDeviceOnline(const DistributedHardware::DmDe
         return;
     }
     auto task = [this, remoteNetworkId, extraData = deviceInfo.extraData]() {
+        std::string localUdid = ProfileCache::GetInstance().GetLocalUdid();
+        if (localUdid.empty()) {
+            HILOGE("Get local udid fail.");
+            return;
+        }
+        std::map<std::string, std::string> localDataByOwner;
+        if (GetProfilesByOwner(localUdid, localDataByOwner) != DP_SUCCESS) {
+            HILOGE("GetProfilesByOwner fail, localUdid=%{public}s", ProfileUtils::GetAnonyString(localUdid).c_str());
+            return;
+        }
+        FixLocalData(localUdid, localDataByOwner);
         std::string remoteUdid;
         if (ProfileCache::GetInstance().GetUdidByNetWorkId(remoteNetworkId, remoteUdid) != DP_SUCCESS ||
             remoteUdid.empty()) {
@@ -667,10 +678,10 @@ void DeviceProfileManager::FixDataOnDeviceOnline(const DistributedHardware::DmDe
             return;
         }
         if (!ProfileUtils::IsOHBasedDevice(extraData)) {
-            CleanDataOnCloudOfNonOH(remoteUdid);
+            FixRemoteDataWhenPeerIsNonOH(remoteUdid);
             return;
         }
-        CleanDataOnCloudOfOHBase(remoteUdid);
+        FixRemoteDataWhenPeerIsOHBase(remoteUdid, localDataByOwner);
     };
     auto handler = EventHandlerFactory::GetInstance().GetEventHandler();
     if (handler == nullptr || !handler->PostTask(task)) {
@@ -818,29 +829,55 @@ void DeviceProfileManager::E2ESyncDynamicProfile(const DistributedHardware::DmDe
     }
 }
 
-void DeviceProfileManager::CleanDataOnCloudOfNonOH(const std::string& remoteUdid)
+// Clean data that does not belong to the local.
+void DeviceProfileManager::FixLocalData(const std::string& localUdid,
+    const std::map<std::string, std::string>& localDataByOwner)
 {
-    if (remoteUdid.empty()) {
-        HILOGE("remoteUdid is empty!");
+    if (localDataByOwner.empty()) { return; }
+    std::map<std::string, std::string> localDataByKeyPrefix;
+    if (GetProfilesByKeyPrefix(localUdid, localDataByKeyPrefix) != DP_SUCCESS) {
+        HILOGE("GetProfilesByKeyPrefix fail, localUdid=%{public}s", ProfileUtils::GetAnonyString(localUdid).c_str());
         return;
     }
-    std::map<std::string, std::string> valuesByKeyPrefix;
-    if (GetProfilesByKeyPrefix(remoteUdid, valuesByKeyPrefix) != DP_SUCCESS) {
+    if (localDataByKeyPrefix.empty()) { return; }
+    std::vector<std::string> delKeys;
+    // cloud has local data, but the data is not written by local
+    for (const auto& [key, _] : localDataByKeyPrefix) {
+        if (localDataByOwner.find(key) == localDataByOwner.end()) {
+            HILOGI("delKey: %{public}s", ProfileUtils::GetDbKeyAnonyString(key).c_str());
+            delKeys.emplace_back(key);
+        }
+    }
+    if (delKeys.empty()) { return; }
+    if (DeleteBatchByKeys(delKeys) != DP_SUCCESS) {
+        HILOGE("DeleteBatchByKeys fail, localUdid=%{public}s", ProfileUtils::GetAnonyString(localUdid).c_str());
+        return;
+    }
+}
+
+// Clean ohbase data when the peer is non-ohbase
+void DeviceProfileManager::FixRemoteDataWhenPeerIsNonOH(const std::string& remoteUdid)
+{
+    std::map<std::string, std::string> remoteDataByKeyPrefix;
+    if (GetProfilesByKeyPrefix(remoteUdid, remoteDataByKeyPrefix) != DP_SUCCESS) {
         HILOGE("GetProfilesByKeyPrefix fail, remoteUdid=%{public}s", ProfileUtils::GetAnonyString(remoteUdid).c_str());
         return;
     }
     std::vector<std::string> delKeys;
-    for (const auto& [key, _] : valuesByKeyPrefix) {
+    for (const auto& [key, _] : remoteDataByKeyPrefix) {
         std::vector<std::string> res;
         if (ProfileUtils::SplitString(key, SEPARATOR, res) != DP_SUCCESS || res.size() < NUM_3) {
+            HILOGW("SplitString fail, key: %{public}s", ProfileUtils::GetDbKeyAnonyString(key).c_str());
             continue;
         }
         if (ProfileUtils::EndsWith(res[NUM_2], OH_PROFILE_SUFFIX)) {
+            HILOGI("delKey: %{public}s", ProfileUtils::GetDbKeyAnonyString(key).c_str());
             delKeys.emplace_back(key);
             continue;
         }
         if ((res[0] == SVR_PREFIX || res[0] == CHAR_PREFIX) &&
             NON_OHBASE_NEED_CLEAR_SVR_NAMES.find(res[NUM_2]) != NON_OHBASE_NEED_CLEAR_SVR_NAMES.end()) {
+            HILOGI("delKey: %{public}s", ProfileUtils::GetDbKeyAnonyString(key).c_str());
             delKeys.emplace_back(key);
             continue;
         }
@@ -852,36 +889,15 @@ void DeviceProfileManager::CleanDataOnCloudOfNonOH(const std::string& remoteUdid
     }
 }
 
-void DeviceProfileManager::CleanDataOnCloudOfOHBase(const std::string& remoteUdid)
+// Clean non-ohbase data when the peer is ohbase
+void DeviceProfileManager::FixRemoteDataWhenPeerIsOHBase(const std::string& remoteUdid,
+    const std::map<std::string, std::string>& localDataByOwner)
 {
-    if (remoteUdid.empty()) {
-        HILOGE("remoteUdid is empty!");
-        return;
-    }
-    std::string localUdid = ProfileCache::GetInstance().GetLocalUdid();
-    std::string localUuid = ProfileCache::GetInstance().GetLocalUuid();
-    if (localUdid.empty() || localUuid.empty()) {
-        HILOGE("Get local deviceId fail.");
-        return;
-    }
     std::vector<std::string> delKeys;
     // local has remote data, and the data is written by local
-    std::map<std::string, std::string> valuesByOwner;
-    if (GetProfilesByOwner(localUuid, valuesByOwner) != DP_SUCCESS) {
-        HILOGE("GetProfilesByOwner fail, localUuid=%{public}s", ProfileUtils::GetAnonyString(localUuid).c_str());
-    }
-    for (const auto& [key, _] : valuesByOwner) {
+    for (const auto& [key, _] : localDataByOwner) {
         if (key.find(remoteUdid) != std::string::npos) {
-            delKeys.emplace_back(key);
-        }
-    }
-    // cloud has local data, but the data is not written by local
-    std::map<std::string, std::string> valuesByKeyPrefix;
-    if (GetProfilesByKeyPrefix(localUdid, valuesByKeyPrefix) != DP_SUCCESS) {
-        HILOGE("GetProfilesByKeyPrefix fail, localUdid=%{public}s", ProfileUtils::GetAnonyString(localUdid).c_str());
-    }
-    for (const auto& [key, _] : valuesByKeyPrefix) {
-        if (valuesByOwner.find(key) == valuesByOwner.end()) {
+            HILOGI("delKey: %{public}s", ProfileUtils::GetDbKeyAnonyString(key).c_str());
             delKeys.emplace_back(key);
         }
     }

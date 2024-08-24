@@ -126,36 +126,46 @@ void KvDataChangeListener::FilterEntries(const std::vector<DistributedKv::Entry>
     for (const auto& item : records) {
         std::string dbKey = item.key.ToString();
         std::vector<std::string> res;
-        if (ProfileUtils::SplitString(dbKey, SEPARATOR, res) != DP_SUCCESS || res.size() < NUM_3 ||
-            res.back() == CHARACTERISTIC_KEY) {
+        if (ProfileUtils::SplitString(dbKey, SEPARATOR, res) != DP_SUCCESS || res.size() < NUM_3) {
+            HILOGW("invalid dbkey(%{public}s)", ProfileUtils::GetDbKeyAnonyString(dbKey).c_str());
             continue;
         }
-        if (res.front() != DEV_PREFIX && res.front() != SVR_PREFIX && res.front() != CHAR_PREFIX) {
+        if (res[0] != DEV_PREFIX && res[0] != SVR_PREFIX && res[0] != CHAR_PREFIX) {
+            HILOGW("%{public}s is invalid dbKey", ProfileUtils::GetDbKeyAnonyString(dbKey).c_str());
             continue;
         }
+        if (res[0] == CHAR_PREFIX && res.back() == CHARACTERISTIC_KEY) {
+            HILOGW("%{public}s is charProfileKey", ProfileUtils::GetDbKeyAnonyString(dbKey).c_str());
+            continue;
+        }
+        entriesMap[dbKey] = item.value.ToString();
         if (ProfileUtils::EndsWith(res[NUM_2], OH_PROFILE_SUFFIX)) {
             res[NUM_2] = ProfileUtils::RemoveOhSuffix(res[NUM_2]);
             ohSuffix2NonMaps[dbKey] = ProfileUtils::JoinString(res, SEPARATOR);
+            continue;
         }
         if (ProfileUtils::IsNeedAddOhSuffix(res[NUM_2], res.front() == SVR_PREFIX)) {
             res[NUM_2] = ProfileUtils::AddOhSuffix(res[NUM_2], res.front() == SVR_PREFIX);
             non2OhSuffixMaps[dbKey] = ProfileUtils::JoinString(res, SEPARATOR);
+            continue;
         }
-        entriesMap[dbKey] = item.value.ToString();
     }
-    for (const auto& [key, value] : ohSuffix2NonMaps) {
-        entriesMap.erase(value);
-        non2OhSuffixMaps.erase(key);
+    for (const auto& [ohSuffixKey, nonOhSuffixKey] : ohSuffix2NonMaps) {
+        entriesMap.erase(nonOhSuffixKey);
+        non2OhSuffixMaps.erase(nonOhSuffixKey);
     }
+    ohSuffix2NonMaps.clear();
     if (isDelete) { return; }
     if (non2OhSuffixMaps.empty()) { return; }
-    std::vector<std::string> keys;
-    std::transform(non2OhSuffixMaps.begin(), non2OhSuffixMaps.end(),
-        std::back_inserter(keys), [](const auto& pair) { return pair.second; });
-    std::vector<DistributedKv::Entry> entries = DeviceProfileManager::GetInstance().GetEntriesByKeys(keys);
+    std::vector<std::string> ohSuffixKeys;
+    for (const auto& [nonOhSuffixKey, ohSuffixKey] : non2OhSuffixMaps) {
+        ohSuffix2NonMaps[ohSuffixKey] = nonOhSuffixKey;
+        ohSuffixKeys.emplace_back(ohSuffixKey);
+    }
+    std::vector<DistributedKv::Entry> entries = DeviceProfileManager::GetInstance().GetEntriesByKeys(ohSuffixKeys);
     if (entries.empty()) { return; }
     for (const auto& item : entries) {
-        entriesMap.erase(non2OhSuffixMaps[item.key.ToString()]);
+        entriesMap.erase(ohSuffix2NonMaps[item.key.ToString()]);
     }
 }
 

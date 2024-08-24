@@ -44,8 +44,8 @@ public:
     static bool IsOHBasedDevice(const std::string& extraData);
     static bool IsP2p(const int32_t authForm);
     static ProfileType GetProfileType(const std::string& key);
-    static bool StartsWith(const std::string& str, const std::string prefix);
-    static bool EndsWith(const std::string& str, const std::string suffix);
+    static bool StartsWith(const std::string& str, const std::string& prefix);
+    static bool EndsWith(const std::string& str, const std::string& suffix);
     static bool IsKeyValid(const std::string& key);
     static bool IsLocalUdid(const std::string& udid);
     // This mothed can be invoked only when put or delete profile.
