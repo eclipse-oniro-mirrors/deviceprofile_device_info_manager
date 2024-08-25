@@ -287,7 +287,7 @@ int32_t ProfileControlUtils::GetCharacteristicProfile(std::shared_ptr<IKVAdapter
     std::map<std::string, std::string> values;
     if (ProfileUtils::IsNeedAddOhSuffix(serviceName, true)) {
         std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId,
-            ProfileUtils::AddOhSuffix(serviceName, true), characteristicKey);
+            ProfileUtils::CheckAndAddOhSuffix(serviceName, true), characteristicKey);
         if (kvStore->GetByPrefix(profileKeyPrefix, values) != DP_SUCCESS) {
             HILOGE("Get data fail!");
             return DP_GET_KV_DB_FAIL;
@@ -429,7 +429,7 @@ int32_t ProfileControlUtils::DeleteCharacteristicProfile(std::shared_ptr<IKVAdap
         ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
     if (ProfileUtils::IsNeedAddOhSuffix(serviceName, true)) {
         std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId,
-            ProfileUtils::AddOhSuffix(serviceName, true), characteristicKey);
+            ProfileUtils::CheckAndAddOhSuffix(serviceName, true), characteristicKey);
         if (kvStore->DeleteByPrefix(profileKeyPrefix) != DP_SUCCESS) {
             HILOGE("DeleteCharacteristicProfile fail!");
             return DP_GET_KV_DB_FAIL;

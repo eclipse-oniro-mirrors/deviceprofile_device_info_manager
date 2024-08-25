@@ -466,7 +466,7 @@ std::string SubscribeProfileManager::DBKeyToSubcribeKey(const std::string& dbkey
         return subscribeKey;
     }
     if (res.size() > NUM_2) {
-        res[NUM_2] = ProfileUtils::RemoveOhSuffix(res[NUM_2]);
+        res[NUM_2] = ProfileUtils::CheckAndRemoveOhSuffix(res[NUM_2]);
         subscribeKey = ProfileUtils::JoinString(res, SEPARATOR);
     }
     return subscribeKey;

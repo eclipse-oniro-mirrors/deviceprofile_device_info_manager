@@ -79,8 +79,8 @@ public:
     static std::string GetServiceNameByDBKey(const std::string& dbKey);
     static std::string GetNonOhSuffixServiceNameByDBKey(const std::string& dbKey);
     static bool IsNeedAddOhSuffix(const std::string& profileName, bool isSvr);
-    static std::string AddOhSuffix(const std::string& profileName, bool isSvr);
-    static std::string RemoveOhSuffix(const std::string& profileName);
+    static std::string CheckAndAddOhSuffix(const std::string& profileName, bool isSvr);
+    static std::string CheckAndRemoveOhSuffix(const std::string& profileName);
     static std::string GetCharKeyByDBKey(const std::string& dbKey);
     static std::string GetDbKeyByProfile(const CharacteristicProfile& profile);
     static int32_t SplitString(const std::string& str, const std::string& splits, std::vector<std::string>& res);

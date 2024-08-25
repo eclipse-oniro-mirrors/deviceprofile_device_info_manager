@@ -241,7 +241,7 @@ std::string ProfileUtils::GetNonOhSuffixServiceNameByDBKey(const std::string& db
     if (serviceName.empty()) {
         return "";
     }
-    return RemoveOhSuffix(serviceName);
+    return CheckAndRemoveOhSuffix(serviceName);
 }
 
 bool ProfileUtils::IsNeedAddOhSuffix(const std::string& profileName, bool isSvr)
@@ -258,7 +258,7 @@ bool ProfileUtils::IsNeedAddOhSuffix(const std::string& profileName, bool isSvr)
     return false;
 }
 
-std::string ProfileUtils::AddOhSuffix(const std::string& profileName, bool isSvr)
+std::string ProfileUtils::CheckAndAddOhSuffix(const std::string& profileName, bool isSvr)
 {
     std::string str = profileName;
     if (IsNeedAddOhSuffix(str, isSvr)) {
@@ -267,7 +267,7 @@ std::string ProfileUtils::AddOhSuffix(const std::string& profileName, bool isSvr
     return str;
 }
 
-std::string ProfileUtils::RemoveOhSuffix(const std::string& profileName)
+std::string ProfileUtils::CheckAndRemoveOhSuffix(const std::string& profileName)
 {
     std::string str = profileName;
     if (EndsWith(str, OH_PROFILE_SUFFIX)) {
@@ -446,7 +446,7 @@ int32_t ProfileUtils::DeviceProfileToEntries(const DeviceProfile& profile, std::
 
 int32_t ProfileUtils::ServiceProfileToEntries(const ServiceProfile& profile, std::map<std::string, std::string>& values)
 {
-    std::string serviceName = AddOhSuffix(profile.GetServiceName(), true);
+    std::string serviceName = CheckAndAddOhSuffix(profile.GetServiceName(), true);
     std::string serviceProfileKey = GenerateServiceProfileKey(profile.GetDeviceId(), serviceName);
     values[GenerateDBKey(serviceProfileKey, SERVICE_NAME)] = serviceName;
     values[GenerateDBKey(serviceProfileKey, SERVICE_TYPE)] = profile.GetServiceType();
@@ -456,7 +456,7 @@ int32_t ProfileUtils::ServiceProfileToEntries(const ServiceProfile& profile, std
 int32_t ProfileUtils::CharacteristicProfileToEntries(const CharacteristicProfile& profile,
                                                      std::map<std::string, std::string>& values)
 {
-    std::string serviceName = AddOhSuffix(profile.GetServiceName(), true);
+    std::string serviceName = CheckAndAddOhSuffix(profile.GetServiceName(), true);
     std::string charProfileKey = GenerateCharProfileKey(profile.GetDeviceId(), serviceName,
         profile.GetCharacteristicKey());
     values[GenerateDBKey(charProfileKey, CHARACTERISTIC_KEY)] = profile.GetCharacteristicKey();
@@ -629,7 +629,7 @@ int32_t ProfileUtils::EntriesToServiceProfile(std::map<std::string, std::string>
     auto propertiesMap = GetProfilePropertiesMap(values);
     if (propertiesMap.count(SERVICE_NAME) != 0 && 0 < propertiesMap[SERVICE_NAME].length() &&
         propertiesMap[SERVICE_NAME].length() < MAX_STRING_LEN) {
-        profile.SetServiceName(RemoveOhSuffix(propertiesMap[SERVICE_NAME]));
+        profile.SetServiceName(CheckAndRemoveOhSuffix(propertiesMap[SERVICE_NAME]));
     }
     if (propertiesMap.count(SERVICE_TYPE) != 0 && 0 < propertiesMap[SERVICE_TYPE].length() &&
         propertiesMap[SERVICE_TYPE].length() < MAX_STRING_LEN) {
@@ -778,7 +778,7 @@ std::string ProfileUtils::GetDbKeyByProfile(const CharacteristicProfile& profile
         HILOGE("GetDbKeyByProfile fail");
         return "";
     }
-    std::string serviceName = AddOhSuffix(profile.GetServiceName(), true);
+    std::string serviceName = CheckAndAddOhSuffix(profile.GetServiceName(), true);
     std::string dbKey = CHAR_PREFIX + SEPARATOR + profile.GetDeviceId() + SEPARATOR + serviceName +
         SEPARATOR + profile.GetCharacteristicKey() + SEPARATOR + CHARACTERISTIC_VALUE;
     return dbKey;

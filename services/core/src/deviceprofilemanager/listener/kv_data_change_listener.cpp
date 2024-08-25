@@ -140,12 +140,12 @@ void KvDataChangeListener::FilterEntries(const std::vector<DistributedKv::Entry>
         }
         entriesMap[dbKey] = item.value.ToString();
         if (ProfileUtils::EndsWith(res[NUM_2], OH_PROFILE_SUFFIX)) {
-            res[NUM_2] = ProfileUtils::RemoveOhSuffix(res[NUM_2]);
+            res[NUM_2] = ProfileUtils::CheckAndRemoveOhSuffix(res[NUM_2]);
             ohSuffix2NonMaps[dbKey] = ProfileUtils::JoinString(res, SEPARATOR);
             continue;
         }
         if (ProfileUtils::IsNeedAddOhSuffix(res[NUM_2], res.front() == SVR_PREFIX)) {
-            res[NUM_2] = ProfileUtils::AddOhSuffix(res[NUM_2], res.front() == SVR_PREFIX);
+            res[NUM_2] = ProfileUtils::CheckAndAddOhSuffix(res[NUM_2], res.front() == SVR_PREFIX);
             non2OhSuffixMaps[dbKey] = ProfileUtils::JoinString(res, SEPARATOR);
             continue;
         }
