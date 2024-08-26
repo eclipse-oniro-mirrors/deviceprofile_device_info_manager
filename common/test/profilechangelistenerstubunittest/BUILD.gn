@@ -44,7 +44,6 @@ ohos_unittest("ProfileChangeListenerStubTest") {
     "device_manager:devicemanagersdk",
     "dmsfwk:common_sdk",
     "eventhandler:libeventhandler",
-    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
