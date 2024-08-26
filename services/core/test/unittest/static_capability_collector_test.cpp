@@ -68,6 +68,7 @@ HWTEST_F(StaticCapabilityCollectorTest, Init_001, TestSize.Level1)
     EXPECT_EQ(ret, DP_SUCCESS);
 }
 
+#ifdef DEVICE_PROFILE_SWITCH_STATIC_ENABLE
 /*
  * @tc.name: CollectStaticCapability_001
  * @tc.desc: Normal testCase of StaticCapabilityCollectorTest
@@ -79,6 +80,7 @@ HWTEST_F(StaticCapabilityCollectorTest, CollectStaticCapability_001, TestSize.Le
         StaticCapabilityCollector::GetInstance().CollectStaticCapability();
     EXPECT_EQ(ret, DP_SUCCESS);
 }
+#endif // DEVICE_PROFILE_SWITCH_STATIC_ENABLE
 
 /*
  * @tc.name: UnInit_001

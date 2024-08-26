@@ -55,6 +55,7 @@ void SwitchProfileManagerTest::TearDown()
 {
 }
 
+#ifdef DEVICE_PROFILE_SWITCH_STATIC_ENABLE
 /*
  * @tc.name: Init_001
  * @tc.desc: Init
@@ -92,6 +93,7 @@ HWTEST_F(SwitchProfileManagerTest, ReInit_001, TestSize.Level1)
     int32_t errCode = SwitchProfileManager::GetInstance().ReInit();
     EXPECT_EQ(errCode, DP_SUCCESS);
 }
+#endif // DEVICE_PROFILE_SWITCH_STATIC_ENABLE
 
 /*
  * @tc.name: PutCharacteristicProfile_001
