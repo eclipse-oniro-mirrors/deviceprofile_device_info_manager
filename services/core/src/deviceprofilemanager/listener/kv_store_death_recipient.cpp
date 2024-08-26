@@ -57,12 +57,12 @@ KvDeathRecipient::~KvDeathRecipient()
 void KvDeathRecipient::OnRemoteDied()
 {
     HILOGI("OnRemoteDied, recover db begin");
-    auto reInitTask = [this]() {
-        HILOGI("ReInit, storeId:%{public}s", storeId_.c_str());
-        if (storeId_ == DYNAMIC_STORE_ID) {
+    auto reInitTask = [storeId = storeId_]() {
+        HILOGI("ReInit, storeId:%{public}s", storeId.c_str());
+        if (storeId == DYNAMIC_STORE_ID) {
             DeviceProfileManager::GetInstance().ReInit();
         }
-        if (storeId_ == STATIC_STORE_ID) {
+        if (storeId == STATIC_STORE_ID) {
             StaticProfileManager::GetInstance().ReInit();
         }
     };
