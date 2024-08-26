@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+device_info_manager_switch_static_disable = true
 old_device_profile_path = "//foundation/deviceprofile/device_info_manager/old"
 old_device_profile_service =
     "//foundation/deviceprofile/device_info_manager/old/services"
