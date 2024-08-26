@@ -42,7 +42,6 @@
           "relational_store"
         ],
         "third_party": [
-          "googletest",
           "json"
         ]
       },
