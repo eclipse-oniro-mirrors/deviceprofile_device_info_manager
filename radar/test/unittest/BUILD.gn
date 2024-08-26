@@ -25,10 +25,7 @@ device_profile_deps = [
   "${device_profile_service}:distributed_device_profile_svr",
 ]
 
-device_profile_external_deps = [
-  "googletest:gtest_main",
-  "hisysevent:libhisysevent",
-]
+device_profile_external_deps = [ "hisysevent:libhisysevent" ]
 
 ohos_unittest("dp_radar_helper_test_new") {
   module_out_path = module_output_path
