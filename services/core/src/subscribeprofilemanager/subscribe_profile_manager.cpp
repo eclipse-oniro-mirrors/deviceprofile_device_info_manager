@@ -211,7 +211,7 @@ int32_t SubscribeProfileManager::NotifyDeviceProfileAdd(const std::string& dbKey
     DeviceProfile deviceProfile;
     deviceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
     ProfileUtils::EntriesToDeviceProfile(values, deviceProfile);
-    auto subscriberInfos = GetSubscribeInfos(dbKey);
+    auto subscriberInfos = GetSubscribeInfos(DBKeyToSubcribeKey(dbKey));
     if (subscriberInfos.empty()) {
         return DP_SUCCESS;
     }
@@ -238,7 +238,7 @@ int32_t SubscribeProfileManager::NotifyDeviceProfileUpdate(const std::string& db
     ProfileUtils::EntriesToDeviceProfile(values, newDeviceProfile);
     DeviceProfile oldDeviceProfile;
     ProfileCache::GetInstance().GetDeviceProfile(ProfileUtils::GetDeviceIdByDBKey(dbKey), oldDeviceProfile);
-    auto subscriberInfos = GetSubscribeInfos(dbKey);
+    auto subscriberInfos = GetSubscribeInfos(DBKeyToSubcribeKey(dbKey));
     if (subscriberInfos.empty()) {
         return DP_SUCCESS;
     }
@@ -263,7 +263,7 @@ int32_t SubscribeProfileManager::NotifyDeviceProfileDelete(const std::string& db
     DeviceProfile deviceProfile;
     deviceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
     ProfileUtils::EntriesToDeviceProfile(values, deviceProfile);
-    auto subscriberInfos = GetSubscribeInfos(dbKey);
+    auto subscriberInfos = GetSubscribeInfos(DBKeyToSubcribeKey(dbKey));
     if (subscriberInfos.empty()) {
         return DP_SUCCESS;
     }
@@ -287,9 +287,9 @@ int32_t SubscribeProfileManager::NotifyServiceProfileAdd(const std::string& dbKe
     values[dbKey] = dbValue;
     ServiceProfile serviceProfile;
     serviceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
-    serviceProfile.SetServiceName(ProfileUtils::GetServiceNameByDBKey(dbKey));
+    serviceProfile.SetServiceName(ProfileUtils::GetNonOhSuffixServiceNameByDBKey(dbKey));
     ProfileUtils::EntriesToServiceProfile(values, serviceProfile);
-    auto subscriberInfos = GetSubscribeInfos(dbKey);
+    auto subscriberInfos = GetSubscribeInfos(DBKeyToSubcribeKey(dbKey));
     if (subscriberInfos.empty()) {
         return DP_SUCCESS;
     }
@@ -313,16 +313,16 @@ int32_t SubscribeProfileManager::NotifyServiceProfileUpdate(const std::string& d
     values[dbKey] = dbValue;
     ServiceProfile newServiceProfile;
     newServiceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
-    newServiceProfile.SetServiceName(ProfileUtils::GetServiceNameByDBKey(dbKey));
+    newServiceProfile.SetServiceName(ProfileUtils::GetNonOhSuffixServiceNameByDBKey(dbKey));
     ProfileUtils::EntriesToServiceProfile(values, newServiceProfile);
-    auto subscriberInfos = GetSubscribeInfos(dbKey);
+    auto subscriberInfos = GetSubscribeInfos(DBKeyToSubcribeKey(dbKey));
     if (subscriberInfos.empty()) {
         return DP_SUCCESS;
     }
     HILOGI("%{public}s!", newServiceProfile.dump().c_str());
     ServiceProfile oldServiceProfile;
     ProfileCache::GetInstance().GetServiceProfile(ProfileUtils::GetDeviceIdByDBKey(dbKey),
-        ProfileUtils::GetServiceNameByDBKey(dbKey), oldServiceProfile);
+        ProfileUtils::GetNonOhSuffixServiceNameByDBKey(dbKey), oldServiceProfile);
     for (const auto& subscriberInfo : subscriberInfos) {
         sptr<IProfileChangeListener> listenerProxy = iface_cast<IProfileChangeListener>(subscriberInfo.GetListener());
         if (listenerProxy == nullptr) {
@@ -342,9 +342,9 @@ int32_t SubscribeProfileManager::NotifyServiceProfileDelete(const std::string& d
     values[dbKey] = dbValue;
     ServiceProfile serviceProfile;
     serviceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
-    serviceProfile.SetServiceName(ProfileUtils::GetServiceNameByDBKey(dbKey));
+    serviceProfile.SetServiceName(ProfileUtils::GetNonOhSuffixServiceNameByDBKey(dbKey));
     ProfileUtils::EntriesToServiceProfile(values, serviceProfile);
-    auto subscriberInfos = GetSubscribeInfos(dbKey);
+    auto subscriberInfos = GetSubscribeInfos(DBKeyToSubcribeKey(dbKey));
     if (subscriberInfos.empty()) {
         return DP_SUCCESS;
     }
@@ -368,10 +368,10 @@ int32_t SubscribeProfileManager::NotifyCharProfileAdd(const std::string& dbKey, 
     values[dbKey] = dbValue;
     CharacteristicProfile charProfile;
     charProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
-    charProfile.SetServiceName(ProfileUtils::GetServiceNameByDBKey(dbKey));
+    charProfile.SetServiceName(ProfileUtils::GetNonOhSuffixServiceNameByDBKey(dbKey));
     charProfile.SetCharacteristicKey(ProfileUtils::GetCharKeyByDBKey(dbKey));
     ProfileUtils::EntriesToCharProfile(values, charProfile);
-    auto subscriberInfos = GetSubscribeInfos(dbKey);
+    auto subscriberInfos = GetSubscribeInfos(DBKeyToSubcribeKey(dbKey));
     if (subscriberInfos.empty()) {
         return DP_SUCCESS;
     }
@@ -395,17 +395,17 @@ int32_t SubscribeProfileManager::NotifyCharProfileUpdate(const std::string& dbKe
     values[dbKey] = dbValue;
     CharacteristicProfile newCharProfile;
     newCharProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
-    newCharProfile.SetServiceName(ProfileUtils::GetServiceNameByDBKey(dbKey));
+    newCharProfile.SetServiceName(ProfileUtils::GetNonOhSuffixServiceNameByDBKey(dbKey));
     newCharProfile.SetCharacteristicKey(ProfileUtils::GetCharKeyByDBKey(dbKey));
     ProfileUtils::EntriesToCharProfile(values, newCharProfile);
-    auto subscriberInfos = GetSubscribeInfos(dbKey);
+    auto subscriberInfos = GetSubscribeInfos(DBKeyToSubcribeKey(dbKey));
     if (subscriberInfos.empty()) {
         return DP_SUCCESS;
     }
     HILOGI("%{public}s!", newCharProfile.dump().c_str());
     CharacteristicProfile oldCharProfile;
     ProfileCache::GetInstance().GetCharacteristicProfile(ProfileUtils::GetDeviceIdByDBKey(dbKey),
-        ProfileUtils::GetServiceNameByDBKey(dbKey), ProfileUtils::GetCharKeyByDBKey(dbKey), oldCharProfile);
+        ProfileUtils::GetNonOhSuffixServiceNameByDBKey(dbKey), ProfileUtils::GetCharKeyByDBKey(dbKey), oldCharProfile);
     for (const auto& subscriberInfo : subscriberInfos) {
         sptr<IProfileChangeListener> listenerProxy = iface_cast<IProfileChangeListener>(subscriberInfo.GetListener());
         if (listenerProxy == nullptr) {
@@ -425,10 +425,10 @@ int32_t SubscribeProfileManager::NotifyCharProfileDelete(const std::string& dbKe
     values[dbKey] = dbValue;
     CharacteristicProfile charProfile;
     charProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
-    charProfile.SetServiceName(ProfileUtils::GetServiceNameByDBKey(dbKey));
+    charProfile.SetServiceName(ProfileUtils::GetNonOhSuffixServiceNameByDBKey(dbKey));
     charProfile.SetCharacteristicKey(ProfileUtils::GetCharKeyByDBKey(dbKey));
     ProfileUtils::EntriesToCharProfile(values, charProfile);
-    auto subscriberInfos = GetSubscribeInfos(dbKey);
+    auto subscriberInfos = GetSubscribeInfos(DBKeyToSubcribeKey(dbKey));
     if (subscriberInfos.empty()) {
         return DP_SUCCESS;
     }
@@ -456,6 +456,20 @@ std::unordered_set<SubscribeInfo, SubscribeHash, SubscribeCompare> SubscribeProf
         }
         return subscribeInfoMap_[dbKey];
     }
+}
+
+std::string SubscribeProfileManager::DBKeyToSubcribeKey(const std::string& dbkey)
+{
+    std::string subscribeKey = dbkey;
+    std::vector<std::string> res;
+    if (ProfileUtils::SplitString(subscribeKey, SEPARATOR, res) != DP_SUCCESS) {
+        return subscribeKey;
+    }
+    if (res.size() > NUM_2) {
+        res[NUM_2] = ProfileUtils::CheckAndRemoveOhSuffix(res[NUM_2]);
+        subscribeKey = ProfileUtils::JoinString(res, SEPARATOR);
+    }
+    return subscribeKey;
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

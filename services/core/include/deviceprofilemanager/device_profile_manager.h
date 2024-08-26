@@ -80,6 +80,16 @@ private:
         sptr<IRemoteObject> syncCompletedCallback);
     void AddToPutTempCache(const std::map<std::string, std::string>& values);
     void FixDataOnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
+    int32_t DeleteBatchByKeys(const std::vector<std::string>& delKeys);
+    int32_t GetProfilesByOwner(const std::string& uuid, std::map<std::string, std::string>& entries);
+    int32_t GetProfilesByKeyPrefix(const std::string& udid, std::map<std::string, std::string>& entries);
+    // Clean data that does not belong to the local.
+    void FixLocalData(const std::string& localUdid, const std::map<std::string, std::string>& localDataByOwner);
+    // Clean ohbase data when the peer is non-ohbase
+    void FixRemoteDataWhenPeerIsNonOH(const std::string& remoteUdid);
+    // Clean non-ohbase data when the peer is ohbase
+    void FixRemoteDataWhenPeerIsOHBase(const std::string& remoteUdid,
+        const std::map<std::string, std::string>& localDataByOwner);
     void NotifyNotOHBaseP2pOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
     void E2ESyncDynamicProfile(const DistributedHardware::DmDeviceInfo deviceInfo);
     bool isAdapterSoLoaded_ = false;

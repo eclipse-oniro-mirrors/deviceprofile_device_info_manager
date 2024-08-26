@@ -18,6 +18,7 @@
 #include <codecvt>
 #include <locale>
 #include <regex>
+#include <unordered_set>
 
 #include "cJSON.h"
 #include "device_manager.h"
@@ -36,6 +37,8 @@ using namespace OHOS::DistributedHardware;
 
 namespace {
     const std::string TAG = "ProfileUtils";
+    const std::unordered_set<std::string> NEED_ADD_OH_SUFFIX_DEV_PROFILES { OS_TYPE, OS_VERSION };
+    const std::unordered_set<std::string> NEED_ADD_OH_SUFFIX_SVR_NAMES { "DistributedModemService" };
 }
 
 std::string ProfileUtils::GetDbKeyAnonyString(const std::string& dbKey)
@@ -180,9 +183,17 @@ ProfileType ProfileUtils::GetProfileType(const std::string& key)
     return profileType;
 }
 
-bool ProfileUtils::StartsWith(const std::string& str, const std::string prefix)
+bool ProfileUtils::StartsWith(const std::string& str, const std::string& prefix)
 {
     return (str.find(prefix, 0) == 0);
+}
+
+bool ProfileUtils::EndsWith(const std::string& str, const std::string& suffix)
+{
+    if (str.length() < suffix.length()) {
+        return false;
+    }
+    return str.substr(str.length() - suffix.length()).compare(suffix) == 0;
 }
 
 std::string ProfileUtils::GetProfileKey(const std::string& dbKey)
@@ -222,6 +233,47 @@ std::string ProfileUtils::GetServiceNameByDBKey(const std::string& dbKey)
         return "";
     }
     return res[NUM_2];
+}
+
+std::string ProfileUtils::GetNonOhSuffixServiceNameByDBKey(const std::string& dbKey)
+{
+    std::string serviceName = GetServiceNameByDBKey(dbKey);
+    if (serviceName.empty()) {
+        return "";
+    }
+    return CheckAndRemoveOhSuffix(serviceName);
+}
+
+bool ProfileUtils::IsNeedAddOhSuffix(const std::string& profileName, bool isSvr)
+{
+    if (profileName.length() == 0 || profileName.length() > MAX_STRING_LEN) {
+        return false;
+    }
+    if (isSvr && NEED_ADD_OH_SUFFIX_SVR_NAMES.count(profileName) > 0) {
+        return true;
+    }
+    if (!isSvr && NEED_ADD_OH_SUFFIX_DEV_PROFILES.count(profileName) > 0) {
+        return true;
+    }
+    return false;
+}
+
+std::string ProfileUtils::CheckAndAddOhSuffix(const std::string& profileName, bool isSvr)
+{
+    std::string str = profileName;
+    if (IsNeedAddOhSuffix(str, isSvr)) {
+        str = str + OH_PROFILE_SUFFIX;
+    }
+    return str;
+}
+
+std::string ProfileUtils::CheckAndRemoveOhSuffix(const std::string& profileName)
+{
+    std::string str = profileName;
+    if (EndsWith(str, OH_PROFILE_SUFFIX)) {
+        str = str.erase(str.length() - OH_PROFILE_SUFFIX.length());
+    }
+    return str;
 }
 
 std::string ProfileUtils::GetCharKeyByDBKey(const std::string& dbKey)
@@ -387,13 +439,16 @@ int32_t ProfileUtils::DeviceProfileToEntries(const DeviceProfile& profile, std::
     values[GenerateDBKey(deviceProfileKey, OS_SYS_CAPACITY)] = profile.GetOsSysCap();
     values[GenerateDBKey(deviceProfileKey, OS_VERSION)] = profile.GetOsVersion();
     values[GenerateDBKey(deviceProfileKey, OS_TYPE)] = std::to_string(profile.GetOsType());
+    values[GenerateDBKey(deviceProfileKey, OS_VERSION + OH_PROFILE_SUFFIX)] = profile.GetOsVersion();
+    values[GenerateDBKey(deviceProfileKey, OS_TYPE + OH_PROFILE_SUFFIX)] = std::to_string(profile.GetOsType());
     return DP_SUCCESS;
 }
 
 int32_t ProfileUtils::ServiceProfileToEntries(const ServiceProfile& profile, std::map<std::string, std::string>& values)
 {
-    std::string serviceProfileKey = GenerateServiceProfileKey(profile.GetDeviceId(), profile.GetServiceName());
-    values[GenerateDBKey(serviceProfileKey, SERVICE_NAME)] = profile.GetServiceName();
+    std::string serviceName = CheckAndAddOhSuffix(profile.GetServiceName(), true);
+    std::string serviceProfileKey = GenerateServiceProfileKey(profile.GetDeviceId(), serviceName);
+    values[GenerateDBKey(serviceProfileKey, SERVICE_NAME)] = serviceName;
     values[GenerateDBKey(serviceProfileKey, SERVICE_TYPE)] = profile.GetServiceType();
     return DP_SUCCESS;
 }
@@ -401,7 +456,8 @@ int32_t ProfileUtils::ServiceProfileToEntries(const ServiceProfile& profile, std
 int32_t ProfileUtils::CharacteristicProfileToEntries(const CharacteristicProfile& profile,
                                                      std::map<std::string, std::string>& values)
 {
-    std::string charProfileKey = GenerateCharProfileKey(profile.GetDeviceId(), profile.GetServiceName(),
+    std::string serviceName = CheckAndAddOhSuffix(profile.GetServiceName(), true);
+    std::string charProfileKey = GenerateCharProfileKey(profile.GetDeviceId(), serviceName,
         profile.GetCharacteristicKey());
     values[GenerateDBKey(charProfileKey, CHARACTERISTIC_KEY)] = profile.GetCharacteristicKey();
     values[GenerateDBKey(charProfileKey, CHARACTERISTIC_VALUE)] = profile.GetCharacteristicValue();
@@ -548,8 +604,15 @@ int32_t ProfileUtils::EntriesToDeviceProfile(std::map<std::string, std::string> 
     if (IsPropertyValid(propertiesMap, OS_VERSION, MAX_STRING_LEN)) {
         profile.SetOsVersion(propertiesMap[OS_VERSION]);
     }
+    if (IsPropertyValid(propertiesMap, OS_VERSION + OH_PROFILE_SUFFIX, MAX_STRING_LEN)) {
+        profile.SetOsVersion(propertiesMap[OS_VERSION + OH_PROFILE_SUFFIX]);
+    }
     if (IsPropertyValid(propertiesMap, OS_TYPE, MIN_OS_TYPE, MAX_OS_TYPE)) {
         int32_t osType = std::atoi(propertiesMap[OS_TYPE].c_str());
+        profile.SetOsType(osType);
+    }
+    if (IsPropertyValid(propertiesMap, OS_TYPE + OH_PROFILE_SUFFIX, MIN_OS_TYPE, MAX_OS_TYPE)) {
+        int32_t osType = std::atoi(propertiesMap[OS_TYPE + OH_PROFILE_SUFFIX].c_str());
         profile.SetOsType(osType);
     }
     return DP_SUCCESS;
@@ -566,7 +629,7 @@ int32_t ProfileUtils::EntriesToServiceProfile(std::map<std::string, std::string>
     auto propertiesMap = GetProfilePropertiesMap(values);
     if (propertiesMap.count(SERVICE_NAME) != 0 && 0 < propertiesMap[SERVICE_NAME].length() &&
         propertiesMap[SERVICE_NAME].length() < MAX_STRING_LEN) {
-        profile.SetServiceName(propertiesMap[SERVICE_NAME]);
+        profile.SetServiceName(CheckAndRemoveOhSuffix(propertiesMap[SERVICE_NAME]));
     }
     if (propertiesMap.count(SERVICE_TYPE) != 0 && 0 < propertiesMap[SERVICE_TYPE].length() &&
         propertiesMap[SERVICE_TYPE].length() < MAX_STRING_LEN) {
@@ -583,7 +646,7 @@ int32_t ProfileUtils::EntriesToCharProfile(std::map<std::string, std::string> va
     }
     auto iter = values.begin();
     profile.SetDeviceId(GetDeviceIdByDBKey(iter->first));
-    profile.SetServiceName(GetServiceNameByDBKey(iter->first));
+    profile.SetServiceName(GetNonOhSuffixServiceNameByDBKey(iter->first));
     auto propertiesMap = GetProfilePropertiesMap(values);
     if (propertiesMap.count(CHARACTERISTIC_KEY) != 0 && 0 < propertiesMap[CHARACTERISTIC_KEY].length() &&
         propertiesMap[CHARACTERISTIC_KEY].length() < MAX_STRING_LEN) {
@@ -715,9 +778,10 @@ std::string ProfileUtils::GetDbKeyByProfile(const CharacteristicProfile& profile
         HILOGE("GetDbKeyByProfile fail");
         return "";
     }
-    std::string dbKey = CHAR_PREFIX + SEPARATOR + profile.GetDeviceId() + SEPARATOR + profile.GetServiceName() +
+    std::string serviceName = CheckAndAddOhSuffix(profile.GetServiceName(), true);
+    std::string dbKey = CHAR_PREFIX + SEPARATOR + profile.GetDeviceId() + SEPARATOR + serviceName +
         SEPARATOR + profile.GetCharacteristicKey() + SEPARATOR + CHARACTERISTIC_VALUE;
-        return dbKey;
+    return dbKey;
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

@@ -88,6 +88,7 @@ public:
     bool IsCharProfileKeyExist(const std::string& charKey);
     std::string GetLocalUdid();
     std::string GetLocalNetworkId();
+    std::string GetLocalUuid();
 
 private:
     int32_t RefreshCharProfileCache(const std::vector<CharacteristicProfile>& characteristicProfiles);
@@ -115,6 +116,8 @@ private:
     // The key is procName, the value is syncCallback
     std::map<std::string, sptr<IRemoteObject>> syncListenerMap_;
     sptr<IRemoteObject::DeathRecipient> syncListenerDeathRecipient_ = nullptr;
+    std::mutex localUuidMtx_;
+    std::string localUuid_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS
