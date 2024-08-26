@@ -50,7 +50,6 @@ device_profile_external_deps = [
   "device_manager:devicemanagersdk",
   "dmsfwk:common_sdk",
   "eventhandler:libeventhandler",
-  "googletest:gtest_main",
   "hilog:libhilog",
   "hisysevent:libhisysevent",
   "hitrace:hitrace_meter",
