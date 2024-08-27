@@ -123,6 +123,7 @@ constexpr int32_t MAX_DEVICE_SIZE = 1000;
 constexpr int32_t MAX_SERVICE_SIZE = 1000;
 constexpr int32_t MAX_CHAR_SIZE = 1000;
 constexpr int32_t MAX_DB_SIZE = 1000;
+constexpr int32_t MAX_DUMP_ARGS_SIZE = 1000;
 constexpr int32_t MAX_LISTENER_SIZE = 100;
 constexpr int32_t MAX_EVENT_HANDLER_SIZE = 50;
 constexpr int32_t MAX_DB_RECORD_SIZE = 10000;

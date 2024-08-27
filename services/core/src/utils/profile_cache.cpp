@@ -178,6 +178,10 @@ int32_t ProfileCache::AddStaticCharProfile(const CharacteristicProfile& charProf
 int32_t ProfileCache::AddStaticCharProfileBatch(
     const std::unordered_map<std::string, CharacteristicProfile>& charProfiles)
 {
+    if (charProfiles.size() > MAX_CHAR_SIZE) {
+        HILOGE("charProfiles size is too large");
+        return DP_INVALID_PARAMS;
+    }
     for (const auto& item : charProfiles) {
         HILOGD("%{public}s!", item.second.dump().c_str());
         ProfileCache::AddStaticCharProfile(item.second);
@@ -541,6 +545,10 @@ int32_t ProfileCache::SetSwitchByProfileBatch(const std::vector<CharacteristicPr
         HILOGE("charProfiles is empty");
         return DP_INVALID_PARAMS;
     }
+    if (charProfiles.size() > MAX_CHAR_SIZE) {
+        HILOGE("charProfiles size is to large");
+        return DP_INVALID_PARAMS;
+    }
     std::lock_guard<std::mutex> lock(switchMutex_);
     outSwitch = curLocalSwitch_;
     for (auto item : charProfiles) {
@@ -738,6 +746,10 @@ int32_t ProfileCache::GetServiceNameByPos(int32_t pos,
     if (pos <= (int32_t)SwitchFlag::SWITCH_FLAG_MIN || pos >= (int32_t)SwitchFlag::SWITCH_FLAG_MAX ||
         switchServiceMap.empty()) {
         HILOGE("params are invalid");
+        return DP_INVALID_PARAMS;
+    }
+    if (switchServiceMap.size() > MAX_SERVICE_SIZE) {
+        HILOGE("switchServiceMap size is too large");
         return DP_INVALID_PARAMS;
     }
     for (const auto& item : switchServiceMap) {

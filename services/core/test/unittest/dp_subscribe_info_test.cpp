@@ -136,7 +136,7 @@ HWTEST_F(DPSubscribeInfoTest, Get_001, TestSize.Level1)
     std::unordered_set<ProfileChangeType> subscribeTypes = {ProfileChangeType::TRUST_DEVICE_PROFILE_ADD,
         ProfileChangeType::TRUST_DEVICE_PROFILE_UPDATE, ProfileChangeType::TRUST_DEVICE_PROFILE_DELETE};
     OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
-	    new(std::nothrow) DPSubscribeInfoTest::SubscribeDPChangeListener;
+        sptr<IProfileChangeListener>(new DPSubscribeInfoTest::SubscribeDPChangeListener);
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
     saId = subscribeInfo.GetSaId();
     subscribeKey = subscribeInfo.GetSubscribeKey();
@@ -245,7 +245,7 @@ HWTEST_F(DPSubscribeInfoTest, Stub_001, TestSize.Level1)
     std::unordered_set<ProfileChangeType> subscribeTypes = {ProfileChangeType::TRUST_DEVICE_PROFILE_ADD,
         ProfileChangeType::TRUST_DEVICE_PROFILE_UPDATE, ProfileChangeType::TRUST_DEVICE_PROFILE_DELETE};
     OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
-	    new(std::nothrow) DPSubscribeInfoTest::SubscribeDPChangeListener;
+        sptr<IProfileChangeListener>(new DPSubscribeInfoTest::SubscribeDPChangeListener);
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
     OHOS::sptr<IProfileChangeListener> proxy = OHOS::iface_cast<IProfileChangeListener>(subscribeInfo.GetListener());
     TrustDeviceProfile oldTrustProfile;
