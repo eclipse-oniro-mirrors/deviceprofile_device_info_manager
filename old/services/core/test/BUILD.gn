@@ -274,6 +274,6 @@ group("unittest") {
     ":subscribe_manager_test",
   ]
   if (!device_info_manager_switch_static_disable) {
-      deps += [ ":profile_crud_test" ]
+    deps += [ ":profile_crud_test" ]
   }
 }
