@@ -262,7 +262,6 @@ group("unittest") {
     ":profile_authority_test",
     ":profile_change_handler_test",
     ":profile_change_notification_test",
-    ":profile_crud_test",
     ":profile_dm_test",
     ":profile_entry_test",
     ":profile_event_notifier_proxy_test",
@@ -274,4 +273,7 @@ group("unittest") {
     ":subscribe_info_test",
     ":subscribe_manager_test",
   ]
+  if (!device_info_manager_switch_static_disable) {
+      deps += [ ":profile_crud_test" ]
+  }
 }
