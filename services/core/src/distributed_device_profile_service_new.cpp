@@ -346,6 +346,10 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfileBatch(
         HILOGE("charProfiles is empty");
         return DP_PUT_CHAR_BATCH_FAIL;
     }
+    if (charProfiles.size() > MAX_CHAR_SIZE) {
+        HILOGE("charProfiles size is too large");
+        return DP_INVALID_PARAMS;
+    }
     if (!IsInited()) {
         return AddCharProfilesToCache(charProfiles);
     }
@@ -505,6 +509,10 @@ int32_t DistributedDeviceProfileServiceNew::SendSubscribeInfos(std::map<std::str
 
 int32_t DistributedDeviceProfileServiceNew::Dump(int32_t fd, const std::vector<std::u16string>& args)
 {
+    if (args.size() > MAX_DUMP_ARGS_SIZE) {
+        HILOGE("args size is too large");
+        return DP_INVALID_PARAMS;
+    }
     std::vector<std::string> argsInStr8;
     for (const auto& arg : args) {
         argsInStr8.emplace_back(Str16ToStr8(arg));

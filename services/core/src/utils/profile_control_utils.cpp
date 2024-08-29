@@ -84,6 +84,10 @@ int32_t ProfileControlUtils::PutServiceProfileBatch(std::shared_ptr<IKVAdapter> 
     const std::vector<ServiceProfile>& serviceProfiles)
 {
     HILOGD("PutServiceProfileBatch call!");
+    if (serviceProfiles.size() > MAX_SERVICE_SIZE) {
+        HILOGE("serviceProfiles size is too large!");
+        return DP_INVALID_PARAMS;
+    }
     for (const auto& serviceProfile : serviceProfiles) {
         int32_t putServiceResult = PutServiceProfile(kvStore, serviceProfile);
         if (putServiceResult != DP_SUCCESS) {
@@ -161,6 +165,10 @@ int32_t ProfileControlUtils::PutSwitchCharacteristicProfileBatch(const std::stri
         HILOGE("charProfiles or appId are empty");
         return DP_INVALID_PARAMS;
     }
+    if (charProfiles.size() > MAX_CHAR_SIZE) {
+        HILOGE("charProfiles size is too large!");
+        return DP_INVALID_PARAMS;
+    }
     int32_t res = 0;
     uint32_t curSwitch = ProfileCache::GetInstance().GetSwitch();
     HILOGD("curSwitch:%{public}d", curSwitch);
@@ -197,6 +205,10 @@ int32_t ProfileControlUtils::PutCharacteristicProfileBatch(std::shared_ptr<IKVAd
     const std::vector<CharacteristicProfile>& charProfiles)
 {
     HILOGD("call!");
+    if (charProfiles.size() > MAX_CHAR_SIZE) {
+        HILOGE("charProfiles size is too large!");
+        return DP_INVALID_PARAMS;
+    }
     for (const auto& charProfile : charProfiles) {
         int32_t putCharacteristicResult = PutCharacteristicProfile(kvStore, charProfile);
         if (putCharacteristicResult != DP_SUCCESS) {
