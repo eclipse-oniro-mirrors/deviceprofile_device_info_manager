@@ -654,6 +654,7 @@ void DeviceProfileManager::OnDeviceOnline(const DistributedHardware::DmDeviceInf
 void DeviceProfileManager::FixDataOnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo)
 {
     std::string remoteNetworkId = deviceInfo.networkId;
+    HILOGD("remoteNetworkId=%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
     if (remoteNetworkId.empty() || deviceInfo.extraData.empty()) {
         HILOGE("networkId or extraData is empty!");
         return;
@@ -692,6 +693,7 @@ void DeviceProfileManager::FixDataOnDeviceOnline(const DistributedHardware::DmDe
 
 int32_t DeviceProfileManager::DeleteBatchByKeys(const std::vector<std::string>& delKeys)
 {
+    HILOGD("delKeys.size:%{public}zu", delKeys.size());
     if (delKeys.empty()) {
         HILOGW("delKeys is empty");
         return DP_SUCCESS;
@@ -710,6 +712,7 @@ int32_t DeviceProfileManager::DeleteBatchByKeys(const std::vector<std::string>& 
 
 int32_t DeviceProfileManager::GetProfilesByOwner(const std::string& uuid, std::map<std::string, std::string>& values)
 {
+    HILOGD("uuid:%{public}s", ProfileUtils::GetAnonyString(uuid).c_str());
     if (uuid.empty()) {
         HILOGW("uuid is empty");
         return DP_INVALID_PARAM;
@@ -729,6 +732,7 @@ int32_t DeviceProfileManager::GetProfilesByOwner(const std::string& uuid, std::m
 int32_t DeviceProfileManager::GetProfilesByKeyPrefix(const std::string& udid,
     std::map<std::string, std::string>& values)
 {
+    HILOGD("udid:%{public}s", ProfileUtils::GetAnonyString(udid).c_str());
     if (udid.empty()) {
         HILOGW("udid is empty");
         return DP_INVALID_PARAM;
@@ -786,6 +790,7 @@ void DeviceProfileManager::NotifyNotOHBaseP2pOnline(const DistributedHardware::D
         int32_t ret = dpSyncAdapter_->NotOHBaseDeviceOnline(remoteUdid, remoteNetworkId, true);
         if (ret != DP_SUCCESS) {
             HILOGE("NotOHBaseDeviceOnline fail. ret=%{public}d", ret);
+            return;
         }
     };
     auto handler = EventHandlerFactory::GetInstance().GetEventHandler();
@@ -833,12 +838,15 @@ void DeviceProfileManager::E2ESyncDynamicProfile(const DistributedHardware::DmDe
 void DeviceProfileManager::FixLocalData(const std::string& localUdid,
     const std::map<std::string, std::string>& localDataByOwner)
 {
+    HILOGD("localUdid:%{public}s,localDataByOwner.size:%{public}zu",
+        ProfileUtils::GetAnonyString(localUdid).c_str(), localDataByOwner.size());
     if (localDataByOwner.empty()) { return; }
     std::map<std::string, std::string> localDataByKeyPrefix;
     if (GetProfilesByKeyPrefix(localUdid, localDataByKeyPrefix) != DP_SUCCESS) {
         HILOGE("GetProfilesByKeyPrefix fail, localUdid=%{public}s", ProfileUtils::GetAnonyString(localUdid).c_str());
         return;
     }
+    HILOGD("localDataByKeyPrefix.size:%{public}zu", localDataByKeyPrefix.size());
     if (localDataByKeyPrefix.empty()) { return; }
     std::vector<std::string> delKeys;
     // cloud has local data, but the data is not written by local
@@ -848,6 +856,7 @@ void DeviceProfileManager::FixLocalData(const std::string& localUdid,
             delKeys.emplace_back(key);
         }
     }
+    HILOGD("delKeys.size:%{public}zu", delKeys.size());
     if (delKeys.empty()) { return; }
     if (DeleteBatchByKeys(delKeys) != DP_SUCCESS) {
         HILOGE("DeleteBatchByKeys fail, localUdid=%{public}s", ProfileUtils::GetAnonyString(localUdid).c_str());
@@ -858,6 +867,7 @@ void DeviceProfileManager::FixLocalData(const std::string& localUdid,
 // Clean ohbase data when the peer is non-ohbase
 void DeviceProfileManager::FixRemoteDataWhenPeerIsNonOH(const std::string& remoteUdid)
 {
+    HILOGD("remoteUdid:%{public}s", ProfileUtils::GetAnonyString(remoteUdid).c_str());
     std::map<std::string, std::string> remoteDataByKeyPrefix;
     if (GetProfilesByKeyPrefix(remoteUdid, remoteDataByKeyPrefix) != DP_SUCCESS) {
         HILOGE("GetProfilesByKeyPrefix fail, remoteUdid=%{public}s", ProfileUtils::GetAnonyString(remoteUdid).c_str());
@@ -882,6 +892,7 @@ void DeviceProfileManager::FixRemoteDataWhenPeerIsNonOH(const std::string& remot
             continue;
         }
     }
+    HILOGD("delKeys.size:%{public}zu", delKeys.size());
     if (delKeys.empty()) { return; }
     if (DeleteBatchByKeys(delKeys) != DP_SUCCESS) {
         HILOGE("DeleteBatchByKeys fail, remoteUdid=%{public}s", ProfileUtils::GetAnonyString(remoteUdid).c_str());
@@ -893,6 +904,7 @@ void DeviceProfileManager::FixRemoteDataWhenPeerIsNonOH(const std::string& remot
 void DeviceProfileManager::FixRemoteDataWhenPeerIsOHBase(const std::string& remoteUdid,
     const std::map<std::string, std::string>& localDataByOwner)
 {
+    HILOGD("remoteUdid:%{public}s", ProfileUtils::GetAnonyString(remoteUdid).c_str());
     std::vector<std::string> delKeys;
     // local has remote data, and the data is written by local
     for (const auto& [key, _] : localDataByOwner) {
@@ -901,6 +913,7 @@ void DeviceProfileManager::FixRemoteDataWhenPeerIsOHBase(const std::string& remo
             delKeys.emplace_back(key);
         }
     }
+    HILOGD("delKeys.size:%{public}zu", delKeys.size());
     if (delKeys.empty()) { return; }
     if (deviceProfileStore_->DeleteBatch(delKeys) != DP_SUCCESS) {
         HILOGE("DeleteBatch failed, remoteUdid=%{public}s", ProfileUtils::GetAnonyString(remoteUdid).c_str());

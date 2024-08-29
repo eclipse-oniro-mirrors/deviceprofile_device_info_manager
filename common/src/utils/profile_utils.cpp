@@ -38,7 +38,7 @@ using namespace OHOS::DistributedHardware;
 namespace {
     const std::string TAG = "ProfileUtils";
     const std::unordered_set<std::string> NEED_ADD_OH_SUFFIX_DEV_PROFILES { OS_TYPE, OS_VERSION };
-    const std::unordered_set<std::string> NEED_ADD_OH_SUFFIX_SVR_NAMES { "DistributedModemService" };
+    const std::unordered_set<std::string> NEED_ADD_OH_SUFFIX_SVR_NAMES { "DistributeModemService" };
 }
 
 std::string ProfileUtils::GetDbKeyAnonyString(const std::string& dbKey)
@@ -448,7 +448,8 @@ int32_t ProfileUtils::ServiceProfileToEntries(const ServiceProfile& profile, std
 {
     std::string serviceName = CheckAndAddOhSuffix(profile.GetServiceName(), true);
     std::string serviceProfileKey = GenerateServiceProfileKey(profile.GetDeviceId(), serviceName);
-    values[GenerateDBKey(serviceProfileKey, SERVICE_NAME)] = serviceName;
+    // value not need add OH suffix
+    values[GenerateDBKey(serviceProfileKey, SERVICE_NAME)] = profile.GetServiceName();
     values[GenerateDBKey(serviceProfileKey, SERVICE_TYPE)] = profile.GetServiceType();
     return DP_SUCCESS;
 }
