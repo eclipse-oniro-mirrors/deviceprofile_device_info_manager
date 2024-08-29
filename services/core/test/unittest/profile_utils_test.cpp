@@ -64,7 +64,7 @@ HWTEST_F(ProfileUtilsTest, GetDbKeyAnonyString001, TestSize.Level1)
 {
     string len2 = "";
     string res = ProfileUtils::GetDbKeyAnonyString(len2);
-    EXPECT_EQ("******", res);
+    EXPECT_EQ("***", res);
 }
 
 /**
@@ -77,7 +77,7 @@ HWTEST_F(ProfileUtilsTest, GetDbKeyAnonyString002, TestSize.Level1)
 {
     string len2 = "ab";
     string res = ProfileUtils::GetDbKeyAnonyString(len2);
-    EXPECT_EQ("******", res);
+    EXPECT_EQ("***", res);
 }
 
 /**
@@ -90,7 +90,7 @@ HWTEST_F(ProfileUtilsTest, GetDbKeyAnonyString003, TestSize.Level1)
 {
     string len2 = "ab#abc";
     string res = ProfileUtils::GetDbKeyAnonyString(len2);
-    EXPECT_EQ("ab#a******c", res);
+    EXPECT_EQ("ab#a***c", res);
 }
 
 /**
@@ -103,7 +103,7 @@ HWTEST_F(ProfileUtilsTest, GetAnonyString001, TestSize.Level1)
 {
     string len2 = "ab";
     string res = ProfileUtils::GetAnonyString(len2);
-    EXPECT_EQ("******", res);
+    EXPECT_EQ("***", res);
 }
 
 /**
@@ -116,7 +116,7 @@ HWTEST_F(ProfileUtilsTest, GetAnonyString002, TestSize.Level1)
 {
     string len5 = "abcde";
     string res = ProfileUtils::GetAnonyString(len5);
-    EXPECT_EQ("a******e", res);
+    EXPECT_EQ("a***e", res);
 }
 
 /**
@@ -129,7 +129,7 @@ HWTEST_F(ProfileUtilsTest, GetAnonyString003, TestSize.Level1)
 {
     string len22 = "abcdefghijklmnopqrstuv";
     string res = ProfileUtils::GetAnonyString(len22);
-    EXPECT_EQ("abcd******stuv", res);
+    EXPECT_EQ("abcd***stuv", res);
 }
 
 /**

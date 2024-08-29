@@ -23,6 +23,9 @@ config("device_profile_test_config") {
     "-Dprivate=public",
     "-Dprotected=public",
   ]
+  if (!device_info_manager_switch_static_disable) {
+    cflags += [ "-DDEVICE_PROFILE_SWITCH_STATIC_ENABLE" ]
+  }
 }
 
 device_profile_configs = [
