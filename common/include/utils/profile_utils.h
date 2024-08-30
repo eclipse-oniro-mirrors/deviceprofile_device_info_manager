@@ -44,7 +44,8 @@ public:
     static bool IsOHBasedDevice(const std::string& extraData);
     static bool IsP2p(const int32_t authForm);
     static ProfileType GetProfileType(const std::string& key);
-    static bool StartsWith(const std::string& str, const std::string prefix);
+    static bool StartsWith(const std::string& str, const std::string& prefix);
+    static bool EndsWith(const std::string& str, const std::string& suffix);
     static bool IsKeyValid(const std::string& key);
     static bool IsLocalUdid(const std::string& udid);
     // This mothed can be invoked only when put or delete profile.
@@ -76,6 +77,10 @@ public:
     static std::string GetProfileKey(const std::string& dbKey);
     static std::string GetDeviceIdByDBKey(const std::string& dbKey);
     static std::string GetServiceNameByDBKey(const std::string& dbKey);
+    static std::string GetNonOhSuffixServiceNameByDBKey(const std::string& dbKey);
+    static bool IsNeedAddOhSuffix(const std::string& profileName, bool isSvr);
+    static std::string CheckAndAddOhSuffix(const std::string& profileName, bool isSvr);
+    static std::string CheckAndRemoveOhSuffix(const std::string& profileName);
     static std::string GetCharKeyByDBKey(const std::string& dbKey);
     static std::string GetDbKeyByProfile(const CharacteristicProfile& profile);
     static int32_t SplitString(const std::string& str, const std::string& splits, std::vector<std::string>& res);

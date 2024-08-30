@@ -16,8 +16,8 @@
 #ifndef OHOS_DP_DATA_CHANGE_LISTENER_H
 #define OHOS_DP_DATA_CHANGE_LISTENER_H
 
+#include <map>
 #include <vector>
-#include <mutex>
 
 #include "kvstore_observer.h"
 
@@ -43,8 +43,9 @@ private:
     int32_t GenerateSwitchNotify(const std::string& udid, const std::string& servcieName,
         const std::string& characteristicProfileKey, const std::string& characteristicProfileValue,
         ChangeType changeType);
+    void FilterEntries(const std::vector<DistributedKv::Entry>& records,
+        std::map<std::string, std::string>& entriesMap, bool isDelete);
 private:
-    std::mutex dataChangeListenerMutex_;
     std::string storeId_;
 };
 } // namespace DeviceProfile

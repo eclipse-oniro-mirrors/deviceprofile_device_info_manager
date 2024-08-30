@@ -54,6 +54,7 @@ private:
     int32_t NotifyCharProfileUpdate(const std::string& dbKey, const std::string& dbValue);
     int32_t NotifyCharProfileDelete(const std::string& dbKey, const std::string& dbValue);
     std::unordered_set<SubscribeInfo, SubscribeHash, SubscribeCompare> GetSubscribeInfos(const std::string& dbKey);
+    std::string DBKeyToSubcribeKey(const std::string& dbkey);
 
 private:
     using Func = int32_t(SubscribeProfileManager::*)(const std::string& profileKey, const std::string& profileValue);

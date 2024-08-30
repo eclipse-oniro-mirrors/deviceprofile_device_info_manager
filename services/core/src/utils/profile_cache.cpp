@@ -803,5 +803,25 @@ std::string ProfileCache::GetLocalNetworkId()
     localNetworkId_ = localDevInfo.networkId;
     return localNetworkId_;
 }
+
+std::string ProfileCache::GetLocalUuid()
+{
+    std::string localUuid = EMPTY_STRING;
+    std::lock_guard<std::mutex> lock(localUuidMtx_);
+    if (!localUuid_.empty()) {
+        return localUuid_;
+    }
+    auto networkId = GetLocalNetworkId();
+    if (networkId.empty()) {
+        HILOGE("networkId is empty");
+        return EMPTY_STRING;
+    }
+    if (!ProfileUtils::GetUuidByNetworkId(networkId, localUuid) || localUuid.empty()) {
+        HILOGE("GetUuidByNetworkId fail");
+        return EMPTY_STRING;
+    }
+    localUuid_ = localUuid;
+    return localUuid;
+}
 } // namespace DeviceProfile
 } // namespace OHOS
