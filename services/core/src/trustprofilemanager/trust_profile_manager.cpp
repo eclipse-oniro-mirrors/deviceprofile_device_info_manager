@@ -1522,7 +1522,6 @@ int32_t TrustProfileManager::ConvertToAccessee(std::shared_ptr<ResultSet> access
     return DP_SUCCESS;
 }
 
-
 int32_t TrustProfileManager::ConvertToAccessControlProfile(
     std::shared_ptr<ResultSet> accessControlResultSet, AccessControlProfile& accessControlProfile)
 {
