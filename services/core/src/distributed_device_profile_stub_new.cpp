@@ -225,12 +225,12 @@ int32_t DistributedDeviceProfileStubNew::UpdateAccessControlProfileInner(Message
 
 int32_t DistributedDeviceProfileStubNew::GetTrustDeviceProfileInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     std::string deviceId;
     READ_HELPER(data, String, deviceId);
     TrustDeviceProfile trustDeviceProfile;
     int32_t ret = GetTrustDeviceProfile(deviceId, trustDeviceProfile);
-    if (!reply.WriteInt32(ret)) {
+    if (!reply.WriteInt32(ret)) {D
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
     }

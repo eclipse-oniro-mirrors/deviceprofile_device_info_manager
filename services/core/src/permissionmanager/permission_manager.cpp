@@ -140,7 +140,7 @@ bool PermissionManager::CheckInterfacePermission(const std::string& interfaceNam
         permittedProcNames = permissionMap_[interfaceName];
     }
     bool checkResult =  (permittedProcNames.count(callProcName) != 0 || permittedProcNames.count(ALL_PROC) != 0);
-    HILOGI("success interface %{public}s callProc %{public}s!", interfaceName.c_str(), callProcName.c_str());
+    HILOGD("success interface %{public}s callProc %{public}s!", interfaceName.c_str(), callProcName.c_str());
     return checkResult;
 }
 
