@@ -28,6 +28,14 @@ config("distributed_device_profile_client_config") {
 ohos_shared_library("distributed_device_profile_client") {
   branch_protector_ret = "pac_ret"
 
+  cflags = [
+    "-fstack-protector-strong",
+    "-D_FORTIFY_SOURCE=2",
+    "-O2",
+  ]
+
+  cflags_cc = cflags
+
   sanitize = {
     boundary_sanitize = true
     integer_overflow = true

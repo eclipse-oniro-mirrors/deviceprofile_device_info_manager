@@ -15,6 +15,16 @@ import("//build/ohos.gni")
 import("//build/ohos_var.gni")
 import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
 ohos_shared_library("device_profile_radar") {
+  branch_protector_ret = "pac_ret"
+
+  cflags = [
+    "-fstack-protector-strong",
+    "-D_FORTIFY_SOURCE=2",
+    "-O2",
+  ]
+
+  cflags_cc = cflags
+
   include_dirs = [
     "include",
     "${device_profile_common}/include/constants",
