@@ -230,7 +230,7 @@ int32_t DistributedDeviceProfileStubNew::GetTrustDeviceProfileInner(MessageParce
     READ_HELPER(data, String, deviceId);
     TrustDeviceProfile trustDeviceProfile;
     int32_t ret = GetTrustDeviceProfile(deviceId, trustDeviceProfile);
-    if (!reply.WriteInt32(ret)) {D
+    if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
     }
