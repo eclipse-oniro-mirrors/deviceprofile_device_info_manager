@@ -135,7 +135,7 @@ void KvDataChangeListener::FilterEntries(const std::vector<DistributedKv::Entry>
             continue;
         }
         if (res[0] == CHAR_PREFIX && res.back() == CHARACTERISTIC_KEY) {
-            HILOGW("%{public}s is charProfileKey", ProfileUtils::GetDbKeyAnonyString(dbKey).c_str());
+            HILOGD("%{public}s is charProfileKey", ProfileUtils::GetDbKeyAnonyString(dbKey).c_str());
             continue;
         }
         entriesMap[dbKey] = item.value.ToString();

@@ -225,7 +225,7 @@ int32_t DistributedDeviceProfileStubNew::UpdateAccessControlProfileInner(Message
 
 int32_t DistributedDeviceProfileStubNew::GetTrustDeviceProfileInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     std::string deviceId;
     READ_HELPER(data, String, deviceId);
     TrustDeviceProfile trustDeviceProfile;
