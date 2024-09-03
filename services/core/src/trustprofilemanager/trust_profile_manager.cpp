@@ -839,6 +839,7 @@ int32_t TrustProfileManager::GetAclProfileByUserIdAndBundleName(std::shared_ptr<
     }
     return DP_SUCCESS;
 }
+
 int32_t TrustProfileManager::GetAclProfileByUserIdAndAccountId(std::shared_ptr<ResultSet> resultSet, int64_t accesserId,
     int64_t accesseeId, int32_t userId, const std::string& accountId, std::vector<AccessControlProfile>& profile)
 {
