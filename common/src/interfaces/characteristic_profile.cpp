@@ -104,8 +104,12 @@ std::string CharacteristicProfile::dump() const
     cJSON_AddStringToObject(json, DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(deviceId_).c_str());
     cJSON_AddStringToObject(json, SERVICE_NAME.c_str(), serviceName_.c_str());
     cJSON_AddStringToObject(json, CHARACTERISTIC_KEY.c_str(), characteristicKey_.c_str());
-    cJSON_AddStringToObject(json, CHARACTERISTIC_VALUE.c_str(),
-        ProfileUtils::GetAnonyString(characteristicValue_).c_str());
+    if (characteristicKey_ == SWITCH_STATUS) {
+        cJSON_AddStringToObject(json, CHARACTERISTIC_VALUE.c_str(), characteristicValue_.c_str());
+    } else {
+        cJSON_AddStringToObject(json, CHARACTERISTIC_VALUE.c_str(),
+            ProfileUtils::GetAnonyString(characteristicValue_).c_str());
+    }
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);
