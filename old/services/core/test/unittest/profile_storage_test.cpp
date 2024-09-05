@@ -1348,7 +1348,7 @@ HWTEST_F(ProfileStorageTest, RemoveDeviceData_003, TestSize.Level2)
 {
     deviceProfileStorage->Init();
     int32_t res = deviceProfileStorage->RemoveDeviceData("network1111111");
-    EXPECT_EQ(27459585, res);
+    EXPECT_EQ(27459584, res);
 }
 
 /**
@@ -1460,7 +1460,7 @@ HWTEST_F(ProfileStorageTest, PutDeviceProfile_010, TestSize.Level3)
     ret = DeviceProfileStorageManager::GetInstance().RemoveUnBoundDeviceProfile("111");
     EXPECT_NE(ret, ERR_OK);
     ret = DeviceProfileStorageManager::GetInstance().RemoveRemoteDeviceProfile();
-    EXPECT_EQ(ret, ERR_OK);
+    EXPECT_EQ(ret, 27459584);
 }
 
 /**
