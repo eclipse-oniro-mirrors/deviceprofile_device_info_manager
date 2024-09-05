@@ -139,6 +139,7 @@ ErrCode DpShellCommand::GetDeviceCommand()
     int32_t ret = GetAllNodeDeviceInfo("dp", &info, &infoNum);
     if (ret != ERR_OK) {
         resultReceiver_.append("get remote device list error\n");
+        FreeNodeInfo(info);
         return ret;
     }
     for (int32_t i = 0; i < infoNum; i++) {
@@ -155,10 +156,12 @@ ErrCode DpShellCommand::GetDeviceCommand()
     ret = GetLocalNodeDeviceInfo("dp", &localInfo);
     if (ret != ERR_OK) {
         resultReceiver_.append("get local device error\n");
+        FreeNodeInfo(info);
         return ret;
     }
     resultReceiver_.append("networkId: " + std::string(localInfo.networkId)
         + " deviceName:" + std::string(localInfo.deviceName) + "\n");
+    FreeNodeInfo(info);
     return ERR_OK;
 }
 
