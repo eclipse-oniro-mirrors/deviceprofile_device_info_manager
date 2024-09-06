@@ -139,7 +139,6 @@ ErrCode DpShellCommand::GetDeviceCommand()
     int32_t ret = GetAllNodeDeviceInfo("dp", &info, &infoNum);
     if (ret != ERR_OK) {
         resultReceiver_.append("get remote device list error\n");
-        FreeNodeInfo(info);
         return ret;
     }
     for (int32_t i = 0; i < infoNum; i++) {
