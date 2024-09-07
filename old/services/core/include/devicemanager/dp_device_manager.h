@@ -16,14 +16,17 @@
 #ifndef OHOS_DEVICE_PROFILE_DEVICE_MANAGER_H
 #define OHOS_DEVICE_PROFILE_DEVICE_MANAGER_H
 
-#include <mutex>
 #include <list>
+#include <mutex>
 #include <string>
 
-#include "event_handler.h"
-#include "single_instance.h"
-#include "device_info.h"
 #include "device_manager.h"
+#include "device_manager_callback.h"
+#include "dm_device_info.h"
+#include "event_handler.h"
+
+#include "device_info.h"
+#include "single_instance.h"
 
 namespace OHOS {
 namespace DeviceProfile {
@@ -67,6 +70,7 @@ private:
     std::shared_ptr<DistributedHardware::DmInitCallback> initCallback_;
     std::map<std::string, std::shared_ptr<DeviceInfo>> remoteDeviceInfoMap_;
     std::list<std::vector<std::string>> deviceIdsList_;
+    std::shared_ptr<DistributedHardware::DevTrustChangeCallback> devTrustChangeCallback_;
 
 class DeviceInitCallBack : public DistributedHardware::DmInitCallback {
     void OnRemoteDied() override;
@@ -77,6 +81,11 @@ class DpDeviceStateCallback : public DistributedHardware::DeviceStateCallback {
     void OnDeviceOffline(const DistributedHardware::DmDeviceInfo &deviceInfo) override;
     void OnDeviceChanged(const DistributedHardware::DmDeviceInfo &deviceInfo) override;
     void OnDeviceReady(const DistributedHardware::DmDeviceInfo &deviceInfo) override;
+};
+
+class DpDevTrustChangeCallback : public DistributedHardware::DevTrustChangeCallback {
+    void OnDeviceTrustChange(const std::string &peerUdid, const std::string &peerUuid,
+        const DistributedHardware::DmAuthForm authform) override;
 };
 };
 } // namespace DeviceProfile

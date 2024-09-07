@@ -920,5 +920,67 @@ void DeviceProfileManager::FixRemoteDataWhenPeerIsOHBase(const std::string& remo
         return;
     }
 }
+
+void  DeviceProfileManager::OnDeviceTrustChange(const std::string& peerUdid, const std::string& peerUuid,
+    const DistributedHardware::DmAuthForm authform)
+{
+    if (peerUdid.empty() || peerUuid.empty()) {
+        HILOGE("peerUdid or peerUuid is empty!");
+        return;
+    }
+    if (authform != DistributedHardware::DmAuthForm::IDENTICAL_ACCOUNT) {
+        HILOGE("peer is not same account");
+        return;
+    }
+    auto clearDataTask = [this, peerUdid, peerUuid]() {
+        ClearDataWithPeerLogout(peerUdid, peerUuid);
+        StaticProfileManager::GetInstance().ClearDataWithPeerLogout(peerUdid, peerUuid);
+    };
+    auto handler = EventHandlerFactory::GetInstance().GetEventHandler();
+    if (handler == nullptr || !handler->PostTask(clearDataTask)) {
+        HILOGE("Post clear data task faild");
+        return;
+    }
+}
+
+void DeviceProfileManager::ClearDataWithPeerLogout(const std::string& peerUdid, const std::string& peerUuid)
+{
+    std::map<std::string, std::string> values;
+    if (GetProfilesByKeyPrefix(peerUdid, values) != DP_SUCCESS) {
+        HILOGE("GetProfilesByKeyPrefix fail, peerUdid=%{public}s", ProfileUtils::GetAnonyString(peerUdid).c_str());
+        return;
+    }
+    HILOGD("values.size:%{public}zu", values.size());
+    if (values.empty()) { return; }
+    std::map<std::string, std::string> deviceEntries;
+    for (const auto& [key, value] : values) {
+        if (ProfileUtils::StartsWith(key, DEV_PREFIX)) {
+            deviceEntries[key] = value;
+        }
+    }
+    if (deviceEntries.empty()) { return; }
+    DeviceProfile deviceProfile;
+    ProfileUtils::EntriesToDeviceProfile(deviceEntries, deviceProfile);
+    if (deviceProfile.GetOsType() != OHOS_TYPE) { return; }
+    std::vector<std::string> delKeys;
+    for (const auto& [key, _] : values) {
+        delKeys.emplace_back(key);
+    }
+    HILOGD("delKeys.size:%{public}zu", delKeys.size());
+    if (delKeys.empty()) { return; }
+    if (DeleteBatchByKeys(delKeys) != DP_SUCCESS) {
+        HILOGE("DeleteBatchByKeys fail, peerUdid=%{public}s", ProfileUtils::GetAnonyString(peerUdid).c_str());
+        return;
+    }
+    std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
+    if (deviceProfileStore_ == nullptr) {
+        HILOGE("dynamicProfileStore is nullptr!");
+        return;
+    }
+    if (deviceProfileStore_->RemoveDeviceData(peerUuid) != DP_SUCCESS) {
+        HILOGE("RemoveDeviceData fail, peerUuid=%{public}s", ProfileUtils::GetAnonyString(peerUuid).c_str());
+        return;
+    }
+}
 } // namespace DeviceProfile
 } // namespace OHOS
