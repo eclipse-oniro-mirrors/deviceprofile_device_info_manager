@@ -155,10 +155,12 @@ ErrCode DpShellCommand::GetDeviceCommand()
     ret = GetLocalNodeDeviceInfo("dp", &localInfo);
     if (ret != ERR_OK) {
         resultReceiver_.append("get local device error\n");
+        FreeNodeInfo(info);
         return ret;
     }
     resultReceiver_.append("networkId: " + std::string(localInfo.networkId)
         + " deviceName:" + std::string(localInfo.deviceName) + "\n");
+    FreeNodeInfo(info);
     return ERR_OK;
 }
 
