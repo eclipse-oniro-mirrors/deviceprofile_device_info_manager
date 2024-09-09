@@ -53,6 +53,7 @@ public:
     int32_t GetDeviceEntries(const std::string& udid, std::map<std::string, std::string>& values) override;
     int32_t DeleteBatch(const std::vector<std::string>& keys) override;
     int32_t DeleteKvStore();
+    int32_t RemoveDeviceData(const std::string& uuid) override;
 
 private:
     DistributedKv::Status GetKvStorePtr(DistributedKv::DataType dataType);

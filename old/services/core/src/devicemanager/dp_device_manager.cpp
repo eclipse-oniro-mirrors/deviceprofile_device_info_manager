@@ -55,6 +55,7 @@ bool DpDeviceManager::Init()
 {
     initCallback_ = std::make_shared<DeviceInitCallBack>();
     stateCallback_ = std::make_shared<DpDeviceStateCallback>();
+    devTrustChangeCallback_ = std::make_shared<DpDevTrustChangeCallback>();
     devMgrHandler_ = DistributedDeviceProfile::EventHandlerFactory::GetInstance().GetEventHandler();
     if (devMgrHandler_ == nullptr) {
         return false;
@@ -119,6 +120,12 @@ void DpDeviceManager::DpDeviceStateCallback::OnDeviceChanged(const DmDeviceInfo 
 void DpDeviceManager::DpDeviceStateCallback::OnDeviceReady(const DmDeviceInfo &deviceInfo)
 {
     HILOGD("called");
+}
+
+void DpDeviceManager::DpDevTrustChangeCallback::OnDeviceTrustChange(const std::string &peerUdid,
+    const std::string &peerUuid, const DistributedHardware::DmAuthForm authform)
+{
+    DistributedDeviceProfile::DeviceProfileManager::GetInstance().OnDeviceTrustChange(peerUdid, peerUuid, authform);
 }
 
 void DpDeviceManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
@@ -218,6 +225,8 @@ bool DpDeviceManager::ConnectDeviceManager()
                 PKG_NAME, "", stateCallback_);
             if (errCode == ERR_OK) {
                 DpDeviceManager::GetInstance().GetTrustedDeviceList();
+                errCode = DeviceManager::GetInstance().RegDevTrustChangeCallback(PKG_NAME, devTrustChangeCallback_);
+                HILOGI("RegDevTrustChangeCallback errCode = %{public}d", errCode);
                 break;
             }
             HILOGE("register errCode = %{public}d, retrying...", errCode);

@@ -531,5 +531,26 @@ int32_t KVAdapter::DeleteKvStore()
     }
     return DP_SUCCESS;
 }
+
+int32_t KVAdapter::RemoveDeviceData(const std::string& uuid)
+{
+    if (uuid.empty()) {
+        HILOGE("uuid is invalid!");
+        return DP_INVALID_PARAMS;
+    }
+    {
+        std::lock_guard<std::mutex> lock(kvAdapterMutex_);
+        if (kvStorePtr_ == nullptr) {
+            HILOGE("kvStorePtr is nullptr!");
+            return DP_KV_DB_PTR_NULL;
+        }
+        DistributedKv::Status status = kvStorePtr_->RemoveDeviceData(uuid);
+        if (status != DistributedKv::Status::SUCCESS) {
+            HILOGE("GetDeviceEntries fail! uuid=%{public}s", ProfileUtils::GetAnonyString(uuid).c_str());
+            return DP_GET_KV_DB_FAIL;
+        }
+    }
+    return DP_SUCCESS;
+}
 } // namespace DeviceProfile
 } // namespace OHOS

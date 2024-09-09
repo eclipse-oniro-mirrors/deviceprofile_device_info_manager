@@ -69,6 +69,8 @@ public:
     bool IsFirstInitDB();
     void ResetFirst();
     void OnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
+    void OnDeviceTrustChange(const std::string& peerUdid, const std::string& peerUuid,
+        const DistributedHardware::DmAuthForm authform);
 
 private:
     bool LoadDpSyncAdapter();
@@ -92,6 +94,7 @@ private:
         const std::map<std::string, std::string>& localDataByOwner);
     void NotifyNotOHBaseP2pOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
     void E2ESyncDynamicProfile(const DistributedHardware::DmDeviceInfo deviceInfo);
+    void ClearDataWithPeerLogout(const std::string& peerUdid, const std::string& peerUuid);
     bool isAdapterSoLoaded_ = false;
     std::mutex isAdapterLoadLock_;
     std::mutex dynamicStoreMutex_;

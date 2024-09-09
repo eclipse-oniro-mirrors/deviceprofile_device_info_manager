@@ -38,6 +38,7 @@ public:
     virtual int32_t Sync(const std::vector<std::string>& deviceList, SyncMode syncMode) = 0;
     virtual int32_t GetDeviceEntries(const std::string& udid, std::map<std::string, std::string>& values) = 0;
     virtual int32_t DeleteBatch(const std::vector<std::string>& keys) = 0;
+    virtual int32_t RemoveDeviceData(const std::string& uuid) = 0;
 };
 } // namespace DeviceProfile
 } // namespace OHOS
