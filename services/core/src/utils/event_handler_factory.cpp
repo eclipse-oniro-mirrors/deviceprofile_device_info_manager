@@ -43,7 +43,10 @@ int32_t EventHandlerFactory::UnInit()
 {
     HILOGI("UnInit");
     std::lock_guard<std::mutex> lock(eventHandlerMutex_);
-    eventHandler_ = nullptr;
+    if (eventHandler_ != nullptr) {
+        eventHandler_->RemoveAllEvents();
+        eventHandler_ = nullptr;
+    }
     return DP_SUCCESS;
 }
 

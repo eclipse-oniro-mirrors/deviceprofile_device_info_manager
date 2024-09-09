@@ -42,6 +42,7 @@ const std::string OS_SYS_CAPACITY = "osSysCapacity";
 const std::string OS_API_LEVEL = "osApiLevel";
 const std::string OS_VERSION = "osVersion";
 const std::string OS_TYPE = "osType";
+const std::string OH_PROFILE_SUFFIX = "_OH";
 /* ServiceProfile Attribute */
 const std::string SERVICE_NAME = "serviceName";
 const std::string SERVICE_TYPE = "serviceType";
