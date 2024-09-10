@@ -804,9 +804,6 @@ std::string ProfileCache::GetLocalUdid()
 
 std::string ProfileCache::GetLocalNetworkId()
 {
-    if (!localNetworkId_.empty()) {
-        return localNetworkId_;
-    }
     DistributedHardware::DmDeviceInfo localDevInfo;
     int32_t res = DistributedHardware::DeviceManager::GetInstance().GetLocalDeviceInfo(DP_PKG_NAME, localDevInfo);
     if (res != DP_SUCCESS) {
