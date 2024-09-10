@@ -63,7 +63,7 @@ int32_t RdbAdapter::Init()
 
 int32_t RdbAdapter::UnInit()
 {
-    HILOGI("rdbAdapter unInit ");
+    HILOGI("rdbAdapter unInit");
     {
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
         store_ = nullptr;
