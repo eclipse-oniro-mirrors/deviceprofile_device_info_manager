@@ -661,13 +661,14 @@ void DeviceProfileManager::FixDataOnDeviceOnline(const DistributedHardware::DmDe
     }
     auto task = [this, remoteNetworkId, extraData = deviceInfo.extraData]() {
         std::string localUdid = ProfileCache::GetInstance().GetLocalUdid();
-        if (localUdid.empty()) {
+        std::string localUuid = ProfileCache::GetInstance().GetLocalUuid();
+        if (localUdid.empty() || localUuid.empty()) {
             HILOGE("Get local udid fail.");
             return;
         }
         std::map<std::string, std::string> localDataByOwner;
-        if (GetProfilesByOwner(localUdid, localDataByOwner) != DP_SUCCESS) {
-            HILOGE("GetProfilesByOwner fail, localUdid=%{public}s", ProfileUtils::GetAnonyString(localUdid).c_str());
+        if (GetProfilesByOwner(localUuid, localDataByOwner) != DP_SUCCESS) {
+            HILOGE("GetProfilesByOwner fail, localUuid=%{public}s", ProfileUtils::GetAnonyString(localUuid).c_str());
             return;
         }
         FixLocalData(localUdid, localDataByOwner);
