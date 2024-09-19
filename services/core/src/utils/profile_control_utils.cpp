@@ -301,7 +301,7 @@ int32_t ProfileControlUtils::GetCharacteristicProfile(std::shared_ptr<IKVAdapter
         std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId,
             ProfileUtils::CheckAndAddOhSuffix(serviceName, true), characteristicKey);
         if (kvStore->GetByPrefix(profileKeyPrefix, values) != DP_SUCCESS) {
-            HILOGE("Get datav by oh suffix fail!");
+            HILOGE("Get data by oh suffix fail!");
         }
     }
     if (values.empty()) {
