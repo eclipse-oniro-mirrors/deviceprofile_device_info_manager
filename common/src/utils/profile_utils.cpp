@@ -38,7 +38,8 @@ using namespace OHOS::DistributedHardware;
 namespace {
     const std::string TAG = "ProfileUtils";
     const std::unordered_set<std::string> NEED_ADD_OH_SUFFIX_DEV_PROFILES { OS_TYPE, OS_VERSION };
-    const std::unordered_set<std::string> NEED_ADD_OH_SUFFIX_SVR_NAMES { "DistributeModemService" };
+    const std::unordered_set<std::string> NEED_ADD_OH_SUFFIX_SVR_NAMES { "DistributeModemService",
+        "multiScreenAssistantService" };
 }
 
 std::string ProfileUtils::GetDbKeyAnonyString(const std::string& dbKey)
