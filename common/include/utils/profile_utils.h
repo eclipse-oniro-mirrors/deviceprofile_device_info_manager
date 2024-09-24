@@ -54,6 +54,12 @@ public:
     static bool IsSvrProfileValid(const ServiceProfile& svrProfile);
     // This mothed can be invoked only when put or delete profile.
     static bool IsCharProfileValid(const CharacteristicProfile& charProfile);
+    // This mothed can be invoked only when get profile.
+    static bool IsDeviceProfileValid(const DeviceProfile& devProfile);
+    // This mothed can be invoked only when get profile.
+    static bool IsServiceProfileValid(const ServiceProfile& svrProfile);
+    // This mothed can be invoked only when get profile.
+    static bool IsCharacteristicProfileValid(const CharacteristicProfile& charProfile);
     static std::string GenerateDeviceProfileKey(const std::string& deviceId);
     static std::string GenerateServiceProfileKey(const std::string& deviceId, const std::string& serviceName);
     static std::string GenerateCharProfileKey(const std::string& deviceId, const std::string& serviceName,
