@@ -364,8 +364,7 @@ bool ProfileUtils::IsCharProfileValid(const CharacteristicProfile& charProfile)
 
 bool ProfileUtils::IsDeviceProfileValid(const DeviceProfile& devProfile)
 {
-    if (devProfile.GetOsSysCap().empty() || devProfile.GetOsVersion().empty() ||
-        devProfile.GetOsType() == MIN_OS_TYPE) {
+    if (devProfile.GetOsVersion().empty() || devProfile.GetOsType() == MIN_OS_TYPE) {
         return false;
     }
     return true;
