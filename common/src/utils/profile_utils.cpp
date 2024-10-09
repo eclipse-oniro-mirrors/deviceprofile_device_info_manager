@@ -167,7 +167,7 @@ bool ProfileUtils::IsP2p(const int32_t authForm)
 ProfileType ProfileUtils::GetProfileType(const std::string& key)
 {
     if (key.length() == 0 || key.length() > MAX_STRING_LEN) {
-        HILOGE("This key is invalid, value: %{public}s!", key.c_str());
+        HILOGE("This key is invalid, value: %{public}s!", GetAnonyString(key).c_str());
         return ProfileType::PROFILE_TYPE_MIN;
     }
     ProfileType profileType = ProfileType::PROFILE_TYPE_MIN;
@@ -715,7 +715,7 @@ bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& pro
     }
     std::string propertyValue = propertyMap.at(property);
     if (!IsNumStr(propertyValue)) {
-        HILOGE("%{public}s is not numeric string", propertyValue.c_str());
+        HILOGE("%{public}s is not numeric string", GetAnonyString(propertyValue).c_str());
         return false;
     }
     if (minValue < std::atoi(propertyValue.c_str()) && std::atoi(propertyValue.c_str()) < maxValue) {
