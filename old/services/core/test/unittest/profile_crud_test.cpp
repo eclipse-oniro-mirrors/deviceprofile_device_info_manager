@@ -738,7 +738,7 @@ HWTEST_F(ProfileCrudTest, GetDeviceProfile_001, TestSize.Level3)
         return;
     }
     if (!jsonObject.contains(CHARACTER_OS_SYSCAP) || !jsonObject[CHARACTER_OS_SYSCAP].is_array()) {
-        DTEST_LOG << "can't find entry for CHARACTER_OS_SYSCAP or not array type" << std::endl;
+        DTEST_LOG << "can't find entry for CHARACTER_OS_SYSCAP" << std::endl;
         return;
     }
     std::vector<int> values = jsonObject[CHARACTER_OS_SYSCAP].get<std::vector<int>>();

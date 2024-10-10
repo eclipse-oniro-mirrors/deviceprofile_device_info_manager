@@ -340,8 +340,8 @@ int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId, const std::
         HILOGE("GetAccessControlProfile::bundleName or trustDeviceId is invalid");
         return DP_INVALID_PARAMS;
     }
-    HILOGI("Params, userId : %{public}s, bundleName : %{public}s, trustDeviceId : %{public}s, status : %{public}d",
-        ProfileUtils::GetAnonyString(std::to_string(userId)).c_str(),
+    HILOGI("Params, userId : %{public}s, bundleName : %{public}s, trustDeviceId : %{public}s,\
+        status : %{public}d", ProfileUtils::GetAnonyString(std::to_string(userId)).c_str(),
         bundleName.c_str(), ProfileUtils::GetAnonyString(trustDeviceId).c_str(), status);
     std::shared_ptr<ResultSet> resultSet =
         GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_TRUSTDEVICEID_AND_STATUS,
@@ -1834,7 +1834,7 @@ int32_t TrustProfileManager::DeleteAccesserCheck(int64_t accesserId)
             return DP_DELETE_ACCESSER_PROFILE_FAIL;
         }
     }
-    HILOGI("DeleteAccesserId : %{public}" PRId64, accesserId);
+    HILOGI("DeleteAclProfile.AccesserId : %{public}" PRId64, accesserId);
     return DP_SUCCESS;
 }
 
@@ -1952,7 +1952,7 @@ int32_t TrustProfileManager::DeleteAccesseeCheck(int64_t accesseeId)
             return DP_DELETE_ACCESSEE_PROFILE_FAIL;
         }
     }
-    HILOGI("DeleteAccesseeId : %{public}" PRId64, accesseeId);
+    HILOGI("DeleteAclProfile.AccesseeId : %{public}" PRId64, accesseeId);
     return DP_SUCCESS;
 }
 
