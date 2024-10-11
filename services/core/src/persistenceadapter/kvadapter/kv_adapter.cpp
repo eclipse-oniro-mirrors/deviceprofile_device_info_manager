@@ -64,7 +64,7 @@ int32_t KVAdapter::Init()
     int64_t beginTime = GetTickCount();
     while (tryTimes > 0) {
         DistributedKv::Status status = GetKvStorePtr(dataType_);
-        if (kvStorePtr_ && status == DistributedKv::Status::SUCCESS) {
+        if (status == DistributedKv::Status::SUCCESS) {
             int64_t endTime = GetTickCount();
             HILOGI("Init KvStorePtr Success, spend %{public}" PRId64 " ms", endTime - beginTime);
             RegisterSyncCompletedListener();
