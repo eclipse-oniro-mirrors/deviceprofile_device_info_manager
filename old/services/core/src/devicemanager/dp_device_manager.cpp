@@ -53,10 +53,19 @@ IMPLEMENT_SINGLE_INSTANCE(DpDeviceManager);
 
 bool DpDeviceManager::Init()
 {
-    initCallback_ = std::make_shared<DeviceInitCallBack>();
-    stateCallback_ = std::make_shared<DpDeviceStateCallback>();
-    devTrustChangeCallback_ = std::make_shared<DpDevTrustChangeCallback>();
-    devMgrHandler_ = DistributedDeviceProfile::EventHandlerFactory::GetInstance().GetEventHandler();
+    std::lock_guard<std::mutex> autoLock(callbackLock_);
+    if (initCallback_ == nullptr) {
+        initCallback_ = std::make_shared<DeviceInitCallBack>();
+    }
+    if (stateCallback_ == nullptr) {
+        stateCallback_ = std::make_shared<DpDeviceStateCallback>();
+    }
+    if (devTrustChangeCallback_ == nullptr) {
+        devTrustChangeCallback_ = std::make_shared<DpDevTrustChangeCallback>();
+    }
+    if (devMgrHandler_ == nullptr) {
+        devMgrHandler_ = DistributedDeviceProfile::EventHandlerFactory::GetInstance().GetEventHandler();
+    }
     if (devMgrHandler_ == nullptr) {
         return false;
     }
@@ -215,6 +224,7 @@ bool DpDeviceManager::ConnectDeviceManager()
         int32_t retryTimes = 0;
         int32_t errCode = ERR_OK;
         while (retryTimes++ < MAX_TIMES_CONNECT_DEVICEMANAGER) {
+            std::lock_guard<std::mutex> autoLock(callbackLock_);
             int32_t ret = DeviceManager::GetInstance().InitDeviceManager(PKG_NAME, initCallback_);
             if (ret != 0) {
                 HILOGE("init device manager failed, ret:%{public}d", ret);
