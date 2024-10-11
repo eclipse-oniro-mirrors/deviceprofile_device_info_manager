@@ -65,6 +65,7 @@ private:
 
 private:
     std::mutex deviceLock_;
+    std::mutex callbackLock_;
     std::shared_ptr<AppExecFwk::EventHandler> devMgrHandler_;
     std::shared_ptr<DistributedHardware::DeviceStateCallback> stateCallback_;
     std::shared_ptr<DistributedHardware::DmInitCallback> initCallback_;
