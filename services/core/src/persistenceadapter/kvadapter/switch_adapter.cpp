@@ -32,7 +32,10 @@ namespace {
 void SwitchAdapter::Init()
 {
     HILOGI("called");
-    observer_ = std::make_shared<KvDataChangeListener>(EMPTY_STRING);
+    std::lock_guard<std::mutex> lock(switchAdapterMutex_);
+    if (observer_ == nullptr) {
+        observer_ = std::make_shared<KvDataChangeListener>(EMPTY_STRING);
+    }
 }
 
 void SwitchAdapter::Uninit() {}
@@ -85,6 +88,11 @@ int32_t SwitchAdapter::SubscribeSwitchData(const std::string& appId)
     }
     DistributedKv::AppId appID;
     appID.appId = appId;
+    std::lock_guard<std::mutex> lock(switchAdapterMutex_);
+    if (observer_ == nullptr) {
+        HILOGE("observer_ is empty");
+        return DP_INVALID_PARAMS;
+    }
     auto res = kvDataMgr_.SubscribeSwitchData(appID, observer_);
     if (res != DistributedKv::Status::SUCCESS) {
         HILOGE("SubscribeSwitchData failed, ret: %{public}d", res);
@@ -103,6 +111,7 @@ int32_t SwitchAdapter::UnsubscribeSwitchData(const std::string& appId)
 
     DistributedKv::AppId appID;
     appID.appId = appId;
+    std::lock_guard<std::mutex> lock(switchAdapterMutex_);
     auto res = kvDataMgr_.UnsubscribeSwitchData(appID, observer_);
     if (res != DistributedKv::Status::SUCCESS) {
         HILOGE("UnSubscribeSwitchData failed, ret: %{public}d", res);
