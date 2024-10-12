@@ -54,9 +54,9 @@ public:
     void GetTrustedDeviceList();
 
 private:
-    void GetInitCallback();
-    void GetStateCallback();
-    void GetDevTrustChangeCallback();
+    std::shared_ptr<DistributedHardware::DmInitCallback> GetInitCallback();
+    std::shared_ptr<DistributedHardware::DeviceStateCallback> GetStateCallback();
+    std::shared_ptr<DistributedHardware::DevTrustChangeCallback> GetDevTrustChangeCallback();
     void GetDevMgrHandler();
     bool WaitForDnetworkReady();
     void OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo);
