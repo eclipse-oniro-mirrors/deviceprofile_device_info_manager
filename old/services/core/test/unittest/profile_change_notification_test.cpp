@@ -318,5 +318,66 @@ HWTEST_F(ProfileChangeNotificationTest, OnRemoteRequest_003, TestSize.Level3)
     DTEST_LOG << "result: " << result << std::endl;
     EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
 }
+
+
+HWTEST_F(ProfileChangeNotificationTest, OnRemoteRequest_004, TestSize.Level3)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option { MessageOption::TF_ASYNC };
+    SyncResult syncResults;
+    if (!data.WriteInterfaceToken(ProfileEventNotifierProxy::GetDescriptor())) {
+        return;
+    }
+    if (!data.WriteInt32(static_cast<int32_t>(syncResults.size()))) {
+        return;
+    }
+    
+    uint32_t code = ProfileEvent::EVENT_SYNC_COMPLETED;
+    auto syncCb = std::make_shared<StorageProfileEventCallback>();
+    std::shared_ptr<ProfileEventNotifierStub> temp = std::make_shared<ProfileEventNotifierStub>(syncCb);
+    int32_t result = temp->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+}
+
+HWTEST_F(ProfileChangeNotificationTest, OnRemoteRequest_005, TestSize.Level3)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option { MessageOption::TF_ASYNC };
+    SyncResult syncResults;
+    if (!data.WriteInterfaceToken(ProfileEventNotifierProxy::GetDescriptor())) {
+        return;
+    }
+    if (!data.WriteInt32(static_cast<int32_t>(syncResults.size()))) {
+        return;
+    }
+    
+    uint32_t code = ProfileEvent::EVENT_PROFILE_CHANGED;
+    auto syncCb = std::make_shared<StorageProfileEventCallback>();
+    std::shared_ptr<ProfileEventNotifierStub> temp = std::make_shared<ProfileEventNotifierStub>(syncCb);
+    int32_t result = temp->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_DP_INVALID_PARAMS, result);
+}
+
+HWTEST_F(ProfileChangeNotificationTest, OnRemoteRequest_006, TestSize.Level3)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option { MessageOption::TF_ASYNC };
+    SyncResult syncResults;
+    if (!data.WriteInterfaceToken(ProfileEventNotifierProxy::GetDescriptor())) {
+        return;
+    }
+    if (!data.WriteInt32(static_cast<int32_t>(syncResults.size()))) {
+        return;
+    }
+    
+    uint32_t code = 1000;
+    auto syncCb = std::make_shared<StorageProfileEventCallback>();
+    std::shared_ptr<ProfileEventNotifierStub> temp = std::make_shared<ProfileEventNotifierStub>(syncCb);
+    int32_t result = temp->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(305, result);
+}
 }
 }
