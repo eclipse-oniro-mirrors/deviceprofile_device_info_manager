@@ -51,28 +51,31 @@ const std::string PKG_NAME = "ohos.deviceprofile";
 
 IMPLEMENT_SINGLE_INSTANCE(DpDeviceManager);
 
-void DpDeviceManager::GetInitCallback()
+std::shared_ptr<DistributedHardware::DmInitCallback>  DpDeviceManager::GetInitCallback()
 {
     std::lock_guard<std::mutex> autoLock(initcallbackLock_);
     if (initCallback_ == nullptr) {
         initCallback_ = std::make_shared<DeviceInitCallBack>();
     }
+    return initCallback_;
 }
 
-void DpDeviceManager::GetStateCallback()
+std::shared_ptr<DistributedHardware::DeviceStateCallback> DpDeviceManager::GetStateCallback()
 {
     std::lock_guard<std::mutex> autoLock(stateCallLock_);
     if (stateCallback_ == nullptr) {
         stateCallback_ = std::make_shared<DpDeviceStateCallback>();
     }
+    return stateCallback_;
 }
 
-void DpDeviceManager::GetDevTrustChangeCallback()
+std::shared_ptr<DistributedHardware::DevTrustChangeCallback> DpDeviceManager::GetDevTrustChangeCallback()
 {
     std::lock_guard<std::mutex> autoLock(devTrustLock_);
     if (devTrustChangeCallback_ == nullptr) {
         devTrustChangeCallback_ = std::make_shared<DpDevTrustChangeCallback>();
     }
+    return devTrustChangeCallback_;
 }
 
 void DpDeviceManager::GetDevMgrHandler()
@@ -252,26 +255,17 @@ bool DpDeviceManager::ConnectDeviceManager()
         int32_t retryTimes = 0;
         int32_t errCode = ERR_OK;
         while (retryTimes++ < MAX_TIMES_CONNECT_DEVICEMANAGER) {
-            {
-                std::lock_guard<std::mutex> autoLock(initcallbackLock_);
-                int32_t ret = DeviceManager::GetInstance().InitDeviceManager(PKG_NAME, initCallback_);
-                if (ret != 0) {
-                    HILOGE("init device manager failed, ret:%{public}d", ret);
-                    std::this_thread::sleep_for(1s);
-                    continue;
-                }
+            int32_t ret = DeviceManager::GetInstance().InitDeviceManager(PKG_NAME, GetInitCallback());
+            if (ret != 0) {
+                HILOGE("init device manager failed, ret:%{public}d", ret);
+                std::this_thread::sleep_for(1s);
+                continue;
             }
-            {
-                std::lock_guard<std::mutex> autoLock(stateCallLock_);
-                errCode = DeviceManager::GetInstance().RegisterDevStateCallback(
-                    PKG_NAME, "", stateCallback_);
-            }
+            errCode = DeviceManager::GetInstance().RegisterDevStateCallback(
+                PKG_NAME, "", GetStateCallback());
             if (errCode == ERR_OK) {
                 DpDeviceManager::GetInstance().GetTrustedDeviceList();
-                {
-                    std::lock_guard<std::mutex> autoLock(devTrustLock_);
-                    errCode = DeviceManager::GetInstance().RegDevTrustChangeCallback(PKG_NAME, devTrustChangeCallback_);
-                }
+                errCode = DeviceManager::GetInstance().RegDevTrustChangeCallback(PKG_NAME, GetDevTrustChangeCallback());
                 HILOGI("RegDevTrustChangeCallback errCode = %{public}d", errCode);
                 break;
             }
