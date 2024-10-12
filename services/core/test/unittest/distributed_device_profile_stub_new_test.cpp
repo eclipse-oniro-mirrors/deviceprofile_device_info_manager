@@ -554,5 +554,357 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, SendSubscribeInfosInner_001, TestS
     int32_t ret = ProfileStub_->SendSubscribeInfosInner(data, reply);
     EXPECT_EQ(DP_READ_PARCEL_FAIL, ret);
 }
+
+/**
+ * @tc.name: NotifyAclEventInner_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_001, TestSize.Level0)
+{
+    uint32_t code = 1000;
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyAclEventInner(code, data, reply, option);
+    EXPECT_EQ(305, ret);
+}
+
+/**
+ * @tc.name: NotifyAclEventInner_002
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_002, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::PUT_ACL_PROFILE);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyAclEventInner(code, data, reply, option);
+    EXPECT_EQ(DP_READ_PARCEL_FAIL, ret);
+}
+
+/**
+ * @tc.name: NotifyAclEventInner_003
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_003, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::UPDATE_ACL_PROFILE);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyAclEventInner(code, data, reply, option);
+    EXPECT_EQ(DP_READ_PARCEL_FAIL, ret);
+}
+
+/**
+ * @tc.name: NotifyAclEventInner_004
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_004, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::GET_TRUST_DEVICE_PROFILE);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyAclEventInner(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+/**
+ * @tc.name: NotifyAclEventInner_005
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_005, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::GET_ALL_TRUST_DEVICE_PROFILE);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyAclEventInner(code, data, reply, option);
+    EXPECT_EQ(DP_READ_PARCEL_FAIL, ret);
+}
+
+/**
+ * @tc.name: NotifyAclEventInner_006
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_006, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::GET_ACL_PROFILE);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyAclEventInner(code, data, reply, option);
+    EXPECT_EQ(DP_READ_PARCEL_FAIL, ret);
+}
+
+/**
+ * @tc.name: NotifyAclEventInner_007
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_007, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::GET_ALL_ACL_PROFILE);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyAclEventInner(code, data, reply, option);
+    EXPECT_EQ(DP_WRITE_PARCEL_FAIL, ret);
+}
+
+/**
+ * @tc.name: NotifyAclEventInner_008
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_008, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::DELETE_ACL_PROFILE);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyAclEventInner(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+/**
+ * @tc.name: NotifyAclEventInner_009
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_009, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyAclEventInner(code, data, reply, option);
+    EXPECT_EQ(DP_READ_PARCEL_FAIL, ret);
+}
+
+/**
+ * @tc.name: NotifyAclEventInner_010
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_010, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyAclEventInner(code, data, reply, option);
+    EXPECT_EQ(DP_READ_PARCEL_FAIL, ret);
+}
+
+/**
+ * @tc.name: NotifyAclEventInner_011
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_011, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::SEND_SUBSCRIBE_INFOS);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyAclEventInner(code, data, reply, option);
+    EXPECT_EQ(DP_READ_PARCEL_FAIL, ret);
+}
+
+/**
+ * @tc.name: NotifyAclEventInner_012
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_012, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyAclEventInner(code, data, reply, option);
+    EXPECT_EQ(DP_READ_PARCEL_FAIL, ret);
+}
+
+/**
+ * @tc.name: NotifyAclEventInner_013
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_013, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE_BATCH);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyAclEventInner(code, data, reply, option);
+    EXPECT_EQ(DP_READ_PARCEL_FAIL, ret);
+}
+
+/**
+ * @tc.name: NotifyAclEventInner_014
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_014, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyAclEventInner(code, data, reply, option);
+    EXPECT_EQ(DP_READ_PARCEL_FAIL, ret);
+}
+
+/**
+ * @tc.name: NotifyAclEventInner_015
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_015, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE_BATCH);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyAclEventInner(code, data, reply, option);
+    EXPECT_EQ(DP_READ_PARCEL_FAIL, ret);
+}
+
+/**
+ * @tc.name: NotifyEventInner_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_001, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_PROFILE_NEW);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyEventInner(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+/**
+ * @tc.name: NotifyEventInner_002
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_002, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::GET_SERVICE_PROFILE);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyEventInner(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+/**
+ * @tc.name: NotifyEventInner_003
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_003, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::GET_CHAR_PROFILE);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyEventInner(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+/**
+ * @tc.name: NotifyEventInner_004
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_004, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::DEL_SERVICE_PROFILE);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyEventInner(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+/**
+ * @tc.name: NotifyEventInner_005
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_005, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::DEL_CHAR_PROFILE);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyEventInner(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+/**
+ * @tc.name: NotifyEventInner_006
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_006, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::SYNC_DEVICE_PROFILE_NEW);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyEventInner(code, data, reply, option);
+    EXPECT_EQ(DP_READ_PARCEL_FAIL, ret);
+}
+
+/**
+ * @tc.name: NotifyEventInner_007
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_007, TestSize.Level0)
+{
+    uint32_t code = 1000;
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = ProfileStub_->NotifyEventInner(code, data, reply, option);
+    EXPECT_EQ(305, ret);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
