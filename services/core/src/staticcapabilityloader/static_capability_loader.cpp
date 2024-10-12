@@ -440,14 +440,13 @@ void StaticCapabilityLoader::SetStaticCapabilityFlag(const std::string& handlerN
 bool StaticCapabilityLoader::GetStaticCapabilityValue(const std::string& handlerLoc)
 {
     HILOGD("call!");
-    char targetPath[PATH_MAX + 1] = {0x00};
     if (handlerLoc.length() == 0 || handlerLoc.length() > PATH_MAX) {
         HILOGE("File canonicalization failed!");
         return false;
     }
     void *so_handler = dlopen(handlerLoc.c_str(), RTLD_LAZY | RTLD_NODELETE);
     if (so_handler == nullptr) {
-        HILOGE("%{public}s handler load failed, failed reason : %{public}s", targetPath, dlerror());
+        HILOGE("%{public}s handler load failed, failed reason : %{public}s", handlerLoc.c_str(), dlerror());
         return false;
     }
     auto func = (StaticCapabilityHandler)dlsym(so_handler, "GetStaticCapabilityCollector");

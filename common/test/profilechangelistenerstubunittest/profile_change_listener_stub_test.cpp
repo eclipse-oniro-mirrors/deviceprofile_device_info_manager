@@ -237,5 +237,149 @@ HWTEST_F(ProfileChangeListenerStubTest, OnCharacteristicProfileUpdateInner_001, 
     int32_t ret = listenerStub_->OnCharacteristicProfileUpdateInner(data, reply);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
+
+
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_002, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_ADD);
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_003, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_DELETE);
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_004, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_UPDATE);
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_005, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_ADD);
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_006, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_DELETE);
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_007, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_UPDATE);
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_008, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_SERVICE_PROFILE_ADD);
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_009, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_SERVICE_PROFILE_DELETE);
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_010, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_SERVICE_PROFILE_UPDATE);
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_011, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_CHAR_PROFILE_ADD);
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_012, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_CHAR_PROFILE_DELETE);
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_013, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_CHAR_PROFILE_UPDATE);
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_014, TestSize.Level0)
+{
+    uint32_t code = 1000;
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(305, ret);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
