@@ -54,6 +54,10 @@ public:
     void GetTrustedDeviceList();
 
 private:
+    std::shared_ptr<DistributedHardware::DmInitCallback> GetInitCallback();
+    std::shared_ptr<DistributedHardware::DeviceStateCallback> GetStateCallback();
+    std::shared_ptr<DistributedHardware::DevTrustChangeCallback> GetDevTrustChangeCallback();
+    void GetDevMgrHandler();
     bool WaitForDnetworkReady();
     void OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo);
     void OnNodeOffline(const std::string& networkId);
@@ -65,6 +69,10 @@ private:
 
 private:
     std::mutex deviceLock_;
+    std::mutex initcallbackLock_;
+    std::mutex stateCallLock_;
+    std::mutex devMgrLock_;
+    std::mutex devTrustLock_;
     std::shared_ptr<AppExecFwk::EventHandler> devMgrHandler_;
     std::shared_ptr<DistributedHardware::DeviceStateCallback> stateCallback_;
     std::shared_ptr<DistributedHardware::DmInitCallback> initCallback_;

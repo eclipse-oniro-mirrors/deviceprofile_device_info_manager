@@ -64,7 +64,7 @@ int32_t KVAdapter::Init()
     int64_t beginTime = GetTickCount();
     while (tryTimes > 0) {
         DistributedKv::Status status = GetKvStorePtr(dataType_);
-        if (kvStorePtr_ && status == DistributedKv::Status::SUCCESS) {
+        if (status == DistributedKv::Status::SUCCESS) {
             int64_t endTime = GetTickCount();
             HILOGI("Init KvStorePtr Success, spend %{public}" PRId64 " ms", endTime - beginTime);
             RegisterSyncCompletedListener();
@@ -291,6 +291,9 @@ DistributedKv::Status KVAdapter::GetKvStorePtr(DistributedKv::DataType dataType)
     {
         std::lock_guard<std::mutex> lock(kvAdapterMutex_);
         status = kvDataMgr_.GetSingleKvStore(options, appId_, storeId_, kvStorePtr_);
+        if (status == DistributedKv::Status::SUCCESS && kvStorePtr_ == nullptr) {
+            status = DistributedKv::Status::ERROR;
+        }
     }
     return status;
 }

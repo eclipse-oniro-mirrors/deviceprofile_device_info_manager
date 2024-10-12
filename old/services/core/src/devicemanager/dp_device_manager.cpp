@@ -51,14 +51,52 @@ const std::string PKG_NAME = "ohos.deviceprofile";
 
 IMPLEMENT_SINGLE_INSTANCE(DpDeviceManager);
 
+std::shared_ptr<DistributedHardware::DmInitCallback> DpDeviceManager::GetInitCallback()
+{
+    std::lock_guard<std::mutex> autoLock(initcallbackLock_);
+    if (initCallback_ == nullptr) {
+        initCallback_ = std::make_shared<DeviceInitCallBack>();
+    }
+    return initCallback_;
+}
+
+std::shared_ptr<DistributedHardware::DeviceStateCallback> DpDeviceManager::GetStateCallback()
+{
+    std::lock_guard<std::mutex> autoLock(stateCallLock_);
+    if (stateCallback_ == nullptr) {
+        stateCallback_ = std::make_shared<DpDeviceStateCallback>();
+    }
+    return stateCallback_;
+}
+
+std::shared_ptr<DistributedHardware::DevTrustChangeCallback> DpDeviceManager::GetDevTrustChangeCallback()
+{
+    std::lock_guard<std::mutex> autoLock(devTrustLock_);
+    if (devTrustChangeCallback_ == nullptr) {
+        devTrustChangeCallback_ = std::make_shared<DpDevTrustChangeCallback>();
+    }
+    return devTrustChangeCallback_;
+}
+
+void DpDeviceManager::GetDevMgrHandler()
+{
+    std::lock_guard<std::mutex> autoLock(devMgrLock_);
+    if (devMgrHandler_ == nullptr) {
+        devMgrHandler_ = DistributedDeviceProfile::EventHandlerFactory::GetInstance().GetEventHandler();
+    }
+}
+
 bool DpDeviceManager::Init()
 {
-    initCallback_ = std::make_shared<DeviceInitCallBack>();
-    stateCallback_ = std::make_shared<DpDeviceStateCallback>();
-    devTrustChangeCallback_ = std::make_shared<DpDevTrustChangeCallback>();
-    devMgrHandler_ = DistributedDeviceProfile::EventHandlerFactory::GetInstance().GetEventHandler();
-    if (devMgrHandler_ == nullptr) {
-        return false;
+    GetInitCallback();
+    GetStateCallback();
+    GetDevTrustChangeCallback();
+    GetDevMgrHandler();
+    {
+        std::lock_guard<std::mutex> autoLock(devMgrLock_);
+        if (devMgrHandler_ == nullptr) {
+            return false;
+        }
     }
     if (!ConnectDeviceManager()) {
         return false;
@@ -145,6 +183,7 @@ void DpDeviceManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
             remoteDeviceInfoMap_[networkId] = deviceInfo;
         }
     };
+    std::lock_guard<std::mutex> autoLock(devMgrLock_);
     if (devMgrHandler_ == nullptr) {
         HILOGE("devMgrHandler is nullptr");
         return;
@@ -162,6 +201,7 @@ void DpDeviceManager::OnNodeOffline(const std::string& networkId)
         std::lock_guard<std::mutex> autoLock(deviceLock_);
         remoteDeviceInfoMap_.erase(networkId);
     };
+    std::lock_guard<std::mutex> autoLock(devMgrLock_);
     if (devMgrHandler_ == nullptr) {
         HILOGE("devMgrHandler is nullptr");
         return;
@@ -215,17 +255,17 @@ bool DpDeviceManager::ConnectDeviceManager()
         int32_t retryTimes = 0;
         int32_t errCode = ERR_OK;
         while (retryTimes++ < MAX_TIMES_CONNECT_DEVICEMANAGER) {
-            int32_t ret = DeviceManager::GetInstance().InitDeviceManager(PKG_NAME, initCallback_);
+            int32_t ret = DeviceManager::GetInstance().InitDeviceManager(PKG_NAME, GetInitCallback());
             if (ret != 0) {
                 HILOGE("init device manager failed, ret:%{public}d", ret);
                 std::this_thread::sleep_for(1s);
                 continue;
             }
             errCode = DeviceManager::GetInstance().RegisterDevStateCallback(
-                PKG_NAME, "", stateCallback_);
+                PKG_NAME, "", GetStateCallback());
             if (errCode == ERR_OK) {
                 DpDeviceManager::GetInstance().GetTrustedDeviceList();
-                errCode = DeviceManager::GetInstance().RegDevTrustChangeCallback(PKG_NAME, devTrustChangeCallback_);
+                errCode = DeviceManager::GetInstance().RegDevTrustChangeCallback(PKG_NAME, GetDevTrustChangeCallback());
                 HILOGI("RegDevTrustChangeCallback errCode = %{public}d", errCode);
                 break;
             }
@@ -242,6 +282,7 @@ bool DpDeviceManager::ConnectDeviceManager()
         }
         HILOGI("register %{public}s", (errCode == ERR_OK) ? "success" : "timeout");
     };
+    std::lock_guard<std::mutex> autoLock(devMgrLock_);
     if (devMgrHandler_ == nullptr) {
         HILOGE("devMgrHandler is nullptr");
         return false;
