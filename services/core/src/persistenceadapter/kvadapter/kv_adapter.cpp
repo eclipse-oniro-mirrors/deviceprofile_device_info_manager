@@ -64,13 +64,16 @@ int32_t KVAdapter::Init()
     int64_t beginTime = GetTickCount();
     while (tryTimes > 0) {
         DistributedKv::Status status = GetKvStorePtr(dataType_);
-        if (status == DistributedKv::Status::SUCCESS) {
-            int64_t endTime = GetTickCount();
-            HILOGI("Init KvStorePtr Success, spend %{public}" PRId64 " ms", endTime - beginTime);
-            RegisterSyncCompletedListener();
-            RegisterDataChangeListener();
-            RegisterDeathListener();
-            return DP_SUCCESS;
+        {
+            std::lock_guard<std::mutex> lock(kvAdapterMutex_);
+            if (kvStorePtr_ != nullptr && status == DistributedKv::Status::SUCCESS) {
+                int64_t endTime = GetTickCount();
+                HILOGI("Init KvStorePtr Success, spend %{public}" PRId64 " ms", endTime - beginTime);
+                RegisterSyncCompletedListener();
+                RegisterDataChangeListener();
+                RegisterDeathListener();
+                return DP_SUCCESS;
+            }
         }
         HILOGI("CheckKvStore, left times: %{public}d, status: %{public}d", tryTimes, status);
         if (status == DistributedKv::Status::STORE_META_CHANGED) {
