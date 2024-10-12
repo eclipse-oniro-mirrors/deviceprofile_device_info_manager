@@ -150,6 +150,7 @@ constexpr int32_t DP_INIT_SWITCH_PROFILE_MANAGER_FAIL = 98566272;
 constexpr int32_t DP_NULLPTR = 98566273;
 constexpr int32_t DP_SUBSCRIBE_INITED_FALI = 98566274;
 constexpr int32_t DP_GET_DEVICE_ENTRIES_FAIL = 98566275;
+constexpr int32_t DP_RDB_DATABASE_RESTORE_FAIL = 98566276;
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_ERRORS_H
