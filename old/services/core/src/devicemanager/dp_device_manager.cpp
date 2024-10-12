@@ -51,7 +51,7 @@ const std::string PKG_NAME = "ohos.deviceprofile";
 
 IMPLEMENT_SINGLE_INSTANCE(DpDeviceManager);
 
-std::shared_ptr<DistributedHardware::DmInitCallback>  DpDeviceManager::GetInitCallback()
+std::shared_ptr<DistributedHardware::DmInitCallback> DpDeviceManager::GetInitCallback()
 {
     std::lock_guard<std::mutex> autoLock(initcallbackLock_);
     if (initCallback_ == nullptr) {
