@@ -213,5 +213,70 @@ HWTEST_F(SubscribeInfoCheckerTest, GetHandler_001, TestSize.Level3)
     DTEST_LOG << "result: " << result << std::endl;
     EXPECT_EQ(nullptr, result);
 }
+
+
+/**
+ * @tc.name: GetHandler_010
+ * @tc.desc: GetHandler
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeInfoCheckerTest, Check_010, TestSize.Level3)
+{
+    SubscribeInfo subInfo;
+    subInfo.extraInfo = {
+        {"deviceId", "deviceId"}
+    };
+    std::list<std::string> serviceIds = {"fakeStorage", "fakeSystem"};
+    subInfo.profileEvent = ProfileEvent::EVENT_SYNC_COMPLETED;
+    std::list<SubscribeInfo> infos(1, subInfo);
+    bool ret = SubscribeInfoChecker::GetInstance().Check(infos);
+    ASSERT_TRUE(ret);
+}
+
+/**
+ * @tc.name: GetHandler_011
+ * @tc.desc: GetHandler
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeInfoCheckerTest, Check_011, TestSize.Level3)
+{
+    SubscribeInfo subInfo;
+    subInfo.extraInfo = {
+        {"deviceId", "deviceId"}
+    };
+    std::list<std::string> serviceIds = {"fakeStorage", "fakeSystem"};
+    subInfo.profileEvent = ProfileEvent::EVENT_UNKNOWN;
+    std::list<SubscribeInfo> infos(1, subInfo);
+    bool ret = SubscribeInfoChecker::GetInstance().Check(infos);
+    ASSERT_FALSE(ret);
+}
+
+/**
+ * @tc.name: GetHandler_002
+ * @tc.desc: GetHandler
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeInfoCheckerTest, GetHandler_002, TestSize.Level3)
+{
+    auto result = ProfileEventHandlerFactory::GetInstance().GetHandler(ProfileEvent::EVENT_PROFILE_CHANGED);
+    DTEST_LOG << "result: " << result << std::endl;
+    EXPECT_NE(nullptr, result);
+}
+
+/**
+ * @tc.name: GetHandler_003
+ * @tc.desc: GetHandler
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeInfoCheckerTest, GetHandler_003, TestSize.Level3)
+{
+    auto result = ProfileEventHandlerFactory::GetInstance().GetHandler(ProfileEvent::EVENT_UNKNOWN);
+    DTEST_LOG << "result: " << result << std::endl;
+    EXPECT_EQ(nullptr, result);
+}
 }
 }
