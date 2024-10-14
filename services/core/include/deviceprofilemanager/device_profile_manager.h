@@ -92,7 +92,7 @@ private:
     // Clean non-ohbase data when the peer is ohbase
     void FixRemoteDataWhenPeerIsOHBase(const std::string& remoteUdid,
         const std::map<std::string, std::string>& localDataByOwner);
-    void NotifyNotOHBaseP2pOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
+    void NotifyNotOHBaseOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
     void E2ESyncDynamicProfile(const DistributedHardware::DmDeviceInfo deviceInfo);
     void ClearDataWithPeerLogout(const std::string& peerUdid, const std::string& peerUuid);
     bool isAdapterSoLoaded_ = false;
