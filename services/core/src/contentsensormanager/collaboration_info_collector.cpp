@@ -25,7 +25,7 @@ namespace DistributedDeviceProfile {
 namespace {
 const std::string TAG = "CollaborationInfoCollector";
 const std::vector<std::string> COLLABORATION_SERVICE_ID_VECTOR = { "distributeCameraControllerService",
-    "multiScreenAssistantService", "padCarCollaborate" };
+    "padCarCollaborate" };
 const std::string COLLABORATION_CHARACTERISTIC_KEY = "status";
 const std::string COLLABORATION_CHARACTERISTIC_VALUE = "false";
 }
