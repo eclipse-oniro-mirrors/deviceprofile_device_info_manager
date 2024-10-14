@@ -643,7 +643,7 @@ void DeviceProfileManager::ResetFirst()
 void DeviceProfileManager::OnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo)
 {
     FixDataOnDeviceOnline(deviceInfo);
-    NotifyNotOHBaseP2pOnline(deviceInfo);
+    NotifyNotOHBaseOnline(deviceInfo);
     if (ContentSensorManagerUtils::GetInstance().IsDeviceE2ESync()) {
         HILOGI("need E2ESync, networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
         E2ESyncDynamicProfile(deviceInfo);
@@ -753,7 +753,7 @@ int32_t DeviceProfileManager::GetProfilesByKeyPrefix(const std::string& udid,
     return DP_SUCCESS;
 }
 
-void DeviceProfileManager::NotifyNotOHBaseP2pOnline(const DistributedHardware::DmDeviceInfo deviceInfo)
+void DeviceProfileManager::NotifyNotOHBaseOnline(const DistributedHardware::DmDeviceInfo deviceInfo)
 {
     std::string remoteNetworkId = deviceInfo.networkId;
     HILOGD("networkId:%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
@@ -765,12 +765,7 @@ void DeviceProfileManager::NotifyNotOHBaseP2pOnline(const DistributedHardware::D
         HILOGD("device is ohbase. remoteNetworkId=%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
         return;
     }
-    if (!ProfileUtils::IsP2p(static_cast<int32_t>(deviceInfo.authForm))) {
-        HILOGD("is not point 2 point. remoteNetworkId=%{public}s",
-            ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
-        return;
-    }
-    auto task = [this, remoteNetworkId]() {
+    auto task = [this, remoteNetworkId, authForm = static_cast<int32_t>(deviceInfo.authForm)]() {
         std::string remoteUdid;
         if (ProfileCache::GetInstance().GetUdidByNetWorkId(remoteNetworkId, remoteUdid) != DP_SUCCESS ||
             remoteUdid.empty()) {
@@ -783,15 +778,16 @@ void DeviceProfileManager::NotifyNotOHBaseP2pOnline(const DistributedHardware::D
             HILOGE("dpSyncAdapter is nullptr.");
             return;
         }
-        int32_t ret = dpSyncAdapter_->NotOHBaseDeviceOnline(remoteUdid, remoteNetworkId, true);
+        int32_t ret = dpSyncAdapter_->NotOHBaseDeviceOnline(remoteUdid, remoteNetworkId, ProfileUtils::IsP2p(authForm));
         if (ret != DP_SUCCESS) {
-            HILOGE("NotOHBaseDeviceOnline fail. ret=%{public}d", ret);
+            HILOGE("NotOHBaseDeviceOnline fail. ret=%{public}d, remoteNetworkId=%{public}s, authForm=%{public}d",
+                ret, ProfileUtils::GetAnonyString(remoteNetworkId).c_str(), authForm);
             return;
         }
     };
     auto handler = EventHandlerFactory::GetInstance().GetEventHandler();
     if (handler == nullptr || !handler->PostTask(task)) {
-        HILOGE("Post NotifyNotOHBaseP2pOnline task faild");
+        HILOGE("Post NotifyNotOHBaseOnline task faild");
         return;
     }
 }
