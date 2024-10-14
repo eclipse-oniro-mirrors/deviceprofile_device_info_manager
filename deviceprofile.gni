@@ -31,6 +31,7 @@ device_profile_innerkits =
     "//foundation/deviceprofile/device_info_manager/interfaces/innerkits/core"
 device_profile_test = "//foundation/deviceprofile/device_info_manager/test"
 
+third_party_json = "//third_party/json"
 third_party_cjson = "//third_party/cJSON"
 fuzz_test_output_path = "device_info_manager/device_info_manager"
 build_flags = [ "-Werror" ]

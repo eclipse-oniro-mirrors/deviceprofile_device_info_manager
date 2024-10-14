@@ -26,7 +26,6 @@ device_profile_configs = [
 device_profile_deps = [
   "${old_device_profile_innerkits}/core:distributed_device_profile_client",
   "${old_device_profile_service}/core:distributed_device_profile",
-  "//third_party/googletest:gtest_main",
 ]
 
 device_profile_external_deps = [

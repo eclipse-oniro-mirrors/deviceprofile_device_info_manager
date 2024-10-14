@@ -23,7 +23,6 @@ device_profile_deps = [
   "${device_profile_innerkits}:distributed_device_profile_sdk",
   "${device_profile_path}/radar:device_profile_radar",
   "${device_profile_service}:distributed_device_profile_svr",
-  "//third_party/googletest:gtest_main",
 ]
 
 device_profile_external_deps = [ "hisysevent:libhisysevent" ]
