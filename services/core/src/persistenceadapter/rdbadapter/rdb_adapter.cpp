@@ -83,10 +83,20 @@ int32_t RdbAdapter::Put(int64_t& outRowId, const std::string& table, const Value
             HILOGE("RDBStore_ is null");
             return DP_RDB_DB_PTR_NULL;
         }
-        if (store_->Insert(outRowId, table, values) != E_OK) {
-            HILOGE("rdbAdapter put failed.");
+        int32_t ret = store_->Insert(outRowId, table, values);
+        if (ret == E_SQLITE_CORRUPT) {
+            HILOGE("database corrupt ret:%{public}d", ret);
+            int32_t restoreRet = store_->Restore("");
+            if (restoreRet != E_OK) {
+                HILOGE("Restore failed restoreRet:%{public}d", restoreRet);
+                return DP_RDB_DATABASE_RESTORE_FAIL;
+            }
+            ret = store_->Insert(outRowId, table, values);
+        }
+        if (ret != E_OK) {
+            HILOGE("rdbAdapter put failed ret:%{public}d", ret);
             return DP_RDBADAPTER_PUT_FAIL;
-        };
+        }
     }
     return DP_SUCCESS;
 }
@@ -104,10 +114,20 @@ int32_t RdbAdapter::Delete(int32_t& deleteRows, const std::string& table, const 
             HILOGE("RDBStore_ is null");
             return DP_RDB_DB_PTR_NULL;
         }
-        if (store_->Delete(deleteRows, table, whereClause, bindArgs) != E_OK) {
-            HILOGE("rdbAdapter delete failed");
+        int32_t ret = store_->Delete(deleteRows, table, whereClause, bindArgs);
+        if (ret == E_SQLITE_CORRUPT) {
+            HILOGE("database corrupt ret:%{public}d", ret);
+            int32_t restoreRet = store_->Restore("");
+            if (restoreRet != E_OK) {
+                HILOGE("Restore failed restoreRet:%{public}d", restoreRet);
+                return DP_RDB_DATABASE_RESTORE_FAIL;
+            }
+            ret = store_->Delete(deleteRows, table, whereClause, bindArgs);
+        }
+        if (ret != E_OK) {
+            HILOGE("rdbAdapter delete failed ret:%{public}d", ret);
             return DP_RDBADAPTER_DELETE_FAIL;
-        };
+        }
     }
     return DP_SUCCESS;
 }
@@ -125,10 +145,20 @@ int32_t RdbAdapter::Update(int32_t& changedRows, const std::string& table, const
             HILOGE("RDBStore_ is null");
             return DP_RDB_DB_PTR_NULL;
         }
-        if (store_->Update(changedRows, table, values, whereClause, bindArgs) != E_OK) {
-            HILOGE("rdbAdapter update failed");
+        int32_t ret = store_->Update(changedRows, table, values, whereClause, bindArgs);
+        if (ret == E_SQLITE_CORRUPT) {
+            HILOGE("database corrupt ret:%{public}d", ret);
+            int32_t restoreRet = store_->Restore("");
+            if (restoreRet != E_OK) {
+                HILOGE("Restore failed restoreRet:%{public}d", restoreRet);
+                return DP_RDB_DATABASE_RESTORE_FAIL;
+            }
+            ret = store_->Update(changedRows, table, values, whereClause, bindArgs);
+        }
+        if (ret != E_OK) {
+            HILOGE("rdbAdapter update failed ret:%{public}d", ret);
             return DP_RDBADAPTER_UPDATE_FAIL;
-        };
+        }
     }
     return DP_SUCCESS;
 }
@@ -143,6 +173,22 @@ std::shared_ptr<ResultSet> RdbAdapter::Get(const std::string& sql, const std::ve
             return nullptr;
         }
         resultSet = store_->QueryByStep(sql, args);
+        if (resultSet == nullptr) {
+            HILOGE("resultSet is null");
+            return nullptr;
+        }
+        int32_t rowCount = ROWCOUNT_INIT;
+        int32_t ret = resultSet->GetRowCount(rowCount);
+        if (ret == E_SQLITE_CORRUPT) {
+            HILOGE("database corrupt ret:%{public}d", ret);
+            resultSet->Close();
+            ret = store_->Restore("");
+            if (ret != E_OK) {
+                HILOGE("Restore failed ret:%{public}d", ret);
+                return nullptr;
+            }
+            resultSet = store_->QueryByStep(sql, args);
+        }
     }
     return resultSet;
 }
@@ -152,14 +198,30 @@ int32_t RdbAdapter::GetRDBPtr()
     int32_t version = RDB_VERSION;
     OpenCallback helper;
     RdbStoreConfig config(RDB_PATH + DATABASE_NAME);
+    config.SetHaMode(HAMode::MAIN_REPLICA);
+    config.SetAllowRebuild(true);
     int32_t errCode = E_OK;
     {
         std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
         store_ = RdbHelper::GetRdbStore(config, version, helper, errCode);
-    }
-    if (errCode != E_OK) {
-        HILOGE("rdbAdapter getRDBPtr failed");
-        return DP_GET_RDBSTORE_FAIL;
+        if (store_ == nullptr) {
+            HILOGE("RDBStore_ is null");
+            return DP_RDB_DB_PTR_NULL;
+        }
+        NativeRdb::RebuiltType rebuiltType = NativeRdb::RebuiltType::NONE;
+        errCode = store_->GetRebuilt(rebuiltType);
+        if (errCode != E_OK) {
+            HILOGE("getRDBPtr failed errCode:%{public}d", errCode);
+            return DP_GET_RDBSTORE_FAIL;
+        }
+        if (rebuiltType == NativeRdb::RebuiltType::REBUILT) {
+            HILOGE("database corrupt");
+            int32_t restoreRet = store_->Restore("");
+            if (restoreRet != E_OK) {
+                HILOGE("Restore failed restoreRet:%{public}d", restoreRet);
+                return DP_RDB_DATABASE_RESTORE_FAIL;
+            }
+        }
     }
     return DP_SUCCESS;
 }
