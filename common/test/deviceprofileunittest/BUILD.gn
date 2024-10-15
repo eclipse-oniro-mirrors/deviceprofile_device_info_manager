@@ -29,10 +29,7 @@ ohos_unittest("DeviceProfileTest") {
 
   sources = [ "device_profile_test.cpp" ]
 
-  deps = [
-    "${device_profile_common}:distributed_device_profile_common",
-    "//third_party/googletest:gtest_main",
-  ]
+  deps = [ "${device_profile_common}:distributed_device_profile_common" ]
 
   defines = [
     "HI_LOG_ENABLE",
