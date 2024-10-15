@@ -232,6 +232,10 @@ int32_t ProfileControlUtils::GetDeviceProfile(std::shared_ptr<IKVAdapter> kvStor
         return DP_GET_KV_DB_FAIL;
     }
     ProfileUtils::EntriesToDeviceProfile(values, deviceProfile);
+    if (!ProfileUtils::IsDeviceProfileValid(deviceProfile)) {
+        HILOGE("deviceProfile is invalid!");
+        return DP_GET_KV_DB_FAIL;
+    }
     HILOGD("GetDeviceProfile in db : %{public}s!", deviceProfile.AnnoymizeDump().c_str());
     return DP_SUCCESS;
 }
@@ -261,6 +265,10 @@ int32_t ProfileControlUtils::GetServiceProfile(std::shared_ptr<IKVAdapter> kvSto
         return DP_GET_KV_DB_FAIL;
     }
     ProfileUtils::EntriesToServiceProfile(values, serviceProfile);
+    if (!ProfileUtils::IsServiceProfileValid(serviceProfile)) {
+        HILOGE("serviceProfile is invalid!");
+        return DP_GET_KV_DB_FAIL;
+    }
     HILOGD("GetServiceProfile in db : %{public}s!", serviceProfile.dump().c_str());
     return DP_SUCCESS;
 }
@@ -300,6 +308,10 @@ int32_t ProfileControlUtils::GetCharacteristicProfile(std::shared_ptr<IKVAdapter
         }
     }
     ProfileUtils::EntriesToCharProfile(values, charProfile);
+    if (!ProfileUtils::IsCharacteristicProfileValid(charProfile)) {
+        HILOGE("charProfile is invalid!");
+        return DP_GET_KV_DB_FAIL;
+    }
     HILOGD("GetCharacteristicProfile in db : %{public}s!", charProfile.dump().c_str());
     return DP_SUCCESS;
 }

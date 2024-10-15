@@ -363,6 +363,30 @@ bool ProfileUtils::IsCharProfileValid(const CharacteristicProfile& charProfile)
         IsKeyValid(charProfile.GetServiceName()) && IsKeyValid(charProfile.GetCharacteristicKey());
 }
 
+bool ProfileUtils::IsDeviceProfileValid(const DeviceProfile& devProfile)
+{
+    if (devProfile.GetOsVersion().empty() || devProfile.GetOsType() == MIN_OS_TYPE) {
+        return false;
+    }
+    return true;
+}
+
+bool ProfileUtils::IsServiceProfileValid(const ServiceProfile& svrProfile)
+{
+    if (svrProfile.GetServiceName().empty() || svrProfile.GetServiceType().empty()) {
+        return false;
+    }
+    return true;
+}
+
+bool ProfileUtils::IsCharacteristicProfileValid(const CharacteristicProfile& charProfile)
+{
+    if (charProfile.GetCharacteristicKey().empty() || charProfile.GetCharacteristicValue().empty()) {
+        return false;
+    }
+    return true;
+}
+
 std::string ProfileUtils::GenerateDeviceProfileKey(const std::string& deviceId)
 {
     return DEV_PREFIX + SEPARATOR + deviceId;
@@ -704,6 +728,7 @@ bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& pro
         (static_cast<int32_t>(propertyMap.at(property).length())) < maxValue) {
         return true;
     }
+    HILOGE("property is valid, property : %{public}s", property.c_str());
     return false;
 }
 
@@ -711,7 +736,7 @@ bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& pro
     int32_t minValue, int32_t maxValue)
 {
     if (property.empty() || propertyMap.find(property) == propertyMap.end()) {
-        HILOGE("property is valid");
+        HILOGE("property is valid, property : %{public}s", property.c_str());
         return false;
     }
     std::string propertyValue = propertyMap.at(property);
