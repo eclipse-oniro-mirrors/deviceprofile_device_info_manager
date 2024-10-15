@@ -70,7 +70,7 @@ bool SyncCoordinator::IsOnlineSync()
 
 bool SyncCoordinator::DispatchSyncTask(const SyncTask& syncTask, int64_t delayTime)
 {
-    if (syncHandler_ == nullptr || !syncHandler_->PostTask(syncTask, delayTime)) {
+    if (!syncHandler_->PostTask(syncTask, delayTime)) {
         HILOGE("post task failed");
         isOnSync_ = false;
         return false;

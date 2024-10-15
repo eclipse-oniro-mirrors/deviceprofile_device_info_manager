@@ -51,10 +51,6 @@ void SyncCompletedCallbackProxy::OnSyncCompleted(const SyncResult &syncResults)
         }
     }
     MessageOption option{MessageOption::TF_ASYNC};
-    if (Remote() == nullptr) {
-        HILOGE("Remote is nullptr");
-        return;
-    }
     int32_t errCode = Remote()->SendRequest(static_cast<uint32_t>(DPInterfaceCode::ON_SYNC_COMPLETED), data, reply,
         option);
     if (errCode != ERR_OK) {

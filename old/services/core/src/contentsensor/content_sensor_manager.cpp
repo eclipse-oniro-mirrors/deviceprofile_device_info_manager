@@ -52,13 +52,13 @@ bool ContentSensorManager::Collect()
         HITRACE_METER_NAME(HITRACE_TAG_DEVICE_PROFILE, DP_CONTENT_SENSOR_TRACE);
         for (auto& task : taskList) {
             ServiceCharacteristicProfile profileData;
-            if (task == nullptr || !task->ConvertToProfileData(profileData)) {
+            if (!task->ConvertToProfileData(profileData)) {
                 continue;
             }
             task->DoCollect(profileData);
         }
     };
-    if (csCollectorHandler_ == nullptr || !csCollectorHandler_->PostTask(csTask)) {
+    if (!csCollectorHandler_->PostTask(csTask)) {
         HILOGE("post task failed");
         return false;
     }
