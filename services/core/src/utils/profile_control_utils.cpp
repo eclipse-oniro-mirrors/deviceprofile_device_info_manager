@@ -310,6 +310,7 @@ int32_t ProfileControlUtils::GetCharacteristicProfile(std::shared_ptr<IKVAdapter
             ProfileUtils::CheckAndAddOhSuffix(serviceName, true), characteristicKey);
         if (kvStore->GetByPrefix(profileKeyPrefix, values) != DP_SUCCESS) {
             HILOGE("Get data by oh suffix fail!");
+            values.clear();
         }
     }
     if (values.empty()) {
