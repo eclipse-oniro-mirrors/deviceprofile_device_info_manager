@@ -29,20 +29,23 @@ namespace DistributedDeviceProfile {
 class SubscribeInfo : public DpParcel {
 public:
     SubscribeInfo(int32_t saId, const std::string& subscribeKey,
-        std::unordered_set<ProfileChangeType> subscribeChangeTypes, sptr<IProfileChangeListener> profileChangeListener);
+        std::unordered_set<ProfileChangeType> subscribeChangeTypes, sptr<IProfileChangeListener> profileChangeListener,
+        int32_t userId = DEFAULT_USER_ID);
     SubscribeInfo();
     ~SubscribeInfo();
 
     int32_t GetSaId() const;
     void SetSaId(int32_t saId);
     std::string GetSubscribeKey() const;
-    void SetSubscribeKey(const std::string& deviceId, const std::string& deviceAttribute);
+    void SetSubscribeKey(const std::string& deviceId, const std::string& deviceAttribute,
+        int32_t userId = DEFAULT_USER_ID);
     void SetSubscribeKey(const std::string& deviceId, const std::string& serviceName,
-        const std::string& serviceAttribute);
+        const std::string& serviceAttribute, int32_t userId = DEFAULT_USER_ID);
     void SetSubscribeKey(const std::string& deviceId, const std::string& serviceName,
-        const std::string& characteristicKey, const std::string& characteristicAttribute);
+        const std::string& characteristicKey, const std::string& characteristicAttribute,
+        int32_t userId = DEFAULT_USER_ID);
     // subscribeTrustDeviceProfile
-    void SetSubscribeKey(const std::string& subscribeKey);
+    void SetSubscribeKey(const std::string& subscribeKey, int32_t userId = DEFAULT_USER_ID);
     sptr<IRemoteObject> GetListener() const;
     void SetListener(sptr<IProfileChangeListener> listener);
     std::unordered_set<ProfileChangeType> GetProfileChangeTypes() const;
