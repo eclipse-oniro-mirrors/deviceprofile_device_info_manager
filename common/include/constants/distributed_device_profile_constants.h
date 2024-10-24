@@ -137,6 +137,7 @@ const std::string DEV_PREFIX = "dev";
 const std::string SVR_PREFIX = "svr";
 const std::string CHAR_PREFIX = "char";
 const std::string USER_ID = "user_id";
+const std::string IS_MULTI_USER = "is_muilt_user";
 const std::string TOKEN_ID = "token_id";
 const std::string ALL_PROC = "all";
 constexpr int32_t NUM_1 = 1;
