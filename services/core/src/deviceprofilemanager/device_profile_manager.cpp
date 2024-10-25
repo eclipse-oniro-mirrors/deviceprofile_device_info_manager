@@ -1026,6 +1026,23 @@ void DeviceProfileManager::ClearDataWithPeerLogout(const std::string& peerUdid, 
         HILOGE("RemoveDeviceData fail, peerUuid=%{public}s", ProfileUtils::GetAnonyString(peerUuid).c_str());
         return;
     }
+    FixDiffProfiles();
+}
+
+void DeviceProfileManager::FixDiffProfiles()
+{
+    HILOGI("call");
+    std::lock_guard<std::mutex> lock(isAdapterLoadLock_);
+    if (dpSyncAdapter_ == nullptr) {
+        HILOGE("dpSyncAdapter is nullptr!");
+        return;
+    }
+    int32_t ret = dpSyncAdapter_->FixDiffProfiles({});
+    if (ret!= DP_SUCCESS) {
+        HILOGE("FixDiffProfiles fail! ret=%{public}d", ret);
+        return;
+    }
+    return;
 }
 <<<<<<< HEAD
 =======
