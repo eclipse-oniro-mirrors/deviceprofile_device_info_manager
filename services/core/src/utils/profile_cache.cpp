@@ -24,6 +24,7 @@
 #include "content_sensor_manager_utils.h"
 #include "distributed_device_profile_errors.h"
 #include "device_profile_manager.h"
+#include "os_account_manager.h"
 #include "profile_utils.h"
 #include "static_profile_manager.h"
 #include "switch_profile_manager.h"
@@ -50,6 +51,13 @@ int32_t ProfileCache::Init()
     if (res != DP_SUCCESS || allOnlineDeviceInfo.empty()) {
         HILOGW("GetTrustedDeviceList failed, res: %{public}d", res);
         return DP_SUCCESS;
+    }
+    {
+        std::lock_guard<std::mutex> lock(foregroundIdMutex_);
+        foregroundId_ = GetForegroundId();
+        if (foregroundId_ == DP_GET_FOREGROUND_ID_FAIL) {
+            LOGE("GetForegroundId id failed, ForegroundId: %{public}d", foregroundId_);
+        }
     }
 
     std::string udid = EMPTY_STRING;
@@ -833,5 +841,18 @@ std::string ProfileCache::GetLocalUuid()
     localUuid_ = localUuid;
     return localUuid;
 }
+
+int32_t ProfileCache::GetForegroundId()
+{
+    int32_t foregroundId;
+    int32_t res = OHOS::AccountSA::OsAccountManager::GetForegroundOsAccountLocalId(foregroundId);
+    if (res != DP_SUCCESS) {
+        LOGE("GetForegroundId failed, res:%{public}d", res);
+        return DP_GET_FOREGROUND_ID_FAIL;
+    }
+    LOGI("current foregroundId = %{public}d", foregroundId);
+    return foregroundId; 
+}
+
 } // namespace DeviceProfile
 } // namespace OHOS

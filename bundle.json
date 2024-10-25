@@ -42,7 +42,8 @@
           "dmsfwk",
           "device_manager",
           "init",
-          "relational_store"
+          "relational_store",
+          "os_account"
         ],
         "third_party": [
           "json"
