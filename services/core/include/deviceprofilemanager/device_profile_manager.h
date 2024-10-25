@@ -95,6 +95,7 @@ private:
     void NotifyNotOHBaseOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
     void E2ESyncDynamicProfile(const DistributedHardware::DmDeviceInfo deviceInfo);
     void ClearDataWithPeerLogout(const std::string& peerUdid, const std::string& peerUuid);
+    void FixDiffProfiles();
     bool isAdapterSoLoaded_ = false;
     std::mutex isAdapterLoadLock_;
     std::mutex dynamicStoreMutex_;

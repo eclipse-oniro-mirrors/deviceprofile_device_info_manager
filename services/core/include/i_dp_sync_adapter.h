@@ -32,6 +32,7 @@ public:
         bool isP2p) = 0;
     virtual int32_t SyncProfile(const std::string& peerUdid, const std::string& peerNetworkId,
         const sptr<IRemoteObject> syncCb, bool isP2p) = 0;
+    virtual int32_t FixDiffProfiles(const std::vector<std::string>& udidVtr) = 0;
 };
 using CreateDPSyncAdapterFuncPtr = IDPSyncAdapter *(*)(void);
 } // namespace DeviceProfile
