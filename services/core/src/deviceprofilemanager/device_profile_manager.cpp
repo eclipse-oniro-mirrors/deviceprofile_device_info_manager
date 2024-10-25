@@ -1026,5 +1026,79 @@ void DeviceProfileManager::ClearDataWithPeerLogout(const std::string& peerUdid, 
         return;
     }
 }
+<<<<<<< HEAD
+=======
+
+void DeviceProfileManager::OnUserChange(int32_t lastUserId, int32_t curUserId)
+{
+    if (lastUserId == curUserId) {
+        HILOGW("user not change");
+        return;
+    }
+    std::string localUdid = ProfileCache::GetInstance().GetLocalUdid();
+    if (localUdid.empty()) {
+        HILOGE("GetLocalUdid fail");
+        return;
+    }
+    std::map<std::string, std::string> profileMap;
+    if (GetProfilesByKeyPrefix(localUdid, profileMap) != DP_SUCCESS || profileMap.empty()) {
+        HILOGE("Get All Local Profiles fail");
+        return;
+    }
+    std::unordered_set<std::string> lastUserDbKeysWithoutUID;
+    std::map<std::string, std::string> curUserProfiles;
+    for (const auto& [key, value] : profileMap) {
+        int32_t userId = ProfileUtils::GetUserIdFromDbKey(key);
+        if (userId != DEFAULT_USER_ID && userId == lastUserId) {
+            std::string dbKeyWithoutUID =ProfileUtils::RemoveUserIdFromDbKey(key);
+            if (!dbKeyWithoutUID.empty()) {
+                lastUserDbKeysWithoutUID.insert(dbKeyWithoutUID);
+            }
+        }
+        if (userId != DEFAULT_USER_ID && userId == curUserId) {
+            curUserProfiles[key] = value;
+        }
+    }
+    std::map<std::string, std::string> curUserProfilesWithoutUID;
+    for (const auto& [key, value] : curUserProfiles) {
+        std::string dbKeyWithoutUID = ProfileUtils::RemoveUserIdFromDbKey(key);
+        if (!dbKeyWithoutUID.empty()) {
+            lastUserDbKeysWithoutUID.erase(dbKeyWithoutUID);
+            curUserProfilesWithoutUID[dbKeyWithoutUID] = value;
+        }
+    }
+    int32_t ret = SaveBatchByKeys(curUserProfilesWithoutUID);
+    if (ret != DP_SUCCESS) {
+        HILOGE("SaveBatchByKeys fail ret=%{public}d", ret);
+        return;
+    }
+    std::vector<std::string> delKeys{lastUserDbKeysWithoutUID.begin(), lastUserDbKeysWithoutUID.end()};
+    ret = DeleteBatchByKeys(delKeys);
+    if (ret != DP_SUCCESS) {
+        HILOGE("DeleteBatchByKeys fail ret=%{public}d", ret);
+        return;
+    }
+}
+
+int32_t DeviceProfileManager::SaveBatchByKeys(const std::map<std::string, std::string>& entries)
+{
+    HILOGD("entries.size:%{public}zu", entries.size());
+    if (entries.empty()) {
+        HILOGW("entries is empty");
+        return DP_SUCCESS;
+    }
+    std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
+    if (deviceProfileStore_ == nullptr) {
+        HILOGE("deviceProfileStore is nullptr!");
+        return DP_GET_KV_DB_FAIL;
+    }
+    int32_t ret = deviceProfileStore_->PutBatch(entries);
+    if (ret != DP_SUCCESS) {
+        HILOGE("PutBatch fail! ret:%{public}d", ret);
+        return ret;
+    }
+    return DP_SUCCESS;
+}
+>>>>>>> 86ce8ca (切换用户时当前用户数据覆盖上一个用户数据)
 } // namespace DeviceProfile
 } // namespace OHOS

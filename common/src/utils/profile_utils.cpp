@@ -853,6 +853,7 @@ int32_t ProfileUtils::GetUserIdFromDbKey(const std::string& dbKey)
         HILOGE("SplitString fail");
         return userId;
     }
+<<<<<<< HEAD
     if(splitKeys[0] == DEV_PREFIX && splitKeys.size() == NUM_4 && IsNumStr(splitKeys[NUM_3])) {
         userId = std::atoi(splitKeys[NUM_3]);
     }
@@ -861,6 +862,16 @@ int32_t ProfileUtils::GetUserIdFromDbKey(const std::string& dbKey)
     }
     if(splitKeys[0] == CHAR_PREFIX && splitKeys.size() == NUM_6 && IsNumStr(splitKeys[NUM_5])) {
         userId = std::atoi(splitKeys[NUM_5]);
+=======
+    if (splitKeys[0] == DEV_PREFIX && splitKeys.size() > NUM_3 && IsNumStr(splitKeys[NUM_3])) {
+        userId = std::atoi(splitKeys[NUM_3].c_str());
+    }
+    if (splitKeys[0] == SVR_PREFIX && splitKeys.size() > NUM_4 && IsNumStr(splitKeys[NUM_4])) {
+        userId = std::atoi(splitKeys[NUM_4].c_str());
+    }
+    if (splitKeys[0] == CHAR_PREFIX && splitKeys.size() > NUM_5 && IsNumStr(splitKeys[NUM_5])) {
+        userId = std::atoi(splitKeys[NUM_5].c_str());
+>>>>>>> 86ce8ca (切换用户时当前用户数据覆盖上一个用户数据)
     }
     return userId;
 }
@@ -872,14 +883,14 @@ std::string ProfileUtils::RemoveUserIdFromDbKey(const std::string& dbKey)
         HILOGE("SplitString fail");
         return EMPTY_STRING;
     }
-    if(splitKeys[0] == DEV_PREFIX && splitKeys.size() == NUM_4) {
-        splitKeys.pop_back();
+    if (splitKeys[0] == DEV_PREFIX && splitKeys.size() > NUM_3 && IsNumStr(splitKeys[NUM_3])) {
+        splitKeys.erase(splitKeys.begin() + NUM_3);
     }
-    if(splitKeys[0] == SVR_PREFIX && splitKeys.size() == NUM_5) {
-        splitKeys.pop_back();
+    if (splitKeys[0] == SVR_PREFIX && splitKeys.size() > NUM_4 && IsNumStr(splitKeys[NUM_4])) {
+        splitKeys.erase(splitKeys.begin() + NUM_4);
     }
-    if(splitKeys[0] == CHAR_PREFIX && splitKeys.size() == NUM_6) {
-        splitKeys.pop_back();
+    if (splitKeys[0] == CHAR_PREFIX && splitKeys.size() > NUM_5 && IsNumStr(splitKeys[NUM_5])) {
+        splitKeys.erase(splitKeys.begin() + NUM_5);
     }
     std::string dbKeyWithoutUserId = JoinString(splitKeys, SEPARATOR);
     if (dbKeyWithoutUserId.empty()) {
