@@ -24,7 +24,6 @@
 #include "content_sensor_manager_utils.h"
 #include "distributed_device_profile_errors.h"
 #include "device_profile_manager.h"
-#include "os_account_manager.h"
 #include "profile_utils.h"
 #include "static_profile_manager.h"
 #include "switch_profile_manager.h"
@@ -52,6 +51,7 @@ int32_t ProfileCache::Init()
         HILOGW("GetTrustedDeviceList failed, res: %{public}d", res);
         return DP_SUCCESS;
     }
+<<<<<<< HEAD
     {
         std::lock_guard<std::mutex> lock(foregroundIdMutex_);
         foregroundId_ = GetForegroundId();
@@ -59,6 +59,8 @@ int32_t ProfileCache::Init()
             LOGE("GetForegroundId id failed, ForegroundId: %{public}d", foregroundId_);
         }
     }
+=======
+>>>>>>> 8f3393c (删除cache中不必要的代码)
 
     std::string udid = EMPTY_STRING;
     std::lock_guard<std::mutex> lock(onlineDeviceLock_);
@@ -841,6 +843,7 @@ std::string ProfileCache::GetLocalUuid()
     localUuid_ = localUuid;
     return localUuid;
 }
+<<<<<<< HEAD
 
 int32_t ProfileCache::GetForegroundId()
 {
@@ -854,5 +857,7 @@ int32_t ProfileCache::GetForegroundId()
     return foregroundId; 
 }
 
+=======
+>>>>>>> 8f3393c (删除cache中不必要的代码)
 } // namespace DeviceProfile
 } // namespace OHOS
