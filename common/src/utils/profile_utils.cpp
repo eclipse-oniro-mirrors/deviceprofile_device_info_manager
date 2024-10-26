@@ -458,46 +458,59 @@ int32_t ProfileUtils::AccesseeToEntries(const AccessControlProfile& aclProfile, 
     return DP_SUCCESS;
 }
 
-int32_t ProfileUtils::DeviceProfileToEntries(const DeviceProfile& profile, std::map<std::string, std::string>& values)
+int32_t ProfileUtils::DeviceProfileToEntries(const DeviceProfile& profile, std::map<std::string, std::string>& values,
+    bool isMuiltUser)
 {
     std::string deviceProfileKey = GenerateDeviceProfileKey(profile.GetDeviceId());
-    values[GenerateDBKey(deviceProfileKey, OS_SYS_CAPACITY)] = profile.GetOsSysCap();
-    values[GenerateDBKey(deviceProfileKey, OS_VERSION)] = profile.GetOsVersion();
-    values[GenerateDBKey(deviceProfileKey, OS_TYPE)] = std::to_string(profile.GetOsType());
-    values[GenerateDBKey(deviceProfileKey, OS_VERSION + OH_PROFILE_SUFFIX)] = profile.GetOsVersion();
-    values[GenerateDBKey(deviceProfileKey, OS_TYPE + OH_PROFILE_SUFFIX)] = std::to_string(profile.GetOsType());
+    if (isMuiltUser) {
+        values[GenerateDBKey(deviceProfileKey, OS_SYS_CAPACITY, profile.GetUserId())] = profile.GetOsSysCap();
+        values[GenerateDBKey(deviceProfileKey, OS_VERSION, profile.GetUserId())] = profile.GetOsVersion();
+        values[GenerateDBKey(deviceProfileKey, OS_TYPE, profile.GetUserId())] = std::to_string(profile.GetOsType());
+        values[GenerateDBKey(deviceProfileKey, OS_VERSION + OH_PROFILE_SUFFIX, profile.GetUserId())] =
+            profile.GetOsVersion();
+        values[GenerateDBKey(deviceProfileKey, OS_TYPE + OH_PROFILE_SUFFIX, profile.GetUserId())] =
+            std::to_string(profile.GetOsType());
+    } else {
+        values[GenerateDBKey(deviceProfileKey, OS_SYS_CAPACITY)] = profile.GetOsSysCap();
+        values[GenerateDBKey(deviceProfileKey, OS_VERSION)] = profile.GetOsVersion();
+        values[GenerateDBKey(deviceProfileKey, OS_TYPE)] = std::to_string(profile.GetOsType());
+        values[GenerateDBKey(deviceProfileKey, OS_VERSION + OH_PROFILE_SUFFIX)] = profile.GetOsVersion();
+        values[GenerateDBKey(deviceProfileKey, OS_TYPE + OH_PROFILE_SUFFIX)] = std::to_string(profile.GetOsType());
+    }
     return DP_SUCCESS;
 }
 
-int32_t ProfileUtils::ServiceProfileToEntries(const ServiceProfile& profile, std::map<std::string, std::string>& values)
+int32_t ProfileUtils::ServiceProfileToEntries(const ServiceProfile& profile, std::map<std::string, std::string>& values
+    , bool isMuiltUser)
 {
     std::string serviceName = CheckAndAddOhSuffix(profile.GetServiceName(), true);
     std::string serviceProfileKey = GenerateServiceProfileKey(profile.GetDeviceId(), serviceName);
     // value not need add OH suffix
-    values[GenerateDBKey(serviceProfileKey, SERVICE_NAME)] = profile.GetServiceName();
-    values[GenerateDBKey(serviceProfileKey, SERVICE_TYPE)] = profile.GetServiceType();
-    return DP_SUCCESS;
-}
-
-int32_t ProfileUtils::ServiceProfileToMuiltUserEntries(const ServiceProfile& profile, std::map<std::string,
-    std::string>& values)
-{
-    std::string serviceName = CheckAndAddOhSuffix(profile.GetServiceName(), true);
-    std::string serviceProfileKey = GenerateServiceProfileKey(profile.GetDeviceId(), serviceName);
-    // value not need add OH suffix
-    values[GenerateMuiltUserDBKey(serviceProfileKey, SERVICE_NAME, profile.GetUserId())] = profile.GetServiceName();
-    values[GenerateMuiltUserDBKey(serviceProfileKey, SERVICE_TYPE, profile.GetUserId())] = profile.GetServiceType();
+    if (isMuiltUser) {
+        values[GenerateDBKey(serviceProfileKey, SERVICE_NAME, profile.GetUserId())] = profile.GetServiceName();
+        values[GenerateDBKey(serviceProfileKey, SERVICE_TYPE, profile.GetUserId())] = profile.GetServiceType();
+    } else{
+        values[GenerateDBKey(serviceProfileKey, SERVICE_NAME)] = profile.GetServiceName();
+        values[GenerateDBKey(serviceProfileKey, SERVICE_TYPE)] = profile.GetServiceType();
+    }
     return DP_SUCCESS;
 }
 
 int32_t ProfileUtils::CharacteristicProfileToEntries(const CharacteristicProfile& profile,
-    std::map<std::string, std::string>& values)
+    std::map<std::string, std::string>& values, bool isMuiltUser)
 {
     std::string serviceName = CheckAndAddOhSuffix(profile.GetServiceName(), true);
     std::string charProfileKey = GenerateCharProfileKey(profile.GetDeviceId(), serviceName,
         profile.GetCharacteristicKey());
-    values[GenerateDBKey(charProfileKey, CHARACTERISTIC_KEY)] = profile.GetCharacteristicKey();
-    values[GenerateDBKey(charProfileKey, CHARACTERISTIC_VALUE)] = profile.GetCharacteristicValue();
+    if (isMuiltUser) {
+        values[GenerateDBKey(charProfileKey, CHARACTERISTIC_KEY, profile.GetUserId())] =
+            profile.GetCharacteristicKey();
+        values[GenerateDBKey(charProfileKey, CHARACTERISTIC_VALUE, profile.GetUserId())] =
+            profile.GetCharacteristicValue();
+    } else {
+        values[GenerateDBKey(charProfileKey, CHARACTERISTIC_KEY)] = profile.GetCharacteristicKey();
+        values[GenerateDBKey(charProfileKey, CHARACTERISTIC_VALUE)] = profile.GetCharacteristicValue();
+    }
     return DP_SUCCESS;
 }
 
@@ -696,16 +709,18 @@ int32_t ProfileUtils::EntriesToCharProfile(std::map<std::string, std::string> va
     return DP_SUCCESS;
 }
 
-std::string ProfileUtils::GenerateDBKey(const std::string& profileKey, const std::string& profileProperty)
-{
-    return profileKey + SEPARATOR + profileProperty;
-}
-
-std::string ProfileUtils::GenerateMuiltUserDBKey(const std::string& profileKey, const std::string& profileProperty,
+std::string ProfileUtils::GenerateDBKey(const std::string& profileKey, const std::string& profileProperty,
     int32_t userId)
 {
-    return profileKey + SEPARATOR + profileProperty + SEPARATOR + std::to_string(userId);
+    std::string DBKey = "";
+    if (userId != -1) {
+        DBKey = profileKey + SEPARATOR + profileProperty + SEPARATOR + std::to_string(userId);
+    } else {
+        DBKey = profileKey + SEPARATOR + profileProperty;
+    }
+    return DBKey;
 }
+
 
 std::string ProfileUtils::GetProfileProperty(const std::string& dbKey)
 {

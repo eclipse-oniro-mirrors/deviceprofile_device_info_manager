@@ -110,7 +110,16 @@ int32_t DeviceProfileManager::PutDeviceProfile(const DeviceProfile& deviceProfil
         return DP_INVALID_PARAMS;
     }
     std::map<std::string, std::string> entries;
-    ProfileUtils::DeviceProfileToEntries(deviceProfile, entries);
+    if (deviceProfile.GetIsMuitUser()) {
+        ProfileUtils::DeviceProfileToEntries(deviceProfile, entries, true);
+        if (ProfileCache::GetInstance().GetForegroundId() == deviceProfile.GetUserId()) {
+            ProfileUtils::DeviceProfileToEntries(deviceProfile, entries);
+        } else {
+            HILOGI("the profile does not belong to the current user.");
+        }
+    } else {
+        ProfileUtils::DeviceProfileToEntries(deviceProfile, entries);
+    }
     if (isFirst_.load()) {
         AddToPutTempCache(entries);
         return DP_SUCCESS;
@@ -139,9 +148,8 @@ int32_t DeviceProfileManager::PutServiceProfile(const ServiceProfile& servicePro
     }
     std::map<std::string, std::string> entries;
     if (serviceProfile.GetIsMuitUser()) {
-        ProfileUtils::ServiceProfileToMuiltUserEntries(serviceProfile, entries);
-        int32_t currentUserId = ProfileCache::GetInstance().GetForegroundId();
-        if (currentUserId == serviceProfile.GetUserId()) {
+        ProfileUtils::ServiceProfileToEntries(serviceProfile, entries, true);
+        if (ProfileCache::GetInstance().GetForegroundId() == serviceProfile.GetUserId()) {
             ProfileUtils::ServiceProfileToEntries(serviceProfile, entries);
         } else {
             HILOGI("the profile does not belong to the current user.");
@@ -177,7 +185,16 @@ int32_t DeviceProfileManager::PutServiceProfileBatch(const std::vector<ServicePr
             HILOGE("the profile is invalid! serviceProfile:%{public}s", serviceProfile.dump().c_str());
             continue;
         }
-        ProfileUtils::ServiceProfileToEntries(serviceProfile, entries);
+        if (serviceProfile.GetIsMuitUser()) {
+            ProfileUtils::ServiceProfileToEntries(serviceProfile, entries, true);
+            if (ProfileCache::GetInstance().GetForegroundId() == serviceProfile.GetUserId()) {
+                ProfileUtils::ServiceProfileToEntries(serviceProfile, entries);
+            } else {
+                HILOGI("the profile does not belong to the current user.");
+            }
+        } else {
+            ProfileUtils::ServiceProfileToEntries(serviceProfile, entries);
+        }
     }
     if (isFirst_.load()) {
         AddToPutTempCache(entries);
@@ -206,7 +223,16 @@ int32_t DeviceProfileManager::PutCharacteristicProfile(const CharacteristicProfi
         return DP_INVALID_PARAMS;
     }
     std::map<std::string, std::string> entries;
-    ProfileUtils::CharacteristicProfileToEntries(charProfile, entries);
+    if (charProfile.GetIsMuitUser()) {
+        ProfileUtils::CharacteristicProfileToEntries(charProfile, entries, true);
+        if (ProfileCache::GetInstance().GetForegroundId() == charProfile.GetUserId()) {
+            ProfileUtils::CharacteristicProfileToEntries(charProfile, entries);
+        } else {
+            HILOGI("the profile does not belong to the current user.");
+        }
+    } else {
+        ProfileUtils::CharacteristicProfileToEntries(charProfile, entries);
+    }
     if (isFirst_.load()) {
         AddToPutTempCache(entries);
         return DP_SUCCESS;
@@ -235,7 +261,16 @@ int32_t DeviceProfileManager::PutCharacteristicProfileBatch(const std::vector<Ch
             HILOGE("the profile is invalid! charProfile:%{public}s", charProfile.dump().c_str());
             continue;
         }
-        ProfileUtils::CharacteristicProfileToEntries(charProfile, entries);
+        if (charProfile.GetIsMuitUser()) {
+            ProfileUtils::CharacteristicProfileToEntries(charProfile, entries, true);
+            if (ProfileCache::GetInstance().GetForegroundId() == charProfile.GetUserId()) {
+                ProfileUtils::CharacteristicProfileToEntries(charProfile, entries);
+            } else {
+                HILOGI("the profile does not belong to the current user.");
+            }
+        } else {
+            ProfileUtils::CharacteristicProfileToEntries(charProfile, entries);
+        }
     }
     if (isFirst_.load()) {
         AddToPutTempCache(entries);

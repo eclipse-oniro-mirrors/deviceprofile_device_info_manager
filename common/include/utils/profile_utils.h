@@ -68,12 +68,12 @@ public:
     static int32_t AccessControlProfileToEntries(const AccessControlProfile& profile, ValuesBucket& values);
     static int32_t AccesserToEntries(const AccessControlProfile& aclProfile, ValuesBucket& values);
     static int32_t AccesseeToEntries(const AccessControlProfile& aclProfile, ValuesBucket& values);
-    static int32_t DeviceProfileToEntries(const DeviceProfile& profile, std::map<std::string, std::string>& values);
-    static int32_t ServiceProfileToEntries(const ServiceProfile& profile, std::map<std::string, std::string>& values);
-    static int32_t ServiceProfileToMuiltUserEntries(const ServiceProfile& profile, std::map<std::string,
-        std::string>& values);
+    static int32_t DeviceProfileToEntries(const DeviceProfile& profile, std::map<std::string, std::string>& values,
+        bool isMuiltUser = false);
+    static int32_t ServiceProfileToEntries(const ServiceProfile& profile, std::map<std::string, std::string>& values,
+        bool isMuiltUser = false);
     static int32_t CharacteristicProfileToEntries(const CharacteristicProfile& profile,
-        std::map<std::string, std::string>& values);
+        std::map<std::string, std::string>& values, bool isMuiltUser = false);
     static int32_t EntriesToTrustDeviceProfile(const ValuesBucket& values, TrustDeviceProfile& profile);
     static int32_t EntriesToAccessControlProfile(const ValuesBucket& values, AccessControlProfile& profile);
     static int32_t EntriesToAccesser(const ValuesBucket& values, Accesser& accesser);
@@ -81,9 +81,8 @@ public:
     static int32_t EntriesToDeviceProfile(std::map<std::string, std::string> values, DeviceProfile& profile);
     static int32_t EntriesToServiceProfile(std::map<std::string, std::string> values, ServiceProfile& profile);
     static int32_t EntriesToCharProfile(std::map<std::string, std::string> values, CharacteristicProfile& profile);
-    static std::string GenerateDBKey(const std::string& profileKey, const std::string& profileProperty);
-    static std::string GenerateMuiltUserDBKey(const std::string& profileKey, const std::string& profileProperty,
-        int32_t userId);
+    static std::string GenerateDBKey(const std::string& profileKey, const std::string& profileProperty,
+        int32_t userId = -1);
     static std::string GetProfileKey(const std::string& dbKey);
     static std::string GetDeviceIdByDBKey(const std::string& dbKey);
     static std::string GetServiceNameByDBKey(const std::string& dbKey);
