@@ -479,8 +479,19 @@ int32_t ProfileUtils::ServiceProfileToEntries(const ServiceProfile& profile, std
     return DP_SUCCESS;
 }
 
+int32_t ProfileUtils::ServiceProfileToMuiltUserEntries(const ServiceProfile& profile, std::map<std::string,
+    std::string>& values)
+{
+    std::string serviceName = CheckAndAddOhSuffix(profile.GetServiceName(), true);
+    std::string serviceProfileKey = GenerateServiceProfileKey(profile.GetDeviceId(), serviceName);
+    // value not need add OH suffix
+    values[GenerateMuiltUserDBKey(serviceProfileKey, SERVICE_NAME, profile.GetUserId())] = profile.GetServiceName();
+    values[GenerateMuiltUserDBKey(serviceProfileKey, SERVICE_TYPE, profile.GetUserId())] = profile.GetServiceType();
+    return DP_SUCCESS;
+}
+
 int32_t ProfileUtils::CharacteristicProfileToEntries(const CharacteristicProfile& profile,
-                                                     std::map<std::string, std::string>& values)
+    std::map<std::string, std::string>& values)
 {
     std::string serviceName = CheckAndAddOhSuffix(profile.GetServiceName(), true);
     std::string charProfileKey = GenerateCharProfileKey(profile.GetDeviceId(), serviceName,
@@ -688,6 +699,12 @@ int32_t ProfileUtils::EntriesToCharProfile(std::map<std::string, std::string> va
 std::string ProfileUtils::GenerateDBKey(const std::string& profileKey, const std::string& profileProperty)
 {
     return profileKey + SEPARATOR + profileProperty;
+}
+
+std::string ProfileUtils::GenerateMuiltUserDBKey(const std::string& profileKey, const std::string& profileProperty,
+    int32_t userId)
+{
+    return profileKey + SEPARATOR + profileProperty + SEPARATOR + std::to_string(userId);
 }
 
 std::string ProfileUtils::GetProfileProperty(const std::string& dbKey)

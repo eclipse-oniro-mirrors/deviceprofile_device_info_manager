@@ -138,7 +138,17 @@ int32_t DeviceProfileManager::PutServiceProfile(const ServiceProfile& servicePro
         return DP_INVALID_PARAMS;
     }
     std::map<std::string, std::string> entries;
-    ProfileUtils::ServiceProfileToEntries(serviceProfile, entries);
+    if (serviceProfile.GetIsMuitUser()) {
+        ProfileUtils::ServiceProfileToMuiltUserEntries(serviceProfile, entries);
+        int32_t currentUserId = ProfileCache::GetInstance().GetForegroundId();
+        if (currentUserId == serviceProfile.GetUserId()) {
+            ProfileUtils::ServiceProfileToEntries(serviceProfile, entries);
+        } else {
+            HILOGI("the profile does not belong to the current user.");
+        }
+    } else {
+        ProfileUtils::ServiceProfileToEntries(serviceProfile, entries);
+    }
     if (isFirst_.load()) {
         AddToPutTempCache(entries);
         return DP_SUCCESS;

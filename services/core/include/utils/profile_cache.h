@@ -89,12 +89,11 @@ public:
     std::string GetLocalUdid();
     std::string GetLocalNetworkId();
     std::string GetLocalUuid();
+    int32_t GetForegroundId();
 
 private:
     int32_t RefreshCharProfileCache(const std::vector<CharacteristicProfile>& characteristicProfiles);
     int32_t RefreshStaticProfileCache(const std::unordered_map<std::string, CharacteristicProfile>& staticProfiles);
-
-    int32_t GetForegroundId();
 
 private:
     std:mutex foregroundIdMutex_;
