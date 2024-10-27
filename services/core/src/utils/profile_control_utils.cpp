@@ -412,7 +412,7 @@ int32_t ProfileControlUtils::GetSwitchCharacteristicProfile(const std::string& a
 }
 
 int32_t ProfileControlUtils::DeleteServiceProfile(std::shared_ptr<IKVAdapter> kvStore, const std::string& deviceId,
-    const std::string& serviceName)
+    const std::string& serviceName, bool isMuitUser, int32_t userId)
 {
     HILOGD("call!");
     if (kvStore == nullptr) {
@@ -426,9 +426,18 @@ int32_t ProfileControlUtils::DeleteServiceProfile(std::shared_ptr<IKVAdapter> kv
     }
     HILOGI("deviceId: %{public}s, serviceName: %{public}s!",
         ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str());
-
-    std::string profileKeyPrefix = ProfileUtils::GenerateServiceProfileKey(deviceId, serviceName);
-    if (kvStore->DeleteByPrefix(profileKeyPrefix) != DP_SUCCESS) {
+    std::vector<std::string> keys;
+    if (isMuitUser) {
+        ProfileUtils::GenerateServiceDBkeys(deviceId, serviceName, keys, true, userId);
+        if (ProfileCache::GetInstance().GetForegroundId() == userId) {
+            ProfileUtils::GenerateServiceDBkeys(deviceId, serviceName, keys);
+        } else {
+            HILOGI("the profile does not belong to the current user.");
+        }
+    } else {
+        ProfileUtils::GenerateServiceDBkeys(deviceId, serviceName, keys);
+    }
+    if (kvStore->DeleteBatch(keys) != DP_SUCCESS) {
         HILOGE("DeleteServiceProfile fail!");
         return DP_DEL_KV_DB_FAIL;
     }
@@ -437,7 +446,8 @@ int32_t ProfileControlUtils::DeleteServiceProfile(std::shared_ptr<IKVAdapter> kv
 }
 
 int32_t ProfileControlUtils::DeleteCharacteristicProfile(std::shared_ptr<IKVAdapter> kvStore,
-    const std::string& deviceId, const std::string& serviceName, const std::string& characteristicKey)
+    const std::string& deviceId, const std::string& serviceName, const std::string& characteristicKey, bool isMuitUser,
+    int32_t userId)
 {
     HILOGI("call!");
     if (kvStore == nullptr) {
@@ -451,16 +461,18 @@ int32_t ProfileControlUtils::DeleteCharacteristicProfile(std::shared_ptr<IKVAdap
     }
     HILOGI("deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
         ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
-    if (ProfileUtils::IsNeedAddOhSuffix(serviceName, true)) {
-        std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId,
-            ProfileUtils::CheckAndAddOhSuffix(serviceName, true), characteristicKey);
-        if (kvStore->DeleteByPrefix(profileKeyPrefix) != DP_SUCCESS) {
-            HILOGE("DeleteCharacteristicProfile fail!");
-            return DP_GET_KV_DB_FAIL;
+    std::vector<std::string> keys;
+    if (isMuitUser) {
+        ProfileUtils::GenerateCharacteristicDBkeys(deviceId, serviceName, characteristicKey,keys, true, userId);
+        if (ProfileCache::GetInstance().GetForegroundId() == userId) {
+            ProfileUtils::GenerateCharacteristicDBkeys(deviceId, serviceName, characteristicKey, keys);
+        } else {
+            HILOGI("the profile does not belong to the current user.");
         }
+    } else {
+        ProfileUtils::GenerateCharacteristicDBkeys(deviceId, serviceName, characteristicKey, keys);
     }
-    std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, characteristicKey);
-    if (kvStore->DeleteByPrefix(profileKeyPrefix) != DP_SUCCESS) {
+    if (kvStore->DeleteBatch(keys) != DP_SUCCESS) {
         HILOGE("DeleteCharacteristicProfile fail!");
         return DP_DEL_KV_DB_FAIL;
     }

@@ -52,9 +52,10 @@ public:
         ServiceProfile& serviceProfile) = 0;
     virtual int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
         const std::string& characteristicId, CharacteristicProfile& charProfile) = 0;
-    virtual int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName) = 0;
+    virtual int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName,
+        bool isMuitUser = false, int32_t userId = -1) = 0;
     virtual int32_t DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-        const std::string& characteristicId) = 0;
+        const std::string& characteristicId, bool isMuitUser = false, int32_t userId = -1) = 0;
     virtual int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) = 0;
     virtual int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) = 0;
     virtual int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IRemoteObject> dpInitedCallback) = 0;

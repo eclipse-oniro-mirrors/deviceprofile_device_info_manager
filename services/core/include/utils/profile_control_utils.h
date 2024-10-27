@@ -50,9 +50,10 @@ public:
     static int32_t GetSwitchCharacteristicProfile(const std::string& appId, const std::string& deviceId,
     const std::string& serviceName, const std::string& characteristicKey, CharacteristicProfile& charProfile);
     static int32_t DeleteServiceProfile(std::shared_ptr<IKVAdapter> kvStore, const std::string& deviceId,
-        const std::string& serviceName);
+        const std::string& serviceName, bool isMuitUser = false, int32_t userId = -1);
     static int32_t DeleteCharacteristicProfile(std::shared_ptr<IKVAdapter> kvStore, const std::string& deviceId,
-        const std::string& serviceName, const std::string& characteristicKey);
+        const std::string& serviceName, const std::string& characteristicKey, bool isMuitUser = false,
+        int32_t userId = -1);
     static int32_t GetAllDeviceProfile(std::shared_ptr<IKVAdapter> kvStore, std::vector<DeviceProfile>& deviceProfiles);
     static int32_t GetAllServiceProfile(std::shared_ptr<IKVAdapter> kvStore,
         std::vector<ServiceProfile>& serviceProfiles);

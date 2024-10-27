@@ -343,13 +343,15 @@ int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& device
     return DP_SUCCESS;
 }
 
-int32_t DeviceProfileManager::DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName)
+int32_t DeviceProfileManager::DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName,
+    bool isMuitUser, int32_t userId)
 {
     HILOGD("call!");
     int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::DeleteServiceProfile(deviceProfileStore_, deviceId, serviceName);
+        res = ProfileControlUtils::DeleteServiceProfile(deviceProfileStore_, deviceId, serviceName, isMuitUser,
+            userId);
     }
     if (res != DP_SUCCESS) {
         HILOGE("DeleteServiceProfile fail, reason: %{public}d!", res);
@@ -360,14 +362,14 @@ int32_t DeviceProfileManager::DeleteServiceProfile(const std::string& deviceId, 
 }
 
 int32_t DeviceProfileManager::DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-    const std::string& characteristicKey)
+    const std::string& characteristicKey, bool isMuitUser, int32_t userId)
 {
     HILOGD("call!");
     int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         res = ProfileControlUtils::DeleteCharacteristicProfile(deviceProfileStore_, deviceId, serviceName,
-            characteristicKey);
+            characteristicKey, isMuitUser, userId);
     }
     if (res != DP_SUCCESS) {
         HILOGE("DeleteCharacteristicProfile fail, reason: %{public}d!", res);

@@ -107,6 +107,16 @@ public:
     static bool GetUdidByNetworkId(const std::string& networkId, std::string& udid);
     static bool GetUuidByNetworkId(const std::string& networkId, std::string& uuid);
     static bool IsNumStr(const std::string& inString);
+<<<<<<< HEAD
+=======
+    static int32_t GetUserIdFromDbKey(const std::string& dbKey);
+    static std::string RemoveUserIdFromDbKey(const std::string& dbKey);
+    static int32_t GenerateServiceDBkeys(const std::string& deviceId, const std::string& serviceName,
+        std::vector<std::string>& dbKeys, bool isMuiltUser = false, int32_t userId = -1);
+    static int32_t GenerateCharacteristicDBkeys(const std::string& deviceId, const std::string& serviceName,
+        const std::string& characteristicKey, std::vector<std::string>& dbKeys, bool isMuiltUser = false,
+        int32_t userId = -1);
+>>>>>>> 507ffd4 (KV Delete接口适配多用户)
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

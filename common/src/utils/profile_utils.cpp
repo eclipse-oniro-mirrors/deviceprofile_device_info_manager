@@ -842,5 +842,83 @@ std::string ProfileUtils::GetDbKeyByProfile(const CharacteristicProfile& profile
         SEPARATOR + profile.GetCharacteristicKey() + SEPARATOR + CHARACTERISTIC_VALUE;
     return dbKey;
 }
+<<<<<<< HEAD
+=======
+
+int32_t ProfileUtils::GetUserIdFromDbKey(const std::string& dbKey)
+{
+    int32_t userId = DEFAULT_USER_ID;
+    std::vector<std::string> splitKeys;
+    if (SplitString(dbKey, SEPARATOR, splitKeys) != DP_SUCCESS || splitKeys.size() < NUM_3) {
+        HILOGE("SplitString fail");
+        return userId;
+    }
+    if(splitKeys[0] == DEV_PREFIX && splitKeys.size() == NUM_4 && IsNumStr(splitKeys[NUM_3])) {
+        userId = std::atoi(splitKeys[NUM_3]);
+    }
+    if(splitKeys[0] == SVR_PREFIX && splitKeys.size() == NUM_5 && IsNumStr(splitKeys[NUM_4])) {
+        userId = std::atoi(splitKeys[NUM_4]);
+    }
+    if(splitKeys[0] == CHAR_PREFIX && splitKeys.size() == NUM_6 && IsNumStr(splitKeys[NUM_5])) {
+        userId = std::atoi(splitKeys[NUM_5]);
+    }
+    return userId;
+}
+
+std::string ProfileUtils::RemoveUserIdFromDbKey(const std::string& dbKey)
+{
+    std::vector<std::string> splitKeys;
+    if (SplitString(dbKey, SEPARATOR, splitKeys) != DP_SUCCESS || splitKeys.size() < NUM_3) {
+        HILOGE("SplitString fail");
+        return EMPTY_STRING;
+    }
+    if(splitKeys[0] == DEV_PREFIX && splitKeys.size() == NUM_4) {
+        splitKeys.pop_back();
+    }
+    if(splitKeys[0] == SVR_PREFIX && splitKeys.size() == NUM_5) {
+        splitKeys.pop_back();
+    }
+    if(splitKeys[0] == CHAR_PREFIX && splitKeys.size() == NUM_6) {
+        splitKeys.pop_back();
+    }
+    std::string dbKeyWithoutUserId = JoinString(splitKeys, SEPARATOR);
+    if (dbKeyWithoutUserId.empty()) {
+        HILOGE("JoinString fail");
+        return EMPTY_STRING;
+    }
+    return dbKeyWithoutUserId;
+}
+
+int32_t ProfileUtils::GenerateServiceDBkeys(const std::string& deviceId, const std::string& serviceName,
+    std::vector<std::string>& dbKeys, bool isMuiltUser, int32_t userId)
+{
+    std::string localServiceName = CheckAndAddOhSuffix(serviceName, true);
+    std::string serviceProfileKey = GenerateServiceProfileKey(deviceId, localServiceName);
+    // value not need add OH suffix
+    if (isMuiltUser) {
+        dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_NAME, userId));
+        dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_TYPE, userId));
+    } else{
+        dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_NAME));
+        dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_TYPE));
+    }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileUtils::GenerateCharacteristicDBkeys(const std::string& deviceId, const std::string& serviceName,
+    const std::string& characteristicKey, std::vector<std::string>& dbKeys, bool isMuiltUser, int32_t userId)
+{
+    std::string localServiceName = CheckAndAddOhSuffix(serviceName, true);
+    std::string charProfileKey = GenerateCharProfileKey(deviceId, localServiceName, characteristicKey);
+    if (isMuiltUser) {
+        dbKeys.emplace_back(GenerateDBKey(charProfileKey, CHARACTERISTIC_KEY, userId));
+        dbKeys.emplace_back(GenerateDBKey(charProfileKey, CHARACTERISTIC_VALUE, userId));
+    } else{
+        dbKeys.emplace_back(GenerateDBKey(charProfileKey, CHARACTERISTIC_KEY));
+        dbKeys.emplace_back(GenerateDBKey(charProfileKey, CHARACTERISTIC_VALUE));
+    }
+    return DP_SUCCESS;
+}
+>>>>>>> 507ffd4 (KV Delete接口适配多用户)
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

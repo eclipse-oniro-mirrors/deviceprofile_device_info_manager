@@ -58,9 +58,10 @@ public:
         ServiceProfile& serviceProfile) override;
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
         const std::string& characteristicKey, CharacteristicProfile& charProfile) override;
-    int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName) override;
+    int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName, bool isMuitUser = false,
+        int32_t userId = -1) override;
     int32_t DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-        const std::string& characteristicKey) override;
+        const std::string& characteristicKey, bool isMuitUser = false, int32_t userId = -1) override;
     int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,

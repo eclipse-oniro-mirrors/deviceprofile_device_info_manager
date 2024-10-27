@@ -439,20 +439,20 @@ int32_t DistributedDeviceProfileServiceNew::GetCharacteristicProfile(const std::
 }
 
 int32_t DistributedDeviceProfileServiceNew::DeleteServiceProfile(const std::string& deviceId,
-    const std::string& serviceName)
+    const std::string& serviceName, bool isMuitUser, int32_t userId)
 {
     if (!PermissionManager::GetInstance().CheckCallerPermission()) {
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
     HILOGD("CheckCallerPermission success interface DeleteServiceProfile");
-    int32_t ret = DeviceProfileManager::GetInstance().DeleteServiceProfile(deviceId, serviceName);
+    int32_t ret = DeviceProfileManager::GetInstance().DeleteServiceProfile(deviceId, serviceName, isMuitUser, userId);
     DpRadarHelper::GetInstance().ReportDeleteServiceProfile(ret, deviceId);
     return ret;
 }
 
 int32_t DistributedDeviceProfileServiceNew::DeleteCharacteristicProfile(const std::string& deviceId,
-    const std::string& serviceName, const std::string& characteristicKey)
+    const std::string& serviceName, const std::string& characteristicKey, bool isMuitUser, int32_t userId)
 {
     if (!PermissionManager::GetInstance().CheckCallerPermission()) {
         HILOGE("this caller is permission denied!");
@@ -460,7 +460,7 @@ int32_t DistributedDeviceProfileServiceNew::DeleteCharacteristicProfile(const st
     }
     HILOGD("CheckCallerPermission success interface DeleteCharacteristicProfile");
     int32_t ret = DeviceProfileManager::GetInstance().DeleteCharacteristicProfile(deviceId, serviceName,
-        characteristicKey);
+        characteristicKey, isMuitUser, userId);
     DpRadarHelper::GetInstance().ReportDeleteCharProfile(ret, deviceId);
     return ret;
 }

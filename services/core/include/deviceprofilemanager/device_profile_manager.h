@@ -56,9 +56,10 @@ public:
         ServiceProfile& serviceProfile);
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
         const std::string& characteristicKey, CharacteristicProfile& charProfile);
-    int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName);
+    int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName, bool isMuitUser = false,
+        int32_t userId = -1);
     int32_t DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-        const std::string& characteristicKey);
+        const std::string& characteristicKey, bool isMuitUser = false, int32_t userId = -1);
     int32_t GetAllDeviceProfile(std::vector<DeviceProfile>& deviceProfiles);
     int32_t GetAllServiceProfile(std::vector<ServiceProfile>& serviceProfiles);
     int32_t GetAllCharacteristicProfile(std::vector<CharacteristicProfile>& charProfiles);

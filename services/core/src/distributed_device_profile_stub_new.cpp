@@ -429,9 +429,13 @@ int32_t DistributedDeviceProfileStubNew::DeleteServiceProfileInner(MessageParcel
 {
     std::string deviceId;
     std::string serviceName;
+    bool isMuitUser;
+    int32_t userId;
     READ_HELPER(data, String, deviceId);
     READ_HELPER(data, String, serviceName);
-    int32_t ret = DeleteServiceProfile(deviceId, serviceName);
+    READ_HELPER(data, Bool, isMuitUser);
+    READ_HELPER(data, Int32, userId);
+    int32_t ret = DeleteServiceProfile(deviceId, serviceName, isMuitUser, userId);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
@@ -444,10 +448,14 @@ int32_t DistributedDeviceProfileStubNew::DeleteCharacteristicProfileInner(Messag
     std::string deviceId;
     std::string serviceName;
     std::string characteristicKey;
+    bool isMuitUser;
+    int32_t userId;
     READ_HELPER(data, String, deviceId);
     READ_HELPER(data, String, serviceName);
     READ_HELPER(data, String, characteristicKey);
-    int32_t ret = DeleteCharacteristicProfile(deviceId, serviceName, characteristicKey);
+    READ_HELPER(data, Bool, isMuitUser);
+    READ_HELPER(data, Int32, userId);
+    int32_t ret = DeleteCharacteristicProfile(deviceId, serviceName, characteristicKey, isMuitUser, userId);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
