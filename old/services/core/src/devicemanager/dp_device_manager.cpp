@@ -51,13 +51,42 @@ const std::string PKG_NAME = "ohos.deviceprofile";
 
 IMPLEMENT_SINGLE_INSTANCE(DpDeviceManager);
 
+std::shared_ptr<DistributedHardware::DmInitCallback> DpDeviceManager::GetInitCallback()
+{
+    std::lock_guard<std::mutex> autoLock(initcallbackLock_);
+    if (initCallback_ == nullptr) {
+        initCallback_ = std::make_shared<DeviceInitCallBack>();
+    }
+    return initCallback_;
+}
+ 
+std::shared_ptr<DistributedHardware::DeviceStateCallback> DpDeviceManager::GetStateCallback()
+{
+    std::lock_guard<std::mutex> autoLock(stateCallLock_);
+    if (stateCallback_ == nullptr) {
+        stateCallback_ = std::make_shared<DpDeviceStateCallback>();
+    }
+    return stateCallback_;
+}
+ 
+void DpDeviceManager::GetDevMgrHandler()
+{
+    std::lock_guard<std::mutex> autoLock(devMgrLock_);
+    if (devMgrHandler_ == nullptr) {
+        devMgrHandler_ = DistributedDeviceProfile::EventHandlerFactory::GetInstance().GetEventHandler();
+    }
+}
+ 
 bool DpDeviceManager::Init()
 {
-    initCallback_ = std::make_shared<DeviceInitCallBack>();
-    stateCallback_ = std::make_shared<DpDeviceStateCallback>();
-    devMgrHandler_ = DistributedDeviceProfile::EventHandlerFactory::GetInstance().GetEventHandler();
-    if (devMgrHandler_ == nullptr) {
-        return false;
+    GetInitCallback();
+    GetStateCallback();
+    GetDevMgrHandler();
+    {
+        std::lock_guard<std::mutex> autoLock(devMgrLock_);
+        if (devMgrHandler_ == nullptr) {
+            return false;
+        }
     }
     if (!ConnectDeviceManager()) {
         return false;
