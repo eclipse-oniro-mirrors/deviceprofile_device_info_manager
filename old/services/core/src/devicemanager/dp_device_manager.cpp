@@ -167,6 +167,7 @@ void DpDeviceManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
             remoteDeviceInfoMap_[networkId] = deviceInfo;
         }
     };
+    std::lock_guard<std::mutex> autoLock(devMgrLock_);
     if (devMgrHandler_ == nullptr) {
         HILOGE("devMgrHandler is nullptr");
         return;
@@ -184,6 +185,7 @@ void DpDeviceManager::OnNodeOffline(const std::string& networkId)
         std::lock_guard<std::mutex> autoLock(deviceLock_);
         remoteDeviceInfoMap_.erase(networkId);
     };
+    std::lock_guard<std::mutex> autoLock(devMgrLock_);
     if (devMgrHandler_ == nullptr) {
         HILOGE("devMgrHandler is nullptr");
         return;
@@ -237,14 +239,14 @@ bool DpDeviceManager::ConnectDeviceManager()
         int32_t retryTimes = 0;
         int32_t errCode = ERR_OK;
         while (retryTimes++ < MAX_TIMES_CONNECT_DEVICEMANAGER) {
-            int32_t ret = DeviceManager::GetInstance().InitDeviceManager(PKG_NAME, initCallback_);
+            int32_t ret = DeviceManager::GetInstance().InitDeviceManager(PKG_NAME, GetInitCallback());
             if (ret != 0) {
                 HILOGE("init device manager failed, ret:%{public}d", ret);
                 std::this_thread::sleep_for(1s);
                 continue;
             }
             errCode = DeviceManager::GetInstance().RegisterDevStateCallback(
-                PKG_NAME, "", stateCallback_);
+                PKG_NAME, "", GetStateCallback());
             if (errCode == ERR_OK) {
                 DpDeviceManager::GetInstance().GetTrustedDeviceList();
                 break;
@@ -262,6 +264,7 @@ bool DpDeviceManager::ConnectDeviceManager()
         }
         HILOGI("register %{public}s", (errCode == ERR_OK) ? "success" : "timeout");
     };
+    std::lock_guard<std::mutex> autoLock(devMgrLock_);
     if (devMgrHandler_ == nullptr) {
         HILOGE("devMgrHandler is nullptr");
         return false;
