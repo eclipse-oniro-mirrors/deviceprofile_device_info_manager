@@ -51,15 +51,17 @@ public:
     int32_t PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles);
     int32_t PutCharacteristicProfile(const CharacteristicProfile& charProfile);
     int32_t PutCharacteristicProfileBatch(const std::vector<CharacteristicProfile>& charProfiles);
-    int32_t GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile);
+    int32_t GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile, bool isMultiUser = false,
+        int32_t userId = DEFAULT_USER_ID);
     int32_t GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
-        ServiceProfile& serviceProfile);
+        ServiceProfile& serviceProfile, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID);
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-        const std::string& characteristicKey, CharacteristicProfile& charProfile);
-    int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName, bool isMuitUser = false,
-        int32_t userId = -1);
+        const std::string& characteristicKey, CharacteristicProfile& charProfile, bool isMultiUser = false,
+        int32_t userId = DEFAULT_USER_ID);
+    int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName, bool isMultiUser = false,
+        int32_t userId = DEFAULT_USER_ID);
     int32_t DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-        const std::string& characteristicKey, bool isMuitUser = false, int32_t userId = -1);
+        const std::string& characteristicKey, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID);
     int32_t GetAllDeviceProfile(std::vector<DeviceProfile>& deviceProfiles);
     int32_t GetAllServiceProfile(std::vector<ServiceProfile>& serviceProfiles);
     int32_t GetAllCharacteristicProfile(std::vector<CharacteristicProfile>& charProfiles);

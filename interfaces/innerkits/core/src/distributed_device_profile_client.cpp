@@ -253,58 +253,61 @@ int32_t DistributedDeviceProfileClient::PutCharacteristicProfileBatch(
     return dpService->PutCharacteristicProfileBatch(characteristicProfiles);
 }
 
-int32_t DistributedDeviceProfileClient::GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile)
+int32_t DistributedDeviceProfileClient::GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile,
+    bool isMultiUser, int32_t userId)
 {
     auto dpService = GetDeviceProfileService();
     if (dpService == nullptr) {
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    return dpService->GetDeviceProfile(deviceId, deviceProfile);
+    return dpService->GetDeviceProfile(deviceId, deviceProfile, isMultiUser, userId);
 }
 
 int32_t DistributedDeviceProfileClient::GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
-    ServiceProfile& serviceProfile)
+    ServiceProfile& serviceProfile, bool isMultiUser, int32_t userId)
 {
     auto dpService = GetDeviceProfileService();
     if (dpService == nullptr) {
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    return dpService->GetServiceProfile(deviceId, serviceName, serviceProfile);
+    return dpService->GetServiceProfile(deviceId, serviceName, serviceProfile, isMultiUser, userId);
 }
 
 int32_t DistributedDeviceProfileClient::GetCharacteristicProfile(const std::string& deviceId,
-    const std::string& serviceName, const std::string& characteristicId, CharacteristicProfile& characteristicProfile)
+    const std::string& serviceName, const std::string& characteristicId, CharacteristicProfile& characteristicProfile,
+    bool isMultiUser, int32_t userId)
 {
     auto dpService = GetDeviceProfileService();
     if (dpService == nullptr) {
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    return dpService->GetCharacteristicProfile(deviceId, serviceName, characteristicId, characteristicProfile);
+    return dpService->GetCharacteristicProfile(deviceId, serviceName, characteristicId, characteristicProfile,
+        isMultiUser, userId);
 }
 
 int32_t DistributedDeviceProfileClient::DeleteServiceProfile(const std::string& deviceId,
-    const std::string& serviceName, bool isMuitUser, int32_t userId)
+    const std::string& serviceName, bool isMultiUser, int32_t userId)
 {
     auto dpService = GetDeviceProfileService();
     if (dpService == nullptr) {
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    return dpService->DeleteServiceProfile(deviceId, serviceName, isMuitUser, userId);
+    return dpService->DeleteServiceProfile(deviceId, serviceName, isMultiUser, userId);
 }
 
 int32_t DistributedDeviceProfileClient::DeleteCharacteristicProfile(const std::string& deviceId,
-    const std::string& serviceName, const std::string& characteristicKey, bool isMuitUser, int32_t userId)
+    const std::string& serviceName, const std::string& characteristicKey, bool isMultiUser, int32_t userId)
 {
     auto dpService = GetDeviceProfileService();
     if (dpService == nullptr) {
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    return dpService->DeleteCharacteristicProfile(deviceId, serviceName, characteristicKey, isMuitUser, userId);
+    return dpService->DeleteCharacteristicProfile(deviceId, serviceName, characteristicKey, isMultiUser, userId);
 }
 
 int32_t DistributedDeviceProfileClient::SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)

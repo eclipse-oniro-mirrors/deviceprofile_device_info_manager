@@ -371,9 +371,13 @@ int32_t DistributedDeviceProfileStubNew::PutCharacteristicProfileBatchInner(Mess
 int32_t DistributedDeviceProfileStubNew::GetDeviceProfileInner(MessageParcel& data, MessageParcel& reply)
 {
     std::string deviceId;
+    bool isMultiUser;
+    int32_t userId;
     DeviceProfile deviceProfile;
     READ_HELPER(data, String, deviceId);
-    int32_t ret = GetDeviceProfile(deviceId, deviceProfile);
+    READ_HELPER(data, Bool, isMultiUser);
+    READ_HELPER(data, Int32, userId);
+    int32_t ret = GetDeviceProfile(deviceId, deviceProfile, isMultiUser, userId);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
@@ -389,9 +393,13 @@ int32_t DistributedDeviceProfileStubNew::GetServiceProfileInner(MessageParcel& d
 {
     std::string deviceId;
     std::string serviceName;
+    bool isMultiUser;
+    int32_t userId;
     ServiceProfile serviceProfile;
     READ_HELPER(data, String, deviceId);
     READ_HELPER(data, String, serviceName);
+    READ_HELPER(data, Bool, isMultiUser);
+    READ_HELPER(data, Int32, userId);
     int32_t ret = GetServiceProfile(deviceId, serviceName, serviceProfile);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
@@ -409,9 +417,13 @@ int32_t DistributedDeviceProfileStubNew::GetCharacteristicProfileInner(MessagePa
     std::string deviceId;
     std::string serviceName;
     std::string characteristicKey;
+    bool isMultiUser;
+    int32_t userId;
     READ_HELPER(data, String, deviceId);
     READ_HELPER(data, String, serviceName);
     READ_HELPER(data, String, characteristicKey);
+    READ_HELPER(data, Bool, isMultiUser);
+    READ_HELPER(data, Int32, userId);
     CharacteristicProfile charProfile;
     int32_t ret = GetCharacteristicProfile(deviceId, serviceName, characteristicKey, charProfile);
     if (!reply.WriteInt32(ret)) {
@@ -429,13 +441,13 @@ int32_t DistributedDeviceProfileStubNew::DeleteServiceProfileInner(MessageParcel
 {
     std::string deviceId;
     std::string serviceName;
-    bool isMuitUser;
+    bool isMultiUser;
     int32_t userId;
     READ_HELPER(data, String, deviceId);
     READ_HELPER(data, String, serviceName);
-    READ_HELPER(data, Bool, isMuitUser);
+    READ_HELPER(data, Bool, isMultiUser);
     READ_HELPER(data, Int32, userId);
-    int32_t ret = DeleteServiceProfile(deviceId, serviceName, isMuitUser, userId);
+    int32_t ret = DeleteServiceProfile(deviceId, serviceName, isMultiUser, userId);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
@@ -448,14 +460,14 @@ int32_t DistributedDeviceProfileStubNew::DeleteCharacteristicProfileInner(Messag
     std::string deviceId;
     std::string serviceName;
     std::string characteristicKey;
-    bool isMuitUser;
+    bool isMultiUser;
     int32_t userId;
     READ_HELPER(data, String, deviceId);
     READ_HELPER(data, String, serviceName);
     READ_HELPER(data, String, characteristicKey);
-    READ_HELPER(data, Bool, isMuitUser);
+    READ_HELPER(data, Bool, isMultiUser);
     READ_HELPER(data, Int32, userId);
-    int32_t ret = DeleteCharacteristicProfile(deviceId, serviceName, characteristicKey, isMuitUser, userId);
+    int32_t ret = DeleteCharacteristicProfile(deviceId, serviceName, characteristicKey, isMultiUser, userId);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;

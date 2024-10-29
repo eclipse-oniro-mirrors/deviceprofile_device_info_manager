@@ -26,7 +26,7 @@ class ServiceProfile : public DpParcel {
 public:
     ServiceProfile(const std::string& deviceId, const std::string& serviceName, const std::string& serviceType);
     ServiceProfile(const std::string& deviceId, const std::string& serviceName, const std::string& serviceType,
-        const bool isMuitUser, const int32_t userId);
+        const bool isMultiUser, const int32_t userId);
     ServiceProfile();
     ~ServiceProfile();
 
@@ -36,8 +36,8 @@ public:
     void SetServiceName(const std::string& serviceName);
     std::string GetServiceType() const;
     void SetServiceType(const std::string& serviceType);
-    bool GetIsMuitUser() const;
-    void SetIsMuitUser(bool isMuitUser);
+    bool GetIsMultiUser() const;
+    void SetIsMultiUser(bool isMultiUser);
     int32_t GetUserId() const;
     void SetUserId(int32_t userId);
     bool Marshalling(MessageParcel& parcel) const override;
@@ -49,7 +49,7 @@ private:
     std::string deviceId_ = "";
     std::string serviceName_ = "";
     std::string serviceType_ = "";
-    bool isMuitUser_ = false;
+    bool isMultiUser_ = false;
     int32_t userId_ = -1;
 };
 } // namespace DistributedDeviceProfile

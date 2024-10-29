@@ -32,13 +32,13 @@ public:
         characteristicValue_(characteristicValue)
     {}
     CharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-        const std::string& characteristicKey, const std::string& characteristicValue, const bool isMuitUser,
+        const std::string& characteristicKey, const std::string& characteristicValue, const bool isMultiUser,
         const int32_t userId)
         : deviceId_(deviceId),
         serviceName_(serviceName),
         characteristicKey_(characteristicKey),
         characteristicValue_(characteristicValue),
-        isMuitUser_(isMuitUser),
+        isMultiUser_(isMultiUser),
         userId_(userId)
     {}
     CharacteristicProfile() = default;
@@ -52,8 +52,8 @@ public:
     void SetCharacteristicKey(const std::string& characteristicId);
     std::string GetCharacteristicValue() const;
     void SetCharacteristicValue(const std::string& characteristicValue);
-    bool GetIsMuitUser() const;
-    void SetIsMuitUser(bool isMuitUser);
+    bool GetIsMultiUser() const;
+    void SetIsMultiUser(bool isMultiUser);
     int32_t GetUserId() const;
     void SetUserId(int32_t userId);
     bool Marshalling(MessageParcel& parcel) const override;
@@ -66,7 +66,7 @@ private:
     std::string serviceName_ = "";
     std::string characteristicKey_ = "";
     std::string characteristicValue_ = "";
-    bool isMuitUser_ = false;
+    bool isMultiUser_ = false;
     int32_t userId_ = -1;
 };
 } // namespace DistributedDeviceProfile

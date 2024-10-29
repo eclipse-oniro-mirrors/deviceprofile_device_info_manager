@@ -64,14 +64,14 @@ void CharacteristicProfile::SetCharacteristicValue(const std::string& characteri
     characteristicValue_ = characteristicValue;
 }
 
-bool CharacteristicProfile::GetIsMuitUser() const
+bool CharacteristicProfile::GetIsMultiUser() const
 {
-    return isMuitUser_;
+    return isMultiUser_;
 }
 
-void CharacteristicProfile::SetIsMuitUser(bool isMuitUser)
+void CharacteristicProfile::SetIsMultiUser(bool isMultiUser)
 {
-    isMuitUser_ = isMuitUser;
+    isMultiUser_ = isMultiUser;
 }
 
 int32_t CharacteristicProfile::GetUserId() const
@@ -90,7 +90,7 @@ bool CharacteristicProfile::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, String, serviceName_, false);
     WRITE_HELPER_RET(parcel, String, characteristicKey_, false);
     WRITE_HELPER_RET(parcel, String, characteristicValue_, false);
-    WRITE_HELPER_RET(parcel, Bool, isMuitUser_, false);
+    WRITE_HELPER_RET(parcel, Bool, isMultiUser_, false);
     WRITE_HELPER_RET(parcel, Int32, userId_, false);
     return true;
 }
@@ -101,7 +101,7 @@ bool CharacteristicProfile::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, String, serviceName_, false);
     READ_HELPER_RET(parcel, String, characteristicKey_, false);
     READ_HELPER_RET(parcel, String, characteristicValue_, false);
-    READ_HELPER_RET(parcel, Bool, isMuitUser_, false);
+    READ_HELPER_RET(parcel, Bool, isMultiUser_, false);
     READ_HELPER_RET(parcel, Int32, userId_, false);
     return true;
 }
@@ -110,7 +110,7 @@ bool CharacteristicProfile::operator!=(const CharacteristicProfile& charProfile)
 {
     bool isNotEqual = (deviceId_ != charProfile.GetDeviceId() || serviceName_ != charProfile.GetServiceName() ||
         characteristicKey_ != charProfile.GetCharacteristicKey() ||
-        characteristicValue_ != charProfile.GetCharacteristicValue() || isMuitUser_ != charProfile.GetIsMuitUser() ||
+        characteristicValue_ != charProfile.GetCharacteristicValue() || isMultiUser_ != charProfile.GetIsMultiUser() ||
         userId_ != charProfile.GetUserId());
     if (isNotEqual) {
         return true;
@@ -129,7 +129,7 @@ std::string CharacteristicProfile::dump() const
     cJSON_AddStringToObject(json, DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(deviceId_).c_str());
     cJSON_AddStringToObject(json, SERVICE_NAME.c_str(), serviceName_.c_str());
     cJSON_AddStringToObject(json, CHARACTERISTIC_KEY.c_str(), characteristicKey_.c_str());
-    cJSON_AddBoolToObject(json, IS_MULTI_USER.c_str(), isMuitUser_);
+    cJSON_AddBoolToObject(json, IS_MULTI_USER.c_str(), isMultiUser_);
     cJSON_AddStringToObject(json, USER_ID.c_str(),
         ProfileUtils::GetAnonyString(std::to_string(userId_)).c_str());
     if (characteristicKey_ == SWITCH_STATUS) {

@@ -459,10 +459,10 @@ int32_t ProfileUtils::AccesseeToEntries(const AccessControlProfile& aclProfile, 
 }
 
 int32_t ProfileUtils::DeviceProfileToEntries(const DeviceProfile& profile, std::map<std::string, std::string>& values,
-    bool isMuiltUser)
+    bool isMultiUser)
 {
     std::string deviceProfileKey = GenerateDeviceProfileKey(profile.GetDeviceId());
-    if (isMuiltUser) {
+    if (isMultiUser) {
         values[GenerateDBKey(deviceProfileKey, OS_SYS_CAPACITY, profile.GetUserId())] = profile.GetOsSysCap();
         values[GenerateDBKey(deviceProfileKey, OS_VERSION, profile.GetUserId())] = profile.GetOsVersion();
         values[GenerateDBKey(deviceProfileKey, OS_TYPE, profile.GetUserId())] = std::to_string(profile.GetOsType());
@@ -480,16 +480,16 @@ int32_t ProfileUtils::DeviceProfileToEntries(const DeviceProfile& profile, std::
     return DP_SUCCESS;
 }
 
-int32_t ProfileUtils::ServiceProfileToEntries(const ServiceProfile& profile, std::map<std::string, std::string>& values
-    , bool isMuiltUser)
+int32_t ProfileUtils::ServiceProfileToEntries(const ServiceProfile& profile, std::map<std::string,
+    std::string>& values, bool isMultiUser)
 {
     std::string serviceName = CheckAndAddOhSuffix(profile.GetServiceName(), true);
     std::string serviceProfileKey = GenerateServiceProfileKey(profile.GetDeviceId(), serviceName);
     // value not need add OH suffix
-    if (isMuiltUser) {
+    if (isMultiUser) {
         values[GenerateDBKey(serviceProfileKey, SERVICE_NAME, profile.GetUserId())] = profile.GetServiceName();
         values[GenerateDBKey(serviceProfileKey, SERVICE_TYPE, profile.GetUserId())] = profile.GetServiceType();
-    } else{
+    } else {
         values[GenerateDBKey(serviceProfileKey, SERVICE_NAME)] = profile.GetServiceName();
         values[GenerateDBKey(serviceProfileKey, SERVICE_TYPE)] = profile.GetServiceType();
     }
@@ -497,12 +497,12 @@ int32_t ProfileUtils::ServiceProfileToEntries(const ServiceProfile& profile, std
 }
 
 int32_t ProfileUtils::CharacteristicProfileToEntries(const CharacteristicProfile& profile,
-    std::map<std::string, std::string>& values, bool isMuiltUser)
+    std::map<std::string, std::string>& values, bool isMultiUser)
 {
     std::string serviceName = CheckAndAddOhSuffix(profile.GetServiceName(), true);
     std::string charProfileKey = GenerateCharProfileKey(profile.GetDeviceId(), serviceName,
         profile.GetCharacteristicKey());
-    if (isMuiltUser) {
+    if (isMultiUser) {
         values[GenerateDBKey(charProfileKey, CHARACTERISTIC_KEY, profile.GetUserId())] =
             profile.GetCharacteristicKey();
         values[GenerateDBKey(charProfileKey, CHARACTERISTIC_VALUE, profile.GetUserId())] =
@@ -721,12 +721,21 @@ std::string ProfileUtils::GenerateDBKey(const std::string& profileKey, const std
     return DBKey;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> fdcd212 (修改检视意见)
 std::string ProfileUtils::GetProfileProperty(const std::string& dbKey)
+=======
+std::string ProfileUtils::GetProfileProperty(const std::string& dbKey, int32_t userId)
+>>>>>>> 1d65cf1 (fix codecheck)
 {
-    if (dbKey.length() == 0 || dbKey.length() > MAX_STRING_LEN) {
+    if (dbKey.length() == 0 || dbKey.length() > MAX_STRING_LEN || (userId <= 0 && userId != DEFAULT_USER_ID)) {
         return "";
     }
+<<<<<<< HEAD
+<<<<<<< HEAD
     std::size_t pos = dbKey.find_last_of("#");
     if (pos == std::string::npos) {
         return "";
@@ -746,6 +755,108 @@ std::map<std::string, std::string> ProfileUtils::GetProfilePropertiesMap(std::ma
         propertiesMap[profileProperty] = item.second;
     }
     return propertiesMap;
+=======
+=======
+    int32_t getUserId = GetUserIdFromDbKey(dbKey);
+>>>>>>> 1d65cf1 (fix codecheck)
+    std::vector<std::string> splitKeys;
+    if (SplitString(dbKey, SEPARATOR, splitKeys) != DP_SUCCESS || splitKeys.size() < NUM_3) {
+        HILOGE("GetProfileProperty SplitString fail");
+        return "";
+    }
+
+    if (splitKeys[0] == DEV_PREFIX) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+        if ((userId == DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID) ||
+            (userId == DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID)) {
+            return splitKeys[NUM_2];
+        }
+        return (userId == getUserId) ? splitKeys[NUM_2] : "";
+    }
+    if (splitKeys[0] == SVR_PREFIX && splitKeys.size() >= NUM_4) {
+        if ((userId == DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID) ||
+            (userId == DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID)) {
+            return splitKeys[NUM_3];
+        }
+        return (userId == getUserId) ? splitKeys[NUM_3] : "";
+    }
+    if (splitKeys[0] == CHAR_PREFIX && splitKeys.size() >= NUM_5) {
+        if ((userId == DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID) ||
+            (userId == DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID)) {
+            return splitKeys[NUM_4];
+        }
+        return (userId == getUserId) ? splitKeys[NUM_4] : "";
+=======
+        return splitKeys[NUM_2];
+=======
+        if ((userId == DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID) ||
+            (userId != DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID)) {
+            return splitKeys[NUM_2];
+        }
+        return (userId == getUserId) ? splitKeys[NUM_2] : "";
+>>>>>>> 66a9bff (Revert "转换dbEnties到Profile")
+    }
+    if (splitKeys[0] == SVR_PREFIX && splitKeys.size() >= NUM_4) {
+        if ((userId == DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID) ||
+            (userId != DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID)) {
+            return splitKeys[NUM_3];
+        }
+        return (userId == getUserId) ? splitKeys[NUM_3] : "";
+    }
+<<<<<<< HEAD
+    if (splitKeys[0] == CHAR_PREFIX && splitKeys.size() > NUM_4) {
+        return splitKeys[NUM_4];
+>>>>>>> f19f01a (转换dbEnties到Profile)
+=======
+    if (splitKeys[0] == CHAR_PREFIX && splitKeys.size() >= NUM_5) {
+        if ((userId == DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID) ||
+            (userId != DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID)) {
+            return splitKeys[NUM_4];
+        }
+        return (userId == getUserId) ? splitKeys[NUM_4] : "";
+>>>>>>> 66a9bff (Revert "转换dbEnties到Profile")
+    }
+
+    HILOGE("dbKey has wrong prefix");
+    return "";
+}
+
+std::map<std::string, std::string> ProfileUtils::GetProfilePropertiesMap(std::map<std::string, std::string> dbEntries,
+    int32_t userId)
+{
+    std::map<std::string, std::string> propertiesWithoutUserId;
+    std::map<std::string, std::string> propertiesWithUserId;
+    if (userId <= 0 && userId != DEFAULT_USER_ID) {
+        HILOGE("userId is invalid, userId: %{public}s", GetAnonyString(std::to_string(userId).c_str()).c_str());
+        return propertiesWithoutUserId;
+    }
+    for (const auto& item : dbEntries) {
+        std::string profileProperty = GetProfileProperty(item.first, userId);
+        if (profileProperty.empty()) {
+            HILOGE("GetProfileProperty fail, %{public}s!", GetDbKeyAnonyString(item.first).c_str());
+            continue;
+        }
+        if (GetUserIdFromDbKey(item.first) == DEFAULT_USER_ID) {
+            propertiesWithoutUserId[profileProperty] = item.second;
+            continue;
+        }
+        propertiesWithUserId[profileProperty] = item.second;
+    }
+<<<<<<< HEAD
+>>>>>>> fdcd212 (修改检视意见)
+=======
+
+    if (userId != DEFAULT_USER_ID && !propertiesWithUserId.empty()) {
+        HILOGI("GetProfile with multi-user");
+        return propertiesWithUserId;
+    }
+
+    //1. Get profile without multi-user;
+    //2. Get profile with multi-user, but remote device without multi-user;
+    //3. Get profile with multi-user, but can't find in DB;
+    return propertiesWithoutUserId;
+>>>>>>> 1d65cf1 (fix codecheck)
 }
 
 std::string ProfileUtils::toString(const std::u16string& str16)
@@ -901,15 +1012,15 @@ std::string ProfileUtils::RemoveUserIdFromDbKey(const std::string& dbKey)
 }
 
 int32_t ProfileUtils::GenerateServiceDBkeys(const std::string& deviceId, const std::string& serviceName,
-    std::vector<std::string>& dbKeys, bool isMuiltUser, int32_t userId)
+    std::vector<std::string>& dbKeys, bool isMultiUser, int32_t userId)
 {
     std::string localServiceName = CheckAndAddOhSuffix(serviceName, true);
     std::string serviceProfileKey = GenerateServiceProfileKey(deviceId, localServiceName);
     // value not need add OH suffix
-    if (isMuiltUser) {
+    if (isMultiUser) {
         dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_NAME, userId));
         dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_TYPE, userId));
-    } else{
+    } else {
         dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_NAME));
         dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_TYPE));
     }
@@ -917,14 +1028,14 @@ int32_t ProfileUtils::GenerateServiceDBkeys(const std::string& deviceId, const s
 }
 
 int32_t ProfileUtils::GenerateCharacteristicDBkeys(const std::string& deviceId, const std::string& serviceName,
-    const std::string& characteristicKey, std::vector<std::string>& dbKeys, bool isMuiltUser, int32_t userId)
+    const std::string& characteristicKey, std::vector<std::string>& dbKeys, bool isMultiUser, int32_t userId)
 {
     std::string localServiceName = CheckAndAddOhSuffix(serviceName, true);
     std::string charProfileKey = GenerateCharProfileKey(deviceId, localServiceName, characteristicKey);
-    if (isMuiltUser) {
+    if (isMultiUser) {
         dbKeys.emplace_back(GenerateDBKey(charProfileKey, CHARACTERISTIC_KEY, userId));
         dbKeys.emplace_back(GenerateDBKey(charProfileKey, CHARACTERISTIC_VALUE, userId));
-    } else{
+    } else {
         dbKeys.emplace_back(GenerateDBKey(charProfileKey, CHARACTERISTIC_KEY));
         dbKeys.emplace_back(GenerateDBKey(charProfileKey, CHARACTERISTIC_VALUE));
     }

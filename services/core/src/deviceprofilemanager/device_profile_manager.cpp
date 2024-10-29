@@ -111,7 +111,7 @@ int32_t DeviceProfileManager::PutDeviceProfile(const DeviceProfile& deviceProfil
         return DP_INVALID_PARAMS;
     }
     std::map<std::string, std::string> entries;
-    if (deviceProfile.GetIsMuitUser()) {
+    if (deviceProfile.GetIsMultiUser()) {
         ProfileUtils::DeviceProfileToEntries(deviceProfile, entries, true);
         if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == deviceProfile.GetUserId()) {
             ProfileUtils::DeviceProfileToEntries(deviceProfile, entries);
@@ -148,7 +148,7 @@ int32_t DeviceProfileManager::PutServiceProfile(const ServiceProfile& servicePro
         return DP_INVALID_PARAMS;
     }
     std::map<std::string, std::string> entries;
-    if (serviceProfile.GetIsMuitUser()) {
+    if (serviceProfile.GetIsMultiUser()) {
         ProfileUtils::ServiceProfileToEntries(serviceProfile, entries, true);
         if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == serviceProfile.GetUserId()) {
             ProfileUtils::ServiceProfileToEntries(serviceProfile, entries);
@@ -186,7 +186,7 @@ int32_t DeviceProfileManager::PutServiceProfileBatch(const std::vector<ServicePr
             HILOGE("the profile is invalid! serviceProfile:%{public}s", serviceProfile.dump().c_str());
             continue;
         }
-        if (serviceProfile.GetIsMuitUser()) {
+        if (serviceProfile.GetIsMultiUser()) {
             ProfileUtils::ServiceProfileToEntries(serviceProfile, entries, true);
             if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == serviceProfile.GetUserId()) {
                 ProfileUtils::ServiceProfileToEntries(serviceProfile, entries);
@@ -224,7 +224,7 @@ int32_t DeviceProfileManager::PutCharacteristicProfile(const CharacteristicProfi
         return DP_INVALID_PARAMS;
     }
     std::map<std::string, std::string> entries;
-    if (charProfile.GetIsMuitUser()) {
+    if (charProfile.GetIsMultiUser()) {
         ProfileUtils::CharacteristicProfileToEntries(charProfile, entries, true);
         if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == charProfile.GetUserId()) {
             ProfileUtils::CharacteristicProfileToEntries(charProfile, entries);
@@ -262,7 +262,7 @@ int32_t DeviceProfileManager::PutCharacteristicProfileBatch(const std::vector<Ch
             HILOGE("the profile is invalid! charProfile:%{public}s", charProfile.dump().c_str());
             continue;
         }
-        if (charProfile.GetIsMuitUser()) {
+        if (charProfile.GetIsMultiUser()) {
             ProfileUtils::CharacteristicProfileToEntries(charProfile, entries, true);
             if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == charProfile.GetUserId()) {
                 ProfileUtils::CharacteristicProfileToEntries(charProfile, entries);
@@ -292,9 +292,35 @@ int32_t DeviceProfileManager::PutCharacteristicProfileBatch(const std::vector<Ch
     return DP_SUCCESS;
 }
 
-int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile)
+int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile,
+    bool isMultiUser, int32_t userId)
 {
+<<<<<<< HEAD
     HILOGD("call!");
+=======
+<<<<<<< HEAD
+    if ((deviceProfile.GetIsMuitUser() && deviceProfile.GetUserId() <= 0) ||
+        (!deviceProfile.GetIsMuitUser() && deviceProfile.GetUserId() != DEFAULT_USER_ID)) {
+            HILOGE("multi-user params are invalid, isMultiUser: %{public}d, userId: %{public}s",
+                deviceProfile.GetIsMuitUser(),
+                ProfileUtils::GetAnonyString(std::to_string(deviceProfile.GetUserId()).c_str()).c_str());
+=======
+    deviceProfile.SetDeviceId(deviceId);
+    deviceProfile.SetIsMultiUser(isMultiUser);
+    deviceProfile.SetUserId(userId);
+    int32_t res = IsMultiUserValid(deviceProfile);
+    if (res != DP_SUCCESS) {
+        HILOGE("GetDeviceProfile IsMultiUserValid failed, res: %{public}d", res);
+        return res;
+>>>>>>> f7ce896 (get接口添加默认参数)
+    }
+    if (deviceProfile.GetIsMuitUser()) {
+        HILOGI("this profile support multi-user, userId: %{public}s", 
+            ProfileUtils::GetAnonyString(std::to_string(deviceProfile.GetUserId()).c_str()).c_str());
+    }
+    HILOGI("this profile not support multi-user");
+
+>>>>>>> 6468278 (解冲突)
     int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
@@ -309,9 +335,34 @@ int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, Devi
 }
 
 int32_t DeviceProfileManager::GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
-    ServiceProfile& serviceProfile)
+    ServiceProfile& serviceProfile, bool isMultiUser, int32_t userId)
 {
+<<<<<<< HEAD
     HILOGD("call!");
+=======
+<<<<<<< HEAD
+    if ((serviceProfile.GetIsMuitUser() && serviceProfile.GetUserId() <= 0) ||
+        (!serviceProfile.GetIsMuitUser() && serviceProfile.GetUserId() != DEFAULT_USER_ID)) {
+            HILOGE("multi-user params are invalid, isMultiUser: %{public}d, userId: %{public}s",
+                serviceProfile.GetIsMuitUser(),
+                ProfileUtils::GetAnonyString(std::to_string(serviceProfile.GetUserId()).c_str()).c_str());
+=======
+    serviceProfile.SetDeviceId(deviceId);
+    serviceProfile.SetIsMultiUser(isMultiUser);
+    serviceProfile.SetUserId(userId);
+    int32_t res = IsMultiUserValid(serviceProfile);
+    if (res != DP_SUCCESS) {
+        HILOGE("GetServiceProfile IsMultiUserValid failed, res: %{public}d", res);
+        return res;
+>>>>>>> f7ce896 (get接口添加默认参数)
+    }
+    if (serviceProfile.GetIsMuitUser()) {
+        HILOGI("this profile support multi-user, userId: %{public}s", 
+            ProfileUtils::GetAnonyString(std::to_string(serviceProfile.GetUserId()).c_str()).c_str());
+    }
+    HILOGI("this profile not support multi-user");
+
+>>>>>>> 6468278 (解冲突)
     int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
@@ -327,9 +378,34 @@ int32_t DeviceProfileManager::GetServiceProfile(const std::string& deviceId, con
 }
 
 int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-    const std::string& characteristicKey, CharacteristicProfile& charProfile)
+    const std::string& characteristicKey, CharacteristicProfile& charProfile, bool isMultiUser, int32_t userId)
 {
+<<<<<<< HEAD
     HILOGD("call!");
+=======
+<<<<<<< HEAD
+    if ((charProfile.GetIsMuitUser() && charProfile.GetUserId() <= 0) ||
+        (!charProfile.GetIsMuitUser() && charProfile.GetUserId() != DEFAULT_USER_ID)) {
+            HILOGE("multi-user params are invalid, isMultiUser: %{public}d, userId: %{public}s",
+                charProfile.GetIsMuitUser(),
+                ProfileUtils::GetAnonyString(std::to_string(charProfile.GetUserId()).c_str()).c_str());
+=======
+    charProfile.SetDeviceId(deviceId);
+    charProfile.SetIsMultiUser(isMultiUser);
+    charProfile.SetUserId(userId);
+    int32_t res = IsMultiUserValid(charProfile);
+    if (res != DP_SUCCESS) {
+        HILOGE("GetCharacteristicProfile IsMultiUserValid failed, res: %{public}d", res);
+        return res;
+>>>>>>> f7ce896 (get接口添加默认参数)
+    }
+    if (charProfile.GetIsMuitUser()) {
+        HILOGI("this profile support multi-user, userId: %{public}s", 
+            ProfileUtils::GetAnonyString(std::to_string(charProfile.GetUserId()).c_str()).c_str());
+    }
+    HILOGI("this profile not support multi-user");
+    
+>>>>>>> 6468278 (解冲突)
     int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
@@ -345,13 +421,13 @@ int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& device
 }
 
 int32_t DeviceProfileManager::DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName,
-    bool isMuitUser, int32_t userId)
+    bool isMultiUser, int32_t userId)
 {
     HILOGD("call!");
     int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::DeleteServiceProfile(deviceProfileStore_, deviceId, serviceName, isMuitUser,
+        res = ProfileControlUtils::DeleteServiceProfile(deviceProfileStore_, deviceId, serviceName, isMultiUser,
             userId);
     }
     if (res != DP_SUCCESS) {
@@ -363,14 +439,14 @@ int32_t DeviceProfileManager::DeleteServiceProfile(const std::string& deviceId, 
 }
 
 int32_t DeviceProfileManager::DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-    const std::string& characteristicKey, bool isMuitUser, int32_t userId)
+    const std::string& characteristicKey, bool isMultiUser, int32_t userId)
 {
     HILOGD("call!");
     int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         res = ProfileControlUtils::DeleteCharacteristicProfile(deviceProfileStore_, deviceId, serviceName,
-            characteristicKey, isMuitUser, userId);
+            characteristicKey, isMultiUser, userId);
     }
     if (res != DP_SUCCESS) {
         HILOGE("DeleteCharacteristicProfile fail, reason: %{public}d!", res);
@@ -1068,7 +1144,7 @@ void DeviceProfileManager::OnUserChange(int32_t lastUserId, int32_t curUserId)
     for (const auto& [key, value] : profileMap) {
         int32_t userId = ProfileUtils::GetUserIdFromDbKey(key);
         if (userId != DEFAULT_USER_ID && userId == lastUserId) {
-            std::string dbKeyWithoutUID =ProfileUtils::RemoveUserIdFromDbKey(key);
+            std::string dbKeyWithoutUID = ProfileUtils::RemoveUserIdFromDbKey(key);
             if (!dbKeyWithoutUID.empty()) {
                 lastUserDbKeysWithoutUID.insert(dbKeyWithoutUID);
             }
@@ -1117,6 +1193,103 @@ int32_t DeviceProfileManager::SaveBatchByKeys(const std::map<std::string, std::s
     }
     return DP_SUCCESS;
 }
+<<<<<<< HEAD
 >>>>>>> 86ce8ca (切换用户时当前用户数据覆盖上一个用户数据)
+=======
+<<<<<<< HEAD
+=======
+
+template <typename T>
+int32_t DeviceProfileManager::IsMultiUserValid(const T& profile)
+{
+    if (profile.GetDeviceId().empty() || (profile.GetIsMultiUser() && profile.GetUserId() <= 0) ||
+        (!profile.GetIsMultiUser() && profile.GetUserId() != DEFAULT_USER_ID)) {
+        HILOGE("multi-user params are invalid, isMultiUser: %{public}d, userId: %{public}s",
+               profile.GetIsMultiUser(),
+            ProfileUtils::GetAnonyInt32(profile.GetUserId()).c_str());
+        return DP_GET_MULTI_USER_PROFILE_PARAMS_INVALID;
+    }
+
+    if (profile.GetIsMultiUser()) {
+        if ((profile.GetDeviceId() == ProfileCache::GetInstance().GetLocalUdid() &&
+            profile.GetUserId() != MultiUserManager::GetInstance().GetCurrentForegroundUserID())) {
+            HILOGE("this userId is not foregroundUserId, userId: %{publish}s, foregroundId: %{publish}s",
+                ProfileUtils::GetAnonyInt32(profile.GetUserId()).c_str(),
+                ProfileUtils::GetAnonyInt32(MultiUserManager::GetInstance().GetCurrentForegroundUserID()).c_str());
+            return DP_GET_LOCAL_PROFILE_IS_NOT_FOREGROUND_ID;
+        }
+        if (profile.GetDeviceId() != ProfileCache::GetInstance().GetLocalUdid()) {
+            if (!IsSameAccount(profile.GetDeviceId(), profile.GetUserId()) ||
+                !HasTrustP2PRelation(profile.GetDeviceId(), profile.GetUserId())) {
+                HILOGE("this userId is not trusted");
+                return DP_GET_USER_ID_IS_NOT_TRUSTED;
+            }
+        }
+    }
+    return DP_SUCCESS;
+}
+
+template int32_t DeviceProfileManager::IsMultiUserValid<DeviceProfile>(const DeviceProfile& profile);
+template int32_t DeviceProfileManager::IsMultiUserValid<ServiceProfile>(const ServiceProfile& profile);
+template int32_t DeviceProfileManager::IsMultiUserValid<CharacteristicProfile>(const CharacteristicProfile& profile);
+
+bool DeviceProfileManager::IsSameAccount(const std::string deviceId, const int32_t userId)
+{
+    (void)userId;
+    if (deviceId.empty()) {
+        HILOGE("param is invalid");
+        return false;
+    }
+
+    std::map<std::string, std::string> params = {
+        {BUNDLENAME, EMPTY_STRING},
+        {BIND_TYPE, std::to_string(static_cast<int32_t>(BindType::SAME_ACCOUNT))},
+        {STATUS, std::to_string(static_cast<int32_t>(Status::ACTIVE))}
+    };
+    std::vector<AccessControlProfile> profile;
+    int32_t res = TrustProfileManager::GetInstance().GetAccessControlProfile(params, profile);
+    if (res != DP_SUCCESS || profile.empty()) {
+        HILOGE("GetAccessControlProfile failed, res: %{public}d", res);
+        return false;
+    }
+    for (auto& item : profile) {
+        if (item.GetTrustDeviceId() == deviceId) {
+            HILOGI("profile has the same account");
+            return true;
+        }
+    }
+    return false;
+}
+
+bool DeviceProfileManager::HasTrustP2PRelation(const std::string deviceId, const int32_t userId)
+{
+    (void)userId;
+    if (deviceId.empty()) {
+        HILOGE("param is invalid");
+        return false;
+    }
+
+    std::map<std::string, std::string> params = {
+        {BUNDLENAME, EMPTY_STRING},
+        {BIND_TYPE, std::to_string(static_cast<int32_t>(BindType::POINT_TO_POINT))},
+        {STATUS, std::to_string(static_cast<int32_t>(Status::ACTIVE))}
+    };
+    std::vector<AccessControlProfile> profile;
+    int32_t res = TrustProfileManager::GetInstance().GetAccessControlProfile(params, profile);
+    if (res != DP_SUCCESS || profile.empty()) {
+        HILOGE("HasTrustP2PRelation failed, res: %{public}d", res);
+        return false;
+    }
+    for (auto& item : profile) {
+        if (item.GetTrustDeviceId() == deviceId) {
+            HILOGI("profile has the trust p2p relationship");
+            return true;
+        }
+    }
+    return false;
+}
+
+>>>>>>> ad8db23 (update)
+>>>>>>> 6468278 (解冲突)
 } // namespace DeviceProfile
 } // namespace OHOS

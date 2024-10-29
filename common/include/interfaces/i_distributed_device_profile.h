@@ -47,15 +47,23 @@ public:
     virtual int32_t PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles) = 0;
     virtual int32_t PutCharacteristicProfile(const CharacteristicProfile& charProfile) = 0;
     virtual int32_t PutCharacteristicProfileBatch(const std::vector<CharacteristicProfile>& charProfiles) = 0;
-    virtual int32_t GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile) = 0;
+    virtual int32_t GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile,
+        bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID) = 0;
     virtual int32_t GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
-        ServiceProfile& serviceProfile) = 0;
+        ServiceProfile& serviceProfile, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID) = 0;
     virtual int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
+<<<<<<< HEAD
         const std::string& characteristicId, CharacteristicProfile& charProfile) = 0;
     virtual int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName,
         bool isMuitUser = false, int32_t userId = -1) = 0;
+=======
+        const std::string& characteristicId, CharacteristicProfile& charProfile, bool isMultiUser = false,
+        int32_t userId = DEFAULT_USER_ID) = 0;
+    virtual int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName,
+        bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID) = 0;
+>>>>>>> 6cd545d (编译通过，修改检视意见)
     virtual int32_t DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-        const std::string& characteristicId, bool isMuitUser = false, int32_t userId = -1) = 0;
+        const std::string& characteristicId, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID) = 0;
     virtual int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) = 0;
     virtual int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) = 0;
     virtual int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IRemoteObject> dpInitedCallback) = 0;

@@ -38,7 +38,6 @@ int32_t MultiUserManager::Init()
     int32_t res = OHOS::AccountSA::OsAccountManager::GetForegroundOsAccountLocalId(foregroundId);
     if (res != DP_SUCCESS) {
         HILOGD("GetForegroundId failed, res:%{public}d", res);
-        return DP_GET_FOREGROUND_ID_FAIL;
     }
     HILOGI("current foregroundId = %{public}d", foregroundId);
     SetCurrentForegroundUserID(foregroundId);

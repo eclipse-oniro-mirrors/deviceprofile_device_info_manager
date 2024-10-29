@@ -134,14 +134,14 @@ void DeviceProfile::SetOsSysCap(const std::string& osSysCap)
     osSysCap_ = osSysCap;
 }
 
-bool DeviceProfile::GetIsMuitUser() const
+bool DeviceProfile::GetIsMultiUser() const
 {
-    return isMuitUser_;
+    return isMultiUser_;
 }
 
-void DeviceProfile::SetIsMuitUser(bool isMuitUser)
+void DeviceProfile::SetIsMultiUser(bool isMultiUser)
 {
-    isMuitUser_ = isMuitUser;
+    isMultiUser_ = isMultiUser;
 }
 
 int32_t DeviceProfile::GetUserId() const
@@ -167,7 +167,7 @@ bool DeviceProfile::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, Int32, osApiLevel_, false);
     WRITE_HELPER_RET(parcel, String, osVersion_, false);
     WRITE_HELPER_RET(parcel, Int32, osType_, false);
-    WRITE_HELPER_RET(parcel, Bool, isMuitUser_, false);
+    WRITE_HELPER_RET(parcel, Bool, isMultiUser_, false);
     WRITE_HELPER_RET(parcel, Int32, userId_, false);
     return true;
 }
@@ -185,7 +185,7 @@ bool DeviceProfile::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, Int32, osApiLevel_, false);
     READ_HELPER_RET(parcel, String, osVersion_, false);
     READ_HELPER_RET(parcel, Int32, osType_, false);
-    READ_HELPER_RET(parcel, Bool, isMuitUser_, false);
+    READ_HELPER_RET(parcel, Bool, isMultiUser_, false);
     READ_HELPER_RET(parcel, Int32, userId_, false);
     return true;
 }
@@ -197,7 +197,7 @@ bool DeviceProfile::operator!=(const DeviceProfile& deviceProfile) const
         manufactureName_ != deviceProfile.GetManufactureName() || deviceModel_ != deviceProfile.GetDeviceModel() ||
         storageCapability_ != deviceProfile.GetStorageCapability() || osSysCap_ != deviceProfile.GetOsSysCap() ||
         osApiLevel_ != deviceProfile.GetOsApiLevel() || osVersion_ != deviceProfile.GetOsVersion() || osType_ !=
-        deviceProfile.GetOsType() || isMuitUser_ != deviceProfile.GetIsMuitUser() || userId_ !=
+        deviceProfile.GetOsType() || isMultiUser_ != deviceProfile.GetIsMultiUser() || userId_ !=
         deviceProfile.GetUserId());
     if (isNotEqual) {
         return true;
@@ -224,10 +224,14 @@ std::string DeviceProfile::dump() const
     cJSON_AddNumberToObject(json, OS_API_LEVEL.c_str(), osApiLevel_);
     cJSON_AddStringToObject(json, OS_VERSION.c_str(), osVersion_.c_str());
     cJSON_AddNumberToObject(json, OS_TYPE.c_str(), osType_);
+<<<<<<< HEAD
     cJSON_AddBoolToObject(json, IS_MULTI_USER.c_str(), isMuitUser_);
 <<<<<<< HEAD
     cJSON_AddNumberToObject(json, USER_ID.c_str(), userId_);
 =======
+=======
+    cJSON_AddBoolToObject(json, IS_MULTI_USER.c_str(), isMultiUser_);
+>>>>>>> 6cd545d (编译通过，修改检视意见)
     cJSON_AddStringToObject(json, USER_ID.c_str(),
         ProfileUtils::GetAnonyString(std::to_string(userId_)).c_str());
 >>>>>>> 776ed34 (虚函数添加默认参数，userId匿名dump)
@@ -266,7 +270,7 @@ std::string DeviceProfile::AnnoymizeDump() const
         ProfileUtils::GetAnonyString(osVersion_).c_str());
     cJSON_AddStringToObject(json, OS_TYPE.c_str(),
         ProfileUtils::GetAnonyString(std::to_string(osType_)).c_str());
-    cJSON_AddBoolToObject(json, IS_MULTI_USER.c_str(), isMuitUser_);
+    cJSON_AddBoolToObject(json, IS_MULTI_USER.c_str(), isMultiUser_);
     cJSON_AddStringToObject(json, USER_ID.c_str(),
         ProfileUtils::GetAnonyString(std::to_string(userId_)).c_str());
     char* jsonChars = cJSON_PrintUnformatted(json);

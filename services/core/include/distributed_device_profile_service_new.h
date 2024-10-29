@@ -53,15 +53,17 @@ public:
     int32_t PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles) override;
     int32_t PutCharacteristicProfile(const CharacteristicProfile& charProfile) override;
     int32_t PutCharacteristicProfileBatch(const std::vector<CharacteristicProfile>& charProfiles) override;
-    int32_t GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile) override;
+    int32_t GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile, bool isMultiUser = false,
+        int32_t userId = DEFAULT_USER_ID) override;
     int32_t GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
-        ServiceProfile& serviceProfile) override;
+        ServiceProfile& serviceProfile, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID) override;
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-        const std::string& characteristicKey, CharacteristicProfile& charProfile) override;
-    int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName, bool isMuitUser = false,
-        int32_t userId = -1) override;
+        const std::string& characteristicKey, CharacteristicProfile& charProfile, bool isMultiUser = false,
+        int32_t userId = DEFAULT_USER_ID) override;
+    int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName, bool isMultiUser = false,
+        int32_t userId = DEFAULT_USER_ID) override;
     int32_t DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-        const std::string& characteristicKey, bool isMuitUser = false, int32_t userId = -1) override;
+        const std::string& characteristicKey, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID) override;
     int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,

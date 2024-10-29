@@ -69,11 +69,11 @@ public:
     static int32_t AccesserToEntries(const AccessControlProfile& aclProfile, ValuesBucket& values);
     static int32_t AccesseeToEntries(const AccessControlProfile& aclProfile, ValuesBucket& values);
     static int32_t DeviceProfileToEntries(const DeviceProfile& profile, std::map<std::string, std::string>& values,
-        bool isMuiltUser = false);
+        bool isMultiUser = false);
     static int32_t ServiceProfileToEntries(const ServiceProfile& profile, std::map<std::string, std::string>& values,
-        bool isMuiltUser = false);
+        bool isMultiUser = false);
     static int32_t CharacteristicProfileToEntries(const CharacteristicProfile& profile,
-        std::map<std::string, std::string>& values, bool isMuiltUser = false);
+        std::map<std::string, std::string>& values, bool isMultiUser = false);
     static int32_t EntriesToTrustDeviceProfile(const ValuesBucket& values, TrustDeviceProfile& profile);
     static int32_t EntriesToAccessControlProfile(const ValuesBucket& values, AccessControlProfile& profile);
     static int32_t EntriesToAccesser(const ValuesBucket& values, Accesser& accesser);
@@ -94,8 +94,21 @@ public:
     static std::string GetDbKeyByProfile(const CharacteristicProfile& profile);
     static int32_t SplitString(const std::string& str, const std::string& splits, std::vector<std::string>& res);
     static std::string JoinString(const std::vector<std::string>& strs, const std::string& delimiter);
+<<<<<<< HEAD
     static std::string GetProfileProperty(const std::string& dbKey);
+<<<<<<< HEAD
     static std::map<std::string, std::string> GetProfilePropertiesMap(std::map<std::string, std::string> dbEntries);
+=======
+    static std::map<std::string, std::string> GetProfilePropertiesMap(
+        const std::map<std::string, std::string>& dbEntries, int32_t userId = DEFAULT_USER_ID);
+    static void GetProfilePropertiesMap(const std::map<std::string, std::string>& dbEntries,
+        std::map<std::string, std::string>& propertiesMap);
+>>>>>>> fdcd212 (修改检视意见)
+=======
+    static std::string GetProfileProperty(const std::string& dbKey, int32_t userId = DEFAULT_USER_ID);
+    static std::map<std::string, std::string> GetProfilePropertiesMap(std::map<std::string, std::string> dbEntries,
+        int32_t userId = DEFAULT_USER_ID);
+>>>>>>> 1d65cf1 (fix codecheck)
     static std::string toString(const std::u16string& str16);
     static bool IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
         int32_t maxValue);
@@ -112,11 +125,19 @@ public:
     static int32_t GetUserIdFromDbKey(const std::string& dbKey);
     static std::string RemoveUserIdFromDbKey(const std::string& dbKey);
     static int32_t GenerateServiceDBkeys(const std::string& deviceId, const std::string& serviceName,
-        std::vector<std::string>& dbKeys, bool isMuiltUser = false, int32_t userId = -1);
+        std::vector<std::string>& dbKeys, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID);
     static int32_t GenerateCharacteristicDBkeys(const std::string& deviceId, const std::string& serviceName,
+<<<<<<< HEAD
         const std::string& characteristicKey, std::vector<std::string>& dbKeys, bool isMuiltUser = false,
+<<<<<<< HEAD
         int32_t userId = -1);
 >>>>>>> 507ffd4 (KV Delete接口适配多用户)
+=======
+=======
+        const std::string& characteristicKey, std::vector<std::string>& dbKeys, bool isMultiUser = false,
+>>>>>>> fdcd212 (修改检视意见)
+        int32_t userId = DEFAULT_USER_ID);
+>>>>>>> 6cd545d (编译通过，修改检视意见)
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

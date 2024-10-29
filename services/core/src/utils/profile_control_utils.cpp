@@ -413,7 +413,7 @@ int32_t ProfileControlUtils::GetSwitchCharacteristicProfile(const std::string& a
 }
 
 int32_t ProfileControlUtils::DeleteServiceProfile(std::shared_ptr<IKVAdapter> kvStore, const std::string& deviceId,
-    const std::string& serviceName, bool isMuitUser, int32_t userId)
+    const std::string& serviceName, bool isMultiUser, int32_t userId)
 {
     HILOGD("call!");
     if (kvStore == nullptr) {
@@ -428,7 +428,7 @@ int32_t ProfileControlUtils::DeleteServiceProfile(std::shared_ptr<IKVAdapter> kv
     HILOGI("deviceId: %{public}s, serviceName: %{public}s!",
         ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str());
     std::vector<std::string> keys;
-    if (isMuitUser) {
+    if (isMultiUser) {
         ProfileUtils::GenerateServiceDBkeys(deviceId, serviceName, keys, true, userId);
         if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == userId) {
             ProfileUtils::GenerateServiceDBkeys(deviceId, serviceName, keys);
@@ -447,7 +447,7 @@ int32_t ProfileControlUtils::DeleteServiceProfile(std::shared_ptr<IKVAdapter> kv
 }
 
 int32_t ProfileControlUtils::DeleteCharacteristicProfile(std::shared_ptr<IKVAdapter> kvStore,
-    const std::string& deviceId, const std::string& serviceName, const std::string& characteristicKey, bool isMuitUser,
+    const std::string& deviceId, const std::string& serviceName, const std::string& characteristicKey, bool isMultiUser,
     int32_t userId)
 {
     HILOGI("call!");
@@ -463,8 +463,8 @@ int32_t ProfileControlUtils::DeleteCharacteristicProfile(std::shared_ptr<IKVAdap
     HILOGI("deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
         ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
     std::vector<std::string> keys;
-    if (isMuitUser) {
-        ProfileUtils::GenerateCharacteristicDBkeys(deviceId, serviceName, characteristicKey,keys, true, userId);
+    if (isMultiUser) {
+        ProfileUtils::GenerateCharacteristicDBkeys(deviceId, serviceName, characteristicKey, keys, true, userId);
         if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == userId) {
             ProfileUtils::GenerateCharacteristicDBkeys(deviceId, serviceName, characteristicKey, keys);
         } else {
