@@ -29,6 +29,7 @@
 #include "event_handler_factory.h"
 #include "i_sync_completed_callback.h"
 #include "kv_adapter.h"
+#include "multi_user_manager.h"
 #include "permission_manager.h"
 #include "profile_cache.h"
 #include "profile_control_utils.h"
@@ -112,7 +113,7 @@ int32_t DeviceProfileManager::PutDeviceProfile(const DeviceProfile& deviceProfil
     std::map<std::string, std::string> entries;
     if (deviceProfile.GetIsMuitUser()) {
         ProfileUtils::DeviceProfileToEntries(deviceProfile, entries, true);
-        if (ProfileCache::GetInstance().GetForegroundId() == deviceProfile.GetUserId()) {
+        if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == deviceProfile.GetUserId()) {
             ProfileUtils::DeviceProfileToEntries(deviceProfile, entries);
         } else {
             HILOGI("the profile does not belong to the current user.");
@@ -149,7 +150,7 @@ int32_t DeviceProfileManager::PutServiceProfile(const ServiceProfile& servicePro
     std::map<std::string, std::string> entries;
     if (serviceProfile.GetIsMuitUser()) {
         ProfileUtils::ServiceProfileToEntries(serviceProfile, entries, true);
-        if (ProfileCache::GetInstance().GetForegroundId() == serviceProfile.GetUserId()) {
+        if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == serviceProfile.GetUserId()) {
             ProfileUtils::ServiceProfileToEntries(serviceProfile, entries);
         } else {
             HILOGI("the profile does not belong to the current user.");
@@ -187,7 +188,7 @@ int32_t DeviceProfileManager::PutServiceProfileBatch(const std::vector<ServicePr
         }
         if (serviceProfile.GetIsMuitUser()) {
             ProfileUtils::ServiceProfileToEntries(serviceProfile, entries, true);
-            if (ProfileCache::GetInstance().GetForegroundId() == serviceProfile.GetUserId()) {
+            if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == serviceProfile.GetUserId()) {
                 ProfileUtils::ServiceProfileToEntries(serviceProfile, entries);
             } else {
                 HILOGI("the profile does not belong to the current user.");
@@ -225,7 +226,7 @@ int32_t DeviceProfileManager::PutCharacteristicProfile(const CharacteristicProfi
     std::map<std::string, std::string> entries;
     if (charProfile.GetIsMuitUser()) {
         ProfileUtils::CharacteristicProfileToEntries(charProfile, entries, true);
-        if (ProfileCache::GetInstance().GetForegroundId() == charProfile.GetUserId()) {
+        if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == charProfile.GetUserId()) {
             ProfileUtils::CharacteristicProfileToEntries(charProfile, entries);
         } else {
             HILOGI("the profile does not belong to the current user.");
@@ -263,7 +264,7 @@ int32_t DeviceProfileManager::PutCharacteristicProfileBatch(const std::vector<Ch
         }
         if (charProfile.GetIsMuitUser()) {
             ProfileUtils::CharacteristicProfileToEntries(charProfile, entries, true);
-            if (ProfileCache::GetInstance().GetForegroundId() == charProfile.GetUserId()) {
+            if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == charProfile.GetUserId()) {
                 ProfileUtils::CharacteristicProfileToEntries(charProfile, entries);
             } else {
                 HILOGI("the profile does not belong to the current user.");

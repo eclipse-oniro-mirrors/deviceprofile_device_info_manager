@@ -20,6 +20,7 @@
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_enums.h"
 #include "distributed_device_profile_log.h"
+#include "multi_user_manager.h"
 #include "profile_cache.h"
 #include "profile_utils.h"
 #include "switch_adapter.h"
@@ -429,7 +430,7 @@ int32_t ProfileControlUtils::DeleteServiceProfile(std::shared_ptr<IKVAdapter> kv
     std::vector<std::string> keys;
     if (isMuitUser) {
         ProfileUtils::GenerateServiceDBkeys(deviceId, serviceName, keys, true, userId);
-        if (ProfileCache::GetInstance().GetForegroundId() == userId) {
+        if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == userId) {
             ProfileUtils::GenerateServiceDBkeys(deviceId, serviceName, keys);
         } else {
             HILOGI("the profile does not belong to the current user.");
@@ -464,7 +465,7 @@ int32_t ProfileControlUtils::DeleteCharacteristicProfile(std::shared_ptr<IKVAdap
     std::vector<std::string> keys;
     if (isMuitUser) {
         ProfileUtils::GenerateCharacteristicDBkeys(deviceId, serviceName, characteristicKey,keys, true, userId);
-        if (ProfileCache::GetInstance().GetForegroundId() == userId) {
+        if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == userId) {
             ProfileUtils::GenerateCharacteristicDBkeys(deviceId, serviceName, characteristicKey, keys);
         } else {
             HILOGI("the profile does not belong to the current user.");
