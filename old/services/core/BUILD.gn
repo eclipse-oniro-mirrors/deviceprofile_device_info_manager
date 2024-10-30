@@ -133,6 +133,7 @@ ohos_shared_library("distributed_device_profile") {
     "kv_store:distributeddata_inner",
     "relational_store:native_rdb",
     "safwk:system_ability_fwk",
+    "samgr:samgr_common",
     "samgr:samgr_proxy",
     "syscap_codec:syscap_interface_shared",
   ]
