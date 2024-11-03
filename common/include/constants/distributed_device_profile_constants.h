@@ -132,16 +132,7 @@ constexpr int32_t MAX_INTERFACE_SIZE = 20;
 constexpr int32_t MAX_SUBSCRIBE_INFO_SIZE = 500;
 constexpr int32_t MAX_SYNC_RESULTS_SIZE = 50;
 constexpr int32_t MAX_STATIC_CAPABILITY_SIZE = 100;
-<<<<<<< HEAD
-const std::string SEPARATOR = "#";
-const std::string DEV_PREFIX = "dev";
-const std::string SVR_PREFIX = "svr";
-const std::string CHAR_PREFIX = "char";
-const std::string USER_ID = "user_id";
-const std::string IS_MULTI_USER = "is_muilt_user";
-const std::string TOKEN_ID = "token_id";
-const std::string ALL_PROC = "all";
-=======
+extern const std::string IS_MULTI_USER;
 extern const std::string SEPARATOR;
 extern const std::string DEV_PREFIX;
 extern const std::string SVR_PREFIX;
@@ -149,11 +140,12 @@ extern const std::string CHAR_PREFIX;
 extern const std::string USER_ID;
 extern const std::string TOKEN_ID;
 extern const std::string ALL_PROC;
->>>>>>> dc018b8 (update)
 constexpr int32_t NUM_1 = 1;
 constexpr int32_t NUM_2 = 2;
 constexpr int32_t NUM_3 = 3;
 constexpr int32_t NUM_4 = 4;
+constexpr int32_t NUM_5 = 5;
+constexpr int32_t NUM_6 = 6;
 constexpr int32_t DEFAULT_USER_ID = -1;
 constexpr uint32_t NUM_1U = 1;
 constexpr uint32_t NUM_8U = 8;

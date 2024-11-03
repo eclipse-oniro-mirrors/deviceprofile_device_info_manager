@@ -37,6 +37,8 @@ public:
 
     void SetCurrentForegroundUserID(int32_t userId);
 
+    int32_t GetForegroundUserIDFromOs();
+
 private:
     int32_t foregroundUserId_ = -1;
     std::mutex foregroundUserIdLock_;

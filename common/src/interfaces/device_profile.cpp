@@ -224,17 +224,9 @@ std::string DeviceProfile::dump() const
     cJSON_AddNumberToObject(json, OS_API_LEVEL.c_str(), osApiLevel_);
     cJSON_AddStringToObject(json, OS_VERSION.c_str(), osVersion_.c_str());
     cJSON_AddNumberToObject(json, OS_TYPE.c_str(), osType_);
-<<<<<<< HEAD
-    cJSON_AddBoolToObject(json, IS_MULTI_USER.c_str(), isMuitUser_);
-<<<<<<< HEAD
-    cJSON_AddNumberToObject(json, USER_ID.c_str(), userId_);
-=======
-=======
     cJSON_AddBoolToObject(json, IS_MULTI_USER.c_str(), isMultiUser_);
->>>>>>> 6cd545d (编译通过，修改检视意见)
     cJSON_AddStringToObject(json, USER_ID.c_str(),
         ProfileUtils::GetAnonyString(std::to_string(userId_)).c_str());
->>>>>>> 776ed34 (虚函数添加默认参数，userId匿名dump)
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);

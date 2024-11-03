@@ -51,16 +51,6 @@ int32_t ProfileCache::Init()
         HILOGW("GetTrustedDeviceList failed, res: %{public}d", res);
         return DP_SUCCESS;
     }
-<<<<<<< HEAD
-    {
-        std::lock_guard<std::mutex> lock(foregroundIdMutex_);
-        foregroundId_ = GetForegroundId();
-        if (foregroundId_ == DP_GET_FOREGROUND_ID_FAIL) {
-            LOGE("GetForegroundId id failed, ForegroundId: %{public}d", foregroundId_);
-        }
-    }
-=======
->>>>>>> 8f3393c (删除cache中不必要的代码)
 
     std::string udid = EMPTY_STRING;
     std::lock_guard<std::mutex> lock(onlineDeviceLock_);
@@ -843,21 +833,5 @@ std::string ProfileCache::GetLocalUuid()
     localUuid_ = localUuid;
     return localUuid;
 }
-<<<<<<< HEAD
-
-int32_t ProfileCache::GetForegroundId()
-{
-    int32_t foregroundId;
-    int32_t res = OHOS::AccountSA::OsAccountManager::GetForegroundOsAccountLocalId(foregroundId);
-    if (res != DP_SUCCESS) {
-        LOGE("GetForegroundId failed, res:%{public}d", res);
-        return DP_GET_FOREGROUND_ID_FAIL;
-    }
-    LOGI("current foregroundId = %{public}d", foregroundId);
-    return foregroundId; 
-}
-
-=======
->>>>>>> 8f3393c (删除cache中不必要的代码)
 } // namespace DeviceProfile
 } // namespace OHOS

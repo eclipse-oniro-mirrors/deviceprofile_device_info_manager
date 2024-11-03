@@ -26,8 +26,9 @@
         "components": [
           "cJSON",
           "c_utils",
-          "config_policy",
           "common_event_service",
+          "config_policy",
+          "ffrt",
           "hisysevent",
           "hilog",
           "ipc",

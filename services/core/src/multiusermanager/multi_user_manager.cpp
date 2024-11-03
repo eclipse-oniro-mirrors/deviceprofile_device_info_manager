@@ -16,8 +16,10 @@
 #include "multi_user_manager.h"
 
 #include "device_profile_manager.h"
+#include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
+#include "profile_utils.h"
 
 #include "account_info.h"
 #include "ohos_account_kits.h"
@@ -34,12 +36,12 @@ namespace {
 int32_t MultiUserManager::Init()
 {
     HILOGI("Init");
-    int32_t foregroundId;
+    int32_t foregroundId = DEFAULT_USER_ID;
     int32_t res = OHOS::AccountSA::OsAccountManager::GetForegroundOsAccountLocalId(foregroundId);
-    if (res != DP_SUCCESS) {
+    if (res != DP_SUCCESS || foregroundId == DEFAULT_USER_ID) {
         HILOGD("GetForegroundId failed, res:%{public}d", res);
     }
-    HILOGI("current foregroundId = %{public}d", foregroundId);
+    HILOGI("current foregroundId = %{public}s", ProfileUtils::GetAnonyInt32(foregroundId).c_str());
     SetCurrentForegroundUserID(foregroundId);
 
     return DP_SUCCESS;
@@ -61,6 +63,18 @@ int32_t MultiUserManager::GetCurrentForegroundUserID()
 {
     std::lock_guard<std::mutex> lock(foregroundUserIdLock_);
     return foregroundUserId_;
+}
+
+int32_t MultiUserManager::GetForegroundUserIDFromOs()
+{
+    int32_t foregroundId = DEFAULT_USER_ID;
+    int32_t res = OHOS::AccountSA::OsAccountManager::GetForegroundOsAccountLocalId(foregroundId);
+    if (res != DP_SUCCESS || foregroundId == DEFAULT_USER_ID) {
+        HILOGD("GetForegroundId failed, res:%{public}d", res);
+        return DP_GET_FOREGROUND_ID_FAIL;
+    }
+    HILOGI("GetForegroundUserIDFromOs foregroundId = %{public}s", ProfileUtils::GetAnonyInt32(foregroundId).c_str());
+    return foregroundId;
 }
 
 } // namespace DistributedHardware

@@ -95,11 +95,6 @@ private:
     int32_t RefreshStaticProfileCache(const std::unordered_map<std::string, CharacteristicProfile>& staticProfiles);
 
 private:
-<<<<<<< HEAD
-    std:mutex foregroundIdMutex_;
-    int32_t foregroundId_ = -1;
-=======
->>>>>>> 8f3393c (删除cache中不必要的代码)
     std::string localNetworkId_;
     std::mutex switchMutex_;
     uint32_t curLocalSwitch_ = 0x0000;

@@ -40,6 +40,7 @@ config("device_info_manager_config") {
     "${device_profile_service}/include/permissionmanager",
     "${device_profile_service}/include/persistenceadapter/kvadapter",
     "${device_profile_service}/include/persistenceadapter/rdbadapter",
+    "${device_profile_service}/include/publishcommonevent",
     "${device_profile_service}/include/subscribeprofilemanager",
     "${device_profile_service}/include/trustprofilemanager",
     "${device_profile_service}/include/utils",

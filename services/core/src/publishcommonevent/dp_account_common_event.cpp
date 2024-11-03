@@ -21,6 +21,7 @@
 #include "common_event_support.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
+#include "ffrt.h"
 #include "iservice_registry.h"
 #include "multi_user_manager.h"
 #include "system_ability_definition.h"
@@ -150,6 +151,7 @@ void DpAccountEventSubscriber::OnReceiveEvent(const CommonEventData &data)
         HILOGE("Invalied account type event.");
         return;
     }
+    ffrt::submit([=]() { callback_(userId, receiveEvent); });
 }
 
 void DpAccountCommonEventManager::SystemAbilityStatusChangeListener::OnAddSystemAbility(
@@ -168,14 +170,6 @@ void DpAccountCommonEventManager::SystemAbilityStatusChangeListener::OnAddSystem
     if (!CommonEventManager::SubscribeCommonEvent(changeSubscriber_)) {
         HILOGE("failed to subscribe account commom event: %{public}zu", eventNameVec.size());
     }
-    // int32_t userId = MultipleUserConnector::GetCurrentAccountUserID();
-    // std::string accountId = MultipleUserConnector::GetOhosAccountId();
-    // HILOGI("after subscribe account event accountId: %{public}s, userId: %{public}s",
-    //     GetAnonyString(accountId).c_str(), GetAnonyInt32(userId).c_str());
-    // if (userId > 0) {
-    //     MultipleUserConnector::SetSwitchOldUserId(userId);
-    //     MultipleUserConnector::SetSwitchOldAccountId(accountId);
-    // }
 }
 
 void DpAccountCommonEventManager::SystemAbilityStatusChangeListener::OnRemoveSystemAbility(

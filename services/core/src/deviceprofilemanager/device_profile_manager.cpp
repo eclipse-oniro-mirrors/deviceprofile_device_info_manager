@@ -25,6 +25,7 @@
 
 #include "content_sensor_manager_utils.h"
 #include "distributed_device_profile_errors.h"
+#include "distributed_device_profile_enums.h"
 #include "distributed_device_profile_log.h"
 #include "event_handler_factory.h"
 #include "i_sync_completed_callback.h"
@@ -35,6 +36,7 @@
 #include "profile_control_utils.h"
 #include "profile_utils.h"
 #include "static_profile_manager.h"
+#include "trust_profile_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -295,16 +297,6 @@ int32_t DeviceProfileManager::PutCharacteristicProfileBatch(const std::vector<Ch
 int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile,
     bool isMultiUser, int32_t userId)
 {
-<<<<<<< HEAD
-    HILOGD("call!");
-=======
-<<<<<<< HEAD
-    if ((deviceProfile.GetIsMuitUser() && deviceProfile.GetUserId() <= 0) ||
-        (!deviceProfile.GetIsMuitUser() && deviceProfile.GetUserId() != DEFAULT_USER_ID)) {
-            HILOGE("multi-user params are invalid, isMultiUser: %{public}d, userId: %{public}s",
-                deviceProfile.GetIsMuitUser(),
-                ProfileUtils::GetAnonyString(std::to_string(deviceProfile.GetUserId()).c_str()).c_str());
-=======
     deviceProfile.SetDeviceId(deviceId);
     deviceProfile.SetIsMultiUser(isMultiUser);
     deviceProfile.SetUserId(userId);
@@ -312,16 +304,7 @@ int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, Devi
     if (res != DP_SUCCESS) {
         HILOGE("GetDeviceProfile IsMultiUserValid failed, res: %{public}d", res);
         return res;
->>>>>>> f7ce896 (get接口添加默认参数)
     }
-    if (deviceProfile.GetIsMuitUser()) {
-        HILOGI("this profile support multi-user, userId: %{public}s", 
-            ProfileUtils::GetAnonyString(std::to_string(deviceProfile.GetUserId()).c_str()).c_str());
-    }
-    HILOGI("this profile not support multi-user");
-
->>>>>>> 6468278 (解冲突)
-    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         res = ProfileControlUtils::GetDeviceProfile(deviceProfileStore_, deviceId, deviceProfile);
@@ -337,16 +320,6 @@ int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, Devi
 int32_t DeviceProfileManager::GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
     ServiceProfile& serviceProfile, bool isMultiUser, int32_t userId)
 {
-<<<<<<< HEAD
-    HILOGD("call!");
-=======
-<<<<<<< HEAD
-    if ((serviceProfile.GetIsMuitUser() && serviceProfile.GetUserId() <= 0) ||
-        (!serviceProfile.GetIsMuitUser() && serviceProfile.GetUserId() != DEFAULT_USER_ID)) {
-            HILOGE("multi-user params are invalid, isMultiUser: %{public}d, userId: %{public}s",
-                serviceProfile.GetIsMuitUser(),
-                ProfileUtils::GetAnonyString(std::to_string(serviceProfile.GetUserId()).c_str()).c_str());
-=======
     serviceProfile.SetDeviceId(deviceId);
     serviceProfile.SetIsMultiUser(isMultiUser);
     serviceProfile.SetUserId(userId);
@@ -354,16 +327,7 @@ int32_t DeviceProfileManager::GetServiceProfile(const std::string& deviceId, con
     if (res != DP_SUCCESS) {
         HILOGE("GetServiceProfile IsMultiUserValid failed, res: %{public}d", res);
         return res;
->>>>>>> f7ce896 (get接口添加默认参数)
     }
-    if (serviceProfile.GetIsMuitUser()) {
-        HILOGI("this profile support multi-user, userId: %{public}s", 
-            ProfileUtils::GetAnonyString(std::to_string(serviceProfile.GetUserId()).c_str()).c_str());
-    }
-    HILOGI("this profile not support multi-user");
-
->>>>>>> 6468278 (解冲突)
-    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         res = ProfileControlUtils::GetServiceProfile(deviceProfileStore_, deviceId, serviceName,
@@ -380,16 +344,6 @@ int32_t DeviceProfileManager::GetServiceProfile(const std::string& deviceId, con
 int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
     const std::string& characteristicKey, CharacteristicProfile& charProfile, bool isMultiUser, int32_t userId)
 {
-<<<<<<< HEAD
-    HILOGD("call!");
-=======
-<<<<<<< HEAD
-    if ((charProfile.GetIsMuitUser() && charProfile.GetUserId() <= 0) ||
-        (!charProfile.GetIsMuitUser() && charProfile.GetUserId() != DEFAULT_USER_ID)) {
-            HILOGE("multi-user params are invalid, isMultiUser: %{public}d, userId: %{public}s",
-                charProfile.GetIsMuitUser(),
-                ProfileUtils::GetAnonyString(std::to_string(charProfile.GetUserId()).c_str()).c_str());
-=======
     charProfile.SetDeviceId(deviceId);
     charProfile.SetIsMultiUser(isMultiUser);
     charProfile.SetUserId(userId);
@@ -397,16 +351,7 @@ int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& device
     if (res != DP_SUCCESS) {
         HILOGE("GetCharacteristicProfile IsMultiUserValid failed, res: %{public}d", res);
         return res;
->>>>>>> f7ce896 (get接口添加默认参数)
     }
-    if (charProfile.GetIsMuitUser()) {
-        HILOGI("this profile support multi-user, userId: %{public}s", 
-            ProfileUtils::GetAnonyString(std::to_string(charProfile.GetUserId()).c_str()).c_str());
-    }
-    HILOGI("this profile not support multi-user");
-    
->>>>>>> 6468278 (解冲突)
-    int32_t res = 0;
     {
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
         res = ProfileControlUtils::GetCharacteristicProfile(deviceProfileStore_, deviceId, serviceName,
@@ -1120,8 +1065,6 @@ void DeviceProfileManager::FixDiffProfiles()
     }
     return;
 }
-<<<<<<< HEAD
-=======
 
 void DeviceProfileManager::OnUserChange(int32_t lastUserId, int32_t curUserId)
 {
@@ -1193,11 +1136,6 @@ int32_t DeviceProfileManager::SaveBatchByKeys(const std::map<std::string, std::s
     }
     return DP_SUCCESS;
 }
-<<<<<<< HEAD
->>>>>>> 86ce8ca (切换用户时当前用户数据覆盖上一个用户数据)
-=======
-<<<<<<< HEAD
-=======
 
 template <typename T>
 int32_t DeviceProfileManager::IsMultiUserValid(const T& profile)
@@ -1289,7 +1227,5 @@ bool DeviceProfileManager::HasTrustP2PRelation(const std::string deviceId, const
     return false;
 }
 
->>>>>>> ad8db23 (update)
->>>>>>> 6468278 (解冲突)
 } // namespace DeviceProfile
 } // namespace OHOS

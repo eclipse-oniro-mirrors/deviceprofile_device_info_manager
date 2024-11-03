@@ -24,6 +24,7 @@
 #include "iservice_registry.h"
 #include "sa_profiles.h"
 
+#include "common_event_support.h"
 #include "content_sensor_manager.h"
 #include "device_profile_dumper.h"
 #include "distributed_device_profile_constants.h"
@@ -32,6 +33,7 @@
 #include "device_profile_manager.h"
 #include "dp_radar_helper.h"
 #include "event_handler_factory.h"
+#include "multi_user_manager.h"
 #include "permission_manager.h"
 #include "profile_cache.h"
 #include "static_profile_manager.h"
@@ -114,6 +116,10 @@ int32_t DistributedDeviceProfileServiceNew::PostInit()
     if (ContentSensorManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("ContentSensorManager init failed");
         return DP_CONTENT_SENSOR_MANAGER_INIT_FAIL;
+    }
+    if (MultiUserManager::GetInstance().Init() != DP_SUCCESS) {
+        HILOGE("MultiUserManager init failed");
+        return DP_MULTI_USER_MANAGER_INIT_FAIL;
     }
     SaveSwitchProfilesFromTempCache();
     SaveDynamicProfilesFromTempCache();
@@ -578,6 +584,7 @@ void DistributedDeviceProfileServiceNew::OnStart(const SystemAbilityOnDemandReas
     AddSystemAbilityListener(SOFTBUS_SERVER_SA_ID);
     AddSystemAbilityListener(DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID);
     AddSystemAbilityListener(DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID);
+    AddSystemAbilityListener(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN);
     if (!Publish(this)) {
         HILOGE("publish SA failed");
         return;
@@ -615,7 +622,45 @@ void DistributedDeviceProfileServiceNew::OnAddSystemAbility(int32_t systemAbilit
             return;
         }
     }
+    if (systemAbilityId == SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN) {
+        SubscribeAccountCommonEvent();
+    }
     PostInit();
+}
+
+void DistributedDeviceProfileServiceNew::SubscribeAccountCommonEvent()
+{
+    HILOGI("Start");
+    if (accountCommonEventManager_ == nullptr) {
+        accountCommonEventManager_ = std::make_shared<DpAccountCommonEventManager>();
+    }
+    AccountEventCallback callback = [=](const auto &arg1, const auto &arg2) {
+        this->AccountCommonEventCallback(arg1, arg2);
+    };
+    std::vector<std::string> AccountCommonEventVec;
+    AccountCommonEventVec.emplace_back(EventFwk::CommonEventSupport::COMMON_EVENT_USER_SWITCHED);
+    AccountCommonEventVec.emplace_back(EventFwk::CommonEventSupport::COMMON_EVENT_USER_REMOVED);
+    AccountCommonEventVec.emplace_back(EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGOUT);
+    AccountCommonEventVec.emplace_back(EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGIN);
+    if (accountCommonEventManager_->SubscribeAccountCommonEvent(AccountCommonEventVec, callback)) {
+        HILOGI("Success");
+    }
+    return;
+}
+
+void DistributedDeviceProfileServiceNew::AccountCommonEventCallback(int32_t userId, const std::string commonEventType)
+{
+    HILOGI("CommonEventType: %{public}s, userId: %{public}d", commonEventType.c_str(), userId);
+    if (commonEventType == EventFwk::CommonEventSupport::COMMON_EVENT_USER_SWITCHED) {
+        // swithed
+        MultiUserManager::GetInstance().SetCurrentForegroundUserID(userId);
+    } else if (commonEventType == EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGIN) {
+    } else if (commonEventType == EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGOUT) {
+    } else if (commonEventType == EventFwk::CommonEventSupport::COMMON_EVENT_USER_REMOVED) {
+    } else {
+        HILOGE("Invalied account common event.");
+    }
+    return;
 }
 
 int32_t DistributedDeviceProfileServiceNew::AddSvrProfilesToCache(const std::vector<ServiceProfile>& serviceProfiles)

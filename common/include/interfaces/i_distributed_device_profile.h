@@ -52,16 +52,10 @@ public:
     virtual int32_t GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
         ServiceProfile& serviceProfile, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID) = 0;
     virtual int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-<<<<<<< HEAD
-        const std::string& characteristicId, CharacteristicProfile& charProfile) = 0;
-    virtual int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName,
-        bool isMuitUser = false, int32_t userId = -1) = 0;
-=======
         const std::string& characteristicId, CharacteristicProfile& charProfile, bool isMultiUser = false,
         int32_t userId = DEFAULT_USER_ID) = 0;
     virtual int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName,
         bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID) = 0;
->>>>>>> 6cd545d (编译通过，修改检视意见)
     virtual int32_t DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
         const std::string& characteristicId, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID) = 0;
     virtual int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) = 0;

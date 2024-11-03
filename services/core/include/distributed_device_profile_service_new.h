@@ -21,6 +21,7 @@
 #include <mutex>
 #include <unordered_set>
 #include "distributed_device_profile_stub_new.h"
+#include "dp_account_common_event.h"
 #include "i_dp_inited_callback.h"
 #include "event_handler.h"
 #include "event_runner.h"
@@ -82,6 +83,7 @@ protected:
     void OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
 
 private:
+    void AccountCommonEventCallback(int32_t userId, const std::string commonEventType);
     int32_t CreateUnloadHandler();
     int32_t DestroyUnloadHandler();
     int32_t AddSvrProfilesToCache(const std::vector<ServiceProfile>& serviceProfiles);
@@ -89,10 +91,12 @@ private:
     int32_t SaveSwitchProfilesFromTempCache();
     int32_t SaveDynamicProfilesFromTempCache();
     int32_t NotifyDeviceProfileInited();
+    void SubscribeAccountCommonEvent();
     void GetDynamicProfilesFromTempCache(std::map<std::string, std::string>& entries);
     void ClearProfileCache();
 
 private:
+    std::shared_ptr<DpAccountCommonEventManager> accountCommonEventManager_;
     std::shared_ptr<AppExecFwk::EventHandler> unloadHandler_;
     std::mutex unloadMutex_;
     std::atomic<bool> isInited_{false};
@@ -106,7 +110,8 @@ private:
     std::unordered_set<int32_t> depSaIds_ {
         SOFTBUS_SERVER_SA_ID,
         DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID,
-        DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID
+        DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID,
+        SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN
     };
 };
 } // namespace DeviceProfile

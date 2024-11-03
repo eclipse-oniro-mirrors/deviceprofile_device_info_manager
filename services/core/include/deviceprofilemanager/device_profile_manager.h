@@ -74,6 +74,7 @@ public:
     void OnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
     void OnDeviceTrustChange(const std::string& peerUdid, const std::string& peerUuid,
         const DistributedHardware::DmAuthForm authform);
+    void OnUserChange(int32_t lastUserId, int32_t curUserId);
 
 private:
     bool LoadDpSyncAdapter();
@@ -98,7 +99,12 @@ private:
     void NotifyNotOHBaseOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
     void E2ESyncDynamicProfile(const DistributedHardware::DmDeviceInfo deviceInfo);
     void ClearDataWithPeerLogout(const std::string& peerUdid, const std::string& peerUuid);
+    int32_t SaveBatchByKeys(const std::map<std::string, std::string>& entries);
     void FixDiffProfiles();
+    template <typename T>
+    int32_t IsMultiUserValid(const T& profile);
+    bool IsSameAccount(const std::string deviceId, const int32_t userId);
+    bool HasTrustP2PRelation(const std::string deviceId, const int32_t userId);
     bool isAdapterSoLoaded_ = false;
     std::mutex isAdapterLoadLock_;
     std::mutex dynamicStoreMutex_;
