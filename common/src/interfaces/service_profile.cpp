@@ -136,8 +136,7 @@ std::string ServiceProfile::dump() const
     cJSON_AddStringToObject(json, SERVICE_NAME.c_str(), serviceName_.c_str());
     cJSON_AddStringToObject(json, SERVICE_TYPE.c_str(), serviceType_.c_str());
     cJSON_AddBoolToObject(json, IS_MULTI_USER.c_str(), isMultiUser_);
-    cJSON_AddStringToObject(json, USER_ID.c_str(),
-        ProfileUtils::GetAnonyString(std::to_string(userId_)).c_str());
+    cJSON_AddNumberToObject(json, USER_ID.c_str(), ProfileUtils::GetAnonyInt32(userId_));
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);

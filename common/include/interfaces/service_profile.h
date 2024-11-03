@@ -18,6 +18,7 @@
 
 #include <cstdint>
 #include <string>
+#include "distributed_device_profile_constants.h"
 #include "dp_parcel.h"
 
 namespace OHOS {
@@ -50,7 +51,7 @@ private:
     std::string serviceName_ = "";
     std::string serviceType_ = "";
     bool isMultiUser_ = false;
-    int32_t userId_ = -1;
+    int32_t userId_ = DEFAULT_USER_ID;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

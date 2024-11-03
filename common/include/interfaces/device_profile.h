@@ -18,6 +18,7 @@
 
 #include <cstdint>
 #include <string>
+#include "distributed_device_profile_constants.h"
 #include "dp_parcel.h"
 
 namespace OHOS {
@@ -37,7 +38,7 @@ public:
         osVersion_(""),
         osType_(0),
         isMultiUser_(false),
-        userId_(-1)
+        userId_(DEFAULT_USER_ID)
     {}
     ~DeviceProfile() = default;
 

@@ -22,6 +22,7 @@
 #include <vector>
 
 #include "iremote_object.h"
+#include "distributed_device_profile_constants.h"
 #include "single_instance.h"
 
 namespace OHOS {
@@ -40,7 +41,7 @@ public:
     int32_t GetForegroundUserIDFromOs();
 
 private:
-    int32_t foregroundUserId_ = -1;
+    int32_t foregroundUserId_ = DEFAULT_USER_ID;
     std::mutex foregroundUserIdLock_;
 };
 } // namespace DistributedHardware

@@ -733,7 +733,7 @@ std::string ProfileUtils::GenerateDBKey(const std::string& profileKey, const std
     int32_t userId)
 {
     std::string DBKey = "";
-    if (userId != -1) {
+    if (userId != DEFAULT_USER_ID) {
         DBKey = profileKey + SEPARATOR + profileProperty + SEPARATOR + std::to_string(userId);
     } else {
         DBKey = profileKey + SEPARATOR + profileProperty;
@@ -782,7 +782,7 @@ std::map<std::string, std::string> ProfileUtils::GetProfilePropertiesMap(std::ma
     std::map<std::string, std::string> propertiesWithoutUserId;
     std::map<std::string, std::string> propertiesWithUserId;
     if (userId <= 0 && userId != DEFAULT_USER_ID) {
-        HILOGE("userId is invalid, userId: %{public}s", GetAnonyString(std::to_string(userId).c_str()).c_str());
+        HILOGE("userId is invalid, userId: %{public}s", GetAnonyInt32(userId).c_str());
         return propertiesWithoutUserId;
     }
     for (const auto& item : dbEntries) {
