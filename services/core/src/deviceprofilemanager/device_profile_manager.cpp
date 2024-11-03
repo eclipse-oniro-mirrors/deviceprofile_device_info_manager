@@ -294,12 +294,9 @@ int32_t DeviceProfileManager::PutCharacteristicProfileBatch(const std::vector<Ch
     return DP_SUCCESS;
 }
 
-int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile,
-    bool isMultiUser, int32_t userId)
+int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile)
 {
     deviceProfile.SetDeviceId(deviceId);
-    deviceProfile.SetIsMultiUser(isMultiUser);
-    deviceProfile.SetUserId(userId);
     int32_t res = IsMultiUserValid(deviceProfile);
     if (res != DP_SUCCESS) {
         HILOGE("GetDeviceProfile IsMultiUserValid failed, res: %{public}d", res);
@@ -318,11 +315,9 @@ int32_t DeviceProfileManager::GetDeviceProfile(const std::string& deviceId, Devi
 }
 
 int32_t DeviceProfileManager::GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
-    ServiceProfile& serviceProfile, bool isMultiUser, int32_t userId)
+    ServiceProfile& serviceProfile)
 {
     serviceProfile.SetDeviceId(deviceId);
-    serviceProfile.SetIsMultiUser(isMultiUser);
-    serviceProfile.SetUserId(userId);
     int32_t res = IsMultiUserValid(serviceProfile);
     if (res != DP_SUCCESS) {
         HILOGE("GetServiceProfile IsMultiUserValid failed, res: %{public}d", res);
