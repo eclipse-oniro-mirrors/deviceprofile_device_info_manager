@@ -398,9 +398,6 @@ int32_t SubscribeProfileManager::NotifyCharProfileUpdate(const std::string& dbKe
     newCharProfile.SetServiceName(ProfileUtils::GetNonOhSuffixServiceNameByDBKey(dbKey));
     newCharProfile.SetCharacteristicKey(ProfileUtils::GetCharKeyByDBKey(dbKey));
     ProfileUtils::EntriesToCharProfile(values, newCharProfile);
-    // TODO 
-    // 1. 判断是否是本设备数据，不是需要将对端设备的udid转换成本地设备的udid
-    // 2. dbKey 也要替换，这样才能获取业务真是订阅的数据
     auto subscriberInfos = GetSubscribeInfos(DBKeyToSubcribeKey(dbKey));
     if (subscriberInfos.empty()) {
         return DP_SUCCESS;
