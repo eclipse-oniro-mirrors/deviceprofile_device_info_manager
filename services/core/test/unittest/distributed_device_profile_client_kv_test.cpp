@@ -343,7 +343,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetCharacteristicProfile001, Test
 HWTEST_F(DistributedDeviceProfileClientKvTest, DeleteServiceProfile001, TestSize.Level1)
 {
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().DeleteServiceProfile(
-            "deviceId", "serviceName");
+            "deviceId", "serviceName", false, DEFAULT_USER_ID);
     EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
 
@@ -356,7 +356,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, DeleteServiceProfile001, TestSize
 HWTEST_F(DistributedDeviceProfileClientKvTest, DeleteCharacteristicProfile001, TestSize.Level1)
 {
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().DeleteCharacteristicProfile(
-            "deviceId", "serviceName", "characteristicKey");
+            "deviceId", "serviceName", "characteristicKey", false, DEFAULT_USER_ID);
     EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
 

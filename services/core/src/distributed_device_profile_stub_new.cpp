@@ -371,8 +371,8 @@ int32_t DistributedDeviceProfileStubNew::PutCharacteristicProfileBatchInner(Mess
 int32_t DistributedDeviceProfileStubNew::GetDeviceProfileInner(MessageParcel& data, MessageParcel& reply)
 {
     std::string deviceId;
-    bool isMultiUser;
-    int32_t userId;
+    bool isMultiUser = false;
+    int32_t userId = DEFAULT_USER_ID;
     DeviceProfile deviceProfile;
     READ_HELPER(data, String, deviceId);
     READ_HELPER(data, Bool, isMultiUser);
@@ -395,8 +395,8 @@ int32_t DistributedDeviceProfileStubNew::GetServiceProfileInner(MessageParcel& d
 {
     std::string deviceId;
     std::string serviceName;
-    bool isMultiUser;
-    int32_t userId;
+    bool isMultiUser = false;
+    int32_t userId = DEFAULT_USER_ID;
     ServiceProfile serviceProfile;
     READ_HELPER(data, String, deviceId);
     READ_HELPER(data, String, serviceName);
@@ -421,8 +421,8 @@ int32_t DistributedDeviceProfileStubNew::GetCharacteristicProfileInner(MessagePa
     std::string deviceId;
     std::string serviceName;
     std::string characteristicKey;
-    bool isMultiUser;
-    int32_t userId;
+    bool isMultiUser = false;
+    int32_t userId = DEFAULT_USER_ID;
     READ_HELPER(data, String, deviceId);
     READ_HELPER(data, String, serviceName);
     READ_HELPER(data, String, characteristicKey);
@@ -447,8 +447,8 @@ int32_t DistributedDeviceProfileStubNew::DeleteServiceProfileInner(MessageParcel
 {
     std::string deviceId;
     std::string serviceName;
-    bool isMultiUser;
-    int32_t userId;
+    bool isMultiUser = false;
+    int32_t userId = DEFAULT_USER_ID;
     READ_HELPER(data, String, deviceId);
     READ_HELPER(data, String, serviceName);
     READ_HELPER(data, Bool, isMultiUser);
@@ -466,8 +466,8 @@ int32_t DistributedDeviceProfileStubNew::DeleteCharacteristicProfileInner(Messag
     std::string deviceId;
     std::string serviceName;
     std::string characteristicKey;
-    bool isMultiUser;
-    int32_t userId;
+    bool isMultiUser = false;
+    int32_t userId = DEFAULT_USER_ID;
     READ_HELPER(data, String, deviceId);
     READ_HELPER(data, String, serviceName);
     READ_HELPER(data, String, characteristicKey);

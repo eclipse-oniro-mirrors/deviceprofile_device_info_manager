@@ -286,6 +286,12 @@ int32_t DistributedDeviceProfileClient::GetCharacteristicProfile(const std::stri
 }
 
 int32_t DistributedDeviceProfileClient::DeleteServiceProfile(const std::string& deviceId,
+    const std::string& serviceName)
+{
+    return DeleteServiceProfile(deviceId, serviceName, false, DEFAULT_USER_ID);
+}
+
+int32_t DistributedDeviceProfileClient::DeleteServiceProfile(const std::string& deviceId,
     const std::string& serviceName, bool isMultiUser, int32_t userId)
 {
     auto dpService = GetDeviceProfileService();
@@ -294,6 +300,12 @@ int32_t DistributedDeviceProfileClient::DeleteServiceProfile(const std::string& 
         return DP_GET_SERVICE_FAILED;
     }
     return dpService->DeleteServiceProfile(deviceId, serviceName, isMultiUser, userId);
+}
+
+int32_t DistributedDeviceProfileClient::DeleteCharacteristicProfile(const std::string& deviceId,
+    const std::string& serviceName, const std::string& characteristicKey)
+{
+    return DeleteCharacteristicProfile(deviceId, serviceName, characteristicKey, false, DEFAULT_USER_ID);
 }
 
 int32_t DistributedDeviceProfileClient::DeleteCharacteristicProfile(const std::string& deviceId,
