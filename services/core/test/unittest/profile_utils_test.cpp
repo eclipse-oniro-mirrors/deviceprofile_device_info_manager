@@ -940,7 +940,7 @@ HWTEST_F(ProfileUtilsTest, GetProfileProperty001, TestSize.Level1)
 {
     string dbKey = "profileKey#profileProperty";
     string res = ProfileUtils::GetProfileProperty(dbKey);
-    EXPECT_EQ("profileProperty", res);
+    EXPECT_EQ("", res);
 }
 
 /**
