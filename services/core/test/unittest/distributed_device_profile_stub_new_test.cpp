@@ -46,13 +46,11 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
     int32_t PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles) override;
     int32_t PutCharacteristicProfile(const CharacteristicProfile& charProfile) override;
     int32_t PutCharacteristicProfileBatch(const std::vector<CharacteristicProfile>& charProfiles) override;
-    int32_t GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile, bool isMultiUser = false,
-        int32_t userId = DEFAULT_USER_ID) override;
+    int32_t GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile,) override;
     int32_t GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
-        ServiceProfile& serviceProfile, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID) override;
+        ServiceProfile& serviceProfile) override;
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-        const std::string& characteristicId, CharacteristicProfile& charProfile, bool isMultiUser = false,
-        int32_t userId = DEFAULT_USER_ID) override;
+        const std::string& characteristicId, CharacteristicProfile& charProfile) override;
     int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName, bool isMultiUser = false,
         int32_t userId = DEFAULT_USER_ID) override;
     int32_t DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
@@ -159,34 +157,27 @@ int32_t MockDistributedDeviceProfileStubNew::PutCharacteristicProfileBatch(
     return 0;
 }
 int32_t MockDistributedDeviceProfileStubNew::GetDeviceProfile(const std::string& deviceId,
-    DeviceProfile& deviceProfile, bool isMultiUser, int32_t userId)
+    DeviceProfile& deviceProfile)
 {
     (void)deviceId;
     (void)deviceProfile;
-    (void)isMultiUser;
-    (void)userId;
     return 0;
 }
 int32_t MockDistributedDeviceProfileStubNew::GetServiceProfile(const std::string& deviceId,
-    const std::string& serviceName, ServiceProfile& serviceProfile, bool isMultiUser, int32_t userId)
+    const std::string& serviceName, ServiceProfile& serviceProfile)
 {
     (void)deviceId;
     (void)serviceName;
     (void)serviceProfile;
-    (void)isMultiUser;
-    (void)userId;
     return 0;
 }
 int32_t MockDistributedDeviceProfileStubNew::GetCharacteristicProfile(const std::string& deviceId,
-    const std::string& serviceName, const std::string& characteristicId, CharacteristicProfile& charProfile,
-    bool isMultiUser, int32_t userId)
+    const std::string& serviceName, const std::string& characteristicId, CharacteristicProfile& charProfile)
 {
     (void)deviceId;
     (void)serviceName;
     (void)characteristicId;
     (void)charProfile;
-    (void)isMultiUser;
-    (void)userId;
     return 0;
 }
 int32_t MockDistributedDeviceProfileStubNew::DeleteServiceProfile(const std::string& deviceId,
