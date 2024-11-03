@@ -743,7 +743,7 @@ std::string ProfileUtils::GenerateDBKey(const std::string& profileKey, const std
 
 std::string ProfileUtils::GetProfileProperty(const std::string& dbKey, int32_t userId)
 {
-    if (dbKey.length() == 0 || dbKey.length() > MAX_STRING_LEN || (userId <= 0 && userId != DEFAULT_USER_ID)) {
+    if (dbKey.length() == 0 || dbKey.length() > MAX_STRING_LEN) {
         return "";
     }
     int32_t getUserId = GetUserIdFromDbKey(dbKey);
@@ -754,22 +754,19 @@ std::string ProfileUtils::GetProfileProperty(const std::string& dbKey, int32_t u
     }
 
     if (splitKeys[0] == DEV_PREFIX) {
-        if ((userId == DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID) ||
-            (userId != DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID)) {
+        if (userId != DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID) {
             return splitKeys[NUM_2];
         }
         return (userId == getUserId) ? splitKeys[NUM_2] : "";
     }
     if (splitKeys[0] == SVR_PREFIX && splitKeys.size() >= NUM_4) {
-        if ((userId == DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID) ||
-            (userId != DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID)) {
+        if (userId != DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID) {
             return splitKeys[NUM_3];
         }
         return (userId == getUserId) ? splitKeys[NUM_3] : "";
     }
     if (splitKeys[0] == CHAR_PREFIX && splitKeys.size() >= NUM_5) {
-        if ((userId == DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID) ||
-            (userId != DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID)) {
+        if (userId != DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID) {
             return splitKeys[NUM_4];
         }
         return (userId == getUserId) ? splitKeys[NUM_4] : "";
