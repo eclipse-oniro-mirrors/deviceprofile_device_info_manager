@@ -1143,23 +1143,6 @@ int32_t DeviceProfileManager::IsMultiUserValid(const T& profile)
             ProfileUtils::GetAnonyInt32(profile.GetUserId()).c_str());
         return DP_GET_MULTI_USER_PROFILE_PARAMS_INVALID;
     }
-
-    if (profile.GetIsMultiUser()) {
-        if ((profile.GetDeviceId() == ProfileCache::GetInstance().GetLocalUdid() &&
-            profile.GetUserId() != MultiUserManager::GetInstance().GetCurrentForegroundUserID())) {
-            HILOGE("this userId is not foregroundUserId, userId: %{publish}s, foregroundId: %{publish}s",
-                ProfileUtils::GetAnonyInt32(profile.GetUserId()).c_str(),
-                ProfileUtils::GetAnonyInt32(MultiUserManager::GetInstance().GetCurrentForegroundUserID()).c_str());
-            return DP_GET_LOCAL_PROFILE_IS_NOT_FOREGROUND_ID;
-        }
-        if (profile.GetDeviceId() != ProfileCache::GetInstance().GetLocalUdid()) {
-            if (!IsSameAccount(profile.GetDeviceId(), profile.GetUserId()) ||
-                !HasTrustP2PRelation(profile.GetDeviceId(), profile.GetUserId())) {
-                HILOGE("this userId is not trusted");
-                return DP_GET_USER_ID_IS_NOT_TRUSTED;
-            }
-        }
-    }
     return DP_SUCCESS;
 }
 
