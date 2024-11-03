@@ -404,15 +404,14 @@ int32_t DistributedDeviceProfileServiceNew::GetDeviceProfile(const std::string& 
 }
 
 int32_t DistributedDeviceProfileServiceNew::GetServiceProfile(const std::string& deviceId,
-    const std::string& serviceName, ServiceProfile& serviceProfile, bool isMultiUser, int32_t userId)
+    const std::string& serviceName, ServiceProfile& serviceProfile)
 {
     if (!PermissionManager::GetInstance().CheckCallerPermission()) {
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
     HILOGD("CheckCallerPermission success interface GetServiceProfile");
-    int32_t ret = DeviceProfileManager::GetInstance().GetServiceProfile(deviceId, serviceName, serviceProfile,
-        isMultiUser, userId);
+    int32_t ret = DeviceProfileManager::GetInstance().GetServiceProfile(deviceId, serviceName, serviceProfile);
     DpRadarHelper::GetInstance().ReportGetServiceProfile(ret, deviceId, serviceProfile);
     return ret;
 }
