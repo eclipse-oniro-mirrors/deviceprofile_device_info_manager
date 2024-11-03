@@ -523,8 +523,14 @@ int32_t DistributedDeviceProfileStub::PutCharacteristicProfileBatchInner(Message
 int32_t DistributedDeviceProfileStub::GetDeviceProfileNewInner(MessageParcel& data, MessageParcel& reply)
 {
     std::string deviceId;
+    bool isMultiUser = false;
+    int32_t userId = DistributedDeviceProfile::DEFAULT_USER_ID;
     OHOS::DistributedDeviceProfile::DeviceProfile deviceProfile;
     READ_HELPER(data, String, deviceId);
+    READ_HELPER(data, Bool, isMultiUser);
+    READ_HELPER(data, Int32, userId);
+    deviceProfile.SetIsMultiUser(isMultiUser);
+    deviceProfile.SetUserId(userId);
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetDeviceProfile(deviceId, deviceProfile);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
@@ -542,8 +548,14 @@ int32_t DistributedDeviceProfileStub::GetServiceProfileInner(MessageParcel& data
     std::string deviceId;
     std::string serviceName;
     ServiceProfile serviceProfile;
+    bool isMultiUser = false;
+    int32_t userId = DistributedDeviceProfile::DEFAULT_USER_ID;
     READ_HELPER(data, String, deviceId);
     READ_HELPER(data, String, serviceName);
+    READ_HELPER(data, Bool, isMultiUser);
+    READ_HELPER(data, Int32, userId);
+    serviceProfile.SetIsMultiUser(isMultiUser);
+    serviceProfile.SetUserId(userId);
     int32_t ret =
         DistributedDeviceProfileServiceNew::GetInstance().GetServiceProfile(deviceId, serviceName, serviceProfile);
     if (!reply.WriteInt32(ret)) {
@@ -562,10 +574,16 @@ int32_t DistributedDeviceProfileStub::GetCharacteristicProfileInner(MessageParce
     std::string deviceId;
     std::string serviceName;
     std::string characteristicKey;
+    bool isMultiUser = false;
+    int32_t userId = DistributedDeviceProfile::DEFAULT_USER_ID;
     READ_HELPER(data, String, deviceId);
     READ_HELPER(data, String, serviceName);
     READ_HELPER(data, String, characteristicKey);
+    READ_HELPER(data, Bool, isMultiUser);
+    READ_HELPER(data, Int32, userId);
     CharacteristicProfile charProfile;
+    charProfile.SetIsMultiUser(isMultiUser);
+    charProfile.SetUserId(userId);
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
         characteristicKey, charProfile);
     if (!reply.WriteInt32(ret)) {
@@ -583,9 +601,14 @@ int32_t DistributedDeviceProfileStub::DeleteServiceProfileInner(MessageParcel& d
 {
     std::string deviceId;
     std::string serviceName;
+    bool isMultiUser = false;
+    int32_t userId = DistributedDeviceProfile::DEFAULT_USER_ID;
     READ_HELPER(data, String, deviceId);
     READ_HELPER(data, String, serviceName);
-    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().DeleteServiceProfile(deviceId, serviceName);
+    READ_HELPER(data, Bool, isMultiUser);
+    READ_HELPER(data, Int32, userId);
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().DeleteServiceProfile(deviceId, serviceName,
+        isMultiUser, userId);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
@@ -598,11 +621,15 @@ int32_t DistributedDeviceProfileStub::DeleteCharacteristicProfileInner(MessagePa
     std::string deviceId;
     std::string serviceName;
     std::string characteristicKey;
+    bool isMultiUser = false;
+    int32_t userId = OHOS::DistributedDeviceProfile::DEFAULT_USER_ID;
     READ_HELPER(data, String, deviceId);
     READ_HELPER(data, String, serviceName);
     READ_HELPER(data, String, characteristicKey);
+    READ_HELPER(data, Bool, isMultiUser);
+    READ_HELPER(data, Int32, userId);
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().DeleteCharacteristicProfile(deviceId, serviceName,
-        characteristicKey);
+        characteristicKey, isMultiUser, userId);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;

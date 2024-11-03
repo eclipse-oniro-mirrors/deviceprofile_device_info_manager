@@ -1061,6 +1061,8 @@ void DeviceProfileManager::FixDiffProfiles()
 
 void DeviceProfileManager::OnUserChange(int32_t lastUserId, int32_t curUserId)
 {
+    HILOGI("lastUserId:%{public}s,curUserId:%{public}s",
+        ProfileUtils::GetAnonyInt32(lastUserId).c_str(), ProfileUtils::GetAnonyInt32(curUserId).c_str());
     if (lastUserId == curUserId) {
         HILOGW("user not change");
         return;
@@ -1108,6 +1110,7 @@ void DeviceProfileManager::OnUserChange(int32_t lastUserId, int32_t curUserId)
         HILOGE("DeleteBatchByKeys fail ret=%{public}d", ret);
         return;
     }
+    HILOGI("end");
 }
 
 int32_t DeviceProfileManager::SaveBatchByKeys(const std::map<std::string, std::string>& entries)
