@@ -342,11 +342,9 @@ int32_t DeviceProfileManager::GetServiceProfile(const std::string& deviceId, con
 }
 
 int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-    const std::string& characteristicKey, CharacteristicProfile& charProfile, bool isMultiUser, int32_t userId)
+    const std::string& characteristicKey, CharacteristicProfile& charProfile)
 {
     charProfile.SetDeviceId(deviceId);
-    charProfile.SetIsMultiUser(isMultiUser);
-    charProfile.SetUserId(userId);
     int32_t res = IsMultiUserValid(charProfile);
     if (res != DP_SUCCESS) {
         HILOGE("GetCharacteristicProfile IsMultiUserValid failed, res: %{public}d", res);

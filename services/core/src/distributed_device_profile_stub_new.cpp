@@ -425,6 +425,8 @@ int32_t DistributedDeviceProfileStubNew::GetCharacteristicProfileInner(MessagePa
     READ_HELPER(data, Bool, isMultiUser);
     READ_HELPER(data, Int32, userId);
     CharacteristicProfile charProfile;
+    charProfile.SetIsMultiUser(isMultiUser);
+    charProfile.SetUserId(userId);
     int32_t ret = GetCharacteristicProfile(deviceId, serviceName, characteristicKey, charProfile);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");

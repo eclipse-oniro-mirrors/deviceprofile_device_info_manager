@@ -52,8 +52,7 @@ public:
     virtual int32_t GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
         ServiceProfile& serviceProfile, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID) = 0;
     virtual int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-        const std::string& characteristicId, CharacteristicProfile& charProfile, bool isMultiUser = false,
-        int32_t userId = DEFAULT_USER_ID) = 0;
+        const std::string& characteristicId, CharacteristicProfile& charProfile) = 0;
     virtual int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName,
         bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID) = 0;
     virtual int32_t DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,

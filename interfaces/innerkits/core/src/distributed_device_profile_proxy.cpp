@@ -233,8 +233,7 @@ int32_t DistributedDeviceProfileProxy::GetServiceProfile(const std::string& devi
 }
 
 int32_t DistributedDeviceProfileProxy::GetCharacteristicProfile(const std::string& deviceId,
-    const std::string& serviceName, const std::string& characteristicId, CharacteristicProfile& charProfile,
-    bool isMultiUser, int32_t userId)
+    const std::string& serviceName, const std::string& characteristicId, CharacteristicProfile& charProfile)
 {
     sptr<IRemoteObject> remote = nullptr;
     GET_REMOTE_OBJECT(remote);
@@ -243,8 +242,8 @@ int32_t DistributedDeviceProfileProxy::GetCharacteristicProfile(const std::strin
     WRITE_HELPER(data, String, deviceId);
     WRITE_HELPER(data, String, serviceName);
     WRITE_HELPER(data, String, characteristicId);
-    WRITE_HELPER(data, Bool, isMultiUser);
-    WRITE_HELPER(data, Int32, userId);
+    WRITE_HELPER(data, Bool, charProfile.GetIsMultiUser());
+    WRITE_HELPER(data, Int32, charProfile.GetUserId());
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::GET_CHAR_PROFILE), data, reply);
     if (!charProfile.UnMarshalling(reply)) {

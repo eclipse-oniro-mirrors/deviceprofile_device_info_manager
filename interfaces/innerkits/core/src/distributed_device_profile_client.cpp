@@ -276,16 +276,14 @@ int32_t DistributedDeviceProfileClient::GetServiceProfile(const std::string& dev
 }
 
 int32_t DistributedDeviceProfileClient::GetCharacteristicProfile(const std::string& deviceId,
-    const std::string& serviceName, const std::string& characteristicId, CharacteristicProfile& characteristicProfile,
-    bool isMultiUser, int32_t userId)
+    const std::string& serviceName, const std::string& characteristicId, CharacteristicProfile& characteristicProfile)
 {
     auto dpService = GetDeviceProfileService();
     if (dpService == nullptr) {
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    return dpService->GetCharacteristicProfile(deviceId, serviceName, characteristicId, characteristicProfile,
-        isMultiUser, userId);
+    return dpService->GetCharacteristicProfile(deviceId, serviceName, characteristicId, characteristicProfile);
 }
 
 int32_t DistributedDeviceProfileClient::DeleteServiceProfile(const std::string& deviceId,

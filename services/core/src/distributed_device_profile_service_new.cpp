@@ -419,8 +419,7 @@ int32_t DistributedDeviceProfileServiceNew::GetServiceProfile(const std::string&
 }
 
 int32_t DistributedDeviceProfileServiceNew::GetCharacteristicProfile(const std::string& deviceId,
-    const std::string& serviceName, const std::string& characteristicKey, CharacteristicProfile& charProfile,
-    bool isMultiUser, int32_t userId)
+    const std::string& serviceName, const std::string& characteristicKey, CharacteristicProfile& charProfile)
 {
     if (!PermissionManager::GetInstance().CheckCallerPermission()) {
         HILOGE("this caller is permission denied!");
@@ -442,7 +441,7 @@ int32_t DistributedDeviceProfileServiceNew::GetCharacteristicProfile(const std::
     }
     HILOGD("CheckCallerPermission success interface DeviceProfileManager::GetCharacteristicProfile");
     int32_t ret = DeviceProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
-        characteristicKey, charProfile, isMultiUser, userId);
+        characteristicKey, charProfile);
     DpRadarHelper::GetInstance().ReportGetCharProfile(ret, deviceId, charProfile);
     return ret;
 }

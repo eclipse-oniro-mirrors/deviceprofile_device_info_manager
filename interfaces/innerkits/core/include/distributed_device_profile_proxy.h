@@ -56,8 +56,7 @@ public:
     int32_t GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
         ServiceProfile& serviceProfile, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID) override;
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-        const std::string& characteristicId, CharacteristicProfile& charProfile, bool isMultiUser = false,
-        int32_t userId = DEFAULT_USER_ID) override;
+        const std::string& characteristicId, CharacteristicProfile& charProfile) override;
     int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName, bool isMultiUser = false,
         int32_t userId = DEFAULT_USER_ID) override;
     int32_t DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
