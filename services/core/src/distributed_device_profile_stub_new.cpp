@@ -377,7 +377,9 @@ int32_t DistributedDeviceProfileStubNew::GetDeviceProfileInner(MessageParcel& da
     READ_HELPER(data, String, deviceId);
     READ_HELPER(data, Bool, isMultiUser);
     READ_HELPER(data, Int32, userId);
-    int32_t ret = GetDeviceProfile(deviceId, deviceProfile, isMultiUser, userId);
+    deviceProfile.SetIsMultiUser(isMultiUser);
+    deviceProfile.SetUserId(userId);
+    int32_t ret = GetDeviceProfile(deviceId, deviceProfile);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
@@ -400,6 +402,8 @@ int32_t DistributedDeviceProfileStubNew::GetServiceProfileInner(MessageParcel& d
     READ_HELPER(data, String, serviceName);
     READ_HELPER(data, Bool, isMultiUser);
     READ_HELPER(data, Int32, userId);
+    serviceProfile.SetIsMultiUser(isMultiUser);
+    serviceProfile.SetUserId(userId);
     int32_t ret = GetServiceProfile(deviceId, serviceName, serviceProfile);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
