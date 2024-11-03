@@ -225,7 +225,7 @@ std::string DeviceProfile::dump() const
     cJSON_AddStringToObject(json, OS_VERSION.c_str(), osVersion_.c_str());
     cJSON_AddNumberToObject(json, OS_TYPE.c_str(), osType_);
     cJSON_AddBoolToObject(json, IS_MULTI_USER.c_str(), isMultiUser_);
-    cJSON_AddNumberToObject(json, USER_ID.c_str(), ProfileUtils::GetAnonyInt32(userId_));
+    cJSON_AddStringToObject(json, USER_ID.c_str(), ProfileUtils::GetAnonyInt32(userId_).c_str());
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);
@@ -262,7 +262,7 @@ std::string DeviceProfile::AnnoymizeDump() const
     cJSON_AddStringToObject(json, OS_TYPE.c_str(),
         ProfileUtils::GetAnonyString(std::to_string(osType_)).c_str());
     cJSON_AddBoolToObject(json, IS_MULTI_USER.c_str(), isMultiUser_);
-    cJSON_AddNumberToObject(json, USER_ID.c_str(), ProfileUtils::GetAnonyInt32(userId_));
+    cJSON_AddStringToObject(json, USER_ID.c_str(), ProfileUtils::GetAnonyInt32(userId_).c_str());
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);
