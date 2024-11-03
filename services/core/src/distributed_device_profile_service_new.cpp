@@ -606,6 +606,9 @@ int32_t DistributedDeviceProfileServiceNew::OnIdle(const SystemAbilityOnDemandRe
 void DistributedDeviceProfileServiceNew::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
 {
     HILOGI("called systemAbilityId:%{public}d", systemAbilityId);
+    if (systemAbilityId == SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN) {
+        SubscribeAccountCommonEvent();
+    }
     if (DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().IsInited()) {
         return;
     }
@@ -618,9 +621,6 @@ void DistributedDeviceProfileServiceNew::OnAddSystemAbility(int32_t systemAbilit
         if (!depSaIds_.empty()) {
             return;
         }
-    }
-    if (systemAbilityId == SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN) {
-        SubscribeAccountCommonEvent();
     }
     PostInit();
 }

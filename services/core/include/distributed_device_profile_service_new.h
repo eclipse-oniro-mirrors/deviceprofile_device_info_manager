@@ -73,6 +73,7 @@ public:
     int32_t Dump(int32_t fd, const std::vector<std::u16string>& args) override;
     void DelayUnloadTask() override;
     bool IsInited() override;
+    void SubscribeAccountCommonEvent();
 
 protected:
     void OnStart(const SystemAbilityOnDemandReason& startReason) override;
@@ -89,7 +90,6 @@ private:
     int32_t SaveSwitchProfilesFromTempCache();
     int32_t SaveDynamicProfilesFromTempCache();
     int32_t NotifyDeviceProfileInited();
-    void SubscribeAccountCommonEvent();
     void GetDynamicProfilesFromTempCache(std::map<std::string, std::string>& entries);
     void ClearProfileCache();
 

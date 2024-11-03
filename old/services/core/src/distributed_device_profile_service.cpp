@@ -291,6 +291,9 @@ void DistributedDeviceProfileService::OnStop()
 void DistributedDeviceProfileService::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
 {
     HILOGI("called systemAbilityId:%{public}d", systemAbilityId);
+    if (systemAbilityId == SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN) {
+        DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().SubscribeAccountCommonEvent();
+    }
     if (DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().IsInited()) {
         return;
     }
