@@ -45,6 +45,7 @@ ohos_shared_library("distributed_device_profile_common") {
   install_enable = true
 
   sources = [
+    "src/constants/distributed_device_profile_constants.cpp",
     "src/interfaces/access_control_profile.cpp",
     "src/interfaces/accessee.cpp",
     "src/interfaces/accesser.cpp",
