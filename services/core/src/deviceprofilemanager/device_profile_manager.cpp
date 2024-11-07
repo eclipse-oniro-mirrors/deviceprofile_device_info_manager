@@ -1140,6 +1140,12 @@ int32_t DeviceProfileManager::IsMultiUserValid(const T& profile)
             profile.IsMultiUser(), profile.GetUserId());
         return DP_GET_MULTI_USER_PROFILE_PARAMS_INVALID;
     }
+    if (profile.IsMultiUser() && (profile.GetDeviceId() == ProfileCache::GetInstance().GetLocalUdid()) &&
+        (profile.GetUserId() != MultiUserManager::GetInstance().GetCurrentForegroundUserID())) {
+        HILOGE("this userId is not foregroundUserId, userId: %{public}d, foregroundId: %{public}d",
+            profile.GetUserId(), MultiUserManager::GetInstance().GetCurrentForegroundUserID());
+        return DP_GET_LOCAL_PROFILE_IS_NOT_FOREGROUND_ID;
+    }
     return DP_SUCCESS;
 }
 
