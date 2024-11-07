@@ -929,6 +929,10 @@ void  DeviceProfileManager::OnDeviceTrustChange(const std::string& peerUdid, con
         HILOGE("peer is not same account");
         return;
     }
+    if (ContentSensorManagerUtils::GetInstance().IsDeviceE2ESync()) {
+        HILOGI("is E2E device, doesn't need clear data");
+        return;
+    }
     auto clearDataTask = [this, peerUdid, peerUuid]() {
         ClearDataWithPeerLogout(peerUdid, peerUuid);
         StaticProfileManager::GetInstance().ClearDataWithPeerLogout(peerUdid, peerUuid);
