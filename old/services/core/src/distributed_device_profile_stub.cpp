@@ -628,7 +628,6 @@ int32_t DistributedDeviceProfileStub::SubscribeDeviceProfileInner(MessageParcel&
 int32_t DistributedDeviceProfileStub::UnSubscribeDeviceProfileInner(MessageParcel& data, MessageParcel& reply)
 {
     OHOS::DistributedDeviceProfile::SubscribeInfo subscribeInfo;
-    subscribeInfo.UnMarshalling(data);
     if (!subscribeInfo.UnMarshalling(data)) {
         HILOGE("read parcel fail!");
         return DP_READ_PARCEL_FAIL;
