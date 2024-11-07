@@ -424,8 +424,7 @@ bool DpRadarHelper::ReportSyncDataCb(struct RadarInfo info)
 
 std::string DpRadarHelper::GetHostNameByServiceId(std::string serviceId)
 {
-    if (hostNameMap_.find(serviceId) != hostNameMap_.end())
-    {
+    if (hostNameMap_.find(serviceId) != hostNameMap_.end()) {
         return hostNameMap_[serviceId];
     }
     return "";
