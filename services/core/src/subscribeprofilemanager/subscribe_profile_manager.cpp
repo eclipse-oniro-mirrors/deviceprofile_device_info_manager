@@ -199,9 +199,8 @@ int32_t SubscribeProfileManager::UnSubscribeDeviceProfile(const SubscribeInfo& s
         ProfileUtils::GetDbKeyAnonyString(subscribeInfo.GetSubscribeKey()).c_str());
     {
         if (subscribeInfoMap_.find(subscribeInfo.GetSubscribeKey()) != subscribeInfoMap_.end()) {
-            auto infos = subscribeInfoMap_[subscribeInfo.GetSubscribeKey()];
-            infos.erase(subscribeInfo);
-            if (infos.empty()) {
+            subscribeInfoMap_[subscribeInfo.GetSubscribeKey()].erase(subscribeInfo);
+            if (subscribeInfoMap_[subscribeInfo.GetSubscribeKey()].empty()) {
                 subscribeInfoMap_.erase(subscribeInfo.GetSubscribeKey());
             }
         }
