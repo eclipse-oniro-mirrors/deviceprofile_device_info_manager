@@ -37,7 +37,7 @@ public:
     void SetServiceName(const std::string& serviceName);
     std::string GetServiceType() const;
     void SetServiceType(const std::string& serviceType);
-    bool GetIsMultiUser() const;
+    bool IsMultiUser() const;
     void SetIsMultiUser(bool isMultiUser);
     int32_t GetUserId() const;
     void SetUserId(int32_t userId);

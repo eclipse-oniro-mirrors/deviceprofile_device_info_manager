@@ -200,7 +200,7 @@ int32_t DistributedDeviceProfileProxy::GetDeviceProfile(const std::string& devic
     MessageParcel data;
     WRITE_INTERFACE_TOKEN(data);
     WRITE_HELPER(data, String, deviceId);
-    WRITE_HELPER(data, Bool, deviceProfile.GetIsMultiUser());
+    WRITE_HELPER(data, Bool, deviceProfile.IsMultiUser());
     WRITE_HELPER(data, Int32, deviceProfile.GetUserId());
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_PROFILE_NEW), data, reply);
@@ -220,7 +220,7 @@ int32_t DistributedDeviceProfileProxy::GetServiceProfile(const std::string& devi
     WRITE_INTERFACE_TOKEN(data);
     WRITE_HELPER(data, String, deviceId);
     WRITE_HELPER(data, String, serviceName);
-    WRITE_HELPER(data, Bool, serviceProfile.GetIsMultiUser());
+    WRITE_HELPER(data, Bool, serviceProfile.IsMultiUser());
     WRITE_HELPER(data, Int32, serviceProfile.GetUserId());
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::GET_SERVICE_PROFILE), data, reply);
@@ -241,7 +241,7 @@ int32_t DistributedDeviceProfileProxy::GetCharacteristicProfile(const std::strin
     WRITE_HELPER(data, String, deviceId);
     WRITE_HELPER(data, String, serviceName);
     WRITE_HELPER(data, String, characteristicId);
-    WRITE_HELPER(data, Bool, charProfile.GetIsMultiUser());
+    WRITE_HELPER(data, Bool, charProfile.IsMultiUser());
     WRITE_HELPER(data, Int32, charProfile.GetUserId());
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::GET_CHAR_PROFILE), data, reply);

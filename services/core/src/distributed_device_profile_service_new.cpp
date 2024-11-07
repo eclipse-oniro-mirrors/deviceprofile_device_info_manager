@@ -651,9 +651,6 @@ void DistributedDeviceProfileServiceNew::AccountCommonEventCallback(int32_t user
     if (commonEventType == EventFwk::CommonEventSupport::COMMON_EVENT_USER_SWITCHED) {
         // swithed
         MultiUserManager::GetInstance().SetCurrentForegroundUserID(userId);
-    } else if (commonEventType == EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGIN) {
-    } else if (commonEventType == EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGOUT) {
-    } else if (commonEventType == EventFwk::CommonEventSupport::COMMON_EVENT_USER_REMOVED) {
     } else {
         HILOGE("Invalied account common event.");
     }

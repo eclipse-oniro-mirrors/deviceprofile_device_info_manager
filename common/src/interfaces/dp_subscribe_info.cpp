@@ -100,6 +100,9 @@ std::string SubscribeInfo::GetSubscribeKey() const
 void SubscribeInfo::SetSubscribeKey(const std::string& subscribeKey, int32_t userId)
 {
     subscribeKey_ = subscribeKey;
+    if (userId != DEFAULT_USER_ID) {
+        subscribeKey_ = subscribeKey_ + SEPARATOR + std::to_string(userId);
+    }
 }
 
 sptr<IRemoteObject> SubscribeInfo::GetListener() const

@@ -99,7 +99,7 @@ const std::string SUBSCRIBE_DEVICE_PROFILE = "SubscribeDeviceProfile";
 const std::string UNSUBSCRIBE_DEVICE_PROFILE = "UnSubscribeDeviceProfile";
 const std::string SYNC_DEVICE_PROFILE = "SyncDeviceProfile";
 /* Common constants */
-const std::string IS_MULTI_USER = "is_mulit_user";
+const std::string IS_MULTI_USER = "is_multi_user";
 const std::string SEPARATOR = "#";
 const std::string DEV_PREFIX = "dev";
 const std::string SVR_PREFIX = "svr";

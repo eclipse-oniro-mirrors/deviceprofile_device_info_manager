@@ -53,7 +53,7 @@ public:
     void SetCharacteristicKey(const std::string& characteristicId);
     std::string GetCharacteristicValue() const;
     void SetCharacteristicValue(const std::string& characteristicValue);
-    bool GetIsMultiUser() const;
+    bool IsMultiUser() const;
     void SetIsMultiUser(bool isMultiUser);
     int32_t GetUserId() const;
     void SetUserId(int32_t userId);

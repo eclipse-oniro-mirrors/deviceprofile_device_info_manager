@@ -64,7 +64,7 @@ public:
     void SetOsVersion(const std::string& osVersion);
     int32_t GetOsType() const;
     void SetOsType(int32_t osType);
-    bool GetIsMultiUser() const;
+    bool IsMultiUser() const;
     void SetIsMultiUser(bool isMultiUser);
     int32_t GetUserId() const;
     void SetUserId(int32_t userId);

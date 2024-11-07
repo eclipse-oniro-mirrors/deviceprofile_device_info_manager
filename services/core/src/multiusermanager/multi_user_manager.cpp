@@ -41,7 +41,7 @@ int32_t MultiUserManager::Init()
     if (res != DP_SUCCESS || foregroundId == DEFAULT_USER_ID) {
         HILOGD("GetForegroundId failed, res:%{public}d", res);
     }
-    HILOGI("current foregroundId = %{public}s", ProfileUtils::GetAnonyInt32(foregroundId).c_str());
+    HILOGI("current foregroundId = %{public}d", foregroundId);
     SetCurrentForegroundUserID(foregroundId);
 
     return DP_SUCCESS;
@@ -55,7 +55,7 @@ int32_t MultiUserManager::UnInit()
 void MultiUserManager::SetCurrentForegroundUserID(int32_t userId)
 {
     std::lock_guard<std::mutex> lock(foregroundUserIdLock_);
-    DeviceProfileManager::GetInstance().OnUserChange(userId, foregroundUserId_);
+    DeviceProfileManager::GetInstance().OnUserChange(foregroundUserId_, userId);
     foregroundUserId_ = userId;
 }
 
@@ -73,7 +73,7 @@ int32_t MultiUserManager::GetForegroundUserIDFromOs()
         HILOGD("GetForegroundId failed, res:%{public}d", res);
         return DP_GET_FOREGROUND_ID_FAIL;
     }
-    HILOGI("GetForegroundUserIDFromOs foregroundId = %{public}s", ProfileUtils::GetAnonyInt32(foregroundId).c_str());
+    HILOGI("GetForegroundUserIDFromOs foregroundId = %{public}d", foregroundId);
     return foregroundId;
 }
 

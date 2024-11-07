@@ -113,7 +113,7 @@ int32_t DeviceProfileManager::PutDeviceProfile(const DeviceProfile& deviceProfil
         return DP_INVALID_PARAMS;
     }
     std::map<std::string, std::string> entries;
-    if (deviceProfile.GetIsMultiUser()) {
+    if (deviceProfile.IsMultiUser()) {
         ProfileUtils::DeviceProfileToEntries(deviceProfile, entries, true);
         if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == deviceProfile.GetUserId()) {
             ProfileUtils::DeviceProfileToEntries(deviceProfile, entries);
@@ -150,7 +150,7 @@ int32_t DeviceProfileManager::PutServiceProfile(const ServiceProfile& servicePro
         return DP_INVALID_PARAMS;
     }
     std::map<std::string, std::string> entries;
-    if (serviceProfile.GetIsMultiUser()) {
+    if (serviceProfile.IsMultiUser()) {
         ProfileUtils::ServiceProfileToEntries(serviceProfile, entries, true);
         if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == serviceProfile.GetUserId()) {
             ProfileUtils::ServiceProfileToEntries(serviceProfile, entries);
@@ -188,7 +188,7 @@ int32_t DeviceProfileManager::PutServiceProfileBatch(const std::vector<ServicePr
             HILOGE("the profile is invalid! serviceProfile:%{public}s", serviceProfile.dump().c_str());
             continue;
         }
-        if (serviceProfile.GetIsMultiUser()) {
+        if (serviceProfile.IsMultiUser()) {
             ProfileUtils::ServiceProfileToEntries(serviceProfile, entries, true);
             if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == serviceProfile.GetUserId()) {
                 ProfileUtils::ServiceProfileToEntries(serviceProfile, entries);
@@ -226,7 +226,7 @@ int32_t DeviceProfileManager::PutCharacteristicProfile(const CharacteristicProfi
         return DP_INVALID_PARAMS;
     }
     std::map<std::string, std::string> entries;
-    if (charProfile.GetIsMultiUser()) {
+    if (charProfile.IsMultiUser()) {
         ProfileUtils::CharacteristicProfileToEntries(charProfile, entries, true);
         if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == charProfile.GetUserId()) {
             ProfileUtils::CharacteristicProfileToEntries(charProfile, entries);
@@ -264,7 +264,7 @@ int32_t DeviceProfileManager::PutCharacteristicProfileBatch(const std::vector<Ch
             HILOGE("the profile is invalid! charProfile:%{public}s", charProfile.dump().c_str());
             continue;
         }
-        if (charProfile.GetIsMultiUser()) {
+        if (charProfile.IsMultiUser()) {
             ProfileUtils::CharacteristicProfileToEntries(charProfile, entries, true);
             if (MultiUserManager::GetInstance().GetCurrentForegroundUserID() == charProfile.GetUserId()) {
                 ProfileUtils::CharacteristicProfileToEntries(charProfile, entries);
@@ -1061,8 +1061,7 @@ void DeviceProfileManager::FixDiffProfiles()
 
 void DeviceProfileManager::OnUserChange(int32_t lastUserId, int32_t curUserId)
 {
-    HILOGI("lastUserId:%{public}s,curUserId:%{public}s",
-        ProfileUtils::GetAnonyInt32(lastUserId).c_str(), ProfileUtils::GetAnonyInt32(curUserId).c_str());
+    HILOGI("lastUserId:%{public}d,curUserId:%{public}d", lastUserId, curUserId);
     if (lastUserId == curUserId) {
         HILOGW("user not change");
         return;
@@ -1110,7 +1109,6 @@ void DeviceProfileManager::OnUserChange(int32_t lastUserId, int32_t curUserId)
         HILOGE("DeleteBatchByKeys fail ret=%{public}d", ret);
         return;
     }
-    HILOGI("end");
 }
 
 int32_t DeviceProfileManager::SaveBatchByKeys(const std::map<std::string, std::string>& entries)
@@ -1136,11 +1134,10 @@ int32_t DeviceProfileManager::SaveBatchByKeys(const std::map<std::string, std::s
 template <typename T>
 int32_t DeviceProfileManager::IsMultiUserValid(const T& profile)
 {
-    if (profile.GetDeviceId().empty() || (profile.GetIsMultiUser() && profile.GetUserId() <= 0) ||
-        (!profile.GetIsMultiUser() && profile.GetUserId() != DEFAULT_USER_ID)) {
-        HILOGE("multi-user params are invalid, isMultiUser: %{public}d, userId: %{public}s",
-               profile.GetIsMultiUser(),
-            ProfileUtils::GetAnonyInt32(profile.GetUserId()).c_str());
+    if (profile.GetDeviceId().empty() || (profile.IsMultiUser() && profile.GetUserId() <= 0) ||
+        (!profile.IsMultiUser() && profile.GetUserId() != DEFAULT_USER_ID)) {
+        HILOGE("multi-user params are invalid, isMultiUser: %{public}d, userId: %{public}d",
+            profile.IsMultiUser(), profile.GetUserId());
         return DP_GET_MULTI_USER_PROFILE_PARAMS_INVALID;
     }
     return DP_SUCCESS;

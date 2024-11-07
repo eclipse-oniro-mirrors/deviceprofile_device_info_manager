@@ -82,22 +82,16 @@ std::string ProfileUtils::GetAnonyString(const std::string& value)
 
 std::string ProfileUtils::GetAnonyInt32(const int32_t value)
 {
-    constexpr int32_t INT32_STRING_LENGTH = 40;
-    char tempBuffer[INT32_STRING_LENGTH] = "";
-    int32_t secRet = sprintf_s(tempBuffer, INT32_STRING_LENGTH, "%d", value);
-    size_t length = strlen(tempBuffer);
-    if (secRet <= 0 || length == 0) {
-        std::string nullString("");
-        return nullString;
-    }
-    for (size_t i = 1; i <= length - 1; ++i) {
-        tempBuffer[i] = '*';
-    }
+    std::string tempString = std::to_string(value);
+    size_t length = tempString.length();
     if (length == 0x01) {
-        tempBuffer[0] = '*';
+        tempString[0] = '*';
+        return tempString;
     }
-    std::string tempBufferStr(tempBuffer);
-    return tempBufferStr;
+    for (size_t i = 1; i < length - 1; i++) {
+        tempString[i] = '*';
+    }
+    return tempString;
 }
 
 std::vector<std::string> ProfileUtils::GetOnlineDevices()

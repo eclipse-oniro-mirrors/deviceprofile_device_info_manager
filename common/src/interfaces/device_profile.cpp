@@ -134,7 +134,7 @@ void DeviceProfile::SetOsSysCap(const std::string& osSysCap)
     osSysCap_ = osSysCap;
 }
 
-bool DeviceProfile::GetIsMultiUser() const
+bool DeviceProfile::IsMultiUser() const
 {
     return isMultiUser_;
 }
@@ -197,7 +197,7 @@ bool DeviceProfile::operator!=(const DeviceProfile& deviceProfile) const
         manufactureName_ != deviceProfile.GetManufactureName() || deviceModel_ != deviceProfile.GetDeviceModel() ||
         storageCapability_ != deviceProfile.GetStorageCapability() || osSysCap_ != deviceProfile.GetOsSysCap() ||
         osApiLevel_ != deviceProfile.GetOsApiLevel() || osVersion_ != deviceProfile.GetOsVersion() || osType_ !=
-        deviceProfile.GetOsType() || isMultiUser_ != deviceProfile.GetIsMultiUser() || userId_ !=
+        deviceProfile.GetOsType() || isMultiUser_ != deviceProfile.IsMultiUser() || userId_ !=
         deviceProfile.GetUserId());
     if (isNotEqual) {
         return true;
@@ -225,7 +225,7 @@ std::string DeviceProfile::dump() const
     cJSON_AddStringToObject(json, OS_VERSION.c_str(), osVersion_.c_str());
     cJSON_AddNumberToObject(json, OS_TYPE.c_str(), osType_);
     cJSON_AddBoolToObject(json, IS_MULTI_USER.c_str(), isMultiUser_);
-    cJSON_AddStringToObject(json, USER_ID.c_str(), ProfileUtils::GetAnonyInt32(userId_).c_str());
+    cJSON_AddNumberToObject(json, USER_ID.c_str(), userId_);
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);
@@ -262,7 +262,7 @@ std::string DeviceProfile::AnnoymizeDump() const
     cJSON_AddStringToObject(json, OS_TYPE.c_str(),
         ProfileUtils::GetAnonyString(std::to_string(osType_)).c_str());
     cJSON_AddBoolToObject(json, IS_MULTI_USER.c_str(), isMultiUser_);
-    cJSON_AddStringToObject(json, USER_ID.c_str(), ProfileUtils::GetAnonyInt32(userId_).c_str());
+    cJSON_AddNumberToObject(json, USER_ID.c_str(), userId_);
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);
