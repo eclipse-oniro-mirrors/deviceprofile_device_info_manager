@@ -71,7 +71,7 @@ int32_t SwitchAdapter::GetSwitch(const std::string& appId, const std::string& ne
     auto res = kvDataMgr_.GetSwitch(appID, networkId);
     if (res.first != DistributedKv::Status::SUCCESS) {
         HILOGE("switch from db failed, ret: %{public}d", res.first);
-        return DP_PUT_KV_DB_FAIL;
+        return DP_GET_KV_DB_FAIL;
     }
     HILOGI("switch value %{public}u, length : %{public}u", res.second.value, res.second.length);
     value = res.second.value;

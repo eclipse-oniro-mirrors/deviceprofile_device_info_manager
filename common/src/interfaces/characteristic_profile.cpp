@@ -64,12 +64,34 @@ void CharacteristicProfile::SetCharacteristicValue(const std::string& characteri
     characteristicValue_ = characteristicValue;
 }
 
+bool CharacteristicProfile::IsMultiUser() const
+{
+    return isMultiUser_;
+}
+
+void CharacteristicProfile::SetIsMultiUser(bool isMultiUser)
+{
+    isMultiUser_ = isMultiUser;
+}
+
+int32_t CharacteristicProfile::GetUserId() const
+{
+    return userId_;
+}
+
+void CharacteristicProfile::SetUserId(int32_t userId)
+{
+    userId_ = userId;
+}
+
 bool CharacteristicProfile::Marshalling(MessageParcel& parcel) const
 {
     WRITE_HELPER_RET(parcel, String, deviceId_, false);
     WRITE_HELPER_RET(parcel, String, serviceName_, false);
     WRITE_HELPER_RET(parcel, String, characteristicKey_, false);
     WRITE_HELPER_RET(parcel, String, characteristicValue_, false);
+    WRITE_HELPER_RET(parcel, Bool, isMultiUser_, false);
+    WRITE_HELPER_RET(parcel, Int32, userId_, false);
     return true;
 }
 
@@ -79,6 +101,8 @@ bool CharacteristicProfile::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, String, serviceName_, false);
     READ_HELPER_RET(parcel, String, characteristicKey_, false);
     READ_HELPER_RET(parcel, String, characteristicValue_, false);
+    READ_HELPER_RET(parcel, Bool, isMultiUser_, false);
+    READ_HELPER_RET(parcel, Int32, userId_, false);
     return true;
 }
 
@@ -86,7 +110,8 @@ bool CharacteristicProfile::operator!=(const CharacteristicProfile& charProfile)
 {
     bool isNotEqual = (deviceId_ != charProfile.GetDeviceId() || serviceName_ != charProfile.GetServiceName() ||
         characteristicKey_ != charProfile.GetCharacteristicKey() ||
-        characteristicValue_ != charProfile.GetCharacteristicValue());
+        characteristicValue_ != charProfile.GetCharacteristicValue() || isMultiUser_ != charProfile.IsMultiUser() ||
+        userId_ != charProfile.GetUserId());
     if (isNotEqual) {
         return true;
     } else {
@@ -104,6 +129,8 @@ std::string CharacteristicProfile::dump() const
     cJSON_AddStringToObject(json, DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(deviceId_).c_str());
     cJSON_AddStringToObject(json, SERVICE_NAME.c_str(), serviceName_.c_str());
     cJSON_AddStringToObject(json, CHARACTERISTIC_KEY.c_str(), characteristicKey_.c_str());
+    cJSON_AddBoolToObject(json, IS_MULTI_USER.c_str(), isMultiUser_);
+    cJSON_AddNumberToObject(json, USER_ID.c_str(), userId_);
     if (characteristicKey_ == SWITCH_STATUS) {
         cJSON_AddStringToObject(json, CHARACTERISTIC_VALUE.c_str(), characteristicValue_.c_str());
     } else {

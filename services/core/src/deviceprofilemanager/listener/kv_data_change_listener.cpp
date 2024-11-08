@@ -134,7 +134,7 @@ void KvDataChangeListener::FilterEntries(const std::vector<DistributedKv::Entry>
             HILOGW("%{public}s is invalid dbKey", ProfileUtils::GetDbKeyAnonyString(dbKey).c_str());
             continue;
         }
-        if (res[0] == CHAR_PREFIX && res.back() == CHARACTERISTIC_KEY) {
+        if (res[0] == CHAR_PREFIX && res.size() > NUM_4 && res[NUM_4] == CHARACTERISTIC_KEY) {
             HILOGD("%{public}s is charProfileKey", ProfileUtils::GetDbKeyAnonyString(dbKey).c_str());
             continue;
         }

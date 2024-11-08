@@ -18,6 +18,7 @@
 
 #include <cstdint>
 #include <string>
+#include "distributed_device_profile_constants.h"
 #include "dp_parcel.h"
 
 namespace OHOS {
@@ -35,7 +36,9 @@ public:
         osSysCap_(""),
         osApiLevel_(0),
         osVersion_(""),
-        osType_(0)
+        osType_(0),
+        isMultiUser_(false),
+        userId_(DEFAULT_USER_ID)
     {}
     ~DeviceProfile() = default;
 
@@ -61,6 +64,10 @@ public:
     void SetOsVersion(const std::string& osVersion);
     int32_t GetOsType() const;
     void SetOsType(int32_t osType);
+    bool IsMultiUser() const;
+    void SetIsMultiUser(bool isMultiUser);
+    int32_t GetUserId() const;
+    void SetUserId(int32_t userId);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     bool operator!=(const DeviceProfile& deviceProfile) const;
@@ -79,6 +86,8 @@ private:
     int32_t osApiLevel_;
     std::string osVersion_;
     int32_t osType_;
+    bool isMultiUser_;
+    int32_t userId_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

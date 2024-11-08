@@ -18,6 +18,7 @@
 
 #include <cstdint>
 #include <string>
+#include "distributed_device_profile_constants.h"
 #include "dp_parcel.h"
 
 namespace OHOS {
@@ -31,6 +32,16 @@ public:
         characteristicKey_(characteristicKey),
         characteristicValue_(characteristicValue)
     {}
+    CharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
+        const std::string& characteristicKey, const std::string& characteristicValue, const bool isMultiUser,
+        const int32_t userId)
+        : deviceId_(deviceId),
+        serviceName_(serviceName),
+        characteristicKey_(characteristicKey),
+        characteristicValue_(characteristicValue),
+        isMultiUser_(isMultiUser),
+        userId_(userId)
+    {}
     CharacteristicProfile() = default;
     ~CharacteristicProfile() = default;
 
@@ -42,6 +53,10 @@ public:
     void SetCharacteristicKey(const std::string& characteristicId);
     std::string GetCharacteristicValue() const;
     void SetCharacteristicValue(const std::string& characteristicValue);
+    bool IsMultiUser() const;
+    void SetIsMultiUser(bool isMultiUser);
+    int32_t GetUserId() const;
+    void SetUserId(int32_t userId);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     bool operator!=(const CharacteristicProfile& charProfile) const;
@@ -52,6 +67,8 @@ private:
     std::string serviceName_ = "";
     std::string characteristicKey_ = "";
     std::string characteristicValue_ = "";
+    bool isMultiUser_ = false;
+    int32_t userId_ = DEFAULT_USER_ID;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

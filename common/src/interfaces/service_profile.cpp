@@ -29,6 +29,12 @@ ServiceProfile::ServiceProfile(const std::string& deviceId, const std::string& s
     const std::string& serviceType) : deviceId_(deviceId), serviceName_(serviceName), serviceType_(serviceType)
 {
 }
+ServiceProfile::ServiceProfile(const std::string& deviceId, const std::string& serviceName,
+    const std::string& serviceType, const bool isMultiUser, const int32_t userId)
+    : deviceId_(deviceId), serviceName_(serviceName), serviceType_(serviceType), isMultiUser_(isMultiUser),
+    userId_(userId)
+{
+}
 ServiceProfile::ServiceProfile()
 {
 }
@@ -67,11 +73,33 @@ void ServiceProfile::SetServiceType(const std::string& serviceType)
     serviceType_ = serviceType;
 }
 
+bool ServiceProfile::IsMultiUser() const
+{
+    return isMultiUser_;
+}
+
+void ServiceProfile::SetIsMultiUser(bool isMultiUser)
+{
+    isMultiUser_ = isMultiUser;
+}
+
+int32_t ServiceProfile::GetUserId() const
+{
+    return userId_;
+}
+
+void ServiceProfile::SetUserId(int32_t userId)
+{
+    userId_ = userId;
+}
+
 bool ServiceProfile::Marshalling(MessageParcel& parcel) const
 {
     WRITE_HELPER_RET(parcel, String, deviceId_, false);
     WRITE_HELPER_RET(parcel, String, serviceName_, false);
     WRITE_HELPER_RET(parcel, String, serviceType_, false);
+    WRITE_HELPER_RET(parcel, Bool, isMultiUser_, false);
+    WRITE_HELPER_RET(parcel, Int32, userId_, false);
     return true;
 }
 
@@ -80,13 +108,16 @@ bool ServiceProfile::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, String, deviceId_, false);
     READ_HELPER_RET(parcel, String, serviceName_, false);
     READ_HELPER_RET(parcel, String, serviceType_, false);
+    READ_HELPER_RET(parcel, Bool, isMultiUser_, false);
+    READ_HELPER_RET(parcel, Int32, userId_, false);
     return true;
 }
 
 bool ServiceProfile::operator!=(const ServiceProfile& serviceProfile) const
 {
     bool isNotEqual = (deviceId_ != serviceProfile.GetDeviceId() || serviceName_ != serviceProfile.GetServiceName() ||
-        serviceType_ != serviceProfile.GetServiceType());
+        serviceType_ != serviceProfile.GetServiceType() || isMultiUser_ != serviceProfile.IsMultiUser() ||
+        userId_ != serviceProfile.GetUserId());
     if (isNotEqual) {
         return true;
     } else {
@@ -104,6 +135,8 @@ std::string ServiceProfile::dump() const
     cJSON_AddStringToObject(json, DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(deviceId_).c_str());
     cJSON_AddStringToObject(json, SERVICE_NAME.c_str(), serviceName_.c_str());
     cJSON_AddStringToObject(json, SERVICE_TYPE.c_str(), serviceType_.c_str());
+    cJSON_AddBoolToObject(json, IS_MULTI_USER.c_str(), isMultiUser_);
+    cJSON_AddNumberToObject(json, USER_ID.c_str(), userId_);
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);

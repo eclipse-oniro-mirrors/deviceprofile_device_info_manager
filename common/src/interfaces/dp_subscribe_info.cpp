@@ -27,10 +27,14 @@ namespace {
     const std::string TAG = "SubscribeInfo";
 }
 SubscribeInfo::SubscribeInfo(int32_t saId, const std::string& subscribeKey,
-    std::unordered_set<ProfileChangeType> subscribeChangeTypes, sptr<IProfileChangeListener> profileChangeListener)
+    std::unordered_set<ProfileChangeType> subscribeChangeTypes, sptr<IProfileChangeListener> profileChangeListener,
+    int32_t userId)
 {
     this->saId_ = saId;
     this->subscribeKey_ = subscribeKey;
+    if (userId != DEFAULT_USER_ID) {
+        this->subscribeKey_ = this->subscribeKey_ + SEPARATOR + std::to_string(userId);
+    }
     this->subscribeChangeTypes_ = subscribeChangeTypes;
     if (profileChangeListener == nullptr) {
         HILOGI("constructor!");
@@ -61,21 +65,31 @@ void SubscribeInfo::SetSaId(int32_t saId)
     saId_ = saId;
 }
 
-void SubscribeInfo::SetSubscribeKey(const std::string& deviceId, const std::string& deviceAttribute)
+void SubscribeInfo::SetSubscribeKey(const std::string& deviceId, const std::string& deviceAttribute,
+    int32_t userId)
 {
     subscribeKey_ = DEV_PREFIX + SEPARATOR + deviceId + SEPARATOR + deviceAttribute;
+    if (userId != DEFAULT_USER_ID) {
+        subscribeKey_ = subscribeKey_ + SEPARATOR + std::to_string(userId);
+    }
 }
 
 void SubscribeInfo::SetSubscribeKey(const std::string& deviceId, const std::string& serviceName,
-    const std::string& serviceAttribute)
+    const std::string& serviceAttribute, int32_t userId)
 {
     subscribeKey_ = SVR_PREFIX + SEPARATOR + deviceId + SEPARATOR + serviceName + SEPARATOR + serviceAttribute;
+    if (userId != DEFAULT_USER_ID) {
+        subscribeKey_ = subscribeKey_ + SEPARATOR + std::to_string(userId);
+    }
 }
 void SubscribeInfo::SetSubscribeKey(const std::string& deviceId, const std::string& serviceName,
-    const std::string& characteristicKey, const std::string& characteristicAttribute)
+    const std::string& characteristicKey, const std::string& characteristicAttribute, int32_t userId)
 {
     subscribeKey_ = CHAR_PREFIX + SEPARATOR + deviceId + SEPARATOR + serviceName + SEPARATOR + characteristicKey +
         SEPARATOR + characteristicAttribute;
+    if (userId != DEFAULT_USER_ID) {
+        subscribeKey_ = subscribeKey_ + SEPARATOR + std::to_string(userId);
+    }
 }
 
 std::string SubscribeInfo::GetSubscribeKey() const
@@ -83,9 +97,12 @@ std::string SubscribeInfo::GetSubscribeKey() const
     return subscribeKey_;
 }
 
-void SubscribeInfo::SetSubscribeKey(const std::string& subscribeKey)
+void SubscribeInfo::SetSubscribeKey(const std::string& subscribeKey, int32_t userId)
 {
     subscribeKey_ = subscribeKey;
+    if (userId != DEFAULT_USER_ID) {
+        subscribeKey_ = subscribeKey_ + SEPARATOR + std::to_string(userId);
+    }
 }
 
 sptr<IRemoteObject> SubscribeInfo::GetListener() const

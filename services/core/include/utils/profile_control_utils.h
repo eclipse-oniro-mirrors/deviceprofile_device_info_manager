@@ -22,6 +22,7 @@
 
 #include "characteristic_profile.h"
 #include "device_profile.h"
+#include "distributed_device_profile_constants.h"
 #include "ikv_adapter.h"
 #include "service_profile.h"
 
@@ -50,9 +51,10 @@ public:
     static int32_t GetSwitchCharacteristicProfile(const std::string& appId, const std::string& deviceId,
     const std::string& serviceName, const std::string& characteristicKey, CharacteristicProfile& charProfile);
     static int32_t DeleteServiceProfile(std::shared_ptr<IKVAdapter> kvStore, const std::string& deviceId,
-        const std::string& serviceName);
+        const std::string& serviceName, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID);
     static int32_t DeleteCharacteristicProfile(std::shared_ptr<IKVAdapter> kvStore, const std::string& deviceId,
-        const std::string& serviceName, const std::string& characteristicKey);
+        const std::string& serviceName, const std::string& characteristicKey, bool isMultiUser = false,
+        int32_t userId = DEFAULT_USER_ID);
     static int32_t GetAllDeviceProfile(std::shared_ptr<IKVAdapter> kvStore, std::vector<DeviceProfile>& deviceProfiles);
     static int32_t GetAllServiceProfile(std::shared_ptr<IKVAdapter> kvStore,
         std::vector<ServiceProfile>& serviceProfiles);

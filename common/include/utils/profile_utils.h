@@ -26,6 +26,7 @@
 #include "access_control_profile.h"
 #include "characteristic_profile.h"
 #include "device_profile.h"
+#include "distributed_device_profile_constants.h"
 #include "service_profile.h"
 #include "trust_device_profile.h"
 
@@ -37,6 +38,7 @@ class ProfileUtils {
 public:
     static std::string GetDbKeyAnonyString(const std::string& value);
     static std::string GetAnonyString(const std::string& value);
+    static std::string GetAnonyInt32(const int32_t value);
     static std::vector<std::string> GetOnlineDevices();
     static std::string GetLocalUdidFromDM();
     static bool FilterAndGroupOnlineDevices(const std::vector<std::string>& deviceList,
@@ -68,10 +70,12 @@ public:
     static int32_t AccessControlProfileToEntries(const AccessControlProfile& profile, ValuesBucket& values);
     static int32_t AccesserToEntries(const AccessControlProfile& aclProfile, ValuesBucket& values);
     static int32_t AccesseeToEntries(const AccessControlProfile& aclProfile, ValuesBucket& values);
-    static int32_t DeviceProfileToEntries(const DeviceProfile& profile, std::map<std::string, std::string>& values);
-    static int32_t ServiceProfileToEntries(const ServiceProfile& profile, std::map<std::string, std::string>& values);
+    static int32_t DeviceProfileToEntries(const DeviceProfile& profile, std::map<std::string, std::string>& values,
+        bool isMultiUser = false);
+    static int32_t ServiceProfileToEntries(const ServiceProfile& profile, std::map<std::string, std::string>& values,
+        bool isMultiUser = false);
     static int32_t CharacteristicProfileToEntries(const CharacteristicProfile& profile,
-        std::map<std::string, std::string>& values);
+        std::map<std::string, std::string>& values, bool isMultiUser = false);
     static int32_t EntriesToTrustDeviceProfile(const ValuesBucket& values, TrustDeviceProfile& profile);
     static int32_t EntriesToAccessControlProfile(const ValuesBucket& values, AccessControlProfile& profile);
     static int32_t EntriesToAccesser(const ValuesBucket& values, Accesser& accesser);
@@ -79,7 +83,8 @@ public:
     static int32_t EntriesToDeviceProfile(std::map<std::string, std::string> values, DeviceProfile& profile);
     static int32_t EntriesToServiceProfile(std::map<std::string, std::string> values, ServiceProfile& profile);
     static int32_t EntriesToCharProfile(std::map<std::string, std::string> values, CharacteristicProfile& profile);
-    static std::string GenerateDBKey(const std::string& profileKey, const std::string& profileProperty);
+    static std::string GenerateDBKey(const std::string& profileKey, const std::string& profileProperty,
+        int32_t userId = DEFAULT_USER_ID);
     static std::string GetProfileKey(const std::string& dbKey);
     static std::string GetDeviceIdByDBKey(const std::string& dbKey);
     static std::string GetServiceNameByDBKey(const std::string& dbKey);
@@ -91,8 +96,9 @@ public:
     static std::string GetDbKeyByProfile(const CharacteristicProfile& profile);
     static int32_t SplitString(const std::string& str, const std::string& splits, std::vector<std::string>& res);
     static std::string JoinString(const std::vector<std::string>& strs, const std::string& delimiter);
-    static std::string GetProfileProperty(const std::string& dbKey);
-    static std::map<std::string, std::string> GetProfilePropertiesMap(std::map<std::string, std::string> dbEntries);
+    static std::string GetProfileProperty(const std::string& dbKey, int32_t userId = DEFAULT_USER_ID);
+    static std::map<std::string, std::string> GetProfilePropertiesMap(std::map<std::string, std::string> dbEntries,
+        int32_t userId = DEFAULT_USER_ID);
     static std::string toString(const std::u16string& str16);
     static bool IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
         int32_t maxValue);
@@ -104,6 +110,13 @@ public:
     static bool GetUdidByNetworkId(const std::string& networkId, std::string& udid);
     static bool GetUuidByNetworkId(const std::string& networkId, std::string& uuid);
     static bool IsNumStr(const std::string& inString);
+    static int32_t GetUserIdFromDbKey(const std::string& dbKey);
+    static std::string RemoveUserIdFromDbKey(const std::string& dbKey);
+    static int32_t GenerateServiceDBkeys(const std::string& deviceId, const std::string& serviceName,
+        std::vector<std::string>& dbKeys, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID);
+    static int32_t GenerateCharacteristicDBkeys(const std::string& deviceId, const std::string& serviceName,
+        const std::string& characteristicKey, std::vector<std::string>& dbKeys, bool isMultiUser = false,
+        int32_t userId = DEFAULT_USER_ID);
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

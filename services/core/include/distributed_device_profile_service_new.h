@@ -21,6 +21,7 @@
 #include <mutex>
 #include <unordered_set>
 #include "distributed_device_profile_stub_new.h"
+#include "dp_account_common_event.h"
 #include "i_dp_inited_callback.h"
 #include "event_handler.h"
 #include "event_runner.h"
@@ -58,9 +59,10 @@ public:
         ServiceProfile& serviceProfile) override;
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
         const std::string& characteristicKey, CharacteristicProfile& charProfile) override;
-    int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName) override;
+    int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName, bool isMultiUser = false,
+        int32_t userId = DEFAULT_USER_ID) override;
     int32_t DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-        const std::string& characteristicKey) override;
+        const std::string& characteristicKey, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID) override;
     int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
@@ -71,6 +73,7 @@ public:
     int32_t Dump(int32_t fd, const std::vector<std::u16string>& args) override;
     void DelayUnloadTask() override;
     bool IsInited() override;
+    void SubscribeAccountCommonEvent();
 
 protected:
     void OnStart(const SystemAbilityOnDemandReason& startReason) override;
@@ -79,6 +82,7 @@ protected:
     void OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
 
 private:
+    void AccountCommonEventCallback(int32_t userId, const std::string commonEventType);
     int32_t CreateUnloadHandler();
     int32_t DestroyUnloadHandler();
     int32_t AddSvrProfilesToCache(const std::vector<ServiceProfile>& serviceProfiles);
@@ -90,6 +94,8 @@ private:
     void ClearProfileCache();
 
 private:
+    std::mutex accountCommonEventManagerMtx_;
+    std::shared_ptr<DpAccountCommonEventManager> accountCommonEventManager_;
     std::shared_ptr<AppExecFwk::EventHandler> unloadHandler_;
     std::mutex unloadMutex_;
     std::atomic<bool> isInited_{false};
@@ -103,7 +109,8 @@ private:
     std::unordered_set<int32_t> depSaIds_ {
         SOFTBUS_SERVER_SA_ID,
         DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID,
-        DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID
+        DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID,
+        SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN
     };
 };
 } // namespace DeviceProfile

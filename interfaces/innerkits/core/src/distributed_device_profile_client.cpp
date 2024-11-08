@@ -286,25 +286,25 @@ int32_t DistributedDeviceProfileClient::GetCharacteristicProfile(const std::stri
 }
 
 int32_t DistributedDeviceProfileClient::DeleteServiceProfile(const std::string& deviceId,
-    const std::string& serviceName)
+    const std::string& serviceName, bool isMultiUser, int32_t userId)
 {
     auto dpService = GetDeviceProfileService();
     if (dpService == nullptr) {
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    return dpService->DeleteServiceProfile(deviceId, serviceName);
+    return dpService->DeleteServiceProfile(deviceId, serviceName, isMultiUser, userId);
 }
 
 int32_t DistributedDeviceProfileClient::DeleteCharacteristicProfile(const std::string& deviceId,
-    const std::string& serviceName, const std::string& characteristicKey)
+    const std::string& serviceName, const std::string& characteristicKey, bool isMultiUser, int32_t userId)
 {
     auto dpService = GetDeviceProfileService();
     if (dpService == nullptr) {
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    return dpService->DeleteCharacteristicProfile(deviceId, serviceName, characteristicKey);
+    return dpService->DeleteCharacteristicProfile(deviceId, serviceName, characteristicKey, isMultiUser, userId);
 }
 
 int32_t DistributedDeviceProfileClient::SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)

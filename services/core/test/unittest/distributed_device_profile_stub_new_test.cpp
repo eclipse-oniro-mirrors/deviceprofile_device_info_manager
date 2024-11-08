@@ -51,9 +51,10 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
         ServiceProfile& serviceProfile) override;
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
         const std::string& characteristicId, CharacteristicProfile& charProfile) override;
-    int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName) override;
+    int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName, bool isMultiUser = false,
+        int32_t userId = DEFAULT_USER_ID) override;
     int32_t DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-        const std::string& characteristicId) override;
+        const std::string& characteristicId, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID) override;
     int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IRemoteObject> dpInitedCallback) override;
@@ -180,18 +181,22 @@ int32_t MockDistributedDeviceProfileStubNew::GetCharacteristicProfile(const std:
     return 0;
 }
 int32_t MockDistributedDeviceProfileStubNew::DeleteServiceProfile(const std::string& deviceId,
-    const std::string& serviceName)
+    const std::string& serviceName, bool isMultiUser, int32_t userId)
 {
     (void)deviceId;
     (void)serviceName;
+    (void)isMultiUser;
+    (void)userId;
     return 0;
 }
 int32_t MockDistributedDeviceProfileStubNew::DeleteCharacteristicProfile(const std::string& deviceId,
-    const std::string& serviceName, const std::string& characteristicId)
+    const std::string& serviceName, const std::string& characteristicId, bool isMultiUser, int32_t userId)
 {
     (void)deviceId;
     (void)serviceName;
     (void)characteristicId;
+    (void)isMultiUser;
+    (void)userId;
     return 0;
 }
 int32_t MockDistributedDeviceProfileStubNew::SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)

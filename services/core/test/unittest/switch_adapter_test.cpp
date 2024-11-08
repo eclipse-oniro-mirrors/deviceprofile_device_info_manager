@@ -134,7 +134,7 @@ HWTEST_F(SwitchAdapterTest, GetSwitch_003, TestSize.Level1)
     uint32_t switchLength = 0;
     int32_t ret = OHOS::DistributedDeviceProfile::
         SwitchAdapter::GetInstance().GetSwitch(appId, networkId, value, switchLength);
-    EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
+    EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
 }
 
 /*

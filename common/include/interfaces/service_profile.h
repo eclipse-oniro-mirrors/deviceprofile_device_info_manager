@@ -18,6 +18,7 @@
 
 #include <cstdint>
 #include <string>
+#include "distributed_device_profile_constants.h"
 #include "dp_parcel.h"
 
 namespace OHOS {
@@ -25,6 +26,8 @@ namespace DistributedDeviceProfile {
 class ServiceProfile : public DpParcel {
 public:
     ServiceProfile(const std::string& deviceId, const std::string& serviceName, const std::string& serviceType);
+    ServiceProfile(const std::string& deviceId, const std::string& serviceName, const std::string& serviceType,
+        const bool isMultiUser, const int32_t userId);
     ServiceProfile();
     ~ServiceProfile();
 
@@ -34,6 +37,10 @@ public:
     void SetServiceName(const std::string& serviceName);
     std::string GetServiceType() const;
     void SetServiceType(const std::string& serviceType);
+    bool IsMultiUser() const;
+    void SetIsMultiUser(bool isMultiUser);
+    int32_t GetUserId() const;
+    void SetUserId(int32_t userId);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     bool operator!=(const ServiceProfile& serviceProfile) const;
@@ -43,6 +50,8 @@ private:
     std::string deviceId_ = "";
     std::string serviceName_ = "";
     std::string serviceType_ = "";
+    bool isMultiUser_ = false;
+    int32_t userId_ = DEFAULT_USER_ID;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

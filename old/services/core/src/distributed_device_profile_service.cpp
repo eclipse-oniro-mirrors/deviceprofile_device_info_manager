@@ -263,6 +263,7 @@ void DistributedDeviceProfileService::OnStart(const SystemAbilityOnDemandReason&
     AddSystemAbilityListener(SOFTBUS_SERVER_SA_ID);
     AddSystemAbilityListener(DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID);
     AddSystemAbilityListener(DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID);
+    AddSystemAbilityListener(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN);
     if (!Publish(this)) {
         HILOGE("publish SA failed");
         return;
@@ -290,6 +291,9 @@ void DistributedDeviceProfileService::OnStop()
 void DistributedDeviceProfileService::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
 {
     HILOGI("called systemAbilityId:%{public}d", systemAbilityId);
+    if (systemAbilityId == SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN) {
+        DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().SubscribeAccountCommonEvent();
+    }
     if (DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().IsInited()) {
         return;
     }

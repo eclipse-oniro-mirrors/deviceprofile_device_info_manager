@@ -214,6 +214,8 @@ int32_t SubscribeProfileManager::NotifyDeviceProfileAdd(const std::string& dbKey
     values[dbKey] = dbValue;
     DeviceProfile deviceProfile;
     deviceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
+    deviceProfile.SetUserId(ProfileUtils::GetUserIdFromDbKey(dbKey));
+    deviceProfile.SetIsMultiUser(deviceProfile.GetUserId() != DEFAULT_USER_ID);
     ProfileUtils::EntriesToDeviceProfile(values, deviceProfile);
     auto subscriberInfos = GetSubscribeInfos(DBKeyToSubcribeKey(dbKey));
     if (subscriberInfos.empty()) {
@@ -239,6 +241,8 @@ int32_t SubscribeProfileManager::NotifyDeviceProfileUpdate(const std::string& db
     values[dbKey] = dbValue;
     DeviceProfile newDeviceProfile;
     newDeviceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
+    newDeviceProfile.SetUserId(ProfileUtils::GetUserIdFromDbKey(dbKey));
+    newDeviceProfile.SetIsMultiUser(newDeviceProfile.GetUserId() != DEFAULT_USER_ID);
     ProfileUtils::EntriesToDeviceProfile(values, newDeviceProfile);
     DeviceProfile oldDeviceProfile;
     ProfileCache::GetInstance().GetDeviceProfile(ProfileUtils::GetDeviceIdByDBKey(dbKey), oldDeviceProfile);
@@ -266,6 +270,8 @@ int32_t SubscribeProfileManager::NotifyDeviceProfileDelete(const std::string& db
     values[dbKey] = dbValue;
     DeviceProfile deviceProfile;
     deviceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
+    deviceProfile.SetUserId(ProfileUtils::GetUserIdFromDbKey(dbKey));
+    deviceProfile.SetIsMultiUser(deviceProfile.GetUserId() != DEFAULT_USER_ID);
     ProfileUtils::EntriesToDeviceProfile(values, deviceProfile);
     auto subscriberInfos = GetSubscribeInfos(DBKeyToSubcribeKey(dbKey));
     if (subscriberInfos.empty()) {
@@ -292,6 +298,8 @@ int32_t SubscribeProfileManager::NotifyServiceProfileAdd(const std::string& dbKe
     ServiceProfile serviceProfile;
     serviceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
     serviceProfile.SetServiceName(ProfileUtils::GetNonOhSuffixServiceNameByDBKey(dbKey));
+    serviceProfile.SetUserId(ProfileUtils::GetUserIdFromDbKey(dbKey));
+    serviceProfile.SetIsMultiUser(serviceProfile.GetUserId() != DEFAULT_USER_ID);
     ProfileUtils::EntriesToServiceProfile(values, serviceProfile);
     auto subscriberInfos = GetSubscribeInfos(DBKeyToSubcribeKey(dbKey));
     if (subscriberInfos.empty()) {
@@ -318,6 +326,8 @@ int32_t SubscribeProfileManager::NotifyServiceProfileUpdate(const std::string& d
     ServiceProfile newServiceProfile;
     newServiceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
     newServiceProfile.SetServiceName(ProfileUtils::GetNonOhSuffixServiceNameByDBKey(dbKey));
+    newServiceProfile.SetUserId(ProfileUtils::GetUserIdFromDbKey(dbKey));
+    newServiceProfile.SetIsMultiUser(newServiceProfile.GetUserId() != DEFAULT_USER_ID);
     ProfileUtils::EntriesToServiceProfile(values, newServiceProfile);
     auto subscriberInfos = GetSubscribeInfos(DBKeyToSubcribeKey(dbKey));
     if (subscriberInfos.empty()) {
@@ -347,6 +357,8 @@ int32_t SubscribeProfileManager::NotifyServiceProfileDelete(const std::string& d
     ServiceProfile serviceProfile;
     serviceProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
     serviceProfile.SetServiceName(ProfileUtils::GetNonOhSuffixServiceNameByDBKey(dbKey));
+    serviceProfile.SetUserId(ProfileUtils::GetUserIdFromDbKey(dbKey));
+    serviceProfile.SetIsMultiUser(serviceProfile.GetUserId() != DEFAULT_USER_ID);
     ProfileUtils::EntriesToServiceProfile(values, serviceProfile);
     auto subscriberInfos = GetSubscribeInfos(DBKeyToSubcribeKey(dbKey));
     if (subscriberInfos.empty()) {
@@ -374,6 +386,10 @@ int32_t SubscribeProfileManager::NotifyCharProfileAdd(const std::string& dbKey, 
     charProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
     charProfile.SetServiceName(ProfileUtils::GetNonOhSuffixServiceNameByDBKey(dbKey));
     charProfile.SetCharacteristicKey(ProfileUtils::GetCharKeyByDBKey(dbKey));
+    if (charProfile.GetCharacteristicKey() != SWITCH_STATUS) {
+        charProfile.SetUserId(ProfileUtils::GetUserIdFromDbKey(dbKey));
+        charProfile.SetIsMultiUser(charProfile.GetUserId() != DEFAULT_USER_ID);
+    }
     ProfileUtils::EntriesToCharProfile(values, charProfile);
     auto subscriberInfos = GetSubscribeInfos(DBKeyToSubcribeKey(dbKey));
     if (subscriberInfos.empty()) {
@@ -401,6 +417,10 @@ int32_t SubscribeProfileManager::NotifyCharProfileUpdate(const std::string& dbKe
     newCharProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
     newCharProfile.SetServiceName(ProfileUtils::GetNonOhSuffixServiceNameByDBKey(dbKey));
     newCharProfile.SetCharacteristicKey(ProfileUtils::GetCharKeyByDBKey(dbKey));
+    if (newCharProfile.GetCharacteristicKey() != SWITCH_STATUS) {
+        newCharProfile.SetUserId(ProfileUtils::GetUserIdFromDbKey(dbKey));
+        newCharProfile.SetIsMultiUser(newCharProfile.GetUserId() != DEFAULT_USER_ID);
+    }
     ProfileUtils::EntriesToCharProfile(values, newCharProfile);
     auto subscriberInfos = GetSubscribeInfos(DBKeyToSubcribeKey(dbKey));
     if (subscriberInfos.empty()) {
@@ -431,6 +451,10 @@ int32_t SubscribeProfileManager::NotifyCharProfileDelete(const std::string& dbKe
     charProfile.SetDeviceId(ProfileUtils::GetDeviceIdByDBKey(dbKey));
     charProfile.SetServiceName(ProfileUtils::GetNonOhSuffixServiceNameByDBKey(dbKey));
     charProfile.SetCharacteristicKey(ProfileUtils::GetCharKeyByDBKey(dbKey));
+    if (charProfile.GetCharacteristicKey() != SWITCH_STATUS) {
+        charProfile.SetUserId(ProfileUtils::GetUserIdFromDbKey(dbKey));
+        charProfile.SetIsMultiUser(charProfile.GetUserId() != DEFAULT_USER_ID);
+    }
     ProfileUtils::EntriesToCharProfile(values, charProfile);
     auto subscriberInfos = GetSubscribeInfos(DBKeyToSubcribeKey(dbKey));
     if (subscriberInfos.empty()) {

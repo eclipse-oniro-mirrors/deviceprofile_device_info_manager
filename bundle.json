@@ -26,7 +26,9 @@
         "components": [
           "cJSON",
           "c_utils",
+          "common_event_service",
           "config_policy",
+          "ffrt",
           "hisysevent",
           "hilog",
           "ipc",
@@ -42,7 +44,8 @@
           "dmsfwk",
           "device_manager",
           "init",
-          "relational_store"
+          "relational_store",
+          "os_account"
         ],
         "third_party": [
           "json"

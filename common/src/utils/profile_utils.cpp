@@ -80,6 +80,20 @@ std::string ProfileUtils::GetAnonyString(const std::string& value)
     return res;
 }
 
+std::string ProfileUtils::GetAnonyInt32(const int32_t value)
+{
+    std::string tempString = std::to_string(value);
+    size_t length = tempString.length();
+    if (length == 0x01) {
+        tempString[0] = '*';
+        return tempString;
+    }
+    for (size_t i = 1; i < length - 1; i++) {
+        tempString[i] = '*';
+    }
+    return tempString;
+}
+
 std::vector<std::string> ProfileUtils::GetOnlineDevices()
 {
     std::vector<std::string> targetDevices;
@@ -458,35 +472,59 @@ int32_t ProfileUtils::AccesseeToEntries(const AccessControlProfile& aclProfile, 
     return DP_SUCCESS;
 }
 
-int32_t ProfileUtils::DeviceProfileToEntries(const DeviceProfile& profile, std::map<std::string, std::string>& values)
+int32_t ProfileUtils::DeviceProfileToEntries(const DeviceProfile& profile, std::map<std::string, std::string>& values,
+    bool isMultiUser)
 {
     std::string deviceProfileKey = GenerateDeviceProfileKey(profile.GetDeviceId());
-    values[GenerateDBKey(deviceProfileKey, OS_SYS_CAPACITY)] = profile.GetOsSysCap();
-    values[GenerateDBKey(deviceProfileKey, OS_VERSION)] = profile.GetOsVersion();
-    values[GenerateDBKey(deviceProfileKey, OS_TYPE)] = std::to_string(profile.GetOsType());
-    values[GenerateDBKey(deviceProfileKey, OS_VERSION + OH_PROFILE_SUFFIX)] = profile.GetOsVersion();
-    values[GenerateDBKey(deviceProfileKey, OS_TYPE + OH_PROFILE_SUFFIX)] = std::to_string(profile.GetOsType());
+    if (isMultiUser) {
+        values[GenerateDBKey(deviceProfileKey, OS_SYS_CAPACITY, profile.GetUserId())] = profile.GetOsSysCap();
+        values[GenerateDBKey(deviceProfileKey, OS_VERSION, profile.GetUserId())] = profile.GetOsVersion();
+        values[GenerateDBKey(deviceProfileKey, OS_TYPE, profile.GetUserId())] = std::to_string(profile.GetOsType());
+        values[GenerateDBKey(deviceProfileKey, OS_VERSION + OH_PROFILE_SUFFIX, profile.GetUserId())] =
+            profile.GetOsVersion();
+        values[GenerateDBKey(deviceProfileKey, OS_TYPE + OH_PROFILE_SUFFIX, profile.GetUserId())] =
+            std::to_string(profile.GetOsType());
+    } else {
+        values[GenerateDBKey(deviceProfileKey, OS_SYS_CAPACITY)] = profile.GetOsSysCap();
+        values[GenerateDBKey(deviceProfileKey, OS_VERSION)] = profile.GetOsVersion();
+        values[GenerateDBKey(deviceProfileKey, OS_TYPE)] = std::to_string(profile.GetOsType());
+        values[GenerateDBKey(deviceProfileKey, OS_VERSION + OH_PROFILE_SUFFIX)] = profile.GetOsVersion();
+        values[GenerateDBKey(deviceProfileKey, OS_TYPE + OH_PROFILE_SUFFIX)] = std::to_string(profile.GetOsType());
+    }
     return DP_SUCCESS;
 }
 
-int32_t ProfileUtils::ServiceProfileToEntries(const ServiceProfile& profile, std::map<std::string, std::string>& values)
+int32_t ProfileUtils::ServiceProfileToEntries(const ServiceProfile& profile, std::map<std::string,
+    std::string>& values, bool isMultiUser)
 {
     std::string serviceName = CheckAndAddOhSuffix(profile.GetServiceName(), true);
     std::string serviceProfileKey = GenerateServiceProfileKey(profile.GetDeviceId(), serviceName);
     // value not need add OH suffix
-    values[GenerateDBKey(serviceProfileKey, SERVICE_NAME)] = profile.GetServiceName();
-    values[GenerateDBKey(serviceProfileKey, SERVICE_TYPE)] = profile.GetServiceType();
+    if (isMultiUser) {
+        values[GenerateDBKey(serviceProfileKey, SERVICE_NAME, profile.GetUserId())] = profile.GetServiceName();
+        values[GenerateDBKey(serviceProfileKey, SERVICE_TYPE, profile.GetUserId())] = profile.GetServiceType();
+    } else {
+        values[GenerateDBKey(serviceProfileKey, SERVICE_NAME)] = profile.GetServiceName();
+        values[GenerateDBKey(serviceProfileKey, SERVICE_TYPE)] = profile.GetServiceType();
+    }
     return DP_SUCCESS;
 }
 
 int32_t ProfileUtils::CharacteristicProfileToEntries(const CharacteristicProfile& profile,
-                                                     std::map<std::string, std::string>& values)
+    std::map<std::string, std::string>& values, bool isMultiUser)
 {
     std::string serviceName = CheckAndAddOhSuffix(profile.GetServiceName(), true);
     std::string charProfileKey = GenerateCharProfileKey(profile.GetDeviceId(), serviceName,
         profile.GetCharacteristicKey());
-    values[GenerateDBKey(charProfileKey, CHARACTERISTIC_KEY)] = profile.GetCharacteristicKey();
-    values[GenerateDBKey(charProfileKey, CHARACTERISTIC_VALUE)] = profile.GetCharacteristicValue();
+    if (isMultiUser) {
+        values[GenerateDBKey(charProfileKey, CHARACTERISTIC_KEY, profile.GetUserId())] =
+            profile.GetCharacteristicKey();
+        values[GenerateDBKey(charProfileKey, CHARACTERISTIC_VALUE, profile.GetUserId())] =
+            profile.GetCharacteristicValue();
+    } else {
+        values[GenerateDBKey(charProfileKey, CHARACTERISTIC_KEY)] = profile.GetCharacteristicKey();
+        values[GenerateDBKey(charProfileKey, CHARACTERISTIC_VALUE)] = profile.GetCharacteristicValue();
+    }
     return DP_SUCCESS;
 }
 
@@ -623,7 +661,7 @@ int32_t ProfileUtils::EntriesToDeviceProfile(std::map<std::string, std::string> 
         HILOGI("Entries size is invalid!size: %{public}zu!", values.size());
         return DP_INVALID_PARAMS;
     }
-    auto propertiesMap = GetProfilePropertiesMap(values);
+    auto propertiesMap = GetProfilePropertiesMap(values, profile.GetUserId());
     if (IsPropertyValid(propertiesMap, OS_SYS_CAPACITY, MAX_STRING_LEN)) {
         profile.SetOsSysCap(propertiesMap[OS_SYS_CAPACITY]);
     }
@@ -652,7 +690,7 @@ int32_t ProfileUtils::EntriesToServiceProfile(std::map<std::string, std::string>
     }
     auto iter = values.begin();
     profile.SetDeviceId(GetDeviceIdByDBKey(iter->first));
-    auto propertiesMap = GetProfilePropertiesMap(values);
+    auto propertiesMap = GetProfilePropertiesMap(values, profile.GetUserId());
     if (propertiesMap.count(SERVICE_NAME) != 0 && 0 < propertiesMap[SERVICE_NAME].length() &&
         propertiesMap[SERVICE_NAME].length() < MAX_STRING_LEN) {
         profile.SetServiceName(CheckAndRemoveOhSuffix(propertiesMap[SERVICE_NAME]));
@@ -673,7 +711,7 @@ int32_t ProfileUtils::EntriesToCharProfile(std::map<std::string, std::string> va
     auto iter = values.begin();
     profile.SetDeviceId(GetDeviceIdByDBKey(iter->first));
     profile.SetServiceName(GetNonOhSuffixServiceNameByDBKey(iter->first));
-    auto propertiesMap = GetProfilePropertiesMap(values);
+    auto propertiesMap = GetProfilePropertiesMap(values, profile.GetUserId());
     if (propertiesMap.count(CHARACTERISTIC_KEY) != 0 && 0 < propertiesMap[CHARACTERISTIC_KEY].length() &&
         propertiesMap[CHARACTERISTIC_KEY].length() < MAX_STRING_LEN) {
         profile.SetCharacteristicKey(propertiesMap[CHARACTERISTIC_KEY]);
@@ -685,35 +723,84 @@ int32_t ProfileUtils::EntriesToCharProfile(std::map<std::string, std::string> va
     return DP_SUCCESS;
 }
 
-std::string ProfileUtils::GenerateDBKey(const std::string& profileKey, const std::string& profileProperty)
+std::string ProfileUtils::GenerateDBKey(const std::string& profileKey, const std::string& profileProperty,
+    int32_t userId)
 {
-    return profileKey + SEPARATOR + profileProperty;
+    std::string DBKey = "";
+    if (userId != DEFAULT_USER_ID) {
+        DBKey = profileKey + SEPARATOR + profileProperty + SEPARATOR + std::to_string(userId);
+    } else {
+        DBKey = profileKey + SEPARATOR + profileProperty;
+    }
+    return DBKey;
 }
 
-std::string ProfileUtils::GetProfileProperty(const std::string& dbKey)
+std::string ProfileUtils::GetProfileProperty(const std::string& dbKey, int32_t userId)
 {
     if (dbKey.length() == 0 || dbKey.length() > MAX_STRING_LEN) {
         return "";
     }
-    std::size_t pos = dbKey.find_last_of("#");
-    if (pos == std::string::npos) {
+    int32_t getUserId = GetUserIdFromDbKey(dbKey);
+    std::vector<std::string> splitKeys;
+    if (SplitString(dbKey, SEPARATOR, splitKeys) != DP_SUCCESS || splitKeys.size() < NUM_3) {
+        HILOGE("GetProfileProperty SplitString fail");
         return "";
     }
-    return dbKey.substr(pos + 1);
+
+    if (splitKeys[0] == DEV_PREFIX) {
+        if (userId != DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID) {
+            return splitKeys[NUM_2];
+        }
+        return (userId == getUserId) ? splitKeys[NUM_2] : "";
+    }
+    if (splitKeys[0] == SVR_PREFIX && splitKeys.size() >= NUM_4) {
+        if (userId != DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID) {
+            return splitKeys[NUM_3];
+        }
+        return (userId == getUserId) ? splitKeys[NUM_3] : "";
+    }
+    if (splitKeys[0] == CHAR_PREFIX && splitKeys.size() >= NUM_5) {
+        if (userId != DEFAULT_USER_ID && getUserId == DEFAULT_USER_ID) {
+            return splitKeys[NUM_4];
+        }
+        return (userId == getUserId) ? splitKeys[NUM_4] : "";
+    }
+
+    HILOGE("dbKey has wrong prefix");
+    return "";
 }
 
-std::map<std::string, std::string> ProfileUtils::GetProfilePropertiesMap(std::map<std::string, std::string> dbEntries)
+std::map<std::string, std::string> ProfileUtils::GetProfilePropertiesMap(std::map<std::string, std::string> dbEntries,
+    int32_t userId)
 {
-    std::map<std::string, std::string> propertiesMap;
+    std::map<std::string, std::string> propertiesWithoutUserId;
+    std::map<std::string, std::string> propertiesWithUserId;
+    if (userId <= 0 && userId != DEFAULT_USER_ID) {
+        HILOGE("userId is invalid, userId: %{public}s", GetAnonyInt32(userId).c_str());
+        return propertiesWithoutUserId;
+    }
     for (const auto& item : dbEntries) {
-        std::string profileProperty = GetProfileProperty(item.first);
+        std::string profileProperty = GetProfileProperty(item.first, userId);
         if (profileProperty.empty()) {
             HILOGE("GetProfileProperty fail, %{public}s!", GetDbKeyAnonyString(item.first).c_str());
             continue;
         }
-        propertiesMap[profileProperty] = item.second;
+        if (GetUserIdFromDbKey(item.first) == DEFAULT_USER_ID) {
+            propertiesWithoutUserId[profileProperty] = item.second;
+            continue;
+        }
+        propertiesWithUserId[profileProperty] = item.second;
     }
-    return propertiesMap;
+
+    if (userId != DEFAULT_USER_ID && !propertiesWithUserId.empty()) {
+        HILOGI("GetProfile with multi-user");
+        return propertiesWithUserId;
+    }
+
+    //1. Get profile without multi-user;
+    //2. Get profile with multi-user, but remote device without multi-user;
+    //3. Get profile with multi-user, but can't find in DB;
+    return propertiesWithoutUserId;
 }
 
 std::string ProfileUtils::toString(const std::u16string& str16)
@@ -809,6 +896,81 @@ std::string ProfileUtils::GetDbKeyByProfile(const CharacteristicProfile& profile
     std::string dbKey = CHAR_PREFIX + SEPARATOR + profile.GetDeviceId() + SEPARATOR + serviceName +
         SEPARATOR + profile.GetCharacteristicKey() + SEPARATOR + CHARACTERISTIC_VALUE;
     return dbKey;
+}
+
+int32_t ProfileUtils::GetUserIdFromDbKey(const std::string& dbKey)
+{
+    int32_t userId = DEFAULT_USER_ID;
+    std::vector<std::string> splitKeys;
+    if (SplitString(dbKey, SEPARATOR, splitKeys) != DP_SUCCESS || splitKeys.size() < NUM_3) {
+        HILOGE("SplitString fail");
+        return userId;
+    }
+    if (splitKeys[0] == DEV_PREFIX && splitKeys.size() > NUM_3 && IsNumStr(splitKeys[NUM_3])) {
+        userId = std::atoi(splitKeys[NUM_3].c_str());
+    }
+    if (splitKeys[0] == SVR_PREFIX && splitKeys.size() > NUM_4 && IsNumStr(splitKeys[NUM_4])) {
+        userId = std::atoi(splitKeys[NUM_4].c_str());
+    }
+    if (splitKeys[0] == CHAR_PREFIX && splitKeys.size() > NUM_5 && IsNumStr(splitKeys[NUM_5])) {
+        userId = std::atoi(splitKeys[NUM_5].c_str());
+    }
+    return userId;
+}
+
+std::string ProfileUtils::RemoveUserIdFromDbKey(const std::string& dbKey)
+{
+    std::vector<std::string> splitKeys;
+    if (SplitString(dbKey, SEPARATOR, splitKeys) != DP_SUCCESS || splitKeys.size() < NUM_3) {
+        HILOGE("SplitString fail");
+        return EMPTY_STRING;
+    }
+    if (splitKeys[0] == DEV_PREFIX && splitKeys.size() > NUM_3 && IsNumStr(splitKeys[NUM_3])) {
+        splitKeys.erase(splitKeys.begin() + NUM_3);
+    }
+    if (splitKeys[0] == SVR_PREFIX && splitKeys.size() > NUM_4 && IsNumStr(splitKeys[NUM_4])) {
+        splitKeys.erase(splitKeys.begin() + NUM_4);
+    }
+    if (splitKeys[0] == CHAR_PREFIX && splitKeys.size() > NUM_5 && IsNumStr(splitKeys[NUM_5])) {
+        splitKeys.erase(splitKeys.begin() + NUM_5);
+    }
+    std::string dbKeyWithoutUserId = JoinString(splitKeys, SEPARATOR);
+    if (dbKeyWithoutUserId.empty()) {
+        HILOGE("JoinString fail");
+        return EMPTY_STRING;
+    }
+    return dbKeyWithoutUserId;
+}
+
+int32_t ProfileUtils::GenerateServiceDBkeys(const std::string& deviceId, const std::string& serviceName,
+    std::vector<std::string>& dbKeys, bool isMultiUser, int32_t userId)
+{
+    std::string localServiceName = CheckAndAddOhSuffix(serviceName, true);
+    std::string serviceProfileKey = GenerateServiceProfileKey(deviceId, localServiceName);
+    // value not need add OH suffix
+    if (isMultiUser) {
+        dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_NAME, userId));
+        dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_TYPE, userId));
+    } else {
+        dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_NAME));
+        dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_TYPE));
+    }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileUtils::GenerateCharacteristicDBkeys(const std::string& deviceId, const std::string& serviceName,
+    const std::string& characteristicKey, std::vector<std::string>& dbKeys, bool isMultiUser, int32_t userId)
+{
+    std::string localServiceName = CheckAndAddOhSuffix(serviceName, true);
+    std::string charProfileKey = GenerateCharProfileKey(deviceId, localServiceName, characteristicKey);
+    if (isMultiUser) {
+        dbKeys.emplace_back(GenerateDBKey(charProfileKey, CHARACTERISTIC_KEY, userId));
+        dbKeys.emplace_back(GenerateDBKey(charProfileKey, CHARACTERISTIC_VALUE, userId));
+    } else {
+        dbKeys.emplace_back(GenerateDBKey(charProfileKey, CHARACTERISTIC_KEY));
+        dbKeys.emplace_back(GenerateDBKey(charProfileKey, CHARACTERISTIC_VALUE));
+    }
+    return DP_SUCCESS;
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

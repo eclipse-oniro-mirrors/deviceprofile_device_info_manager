@@ -200,6 +200,8 @@ int32_t DistributedDeviceProfileProxy::GetDeviceProfile(const std::string& devic
     MessageParcel data;
     WRITE_INTERFACE_TOKEN(data);
     WRITE_HELPER(data, String, deviceId);
+    WRITE_HELPER(data, Bool, deviceProfile.IsMultiUser());
+    WRITE_HELPER(data, Int32, deviceProfile.GetUserId());
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_PROFILE_NEW), data, reply);
     if (!deviceProfile.UnMarshalling(reply)) {
@@ -218,6 +220,8 @@ int32_t DistributedDeviceProfileProxy::GetServiceProfile(const std::string& devi
     WRITE_INTERFACE_TOKEN(data);
     WRITE_HELPER(data, String, deviceId);
     WRITE_HELPER(data, String, serviceName);
+    WRITE_HELPER(data, Bool, serviceProfile.IsMultiUser());
+    WRITE_HELPER(data, Int32, serviceProfile.GetUserId());
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::GET_SERVICE_PROFILE), data, reply);
     if (!serviceProfile.UnMarshalling(reply)) {
@@ -237,6 +241,8 @@ int32_t DistributedDeviceProfileProxy::GetCharacteristicProfile(const std::strin
     WRITE_HELPER(data, String, deviceId);
     WRITE_HELPER(data, String, serviceName);
     WRITE_HELPER(data, String, characteristicId);
+    WRITE_HELPER(data, Bool, charProfile.IsMultiUser());
+    WRITE_HELPER(data, Int32, charProfile.GetUserId());
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::GET_CHAR_PROFILE), data, reply);
     if (!charProfile.UnMarshalling(reply)) {
@@ -247,7 +253,7 @@ int32_t DistributedDeviceProfileProxy::GetCharacteristicProfile(const std::strin
 }
 
 int32_t DistributedDeviceProfileProxy::DeleteServiceProfile(const std::string& deviceId,
-    const std::string& serviceName)
+    const std::string& serviceName, bool isMultiUser, int32_t userId)
 {
     sptr<IRemoteObject> remote = nullptr;
     GET_REMOTE_OBJECT(remote);
@@ -255,13 +261,15 @@ int32_t DistributedDeviceProfileProxy::DeleteServiceProfile(const std::string& d
     WRITE_INTERFACE_TOKEN(data);
     WRITE_HELPER(data, String, deviceId);
     WRITE_HELPER(data, String, serviceName);
+    WRITE_HELPER(data, Bool, isMultiUser);
+    WRITE_HELPER(data, Int32, userId);
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::DEL_SERVICE_PROFILE), data, reply);
     return DP_SUCCESS;
 }
 
 int32_t DistributedDeviceProfileProxy::DeleteCharacteristicProfile(const std::string& deviceId,
-    const std::string& serviceName, const std::string& characteristicId)
+    const std::string& serviceName, const std::string& characteristicId, bool isMultiUser, int32_t userId)
 {
     sptr<IRemoteObject> remote = nullptr;
     GET_REMOTE_OBJECT(remote);
@@ -270,6 +278,8 @@ int32_t DistributedDeviceProfileProxy::DeleteCharacteristicProfile(const std::st
     WRITE_HELPER(data, String, deviceId);
     WRITE_HELPER(data, String, serviceName);
     WRITE_HELPER(data, String, characteristicId);
+    WRITE_HELPER(data, Bool, isMultiUser);
+    WRITE_HELPER(data, Int32, userId);
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::DEL_CHAR_PROFILE), data, reply);
     return DP_SUCCESS;

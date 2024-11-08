@@ -40,6 +40,7 @@ config("device_info_manager_config") {
     "${device_profile_service}/include/permissionmanager",
     "${device_profile_service}/include/persistenceadapter/kvadapter",
     "${device_profile_service}/include/persistenceadapter/rdbadapter",
+    "${device_profile_service}/include/publishcommonevent",
     "${device_profile_service}/include/subscribeprofilemanager",
     "${device_profile_service}/include/trustprofilemanager",
     "${device_profile_service}/include/utils",
@@ -121,6 +122,7 @@ ohos_shared_library("distributed_device_profile") {
   external_deps = [
     "access_token:libaccesstoken_sdk",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "device_auth:deviceauth_sdk",
     "device_manager:devicemanagersdk",
     "dmsfwk:common_sdk",

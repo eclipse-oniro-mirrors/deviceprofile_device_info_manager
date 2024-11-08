@@ -68,7 +68,8 @@ private:
     std::unordered_set<int32_t> depSaIds_ {
         SOFTBUS_SERVER_SA_ID,
         DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID,
-        DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID
+        DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID,
+        SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN
     };
 };
 } // namespace DeviceProfile

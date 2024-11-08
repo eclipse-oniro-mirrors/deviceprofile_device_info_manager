@@ -56,9 +56,10 @@ public:
         ServiceProfile& serviceProfile);
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
         const std::string& characteristicKey, CharacteristicProfile& charProfile);
-    int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName);
+    int32_t DeleteServiceProfile(const std::string& deviceId, const std::string& serviceName, bool isMultiUser = false,
+        int32_t userId = DEFAULT_USER_ID);
     int32_t DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
-        const std::string& characteristicKey);
+        const std::string& characteristicKey, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID);
     int32_t GetAllDeviceProfile(std::vector<DeviceProfile>& deviceProfiles);
     int32_t GetAllServiceProfile(std::vector<ServiceProfile>& serviceProfiles);
     int32_t GetAllCharacteristicProfile(std::vector<CharacteristicProfile>& charProfiles);
@@ -71,6 +72,7 @@ public:
     void OnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
     void OnDeviceTrustChange(const std::string& peerUdid, const std::string& peerUuid,
         const DistributedHardware::DmAuthForm authform);
+    void OnUserChange(int32_t lastUserId, int32_t curUserId);
 
 private:
     bool LoadDpSyncAdapter();
@@ -95,7 +97,12 @@ private:
     void NotifyNotOHBaseOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
     void E2ESyncDynamicProfile(const DistributedHardware::DmDeviceInfo deviceInfo);
     void ClearDataWithPeerLogout(const std::string& peerUdid, const std::string& peerUuid);
+    int32_t SaveBatchByKeys(const std::map<std::string, std::string>& entries);
     void FixDiffProfiles();
+    template <typename T>
+    int32_t IsMultiUserValid(const T& profile);
+    bool IsSameAccount(const std::string deviceId, const int32_t userId);
+    bool HasTrustP2PRelation(const std::string deviceId, const int32_t userId);
     bool isAdapterSoLoaded_ = false;
     std::mutex isAdapterLoadLock_;
     std::mutex dynamicStoreMutex_;
