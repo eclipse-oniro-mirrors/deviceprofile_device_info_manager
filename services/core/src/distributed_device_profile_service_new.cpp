@@ -628,8 +628,11 @@ void DistributedDeviceProfileServiceNew::OnAddSystemAbility(int32_t systemAbilit
 void DistributedDeviceProfileServiceNew::SubscribeAccountCommonEvent()
 {
     HILOGI("Start");
-    if (accountCommonEventManager_ == nullptr) {
-        accountCommonEventManager_ = std::make_shared<DpAccountCommonEventManager>();
+    {
+        std::lock_guard<std::mutex> lock(accountCommonEventManagerMtx_);
+        if (accountCommonEventManager_ == nullptr) {
+            accountCommonEventManager_ = std::make_shared<DpAccountCommonEventManager>();
+        }
     }
     AccountEventCallback callback = [=](const auto &arg1, const auto &arg2) {
         this->AccountCommonEventCallback(arg1, arg2);
@@ -639,6 +642,7 @@ void DistributedDeviceProfileServiceNew::SubscribeAccountCommonEvent()
     AccountCommonEventVec.emplace_back(EventFwk::CommonEventSupport::COMMON_EVENT_USER_REMOVED);
     AccountCommonEventVec.emplace_back(EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGOUT);
     AccountCommonEventVec.emplace_back(EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGIN);
+    std::lock_guard<std::mutex> lock(accountCommonEventManagerMtx_);
     if (accountCommonEventManager_->SubscribeAccountCommonEvent(AccountCommonEventVec, callback)) {
         HILOGI("Success");
     }

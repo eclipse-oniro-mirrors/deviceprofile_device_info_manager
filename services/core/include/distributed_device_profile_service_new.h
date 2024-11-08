@@ -94,6 +94,7 @@ private:
     void ClearProfileCache();
 
 private:
+    std::mutex accountCommonEventManagerMtx_;
     std::shared_ptr<DpAccountCommonEventManager> accountCommonEventManager_;
     std::shared_ptr<AppExecFwk::EventHandler> unloadHandler_;
     std::mutex unloadMutex_;
