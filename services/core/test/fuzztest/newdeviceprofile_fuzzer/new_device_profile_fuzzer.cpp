@@ -34,7 +34,7 @@ namespace DistributedDeviceProfile {
 namespace {
     constexpr size_t THRESHOLD = 10;
     constexpr uint32_t MIN_INTERFACE_CODE = 7;
-    constexpr uint32_t MAX_INTERFACE_CODE = 26;
+    constexpr uint32_t MAX_INTERFACE_CODE = 43;
     constexpr int32_t OFFSET = 4;
     constexpr int32_t ZERO_BIT = 0;
     constexpr int32_t FIRST_BIT = 1;
@@ -101,6 +101,7 @@ void FuzzDeviceProfile(const uint8_t* rawData, size_t size)
         code += MIN_INTERFACE_CODE;
     }
     DistributedDeviceProfileServiceNew::GetInstance().OnRemoteRequest(code, data, reply, option);
+    DistributedDeviceProfileServiceNew::GetInstance().NotifyEventInner(code, data, reply, option);
 }
 }
 }
