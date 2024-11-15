@@ -32,6 +32,7 @@
           "hisysevent",
           "hilog",
           "ipc",
+          "json",
           "syscap_codec",
           "access_token",
           "device_auth",
