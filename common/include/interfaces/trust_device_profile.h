@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,7 +29,8 @@ public:
         deviceIdType_(static_cast<uint32_t>(DeviceIdType::MIN)),
         deviceIdHash_(""),
         status_(static_cast<int32_t>(Status::MIN)),
-        bindType_(static_cast<uint32_t>(BindType::MIN))
+        bindType_(static_cast<uint32_t>(BindType::MIN)),
+        peerUserId_(-1)
     {}
     ~TrustDeviceProfile() = default;
 
@@ -43,6 +44,8 @@ public:
     void SetStatus(int32_t status);
     uint32_t GetBindType() const;
     void SetBindType(uint32_t bindType);
+    int32_t GetPeerUserId() const;
+    void SetPeerUserId(int32_t peerUserId);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     std::string dump() const override;
@@ -53,6 +56,7 @@ private:
     std::string deviceIdHash_;
     int32_t status_;
     uint32_t bindType_;
+    int32_t peerUserId_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

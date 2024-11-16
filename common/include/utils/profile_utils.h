@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 
+#include "result_set.h"
 #include "values_bucket.h"
 
 #include "access_control_profile.h"
@@ -117,6 +118,17 @@ public:
     static int32_t GenerateCharacteristicDBkeys(const std::string& deviceId, const std::string& serviceName,
         const std::string& characteristicKey, std::vector<std::string>& dbKeys, bool isMultiUser = false,
         int32_t userId = DEFAULT_USER_ID);
+    static int32_t ConvertToTrustDeviceProfile(const AccessControlProfile& accessControlProfile,
+        TrustDeviceProfile& trustDeviceProfile);
+    static int32_t ConvertToAccessControlProfiles(std::shared_ptr<ResultSet> resultSet,
+        std::shared_ptr<ResultSet> accesserResultSet, std::shared_ptr<ResultSet> accesseeResultSet,
+        std::vector<AccessControlProfile>& profile);
+    static int32_t ConvertToTrustDeviceProfile(std::shared_ptr<ResultSet> trustResultSet,
+        TrustDeviceProfile& trustDeviceProfile);
+    static int32_t ConvertToAccesser(std::shared_ptr<ResultSet> accesserResultSet, Accesser& accesser);
+    static int32_t ConvertToAccessee(std::shared_ptr<ResultSet> accesseeResultSet, Accessee& accessee);
+    static int32_t ConvertToAccessControlProfile(std::shared_ptr<ResultSet> accessControlResultSet,
+        AccessControlProfile& accessControlProfile);
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

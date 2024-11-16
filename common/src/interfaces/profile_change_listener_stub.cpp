@@ -38,6 +38,10 @@ ProfileChangeListenerStub::ProfileChangeListenerStub()
         &ProfileChangeListenerStub::OnTrustDeviceProfileDeleteInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_UPDATE)] =
         &ProfileChangeListenerStub::OnTrustDeviceProfileUpdateInner;
+    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_ACTIVE)] =
+        &ProfileChangeListenerStub::OnTrustDeviceProfileActiveInner;
+    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_INACTIVE)] =
+        &ProfileChangeListenerStub::OnTrustDeviceProfileInactiveInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_ADD)] =
         &ProfileChangeListenerStub::OnDeviceProfileAddInner;
     funcsMap_[static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_DELETE)] =
@@ -84,6 +88,10 @@ int32_t ProfileChangeListenerStub::OnRemoteRequest(uint32_t code, MessageParcel&
             return ProfileChangeListenerStub::OnTrustDeviceProfileDeleteInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_UPDATE):
             return ProfileChangeListenerStub::OnTrustDeviceProfileUpdateInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_ACTIVE):
+            return ProfileChangeListenerStub::OnTrustDeviceProfileActiveInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_INACTIVE):
+            return ProfileChangeListenerStub::OnTrustDeviceProfileInactiveInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_ADD):
             return ProfileChangeListenerStub::OnDeviceProfileAddInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_DELETE):
@@ -156,6 +164,38 @@ int32_t ProfileChangeListenerStub::OnTrustDeviceProfileUpdateInner(MessageParcel
     OnTrustDeviceProfileUpdate(oldTrustDeviceProfile, newTrustDeviceProfile);
     if (!reply.WriteInt32(DP_SUCCESS)) {
         HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileChangeListenerStub::OnTrustDeviceProfileActiveInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    TrustDeviceProfile trustDeviceProfile;
+    if (!trustDeviceProfile.UnMarshalling(data)) {
+        HILOGE("Read reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    OnTrustDeviceProfileActive(trustDeviceProfile);
+    if (!reply.WriteInt32(DP_SUCCESS)) {
+        HILOGE("Read reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileChangeListenerStub::OnTrustDeviceProfileInactiveInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    TrustDeviceProfile trustDeviceProfile;
+    if (!trustDeviceProfile.UnMarshalling(data)) {
+        HILOGE("Read reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    OnTrustDeviceProfileInactive(trustDeviceProfile);
+    if (!reply.WriteInt32(DP_SUCCESS)) {
+        HILOGE("Read reply failed");
         return ERR_FLATTEN_OBJECT;
     }
     return DP_SUCCESS;
@@ -317,6 +357,18 @@ int32_t ProfileChangeListenerStub::OnCharacteristicProfileUpdateInner(MessagePar
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
     }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileChangeListenerStub::OnTrustDeviceProfileActive(const TrustDeviceProfile& profile)
+{
+    (void)profile;
+    return DP_SUCCESS;
+}
+
+int32_t ProfileChangeListenerStub::OnTrustDeviceProfileInactive(const TrustDeviceProfile& profile)
+{
+    (void)profile;
     return DP_SUCCESS;
 }
 } // namespace DistributedDeviceProfile

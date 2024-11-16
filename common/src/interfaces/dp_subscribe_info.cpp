@@ -118,9 +118,11 @@ std::unordered_set<ProfileChangeType> SubscribeInfo::GetProfileChangeTypes() con
 void SubscribeInfo::AddProfileChangeType(ProfileChangeType profileChangeType)
 {
     if (profileChangeType <= PROFILE_CHANGE_TYPE_MIN || profileChangeType >= PROFILE_CHANGE_TYPE_MAX) {
+        HILOGE("profileChangeType is invaild");
         return;
     }
     if (subscribeChangeTypes_.size() > MAX_SUBSCRIBE_CHANGE_SIZE) {
+        HILOGE("subscribeChangeTypes_ size greater than max");
         return;
     }
     subscribeChangeTypes_.emplace(profileChangeType);

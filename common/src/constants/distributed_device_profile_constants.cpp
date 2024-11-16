@@ -43,6 +43,7 @@ const std::string CHARACTERISTIC_VALUE = "characteristicValue";
 const std::string SUBSCRIBE_TRUST_DEVICE_PROFILE = "trust_device_profile";
 const std::string DEVICE_ID_TYPE = "deviceIdType";
 const std::string DEVICE_ID_HASH = "deviceIdHash";
+const std::string PEER_USER_ID = "peerUserId";
 /* AccessControlProfile Attribute */
 const std::string ACCESS_CONTROL_ID = "accessControlId";
 const std::string ACCESSER_ID = "accesserId";
@@ -182,7 +183,6 @@ const std::string CREATE_ACCESS_CONTROL_TABLE_UNIQUE_INDEX_SQL =
     authenticationType,\
     deviceIdType,\
     deviceIdHash,\
-    status,\
     validPeriod,\
     lastAuthTime,\
     bindLevel);";
@@ -250,6 +250,10 @@ const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_DEVICEID_AND_ACCESS
     "SELECT * FROM accesser_table WHERE accesserId = ? and accesserDeviceId = ? and accesserTokenId = ? ";
 const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_DEVICEID_AND_ACCESSEETOKENID =
     "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeDeviceId = ? and accesseeTokenId = ? ";
+const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_DEVICEID_AND_USERID =
+    "SELECT * FROM accesser_table WHERE accesserId = ? and accesserDeviceId = ? and accesserUserId = ? ";
+const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_DEVICEID_AND_USERID =
+    "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeDeviceId = ? and accesseeUserId = ? ";
 const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERDEVICEID =
     "SELECT * FROM accesser_table WHERE accesserId = ? and accesserDeviceId = ? ";
 const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEDEVICEID =
@@ -260,16 +264,22 @@ const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEBUNDLENAME 
     "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeBundleName = ? ";
 const std::string SELECT_ACCESSEE_TABLE = "SELECT * FROM accessee_table ";
 const std::string SELECT_ACCESSER_TABLE = "SELECT * FROM accesser_table ";
-const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_ALL =
+const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_ALL_EXCEPT_STATUS =
     "SELECT * FROM access_control_table WHERE accesserId = ? and accesseeId = ? and trustDeviceId = ? and \
     sessionKey = ? and bindType = ? and authenticationType = ? and deviceIdType = ? and deviceIdHash = ? \
-    and status = ? and validPeriod = ? and lastAuthTime = ? and bindLevel = ? ";
+    and validPeriod = ? and lastAuthTime = ? and bindLevel = ? ";
 const std::string SELECT_ACCESSER_TABLE_WHERE_ALL =
     "SELECT * FROM accesser_table WHERE accesserDeviceId = ? and accesserUserId = ? and accesserAccountId = ? and \
     accesserTokenId = ? and accesserBundleName = ? and accesserHapSignature = ? and accesserBindLevel = ? ";
 const std::string SELECT_ACCESSEE_TABLE_WHERE_ALL =
     "SELECT * FROM accessee_table WHERE accesseeDeviceId = ? and accesseeUserId = ? and accesseeAccountId = ? and \
     accesseeTokenId = ? and accesseeBundleName = ? and accesseeHapSignature = ? and accesseeBindLevel = ? ";
+const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERDEVICEID_AND_ACCESSERUSERID =
+    "SELECT * FROM accesser_table WHERE accesserDeviceId = ? and accesserUserId = ? ";
+const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEDEVICEID_AND_ACCESSEEUSERID =
+    "SELECT * FROM accessee_table WHERE accesseeDeviceId = ? and accesseeUserId = ? ";
+const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_ACCESSERID_AND_ACCESSEEID =
+    "SELECT * FROM access_control_table WHERE accesserId = ? and accesseeId = ? ";
 /* SubscribeTrustInfoManager */
 const std::string SUBSCRIBE_TRUST_INFO_TABLE = "subscribe_trust_info_table";
 const std::string CREATE_SUBSCRIBE_TRUST_INFO_TABLE_SQL =

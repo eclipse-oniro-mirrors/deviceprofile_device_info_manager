@@ -68,8 +68,6 @@ private:
     int32_t GetAccessControlProfile(int32_t userId, std::vector<AccessControlProfile>& profile);
     int32_t GetAccessControlProfileByTokenId(int64_t tokenId, const std::string& trustDeviceId,
         int32_t status, std::vector<AccessControlProfile>& profile);
-    int32_t ConvertToTrustDeviceProfile(const AccessControlProfile& accessControlProfile,
-        TrustDeviceProfile& trustDeviceProfile);
     int32_t GetAclProfileByUserIdAndBundleName(std::shared_ptr<ResultSet> resultSet,
         int32_t userId, const std::string& bundleName, std::vector<AccessControlProfile>& profile);
     int32_t GetAclProfileByUserIdAndAccountId(std::shared_ptr<ResultSet> resultSet, int64_t accesserId,
@@ -78,16 +76,13 @@ private:
         int64_t tokenId, std::vector<AccessControlProfile>& profile);
     int32_t GetAclProfileByBundleName(std::shared_ptr<ResultSet> resultSet,
         const std::string& bundleName, std::vector<AccessControlProfile>& profile);
-    int32_t ConvertToAccessControlProfiles(std::shared_ptr<ResultSet> resultSet,
-        std::shared_ptr<ResultSet> accesserResultSet, std::shared_ptr<ResultSet> accesseeResultSet,
-        std::vector<AccessControlProfile>& profile);
     int32_t PutAccesserProfile(const AccessControlProfile& profile);
     int32_t PutAccesseeProfile(const AccessControlProfile& profile);
     int32_t SetAccessControlId(AccessControlProfile& profile);
     int32_t SetAccesserId(AccessControlProfile& profile);
     int32_t SetAccesseeId(AccessControlProfile& profile);
-    int32_t UpdateAccesserProfile(int64_t accesserId, const AccessControlProfile& profile);
-    int32_t UpdateAccesseeProfile(int64_t accesseeId, const AccessControlProfile& profile);
+    int32_t UpdateAccesserProfile(AccessControlProfile& profile, bool& isAcerOrAceeExist);
+    int32_t UpdateAccesseeProfile(AccessControlProfile& profile, bool& isAcerOrAceeExist);
     int32_t UpdateTrustDeviceProfileNotify(const TrustDeviceProfile& oldProfile,
         const TrustDeviceProfile& newProfile);
     int32_t GetResultStatus(const std::string& trustDeviceId, int32_t& trustDeviceStatus);
@@ -95,13 +90,7 @@ private:
         int64_t accesserId, int64_t accesseeId, std::vector<AccessControlProfile>& profile);
     int32_t GetAccessControlProfilesByDeviceId(std::shared_ptr<ResultSet> resultSet, int64_t accesserId,
         int64_t accesseeId, const std::string& trustDeviceId, std::vector<AccessControlProfile>& profile);
-    int32_t DeleteAccessControlProfileCheck(std::shared_ptr<ResultSet> resultSet);
-    int32_t ConvertToTrustDeviceProfile(std::shared_ptr<ResultSet> trustResultSet,
-        TrustDeviceProfile& trustDeviceProfile);
-    int32_t ConvertToAccesser(std::shared_ptr<ResultSet> accesserResultSet, Accesser& accesser);
-    int32_t ConvertToAccessee(std::shared_ptr<ResultSet> accesseeResultSet, Accessee& accessee);
-    int32_t ConvertToAccessControlProfile(std::shared_ptr<ResultSet> accessControlResultSet,
-        AccessControlProfile& accessControlProfile);
+    int32_t DeleteAccessControlProfileCheck(const AccessControlProfile& profile);
     std::shared_ptr<ResultSet> GetResultSet(const std::string& sql, std::vector<ValueObject> condition);
     int32_t SetAccessControlProfileId(AccessControlProfile& accessControlProfile);
     int32_t GetAccessControlProfiles(std::shared_ptr<ResultSet> resultSet, int64_t accesserId,
@@ -114,12 +103,16 @@ private:
     int32_t GetAccessControlProfilesByTokenId(std::shared_ptr<ResultSet> resultSet, int64_t accesserId,
         int64_t accesseeId, const std::string& trustDeviceId, int64_t tokenId,
         std::vector<AccessControlProfile>& profile);
-    int32_t DeleteAccesserCheck(int64_t accesserId);
-    int32_t DeleteAccesseeCheck(int64_t accesseeId);
+    int32_t DeleteAccesserCheck(int64_t accesserId, Accesser& accesser);
+    int32_t DeleteAccesseeCheck(int64_t accesseeId, Accessee& accessee);
     int32_t DeleteTrustDeviceCheck(const AccessControlProfile& profile);
-    int32_t UpdateAclCheck(const AccessControlProfile& profile);
-    int32_t PutAclCheck(const AccessControlProfile& profile);
+    int32_t UpdateAclCheck(const AccessControlProfile& profile, AccessControlProfile& oldProfile);
+    int32_t PutAclCheck(const AccessControlProfile& profile, bool peerDevInfoExists);
     int32_t IsAclExists(const AccessControlProfile& profile);
+    bool CheckUserIdExists(const AccessControlProfile& profile);
+    int32_t GetConformCount(const std::string& peerDeviceId, int32_t peerUserId);
+    int32_t NotifyCheck(const AccessControlProfile& profile, const AccessControlProfile& oldProfile);
+    int32_t UpdateOrDeleteAclCheck(const AccessControlProfile& profile, bool isAcerOrAceeExist);
 
 private:
     std::shared_ptr<IRdbAdapter> rdbStore_;
