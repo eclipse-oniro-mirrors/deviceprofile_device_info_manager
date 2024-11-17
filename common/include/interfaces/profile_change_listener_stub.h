@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -35,6 +35,8 @@ public:
     int32_t OnTrustDeviceProfileAddInner(MessageParcel& data, MessageParcel& reply);
     int32_t OnTrustDeviceProfileDeleteInner(MessageParcel& data, MessageParcel& reply);
     int32_t OnTrustDeviceProfileUpdateInner(MessageParcel& data, MessageParcel& reply);
+    int32_t OnTrustDeviceProfileActiveInner(MessageParcel& data, MessageParcel& reply);
+    int32_t OnTrustDeviceProfileInactiveInner(MessageParcel& data, MessageParcel& reply);
     int32_t OnDeviceProfileAddInner(MessageParcel& data, MessageParcel& reply);
     int32_t OnDeviceProfileDeleteInner(MessageParcel& data, MessageParcel& reply);
     int32_t OnDeviceProfileUpdateInner(MessageParcel& data, MessageParcel& reply);
@@ -44,6 +46,8 @@ public:
     int32_t OnCharacteristicProfileAddInner(MessageParcel& data, MessageParcel& reply);
     int32_t OnCharacteristicProfileDeleteInner(MessageParcel& data, MessageParcel& reply);
     int32_t OnCharacteristicProfileUpdateInner(MessageParcel& data, MessageParcel& reply);
+    int32_t OnTrustDeviceProfileActive(const TrustDeviceProfile& profile) override;
+    int32_t OnTrustDeviceProfileInactive(const TrustDeviceProfile& profile) override;
 
 private:
     using Func = int32_t(ProfileChangeListenerStub::*)(MessageParcel& data, MessageParcel& reply);

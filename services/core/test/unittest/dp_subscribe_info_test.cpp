@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -66,6 +66,16 @@ public:
         {
             cout << "OnTrustDeviceProfileUpdate: oldProfile " << oldProfile.dump() <<endl;
             cout << "OnTrustDeviceProfileUpdate: newProfile " << newProfile.dump() <<endl;
+            return 0;
+        }
+        int32_t OnTrustDeviceProfileActive(const TrustDeviceProfile& profile)
+        {
+            cout << "OnTrustDeviceProfileActive" << profile.dump() <<endl;
+            return 0;
+        }
+        int32_t OnTrustDeviceProfileInactive(const TrustDeviceProfile& profile)
+        {
+            cout << "OnTrustDeviceProfileInactive" << profile.dump() <<endl;
             return 0;
         }
         int32_t OnDeviceProfileAdd(const DeviceProfile& profile)
@@ -283,6 +293,30 @@ HWTEST_F(DPSubscribeInfoTest, Stub_001, TestSize.Level1)
     ret = proxy->OnCharacteristicProfileDelete(oldChaProfile);
     EXPECT_EQ(ret, DP_SUCCESS);
     ret = proxy->OnCharacteristicProfileUpdate(oldChaProfile, newChaProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: Stub_002
+ * @tc.desc: Normal testCase of DPSubscribeInfoTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(DPSubscribeInfoTest, Stub_002, TestSize.Level1)
+{
+    uint32_t saId = 4801;
+    std::string subscribeKey = "trust_device_profile";
+    std::unordered_set<ProfileChangeType> subscribeTypes = {ProfileChangeType::TRUST_DEVICE_PROFILE_ACTIVE,
+        ProfileChangeType::TRUST_DEVICE_PROFILE_INACTIVE};
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        sptr<IProfileChangeListener>(new DPSubscribeInfoTest::SubscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    OHOS::sptr<IProfileChangeListener> proxy = OHOS::iface_cast<IProfileChangeListener>(subscribeInfo.GetListener());
+    TrustDeviceProfile profile;
+    profile.SetPeerUserId(1001);
+    ASSERT_NE(proxy, nullptr);
+    int32_t ret = proxy->OnTrustDeviceProfileActive(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->OnTrustDeviceProfileInactive(profile);
     EXPECT_EQ(ret, DP_SUCCESS);
 }
 } // namespace DistributedDeviceProfile

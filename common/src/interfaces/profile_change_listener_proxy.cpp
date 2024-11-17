@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -71,6 +71,36 @@ int32_t ProfileListenerProxy::OnTrustDeviceProfileUpdate(const TrustDeviceProfil
     }
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_UPDATE), data, reply);
+    return DP_SUCCESS;
+}
+
+int32_t ProfileListenerProxy::OnTrustDeviceProfileActive(const TrustDeviceProfile& profile)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_CHANGE_LISTENER_TOKEN(data);
+    if (!profile.Marshalling(data)) {
+        HILOGE("write reply failed!");
+        return ERR_FLATTEN_OBJECT;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_ACTIVE), data, reply);
+    return DP_SUCCESS;
+}
+
+int32_t ProfileListenerProxy::OnTrustDeviceProfileInactive(const TrustDeviceProfile& profile)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_CHANGE_LISTENER_TOKEN(data);
+    if (!profile.Marshalling(data)) {
+        HILOGE("write reply failed!");
+        return ERR_FLATTEN_OBJECT;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_INACTIVE), data, reply);
     return DP_SUCCESS;
 }
 

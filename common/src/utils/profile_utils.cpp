@@ -972,5 +972,183 @@ int32_t ProfileUtils::GenerateCharacteristicDBkeys(const std::string& deviceId, 
     }
     return DP_SUCCESS;
 }
+
+int32_t ProfileUtils::ConvertToTrustDeviceProfile(
+    const AccessControlProfile& accessControlProfile, TrustDeviceProfile& trustDeviceProfile)
+{
+    trustDeviceProfile.SetDeviceId(accessControlProfile.GetTrustDeviceId());
+    trustDeviceProfile.SetDeviceIdType(accessControlProfile.GetDeviceIdType());
+    trustDeviceProfile.SetDeviceIdHash(accessControlProfile.GetDeviceIdHash());
+    trustDeviceProfile.SetStatus(accessControlProfile.GetStatus());
+    trustDeviceProfile.SetBindType(accessControlProfile.GetBindType());
+    std::string peerDeviceId = accessControlProfile.GetTrustDeviceId();
+    int32_t peerUserId = accessControlProfile.GetAccesser().GetAccesserUserId();
+    if (accessControlProfile.GetAccessee().GetAccesseeDeviceId() == peerDeviceId) {
+        peerUserId = accessControlProfile.GetAccessee().GetAccesseeUserId();
+    }
+    trustDeviceProfile.SetPeerUserId(peerUserId);
+    return DP_SUCCESS;
+}
+
+int32_t ProfileUtils::ConvertToAccessControlProfiles(std::shared_ptr<ResultSet> resultSet,
+    std::shared_ptr<ResultSet> accesserResultSet, std::shared_ptr<ResultSet> accesseeResultSet,
+    std::vector<AccessControlProfile>& profile)
+{
+    if (accesserResultSet == nullptr) {
+        HILOGE("accesserResultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    if (accesseeResultSet == nullptr) {
+        HILOGE("accesseeResultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    Accesser accesser;
+    accesserResultSet->GoToNextRow();
+    ConvertToAccesser(accesserResultSet, accesser);
+    Accessee accessee;
+    accesseeResultSet->GoToNextRow();
+    ConvertToAccessee(accesseeResultSet, accessee);
+    if (resultSet == nullptr) {
+        HILOGE("resultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    AccessControlProfile accessControlProfile;
+    ConvertToAccessControlProfile(resultSet, accessControlProfile);
+
+    accessControlProfile.SetAccesser(accesser);
+    accessControlProfile.SetAccessee(accessee);
+    profile.push_back(accessControlProfile);
+    return DP_SUCCESS;
+}
+
+int32_t ProfileUtils::ConvertToTrustDeviceProfile(
+    std::shared_ptr<ResultSet> trustResultSet, TrustDeviceProfile& trustDeviceProfile)
+{
+    if (trustResultSet == nullptr) {
+        HILOGE("trustResultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    RowEntity rowEntity;
+    if (trustResultSet->GetRow(rowEntity) != DP_SUCCESS) {
+        HILOGE("get trustResultSet failed");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    std::string deviceId = rowEntity.Get(DEVICE_ID);
+    int32_t deviceIdType = rowEntity.Get(DEVICE_ID_TYPE);
+    std::string deviceIdHash = rowEntity.Get(DEVICE_ID_HASH);
+    int32_t status = rowEntity.Get(STATUS);
+
+    trustDeviceProfile.SetDeviceId(deviceId);
+    trustDeviceProfile.SetDeviceIdType(deviceIdType);
+    trustDeviceProfile.SetDeviceIdHash(deviceIdHash);
+    trustDeviceProfile.SetStatus(status);
+    return DP_SUCCESS;
+}
+
+int32_t ProfileUtils::ConvertToAccesser(std::shared_ptr<ResultSet> accesserResultSet,
+    Accesser& accesser)
+{
+    if (accesserResultSet == nullptr) {
+        HILOGE("accesserResultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    RowEntity rowEntity;
+    if (accesserResultSet->GetRow(rowEntity) != DP_SUCCESS) {
+        HILOGE("get accesserResultSet failed");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    int64_t accesserId = rowEntity.Get(ACCESSER_ID);
+    std::string accesserDeviceId = rowEntity.Get(ACCESSER_DEVICE_ID);
+    int32_t accesserUserId = rowEntity.Get(ACCESSER_USER_ID);
+    std::string accesserAccountId = rowEntity.Get(ACCESSER_ACCOUNT_ID);
+    int64_t accesserTokenId = rowEntity.Get(ACCESSER_TOKEN_ID);
+    std::string accesserBundleName = rowEntity.Get(ACCESSER_BUNDLE_NAME);
+    std::string accesserHapSignature = rowEntity.Get(ACCESSER_HAP_SIGNATURE);
+    int32_t accesserBindLevel = rowEntity.Get(ACCESSER_BIND_LEVEL);
+
+    accesser.SetAccesserId(accesserId);
+    accesser.SetAccesserDeviceId(accesserDeviceId);
+    accesser.SetAccesserUserId(accesserUserId);
+    accesser.SetAccesserAccountId(accesserAccountId);
+    accesser.SetAccesserTokenId(accesserTokenId);
+    accesser.SetAccesserBundleName(accesserBundleName);
+    accesser.SetAccesserHapSignature(accesserHapSignature);
+    accesser.SetAccesserBindLevel(accesserBindLevel);
+    return DP_SUCCESS;
+}
+
+int32_t ProfileUtils::ConvertToAccessee(std::shared_ptr<ResultSet> accesseeResultSet,
+    Accessee& accessee)
+{
+    if (accesseeResultSet == nullptr) {
+        HILOGE("accesseeResultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    RowEntity rowEntity;
+    if (accesseeResultSet->GetRow(rowEntity) != DP_SUCCESS) {
+        HILOGE("get accesseeResultSet failed");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    int64_t accesseeId = rowEntity.Get(ACCESSEE_ID);
+    std::string accesseeDeviceId = rowEntity.Get(ACCESSEE_DEVICE_ID);
+    int32_t accesseeUserId = rowEntity.Get(ACCESSEE_USER_ID);
+    std::string accesseeAccountId = rowEntity.Get(ACCESSEE_ACCOUNT_ID);
+    int64_t accesseeTokenId = rowEntity.Get(ACCESSEE_TOKEN_ID);
+    std::string accesseeBundleName = rowEntity.Get(ACCESSEE_BUNDLE_NAME);
+    std::string accesseeHapSignature = rowEntity.Get(ACCESSEE_HAP_SIGNATURE);
+    int32_t accesseeBindLevel = rowEntity.Get(ACCESSEE_BIND_LEVEL);
+
+    accessee.SetAccesseeId(accesseeId);
+    accessee.SetAccesseeDeviceId(accesseeDeviceId);
+    accessee.SetAccesseeUserId(accesseeUserId);
+    accessee.SetAccesseeAccountId(accesseeAccountId);
+    accessee.SetAccesseeTokenId(accesseeTokenId);
+    accessee.SetAccesseeBundleName(accesseeBundleName);
+    accessee.SetAccesseeHapSignature(accesseeHapSignature);
+    accessee.SetAccesseeBindLevel(accesseeBindLevel);
+    return DP_SUCCESS;
+}
+
+int32_t ProfileUtils::ConvertToAccessControlProfile(
+    std::shared_ptr<ResultSet> accessControlResultSet, AccessControlProfile& accessControlProfile)
+{
+    if (accessControlResultSet == nullptr) {
+        HILOGE("accessControlResultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    RowEntity rowEntity;
+    if (accessControlResultSet->GetRow(rowEntity) != DP_SUCCESS) {
+        HILOGE("get accessControlResultSet failed");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    int64_t accessControlId = rowEntity.Get(ACCESS_CONTROL_ID);
+    int64_t accesserId = rowEntity.Get(ACCESSER_ID);
+    int64_t accesseeId = rowEntity.Get(ACCESSEE_ID);
+    std::string trustDeviceId = rowEntity.Get(TRUST_DEVICE_ID);
+    std::string sessionKey = rowEntity.Get(SESSION_KEY);
+    int32_t bindType = rowEntity.Get(BIND_TYPE);
+    int32_t authenticationType = rowEntity.Get(AUTHENTICATION_TYPE);
+    int32_t deviceIdType = rowEntity.Get(DEVICE_ID_TYPE);
+    std::string deviceIdHash = rowEntity.Get(DEVICE_ID_HASH);
+    int32_t status = rowEntity.Get(STATUS);
+    int32_t validPeriod = rowEntity.Get(VALID_PERIOD);
+    int32_t lastAuthTime = rowEntity.Get(LAST_AUTH_TIME);
+    int32_t bindLevel = rowEntity.Get(BIND_LEVEL);
+
+    accessControlProfile.SetAccessControlId(accessControlId);
+    accessControlProfile.SetAccesserId(accesserId);
+    accessControlProfile.SetAccesseeId(accesseeId);
+    accessControlProfile.SetTrustDeviceId(trustDeviceId);
+    accessControlProfile.SetSessionKey(sessionKey);
+    accessControlProfile.SetBindType(bindType);
+    accessControlProfile.SetAuthenticationType(authenticationType);
+    accessControlProfile.SetDeviceIdType(deviceIdType);
+    accessControlProfile.SetDeviceIdHash(deviceIdHash);
+    accessControlProfile.SetStatus(status);
+    accessControlProfile.SetValidPeriod(validPeriod);
+    accessControlProfile.SetLastAuthTime(lastAuthTime);
+    accessControlProfile.SetBindLevel(bindLevel);
+    return DP_SUCCESS;
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
