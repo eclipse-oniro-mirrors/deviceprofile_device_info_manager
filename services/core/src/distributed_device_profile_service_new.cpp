@@ -655,9 +655,18 @@ void DistributedDeviceProfileServiceNew::AccountCommonEventCallback(int32_t user
     if (commonEventType == EventFwk::CommonEventSupport::COMMON_EVENT_USER_SWITCHED) {
         // swithed
         MultiUserManager::GetInstance().SetCurrentForegroundUserID(userId);
-    } else {
-        HILOGE("Invalied account common event.");
+        return;
     }
+    if (commonEventType == EventFwk::CommonEventSupport::COMMON_EVENT_USER_REMOVED) {
+        // removed
+        if (DeviceProfileManager::GetInstance().DeleteRemovedUserData(userId) != DP_SUCCESS) {
+            HILOGE("DeleteRemovedUserData failed,userId=%{public}d", userId);
+        } else {
+            HILOGI("DeleteRemovedUserData succeed,userId=%{public}d", userId)
+        }
+        return;
+    }
+    HILOGI("Invalied account common event.");
     return;
 }
 

@@ -60,6 +60,7 @@ public:
         int32_t userId = DEFAULT_USER_ID);
     int32_t DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
         const std::string& characteristicKey, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID);
+    int32_t DeleteRemovedUserData(int32_t userId);
     int32_t GetAllDeviceProfile(std::vector<DeviceProfile>& deviceProfiles);
     int32_t GetAllServiceProfile(std::vector<ServiceProfile>& serviceProfiles);
     int32_t GetAllCharacteristicProfile(std::vector<CharacteristicProfile>& charProfiles);

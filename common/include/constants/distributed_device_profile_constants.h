@@ -133,6 +133,8 @@ constexpr int32_t MAX_INTERFACE_SIZE = 20;
 constexpr int32_t MAX_SUBSCRIBE_INFO_SIZE = 500;
 constexpr int32_t MAX_SYNC_RESULTS_SIZE = 50;
 constexpr int32_t MAX_STATIC_CAPABILITY_SIZE = 100;
+constexpr int32_t MIN_USER_ID = 0;
+constexpr int32_t MAX_USER_ID = 100000;
 extern const std::string IS_MULTI_USER;
 extern const std::string SEPARATOR;
 extern const std::string DEV_PREFIX;

@@ -394,6 +394,35 @@ int32_t DeviceProfileManager::DeleteCharacteristicProfile(const std::string& dev
     return DP_SUCCESS;
 }
 
+int32_t DeviceProfileManager::DeleteRemovedUserData(int32_t userId) {
+    if (userId < MIN_USER_ID || userId > MAX_USER_ID) {
+        HILOGE("Invalid userId: %{public}d", userId);
+        return DP_INVALID_PARAM;
+    }
+    std::map<std::string, std::string> allLocalEntries;
+    std::vector<std::string> keysToDelete;
+    std::string localDeviceId = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
+    int32_t getRet = GetProfilesByKeyPrefix(localDeviceId, allLocalEntries);
+    if (getRet != DP_SUCCESS) {
+        HILOGE("GetLocalProfile fail,deviceId: %{public}s,reason: %{public}d!",
+            ProfileUtils::GetAnonyString(localDeviceId).c_str(), getRet);
+        return getRet;
+    }
+    for (const auto& pair : allLocalEntries) {
+        std::string suffix = pair.first.substr(pair.first.find_last_of(SEPARATOR) + 1);
+        if (suffix == std::to_string(userId)) {
+            keysToDelete.emplace_back(pair.first);
+        }
+    }
+    std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
+    int32_t delRet = deviceProfileStore_->DeleteBatch(keysToDelete);
+    if (delRet != DP_SUCCESS) {
+        HILOGE("DeleteBatch fail, reason: %{public}d!", delRet);
+        return delRet;
+    }
+    return DP_SUCCESS;
+}
+
 int32_t DeviceProfileManager::GetAllDeviceProfile(std::vector<DeviceProfile>& deviceProfiles)
 {
     HILOGD("call!");
