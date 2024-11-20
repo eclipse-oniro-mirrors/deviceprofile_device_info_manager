@@ -238,6 +238,7 @@ int32_t SubscribeProfileManager::UnSubscribeDeviceProfile(const SubscribeInfo& s
     HILOGI("saId: %{public}d!, subscribeKey: %{public}s", subscribeInfo.GetSaId(),
         ProfileUtils::GetDbKeyAnonyString(subscribeInfo.GetSubscribeKey()).c_str());
     {
+        std::lock_guard<std::mutex> lock(subscribeMutex_);
         if (subscribeInfoMap_.find(subscribeInfo.GetSubscribeKey()) != subscribeInfoMap_.end()) {
             subscribeInfoMap_[subscribeInfo.GetSubscribeKey()].erase(subscribeInfo);
             if (subscribeInfoMap_[subscribeInfo.GetSubscribeKey()].empty()) {
