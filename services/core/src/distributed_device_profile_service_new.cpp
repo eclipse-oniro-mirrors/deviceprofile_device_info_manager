@@ -662,7 +662,7 @@ void DistributedDeviceProfileServiceNew::AccountCommonEventCallback(int32_t user
         if (DeviceProfileManager::GetInstance().DeleteRemovedUserData(userId) != DP_SUCCESS) {
             HILOGE("DeleteRemovedUserData failed,userId=%{public}d", userId);
         } else {
-            HILOGI("DeleteRemovedUserData succeed,userId=%{public}d", userId)
+            HILOGI("DeleteRemovedUserData succeed,userId=%{public}d", userId);
         }
         return;
     }
