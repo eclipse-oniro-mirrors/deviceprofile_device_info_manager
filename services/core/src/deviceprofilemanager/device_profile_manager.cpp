@@ -413,17 +413,13 @@ int32_t DeviceProfileManager::DeleteRemovedUserData(int32_t userId)
             ProfileUtils::GetAnonyString(localDeviceId).c_str(), getRet);
         return getRet;
     }
-    if (allLocalEntries.empty()) {
-        HILOGI("Local data is empty.");
-        return DP_SUCCESS;
-    }
     for (const auto& pair : allLocalEntries) {
         if (userId == ProfileUtils::GetUserIdFromDbKey(pair.first)) {
             keysToDelete.emplace_back(pair.first);
         }
     }
     if (keysToDelete.empty()) {
-        HILOGI("user:{public}d has no multi-user data.");
+        HILOGI("userId:%{public}d has no multi-user data.", userId);
         return DP_SUCCESS;
     }
     std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
