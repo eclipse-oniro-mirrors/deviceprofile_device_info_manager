@@ -402,18 +402,29 @@ int32_t DeviceProfileManager::DeleteRemovedUserData(int32_t userId)
     }
     std::map<std::string, std::string> allLocalEntries;
     std::vector<std::string> keysToDelete;
-    std::string localDeviceId = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
+    std::string localDeviceId = ProfileCache::GetInstance().GetLocalUdid();
+    if (localDeviceId.empty()) {
+        HILOGE("GetLocalUdid fail");
+        return DP_GET_LOCAL_UDID_FAILED;
+    }
     int32_t getRet = GetProfilesByKeyPrefix(localDeviceId, allLocalEntries);
     if (getRet != DP_SUCCESS) {
         HILOGE("GetLocalProfile fail,deviceId: %{public}s,reason: %{public}d!",
             ProfileUtils::GetAnonyString(localDeviceId).c_str(), getRet);
         return getRet;
     }
+    if (allLocalEntries.empty()) {
+        HILOGI("Local data is empty.");
+        return DP_SUCCESS;
+    }
     for (const auto& pair : allLocalEntries) {
-        std::string suffix = pair.first.substr(pair.first.find_last_of(SEPARATOR) + 1);
-        if (suffix == std::to_string(userId)) {
+        if (userId == ProfileUtils::GetUserIdFromDbKey(pair.first)) {
             keysToDelete.emplace_back(pair.first);
         }
+    }
+    if (keysToDelete.empty()) {
+        HILOGI("user:{public}d has no multi-user data.");
+        return DP_SUCCESS;
     }
     std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
     int32_t delRet = deviceProfileStore_->DeleteBatch(keysToDelete);
