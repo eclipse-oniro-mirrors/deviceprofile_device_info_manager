@@ -142,11 +142,6 @@ void DpAccountEventSubscriber::OnReceiveEvent(const CommonEventData &data)
         userId = data.GetCode();
         isValidEvent = true;
     }
-    if (receiveEvent == EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGOUT ||
-        receiveEvent == EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGIN) {
-        userId = data.GetWant().GetIntParam("userId", 0);
-        isValidEvent = true;
-    }
     if (userId <= 0 || !isValidEvent) {
         HILOGE("Invalid account type event.");
         return;

@@ -640,8 +640,6 @@ void DistributedDeviceProfileServiceNew::SubscribeAccountCommonEvent()
     std::vector<std::string> AccountCommonEventVec;
     AccountCommonEventVec.emplace_back(EventFwk::CommonEventSupport::COMMON_EVENT_USER_SWITCHED);
     AccountCommonEventVec.emplace_back(EventFwk::CommonEventSupport::COMMON_EVENT_USER_REMOVED);
-    AccountCommonEventVec.emplace_back(EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGOUT);
-    AccountCommonEventVec.emplace_back(EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGIN);
     std::lock_guard<std::mutex> lock(accountCommonEventManagerMtx_);
     if (accountCommonEventManager_->SubscribeAccountCommonEvent(AccountCommonEventVec, callback)) {
         HILOGI("Success");
@@ -666,7 +664,7 @@ void DistributedDeviceProfileServiceNew::AccountCommonEventCallback(int32_t user
         }
         return;
     }
-    HILOGI("Invalied account common event.");
+    HILOGE("Invalied account common event.");
     return;
 }
 
