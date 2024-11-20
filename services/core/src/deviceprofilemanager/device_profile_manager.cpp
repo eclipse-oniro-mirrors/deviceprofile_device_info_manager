@@ -394,6 +394,43 @@ int32_t DeviceProfileManager::DeleteCharacteristicProfile(const std::string& dev
     return DP_SUCCESS;
 }
 
+int32_t DeviceProfileManager::DeleteRemovedUserData(int32_t userId)
+{
+    if (userId < MIN_USER_ID || userId > MAX_USER_ID) {
+        HILOGE("Invalid userId: %{public}d", userId);
+        return DP_INVALID_PARAM;
+    }
+    std::map<std::string, std::string> allLocalEntries;
+    std::vector<std::string> keysToDelete;
+    std::string localDeviceId = ProfileCache::GetInstance().GetLocalUdid();
+    if (localDeviceId.empty()) {
+        HILOGE("GetLocalUdid fail");
+        return DP_GET_LOCAL_UDID_FAILED;
+    }
+    int32_t getRet = GetProfilesByKeyPrefix(localDeviceId, allLocalEntries);
+    if (getRet != DP_SUCCESS) {
+        HILOGE("GetLocalProfile fail,deviceId: %{public}s,reason: %{public}d!",
+            ProfileUtils::GetAnonyString(localDeviceId).c_str(), getRet);
+        return getRet;
+    }
+    for (const auto& pair : allLocalEntries) {
+        if (userId == ProfileUtils::GetUserIdFromDbKey(pair.first)) {
+            keysToDelete.emplace_back(pair.first);
+        }
+    }
+    if (keysToDelete.empty()) {
+        HILOGI("userId:%{public}d has no multi-user data.", userId);
+        return DP_SUCCESS;
+    }
+    std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
+    int32_t delRet = deviceProfileStore_->DeleteBatch(keysToDelete);
+    if (delRet != DP_SUCCESS) {
+        HILOGE("DeleteBatch fail, reason: %{public}d!", delRet);
+        return delRet;
+    }
+    return DP_SUCCESS;
+}
+
 int32_t DeviceProfileManager::GetAllDeviceProfile(std::vector<DeviceProfile>& deviceProfiles)
 {
     HILOGD("call!");

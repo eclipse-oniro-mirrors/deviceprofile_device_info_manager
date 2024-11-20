@@ -640,8 +640,6 @@ void DistributedDeviceProfileServiceNew::SubscribeAccountCommonEvent()
     std::vector<std::string> AccountCommonEventVec;
     AccountCommonEventVec.emplace_back(EventFwk::CommonEventSupport::COMMON_EVENT_USER_SWITCHED);
     AccountCommonEventVec.emplace_back(EventFwk::CommonEventSupport::COMMON_EVENT_USER_REMOVED);
-    AccountCommonEventVec.emplace_back(EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGOUT);
-    AccountCommonEventVec.emplace_back(EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGIN);
     std::lock_guard<std::mutex> lock(accountCommonEventManagerMtx_);
     if (accountCommonEventManager_->SubscribeAccountCommonEvent(AccountCommonEventVec, callback)) {
         HILOGI("Success");
@@ -655,9 +653,18 @@ void DistributedDeviceProfileServiceNew::AccountCommonEventCallback(int32_t user
     if (commonEventType == EventFwk::CommonEventSupport::COMMON_EVENT_USER_SWITCHED) {
         // swithed
         MultiUserManager::GetInstance().SetCurrentForegroundUserID(userId);
-    } else {
-        HILOGE("Invalied account common event.");
+        return;
     }
+    if (commonEventType == EventFwk::CommonEventSupport::COMMON_EVENT_USER_REMOVED) {
+        // removed
+        if (DeviceProfileManager::GetInstance().DeleteRemovedUserData(userId) != DP_SUCCESS) {
+            HILOGE("DeleteRemovedUserData failed,userId=%{public}d", userId);
+        } else {
+            HILOGI("DeleteRemovedUserData succeed,userId=%{public}d", userId);
+        }
+        return;
+    }
+    HILOGE("Invalied account common event.");
     return;
 }
 
