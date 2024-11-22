@@ -13,30 +13,24 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_DP_DM_ADAPTER_H
-#define OHOS_DP_DM_ADAPTER_H
+#include "dm_dev_trust_change_callback.h"
 
-#include <mutex>
+#include "device_profile_manager.h"
+#include "distributed_device_profile_log.h"
+#include "profile_utils.h"
 
-#include "device_manager_callback.h"
-
-#include "single_instance.h"
 namespace OHOS {
 namespace DistributedDeviceProfile {
-class DMAdapter {
-DECLARE_SINGLE_INSTANCE(DMAdapter);
+namespace {
+    const std::string TAG = "DmDevTrustChangeCallback";
+}
 
-public:
-    int32_t Init();
-    int32_t UnInit();
-    int32_t ReInit();
-    bool GetUuidByNetworkId(const std::string& networkId, std::string& uuid);
-private:
-    std::mutex deviceStateCallbackMutex_;
-    std::shared_ptr<DistributedHardware::DmInitCallback> dmInitCallback_;
-    std::shared_ptr<DistributedHardware::DeviceStateCallback> deviceStateCallback_;
-    std::shared_ptr<DistributedHardware::DevTrustChangeCallback> devTrustChangeCallback_;
-};
+void DmDevTrustChangeCallback::OnDeviceTrustChange(const std::string& peerUdid, const std::string& peerUuid,
+    const DistributedHardware::DmAuthForm authform)
+{
+    HILOGI("peerUdid:%{public}s,peerUuid:%{public}s,authform:%{public}d",
+        ProfileUtils::GetAnonyString(peerUdid).c_str(), ProfileUtils::GetAnonyString(peerUuid).c_str(), authform);
+    DeviceProfileManager::GetInstance().OnDeviceTrustChange(peerUdid, peerUuid, authform);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
-#endif // OHOS_DP_DM_ADAPTER_H

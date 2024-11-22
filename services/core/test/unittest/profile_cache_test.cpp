@@ -571,12 +571,14 @@ HWTEST_F(ProfileCacheTest, RemoveSyncListener002, TestSize.Level1)
  */
 HWTEST_F(ProfileCacheTest, OnNodeOnline001, TestSize.Level1)
 {
-    std::string peerNetworkId = "";
-    ProfileCache::GetInstance().OnNodeOnline(peerNetworkId);
-
-    peerNetworkId = ProfileUtils::GetLocalUdidFromDM();
-    ProfileCache::GetInstance().OnNodeOnline(peerNetworkId);
-    EXPECT_NE("NetworkId", peerNetworkId);
+    std::string peerNetworkId = "NetworkId";
+    std::string peerUdid = "peerUdid";
+    TrustedDeviceInfo trustedDeviceInfo;
+    trustedDeviceInfo.SetNetworkId(peerNetworkId);
+    trustedDeviceInfo.SetUdid(peerUdid);
+    ProfileCache::GetInstance().OnNodeOnline(trustedDeviceInfo);
+    EXPECT_EQ(peerNetworkId, ProfileCache::GetInstance().onlineDevMap_[peerUdid].GetNetworkId());
+    ProfileCache::GetInstance().onlineDevMap_.clear();
 }
 
 /**
@@ -587,52 +589,135 @@ HWTEST_F(ProfileCacheTest, OnNodeOnline001, TestSize.Level1)
  */
 HWTEST_F(ProfileCacheTest, OnNodeOffline001, TestSize.Level1)
 {
-    std::string peerNetworkId = "";
+    std::string peerNetworkId = "NetworkId";
+    std::string peerUdid = "peerUdid";
+    TrustedDeviceInfo trustedDeviceInfo;
+    trustedDeviceInfo.SetNetworkId(peerNetworkId);
+    trustedDeviceInfo.SetUdid(peerUdid);
+    ProfileCache::GetInstance().onlineDevMap_[peerUdid] = trustedDeviceInfo;
     ProfileCache::GetInstance().OnNodeOffline(peerNetworkId);
-
-    peerNetworkId = ProfileUtils::GetLocalUdidFromDM();
-    ProfileCache::GetInstance().OnNodeOffline(peerNetworkId);
-    EXPECT_NE("NetworkId", peerNetworkId);
+    EXPECT_EQ(true, ProfileCache::GetInstance().onlineDevMap_.empty());
 }
 
 /**
- * @tc.name: IsLocalOrOnlineDevice001
- * @tc.desc: IsLocalOrOnlineDevice001
+ * @tc.name: FilterAndGroupOnlineDevices001
+ * @tc.desc: FilterAndGroupOnlineDevices failed, deviceList.size() == 0.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProfileCacheTest, IsLocalOrOnlineDevice001, TestSize.Level1)
+HWTEST_F(ProfileCacheTest, FilterAndGroupOnlineDevices001, TestSize.Level1)
 {
-    std::string deviceId = "";
-    bool ret = ProfileCache::GetInstance().IsLocalOrOnlineDevice(deviceId);
-    EXPECT_EQ(ret, false);
+    vector<std::string> deviceList;
+    std::vector<std::string> ohBasedDevices;
+    std::vector<std::string> notOHBasedDevices;
+    bool res = ProfileCache::GetInstance().FilterAndGroupOnlineDevices(deviceList, ohBasedDevices, notOHBasedDevices);
+    EXPECT_FALSE(res);
 }
 
 /**
- * @tc.name: IsLocalOrOnlineDevice002
- * @tc.desc: IsLocalOrOnlineDevice002
+ * @tc.name: FilterAndGroupOnlineDevices002
+ * @tc.desc: FilterAndGroupOnlineDevices failed, deviceList.size() > MAX_DEVICE_SIZE.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProfileCacheTest, IsLocalOrOnlineDevice002, TestSize.Level1)
+HWTEST_F(ProfileCacheTest, FilterAndGroupOnlineDevices002, TestSize.Level1)
 {
-    std::string deviceId = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
-    bool ret = ProfileCache::GetInstance().IsLocalOrOnlineDevice(deviceId);
-    EXPECT_EQ(ret, true);
+    vector<std::string> deviceList;
+    for (int32_t i = 0; i < MAX_DEVICE_SIZE + 5; i++) {
+        deviceList.emplace_back("networkId");
+    }
+    std::vector<std::string> ohBasedDevices;
+    std::vector<std::string> notOHBasedDevices;
+    bool res = ProfileCache::GetInstance().FilterAndGroupOnlineDevices(deviceList, ohBasedDevices, notOHBasedDevices);
+    EXPECT_FALSE(res);
 }
 
 /**
- * @tc.name: IsLocalOrOnlineDevice003
- * @tc.desc: IsLocalOrOnlineDevice003
+ * @tc.name: FilterAndGroupOnlineDevices003
+ * @tc.desc: FilterAndGroupOnlineDevices failed
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProfileCacheTest, IsLocalOrOnlineDevice0013, TestSize.Level1)
+HWTEST_F(ProfileCacheTest, FilterAndGroupOnlineDevices003, TestSize.Level1)
 {
-    std::string deviceId = "deviceId";
-    ProfileCache::GetInstance().onlineDevMap_[deviceId] = deviceId;
-    bool ret = ProfileCache::GetInstance().IsLocalOrOnlineDevice(deviceId);
-    EXPECT_EQ(ret, true);
+    TrustedDeviceInfo deviceInfo1;
+    deviceInfo1.SetNetworkId("networkId1");
+    deviceInfo1.SetUdid("udid1");
+    deviceInfo1.SetOsType(OHOS_TYPE);
+    ProfileCache::GetInstance().onlineDevMap_[deviceInfo1.GetUdid()] = deviceInfo1;
+    TrustedDeviceInfo deviceInfo2;
+    deviceInfo2.SetNetworkId("networkId2");
+    deviceInfo2.SetUdid("udid2");
+    deviceInfo2.SetOsType(OHOS_TYPE_UNKNOWN);
+    ProfileCache::GetInstance().onlineDevMap_[deviceInfo2.GetUdid()] = deviceInfo2;
+
+    
+    std::vector<std::string> deviceList {deviceInfo1.GetNetworkId(), deviceInfo2.GetNetworkId()};
+    std::vector<std::string> ohBasedDevices;
+    std::vector<std::string> notOHBasedDevices;
+    bool res = ProfileCache::GetInstance().FilterAndGroupOnlineDevices(deviceList, ohBasedDevices, notOHBasedDevices);
+    EXPECT_TRUE(res);
+    EXPECT_FALSE(ohBasedDevices.empty());
+    EXPECT_FALSE(notOHBasedDevices.empty());
+    ProfileCache::GetInstance().onlineDevMap_.erase(deviceInfo1.GetUdid());
+    ProfileCache::GetInstance().onlineDevMap_.erase(deviceInfo2.GetUdid());
+}
+
+/**
+ * @tc.name: AddAllTrustedDevices001
+ * @tc.desc: AddAllTrustedDevices001
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, AddAllTrustedDevices001, TestSize.Level1)
+{
+    std::vector<TrustedDeviceInfo> deviceInfos;
+    int32_t ret = ProfileCache::GetInstance().AddAllTrustedDevices(deviceInfos);
+    EXPECT_EQ(ret, DP_INVALID_PARAM);
+}
+
+/**
+ * @tc.name: AddAllTrustedDevices002
+ * @tc.desc: AddAllTrustedDevices002
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, AddAllTrustedDevices002, TestSize.Level1)
+{
+    TrustedDeviceInfo deviceInfo;
+    deviceInfo.SetUdid("udid");
+    std::vector<TrustedDeviceInfo> deviceInfos {deviceInfo};
+    int32_t ret = ProfileCache::GetInstance().AddAllTrustedDevices(deviceInfos);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_FALSE(ProfileCache::GetInstance().onlineDevMap_.empty());
+    ProfileCache::GetInstance().onlineDevMap_.erase(deviceInfo.GetUdid());
+}
+
+/**
+ * @tc.name: IsDeviceOnline001
+ * @tc.desc: IsDeviceOnline001
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, IsDeviceOnline001, TestSize.Level1)
+{
+    TrustedDeviceInfo deviceInfo;
+    deviceInfo.SetUdid("udid");
+    ProfileCache::GetInstance().onlineDevMap_[deviceInfo.GetUdid()] = deviceInfo;
+    EXPECT_TRUE(ProfileCache::GetInstance().IsDeviceOnline());
+    ProfileCache::GetInstance().onlineDevMap_.erase(deviceInfo.GetUdid());
+}
+
+/**
+ * @tc.name: IsDeviceOnline002
+ * @tc.desc: IsDeviceOnline002
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, IsDeviceOnline002, TestSize.Level1)
+{
+    ProfileCache::GetInstance().onlineDevMap_.clear();
+    EXPECT_FALSE(ProfileCache::GetInstance().IsDeviceOnline());
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

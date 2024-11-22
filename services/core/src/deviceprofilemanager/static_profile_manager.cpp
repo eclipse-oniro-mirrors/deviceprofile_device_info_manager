@@ -186,19 +186,18 @@ int32_t StaticProfileManager::GenerateStaticInfoProfile(const CharacteristicProf
     return DP_SUCCESS;
 }
 
-void StaticProfileManager::E2ESyncStaticProfile(const DistributedHardware::DmDeviceInfo deviceInfo)
+void StaticProfileManager::E2ESyncStaticProfile(const TrustedDeviceInfo& deviceInfo)
 {
-    HILOGD("call!");
+    HILOGD("deviceInfo:%{public}s", deviceInfo.dump().c_str());
     auto task = [this, deviceInfo]() {
-        std::string remoteNetworkId = deviceInfo.networkId;
-        HILOGD("networkId:%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
-        if (remoteNetworkId.empty()) {
-            HILOGE("networkId or extraData is empty!");
+        HILOGD("networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.GetNetworkId()).c_str());
+        if (deviceInfo.GetNetworkId().empty()) {
+            HILOGE("networkId is empty!");
             return;
         }
-        if (!ProfileUtils::IsOHBasedDevice(deviceInfo.extraData)) {
+        if (deviceInfo.GetOsType() != OHOS_TYPE) {
             HILOGI("device is not ohbase. remoteNetworkId=%{public}s",
-                ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+                ProfileUtils::GetAnonyString(deviceInfo.GetNetworkId()).c_str());
             return;
         }
         std::lock_guard<std::mutex> lock(staticStoreMutex_);
@@ -206,7 +205,7 @@ void StaticProfileManager::E2ESyncStaticProfile(const DistributedHardware::DmDev
             HILOGE("staticProfileStore is nullptr");
             return;
         }
-        int32_t syncResult = staticProfileStore_->Sync({remoteNetworkId}, SyncMode::PUSH_PULL);
+        int32_t syncResult = staticProfileStore_->Sync({deviceInfo.GetNetworkId()}, SyncMode::PUSH_PULL);
         if (syncResult != DP_SUCCESS) {
             HILOGE("E2ESyncStaticProfile fail, res: %{public}d!", syncResult);
             return;

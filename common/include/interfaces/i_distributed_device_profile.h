@@ -16,17 +16,19 @@
 #ifndef OHOS_DP_I_DISTRIBUTED_DEVICE_PROFILE_H
 #define OHOS_DP_I_DISTRIBUTED_DEVICE_PROFILE_H
 
-#include <list>
+#include <vector>
 
 #include "iremote_broker.h"
-#include "trust_device_profile.h"
+
 #include "access_control_profile.h"
-#include "device_profile.h"
-#include "service_profile.h"
 #include "characteristic_profile.h"
+#include "device_profile.h"
 #include "dp_subscribe_info.h"
 #include "dp_sync_options.h"
 #include "i_sync_completed_callback.h"
+#include "service_profile.h"
+#include "trust_device_profile.h"
+#include "trusted_device_info.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -63,6 +65,7 @@ public:
     virtual int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
         sptr<IRemoteObject> syncCompletedCallback) = 0;
     virtual int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) = 0;
+    virtual int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo> deviceInfos) = 0;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

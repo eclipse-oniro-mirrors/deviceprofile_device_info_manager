@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,22 +16,25 @@
 #ifndef OHOS_DP_IPC_SERIALIZATION_UTILS_H
 #define OHOS_DP_IPC_SERIALIZATION_UTILS_H
 
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
-#include "trust_device_profile.h"
-#include "access_control_profile.h"
-#include "accesser.h"
-#include "accessee.h"
-#include "device_profile.h"
-#include "service_profile.h"
-#include "characteristic_profile.h"
-#include "distributed_device_profile_errors.h"
-#include "distributed_device_profile_constants.h"
-#include "distributed_device_profile_log.h"
-#include "parcel.h"
+
 #include "message_parcel.h"
+#include "parcel.h"
+
+#include "access_control_profile.h"
+#include "accessee.h"
+#include "accesser.h"
+#include "characteristic_profile.h"
+#include "device_profile.h"
+#include "distributed_device_profile_constants.h"
+#include "distributed_device_profile_errors.h"
+#include "distributed_device_profile_log.h"
 #include "dp_subscribe_info.h"
+#include "service_profile.h"
+#include "trust_device_profile.h"
+#include "trusted_device_info.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -45,6 +48,7 @@ public:
     static bool Marshalling(MessageParcel& parcel, const std::map<std::string,
         OHOS::DistributedDeviceProfile::SubscribeInfo>& listenerMap);
     static bool Marshalling(MessageParcel& parcel, const std::unordered_set<ProfileChangeType>& changeTypes);
+    static bool Marshalling(MessageParcel& parcel, const std::vector<TrustedDeviceInfo>& deviceInfos);
     static bool UnMarshalling(MessageParcel& parcel, std::vector<TrustDeviceProfile>& trustDeviceProfiles);
     static bool UnMarshalling(MessageParcel& parcel, std::vector<AccessControlProfile>& aclProfiles);
     static bool UnMarshalling(MessageParcel& parcel, std::vector<ServiceProfile>& serviceProfiles);
@@ -53,6 +57,7 @@ public:
     static bool UnMarshalling(MessageParcel& parcel, std::map<std::string,
         OHOS::DistributedDeviceProfile::SubscribeInfo>& listenerMap);
     static bool UnMarshalling(MessageParcel& parcel, std::unordered_set<ProfileChangeType>& changeTypes);
+    static bool UnMarshalling(MessageParcel& parcel, std::vector<TrustedDeviceInfo>& deviceInfos);
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

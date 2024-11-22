@@ -14,9 +14,15 @@
  */
 
 #include "dm_adapter.h"
+
+#include "device_manager.h"
+
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
+#include "dm_dev_trust_change_callback.h"
+#include "dm_device_state_callback.h"
+#include "dp_dm_init_callback.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -29,17 +35,36 @@ IMPLEMENT_SINGLE_INSTANCE(DMAdapter);
 int32_t DMAdapter::Init()
 {
     HILOGI("call!");
-    int32_t errCode = DP_SUCCESS;
     {
         std::lock_guard<std::mutex> autoLock(deviceStateCallbackMutex_);
-        if (deviceStateCallback_ == nullptr) {
-            deviceStateCallback_ = std::make_shared<DpDeviceStateCallback>();
+        if (dmInitCallback_ == nullptr) {
+            dmInitCallback_ = std::make_shared<DpDmInitCallback>();
         }
-        errCode = DistributedHardware::DeviceManager::GetInstance()
-            .RegisterDevStateCallback(DP_PKG_NAME, "", deviceStateCallback_);
+        if (deviceStateCallback_ == nullptr) {
+            deviceStateCallback_ = std::make_shared<DmDeviceStateCallback>();
+        }
+        if (devTrustChangeCallback_ == nullptr) {
+            devTrustChangeCallback_ = std::make_shared<DmDevTrustChangeCallback>();
+        }
+        int32_t errCode = DistributedHardware::DeviceManager::GetInstance().InitDeviceManager(
+            DP_PKG_NAME, dmInitCallback_);
+        if (errCode != DP_SUCCESS) {
+            HILOGE("InitDeviceManager errCode = %{public}d", errCode);
+            return errCode;
+        }
+        errCode = DistributedHardware::DeviceManager::GetInstance().RegisterDevStateCallback(
+            DP_PKG_NAME, "", deviceStateCallback_);
+        if (errCode != DP_SUCCESS) {
+            HILOGE("RegisterDevStateCallback errCode = %{public}d", errCode);
+            return errCode;
+        }
+        errCode = DistributedHardware::DeviceManager::GetInstance().RegDevTrustChangeCallback(
+            DP_PKG_NAME, devTrustChangeCallback_);
+        if (errCode != DP_SUCCESS) {
+            HILOGE("RegDevTrustChangeCallback errCode = %{public}d", errCode);
+        }
     }
-    HILOGI("RegisterDevStateCallback errCode = %{public}d", errCode);
-    return errCode;
+    return DP_SUCCESS;
 }
 
 int32_t DMAdapter::UnInit()
@@ -50,11 +75,16 @@ int32_t DMAdapter::UnInit()
         std::lock_guard<std::mutex> autoLock(deviceStateCallbackMutex_);
         if (deviceStateCallback_ != nullptr) {
             errCode = DistributedHardware::DeviceManager::GetInstance().UnRegisterDevStateCallback(DP_PKG_NAME);
+            HILOGI("UnRegisterDevStateCallback errCode = %{public}d", errCode);
             deviceStateCallback_ = nullptr;
         }
+        if (dmInitCallback_ != nullptr) {
+            errCode = DistributedHardware::DeviceManager::GetInstance().UnInitDeviceManager(DP_PKG_NAME);
+            HILOGI("UnInitDeviceManager errCode = %{public}d", errCode);
+            dmInitCallback_ = nullptr;
+        }
     }
-    HILOGI("UnRegisterDevStateCallback errCode = %{public}d", errCode);
-    return errCode;
+    return DP_SUCCESS;
 }
 
 int32_t DMAdapter::ReInit()
@@ -64,24 +94,10 @@ int32_t DMAdapter::ReInit()
     return Init();
 }
 
-void DMAdapter::DpDeviceStateCallback::OnDeviceOnline(const DistributedHardware::DmDeviceInfo &deviceInfo)
+bool DMAdapter::GetUuidByNetworkId(const std::string& networkId, std::string& uuid)
 {
-    HILOGI("call!");
-}
-
-void DMAdapter::DpDeviceStateCallback::OnDeviceOffline(const DistributedHardware::DmDeviceInfo &deviceInfo)
-{
-    HILOGI("call!");
-}
-
-void DMAdapter::DpDeviceStateCallback::OnDeviceChanged(const DistributedHardware::DmDeviceInfo &deviceInfo)
-{
-    HILOGI("call!");
-}
-
-void DMAdapter::DpDeviceStateCallback::OnDeviceReady(const DistributedHardware::DmDeviceInfo &deviceInfo)
-{
-    HILOGI("call!");
+    return ((DistributedHardware::DeviceManager::GetInstance().GetUuidByNetworkId(DP_PKG_NAME, networkId, uuid) == 0) ?
+        true : false);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

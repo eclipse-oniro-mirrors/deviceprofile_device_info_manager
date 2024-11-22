@@ -350,17 +350,6 @@ void GetLongValueFuzzTest(const uint8_t* data, size_t size)
     ProfileUtils::GetLongValue(values, property, outValue);
 }
 
-void GetUdidByNetworkIdFuzzTest(const uint8_t* data, size_t size)
-{
-    if ((data == nullptr) || (size == 0)) {
-        return;
-    }
-
-    std::string networkId(reinterpret_cast<const char*>(data), size);
-    std::string udid(reinterpret_cast<const char*>(data), size);
-    ProfileUtils::GetUdidByNetworkId(networkId, udid);
-}
-
 void GetDbKeyByProfileFuzzTest(const uint8_t* data, size_t size)
 {
     if ((data == nullptr) || (size == 0)) {
@@ -404,7 +393,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::DistributedDeviceProfile::GetIntValueFuzzTest(data, size);
     OHOS::DistributedDeviceProfile::GetStringValueFuzzTest(data, size);
     OHOS::DistributedDeviceProfile::GetLongValueFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GetUdidByNetworkIdFuzzTest(data, size);
     OHOS::DistributedDeviceProfile::GetDbKeyByProfileFuzzTest(data, size);
     OHOS::DistributedDeviceProfile::EntriesToServiceProfileFuzzTest(data, size);
 

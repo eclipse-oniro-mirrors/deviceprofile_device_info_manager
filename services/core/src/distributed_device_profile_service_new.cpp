@@ -55,16 +55,12 @@ constexpr int32_t WRTE_CACHE_PROFILE_RETRY_TIMES = 20;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileServiceNew);
+const bool REGISTER_RESULT = SystemAbility::MakeAndRegisterAbility(&DistributedDeviceProfileServiceNew::GetInstance());
 
 DistributedDeviceProfileServiceNew::DistributedDeviceProfileServiceNew()
     : SystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, true)
 {
     HILOGI("DPService construct!");
-}
-
-DistributedDeviceProfileServiceNew::~DistributedDeviceProfileServiceNew()
-{
-    HILOGI("DPService destruction!");
 }
 
 int32_t DistributedDeviceProfileServiceNew::Init()
@@ -93,6 +89,10 @@ int32_t DistributedDeviceProfileServiceNew::Init()
 int32_t DistributedDeviceProfileServiceNew::PostInit()
 {
     HILOGI("PostInit begin");
+    if (DMAdapter::GetInstance().Init() != DP_SUCCESS) {
+        HILOGE("DMAdapter init failed");
+        return DP_DM_ADAPTER_INIT_FAIL;
+    }
     if (SwitchProfileManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("SwitchProfileManager init failed");
         return DP_DEVICE_PROFILE_MANAGER_INIT_FAIL;
@@ -172,6 +172,10 @@ int32_t DistributedDeviceProfileServiceNew::UnInit()
     if (ContentSensorManager::GetInstance().UnInit() != DP_SUCCESS) {
         HILOGE("ContentSensorManager UnInit failed");
         return DP_CONTENT_SENSOR_MANAGER_UNINIT_FAIL;
+    }
+    if (DMAdapter::GetInstance().UnInit() != DP_SUCCESS) {
+        HILOGE("DMAdapter UnInit failed");
+        return DP_DM_ADAPTER_UNINIT_FAIL;
     }
     if (EventHandlerFactory::GetInstance().UnInit() != DP_SUCCESS) {
         HILOGE("EventHandlerFactory UnInit failed");
@@ -536,20 +540,16 @@ int32_t DistributedDeviceProfileServiceNew::Dump(int32_t fd, const std::vector<s
 
 void DistributedDeviceProfileServiceNew::DelayUnloadTask()
 {
-    HILOGI("delay unload task begin");
-    if (!ProfileUtils::GetOnlineDevices().empty()) {
-        HILOGI("already device online, not kill!");
-        return;
-    }
+    HILOGD("delay unload task begin");
     auto task = []() {
-        HILOGI("do unload task");
+        HILOGD("do unload task");
+        if (ProfileCache::GetInstance().IsDeviceOnline()) {
+            HILOGI("already device online in 3 min, not kill!");
+            return;
+        }
         auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
         if (samgrProxy == nullptr) {
             HILOGE("get samgr failed");
-            return;
-        }
-        if (!ProfileUtils::GetOnlineDevices().empty()) {
-            HILOGI("already device online in 3 min, not kill!");
             return;
         }
         int32_t unloadResult = samgrProxy->UnloadSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID);
@@ -559,18 +559,26 @@ void DistributedDeviceProfileServiceNew::DelayUnloadTask()
         }
         HILOGI("kill dp svr success!");
     };
-    if (unloadHandler_ == nullptr) {
-        return;
+    {
+        std::lock_guard<std::mutex> lock(unloadMutex_);
+        if (unloadHandler_ == nullptr) {
+            HILOGE("unloadHandler is nullptr ");
+            return;
+        }
+        unloadHandler_->RemoveTask(UNLOAD_TASK_ID);
+        if (ProfileCache::GetInstance().IsDeviceOnline()) {
+            HILOGI("already device online, not kill!");
+            return;
+        }
+        HILOGI("delay unload task post task");
+        unloadHandler_->PostTask(task, UNLOAD_TASK_ID, DELAY_TIME);
     }
-    unloadHandler_->RemoveTask(UNLOAD_TASK_ID);
-    HILOGI("delay unload task post task");
-    unloadHandler_->PostTask(task, UNLOAD_TASK_ID, DELAY_TIME);
 }
 
 void DistributedDeviceProfileServiceNew::OnStart(const SystemAbilityOnDemandReason& startReason)
 {
     HILOGI("start reason %{public}s", startReason.GetName().c_str());
-    if (!Init()) {
+    if (Init() != DP_SUCCESS) {
         HILOGE("init failed");
         return;
     }
@@ -609,7 +617,7 @@ void DistributedDeviceProfileServiceNew::OnAddSystemAbility(int32_t systemAbilit
     if (systemAbilityId == SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN) {
         SubscribeAccountCommonEvent();
     }
-    if (DistributedDeviceProfile::DistributedDeviceProfileServiceNew::GetInstance().IsInited()) {
+    if (IsInited()) {
         return;
     }
     {
@@ -869,6 +877,15 @@ int32_t DistributedDeviceProfileServiceNew::NotifyDeviceProfileInited()
         callbackProxy->OnDpInited();
     }
     return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileServiceNew::PutAllTrustedDevices(const std::vector<TrustedDeviceInfo> deviceInfos)
+{
+    if (!PermissionManager::GetInstance().IsCallerTrust(PUT_ALL_TRUSTED_DEVICES)) {
+        HILOGE("this caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    return ProfileCache::GetInstance().AddAllTrustedDevices(deviceInfos);
 }
 } // namespace DeviceProfile
 } // namespace OHOS

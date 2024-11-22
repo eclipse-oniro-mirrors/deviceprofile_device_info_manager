@@ -1556,8 +1556,8 @@ HWTEST_F(DeviceProfileManagerTest, GetInKvDB001, TestSize.Level1)
 HWTEST_F(DeviceProfileManagerTest, RunloadedFunction001, TestSize.Level1)
 {
     OHOS::sptr<OHOS::IRemoteObject> syncCb = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
-    string deviceId = "DeviceId";
-    int32_t ret = DeviceProfileManager::GetInstance().RunloadedFunction(deviceId, syncCb);
+    string peerNetworkId = "peerNetworkId";
+    int32_t ret = DeviceProfileManager::GetInstance().RunloadedFunction(peerNetworkId, syncCb);
     EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
 }
 /**
@@ -1569,8 +1569,8 @@ HWTEST_F(DeviceProfileManagerTest, RunloadedFunction001, TestSize.Level1)
 HWTEST_F(DeviceProfileManagerTest, RunloadedFunction002, TestSize.Level1)
 {
     OHOS::sptr<OHOS::IRemoteObject> syncCb = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
-    string deviceId = ProfileUtils::GetLocalUdidFromDM();
-    int32_t ret = DeviceProfileManager::GetInstance().RunloadedFunction(deviceId, syncCb);
+    string peerNetworkId = "peerNetworkId";
+    int32_t ret = DeviceProfileManager::GetInstance().RunloadedFunction(peerNetworkId, syncCb);
     EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
 }
 

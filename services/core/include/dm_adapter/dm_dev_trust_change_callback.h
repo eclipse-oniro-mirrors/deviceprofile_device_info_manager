@@ -13,30 +13,20 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_DP_DM_ADAPTER_H
-#define OHOS_DP_DM_ADAPTER_H
+#ifndef OHOS_DP_DM_DEV_TRUST_CHANGE_CALLBACK_H
+#define OHOS_DP_DM_DEV_TRUST_CHANGE_CALLBACK_H
 
-#include <mutex>
+#include <string>
 
 #include "device_manager_callback.h"
+#include "dm_device_info.h"
 
-#include "single_instance.h"
 namespace OHOS {
 namespace DistributedDeviceProfile {
-class DMAdapter {
-DECLARE_SINGLE_INSTANCE(DMAdapter);
-
-public:
-    int32_t Init();
-    int32_t UnInit();
-    int32_t ReInit();
-    bool GetUuidByNetworkId(const std::string& networkId, std::string& uuid);
-private:
-    std::mutex deviceStateCallbackMutex_;
-    std::shared_ptr<DistributedHardware::DmInitCallback> dmInitCallback_;
-    std::shared_ptr<DistributedHardware::DeviceStateCallback> deviceStateCallback_;
-    std::shared_ptr<DistributedHardware::DevTrustChangeCallback> devTrustChangeCallback_;
+class DmDevTrustChangeCallback : public DistributedHardware::DevTrustChangeCallback{
+    void OnDeviceTrustChange(const std::string& peerUdid, const std::string& peerUuid,
+        const DistributedHardware::DmAuthForm authform) override;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
-#endif // OHOS_DP_DM_ADAPTER_H
+#endif // OHOS_DP_DM_DEV_TRUST_CHANGE_CALLBACK_H

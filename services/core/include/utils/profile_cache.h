@@ -31,6 +31,7 @@
 #include "dp_subscribe_info.h"
 #include "profile_utils.h"
 #include "service_profile.h"
+#include "trusted_device_info.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -78,9 +79,8 @@ public:
     bool IsSwitchValid(const CharacteristicProfile& charProfile,
         const std::unordered_map<std::string, SwitchFlag>& switchServiceMap, const std::string& operate);
     int32_t SetSwitchProfile(CharacteristicProfile& charProfile, uint32_t switchValue);
-    void OnNodeOnline(const std::string& peerNetworkId);
+    void OnNodeOnline(const TrustedDeviceInfo& trustedDeviceInfo);
     void OnNodeOffline(const std::string& peerNetworkId);
-    bool IsLocalOrOnlineDevice(const std::string& deviceId);
     void SetCurSwitch(uint32_t newSwitch);
     int32_t GetServiceNameByPos(int32_t pos, const std::unordered_map<std::string, SwitchFlag>& switchServiceMap,
         std::string& serviceName);
@@ -89,6 +89,10 @@ public:
     std::string GetLocalUdid();
     std::string GetLocalNetworkId();
     std::string GetLocalUuid();
+    int32_t AddAllTrustedDevices(const std::vector<TrustedDeviceInfo>& deviceInfos);
+    bool FilterAndGroupOnlineDevices(const std::vector<std::string>& deviceList,
+        std::vector<std::string>& ohBasedDevices, std::vector<std::string>& notOHBasedDevices);
+    bool IsDeviceOnline();
 
 private:
     int32_t RefreshCharProfileCache(const std::vector<CharacteristicProfile>& characteristicProfiles);
@@ -99,7 +103,7 @@ private:
     std::mutex switchMutex_;
     uint32_t curLocalSwitch_ = 0x0000;
     std::mutex onlineDeviceLock_;
-    std::unordered_map<std::string, std::string> onlineDevMap_;
+    std::unordered_map<std::string, TrustedDeviceInfo> onlineDevMap_;
     std::mutex deviceProfileMutex_;
     // The key is profileKey, the value is DeviceProfile
     std::unordered_map<std::string, DeviceProfile> deviceProfileMap_;

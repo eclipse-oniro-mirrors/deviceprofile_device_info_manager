@@ -59,6 +59,7 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IRemoteObject> dpInitedCallback) override;
     int32_t UnSubscribeDeviceProfileInited(int32_t saId) override;
+    int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo> deviceInfos) override;
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
         sptr<IRemoteObject> syncCompletedCallback) override;
     int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) override;
@@ -219,6 +220,11 @@ int32_t MockDistributedDeviceProfileStubNew::SubscribeDeviceProfileInited(int32_
 int32_t MockDistributedDeviceProfileStubNew::UnSubscribeDeviceProfileInited(int32_t saId)
 {
     (void)saId;
+    return 0;
+}
+int32_t MockDistributedDeviceProfileStubNew::PutAllTrustedDevices(const std::vector<TrustedDeviceInfo> deviceInfos)
+{
+    (void)deviceInfos;
     return 0;
 }
 int32_t MockDistributedDeviceProfileStubNew::SyncDeviceProfile(
@@ -910,6 +916,20 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_007, TestSize.Lev
     MessageOption option;
     int32_t ret = ProfileStub_->NotifyEventInner(code, data, reply, option);
     EXPECT_EQ(305, ret);
+}
+
+/**
+ * @tc.name: PutAllTrustedDevicesInner001
+ * @tc.desc: PutAllTrustedDevicesInner
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, PutAllTrustedDevicesInner_001, TestSize.Level1)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    int32_t ret = ProfileStub_->PutAllTrustedDevicesInner(data, reply);
+    EXPECT_EQ(DP_READ_PARCEL_FAIL, ret);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

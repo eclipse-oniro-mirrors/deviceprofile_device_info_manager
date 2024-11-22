@@ -13,30 +13,16 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_DP_DM_ADAPTER_H
-#define OHOS_DP_DM_ADAPTER_H
-
-#include <mutex>
+#ifndef OHOS_DP_DP_DM_INIT_CALLBACK_H
+#define OHOS_DP_DP_DM_INIT_CALLBACK_H
 
 #include "device_manager_callback.h"
 
-#include "single_instance.h"
 namespace OHOS {
 namespace DistributedDeviceProfile {
-class DMAdapter {
-DECLARE_SINGLE_INSTANCE(DMAdapter);
-
-public:
-    int32_t Init();
-    int32_t UnInit();
-    int32_t ReInit();
-    bool GetUuidByNetworkId(const std::string& networkId, std::string& uuid);
-private:
-    std::mutex deviceStateCallbackMutex_;
-    std::shared_ptr<DistributedHardware::DmInitCallback> dmInitCallback_;
-    std::shared_ptr<DistributedHardware::DeviceStateCallback> deviceStateCallback_;
-    std::shared_ptr<DistributedHardware::DevTrustChangeCallback> devTrustChangeCallback_;
+class DpDmInitCallback : public DistributedHardware::DmInitCallback {
+    void OnRemoteDied() override;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
-#endif // OHOS_DP_DM_ADAPTER_H
+#endif // OHOS_DP_DP_DM_INIT_CALLBACK_H

@@ -109,6 +109,7 @@ extern const std::string DELETE_CHARACTERISTIC_PROFILE;
 extern const std::string SUBSCRIBE_DEVICE_PROFILE;
 extern const std::string UNSUBSCRIBE_DEVICE_PROFILE;
 extern const std::string SYNC_DEVICE_PROFILE;
+extern const std::string PUT_ALL_TRUSTED_DEVICES;
 /* Common constants */
 constexpr int32_t MIN_STRING_LEN = 0;
 constexpr int32_t MAX_STRING_LEN = 4096;

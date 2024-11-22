@@ -534,6 +534,20 @@ int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfileInited(int32_t s
     return DP_SUCCESS;
 }
 
+int32_t DistributedDeviceProfileClient::PutAllTrustedDevices(const std::vector<TrustedDeviceInfo>& deviceInfos)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    if (deviceInfos.empty() || deviceInfos.size() > MAX_PROFILE_SIZE) {
+        HILOGE("size is invalid! size: %{public}zu!", deviceInfos.size());
+        return DP_INVALID_PARAMS;
+    }
+    return dpService->PutAllTrustedDevices(deviceInfos);
+}
+
 void DistributedDeviceProfileClient::SystemAbilityListener::OnRemoveSystemAbility(int32_t systemAbilityId,
     const std::string &deviceId)
 {

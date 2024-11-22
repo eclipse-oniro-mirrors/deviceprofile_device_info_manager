@@ -36,6 +36,7 @@
 #include "sync_completed_callback_stub.h"
 #include "system_ability_status_change_stub.h"
 #include "profile_change_listener_stub.h"
+#include "trusted_device_info.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -69,6 +70,7 @@ public:
     int32_t SyncDeviceProfile(const DpSyncOptions& syncOptions, sptr<ISyncCompletedCallback> syncCb);
     int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IDpInitedCallback> initedCb);
     int32_t UnSubscribeDeviceProfileInited(int32_t saId);
+    int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo>& deviceInfos);
 
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
     void LoadSystemAbilityFail();

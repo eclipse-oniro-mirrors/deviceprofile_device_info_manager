@@ -60,7 +60,8 @@ enum class DPInterfaceCode : uint32_t {
     UNSUBSCRIBE_DEVICE_PROFILE_INITED = 42,
     ON_TRUST_DEVICE_PROFILE_ACTIVE = 43,
     ON_TRUST_DEVICE_PROFILE_INACTIVE = 44,
-    MAX = 45
+    PUT_ALL_TRUSTED_DEVICES = 45,
+    MAX = 46
 };
 
 enum class DeviceIdType : uint32_t {

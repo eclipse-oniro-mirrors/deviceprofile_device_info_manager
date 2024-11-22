@@ -22,15 +22,17 @@
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
-#include "event_handler_factory.h"
 #include "dm_adapter.h"
+#include "dm_dev_trust_change_callback.h"
+#include "dm_device_state_callback.h"
+#include "dp_dm_init_callback.h"
+#include "event_handler_factory.h"
 using namespace testing::ext;
 namespace OHOS {
 namespace DistributedDeviceProfile {
 using namespace std;
 namespace {
     const std::string TAG = "DMAdapterTest";
-    const int32_t ERR_DM_IPC_SEND_REQUEST_FAILED = 96929756;
 }
 class DMAdapterTest : public testing::Test {
 public:
@@ -64,22 +66,13 @@ void DMAdapterTest::TearDown()
  */
 HWTEST_F(DMAdapterTest, Init001, TestSize.Level1)
 {
+    DMAdapter::GetInstance().dmInitCallback_ = nullptr;
     DMAdapter::GetInstance().deviceStateCallback_ = nullptr;
+    DMAdapter::GetInstance().devTrustChangeCallback_ = nullptr;
     int32_t ret = DMAdapter::GetInstance().Init();
-    EXPECT_EQ(ERR_DM_IPC_SEND_REQUEST_FAILED, ret);
-}
-
-/*
- * @tc.name: Init002
- * @tc.desc: Init
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(DMAdapterTest, Init002, TestSize.Level1)
-{
-    DMAdapter::GetInstance().deviceStateCallback_ = std::make_shared<DMAdapter::DpDeviceStateCallback>();
-    int32_t ret = DMAdapter::GetInstance().Init();
-    EXPECT_EQ(ERR_DM_IPC_SEND_REQUEST_FAILED, ret);
+    EXPECT_EQ(0, ret);
+    ret = DMAdapter::GetInstance().UnInit();
+    EXPECT_EQ(DP_SUCCESS, ret);
 }
 
 /*
@@ -90,9 +83,10 @@ HWTEST_F(DMAdapterTest, Init002, TestSize.Level1)
  */
 HWTEST_F(DMAdapterTest, UnInit001, TestSize.Level1)
 {
+    DMAdapter::GetInstance().dmInitCallback_ = nullptr;
     DMAdapter::GetInstance().deviceStateCallback_ = nullptr;
     int32_t ret = DMAdapter::GetInstance().UnInit();
-    EXPECT_EQ(0, ret);
+    EXPECT_EQ(DP_SUCCESS, ret);
 }
 
 /*
@@ -103,9 +97,10 @@ HWTEST_F(DMAdapterTest, UnInit001, TestSize.Level1)
  */
 HWTEST_F(DMAdapterTest, UnInit002, TestSize.Level1)
 {
-    DMAdapter::GetInstance().deviceStateCallback_ = std::make_shared<DMAdapter::DpDeviceStateCallback>();
     int32_t ret = DMAdapter::GetInstance().Init();
-    EXPECT_EQ(ERR_DM_IPC_SEND_REQUEST_FAILED, ret);
+    EXPECT_EQ(0, ret);
+    ret = DMAdapter::GetInstance().UnInit();
+    EXPECT_EQ(DP_SUCCESS, ret);
 }
 
 /*
@@ -117,7 +112,23 @@ HWTEST_F(DMAdapterTest, UnInit002, TestSize.Level1)
 HWTEST_F(DMAdapterTest, ReInit001, TestSize.Level1)
 {
     int32_t ret = DMAdapter::GetInstance().ReInit();
-    EXPECT_EQ(ERR_DM_IPC_SEND_REQUEST_FAILED, ret);
+    EXPECT_EQ(0, ret);
+    ret = DMAdapter::GetInstance().UnInit();
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+/*
+ * @tc.name: GetUuidByNetworkId001
+ * @tc.desc: GetUuidByNetworkId
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DMAdapterTest, GetUuidByNetworkId001, TestSize.Level1)
+{
+    std::string networkId = "networkId";
+    std::string uuid = "";
+    bool ret = DMAdapter::GetInstance().GetUuidByNetworkId(networkId, uuid);
+    EXPECT_FALSE(ret);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

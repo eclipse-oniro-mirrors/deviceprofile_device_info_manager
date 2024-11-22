@@ -372,5 +372,20 @@ int32_t OHOS::DistributedDeviceProfile::DistributedDeviceProfileProxy::UnSubscri
     return DP_SUCCESS;
 }
 
+int32_t OHOS::DistributedDeviceProfile::DistributedDeviceProfileProxy::PutAllTrustedDevices(
+    const std::vector<TrustedDeviceInfo> deviceInfos)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    if (!IpcUtils::Marshalling(data, deviceInfos)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::PUT_ALL_TRUSTED_DEVICES), data, reply);
+    return DP_SUCCESS;
+}
 } // namespace DeviceProfile
 } // namespace OHOS

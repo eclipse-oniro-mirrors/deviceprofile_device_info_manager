@@ -24,6 +24,7 @@
 #include "content_sensor_manager_utils.h"
 #include "distributed_device_profile_errors.h"
 #include "device_profile_manager.h"
+#include "dm_adapter.h"
 #include "profile_utils.h"
 #include "static_profile_manager.h"
 #include "switch_profile_manager.h"
@@ -44,25 +45,6 @@ int32_t ProfileCache::Init()
     RefreshProfileCache();
     SwitchProfileManager::GetInstance().RefreshLocalSwitchProfile();
     syncListenerDeathRecipient_ = sptr<IRemoteObject::DeathRecipient>(new SyncSubscriberDeathRecipient);
-    std::vector<DistributedHardware::DmDeviceInfo> allOnlineDeviceInfo;
-    int32_t res =
-        DistributedHardware::DeviceManager::GetInstance().GetTrustedDeviceList(DP_PKG_NAME, "", allOnlineDeviceInfo);
-    if (res != DP_SUCCESS || allOnlineDeviceInfo.empty()) {
-        HILOGW("GetTrustedDeviceList failed, res: %{public}d", res);
-        return DP_SUCCESS;
-    }
-
-    std::string udid = EMPTY_STRING;
-    std::lock_guard<std::mutex> lock(onlineDeviceLock_);
-    for (const auto& dmDeviceInfo : allOnlineDeviceInfo) {
-        if (!ProfileUtils::GetUdidByNetworkId(dmDeviceInfo.networkId, udid)) {
-            HILOGE("get udid by networkId failed, networkId:%{public}s",
-                ProfileUtils::GetAnonyString(dmDeviceInfo.networkId).c_str());
-            continue;
-        }
-        onlineDevMap_[udid] = dmDeviceInfo.networkId;
-        HILOGI("Init add %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
-    }
     return DP_SUCCESS;
 }
 
@@ -645,49 +627,35 @@ void ProfileCache::SetCurSwitch(uint32_t newSwitch)
     return;
 }
 
-void ProfileCache::OnNodeOnline(const std::string& peerNetworkId)
+void ProfileCache::OnNodeOnline(const TrustedDeviceInfo& trustedDevice)
 {
-    HILOGD("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
-    std::string udid = EMPTY_STRING;
-    if (!ProfileUtils::GetUdidByNetworkId(peerNetworkId, udid)) {
-        HILOGE("get udid by networkId failed");
+    HILOGD("trustedDevice=%{public}s", trustedDevice.dump().c_str());
+    if (trustedDevice.GetUdid().empty() || trustedDevice.GetUdid().empty() ||
+        trustedDevice.GetNetworkId().empty()  || trustedDevice.GetAuthForm() == BINDTYPE_INIT ||
+        trustedDevice.GetOsType() == 0) {
+        HILOGE("trustedDevice invalid:%{public}s", trustedDevice.dump().c_str());
         return;
     }
     {
         std::lock_guard<std::mutex> lock(onlineDeviceLock_);
-        onlineDevMap_[udid] = peerNetworkId;
-        HILOGI("add %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
+        onlineDevMap_[trustedDevice.GetUdid()] = trustedDevice;
     }
 }
 
 void ProfileCache::OnNodeOffline(const std::string& peerNetworkId)
 {
-    HILOGD("call! peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
-    std::string udid = EMPTY_STRING;
-    if (!ProfileUtils::GetUdidByNetworkId(peerNetworkId, udid)) {
-        HILOGE("get udid by networkId failed");
-        return;
-    }
+    HILOGD("peerNetworkId=%{public}s", ProfileUtils::GetAnonyString(peerNetworkId).c_str());
     {
         std::lock_guard<std::mutex> lock(onlineDeviceLock_);
-        onlineDevMap_.erase(udid);
-        HILOGI("release %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
+        auto it = onlineDevMap_.begin();
+        while(it != onlineDevMap_.end()) {
+            if (it->second.GetNetworkId() == peerNetworkId) {
+                onlineDevMap_.erase(it);
+                break;
+            }
+            ++it;
+        }
     }
-}
-
-bool ProfileCache::IsLocalOrOnlineDevice(const std::string& deviceId)
-{
-    if (deviceId == GetLocalUdid()) {
-        HILOGI("%{public}s is localDevice", ProfileUtils::GetAnonyString(deviceId).c_str());
-        return true;
-    }
-    std::lock_guard<std::mutex> lock(onlineDeviceLock_);
-    if (onlineDevMap_.find(deviceId) != onlineDevMap_.end()) {
-        HILOGI("%{public}s is online", ProfileUtils::GetAnonyString(deviceId).c_str());
-        return true;
-    }
-    HILOGE("%{public}s is offline or is not a local device.", ProfileUtils::GetAnonyString(deviceId).c_str());
-    return false;
 }
 
 int32_t ProfileCache::GetNetWorkIdByUdid(const std::string& udid, std::string& networkId)
@@ -697,7 +665,7 @@ int32_t ProfileCache::GetNetWorkIdByUdid(const std::string& udid, std::string& n
         HILOGE("UDID is empty");
         return DP_INVALID_PARAMS;
     }
-    
+
     if (udid == GetLocalUdid()) {
         networkId = GetLocalNetworkId();
         HILOGI("success, networkId is localNetworkid: %{public}s",
@@ -706,10 +674,10 @@ int32_t ProfileCache::GetNetWorkIdByUdid(const std::string& udid, std::string& n
     }
     std::lock_guard<std::mutex> lock(onlineDeviceLock_);
     if (onlineDevMap_.find(udid) == onlineDevMap_.end()) {
-        HILOGE("GetNetWorkIdByUdid failed");
+        HILOGE("failed udid:%{public}s", ProfileUtils::GetAnonyString(udid).c_str());
         return DP_GET_NETWORKID_BY_UDID_FAIL;
     }
-    networkId = onlineDevMap_[udid];
+    networkId = onlineDevMap_[udid].GetNetworkId();
     HILOGI("success, networkId: %{public}s", ProfileUtils::GetAnonyString(networkId).c_str());
     return DP_SUCCESS;
 }
@@ -727,17 +695,16 @@ int32_t ProfileCache::GetUdidByNetWorkId(const std::string& networkId, std::stri
     }
     std::lock_guard<std::mutex> lock(onlineDeviceLock_);
     for (auto& item : onlineDevMap_) {
-        if (item.second == networkId) {
+        if (item.second.GetNetworkId() == networkId) {
             udid = item.first;
             HILOGI("find udid: %{public}s", ProfileUtils::GetAnonyString(udid).c_str());
             return DP_SUCCESS;
         }
     }
-    if (!ProfileUtils::GetUdidByNetworkId(networkId, udid)) {
-        HILOGE("GetUdidByNetworkId failed");
+    if (udid.empty()) {
+        HILOGE("udid is empty");
         return DP_GET_UDID_BY_NETWORKID_FAIL;
     }
-    onlineDevMap_[udid] = networkId;
     return DP_SUCCESS;
 }
 
@@ -826,12 +793,61 @@ std::string ProfileCache::GetLocalUuid()
         HILOGE("networkId is empty");
         return EMPTY_STRING;
     }
-    if (!ProfileUtils::GetUuidByNetworkId(networkId, localUuid) || localUuid.empty()) {
+    if (!DMAdapter::GetInstance().GetUuidByNetworkId(networkId, localUuid) || localUuid.empty()) {
         HILOGE("GetUuidByNetworkId fail");
         return EMPTY_STRING;
     }
     localUuid_ = localUuid;
     return localUuid;
+}
+
+int32_t ProfileCache::AddAllTrustedDevices(const std::vector<TrustedDeviceInfo>& deviceInfos)
+{
+    HILOGI("deviceInfos.size: %{public}zu!", deviceInfos.size());
+    if (deviceInfos.empty()) {
+        HILOGE("deviceInfos is empty");
+        return DP_INVALID_PARAM;
+    }
+    std::lock_guard<std::mutex> lock(onlineDeviceLock_);
+    onlineDevMap_.clear();
+    for (const auto& trustedDevice : deviceInfos) {
+        if (trustedDevice.GetUdid().empty() || trustedDevice.GetUdid().empty() ||
+            trustedDevice.GetNetworkId().empty()  || trustedDevice.GetAuthForm() == BINDTYPE_INIT ||
+            trustedDevice.GetOsType() == 0) {
+            HILOGE("trustedDevice invalid:%{public}s", trustedDevice.dump().c_str());
+            continue;
+        }
+        onlineDevMap_[trustedDevice.GetUdid()] = trustedDevice;
+    }
+    return DP_SUCCESS;
+}
+
+bool ProfileCache::FilterAndGroupOnlineDevices(const std::vector<std::string>& deviceList,
+    std::vector<std::string>& ohBasedDevices, std::vector<std::string>& notOHBasedDevices)
+{
+    HILOGI("deviceList.size: %{public}zu!", deviceList.size());
+    if (deviceList.size() == 0 || deviceList.size() > MAX_DEVICE_SIZE) {
+        HILOGE("This deviceList size is invalid, size: %{public}zu!", deviceList.size());
+        return false;
+    }
+    std::lock_guard<std::mutex> lock(onlineDeviceLock_);
+    for (const auto& [_, item] : onlineDevMap_) {
+        if (std::find(deviceList.begin(), deviceList.end(), item.GetNetworkId()) == deviceList.end()) {
+            continue;
+        }
+        if (item.GetOsType() == OHOS_TYPE) {
+            ohBasedDevices.push_back(item.GetNetworkId());
+        } else {
+            notOHBasedDevices.push_back(item.GetNetworkId());
+        }
+    }
+    return true;
+}
+
+bool ProfileCache::IsDeviceOnline()
+{
+    std::lock_guard<std::mutex> lock(onlineDeviceLock_);
+    return !onlineDevMap_.empty();
 }
 } // namespace DeviceProfile
 } // namespace OHOS

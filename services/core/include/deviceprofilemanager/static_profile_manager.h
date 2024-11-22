@@ -20,6 +20,7 @@
 #include "dm_device_info.h"
 #include "kv_adapter.h"
 #include "single_instance.h"
+#include "trusted_device_info.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -34,7 +35,7 @@ public:
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
         const std::string& characteristicKey, CharacteristicProfile& charProfile);
     int32_t GetAllCharacteristicProfile(std::vector<CharacteristicProfile>& staticCapabilityProfiles);
-    void E2ESyncStaticProfile(const DistributedHardware::DmDeviceInfo deviceInfo);
+    void E2ESyncStaticProfile(const TrustedDeviceInfo& deviceInfo);
     void ClearDataWithPeerLogout(const std::string& peerUdid, const std::string& peerUuid);
 
 private:
