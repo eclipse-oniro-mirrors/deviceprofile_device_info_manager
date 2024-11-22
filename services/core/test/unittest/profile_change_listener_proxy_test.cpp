@@ -130,5 +130,20 @@ HWTEST_F(ProfileChangeListenerProxyTest, OnCharacteristicProfile_001, TestSize.L
     ret = proxy.OnCharacteristicProfileDelete(oldProfile);
     EXPECT_NE(ret, DP_SUCCESS);
 }
+
+/*
+ * @tc.name: OnTrustDeviceProfileActive_001
+ * @tc.desc: Normal testCase of ProfileChangeListenerProxyTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(ProfileChangeListenerProxyTest, OnTrustDeviceProfileActive_001, TestSize.Level1)
+{
+    TrustDeviceProfile Profile;
+    OHOS::DistributedDeviceProfile::ProfileListenerProxy proxy(nullptr);
+    int32_t ret = proxy.OnTrustDeviceProfileActive(Profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+    ret = proxy.OnTrustDeviceProfileInactive(Profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

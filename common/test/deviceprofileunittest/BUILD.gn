@@ -20,7 +20,10 @@ module_output_path = "device_info_manager/commontest"
 
 ohos_unittest("DeviceProfileTest") {
   module_out_path = module_output_path
-
+  cflags = [
+    "-Dprivate=public",
+    "-Dprotected=public",
+  ]
   include_dirs = [
     "include/interfaces",
     "include/constants",

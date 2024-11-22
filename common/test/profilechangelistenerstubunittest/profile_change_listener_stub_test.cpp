@@ -381,5 +381,38 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_014, TestSize.Level0)
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(305, ret);
 }
+
+HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileActiveInner_001, TestSize.Level0)
+{
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    int32_t ret = listenerStub_->OnTrustDeviceProfileActiveInner(data, reply);
+    EXPECT_NE(DP_SUCCESS, ret);
+}
+
+
+HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactiveInner_001, TestSize.Level0)
+{
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    int32_t ret = listenerStub_->OnTrustDeviceProfileInactiveInner(data, reply);
+    EXPECT_NE(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileActive_001, TestSize.Level0)
+{
+    TrustDeviceProfile profile;
+    int32_t ret = listenerStub_->OnTrustDeviceProfileActive(profile);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactivet_001, TestSize.Level0)
+{
+    TrustDeviceProfile profile;
+    int32_t ret = listenerStub_->OnTrustDeviceProfileInactive(profile);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
