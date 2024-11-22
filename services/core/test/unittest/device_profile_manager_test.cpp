@@ -1046,6 +1046,64 @@ HWTEST_F(DeviceProfileManagerTest, DeleteServiceProfile004, TestSize.Level1)
 }
 
 /**
+ * @tc.name: SetIsMultiUser001
+ * @tc.desc: SetIsMultiUser Success, SetIsMultiUser Success.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, SetIsMultiUser001, TestSize.Level1)
+{
+    ServiceProfile serviceProfile7;
+    bool isMultiUser = true;
+    serviceProfile7.SetIsMultiUser(isMultiUser);
+    EXPECT_EQ(true, serviceProfile7.isMultiUser_);
+}
+
+/**
+ * @tc.name: IsMultiUser001
+ * @tc.desc: IsMultiUser Success, IsMultiUser Success.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, IsMultiUser001, TestSize.Level1)
+{
+    ServiceProfile serviceProfile8;
+    bool isMultiUser = true;
+    serviceProfile8.SetIsMultiUser(isMultiUser);
+    bool ret = serviceProfile8.IsMultiUser();
+    EXPECT_EQ(true, ret);
+}
+
+/**
+ * @tc.name: SetUserId001
+ * @tc.desc: SetUserId Success, SetUserId Success.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, SetUserId001, TestSize.Level1)
+{
+    ServiceProfile serviceProfile9;
+    int32_t userId = 1;
+    serviceProfile9.SetUserId(userId);
+    EXPECT_EQ(1, serviceProfile9.userId_);
+}
+
+/**
+ * @tc.name: GetUserId001
+ * @tc.desc: GetUserId Success, GetUserId Success.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, GetUserId001, TestSize.Level1)
+{
+    ServiceProfile serviceProfile9;
+    int32_t userId = 1;
+    serviceProfile9.SetUserId(userId);
+    bool ret = serviceProfile9.GetUserId();
+    EXPECT_EQ(true, ret);
+}
+
+/**
  * @tc.name: DeleteCharacteristicProfile001
  * @tc.desc: DeleteCharacteristicProfile succeed.
  * @tc.type: FUNC

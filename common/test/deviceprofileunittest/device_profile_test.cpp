@@ -66,5 +66,39 @@ HWTEST_F(DeviceProfileTest, dump_001, TestSize.Level0)
     auto result = deviceProfile.dump();
     EXPECT_NE(0, result.length());
 }
+
+HWTEST_F(DeviceProfileTest, IsMultiUser_001, TestSize.Level0)
+{
+    DeviceProfile deviceProfile;
+    deviceProfile.isMultiUser_ = true;
+    auto result = deviceProfile.IsMultiUser();
+    EXPECT_EQ(true, result);
+}
+
+HWTEST_F(DeviceProfileTest, SetIsMultiUser_001, TestSize.Level0)
+{
+    DeviceProfile deviceProfile;
+    bool isMultiUser = true;
+    deviceProfile.SetIsMultiUser(isMultiUser);
+    auto result = deviceProfile.isMultiUser_;
+    EXPECT_EQ(result, true);
+}
+
+HWTEST_F(DeviceProfileTest, GetUserId_001, TestSize.Level0)
+{
+    DeviceProfile deviceProfile;
+    deviceProfile.userId_ = 0;
+    auto result = deviceProfile.GetUserId();
+    EXPECT_EQ(0, result);
+}
+
+HWTEST_F(DeviceProfileTest, SetUserId_001, TestSize.Level0)
+{
+    DeviceProfile deviceProfile;
+    int32_t userId = 1;
+    deviceProfile.SetUserId(userId);
+    auto result = deviceProfile.userId_;
+    EXPECT_EQ(1, result);
+}
 }
 }

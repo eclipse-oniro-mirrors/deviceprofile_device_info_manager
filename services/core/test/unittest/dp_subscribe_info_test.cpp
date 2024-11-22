@@ -313,10 +313,28 @@ HWTEST_F(DPSubscribeInfoTest, Stub_002, TestSize.Level1)
     OHOS::sptr<IProfileChangeListener> proxy = OHOS::iface_cast<IProfileChangeListener>(subscribeInfo.GetListener());
     TrustDeviceProfile profile;
     profile.SetPeerUserId(1001);
+    profile.GetPeerUserId();
     ASSERT_NE(proxy, nullptr);
     int32_t ret = proxy->OnTrustDeviceProfileActive(profile);
     EXPECT_EQ(ret, DP_SUCCESS);
     ret = proxy->OnTrustDeviceProfileInactive(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: IProfileChangeListener_001
+ * @tc.desc: Normal testCase of DPSubscribeInfoTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(DPSubscribeInfoTest, IProfileChangeListener_001, TestSize.Level1)
+{
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+	    new(std::nothrow) DPSubscribeInfoTest::SubscribeDPChangeListener;
+    TrustDeviceProfile profile;
+    profile.SetPeerUserId(1001);
+    int32_t ret = subscribeDPChangeListener->OnTrustDeviceProfileActive(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = subscribeDPChangeListener->OnTrustDeviceProfileInactive(profile);
     EXPECT_EQ(ret, DP_SUCCESS);
 }
 } // namespace DistributedDeviceProfile
