@@ -52,10 +52,10 @@ constexpr int32_t UNLOAD_IMMEDIATELY = 0;
 constexpr int32_t WAIT_BUSINESS_PUT_TIME_S = 5;
 constexpr int32_t WRTE_CACHE_PROFILE_DELAY_TIME_US = 200 * 1000;
 constexpr int32_t WRTE_CACHE_PROFILE_RETRY_TIMES = 20;
+constexpr int32_t DP_IPC_THREAD_NUM = 32;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileServiceNew);
-const bool REGISTER_RESULT = SystemAbility::MakeAndRegisterAbility(&DistributedDeviceProfileServiceNew::GetInstance());
 
 DistributedDeviceProfileServiceNew::DistributedDeviceProfileServiceNew()
     : SystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, true)
@@ -183,7 +183,6 @@ int32_t DistributedDeviceProfileServiceNew::UnInit()
     }
     DestroyUnloadHandler();
     ClearProfileCache();
-    HILOGI("UnInit succeeded");
     return DP_SUCCESS;
 }
 
@@ -582,27 +581,25 @@ void DistributedDeviceProfileServiceNew::OnStart(const SystemAbilityOnDemandReas
         HILOGE("init failed");
         return;
     }
-    if (CreateUnloadHandler() == DP_SUCCESS) {
-        HILOGI("CreateUnloadHandler success!");
-        DelayUnloadTask();
-    }
     AddSystemAbilityListener(SOFTBUS_SERVER_SA_ID);
     AddSystemAbilityListener(DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID);
     AddSystemAbilityListener(DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID);
     AddSystemAbilityListener(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN);
+    IPCSkeleton::SetMaxWorkThreadNum(DP_IPC_THREAD_NUM);
     if (!Publish(this)) {
         HILOGE("publish SA failed");
         return;
+    }
+    if (CreateUnloadHandler() == DP_SUCCESS) {
+        HILOGI("CreateUnloadHandler success!");
+        DelayUnloadTask();
     }
 }
 
 void DistributedDeviceProfileServiceNew::OnStop()
 {
-    HILOGI("called");
-    if (!UnInit()) {
-        HILOGE("Uninit failed");
-        return;
-    }
+    int32_t ret = UnInit();
+    HILOGI("UnInit ret=%{public}d", ret);
 }
 
 int32_t DistributedDeviceProfileServiceNew::OnIdle(const SystemAbilityOnDemandReason& idleReason)

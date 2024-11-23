@@ -23,9 +23,6 @@
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 #include "dm_adapter.h"
-#include "dm_dev_trust_change_callback.h"
-#include "dm_device_state_callback.h"
-#include "dp_dm_init_callback.h"
 #include "event_handler_factory.h"
 using namespace testing::ext;
 namespace OHOS {
@@ -68,7 +65,6 @@ HWTEST_F(DMAdapterTest, Init001, TestSize.Level1)
 {
     DMAdapter::GetInstance().dmInitCallback_ = nullptr;
     DMAdapter::GetInstance().deviceStateCallback_ = nullptr;
-    DMAdapter::GetInstance().devTrustChangeCallback_ = nullptr;
     int32_t ret = DMAdapter::GetInstance().Init();
     EXPECT_EQ(0, ret);
     ret = DMAdapter::GetInstance().UnInit();

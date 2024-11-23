@@ -288,7 +288,7 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<TrustedDeviceInf
         return false;
     }
     for (uint32_t i = 0; i < size; i++) {
-        TrustedDeviceInfo item;;
+        TrustedDeviceInfo item;
         if (!item.UnMarshalling(parcel)) {
             HILOGE("Profile UnMarshalling fail!");
             return false;

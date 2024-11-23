@@ -648,7 +648,7 @@ void ProfileCache::OnNodeOffline(const std::string& peerNetworkId)
     {
         std::lock_guard<std::mutex> lock(onlineDeviceLock_);
         auto it = onlineDevMap_.begin();
-        while(it != onlineDevMap_.end()) {
+        while (it != onlineDevMap_.end()) {
             if (it->second.GetNetworkId() == peerNetworkId) {
                 onlineDevMap_.erase(it);
                 break;

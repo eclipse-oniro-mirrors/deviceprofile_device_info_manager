@@ -70,17 +70,6 @@ void GetAccessControlProfileTwoFuzzTest(const uint8_t* data, size_t size)
     TrustProfileManager::GetInstance().GetAccessControlProfile(userId, profile);
 }
 
-void GetAllAccessControlProfileFuzzTest(const uint8_t* data, size_t size)
-{
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
-        return;
-    }
-    std::vector<AccessControlProfile> profile;
-    AccessControlProfile acProfile;
-    profile.push_back(acProfile);
-    TrustProfileManager::GetInstance().GetAllAccessControlProfile(profile);
-}
-
 void GetAccessControlProfileThreeFuzzTest(const uint8_t* data, size_t size)
 {
     if ((data == nullptr) || (size < sizeof(int32_t))) {
@@ -109,18 +98,6 @@ void GetAccessControlProfileFourFuzzTest(const uint8_t* data, size_t size)
     TrustProfileManager::GetInstance().GetAccessControlProfile(bundleName, trustDeviceId, status, profile);
 }
 
-void GetAccessControlProfileFiveFuzzTest(const uint8_t* data, size_t size)
-{
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
-        return;
-    }
-    std::map<std::string, std::string> params;
-    std::vector<AccessControlProfile> profile;
-    AccessControlProfile acProfile;
-    profile.push_back(acProfile);
-    TrustProfileManager::GetInstance().GetAccessControlProfile(params, profile);
-}
-
 void DeleteTrustDeviceProfileFuzzTest(const uint8_t* data, size_t size)
 {
     if ((data == nullptr) || (size < sizeof(int32_t))) {
@@ -147,10 +124,8 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::DistributedDeviceProfile::GetAccessControlProfileByTokenIdFuzzTest(data, size);
     OHOS::DistributedDeviceProfile::GetAccessControlProfileOneFuzzTest(data, size);
     OHOS::DistributedDeviceProfile::GetAccessControlProfileTwoFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GetAllAccessControlProfileFuzzTest(data, size);
     OHOS::DistributedDeviceProfile::GetAccessControlProfileThreeFuzzTest(data, size);
     OHOS::DistributedDeviceProfile::GetAccessControlProfileFourFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GetAccessControlProfileFiveFuzzTest(data, size);
     OHOS::DistributedDeviceProfile::DeleteTrustDeviceProfileFuzzTest(data, size);
     OHOS::DistributedDeviceProfile::DeleteAccessControlProfileFuzzTest(data, size);
     return 0;

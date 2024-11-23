@@ -21,6 +21,7 @@
 #include "profile_utils.h"
 #include "i_sync_completed_callback.h"
 #include "sync_completed_callback_stub.h"
+#include "trusted_device_info.h"
 #undef private
 #undef protected
 
@@ -573,10 +574,13 @@ HWTEST_F(ProfileCacheTest, OnNodeOnline001, TestSize.Level1)
 {
     std::string peerNetworkId = "NetworkId";
     std::string peerUdid = "peerUdid";
-    TrustedDeviceInfo trustedDeviceInfo;
-    trustedDeviceInfo.SetNetworkId(peerNetworkId);
-    trustedDeviceInfo.SetUdid(peerUdid);
-    ProfileCache::GetInstance().OnNodeOnline(trustedDeviceInfo);
+    TrustedDeviceInfo deviceInfo;
+    deviceInfo.SetNetworkId(peerNetworkId);
+    deviceInfo.SetUdid(peerUdid);
+    deviceInfo.SetUuid("peerUuid");
+    deviceInfo.SetAuthForm(1);
+    deviceInfo.SetOsType(10);
+    ProfileCache::GetInstance().OnNodeOnline(deviceInfo);
     EXPECT_EQ(peerNetworkId, ProfileCache::GetInstance().onlineDevMap_[peerUdid].GetNetworkId());
     ProfileCache::GetInstance().onlineDevMap_.clear();
 }
@@ -591,10 +595,10 @@ HWTEST_F(ProfileCacheTest, OnNodeOffline001, TestSize.Level1)
 {
     std::string peerNetworkId = "NetworkId";
     std::string peerUdid = "peerUdid";
-    TrustedDeviceInfo trustedDeviceInfo;
-    trustedDeviceInfo.SetNetworkId(peerNetworkId);
-    trustedDeviceInfo.SetUdid(peerUdid);
-    ProfileCache::GetInstance().onlineDevMap_[peerUdid] = trustedDeviceInfo;
+    TrustedDeviceInfo deviceInfo;
+    deviceInfo.SetNetworkId(peerNetworkId);
+    deviceInfo.SetUdid(peerUdid);
+    ProfileCache::GetInstance().onlineDevMap_[peerUdid] = deviceInfo;
     ProfileCache::GetInstance().OnNodeOffline(peerNetworkId);
     EXPECT_EQ(true, ProfileCache::GetInstance().onlineDevMap_.empty());
 }
@@ -685,7 +689,11 @@ HWTEST_F(ProfileCacheTest, AddAllTrustedDevices001, TestSize.Level1)
 HWTEST_F(ProfileCacheTest, AddAllTrustedDevices002, TestSize.Level1)
 {
     TrustedDeviceInfo deviceInfo;
+    deviceInfo.SetNetworkId("peerNetworkId");
     deviceInfo.SetUdid("udid");
+    deviceInfo.SetUuid("peerUuid");
+    deviceInfo.SetAuthForm(1);
+    deviceInfo.SetOsType(10);
     std::vector<TrustedDeviceInfo> deviceInfos {deviceInfo};
     int32_t ret = ProfileCache::GetInstance().AddAllTrustedDevices(deviceInfos);
     EXPECT_EQ(ret, DP_SUCCESS);

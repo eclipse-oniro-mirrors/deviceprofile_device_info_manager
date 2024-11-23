@@ -31,7 +31,6 @@
 #include "ipc_object_proxy.h"
 #include "ipc_skeleton.h"
 #include "iservice_registry.h"
-#include "profile_cache.h"
 #include "system_ability_definition.h"
 
 namespace OHOS {
