@@ -672,6 +672,7 @@ void DistributedDeviceProfileServiceNew::AccountCommonEventCallback(int32_t user
         } else {
             HILOGI("RewriteLocalProfiles succeed");
         }
+        return;
     }
     HILOGE("Invalied account common event.");
     return;
