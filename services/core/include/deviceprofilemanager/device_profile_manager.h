@@ -68,6 +68,7 @@ public:
         sptr<IRemoteObject> syncCompletedCallback);
     std::vector<DistributedKv::Entry> GetEntriesByKeys(const std::vector<std::string>& keys);
     int32_t SavePutTempCache(std::map<std::string, std::string>& entries);
+    int32_t RewriteLocalProfiles();
     bool IsFirstInitDB();
     void ResetFirst();
     void OnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo);

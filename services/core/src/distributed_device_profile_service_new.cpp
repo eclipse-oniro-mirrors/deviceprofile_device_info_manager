@@ -667,6 +667,11 @@ void DistributedDeviceProfileServiceNew::AccountCommonEventCallback(int32_t user
     }
     if (commonEventType == EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGIN) {
         // login
+        if (DeviceProfileManager::GetInstance().RewriteLocalProfiles() != DP_SUCCESS) {
+            HILOGE("RewriteLocalProfiles failed")
+        } else {
+            HILOGI("RewriteLocalProfiles succeed");
+        }
     }
     HILOGE("Invalied account common event.");
     return;
