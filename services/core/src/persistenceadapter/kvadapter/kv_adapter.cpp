@@ -175,6 +175,35 @@ int32_t KVAdapter::PutBatch(const std::map<std::string, std::string>& values)
     return DP_SUCCESS;
 }
 
+int32_t KVAdapter::PutBatchNoDedup(const std::map<std::string, std::string>& values)
+{
+    if (values.empty() || values.size() > MAX_PROFILE_SIZE) {
+        HILOGE("Param is invalid!");
+        return DP_INVALID_PARAMS;
+    }
+    DistributedKv::Status status;
+    {
+        std::lock_guard<std::mutex> lock(kvAdapterMutex_);
+        if (kvStorePtr_ == nullptr) {
+            HILOGE("kvDBPtr is null!");
+            return DP_KV_DB_PTR_NULL;
+        }
+        std::vector<DistributedKv::Entry> entries;
+        for (auto item : values) {
+            Entry entry;
+            entry.key = item.first;
+            entry.value = item.second;
+            entries.emplace_back(entry);
+        }
+        status = kvStorePtr_->PutBatch(entries);
+    }
+    if (status != DistributedKv::Status::SUCCESS) {
+        HILOGE("PutBatch kv to db failed, ret: %{public}d", status);
+        return DP_PUT_KV_DB_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
 int32_t KVAdapter::Delete(const std::string& key)
 {
     DistributedKv::Status status;
