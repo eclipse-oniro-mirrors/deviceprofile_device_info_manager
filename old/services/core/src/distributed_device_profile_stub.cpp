@@ -254,7 +254,11 @@ int32_t DistributedDeviceProfileStub::GetDeviceProfileInner(MessageParcel& data,
     PARCEL_READ_HELPER(data, String, udid);
     PARCEL_READ_HELPER(data, String, serviceId);
     int32_t ret = GetDeviceProfile(udid, serviceId, profile);
-    if (!(reply.WriteInt32(ret) && profile.Marshalling(reply))) {
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("WriteInt32 failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    if (!profile.Marshalling(reply)) {
         HILOGE("marshall profile failed");
         return ERR_FLATTEN_OBJECT;
     }

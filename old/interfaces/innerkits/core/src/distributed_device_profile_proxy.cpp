@@ -39,6 +39,10 @@ const std::string TAG = "DistributedDeviceProfileProxy";
 int32_t DistributedDeviceProfileProxy::PutDeviceProfile(const ServiceCharacteristicProfile& profile)
 {
     sptr<IRemoteObject> remote = Remote();
+    if (remote == nullptr) {
+        HILOGE("remote is nullptr");
+        return ERR_FLATTEN_OBJECT;
+    }
     MessageParcel data;
     if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) {
         HILOGE("write interface token failed");
@@ -57,6 +61,10 @@ int32_t DistributedDeviceProfileProxy::GetDeviceProfile(const std::string& udid,
     ServiceCharacteristicProfile& profile)
 {
     sptr<IRemoteObject> remote = Remote();
+    if (remote == nullptr) {
+        HILOGE("remote is nullptr");
+        return ERR_FLATTEN_OBJECT;
+    }
     MessageParcel data;
     if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) {
         HILOGE("write interface token failed");
@@ -84,6 +92,10 @@ int32_t DistributedDeviceProfileProxy::GetDeviceProfile(const std::string& udid,
 int32_t DistributedDeviceProfileProxy::DeleteDeviceProfile(const std::string& serviceId)
 {
     sptr<IRemoteObject> remote = Remote();
+    if (remote == nullptr) {
+        HILOGE("remote is nullptr");
+        return ERR_FLATTEN_OBJECT;
+    }
     MessageParcel data;
     if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) {
         HILOGE("write interface token failed");
@@ -101,6 +113,10 @@ int32_t DistributedDeviceProfileProxy::SubscribeProfileEvents(
     std::list<ProfileEvent>& failedEvents)
 {
     sptr<IRemoteObject> remote = Remote();
+    if (remote == nullptr) {
+        HILOGE("remote is nullptr");
+        return ERR_FLATTEN_OBJECT;
+    }
     MessageParcel data;
     if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) {
         HILOGE("write interface token failed");
@@ -138,6 +154,10 @@ int32_t DistributedDeviceProfileProxy::UnsubscribeProfileEvents(
     std::list<ProfileEvent>& failedEvents)
 {
     sptr<IRemoteObject> remote = Remote();
+    if (remote == nullptr) {
+        HILOGE("remote is nullptr");
+        return ERR_FLATTEN_OBJECT;
+    }
     MessageParcel data;
     if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) {
         HILOGE("write interface token failed");
@@ -169,6 +189,10 @@ int32_t DistributedDeviceProfileProxy::SyncDeviceProfile(const SyncOptions& sync
     const sptr<IRemoteObject>& profileEventNotifier)
 {
     sptr<IRemoteObject> remote = Remote();
+    if (remote == nullptr) {
+        HILOGE("remote is nullptr");
+        return ERR_FLATTEN_OBJECT;
+    }
     MessageParcel data;
     if (!data.WriteInterfaceToken(IDistributedDeviceProfile::GetDescriptor())) {
         HILOGE("write interface token failed");

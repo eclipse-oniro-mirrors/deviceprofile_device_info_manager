@@ -460,9 +460,15 @@ bool StaticCapabilityLoader::GetStaticCapabilityValue(const std::string& handler
     dlclose(so_handler);
     return isSupportStaticCapability;
 }
+
 bool StaticCapabilityLoader::HasStaticCapability(const std::string& serviceId, const std::string& staticCapability)
 {
     HILOGD("call!");
+    if (CAPABILITY_FLAG_MAP.find(serviceId) == CAPABILITY_FLAG_MAP.end()) {
+        HILOGE("serviceId doesn't exist map, serviceId: %{public}s",
+            ProfileUtils::GetAnonyString(serviceId).c_str());
+        return false;
+    }
     int32_t capabilityFlag = static_cast<int32_t>(CAPABILITY_FLAG_MAP.at(serviceId));
     if (capabilityFlag >= static_cast<int32_t>(staticCapability.size())) {
         HILOGE("HasStaticCapability fail, capabilityFlag is out of range, serviceId: %{public}s",

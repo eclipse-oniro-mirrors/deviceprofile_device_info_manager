@@ -51,7 +51,7 @@ std::unique_ptr<ProfileKey> ProfileKey::Parse(const std::string& entryKey)
 {
     std::vector<std::string> vec;
     SplitStr(entryKey, "/", vec);
-    if (vec.size() != NUM_KEY_FILEDS) {
+    if (vec.size() != NUM_KEY_FILEDS || vec.empty()) {
         HILOGE("parse key failed");
         return nullptr;
     }
