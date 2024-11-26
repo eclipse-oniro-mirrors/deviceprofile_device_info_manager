@@ -57,6 +57,7 @@ ohos_fuzztest("DeviceProfileFuzzTest") {
     "c_utils:utils",
     "hilog:libhilog",
     "ipc:ipc_core",
+    "json:nlohmann_json_static",
     "safwk:system_ability_fwk",
   ]
 }

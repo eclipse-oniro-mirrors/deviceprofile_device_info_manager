@@ -47,7 +47,6 @@ config("device_info_manager_config") {
     "${device_profile_common}/include/constants",
     "${device_profile_common}/include/interfaces",
     "${device_profile_common}/include/utils",
-    "${third_party_json}/include",
   ]
 }
 
@@ -132,6 +131,7 @@ ohos_shared_library("distributed_device_profile") {
     "hitrace:hitrace_meter",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "json:nlohmann_json_static",
     "kv_store:distributeddata_inner",
     "relational_store:native_rdb",
     "safwk:system_ability_fwk",
