@@ -1622,7 +1622,6 @@ int32_t TrustProfileManager::GetAccessControlProfilesByTokenId(std::shared_ptr<R
     }
     accesserResultSet->Close();
 
-
     std::shared_ptr<ResultSet> accesseeResultSet =
         GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEDEVICEID,
             std::vector<ValueObject>{ ValueObject(accesseeId), ValueObject(trustDeviceId) });
