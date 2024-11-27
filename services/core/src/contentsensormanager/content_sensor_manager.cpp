@@ -86,7 +86,7 @@ int32_t ContentSensorManager::Collect()
     };
     std::thread csTaskThread(csTask);
     if (!csTaskThread.joinable()) {
-        HILOGI("csTaskThread joinable is false");
+        HILOGE("csTaskThread joinable is false");
         return DP_CONTENT_SENSOR_MANAGER_INIT_FAIL;
     }
     csTaskThread.join();
