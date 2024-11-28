@@ -174,6 +174,7 @@ HWTEST_F(StaticProfileManagerTest, GetCharacteristicProfile_004, TestSize.Level1
     EXPECT_EQ(errCode, DP_INVALID_PARAMS);
 }
 
+#ifdef DEVICE_PROFILE_SWITCH_STATIC_ENABLE
 /*
  * @tc.name: GetCharacteristicProfile_005
  * @tc.desc: GetCharacteristicProfile
@@ -211,7 +212,6 @@ HWTEST_F(StaticProfileManagerTest, GetCharacteristicProfile_006, TestSize.Level1
     EXPECT_EQ(errCode, DP_SUCCESS);
 }
 
-#ifdef DEVICE_PROFILE_SWITCH_STATIC_ENABLE
 /*
  * @tc.name: GetAllCharacteristicProfile_001
  * @tc.desc: GetAllCharacteristicProfile
