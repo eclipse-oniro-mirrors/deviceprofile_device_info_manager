@@ -1623,5 +1623,210 @@ HWTEST_F(DeviceProfileManagerTest, GetInKvDB002, TestSize.Level1)
                                                                                 characteristicKey3, outCharProfile);
     EXPECT_EQ(ret, DP_SUCCESS);
 }
+
+/**
+ * @tc.name: HasTrustP2PRelation001
+ * @tc.desc: param is invalid
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, HasTrustP2PRelation001, TestSize.Level1)
+{
+    bool ret = DeviceProfileManager::GetInstance().HasTrustP2PRelation("", 100);
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: HasTrustP2PRelation002
+ * @tc.desc: HasTrustP2PRelation failed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, HasTrustP2PRelation001, TestSize.Level1)
+{
+    bool ret = DeviceProfileManager::GetInstance().HasTrustP2PRelation("deviceId", 100);
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: IsSameAccount001
+ * @tc.desc: param is invalid
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, IsSameAccount001, TestSize.Level1)
+{
+    bool ret = DeviceProfileManager::GetInstance().IsSameAccount("", 100);
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: IsSameAccount002
+ * @tc.desc: GetAccessControlProfile failed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, IsSameAccount002, TestSize.Level1)
+{
+    bool ret = DeviceProfileManager::GetInstance().IsSameAccount("deviceId", 100);
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: IsMultiUserValid001
+ * @tc.desc: 
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, IsMultiUserValid001, TestSize.Level1)
+{
+    ServiceProfile profile("", "serviceName", "serviceType");
+    profile.SetIsMultiUser(false);
+    profile.SetUserId(DEFAULT_USER_ID);
+    
+    int32_t result = DeviceProfileManager::GetInstance().IsMultiUserValid(profile);
+    EXPECT_NE(result, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: IsMultiUserValid002
+ * @tc.desc: 
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, IsMultiUserValid002, TestSize.Level1)
+{
+    ServiceProfile profile("deviceId", "serviceName", "serviceType");
+    profile.SetIsMultiUser(true);
+    profile.SetUserId(0);
+    
+    int32_t result = DeviceProfileManager::GetInstance().IsMultiUserValid(profile);
+    EXPECT_NE(result, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: IsMultiUserValid003
+ * @tc.desc: 
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, IsMultiUserValid003, TestSize.Level1)
+{
+    ServiceProfile profile("deviceId", "serviceName", "serviceType");
+    profile.SetIsMultiUser(false);
+    profile.SetUserId(DEFAULT_USER_ID + 1);
+    
+    int32_t result = DeviceProfileManager::GetInstance().IsMultiUserValid(profile);
+    EXPECT_NE(result, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: IsMultiUserValid004
+ * @tc.desc: 
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, IsMultiUserValid004, TestSize.Level1)
+{
+    ServiceProfile profile(ProfileCache::GetInstance().GetLocalUdid(), "serviceName", "serviceType");
+    profile.SetIsMultiUser(true);
+    profile.SetUserId(333);
+    
+    int32_t result = DeviceProfileManager::GetInstance().IsMultiUserValid(profile);
+    EXPECT_NE(result, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: IsMultiUserValid005
+ * @tc.desc: 
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, IsMultiUserValid005, TestSize.Level1)
+{
+    ServiceProfile profile("deviceId", "serviceName", "serviceType");
+    profile.SetIsMultiUser(false);
+    profile.SetUserId(DEFAULT_USER_ID);
+    
+    int32_t result = DeviceProfileManager::GetInstance().IsMultiUserValid(profile);
+    EXPECT_EQ(result, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: SaveBatchByKeys001
+ * @tc.desc: entries is empty
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, SaveBatchByKeys001, TestSize.Level1)
+{
+    std::map<std::string, std::string> entries;
+    int32_t result = DeviceProfileManager::GetInstance().SaveBatchByKeys(entries);
+    EXPECT_NE(result, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: SaveBatchByKeys002
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, SaveBatchByKeys002, TestSize.Level1)
+{
+    std::map<std::string, std::string> entries;
+    entries.insert(std::make_pair("key1", "value1"));
+    int32_t result = DeviceProfileManager::GetInstance().SaveBatchByKeys(entries);
+    EXPECT_EQ(result, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: SaveBatchByKeys003
+ * @tc.desc: deviceProfileStore is nullptr
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, SaveBatchByKeys003, TestSize.Level1)
+{
+    std::map<std::string, std::string> entries;
+    entries.insert(std::make_pair("key1", "value1"));
+    DeviceProfileManager::GetInstance().deviceProfileStore_ = nullptr;
+    int32_t result = DeviceProfileManager::GetInstance().SaveBatchByKeys(entries);
+    EXPECT_NE(result, DP_SUCCESS);
+    DeviceProfileManager::GetInstance().FixDiffProfiles();
+    DeviceProfileManager::GetInstance().dpSyncAdapter_ = nullptr;
+    DeviceProfileManager::GetInstance().FixDiffProfiles();
+    DeviceProfileManager::GetInstance().ClearDataWithPeerLogout("peerUdid", "peerUuid");
+    DeviceProfileManager::GetInstance().FixRemoteDataWhenPeerIsOHBase("remoteUdid", entries);
+    DeviceProfileManager::GetInstance().FixRemoteDataWhenPeerIsNonOH("remoteUdid");
+}
+
+/**
+ * @tc.name: GetProfilesByKeyPrefix001
+ * @tc.desc: DP_INVALID_PARAM
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, GetProfilesByKeyPrefix001, TestSize.Level1)
+{
+    std::string udid = "";
+    std::map<std::string, std::string> values;
+    int32_t result = DeviceProfileManager::GetInstance().GetProfilesByKeyPrefix(udid, values);
+    EXPECT_NE(result, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: GetProfilesByKeyPrefix002
+ * @tc.desc: 
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, GetProfilesByKeyPrefix002, TestSize.Level1)
+{
+    std::string udid = "udid";
+    std::map<std::string, std::string> values;
+    DeviceProfileManager::GetInstance().deviceProfileStore_ = nullptr;
+    int32_t result = DeviceProfileManager::GetInstance().GetProfilesByKeyPrefix(udid, values);
+    EXPECT_NE(result, DP_SUCCESS);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
