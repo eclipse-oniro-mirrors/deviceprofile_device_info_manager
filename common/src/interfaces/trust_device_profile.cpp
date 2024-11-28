@@ -84,6 +84,16 @@ void TrustDeviceProfile::SetPeerUserId(int32_t peerUserId)
     peerUserId_ = peerUserId;
 }
 
+int32_t TrustDeviceProfile::GetLocalUserId() const
+{
+    return localUserId_;
+}
+
+void TrustDeviceProfile::SetLocalUserId(int32_t localUserId)
+{
+    localUserId_ = localUserId;
+}
+
 bool TrustDeviceProfile::Marshalling(MessageParcel& parcel) const
 {
     WRITE_HELPER_RET(parcel, String, deviceId_, false);
@@ -92,6 +102,7 @@ bool TrustDeviceProfile::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, Int32, status_, false);
     WRITE_HELPER_RET(parcel, Uint32, bindType_, false);
     WRITE_HELPER_RET(parcel, Int32, peerUserId_, false);
+    WRITE_HELPER_RET(parcel, Int32, localUserId_, false);
     return true;
 }
 
@@ -103,6 +114,7 @@ bool TrustDeviceProfile::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, Int32, status_, false);
     READ_HELPER_RET(parcel, Uint32, bindType_, false);
     READ_HELPER_RET(parcel, Int32, peerUserId_, false);
+    READ_HELPER_RET(parcel, Int32, localUserId_, false);
     return true;
 }
 
@@ -120,6 +132,8 @@ std::string TrustDeviceProfile::dump() const
     cJSON_AddNumberToObject(json, BIND_TYPE.c_str(), bindType_);
     cJSON_AddStringToObject(json, PEER_USER_ID.c_str(),
         ProfileUtils::GetAnonyString(std::to_string(peerUserId_)).c_str());
+    cJSON_AddStringToObject(json, LOCAL_USER_ID.c_str(),
+        ProfileUtils::GetAnonyString(std::to_string(localUserId_)).c_str());
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);

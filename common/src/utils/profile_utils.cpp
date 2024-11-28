@@ -983,10 +983,13 @@ int32_t ProfileUtils::ConvertToTrustDeviceProfile(
     trustDeviceProfile.SetBindType(accessControlProfile.GetBindType());
     std::string peerDeviceId = accessControlProfile.GetTrustDeviceId();
     int32_t peerUserId = accessControlProfile.GetAccesser().GetAccesserUserId();
+    int32_t localUserId = accessControlProfile.GetAccessee().GetAccesseeUserId();
     if (accessControlProfile.GetAccessee().GetAccesseeDeviceId() == peerDeviceId) {
         peerUserId = accessControlProfile.GetAccessee().GetAccesseeUserId();
+        localUserId = accessControlProfile.GetAccesser().GetAccesserUserId();
     }
     trustDeviceProfile.SetPeerUserId(peerUserId);
+    trustDeviceProfile.SetLocalUserId(localUserId);
     return DP_SUCCESS;
 }
 

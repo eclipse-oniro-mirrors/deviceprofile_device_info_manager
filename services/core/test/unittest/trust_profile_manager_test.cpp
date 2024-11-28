@@ -1487,13 +1487,12 @@ HWTEST_F(TrustProfileManagerTest, RdbStoreIsNullptr_002, TestSize.Level1)
     EXPECT_NE(ret, DP_SUCCESS);
 
     profile.SetAccessControlId(1);
-    bool isAcerOrAceeExist = false;
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().UpdateAccesserProfile(profile, isAcerOrAceeExist);
+        GetInstance().UpdateAccesserProfile(profile);
     EXPECT_NE(ret, DP_SUCCESS);
 
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().UpdateAccesseeProfile(profile, isAcerOrAceeExist);
+        GetInstance().UpdateAccesseeProfile(profile);
     EXPECT_NE(ret, DP_SUCCESS);
 }
 
@@ -1622,23 +1621,19 @@ HWTEST_F(TrustProfileManagerTest, Check_001, TestSize.Level1)
     profile.SetAccessControlId(1);
     profile.SetAccesserId(1);
     profile.SetAccesseeId(1);
-    profile.GetAccessee().SetAccesseeDeviceId("123456");
+    profile.SetTrustDeviceId("123456");
     profile.GetAccessee().SetAccesseeUserId(6666);
     profile.SetStatus(0);
     bool ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().CheckUserIdExists(profile);
+        GetInstance().CheckUserIdExists(1, 1, "123", 100, "456", 101);
     EXPECT_EQ(ret, false);
-
-    int32_t count = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().GetConformCount("123456", 6666);
-    EXPECT_EQ(count, DP_GET_RESULTSET_FAIL);
 
     AccessControlProfile oldProfile;
     oldProfile.SetStatus(1);
     profile.SetTrustDeviceId("123456");
     int32_t result = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().NotifyCheck(profile, oldProfile);
-    EXPECT_EQ(result, DP_SUCCESS);
+    EXPECT_NE(result, DP_SUCCESS);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
