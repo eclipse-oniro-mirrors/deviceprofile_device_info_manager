@@ -634,6 +634,302 @@ HWTEST_F(ProfileCacheTest, IsLocalOrOnlineDevice0013, TestSize.Level1)
     bool ret = ProfileCache::GetInstance().IsLocalOrOnlineDevice(deviceId);
     EXPECT_EQ(ret, true);
 }
+
+/**
+ * @tc.name: GetStaticCharacteristicProfile001
+ * @tc.desc: GetStaticCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetStaticCharacteristicProfile001, TestSize.Level1)
+{
+    std::string deviceId = "";
+    std::string serviceName = "";
+    std::string charKey = "";
+    CharacteristicProfile charProfile;
+    int32_t ret =
+        ProfileCache::GetInstance().GetStaticCharacteristicProfile(deviceId, serviceName, charKey, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetStaticCharacteristicProfile002
+ * @tc.desc: GetStaticCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetStaticCharacteristicProfile002, TestSize.Level1)
+{
+    std::string deviceId = "deviceId";
+    std::string serviceName = "";
+    std::string charKey = "";
+    CharacteristicProfile charProfile;
+    int32_t ret =
+        ProfileCache::GetInstance().GetStaticCharacteristicProfile(deviceId, serviceName, charKey, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetStaticCharacteristicProfile003
+ * @tc.desc: GetStaticCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetStaticCharacteristicProfile003, TestSize.Level1)
+{
+    std::string deviceId = "";
+    std::string serviceName = "serviceName";
+    std::string charKey = "";
+    CharacteristicProfile charProfile;
+    int32_t ret =
+        ProfileCache::GetInstance().GetStaticCharacteristicProfile(deviceId, serviceName, charKey, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetStaticCharacteristicProfile004
+ * @tc.desc: GetStaticCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetStaticCharacteristicProfile004, TestSize.Level1)
+{
+    std::string deviceId = "";
+    std::string serviceName = "";
+    std::string charKey = "charKey";
+    CharacteristicProfile charProfile;
+    int32_t ret =
+        ProfileCache::GetInstance().GetStaticCharacteristicProfile(deviceId, serviceName, charKey, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetStaticCharacteristicProfile005
+ * @tc.desc: GetStaticCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetStaticCharacteristicProfile005, TestSize.Level1)
+{
+    std::string deviceId = "";
+    std::string serviceName = "serviceName";
+    std::string charKey = "charKey";
+    CharacteristicProfile charProfile;
+    int32_t ret =
+        ProfileCache::GetInstance().GetStaticCharacteristicProfile(deviceId, serviceName, charKey, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetStaticCharacteristicProfile006
+ * @tc.desc: GetStaticCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetStaticCharacteristicProfile006, TestSize.Level1)
+{
+    std::string deviceId = "deviceId";
+    std::string serviceName = "";
+    std::string charKey = "charKey";
+    CharacteristicProfile charProfile;
+    int32_t ret =
+        ProfileCache::GetInstance().GetStaticCharacteristicProfile(deviceId, serviceName, charKey, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetStaticCharacteristicProfile007
+ * @tc.desc: GetStaticCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetStaticCharacteristicProfile007, TestSize.Level1)
+{
+    std::string deviceId = "deviceId";
+    std::string serviceName = "serviceName";
+    std::string charKey = "";
+    CharacteristicProfile charProfile;
+    int32_t ret =
+        ProfileCache::GetInstance().GetStaticCharacteristicProfile(deviceId, serviceName, charKey, charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetStaticCharacteristicProfile008
+ * @tc.desc: GetStaticCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetStaticCharacteristicProfile008, TestSize.Level1)
+{
+    std::string deviceId = "deviceId";
+    std::string serviceName = "serviceName";
+    std::string charKey = "charKey";
+    CharacteristicProfile charProfile;
+    int32_t ret =
+        ProfileCache::GetInstance().GetStaticCharacteristicProfile(deviceId, serviceName, charKey, charProfile);
+    EXPECT_EQ(ret, DP_NOT_FOUND_FAIL);
+}
+
+/**
+ * @tc.name: GetStaticCharacteristicProfile009
+ * @tc.desc: GetStaticCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetStaticCharacteristicProfile009, TestSize.Level1)
+{
+    std::string deviceId = "deviceId";
+    std::string serviceName = "serviceName";
+    std::string charKey = "charKey";
+    CharacteristicProfile charProfile;
+    std::string charProfileKey =
+        CHAR_PREFIX + SEPARATOR + deviceId + SEPARATOR + serviceName + SEPARATOR + charKey;
+    ProfileCache::GetInstance().staticCharProfileMap_.emplace(charProfileKey, charProfile);
+    int32_t ret =
+        ProfileCache::GetInstance().GetStaticCharacteristicProfile(deviceId, serviceName, charKey, charProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: RefreshStaticProfileCache001
+ * @tc.desc: RefreshStaticProfileCache
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, RefreshStaticProfileCache001, TestSize.Level1)
+{
+    std::unordered_map<std::string, CharacteristicProfile> staticProfiles;
+    int32_t ret = ProfileCache::GetInstance().RefreshStaticProfileCache(staticProfiles);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: RefreshStaticProfileCache002
+ * @tc.desc: RefreshStaticProfileCache
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, RefreshStaticProfileCache002, TestSize.Level1)
+{
+    std::unordered_map<std::string, CharacteristicProfile> staticProfiles;
+    staticProfiles.reserve(10001);
+    for (int i = 0; i < 100001; ++i) {
+        std::string key = "key_" + std::to_string(i);
+        CharacteristicProfile profile;
+        staticProfiles[key] = profile;
+    }
+    int32_t ret = ProfileCache::GetInstance().RefreshStaticProfileCache(staticProfiles);
+    staticProfiles.clear();
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: RefreshStaticProfileCache003
+ * @tc.desc: RefreshStaticProfileCache
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, RefreshStaticProfileCache003, TestSize.Level1)
+{
+    std::unordered_map<std::string, CharacteristicProfile> staticProfiles;
+    CharacteristicProfile charProfile;
+    std::string charProfileKey = "charProfileKey";
+    staticProfiles.emplace(charProfileKey, charProfile);
+    int32_t ret = ProfileCache::GetInstance().RefreshStaticProfileCache(staticProfiles);
+    staticProfiles.clear();
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: GetNetWorkIdByUdid001
+ * @tc.desc: GetNetWorkIdByUdid
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetNetWorkIdByUdid001, TestSize.Level1)
+{
+    std::string udid = "";
+    std::string networkId = "";
+    int32_t ret = ProfileCache::GetInstance().GetNetWorkIdByUdid(udid, networkId);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetNetWorkIdByUdid002
+ * @tc.desc: GetNetWorkIdByUdid
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetNetWorkIdByUdid002, TestSize.Level1)
+{
+    std::string udid = "udid1";
+    std::string networkId = "";
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "udid1";
+    int32_t ret = ProfileCache::GetInstance().GetNetWorkIdByUdid(udid, networkId);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: GetNetWorkIdByUdid003
+ * @tc.desc: GetNetWorkIdByUdid
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetNetWorkIdByUdid003, TestSize.Level1)
+{
+    std::string udid = "udid1";
+    std::string networkId = "";
+    int32_t ret = ProfileCache::GetInstance().GetNetWorkIdByUdid(udid, networkId);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: GetNetWorkIdByUdid004
+ * @tc.desc: GetNetWorkIdByUdid
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetNetWorkIdByUdid004, TestSize.Level1)
+{
+    std::string udid = "udid1";
+    std::string networkId = "networkId";
+    ProfileCache::GetInstance().onlineDevMap_.emplace(udid, networkId);
+    int32_t ret = ProfileCache::GetInstance().GetNetWorkIdByUdid(udid, networkId);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: SetSwitchByProfileBatch001
+ * @tc.desc: SetSwitchByProfileBatch
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, SetSwitchByProfileBatch001, TestSize.Level1)
+{
+    std::vector<CharacteristicProfile> charProfiles;
+    std::unordered_map<std::string, SwitchFlag> switchServiceMap;
+    uint32_t outSwitch;
+    int32_t ret = ProfileCache::GetInstance().SetSwitchByProfileBatch(charProfiles, switchServiceMap, outSwitch);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+
+/**
+ * @tc.name: SetSwitchByProfileBatch002
+ * @tc.desc: SetSwitchByProfileBatch
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, SetSwitchByProfileBatch002, TestSize.Level1)
+{
+    std::vector<CharacteristicProfile> charProfiles;
+    std::unordered_map<std::string, SwitchFlag> switchServiceMap;
+    uint32_t outSwitch;
+    CharacteristicProfile charProfile;
+    int32_t ret = ProfileCache::GetInstance().SetSwitchByProfileBatch(charProfiles, switchServiceMap, outSwitch);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 

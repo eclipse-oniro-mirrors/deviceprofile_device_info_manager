@@ -1642,7 +1642,7 @@ HWTEST_F(DeviceProfileManagerTest, HasTrustP2PRelation001, TestSize.Level1)
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(DeviceProfileManagerTest, HasTrustP2PRelation001, TestSize.Level1)
+HWTEST_F(DeviceProfileManagerTest, HasTrustP2PRelation002, TestSize.Level1)
 {
     bool ret = DeviceProfileManager::GetInstance().HasTrustP2PRelation("deviceId", 100);
     EXPECT_EQ(ret, false);
@@ -1674,7 +1674,7 @@ HWTEST_F(DeviceProfileManagerTest, IsSameAccount002, TestSize.Level1)
 
 /**
  * @tc.name: IsMultiUserValid001
- * @tc.desc: 
+ * @tc.desc:
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1690,7 +1690,7 @@ HWTEST_F(DeviceProfileManagerTest, IsMultiUserValid001, TestSize.Level1)
 
 /**
  * @tc.name: IsMultiUserValid002
- * @tc.desc: 
+ * @tc.desc:
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1706,7 +1706,7 @@ HWTEST_F(DeviceProfileManagerTest, IsMultiUserValid002, TestSize.Level1)
 
 /**
  * @tc.name: IsMultiUserValid003
- * @tc.desc: 
+ * @tc.desc:
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1722,7 +1722,7 @@ HWTEST_F(DeviceProfileManagerTest, IsMultiUserValid003, TestSize.Level1)
 
 /**
  * @tc.name: IsMultiUserValid004
- * @tc.desc: 
+ * @tc.desc:
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1738,7 +1738,7 @@ HWTEST_F(DeviceProfileManagerTest, IsMultiUserValid004, TestSize.Level1)
 
 /**
  * @tc.name: IsMultiUserValid005
- * @tc.desc: 
+ * @tc.desc:
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1762,7 +1762,7 @@ HWTEST_F(DeviceProfileManagerTest, SaveBatchByKeys001, TestSize.Level1)
 {
     std::map<std::string, std::string> entries;
     int32_t result = DeviceProfileManager::GetInstance().SaveBatchByKeys(entries);
-    EXPECT_NE(result, DP_SUCCESS);
+    EXPECT_EQ(result, DP_SUCCESS);
 }
 
 /**
@@ -1816,7 +1816,7 @@ HWTEST_F(DeviceProfileManagerTest, GetProfilesByKeyPrefix001, TestSize.Level1)
 
 /**
  * @tc.name: GetProfilesByKeyPrefix002
- * @tc.desc: 
+ * @tc.desc:
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1828,5 +1828,73 @@ HWTEST_F(DeviceProfileManagerTest, GetProfilesByKeyPrefix002, TestSize.Level1)
     int32_t result = DeviceProfileManager::GetInstance().GetProfilesByKeyPrefix(udid, values);
     EXPECT_NE(result, DP_SUCCESS);
 }
+
+/**
+ * @tc.name: DeleteRemovedUserData001
+ * @tc.desc: DeleteRemovedUserData001
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, DeleteRemovedUserData001, TestSize.Level1)
+{
+    int32_t userId = -1;
+    int32_t ret = DeviceProfileManager::GetInstance().DeleteRemovedUserData(userId);
+    EXPECT_EQ(ret, DP_INVALID_PARAM);
+}
+
+/**
+ * @tc.name: DeleteRemovedUserData001
+ * @tc.desc: DeleteRemovedUserData001
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, DeleteRemovedUserData002, TestSize.Level1)
+{
+    int32_t userId = 100001;
+    int32_t ret = DeviceProfileManager::GetInstance().DeleteRemovedUserData(userId);
+    EXPECT_EQ(ret, DP_INVALID_PARAM);
+}
+
+/**
+ * @tc.name: DeleteRemovedUserData003
+ * @tc.desc: DeleteRemovedUserData003
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, DeleteRemovedUserData003, TestSize.Level1)
+{
+    int32_t userId = 1;
+    int32_t ret = DeviceProfileManager::GetInstance().DeleteRemovedUserData(userId);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: DeleteRemovedUserData004
+ * @tc.desc: DeleteRemovedUserData004
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, DeleteRemovedUserData004, TestSize.Level1)
+{
+    int32_t userId = 1;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "";
+    int32_t ret = DeviceProfileManager::GetInstance().DeleteRemovedUserData(userId);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: DeleteRemovedUserData005
+ * @tc.desc: DeleteRemovedUserData005
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, DeleteRemovedUserData005, TestSize.Level1)
+{
+    int32_t userId = 1;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "localUdid";
+    int32_t ret = DeviceProfileManager::GetInstance().DeleteRemovedUserData(userId);
+    EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
+}
+
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

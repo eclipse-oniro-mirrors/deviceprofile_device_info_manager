@@ -22,6 +22,7 @@
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
+#include "profile_cache.h"
 #include "static_profile_manager.h"
 using namespace testing::ext;
 namespace OHOS {
@@ -120,6 +121,94 @@ HWTEST_F(StaticProfileManagerTest, GetCharacteristicProfile_001, TestSize.Level1
     int32_t errCode = StaticProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
         characteristicKey, charProfile);
     EXPECT_EQ(errCode, DP_INVALID_PARAMS);
+}
+
+/*
+ * @tc.name: GetCharacteristicProfile_002
+ * @tc.desc: GetCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(StaticProfileManagerTest, GetCharacteristicProfile_002, TestSize.Level1)
+{
+    std::string deviceId = "deviceId";
+    std::string serviceName = "serviceName";
+    std::string characteristicKey = "";
+    CharacteristicProfile charProfile;
+    int32_t errCode = StaticProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
+        characteristicKey, charProfile);
+    EXPECT_EQ(errCode, DP_INVALID_PARAMS);
+}
+
+/*
+ * @tc.name: GetCharacteristicProfile_003
+ * @tc.desc: GetCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(StaticProfileManagerTest, GetCharacteristicProfile_003, TestSize.Level1)
+{
+    std::string deviceId = "";
+    std::string serviceName = "serviceName";
+    std::string characteristicKey = "characteristicKey";
+    CharacteristicProfile charProfile;
+    int32_t errCode = StaticProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
+        characteristicKey, charProfile);
+    EXPECT_EQ(errCode, DP_INVALID_PARAMS);
+}
+
+/*
+ * @tc.name: GetCharacteristicProfile_004
+ * @tc.desc: GetCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(StaticProfileManagerTest, GetCharacteristicProfile_004, TestSize.Level1)
+{
+    std::string deviceId = "deviceId";
+    std::string serviceName = "";
+    std::string characteristicKey = "characteristicKey";
+    CharacteristicProfile charProfile;
+    int32_t errCode = StaticProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
+        characteristicKey, charProfile);
+    EXPECT_EQ(errCode, DP_INVALID_PARAMS);
+}
+
+/*
+ * @tc.name: GetCharacteristicProfile_005
+ * @tc.desc: GetCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(StaticProfileManagerTest, GetCharacteristicProfile_005, TestSize.Level1)
+{
+    std::string deviceId = "deviceId";
+    std::string serviceName = "serviceName";
+    std::string characteristicKey = "characteristicKey";
+    CharacteristicProfile charProfile;
+    std::string charProfileKey =
+        CHAR_PREFIX + SEPARATOR + deviceId + SEPARATOR + serviceName + SEPARATOR + characteristicKey;
+    ProfileCache::GetInstance().staticCharProfileMap_.emplace(charProfileKey, charProfile);
+    int32_t errCode = StaticProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
+        characteristicKey, charProfile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: GetCharacteristicProfile_006
+ * @tc.desc: GetCharacteristicProfile
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(StaticProfileManagerTest, GetCharacteristicProfile_006, TestSize.Level1)
+{
+    std::string deviceId = "deviceId";
+    std::string serviceName = "serviceName";
+    std::string characteristicKey = "characteristicKey";
+    CharacteristicProfile charProfile;
+    int32_t errCode = StaticProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
+        characteristicKey, charProfile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
 }
 
 #ifdef DEVICE_PROFILE_SWITCH_STATIC_ENABLE
