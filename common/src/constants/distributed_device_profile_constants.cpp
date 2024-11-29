@@ -44,6 +44,7 @@ const std::string SUBSCRIBE_TRUST_DEVICE_PROFILE = "trust_device_profile";
 const std::string DEVICE_ID_TYPE = "deviceIdType";
 const std::string DEVICE_ID_HASH = "deviceIdHash";
 const std::string PEER_USER_ID = "peerUserId";
+const std::string LOCAL_USER_ID = "localUserId";
 /* AccessControlProfile Attribute */
 const std::string ACCESS_CONTROL_ID = "accessControlId";
 const std::string ACCESSER_ID = "accesserId";

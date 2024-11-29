@@ -30,7 +30,8 @@ public:
         deviceIdHash_(""),
         status_(static_cast<int32_t>(Status::MIN)),
         bindType_(static_cast<uint32_t>(BindType::MIN)),
-        peerUserId_(-1)
+        peerUserId_(-1),
+        localUserId_(-1)
     {}
     ~TrustDeviceProfile() = default;
 
@@ -46,6 +47,8 @@ public:
     void SetBindType(uint32_t bindType);
     int32_t GetPeerUserId() const;
     void SetPeerUserId(int32_t peerUserId);
+    int32_t GetLocalUserId() const;
+    void SetLocalUserId(int32_t localUserId);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     std::string dump() const override;
@@ -57,6 +60,7 @@ private:
     int32_t status_;
     uint32_t bindType_;
     int32_t peerUserId_;
+    int32_t localUserId_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

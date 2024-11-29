@@ -95,7 +95,8 @@ int32_t TrustProfileManager::PutTrustDeviceProfile(const TrustDeviceProfile& pro
 
 int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile& profile)
 {
-    bool peerDevInfoExists = CheckUserIdExists(profile);
+    bool isExists = false;
+    CheckDeviceIdAndUserIdExists(profile, isExists);
     AccessControlProfile accessControlProfile(profile);
     int32_t ret = this->SetAccessControlProfileId(accessControlProfile);
     if (ret != DP_SUCCESS) {
@@ -131,16 +132,13 @@ int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile&
         }
     }
     HILOGI("PutAclProfile : %{public}s", accessControlProfile.dump().c_str());
-    ret = this->PutAclCheck(accessControlProfile, peerDevInfoExists);
+    ret = this->PutAclCheck(accessControlProfile, isExists);
     if (ret != DP_SUCCESS) {
         HILOGE("PutAclCheck failed");
         return ret;
     }
-    if (DistributedHardware::DeviceManager::GetInstance().DpAclAdd(accessControlProfile.GetAccessControlId(),
-        accessControlProfile.GetTrustDeviceId(), accessControlProfile.GetBindType()) != DP_SUCCESS) {
-        HILOGE("Notify accessControlProfile Add failed");
-        return DP_NOTIFY_ACCESS_CONTROL_FAIL;
-    }
+    DistributedHardware::DeviceManager::GetInstance().DpAclAdd(accessControlProfile.GetAccessControlId(),
+        accessControlProfile.GetTrustDeviceId(), accessControlProfile.GetBindType());
     HILOGI("end!");
     return DP_SUCCESS;
 }
@@ -199,14 +197,9 @@ int32_t TrustProfileManager::UpdateAccessControlProfile(const AccessControlProfi
         HILOGE("UpdateAclCheck faild");
         return ret;
     }
-    bool isAcerOrAceeExist = false;
     AccessControlProfile newProfile(profile);
-    this->UpdateAccesserProfile(newProfile, isAcerOrAceeExist);
-    this->UpdateAccesseeProfile(newProfile, isAcerOrAceeExist);
-    if (UpdateOrDeleteAclCheck(newProfile, isAcerOrAceeExist) == DP_DATA_EXISTS) {
-        HILOGE("aclProfile is duplicative");
-        return DP_SUCCESS;
-    }
+    this->UpdateAccesserProfile(newProfile);
+    this->UpdateAccesseeProfile(newProfile);
     ValuesBucket values;
     ProfileUtils::AccessControlProfileToEntries(newProfile, values);
     int32_t changeRowCnt = CHANGEROWCNT_INIT;
@@ -1137,36 +1130,8 @@ int32_t TrustProfileManager::SetAccesseeId(AccessControlProfile& profile)
     return DP_SUCCESS;
 }
 
-int32_t TrustProfileManager::UpdateAccesserProfile(AccessControlProfile& profile, bool& isAcerOrAceeExist)
+int32_t TrustProfileManager::UpdateAccesserProfile(AccessControlProfile& profile)
 {
-    int64_t accesserId = profile.GetAccesserId();
-    Accesser accesser = profile.GetAccesser();
-    std::shared_ptr<ResultSet> resultSet = GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ALL, std::vector<ValueObject>{
-        ValueObject(accesser.GetAccesserDeviceId()), ValueObject(accesser.GetAccesserUserId()),
-        ValueObject(accesser.GetAccesserAccountId()), ValueObject(accesser.GetAccesserTokenId()),
-        ValueObject(accesser.GetAccesserBundleName()), ValueObject(accesser.GetAccesserHapSignature()),
-        ValueObject(static_cast<int32_t>(accesser.GetAccesserBindLevel()))});
-    if (resultSet == nullptr) {
-        HILOGE("resultSet is nullptr");
-        return DP_GET_RESULTSET_FAIL;
-    }
-    int32_t rowCount = ROWCOUNT_INIT;
-    resultSet->GetRowCount(rowCount);
-    resultSet->GoToNextRow();
-    int32_t columnIndex = COLUMNINDEX_INIT;
-    int64_t oldAccesserId = ACCESSERID_INIT;
-    resultSet->GetColumnIndex(ACCESSER_ID, columnIndex);
-    resultSet->GetLong(columnIndex, oldAccesserId);
-    resultSet->Close();
-    if (rowCount != 0 && accesserId != oldAccesserId) {
-        isAcerOrAceeExist = true;
-        Accesser oldAccesser;
-        this->DeleteAccesserCheck(accesserId, oldAccesser);
-        profile.SetAccesserId(oldAccesserId);
-        profile.SetAccesser(oldAccesser);
-        HILOGI("update accesser is exists, UpdateAccesser : %{public}s", accesser.dump().c_str());
-        return DP_SUCCESS;
-    }
     ValuesBucket values;
     ProfileUtils::AccesserToEntries(profile, values);
     int32_t changeRowCnt = CHANGEROWCNT_INIT;
@@ -1177,7 +1142,7 @@ int32_t TrustProfileManager::UpdateAccesserProfile(AccessControlProfile& profile
             return DP_GET_RDBSTORE_FAIL;
         }
         int32_t ret = rdbStore_->Update(changeRowCnt, ACCESSER_TABLE, values, ACCESSERID_EQUAL_CONDITION,
-            std::vector<ValueObject> {ValueObject(accesserId)});
+            std::vector<ValueObject> {ValueObject(profile.GetAccesserId())});
         if (ret != DP_SUCCESS) {
             HILOGE("accesser_table update failed");
             return DP_UPDATE_ACCESSER_PROFILE_FAIL;
@@ -1187,36 +1152,8 @@ int32_t TrustProfileManager::UpdateAccesserProfile(AccessControlProfile& profile
     return DP_SUCCESS;
 }
 
-int32_t TrustProfileManager::UpdateAccesseeProfile(AccessControlProfile& profile, bool& isAcerOrAceeExist)
+int32_t TrustProfileManager::UpdateAccesseeProfile(AccessControlProfile& profile)
 {
-    int64_t accesseeId = profile.GetAccesseeId();
-    Accessee accessee = profile.GetAccessee();
-    std::shared_ptr<ResultSet> resultSet = GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ALL, std::vector<ValueObject>{
-        ValueObject(accessee.GetAccesseeDeviceId()), ValueObject(accessee.GetAccesseeUserId()),
-        ValueObject(accessee.GetAccesseeAccountId()), ValueObject(accessee.GetAccesseeTokenId()),
-        ValueObject(accessee.GetAccesseeBundleName()), ValueObject(accessee.GetAccesseeHapSignature()),
-        ValueObject(static_cast<int32_t>(accessee.GetAccesseeBindLevel()))});
-    if (resultSet == nullptr) {
-        HILOGE("resultSet is nullptr");
-        return DP_GET_RESULTSET_FAIL;
-    }
-    int32_t rowCount = ROWCOUNT_INIT;
-    resultSet->GetRowCount(rowCount);
-    resultSet->GoToNextRow();
-    int32_t columnIndex = COLUMNINDEX_INIT;
-    int64_t oldAccesseeId = ACCESSEEID_INIT;
-    resultSet->GetColumnIndex(ACCESSEE_ID, columnIndex);
-    resultSet->GetLong(columnIndex, oldAccesseeId);
-    resultSet->Close();
-    if (rowCount != 0 && accesseeId != oldAccesseeId) {
-        isAcerOrAceeExist = true;
-        Accessee oldAccessee;
-        this->DeleteAccesseeCheck(accesseeId, oldAccessee);
-        profile.SetAccesseeId(oldAccesseeId);
-        profile.SetAccessee(oldAccessee);
-        HILOGI("accessee is exists, change accesseeId, UpdateAccessee : %{public}s", accessee.dump().c_str());
-        return DP_SUCCESS;
-    }
     ValuesBucket values;
     ProfileUtils::AccesseeToEntries(profile, values);
     int32_t changeRowCnt = CHANGEROWCNT_INIT;
@@ -1227,7 +1164,7 @@ int32_t TrustProfileManager::UpdateAccesseeProfile(AccessControlProfile& profile
             return DP_GET_RDBSTORE_FAIL;
         }
         int32_t ret = rdbStore_->Update(changeRowCnt, ACCESSEE_TABLE, values, ACCESSEEID_EQUAL_CONDITION,
-            std::vector<ValueObject>{ ValueObject(accesseeId) });
+            std::vector<ValueObject>{ ValueObject(profile.GetAccesseeId()) });
         if (ret != DP_SUCCESS) {
             HILOGE("accessee_table update failed");
             return DP_UPDATE_ACCESSEE_PROFILE_FAIL;
@@ -1773,47 +1710,33 @@ int32_t TrustProfileManager::IsAclExists(const AccessControlProfile &profile)
     return DP_SUCCESS;
 }
 
-bool TrustProfileManager::CheckUserIdExists(const AccessControlProfile& profile)
+int32_t TrustProfileManager::CheckDeviceIdAndUserIdActive(const AccessControlProfile& profile, int32_t& resultCount)
 {
     std::string peerDeviceId = profile.GetTrustDeviceId();
+    std::string localDeviceId = profile.GetAccessee().GetAccesseeDeviceId();
     int32_t peerUserId = profile.GetAccesser().GetAccesserUserId();
+    int32_t localUserId = profile.GetAccessee().GetAccesseeUserId();
     if (profile.GetAccessee().GetAccesseeDeviceId() == peerDeviceId) {
         peerUserId = profile.GetAccessee().GetAccesseeUserId();
+        localUserId = profile.GetAccesser().GetAccesserUserId();
+        localDeviceId = profile.GetAccesser().GetAccesserDeviceId();
     }
     std::shared_ptr<ResultSet> resultSet =
-        GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERDEVICEID_AND_ACCESSERUSERID,
-        std::vector<ValueObject>{ ValueObject(peerDeviceId), ValueObject(peerUserId) });
-    if (resultSet == nullptr) {
-        HILOGE("resultSet is nullptr");
-        return false;
-    }
-    int32_t acerRowCount = ROWCOUNT_INIT;
-    resultSet->GetRowCount(acerRowCount);
-    resultSet->Close();
-    resultSet = GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEDEVICEID_AND_ACCESSEEUSERID,
-        std::vector<ValueObject>{ ValueObject(peerDeviceId), ValueObject(peerUserId) });
-    if (resultSet == nullptr) {
-        HILOGE("resultSet is nullptr");
-        return false;
-    }
-    int32_t aceeRowCount = ROWCOUNT_INIT;
-    resultSet->GetRowCount(aceeRowCount);
-    resultSet->Close();
-    if (acerRowCount > 0 || aceeRowCount > 0) {
-        return true;
-    }
-    return false;
-}
-
-int32_t TrustProfileManager::GetConformCount(const std::string &peerDeviceId, int32_t peerUserId)
-{
-    std::shared_ptr<ResultSet> resultSet = GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_TRUSTDEVICEID_AND_STATUS,
-        std::vector<ValueObject>{ ValueObject(peerDeviceId), ValueObject(1) });
+        GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_TRUSTDEVICEID_AND_STATUS,
+        std::vector<ValueObject>{ ValueObject(peerDeviceId), ValueObject(STATUS_ACTIVE) });
     if (resultSet == nullptr) {
         HILOGE("resultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
     }
-    int32_t resultRowCount = 0;
+    int32_t rowCount = ROWCOUNT_INIT;
+    resultSet->GetRowCount(rowCount);
+    if (rowCount == 0) {
+        HILOGE("peerDeviceId  : %{public}s not have acl status active",
+            ProfileUtils::GetAnonyString(peerDeviceId).c_str());
+        return DP_SUCCESS;
+    }
+    bool acerExists = false;
+    bool aceeExists = false;
     while (resultSet->GoToNextRow() == DP_SUCCESS) {
         int32_t columnIndex = COLUMNINDEX_INIT;
         int64_t accesserId = ACCESSERID_INIT;
@@ -1822,51 +1745,81 @@ int32_t TrustProfileManager::GetConformCount(const std::string &peerDeviceId, in
         int64_t accesseeId = ACCESSEEID_INIT;
         resultSet->GetColumnIndex(ACCESSEE_ID, columnIndex);
         resultSet->GetLong(columnIndex, accesseeId);
-        std::shared_ptr<ResultSet> accesserResultSet =
-            GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_DEVICEID_AND_USERID,
-            std::vector<ValueObject>{ ValueObject(accesserId), ValueObject(peerDeviceId), ValueObject(peerUserId) });
-        if (accesserResultSet == nullptr) {
-            HILOGE("accesserResultSet is nullptr");
-            return DP_GET_RESULTSET_FAIL;
+        aceeExists = this->CheckUserIdExists(
+            accesserId, accesseeId, localDeviceId, localUserId, peerDeviceId, peerUserId);
+        acerExists = this->CheckUserIdExists(
+            accesserId, accesseeId, peerDeviceId, peerUserId, localDeviceId, localUserId);
+        if (acerExists || aceeExists) {
+            resultCount++;
+            HILOGE("localUserId and peerUserId have acl status is active");
         }
-        int32_t acerRowCount = ROWCOUNT_INIT;
-        accesserResultSet->GetRowCount(acerRowCount);
-        accesserResultSet->Close();
-        if (acerRowCount > 0) {
-            resultRowCount++;
-        } else {
-            std::shared_ptr<ResultSet> accesseeResultSet = GetResultSet(
-                SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_DEVICEID_AND_USERID, std::vector<ValueObject>{
-                ValueObject(accesseeId), ValueObject(peerDeviceId), ValueObject(peerUserId) });
-            if (accesseeResultSet == nullptr) {
-                HILOGE("accesserResultSet is nullptr");
-                return DP_GET_RESULTSET_FAIL;
-            }
-            int32_t aceeRowCount = ROWCOUNT_INIT;
-            accesseeResultSet->GetRowCount(aceeRowCount);
-            if (aceeRowCount > 0) {
-                resultRowCount++;
-            }
-            accesseeResultSet->Close();
+    }
+    return DP_SUCCESS;
+}
+
+int32_t TrustProfileManager::CheckDeviceIdAndUserIdExists(const AccessControlProfile& profile, bool& isExists)
+{
+    std::string peerDeviceId = profile.GetTrustDeviceId();
+    std::string localDeviceId = profile.GetAccessee().GetAccesseeDeviceId();
+    int32_t peerUserId = profile.GetAccesser().GetAccesserUserId();
+    int32_t localUserId = profile.GetAccessee().GetAccesseeUserId();
+    if (profile.GetAccessee().GetAccesseeDeviceId() == peerDeviceId) {
+        peerUserId = profile.GetAccessee().GetAccesseeUserId();
+        localUserId = profile.GetAccesser().GetAccesserUserId();
+        localDeviceId = profile.GetAccesser().GetAccesserDeviceId();
+    }
+    std::shared_ptr<ResultSet> resultSet =
+        GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_TRUSTDEVICEID,
+        std::vector<ValueObject>{ ValueObject(peerDeviceId) });
+    if (resultSet == nullptr) {
+        HILOGE("resultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    int32_t rowCount = ROWCOUNT_INIT;
+    resultSet->GetRowCount(rowCount);
+    if (rowCount == 0) {
+        HILOGE("peerDeviceId  : %{public}s not have acl",
+            ProfileUtils::GetAnonyString(peerDeviceId).c_str());
+        return DP_SUCCESS;
+    }
+    bool acerExists = false;
+    bool aceeExists = false;
+    while (resultSet->GoToNextRow() == DP_SUCCESS) {
+        int32_t columnIndex = COLUMNINDEX_INIT;
+        int64_t accesserId = ACCESSERID_INIT;
+        resultSet->GetColumnIndex(ACCESSER_ID, columnIndex);
+        resultSet->GetLong(columnIndex, accesserId);
+        int64_t accesseeId = ACCESSEEID_INIT;
+        resultSet->GetColumnIndex(ACCESSEE_ID, columnIndex);
+        resultSet->GetLong(columnIndex, accesseeId);
+        aceeExists = this->CheckUserIdExists(
+            accesserId, accesseeId, localDeviceId, localUserId, peerDeviceId, peerUserId);
+        acerExists = this->CheckUserIdExists(
+            accesserId, accesseeId, peerDeviceId, peerUserId, localDeviceId, localUserId);
+        if (acerExists || aceeExists) {
+            isExists = true;
+            resultSet->Close();
+            HILOGE("localUserId and peerUserId have acl status is active");
+            return DP_SUCCESS;
         }
     }
     resultSet->Close();
-    return resultRowCount;
+    return DP_SUCCESS;
 }
 
 int32_t TrustProfileManager::NotifyCheck(const AccessControlProfile& profile, const AccessControlProfile& oldProfile)
 {
-    std::string peerDeviceId = profile.GetTrustDeviceId();
-    int32_t peerUserId = profile.GetAccesser().GetAccesserUserId();
-    if (profile.GetAccessee().GetAccesseeDeviceId() == peerDeviceId) {
-        peerUserId = profile.GetAccessee().GetAccesseeUserId();
+    int32_t resultCount = 0;
+    int32_t ret = CheckDeviceIdAndUserIdActive(profile, resultCount);
+    if (ret != DP_SUCCESS) {
+        HILOGE("CheckDeviceIdAndUserIdActive failed");
+        return DP_NOTIFY_TRUST_DEVICE_FAIL;
     }
-    int32_t resultCount = GetConformCount(peerDeviceId, peerUserId);
     HILOGI("resultCount : %{public}d", resultCount);
     TrustDeviceProfile trustProfile;
     ProfileUtils::ConvertToTrustDeviceProfile(profile, trustProfile);
     if (resultCount == 1 && profile.GetStatus() == STATUS_ACTIVE && oldProfile.GetStatus() == STATUS_INACTIVE) {
-        int32_t ret = SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileActive(trustProfile);
+        ret = SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileActive(trustProfile);
         if (ret != DP_SUCCESS) {
             HILOGE("NotifyTrustDeviceProfileActive failed");
             return DP_NOTIFY_TRUST_DEVICE_FAIL;
@@ -1924,7 +1877,9 @@ int32_t TrustProfileManager::DeleteTrustDeviceCheck(const AccessControlProfile& 
 {
     TrustDeviceProfile trustProfile;
     ProfileUtils::ConvertToTrustDeviceProfile(profile, trustProfile);
-    if (!CheckUserIdExists(profile)) {
+    bool isExists = false;
+    CheckDeviceIdAndUserIdExists(profile, isExists);
+    if (!isExists) {
         int32_t ret = SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileDelete(trustProfile);
         if (ret != DP_SUCCESS) {
             HILOGE("NotifyTrustDeviceProfileDelete failed");
@@ -1961,34 +1916,33 @@ int32_t TrustProfileManager::DeleteTrustDeviceCheck(const AccessControlProfile& 
     return DP_SUCCESS;
 }
 
-int32_t TrustProfileManager::UpdateOrDeleteAclCheck(const AccessControlProfile& profile, bool isAcerOrAceeExist)
+bool TrustProfileManager::CheckUserIdExists(int64_t accesserId, int64_t accesseeId,
+    const std::string& peerDeviceId, int32_t peerUserId, const std::string& localDeviceId, int32_t localUserId)
 {
-    std::shared_ptr<ResultSet> resultSet = GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_ACCESSERID_AND_ACCESSEEID,
-        std::vector<ValueObject>{ ValueObject(profile.GetAccesserId()), ValueObject(profile.GetAccesseeId()) });
-    if (resultSet == nullptr) {
-        HILOGE("resultSet is nullptr");
-        return DP_GET_RESULTSET_FAIL;
+    std::shared_ptr<ResultSet> accesserResultSet =
+        GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_DEVICEID_AND_USERID,
+            std::vector<ValueObject>{ ValueObject(accesserId), ValueObject(peerDeviceId), ValueObject(peerUserId) });
+    if (accesserResultSet == nullptr) {
+        HILOGE("accesserResultSet is nullptr");
+        return false;
     }
-    int32_t rowCount = ROWCOUNT_INIT;
-    resultSet->GetRowCount(rowCount);
-    resultSet->Close();
-    if (rowCount != 0 && isAcerOrAceeExist) {
-        std::lock_guard<std::mutex> lock(rdbMutex_);
-        if (rdbStore_ == nullptr) {
-            HILOGE("rdbStore_ is nullptr");
-            return DP_GET_RDBSTORE_FAIL;
+    int32_t acerRowCount = ROWCOUNT_INIT;
+    accesserResultSet->GetRowCount(acerRowCount);
+    accesserResultSet->Close();
+    if (acerRowCount > 0) {
+        std::shared_ptr<ResultSet> accesseeResultSet =
+            GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_DEVICEID_AND_USERID,
+                std::vector<ValueObject>{ ValueObject(accesseeId),
+                ValueObject(localDeviceId), ValueObject(localUserId) });
+        int32_t aceeRowCount = ROWCOUNT_INIT;
+        accesseeResultSet->GetRowCount(aceeRowCount);
+        accesseeResultSet->Close();
+        if (aceeRowCount > 0) {
+            HILOGE("localUserId and peerUserId status : 1");
+            return true;
         }
-        int32_t deleteRows = DELETEROWS_INIT;
-        int32_t ret = rdbStore_->Delete(deleteRows, ACCESS_CONTROL_TABLE, ACCESSCONTROLID_EQUAL_CONDITION,
-            std::vector<ValueObject>{ ValueObject(profile.GetAccessControlId()) });
-        if (ret != DP_SUCCESS) {
-            HILOGE("delete access_control_table failed");
-            return DP_DELETE_ACCESS_CONTROL_PROFILE_FAIL;
-        }
-        HILOGE("aclProfile is exist, DeleteAclProfile : %{public}s", profile.dump().c_str());
-        return DP_DATA_EXISTS;
     }
-    return DP_SUCCESS;
+    return false;
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

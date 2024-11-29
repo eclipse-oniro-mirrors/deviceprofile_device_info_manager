@@ -81,8 +81,8 @@ private:
     int32_t SetAccessControlId(AccessControlProfile& profile);
     int32_t SetAccesserId(AccessControlProfile& profile);
     int32_t SetAccesseeId(AccessControlProfile& profile);
-    int32_t UpdateAccesserProfile(AccessControlProfile& profile, bool& isAcerOrAceeExist);
-    int32_t UpdateAccesseeProfile(AccessControlProfile& profile, bool& isAcerOrAceeExist);
+    int32_t UpdateAccesserProfile(AccessControlProfile& profile);
+    int32_t UpdateAccesseeProfile(AccessControlProfile& profile);
     int32_t UpdateTrustDeviceProfileNotify(const TrustDeviceProfile& oldProfile,
         const TrustDeviceProfile& newProfile);
     int32_t GetResultStatus(const std::string& trustDeviceId, int32_t& trustDeviceStatus);
@@ -109,10 +109,11 @@ private:
     int32_t UpdateAclCheck(const AccessControlProfile& profile, AccessControlProfile& oldProfile);
     int32_t PutAclCheck(const AccessControlProfile& profile, bool peerDevInfoExists);
     int32_t IsAclExists(const AccessControlProfile& profile);
-    bool CheckUserIdExists(const AccessControlProfile& profile);
-    int32_t GetConformCount(const std::string& peerDeviceId, int32_t peerUserId);
+    int32_t CheckDeviceIdAndUserIdActive(const AccessControlProfile& profile, int32_t& resultCount);
+    int32_t CheckDeviceIdAndUserIdExists(const AccessControlProfile& profile, bool& isExists);
     int32_t NotifyCheck(const AccessControlProfile& profile, const AccessControlProfile& oldProfile);
-    int32_t UpdateOrDeleteAclCheck(const AccessControlProfile& profile, bool isAcerOrAceeExist);
+    bool CheckUserIdExists(int64_t accesserId, int64_t accesseeId, const std::string& peerDeviceId,
+        int32_t peerUserId, const std::string& localDeviceId, int32_t localUserId);
 
 private:
     std::shared_ptr<IRdbAdapter> rdbStore_;

@@ -54,6 +54,7 @@ extern const std::string SUBSCRIBE_TRUST_DEVICE_PROFILE;
 extern const std::string DEVICE_ID_TYPE;
 extern const std::string DEVICE_ID_HASH;
 extern const std::string PEER_USER_ID;
+extern const std::string LOCAL_USER_ID;
 /* AccessControlProfile Attribute */
 extern const std::string ACCESS_CONTROL_ID;
 extern const std::string ACCESSER_ID;
