@@ -31,7 +31,6 @@ public:
     virtual int32_t UnInit() = 0;
     virtual int32_t Put(const std::string& key, const std::string& value) = 0;
     virtual int32_t PutBatch(const std::map<std::string, std::string>& values) = 0;
-    virtual int32_t PutBatchNoDedup(const std::map<std::string, std::string>& values) = 0;
     virtual int32_t Delete(const std::string& key) = 0;
     virtual int32_t DeleteByPrefix(const std::string& keyPrefix) = 0;
     virtual int32_t Get(const std::string& key, std::string& value) = 0;

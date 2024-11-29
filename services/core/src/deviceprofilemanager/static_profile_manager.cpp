@@ -219,39 +219,5 @@ void StaticProfileManager::E2ESyncStaticProfile(const DistributedHardware::DmDev
         return;
     }
 }
-
-void StaticProfileManager::ClearDataWithPeerLogout(const std::string& peerUdid, const std::string& peerUuid)
-{
-    if (peerUdid.empty() || peerUuid.empty()) {
-        HILOGE("peerUdid or peerUuid is empty!");
-        return;
-    }
-    std::map<std::string, std::string> values;
-    std::lock_guard<std::mutex> lock(staticStoreMutex_);
-    if (staticProfileStore_ == nullptr) {
-        HILOGE("staticProfileStore_ is nullptr!");
-        return;
-    }
-    if (staticProfileStore_->GetByPrefix(CHAR_PREFIX + SEPARATOR + peerUdid, values) != DP_SUCCESS) {
-        HILOGE("Get char profile by prefix fail, peerUdid=%{public}s", ProfileUtils::GetAnonyString(peerUdid).c_str());
-        return;
-    }
-    HILOGD("values.size:%{public}zu", values.size());
-    if (values.empty()) { return; }
-    std::vector<std::string> delKeys;
-    for (const auto& [key, _] : values) {
-        delKeys.emplace_back(key);
-    }
-    HILOGD("delKeys.size:%{public}zu", delKeys.size());
-    if (delKeys.empty()) { return; }
-    if (staticProfileStore_->DeleteBatch(delKeys) != DP_SUCCESS) {
-        HILOGE("DeleteBatchByKeys fail, peerUdid=%{public}s", ProfileUtils::GetAnonyString(peerUdid).c_str());
-        return;
-    }
-    if (staticProfileStore_->RemoveDeviceData(peerUuid) != DP_SUCCESS) {
-        HILOGE("RemoveDeviceData fail, peerUuid=%{public}s", ProfileUtils::GetAnonyString(peerUuid).c_str());
-        return;
-    }
-}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

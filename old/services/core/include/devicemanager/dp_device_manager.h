@@ -56,7 +56,6 @@ public:
 private:
     std::shared_ptr<DistributedHardware::DmInitCallback> GetInitCallback();
     std::shared_ptr<DistributedHardware::DeviceStateCallback> GetStateCallback();
-    std::shared_ptr<DistributedHardware::DevTrustChangeCallback> GetDevTrustChangeCallback();
     void GetDevMgrHandler();
     bool WaitForDnetworkReady();
     void OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo);
@@ -78,7 +77,6 @@ private:
     std::shared_ptr<DistributedHardware::DmInitCallback> initCallback_;
     std::map<std::string, std::shared_ptr<DeviceInfo>> remoteDeviceInfoMap_;
     std::list<std::vector<std::string>> deviceIdsList_;
-    std::shared_ptr<DistributedHardware::DevTrustChangeCallback> devTrustChangeCallback_;
 
 class DeviceInitCallBack : public DistributedHardware::DmInitCallback {
     void OnRemoteDied() override;
@@ -89,11 +87,6 @@ class DpDeviceStateCallback : public DistributedHardware::DeviceStateCallback {
     void OnDeviceOffline(const DistributedHardware::DmDeviceInfo &deviceInfo) override;
     void OnDeviceChanged(const DistributedHardware::DmDeviceInfo &deviceInfo) override;
     void OnDeviceReady(const DistributedHardware::DmDeviceInfo &deviceInfo) override;
-};
-
-class DpDevTrustChangeCallback : public DistributedHardware::DevTrustChangeCallback {
-    void OnDeviceTrustChange(const std::string &peerUdid, const std::string &peerUuid,
-        const DistributedHardware::DmAuthForm authform) override;
 };
 };
 } // namespace DeviceProfile

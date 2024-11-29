@@ -68,12 +68,9 @@ public:
         sptr<IRemoteObject> syncCompletedCallback);
     std::vector<DistributedKv::Entry> GetEntriesByKeys(const std::vector<std::string>& keys);
     int32_t SavePutTempCache(std::map<std::string, std::string>& entries);
-    int32_t RewriteLocalProfiles();
     bool IsFirstInitDB();
     void ResetFirst();
     void OnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
-    void OnDeviceTrustChange(const std::string& peerUdid, const std::string& peerUuid,
-        const DistributedHardware::DmAuthForm authform);
     void OnUserChange(int32_t lastUserId, int32_t curUserId);
 
 private:
@@ -98,7 +95,6 @@ private:
         const std::map<std::string, std::string>& localDataByOwner);
     void NotifyNotOHBaseOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
     void E2ESyncDynamicProfile(const DistributedHardware::DmDeviceInfo deviceInfo);
-    void ClearDataWithPeerLogout(const std::string& peerUdid, const std::string& peerUuid);
     int32_t SaveBatchByKeys(const std::map<std::string, std::string>& entries);
     void FixDiffProfiles();
     template <typename T>
