@@ -733,33 +733,6 @@ int32_t DeviceProfileManager::SavePutTempCache(std::map<std::string, std::string
     return ret;
 }
 
-int32_t DeviceProfileManager::RewriteLocalProfiles()
-{
-    std::map<std::string, std::string> allLocalEntries;
-    std::string localDeviceId = ProfileCache::GetInstance().GetLocalUdid();
-    if (localDeviceId.empty()) {
-        HILOGE("GetLocalUdid fail");
-        return DP_GET_LOCAL_UDID_FAILED;
-    }
-    int32_t getRet = GetProfilesByKeyPrefix(localDeviceId, allLocalEntries);
-    if (getRet != DP_SUCCESS) {
-        HILOGE("GetLocalProfile fail,deviceId: %{public}s,reason: %{public}d!",
-            ProfileUtils::GetAnonyString(localDeviceId).c_str(), getRet);
-        return getRet;
-    }
-    std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-    if (deviceProfileStore_ == nullptr) {
-        HILOGE("dynamicProfileStore is nullptr!");
-        return DP_KV_DB_PTR_NULL;
-    }
-    int32_t putRet = deviceProfileStore_->PutBatchNoDedup(allLocalEntries);
-    if (putRet != DP_SUCCESS) {
-        HILOGE("PutBatchNoDedup fail, reason: %{public}d!", putRet);
-        return putRet;
-    }
-    return DP_SUCCESS;
-}
-
 bool DeviceProfileManager::IsFirstInitDB()
 {
     return isFirst_.load();
