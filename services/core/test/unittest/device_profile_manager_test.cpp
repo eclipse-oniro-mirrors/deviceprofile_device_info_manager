@@ -1795,7 +1795,6 @@ HWTEST_F(DeviceProfileManagerTest, SaveBatchByKeys003, TestSize.Level1)
     DeviceProfileManager::GetInstance().FixDiffProfiles();
     DeviceProfileManager::GetInstance().dpSyncAdapter_ = nullptr;
     DeviceProfileManager::GetInstance().FixDiffProfiles();
-    DeviceProfileManager::GetInstance().ClearDataWithPeerLogout("peerUdid", "peerUuid");
     DeviceProfileManager::GetInstance().FixRemoteDataWhenPeerIsOHBase("remoteUdid", entries);
     DeviceProfileManager::GetInstance().FixRemoteDataWhenPeerIsNonOH("remoteUdid");
 }
