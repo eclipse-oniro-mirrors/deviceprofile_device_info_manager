@@ -188,7 +188,7 @@ int32_t StaticProfileManager::GenerateStaticInfoProfile(const CharacteristicProf
 
 void StaticProfileManager::E2ESyncStaticProfile(const TrustedDeviceInfo& deviceInfo)
 {
-    HILOGD("deviceInfo:%{public}s", deviceInfo.dump().c_str());
+    HILOGI("deviceInfo:%{public}s", deviceInfo.dump().c_str());
     auto task = [this, deviceInfo]() {
         HILOGD("networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.GetNetworkId()).c_str());
         if (deviceInfo.GetNetworkId().empty()) {

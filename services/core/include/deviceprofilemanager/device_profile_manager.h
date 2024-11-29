@@ -94,9 +94,8 @@ private:
     // Clean non-ohbase data when the peer is ohbase
     void FixRemoteDataWhenPeerIsOHBase(const std::string& remoteUdid,
         const std::map<std::string, std::string>& localDataByOwner);
-    void NotifyNotOHBaseOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
-    void E2ESyncDynamicProfile(const DistributedHardware::DmDeviceInfo deviceInfo);
-    void ClearDataWithPeerLogout(const std::string& peerUdid, const std::string& peerUuid);
+    void NotifyNotOHBaseOnline(const TrustedDeviceInfo& deviceInfo);
+    void E2ESyncDynamicProfile(const TrustedDeviceInfo& deviceInfo);
     int32_t SaveBatchByKeys(const std::map<std::string, std::string>& entries);
     void FixDiffProfiles();
     template <typename T>

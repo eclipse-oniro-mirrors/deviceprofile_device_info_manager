@@ -90,6 +90,7 @@ int32_t DMAdapter::ReInit()
 
 bool DMAdapter::GetUuidByNetworkId(const std::string& networkId, std::string& uuid)
 {
+    HILOGI("networkId:%{public}s", ProfileUtils::GetAnonyString(networkId).c_str());
     return ((DistributedHardware::DeviceManager::GetInstance().GetUuidByNetworkId(DP_PKG_NAME, networkId, uuid) == 0) ?
         true : false);
 }
@@ -99,6 +100,8 @@ void DMAdapter::DmDeviceStateCallback::OnDeviceOnline(const DistributedHardware:
     HILOGI("networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
     TrustedDeviceInfo trustedDeviceInfo;
     if (!ConvertToTrustedDeviceInfo(deviceInfo, trustedDeviceInfo)) {
+        HILOGE("ConvertToTrustedDeviceInfo fial, networkId:%{public}s",
+            ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
         return;
     }
     HILOGI("trustedDeviceInfo:%{public}s", trustedDeviceInfo.dump().c_str());
@@ -114,10 +117,14 @@ void DMAdapter::DmDeviceStateCallback::OnDeviceOffline(const DistributedHardware
 }
 
 void DMAdapter::DmDeviceStateCallback::OnDeviceChanged(const DistributedHardware::DmDeviceInfo& deviceInfo)
-{}
+{
+    HILOGD("networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
+}
 
 void DMAdapter::DmDeviceStateCallback::OnDeviceReady(const DistributedHardware::DmDeviceInfo& deviceInfo)
-{}
+{
+    HILOGD("networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
+}
 
 bool DMAdapter::DmDeviceStateCallback::ConvertToTrustedDeviceInfo(const DistributedHardware::DmDeviceInfo& deviceInfo,
     TrustedDeviceInfo& trustedDeviceInfo)

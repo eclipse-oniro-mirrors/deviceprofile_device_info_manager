@@ -757,7 +757,7 @@ void DeviceProfileManager::OnDeviceOnline(const TrustedDeviceInfo& deviceInfo)
 
 void DeviceProfileManager::FixDataOnDeviceOnline(const TrustedDeviceInfo& deviceInfo)
 {
-    HILOGD("deviceInfo=%{public}s", deviceInfo.dump().c_str());
+    HILOGI("deviceInfo=%{public}s", deviceInfo.dump().c_str());
     if (deviceInfo.GetNetworkId().empty()) {
         HILOGE("networkId is empty!");
         return;
@@ -861,7 +861,7 @@ int32_t DeviceProfileManager::GetProfilesByKeyPrefix(const std::string& udid,
 
 void DeviceProfileManager::NotifyNotOHBaseOnline(const TrustedDeviceInfo& deviceInfo)
 {
-    HILOGD("deviceInfo:%{public}s", deviceInfo.dump().c_str());
+    HILOGI("deviceInfo:%{public}s", deviceInfo.dump().c_str());
     if (deviceInfo.GetNetworkId().empty()) {
         HILOGE("networkId is empty!");
         return;
@@ -904,7 +904,7 @@ void DeviceProfileManager::NotifyNotOHBaseOnline(const TrustedDeviceInfo& device
 
 void DeviceProfileManager::E2ESyncDynamicProfile(const TrustedDeviceInfo& deviceInfo)
 {
-    HILOGD("deviceInfo:%{public}s", deviceInfo.dump().c_str());
+    HILOGI("deviceInfo:%{public}s", deviceInfo.dump().c_str());
     auto task = [this, deviceInfo]() {
         HILOGD("networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.GetNetworkId()).c_str());
         if (deviceInfo.GetNetworkId().empty()) {
