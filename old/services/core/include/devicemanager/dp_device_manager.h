@@ -56,7 +56,6 @@ public:
 private:
     std::shared_ptr<DistributedHardware::DmInitCallback> GetInitCallback();
     std::shared_ptr<DistributedHardware::DeviceStateCallback> GetStateCallback();
-    std::shared_ptr<DistributedHardware::DevTrustChangeCallback> GetDevTrustChangeCallback();
     void GetDevMgrHandler();
     bool WaitForDnetworkReady();
     void OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo);
