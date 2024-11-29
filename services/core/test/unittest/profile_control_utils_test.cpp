@@ -1155,7 +1155,7 @@ HWTEST_F(ProfileControlUtilsTest, RefreshLocalSwitchProfile003, TestSize.Level1)
     auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
     ProfileCache::GetInstance().localNetworkId_ = "localNetwork";
     int32_t ret = profileControlUtils->RefreshLocalSwitchProfile(appId);
-    EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
 
 /**
