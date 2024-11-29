@@ -987,9 +987,16 @@ HWTEST_F(ProfileCacheTest, GetNetWorkIdByUdid004, TestSize.Level1)
 {
     std::string udid = "udid1";
     std::string networkId = "networkId";
-    ProfileCache::GetInstance().onlineDevMap_.emplace(udid, networkId);
+    TrustedDeviceInfo deviceInfo;
+    deviceInfo.SetNetworkId(networkId);
+    deviceInfo.SetUdid(udid);
+    deviceInfo.SetUuid("peerUuid");
+    deviceInfo.SetAuthForm(1);
+    deviceInfo.SetOsType(10);
+    ProfileCache::GetInstance().onlineDevMap_[udid] = deviceInfo;
     int32_t ret = ProfileCache::GetInstance().GetNetWorkIdByUdid(udid, networkId);
     EXPECT_EQ(ret, DP_SUCCESS);
+    ProfileCache::GetInstance().onlineDevMap_.erase(udid);
 }
 
 /**
