@@ -35,7 +35,6 @@ public:
         const std::string& characteristicKey, CharacteristicProfile& charProfile);
     int32_t GetAllCharacteristicProfile(std::vector<CharacteristicProfile>& staticCapabilityProfiles);
     void E2ESyncStaticProfile(const DistributedHardware::DmDeviceInfo deviceInfo);
-    void ClearDataWithPeerLogout(const std::string& peerUdid, const std::string& peerUuid);
 
 private:
     int32_t GenerateStaticInfoProfile(const CharacteristicProfile& staticCapabilityProfile,
