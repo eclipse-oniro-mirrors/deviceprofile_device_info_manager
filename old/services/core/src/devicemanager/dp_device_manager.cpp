@@ -68,15 +68,6 @@ std::shared_ptr<DistributedHardware::DeviceStateCallback> DpDeviceManager::GetSt
     return stateCallback_;
 }
 
-std::shared_ptr<DistributedHardware::DevTrustChangeCallback> DpDeviceManager::GetDevTrustChangeCallback()
-{
-    std::lock_guard<std::mutex> autoLock(devTrustLock_);
-    if (devTrustChangeCallback_ == nullptr) {
-        devTrustChangeCallback_ = std::make_shared<DpDevTrustChangeCallback>();
-    }
-    return devTrustChangeCallback_;
-}
-
 void DpDeviceManager::GetDevMgrHandler()
 {
     std::lock_guard<std::mutex> autoLock(devMgrLock_);
@@ -89,7 +80,6 @@ bool DpDeviceManager::Init()
 {
     GetInitCallback();
     GetStateCallback();
-    GetDevTrustChangeCallback();
     GetDevMgrHandler();
     {
         std::lock_guard<std::mutex> autoLock(devMgrLock_);
@@ -153,12 +143,6 @@ void DpDeviceManager::DpDeviceStateCallback::OnDeviceChanged(const DmDeviceInfo 
 void DpDeviceManager::DpDeviceStateCallback::OnDeviceReady(const DmDeviceInfo &deviceInfo)
 {
     HILOGD("called");
-}
-
-void DpDeviceManager::DpDevTrustChangeCallback::OnDeviceTrustChange(const std::string &peerUdid,
-    const std::string &peerUuid, const DistributedHardware::DmAuthForm authform)
-{
-    DistributedDeviceProfile::DeviceProfileManager::GetInstance().OnDeviceTrustChange(peerUdid, peerUuid, authform);
 }
 
 void DpDeviceManager::OnNodeOnline(const std::shared_ptr<DeviceInfo> deviceInfo)
@@ -260,8 +244,6 @@ bool DpDeviceManager::ConnectDeviceManager()
                 PKG_NAME, "", GetStateCallback());
             if (errCode == ERR_OK) {
                 DpDeviceManager::GetInstance().GetTrustedDeviceList();
-                errCode = DeviceManager::GetInstance().RegDevTrustChangeCallback(PKG_NAME, GetDevTrustChangeCallback());
-                HILOGI("RegDevTrustChangeCallback errCode = %{public}d", errCode);
                 break;
             }
             HILOGE("register errCode = %{public}d, retrying...", errCode);

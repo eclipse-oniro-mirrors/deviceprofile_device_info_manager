@@ -734,33 +734,6 @@ int32_t DeviceProfileManager::SavePutTempCache(std::map<std::string, std::string
     return ret;
 }
 
-int32_t DeviceProfileManager::RewriteLocalProfiles()
-{
-    std::map<std::string, std::string> allLocalEntries;
-    std::string localDeviceId = ProfileCache::GetInstance().GetLocalUdid();
-    if (localDeviceId.empty()) {
-        HILOGE("GetLocalUdid fail");
-        return DP_GET_LOCAL_UDID_FAILED;
-    }
-    int32_t getRet = GetProfilesByKeyPrefix(localDeviceId, allLocalEntries);
-    if (getRet != DP_SUCCESS) {
-        HILOGE("GetLocalProfile fail,deviceId: %{public}s,reason: %{public}d!",
-            ProfileUtils::GetAnonyString(localDeviceId).c_str(), getRet);
-        return getRet;
-    }
-    std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-    if (deviceProfileStore_ == nullptr) {
-        HILOGE("dynamicProfileStore is nullptr!");
-        return DP_KV_DB_PTR_NULL;
-    }
-    int32_t putRet = deviceProfileStore_->PutBatchNoDedup(allLocalEntries);
-    if (putRet != DP_SUCCESS) {
-        HILOGE("PutBatchNoDedup fail, reason: %{public}d!", putRet);
-        return putRet;
-    }
-    return DP_SUCCESS;
-}
-
 bool DeviceProfileManager::IsFirstInitDB()
 {
     return isFirst_.load();
@@ -1047,73 +1020,6 @@ void DeviceProfileManager::FixRemoteDataWhenPeerIsOHBase(const std::string& remo
         HILOGE("DeleteBatch failed, remoteUdid=%{public}s", ProfileUtils::GetAnonyString(remoteUdid).c_str());
         return;
     }
-}
-
-void  DeviceProfileManager::OnDeviceTrustChange(const std::string& peerUdid, const std::string& peerUuid,
-    const DistributedHardware::DmAuthForm authform)
-{
-    if (peerUdid.empty() || peerUuid.empty()) {
-        HILOGE("peerUdid or peerUuid is empty!");
-        return;
-    }
-    if (authform != DistributedHardware::DmAuthForm::IDENTICAL_ACCOUNT) {
-        HILOGE("peer is not same account");
-        return;
-    }
-    if (ContentSensorManagerUtils::GetInstance().IsDeviceE2ESync()) {
-        HILOGI("is E2E device, doesn't need clear data");
-        return;
-    }
-    auto clearDataTask = [this, peerUdid, peerUuid]() {
-        ClearDataWithPeerLogout(peerUdid, peerUuid);
-        StaticProfileManager::GetInstance().ClearDataWithPeerLogout(peerUdid, peerUuid);
-    };
-    auto handler = EventHandlerFactory::GetInstance().GetEventHandler();
-    if (handler == nullptr || !handler->PostTask(clearDataTask)) {
-        HILOGE("Post clear data task faild");
-        return;
-    }
-}
-
-void DeviceProfileManager::ClearDataWithPeerLogout(const std::string& peerUdid, const std::string& peerUuid)
-{
-    std::map<std::string, std::string> values;
-    if (GetProfilesByKeyPrefix(peerUdid, values) != DP_SUCCESS) {
-        HILOGE("GetProfilesByKeyPrefix fail, peerUdid=%{public}s", ProfileUtils::GetAnonyString(peerUdid).c_str());
-        return;
-    }
-    HILOGD("values.size:%{public}zu", values.size());
-    if (values.empty()) { return; }
-    std::map<std::string, std::string> deviceEntries;
-    for (const auto& [key, value] : values) {
-        if (ProfileUtils::StartsWith(key, DEV_PREFIX)) {
-            deviceEntries[key] = value;
-        }
-    }
-    if (deviceEntries.empty()) { return; }
-    DeviceProfile deviceProfile;
-    ProfileUtils::EntriesToDeviceProfile(deviceEntries, deviceProfile);
-    if (deviceProfile.GetOsType() != OHOS_TYPE) { return; }
-    std::vector<std::string> delKeys;
-    for (const auto& [key, _] : values) {
-        delKeys.emplace_back(key);
-    }
-    HILOGD("delKeys.size:%{public}zu", delKeys.size());
-    if (delKeys.empty()) { return; }
-    if (DeleteBatchByKeys(delKeys) != DP_SUCCESS) {
-        HILOGE("DeleteBatchByKeys fail, peerUdid=%{public}s", ProfileUtils::GetAnonyString(peerUdid).c_str());
-        return;
-    }
-    std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-    if (deviceProfileStore_ == nullptr) {
-        HILOGE("dynamicProfileStore is nullptr!");
-        return;
-    }
-    if (deviceProfileStore_->RemoveDeviceData(peerUuid) != DP_SUCCESS) {
-        HILOGE("RemoveDeviceData fail, peerUuid=%{public}s", ProfileUtils::GetAnonyString(peerUuid).c_str());
-        return;
-    }
-    FixDiffProfiles();
 }
 
 void DeviceProfileManager::FixDiffProfiles()

@@ -45,7 +45,6 @@ public:
     int32_t UnInit() override;
     int32_t Put(const std::string& key, const std::string& value) override;
     int32_t PutBatch(const std::map<std::string, std::string>& values) override;
-    int32_t PutBatchNoDedup(const std::map<std::string, std::string>& values) override;
     int32_t Delete(const std::string& key) override;
     int32_t DeleteByPrefix(const std::string& keyPrefix) override;
     int32_t Get(const std::string& key, std::string& value) override;
