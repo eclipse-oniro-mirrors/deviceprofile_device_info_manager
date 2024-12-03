@@ -804,15 +804,15 @@ std::string ProfileCache::GetLocalUuid()
 int32_t ProfileCache::AddAllTrustedDevices(const std::vector<TrustedDeviceInfo>& deviceInfos)
 {
     HILOGI("deviceInfos.size: %{public}zu!", deviceInfos.size());
-    if (deviceInfos.empty()) {
-        HILOGE("deviceInfos is empty");
+    if (deviceInfos.empty() || deviceInfos.size() > MAX_TRUSTED_DEVICE_SIZE) {
+        HILOGE("deviceInfos size invalid, size: %{public}zu!", deviceInfos.size());
         return DP_INVALID_PARAM;
     }
     std::lock_guard<std::mutex> lock(onlineDeviceLock_);
     onlineDevMap_.clear();
     for (const auto& trustedDevice : deviceInfos) {
         if (trustedDevice.GetUdid().empty() || trustedDevice.GetUdid().empty() ||
-            trustedDevice.GetNetworkId().empty()  || trustedDevice.GetAuthForm() == BINDTYPE_INIT ||
+            trustedDevice.GetNetworkId().empty() || trustedDevice.GetAuthForm() == BINDTYPE_INIT ||
             trustedDevice.GetOsType() == 0) {
             HILOGE("trustedDevice invalid:%{public}s", trustedDevice.dump().c_str());
             continue;

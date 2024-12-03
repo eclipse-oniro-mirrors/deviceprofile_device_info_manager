@@ -541,7 +541,7 @@ int32_t DistributedDeviceProfileClient::PutAllTrustedDevices(const std::vector<T
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    if (deviceInfos.empty() || deviceInfos.size() > MAX_PROFILE_SIZE) {
+    if (deviceInfos.empty() || deviceInfos.size() > MAX_TRUSTED_DEVICE_SIZE) {
         HILOGE("size is invalid! size: %{public}zu!", deviceInfos.size());
         return DP_INVALID_PARAMS;
     }

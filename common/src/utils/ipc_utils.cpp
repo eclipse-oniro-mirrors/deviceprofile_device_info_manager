@@ -134,7 +134,7 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::unordered_set<Profi
     return true;
 }
 
-bool IpcUtils::Marshalling(MessageParcel& parcel,  const std::vector<TrustedDeviceInfo>& deviceInfos)
+bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<TrustedDeviceInfo>& deviceInfos)
 {
     if (deviceInfos.empty() || deviceInfos.size() > MAX_PROFILE_SIZE) {
         HILOGE("deviceInfos size is invalid!size : %{public}zu", deviceInfos.size());

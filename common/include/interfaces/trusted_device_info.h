@@ -45,6 +45,7 @@ public:
     void SetUuid(const std::string& uuid);
 
     bool operator!=(const TrustedDeviceInfo& trustedDeviceInfo) const;
+    bool operator<(const TrustedDeviceInfo& trustedDeviceInfo) const;
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     std::string dump() const override;

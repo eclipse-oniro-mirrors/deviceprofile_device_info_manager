@@ -108,6 +108,14 @@ bool TrustedDeviceInfo::operator!=(const TrustedDeviceInfo& trustedDeviceInfo) c
         uuid_ != trustedDeviceInfo.GetUuid());
 }
 
+bool TrustedDeviceInfo::operator<(const TrustedDeviceInfo& trustedDeviceInfo) const
+{
+    return (networkId_ < trustedDeviceInfo.GetNetworkId() || authForm_ < trustedDeviceInfo.GetAuthForm() ||
+        deviceTypeId_ < trustedDeviceInfo.GetDeviceTypeId() || osVersion_ < trustedDeviceInfo.GetOsVersion() ||
+        osType_ < trustedDeviceInfo.GetOsType() || udid_ < trustedDeviceInfo.GetUdid() ||
+        uuid_ < trustedDeviceInfo.GetUuid());
+}
+
 bool TrustedDeviceInfo::Marshalling(MessageParcel& parcel) const
 {
     WRITE_HELPER_RET(parcel, String, networkId_, false);
