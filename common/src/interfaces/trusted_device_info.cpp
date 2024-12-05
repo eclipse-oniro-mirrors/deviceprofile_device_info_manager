@@ -100,20 +100,31 @@ void TrustedDeviceInfo::SetUuid(const std::string& uuid)
     uuid_ = uuid;
 }
 
-bool TrustedDeviceInfo::operator!=(const TrustedDeviceInfo& trustedDeviceInfo) const
+bool TrustedDeviceInfo::operator!=(const TrustedDeviceInfo& other) const
 {
-    return (networkId_ != trustedDeviceInfo.GetNetworkId() || authForm_ != trustedDeviceInfo.GetAuthForm() ||
-        deviceTypeId_ != trustedDeviceInfo.GetDeviceTypeId() || osVersion_ != trustedDeviceInfo.GetOsVersion() ||
-        osType_ != trustedDeviceInfo.GetOsType() || udid_ != trustedDeviceInfo.GetUdid() ||
-        uuid_ != trustedDeviceInfo.GetUuid());
+    return (networkId_ != other.GetNetworkId() || authForm_ != other.GetAuthForm() ||
+        deviceTypeId_ != other.GetDeviceTypeId() || osVersion_ != other.GetOsVersion() ||
+        osType_ != other.GetOsType() || udid_ != other.GetUdid() ||
+        uuid_ != other.GetUuid());
 }
 
-bool TrustedDeviceInfo::operator<(const TrustedDeviceInfo& trustedDeviceInfo) const
+bool TrustedDeviceInfo::operator<(const TrustedDeviceInfo& other) const
 {
-    return (networkId_ < trustedDeviceInfo.GetNetworkId() || authForm_ < trustedDeviceInfo.GetAuthForm() ||
-        deviceTypeId_ < trustedDeviceInfo.GetDeviceTypeId() || osVersion_ < trustedDeviceInfo.GetOsVersion() ||
-        osType_ < trustedDeviceInfo.GetOsType() || udid_ < trustedDeviceInfo.GetUdid() ||
-        uuid_ < trustedDeviceInfo.GetUuid());
+    return (networkId_ < other.GetNetworkId() ||
+        (networkId_ == other.GetNetworkId() && authForm_ < other.GetAuthForm()) ||
+        (networkId_ == other.GetNetworkId() && authForm_ == other.GetAuthForm() &&
+            deviceTypeId_ < other.GetDeviceTypeId()) ||
+        (networkId_ == other.GetNetworkId() && authForm_ == other.GetAuthForm() &&
+            deviceTypeId_ == other.GetDeviceTypeId() && osVersion_ < other.GetOsVersion()) ||
+        (networkId_ == other.GetNetworkId() && authForm_ == other.GetAuthForm() &&
+            deviceTypeId_ == other.GetDeviceTypeId() && osVersion_ == other.GetOsVersion() &&
+            osType_ < other.GetOsType()) ||
+        (networkId_ == other.GetNetworkId() && authForm_ == other.GetAuthForm() &&
+            deviceTypeId_ == other.GetDeviceTypeId() && osVersion_ == other.GetOsVersion() &&
+            osType_ == other.GetOsType() && udid_ < other.GetUdid()) ||
+        (networkId_ == other.GetNetworkId() && authForm_ == other.GetAuthForm() &&
+            deviceTypeId_ == other.GetDeviceTypeId() && osVersion_ == other.GetOsVersion() &&
+            osType_ == other.GetOsType() && udid_ == other.GetUdid() && uuid_ < other.GetUuid()));
 }
 
 bool TrustedDeviceInfo::Marshalling(MessageParcel& parcel) const
