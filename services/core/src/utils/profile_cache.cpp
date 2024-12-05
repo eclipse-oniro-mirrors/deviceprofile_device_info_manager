@@ -638,6 +638,10 @@ void ProfileCache::OnNodeOnline(const TrustedDeviceInfo& trustedDevice)
     }
     {
         std::lock_guard<std::mutex> lock(onlineDeviceLock_);
+        if (onlineDevMap_.size() > MAX_TRUSTED_DEVICE_SIZE) {
+            HILOGE("onlineDevMap_.size greater than %{public}u", MAX_TRUSTED_DEVICE_SIZE);
+            return;
+        }
         onlineDevMap_[trustedDevice.GetUdid()] = trustedDevice;
     }
 }

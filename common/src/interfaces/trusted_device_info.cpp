@@ -110,7 +110,7 @@ bool TrustedDeviceInfo::operator!=(const TrustedDeviceInfo& other) const
 
 bool TrustedDeviceInfo::operator<(const TrustedDeviceInfo& other) const
 {
-    return (networkId_ < other.GetNetworkId() ||
+    return ((networkId_ < other.GetNetworkId()) ||
         (networkId_ == other.GetNetworkId() && authForm_ < other.GetAuthForm()) ||
         (networkId_ == other.GetNetworkId() && authForm_ == other.GetAuthForm() &&
             deviceTypeId_ < other.GetDeviceTypeId()) ||
