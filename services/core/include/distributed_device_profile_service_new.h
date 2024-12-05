@@ -37,7 +37,7 @@ class DistributedDeviceProfileServiceNew : public SystemAbility, public Distribu
 
 public:
     DistributedDeviceProfileServiceNew();
-    ~DistributedDeviceProfileServiceNew();
+    ~DistributedDeviceProfileServiceNew() = default;
 
     int32_t Init();
     int32_t PostInit();
@@ -69,6 +69,7 @@ public:
         sptr<IRemoteObject> syncCompletedCallback) override;
     int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IRemoteObject> dpInitedCallback) override;
     int32_t UnSubscribeDeviceProfileInited(int32_t saId) override;
+    int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo> deviceInfos) override;
     int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) override;
     int32_t Dump(int32_t fd, const std::vector<std::u16string>& args) override;
     void DelayUnloadTask() override;

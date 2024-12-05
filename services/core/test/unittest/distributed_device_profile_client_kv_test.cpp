@@ -31,6 +31,7 @@
 #include "i_sync_completed_callback.h"
 #include "characteristic_profile.h"
 #include "distributed_device_profile_client.h"
+#include "trusted_device_info.h"
 #undef private
 #undef protected
 
@@ -236,7 +237,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutCharacteristicProfileBatch001,
     charProfile2.SetCharacteristicValue("characteristicValue2");
     charProfiles.push_back(charProfile1);
     charProfiles.push_back(charProfile2);
-    
+
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutCharacteristicProfileBatch(charProfiles);
     EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
@@ -581,6 +582,33 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, OnRemoteRequest_001, TestSize.Lev
     MessageOption option;
     int32_t ret = DpinitedCallbackStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(DP_INTERFACE_CHECK_FAILED, ret);
+}
+
+/**
+ * @tc.name: PutAllTrustedDevices_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, PutAllTrustedDevices_001, TestSize.Level0)
+{
+    std::vector<TrustedDeviceInfo> deviceInfos;
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutAllTrustedDevices(deviceInfos);
+    EXPECT_EQ(errCode, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: PutAllTrustedDevices_002
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, PutAllTrustedDevices_002, TestSize.Level0)
+{
+    TrustedDeviceInfo deviceInfo;
+    std::vector<TrustedDeviceInfo> deviceInfos { deviceInfo };
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutAllTrustedDevices(deviceInfos);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

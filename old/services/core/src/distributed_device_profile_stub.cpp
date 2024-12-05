@@ -117,6 +117,7 @@ void DistributedDeviceProfileStub::InitAclAndSubscribe()
     aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE_BATCH));
     aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE_INITED));
     aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE_INITED));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::PUT_ALL_TRUSTED_DEVICES));
 }
 
 int32_t DistributedDeviceProfileStub::NotifyAclEventInner(uint32_t code, MessageParcel& data,
@@ -155,6 +156,8 @@ int32_t DistributedDeviceProfileStub::NotifyAclEventInner(uint32_t code, Message
             return SubscribeDeviceProfileInitedInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE_INITED):
             return UnSubscribeDeviceProfileInitedInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::PUT_ALL_TRUSTED_DEVICES):
+            return PutAllTrustedDevicesInner(data, reply);
         default:
             HILOGW("unknown request code, please check, code = %{public}u", code);
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
@@ -727,6 +730,21 @@ int32_t DistributedDeviceProfileStub::UnSubscribeDeviceProfileInitedInner(Messag
     int32_t saId = -1;
     READ_HELPER(data, Int32, saId);
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().UnSubscribeDeviceProfileInited(saId);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::PutAllTrustedDevicesInner(MessageParcel& data, MessageParcel& reply)
+{
+    std::vector<TrustedDeviceInfo> deviceInfos;
+    if (!IpcUtils::UnMarshalling(data, deviceInfos)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutAllTrustedDevices(deviceInfos);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;

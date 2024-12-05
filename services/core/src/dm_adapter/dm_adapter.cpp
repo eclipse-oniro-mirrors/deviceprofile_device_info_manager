@@ -14,9 +14,17 @@
  */
 
 #include "dm_adapter.h"
+
+#include "cJSON.h"
+#include "device_manager.h"
+#include "dm_constants.h"
+
+#include "device_profile_manager.h"
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
+#include "profile_cache.h"
+#include "profile_utils.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -29,17 +37,28 @@ IMPLEMENT_SINGLE_INSTANCE(DMAdapter);
 int32_t DMAdapter::Init()
 {
     HILOGI("call!");
-    int32_t errCode = DP_SUCCESS;
     {
         std::lock_guard<std::mutex> autoLock(deviceStateCallbackMutex_);
-        if (deviceStateCallback_ == nullptr) {
-            deviceStateCallback_ = std::make_shared<DpDeviceStateCallback>();
+        if (dmInitCallback_ == nullptr) {
+            dmInitCallback_ = std::make_shared<DpDmInitCallback>();
         }
-        errCode = DistributedHardware::DeviceManager::GetInstance()
-            .RegisterDevStateCallback(DP_PKG_NAME, "", deviceStateCallback_);
+        if (deviceStateCallback_ == nullptr) {
+            deviceStateCallback_ = std::make_shared<DmDeviceStateCallback>();
+        }
+        int32_t errCode = DistributedHardware::DeviceManager::GetInstance().InitDeviceManager(
+            DP_PKG_NAME, dmInitCallback_);
+        if (errCode != DP_SUCCESS) {
+            HILOGE("InitDeviceManager errCode = %{public}d", errCode);
+            return errCode;
+        }
+        errCode = DistributedHardware::DeviceManager::GetInstance().RegisterDevStateCallback(
+            DP_PKG_NAME, "", deviceStateCallback_);
+        if (errCode != DP_SUCCESS) {
+            HILOGE("RegisterDevStateCallback errCode = %{public}d", errCode);
+            return errCode;
+        }
     }
-    HILOGI("RegisterDevStateCallback errCode = %{public}d", errCode);
-    return errCode;
+    return DP_SUCCESS;
 }
 
 int32_t DMAdapter::UnInit()
@@ -50,11 +69,16 @@ int32_t DMAdapter::UnInit()
         std::lock_guard<std::mutex> autoLock(deviceStateCallbackMutex_);
         if (deviceStateCallback_ != nullptr) {
             errCode = DistributedHardware::DeviceManager::GetInstance().UnRegisterDevStateCallback(DP_PKG_NAME);
+            HILOGI("UnRegisterDevStateCallback errCode = %{public}d", errCode);
             deviceStateCallback_ = nullptr;
         }
+        if (dmInitCallback_ != nullptr) {
+            errCode = DistributedHardware::DeviceManager::GetInstance().UnInitDeviceManager(DP_PKG_NAME);
+            HILOGI("UnInitDeviceManager errCode = %{public}d", errCode);
+            dmInitCallback_ = nullptr;
+        }
     }
-    HILOGI("UnRegisterDevStateCallback errCode = %{public}d", errCode);
-    return errCode;
+    return DP_SUCCESS;
 }
 
 int32_t DMAdapter::ReInit()
@@ -64,24 +88,101 @@ int32_t DMAdapter::ReInit()
     return Init();
 }
 
-void DMAdapter::DpDeviceStateCallback::OnDeviceOnline(const DistributedHardware::DmDeviceInfo &deviceInfo)
+bool DMAdapter::GetUuidByNetworkId(const std::string& networkId, std::string& uuid)
 {
-    HILOGI("call!");
+    HILOGI("networkId:%{public}s", ProfileUtils::GetAnonyString(networkId).c_str());
+    return ((DistributedHardware::DeviceManager::GetInstance().GetUuidByNetworkId(DP_PKG_NAME, networkId, uuid) == 0) ?
+        true : false);
 }
 
-void DMAdapter::DpDeviceStateCallback::OnDeviceOffline(const DistributedHardware::DmDeviceInfo &deviceInfo)
+void DMAdapter::DmDeviceStateCallback::OnDeviceOnline(const DistributedHardware::DmDeviceInfo& deviceInfo)
 {
-    HILOGI("call!");
+    HILOGI("networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
+    TrustedDeviceInfo trustedDeviceInfo;
+    if (!ConvertToTrustedDeviceInfo(deviceInfo, trustedDeviceInfo)) {
+        HILOGE("ConvertToTrustedDeviceInfo fial, networkId:%{public}s",
+            ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
+        return;
+    }
+    HILOGI("trustedDeviceInfo:%{public}s", trustedDeviceInfo.dump().c_str());
+    ProfileCache::GetInstance().OnNodeOnline(trustedDeviceInfo);
+    DeviceProfileManager::GetInstance().OnDeviceOnline(trustedDeviceInfo);
 }
 
-void DMAdapter::DpDeviceStateCallback::OnDeviceChanged(const DistributedHardware::DmDeviceInfo &deviceInfo)
+void DMAdapter::DmDeviceStateCallback::OnDeviceOffline(const DistributedHardware::DmDeviceInfo& deviceInfo)
 {
-    HILOGI("call!");
+    std::string networkId = deviceInfo.networkId;
+    HILOGI("networkId:%{public}s", ProfileUtils::GetAnonyString(networkId).c_str());
+    ProfileCache::GetInstance().OnNodeOffline(networkId);
 }
 
-void DMAdapter::DpDeviceStateCallback::OnDeviceReady(const DistributedHardware::DmDeviceInfo &deviceInfo)
+void DMAdapter::DmDeviceStateCallback::OnDeviceChanged(const DistributedHardware::DmDeviceInfo& deviceInfo)
+{
+    HILOGD("networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
+}
+
+void DMAdapter::DmDeviceStateCallback::OnDeviceReady(const DistributedHardware::DmDeviceInfo& deviceInfo)
+{
+    HILOGD("networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
+}
+
+bool DMAdapter::DmDeviceStateCallback::ConvertToTrustedDeviceInfo(const DistributedHardware::DmDeviceInfo& deviceInfo,
+    TrustedDeviceInfo& trustedDeviceInfo)
+{
+    trustedDeviceInfo.SetNetworkId(deviceInfo.networkId);
+    trustedDeviceInfo.SetAuthForm(static_cast<int32_t>(deviceInfo.authForm));
+    trustedDeviceInfo.SetDeviceTypeId(deviceInfo.deviceTypeId);
+
+    if (deviceInfo.extraData.empty()) {
+        HILOGE("extraData is empty!");
+        return false;
+    }
+    cJSON* extraDataJson = cJSON_Parse(deviceInfo.extraData.c_str());
+    if (extraDataJson == NULL) {
+        HILOGE("extraData parse failed");
+        cJSON_Delete(extraDataJson);
+        return false;
+    }
+
+    cJSON* osVersionJson = cJSON_GetObjectItem(extraDataJson, DistributedHardware::PARAM_KEY_OS_VERSION);
+    if (!cJSON_IsString(osVersionJson)) {
+        HILOGE("osVersion parse failed");
+        cJSON_Delete(extraDataJson);
+        return false;
+    }
+    trustedDeviceInfo.SetOsVersion(osVersionJson->valuestring);
+
+    cJSON* osTypeJson = cJSON_GetObjectItem(extraDataJson, DistributedHardware::PARAM_KEY_OS_TYPE);
+    if (!cJSON_IsNumber(osTypeJson)) {
+        HILOGE("osType parse failed");
+        cJSON_Delete(extraDataJson);
+        return false;
+    }
+    trustedDeviceInfo.SetOsType(static_cast<int32_t>(osTypeJson->valueint));
+
+    cJSON* udidJson = cJSON_GetObjectItem(extraDataJson, DistributedHardware::PARAM_KEY_UDID);
+    if (!cJSON_IsString(udidJson)) {
+        HILOGE("udid parse failed");
+        cJSON_Delete(extraDataJson);
+        return false;
+    }
+    trustedDeviceInfo.SetUdid(udidJson->valuestring);
+
+    cJSON* uuidJson = cJSON_GetObjectItem(extraDataJson, DistributedHardware::PARAM_KEY_UUID);
+    if (!cJSON_IsString(uuidJson)) {
+        HILOGE("uuid parse failed");
+        cJSON_Delete(extraDataJson);
+        return false;
+    }
+    trustedDeviceInfo.SetUuid(uuidJson->valuestring);
+    cJSON_Delete(extraDataJson);
+    return true;
+}
+
+void DMAdapter::DpDmInitCallback::OnRemoteDied()
 {
     HILOGI("call!");
+    DMAdapter::GetInstance().ReInit();
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

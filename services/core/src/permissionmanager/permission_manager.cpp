@@ -121,6 +121,7 @@ int32_t PermissionManager::ParsePermissionJson(const cJSON* const permissionJson
     SetPermissionMap(permissionJson, SUBSCRIBE_DEVICE_PROFILE);
     SetPermissionMap(permissionJson, UNSUBSCRIBE_DEVICE_PROFILE);
     SetPermissionMap(permissionJson, SYNC_DEVICE_PROFILE);
+    SetPermissionMap(permissionJson, PUT_ALL_TRUSTED_DEVICES);
     char* jsonChars = cJSON_PrintUnformatted(permissionJson);
     if (jsonChars == NULL) {
         HILOGW("cJSON formatted to string failed!");
@@ -188,7 +189,7 @@ bool PermissionManager::CheckCallerPermission()
     std::string callProcName = GetCallerProcName();
     int32_t ret = AccessTokenKit::VerifyAccessToken(tokenID, DP_SERVICE_ACCESS_PERMISSION);
     if (ret != PermissionState::PERMISSION_GRANTED) {
-        HILOGE("CheckCallerPermission failed callProc %{public}s!", callProcName.c_str());
+        HILOGE("failed callProc %{public}s!", callProcName.c_str());
         DpRadarHelper::GetInstance().ReportSaCheckAuth(stageRes);
         return false;
     }

@@ -493,7 +493,8 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const DistributedDeviceProfile::
     }
     std::vector<std::string> ohBasedDevices;
     std::vector<std::string> notOHBasedDevices;
-    ProfileUtils::FilterAndGroupOnlineDevices(syncOptions.GetDeviceList(), ohBasedDevices, notOHBasedDevices);
+    ProfileCache::GetInstance().FilterAndGroupOnlineDevices(syncOptions.GetDeviceList(),
+        ohBasedDevices, notOHBasedDevices);
     if (ohBasedDevices.empty() && notOHBasedDevices.empty()) {
         HILOGE("Params is invalid!");
         return DP_INVALID_PARAMS;
@@ -743,26 +744,25 @@ void DeviceProfileManager::ResetFirst()
     isFirst_.store(false);
 }
 
-void DeviceProfileManager::OnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo)
+void DeviceProfileManager::OnDeviceOnline(const TrustedDeviceInfo& deviceInfo)
 {
     FixDataOnDeviceOnline(deviceInfo);
     NotifyNotOHBaseOnline(deviceInfo);
     if (ContentSensorManagerUtils::GetInstance().IsDeviceE2ESync()) {
-        HILOGI("need E2ESync, networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
+        HILOGI("need E2ESync, deviceInfo:%{public}s", deviceInfo.dump().c_str());
         E2ESyncDynamicProfile(deviceInfo);
         StaticProfileManager::GetInstance().E2ESyncStaticProfile(deviceInfo);
     }
 }
 
-void DeviceProfileManager::FixDataOnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo)
+void DeviceProfileManager::FixDataOnDeviceOnline(const TrustedDeviceInfo& deviceInfo)
 {
-    std::string remoteNetworkId = deviceInfo.networkId;
-    HILOGD("remoteNetworkId=%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
-    if (remoteNetworkId.empty() || deviceInfo.extraData.empty()) {
-        HILOGE("networkId or extraData is empty!");
+    HILOGI("deviceInfo=%{public}s", deviceInfo.dump().c_str());
+    if (deviceInfo.GetNetworkId().empty()) {
+        HILOGE("networkId is empty!");
         return;
     }
-    auto task = [this, remoteNetworkId, extraData = deviceInfo.extraData]() {
+    auto task = [this, deviceInfo]() {
         std::string localUdid = ProfileCache::GetInstance().GetLocalUdid();
         std::string localUuid = ProfileCache::GetInstance().GetLocalUuid();
         if (localUdid.empty() || localUuid.empty()) {
@@ -775,18 +775,16 @@ void DeviceProfileManager::FixDataOnDeviceOnline(const DistributedHardware::DmDe
             return;
         }
         FixLocalData(localUdid, localDataByOwner);
-        std::string remoteUdid;
-        if (ProfileCache::GetInstance().GetUdidByNetWorkId(remoteNetworkId, remoteUdid) != DP_SUCCESS ||
-            remoteUdid.empty()) {
-            HILOGE("Get remote udid failed. remoteNetworkId=%{public}s",
-                ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+        if (deviceInfo.GetUdid().empty()) {
+            HILOGE("remoteUdid empty. remoteNetworkId=%{public}s",
+                ProfileUtils::GetAnonyString(deviceInfo.GetNetworkId()).c_str());
             return;
         }
-        if (!ProfileUtils::IsOHBasedDevice(extraData)) {
-            FixRemoteDataWhenPeerIsNonOH(remoteUdid);
+        if (deviceInfo.GetOsType() != OHOS_TYPE) {
+            FixRemoteDataWhenPeerIsNonOH(deviceInfo.GetUdid());
             return;
         }
-        FixRemoteDataWhenPeerIsOHBase(remoteUdid, localDataByOwner);
+        FixRemoteDataWhenPeerIsOHBase(deviceInfo.GetUdid(), localDataByOwner);
     };
     auto handler = EventHandlerFactory::GetInstance().GetEventHandler();
     if (handler == nullptr || !handler->PostTask(task)) {
@@ -861,24 +859,27 @@ int32_t DeviceProfileManager::GetProfilesByKeyPrefix(const std::string& udid,
     return DP_SUCCESS;
 }
 
-void DeviceProfileManager::NotifyNotOHBaseOnline(const DistributedHardware::DmDeviceInfo deviceInfo)
+void DeviceProfileManager::NotifyNotOHBaseOnline(const TrustedDeviceInfo& deviceInfo)
 {
-    std::string remoteNetworkId = deviceInfo.networkId;
-    HILOGD("networkId:%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
-    if (remoteNetworkId.empty()) {
-        HILOGE("networkId or extraData is empty!");
+    HILOGI("deviceInfo:%{public}s", deviceInfo.dump().c_str());
+    if (deviceInfo.GetNetworkId().empty()) {
+        HILOGE("networkId is empty!");
         return;
     }
-    if (ProfileUtils::IsOHBasedDevice(deviceInfo.extraData)) {
-        HILOGD("device is ohbase. remoteNetworkId=%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+    if (deviceInfo.GetOsType() == OHOS_TYPE) {
+        HILOGD("device is ohbase. networkId=%{public}s",
+            ProfileUtils::GetAnonyString(deviceInfo.GetNetworkId()).c_str());
         return;
     }
-    auto task = [this, remoteNetworkId, authForm = static_cast<int32_t>(deviceInfo.authForm)]() {
-        std::string remoteUdid;
-        if (ProfileCache::GetInstance().GetUdidByNetWorkId(remoteNetworkId, remoteUdid) != DP_SUCCESS ||
-            remoteUdid.empty()) {
-            HILOGE("Get remote deviceId failed. remoteNetworkId=%{public}s",
-                ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+    if (!ProfileUtils::IsP2p(deviceInfo.GetAuthForm())) {
+        HILOGD("is not point 2 point. remoteNetworkId=%{public}s",
+            ProfileUtils::GetAnonyString(deviceInfo.GetNetworkId()).c_str());
+        return;
+    }
+    auto task = [this, deviceInfo]() {
+        if (deviceInfo.GetUdid().empty()) {
+            HILOGE("remoteUdid empty. remoteNetworkId=%{public}s",
+                ProfileUtils::GetAnonyString(deviceInfo.GetNetworkId()).c_str());
             return;
         }
         std::lock_guard<std::mutex> lock(isAdapterLoadLock_);
@@ -886,10 +887,11 @@ void DeviceProfileManager::NotifyNotOHBaseOnline(const DistributedHardware::DmDe
             HILOGE("dpSyncAdapter is nullptr.");
             return;
         }
-        int32_t ret = dpSyncAdapter_->NotOHBaseDeviceOnline(remoteUdid, remoteNetworkId, ProfileUtils::IsP2p(authForm));
+        int32_t ret = dpSyncAdapter_->NotOHBaseDeviceOnline(deviceInfo.GetUdid(), deviceInfo.GetNetworkId(),
+            ProfileUtils::IsP2p(deviceInfo.GetAuthForm()));
         if (ret != DP_SUCCESS) {
             HILOGE("NotOHBaseDeviceOnline fail. ret=%{public}d, remoteNetworkId=%{public}s, authForm=%{public}d",
-                ret, ProfileUtils::GetAnonyString(remoteNetworkId).c_str(), authForm);
+                ret, ProfileUtils::GetAnonyString(deviceInfo.GetNetworkId()).c_str(), deviceInfo.GetAuthForm());
             return;
         }
     };
@@ -900,19 +902,18 @@ void DeviceProfileManager::NotifyNotOHBaseOnline(const DistributedHardware::DmDe
     }
 }
 
-void DeviceProfileManager::E2ESyncDynamicProfile(const DistributedHardware::DmDeviceInfo deviceInfo)
+void DeviceProfileManager::E2ESyncDynamicProfile(const TrustedDeviceInfo& deviceInfo)
 {
-    HILOGD("call!");
+    HILOGI("deviceInfo:%{public}s", deviceInfo.dump().c_str());
     auto task = [this, deviceInfo]() {
-        std::string remoteNetworkId = deviceInfo.networkId;
-        HILOGD("networkId:%{public}s", ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
-        if (remoteNetworkId.empty()) {
+        HILOGD("networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.GetNetworkId()).c_str());
+        if (deviceInfo.GetNetworkId().empty()) {
             HILOGE("networkId or extraData is empty!");
             return;
         }
-        if (!ProfileUtils::IsOHBasedDevice(deviceInfo.extraData)) {
+        if (deviceInfo.GetOsType() != OHOS_TYPE) {
             HILOGI("device is not ohbase. remoteNetworkId=%{public}s",
-                ProfileUtils::GetAnonyString(remoteNetworkId).c_str());
+                ProfileUtils::GetAnonyString(deviceInfo.GetNetworkId()).c_str());
             return;
         }
         std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
@@ -920,7 +921,7 @@ void DeviceProfileManager::E2ESyncDynamicProfile(const DistributedHardware::DmDe
             HILOGE("deviceProfileStore is nullptr");
             return;
         }
-        int32_t syncResult = deviceProfileStore_->Sync({remoteNetworkId}, SyncMode::PUSH_PULL);
+        int32_t syncResult = deviceProfileStore_->Sync({deviceInfo.GetNetworkId()}, SyncMode::PUSH_PULL);
         if (syncResult != DP_SUCCESS) {
             HILOGE("E2ESyncDynamicProfile fail, res: %{public}d!", syncResult);
             return;

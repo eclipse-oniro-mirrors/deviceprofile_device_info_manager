@@ -134,6 +134,20 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::unordered_set<Profi
     return true;
 }
 
+bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<TrustedDeviceInfo>& deviceInfos)
+{
+    if (deviceInfos.empty() || deviceInfos.size() > MAX_PROFILE_SIZE) {
+        HILOGE("deviceInfos size is invalid!size : %{public}zu", deviceInfos.size());
+        return false;
+    }
+    uint32_t size = deviceInfos.size();
+    WRITE_HELPER_RET(parcel, Uint32, size, false);
+    for (const auto& item : deviceInfos) {
+        item.Marshalling(parcel);
+    }
+    return true;
+}
+
 bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<TrustDeviceProfile>& trustDeviceProfiles)
 {
     uint32_t size = parcel.ReadUint32();
@@ -262,6 +276,24 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::unordered_set<ProfileCh
             return false;
         }
         changeTypes.emplace(static_cast<ProfileChangeType>(num));
+    }
+    return true;
+}
+
+bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<TrustedDeviceInfo>& deviceInfos)
+{
+    uint32_t size = parcel.ReadUint32();
+    if (size == 0 || size > MAX_PROFILE_SIZE) {
+        HILOGE("deviceInfos size is invalid!size : %{public}u", size);
+        return false;
+    }
+    for (uint32_t i = 0; i < size; i++) {
+        TrustedDeviceInfo item;
+        if (!item.UnMarshalling(parcel)) {
+            HILOGE("Profile UnMarshalling fail!");
+            return false;
+        }
+        deviceInfos.emplace_back(item);
     }
     return true;
 }

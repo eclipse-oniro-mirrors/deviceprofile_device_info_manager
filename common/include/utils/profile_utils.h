@@ -40,11 +40,6 @@ public:
     static std::string GetDbKeyAnonyString(const std::string& value);
     static std::string GetAnonyString(const std::string& value);
     static std::string GetAnonyInt32(const int32_t value);
-    static std::vector<std::string> GetOnlineDevices();
-    static std::string GetLocalUdidFromDM();
-    static bool FilterAndGroupOnlineDevices(const std::vector<std::string>& deviceList,
-        std::vector<std::string>& ohBasedDevices, std::vector<std::string>& notOHBasedDevices);
-    static bool IsOHBasedDevice(const std::string& extraData);
     static bool IsP2p(const int32_t authForm);
     static ProfileType GetProfileType(const std::string& key);
     static bool StartsWith(const std::string& str, const std::string& prefix);
@@ -108,8 +103,6 @@ public:
     static bool GetIntValue(const ValuesBucket& values, const std::string& property, int32_t& value);
     static bool GetStringValue(const ValuesBucket& values, const std::string& property, std::string& value);
     static bool GetLongValue(const ValuesBucket& values, const std::string& property, int64_t& value);
-    static bool GetUdidByNetworkId(const std::string& networkId, std::string& udid);
-    static bool GetUuidByNetworkId(const std::string& networkId, std::string& uuid);
     static bool IsNumStr(const std::string& inString);
     static int32_t GetUserIdFromDbKey(const std::string& dbKey);
     static std::string RemoveUserIdFromDbKey(const std::string& dbKey);

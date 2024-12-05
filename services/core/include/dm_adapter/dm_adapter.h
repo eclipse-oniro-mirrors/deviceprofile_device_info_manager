@@ -18,11 +18,12 @@
 
 #include <mutex>
 
+#include "device_manager_callback.h"
+#include "dm_device_info.h"
+
+
 #include "single_instance.h"
-
-#include "device_manager.h"
-#include "event_handler.h"
-
+#include "trusted_device_info.h"
 namespace OHOS {
 namespace DistributedDeviceProfile {
 class DMAdapter {
@@ -32,15 +33,25 @@ public:
     int32_t Init();
     int32_t UnInit();
     int32_t ReInit();
-
+    bool GetUuidByNetworkId(const std::string& networkId, std::string& uuid);
 private:
     std::mutex deviceStateCallbackMutex_;
+    std::shared_ptr<DistributedHardware::DmInitCallback> dmInitCallback_;
     std::shared_ptr<DistributedHardware::DeviceStateCallback> deviceStateCallback_;
-class DpDeviceStateCallback : public DistributedHardware::DeviceStateCallback {
-    void OnDeviceOnline(const DistributedHardware::DmDeviceInfo &deviceInfo) override;
-    void OnDeviceOffline(const DistributedHardware::DmDeviceInfo &deviceInfo) override;
-    void OnDeviceChanged(const DistributedHardware::DmDeviceInfo &deviceInfo) override;
-    void OnDeviceReady(const DistributedHardware::DmDeviceInfo &deviceInfo) override;
+
+class DmDeviceStateCallback : public DistributedHardware::DeviceStateCallback {
+public:
+    void OnDeviceOnline(const DistributedHardware::DmDeviceInfo& deviceInfo) override;
+    void OnDeviceOffline(const DistributedHardware::DmDeviceInfo& deviceInfo) override;
+    void OnDeviceChanged(const DistributedHardware::DmDeviceInfo& deviceInfo) override;
+    void OnDeviceReady(const DistributedHardware::DmDeviceInfo& deviceInfo) override;
+private:
+    bool ConvertToTrustedDeviceInfo(const DistributedHardware::DmDeviceInfo& deviceInfo,
+        TrustedDeviceInfo& trustedDeviceInfo);
+};
+class DpDmInitCallback : public DistributedHardware::DmInitCallback {
+public:
+    void OnRemoteDied() override;
 };
 };
 } // namespace DistributedDeviceProfile

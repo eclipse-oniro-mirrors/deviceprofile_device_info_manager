@@ -111,17 +111,6 @@ void GenerateDBKeyFuzzTest(const uint8_t* data, size_t size)
 
     ProfileUtils::GenerateDBKey(profileKey, profileProperty);
 }
-
-void GetUdidByNetworkIdFuzzTest(const uint8_t* data, size_t size)
-{
-    if ((data == nullptr) || (size == 0)) {
-        return;
-    }
-
-    std::string networkId(reinterpret_cast<const char*>(data), size);
-    std::string udid(reinterpret_cast<const char*>(data), size);
-    ProfileUtils::GetUdidByNetworkId(networkId, udid);
-}
 }
 }
 
@@ -136,7 +125,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::DistributedDeviceProfile::GenerateServiceProfileKeyFuzzTest(data, size);
     OHOS::DistributedDeviceProfile::GenerateCharProfileKeyFuzzTest(data, size);
     OHOS::DistributedDeviceProfile::GenerateDBKeyFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GetUdidByNetworkIdFuzzTest(data, size);
 
     return 0;
 }

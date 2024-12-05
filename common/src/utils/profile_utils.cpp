@@ -20,9 +20,7 @@
 #include <regex>
 #include <unordered_set>
 
-#include "cJSON.h"
-#include "device_manager.h"
-#include "dm_constants.h"
+#include "dm_device_info.h"
 #include "rdb_errno.h"
 
 #include "content_sensor_manager_utils.h"
@@ -92,81 +90,6 @@ std::string ProfileUtils::GetAnonyInt32(const int32_t value)
         tempString[i] = '*';
     }
     return tempString;
-}
-
-std::vector<std::string> ProfileUtils::GetOnlineDevices()
-{
-    std::vector<std::string> targetDevices;
-    std::vector<DmDeviceInfo> allOnlineDeviceInfos;
-    int32_t result = DeviceManager::GetInstance().GetTrustedDeviceList(DP_PKG_NAME, "", allOnlineDeviceInfos);
-    if (result != DP_SUCCESS || allOnlineDeviceInfos.empty()) {
-        HILOGE("GetTrustedDeviceList Failed!");
-        return {};
-    }
-    for (const DmDeviceInfo& dmDeviceInfo : allOnlineDeviceInfos) {
-        targetDevices.push_back(dmDeviceInfo.networkId);
-    }
-    return targetDevices;
-}
-
-std::string ProfileUtils::GetLocalUdidFromDM()
-{
-    std::string udid = "";
-    if (DeviceManager::GetInstance().GetLocalDeviceId(DP_PKG_NAME, udid) != DP_SUCCESS) {
-        HILOGE("Get local udid fail from DM!");
-        return "";
-    }
-    return udid;
-}
-
-bool ProfileUtils::FilterAndGroupOnlineDevices(const std::vector<std::string>& deviceList,
-    std::vector<std::string>& ohBasedDevices, std::vector<std::string>& notOHBasedDevices)
-{
-    if (deviceList.size() == 0 || deviceList.size() > MAX_DEVICE_SIZE) {
-        HILOGE("This deviceList size is invalid, size: %{public}zu!", deviceList.size());
-        return false;
-    }
-    std::vector<DmDeviceInfo> allOnlineDeviceInfos;
-    int32_t result = DeviceManager::GetInstance().GetTrustedDeviceList(DP_PKG_NAME, "", allOnlineDeviceInfos);
-    if (result != DP_SUCCESS || allOnlineDeviceInfos.empty()) {
-        HILOGE("GetTrustedDeviceList Failed!");
-        return false;
-    }
-    for (const DmDeviceInfo& dmDeviceInfo : allOnlineDeviceInfos) {
-        if (std::find(deviceList.begin(), deviceList.end(), dmDeviceInfo.networkId) == deviceList.end()) {
-            continue;
-        }
-        if (dmDeviceInfo.extraData.empty()) {
-            HILOGW("extraData is empty! networkId:%{public}s", GetAnonyString(dmDeviceInfo.networkId).c_str());
-            continue;
-        }
-        if (IsOHBasedDevice(dmDeviceInfo.extraData)) {
-            ohBasedDevices.push_back(dmDeviceInfo.networkId);
-        } else {
-            notOHBasedDevices.push_back(dmDeviceInfo.networkId);
-        }
-    }
-    return true;
-}
-
-bool ProfileUtils::IsOHBasedDevice(const std::string& extraData)
-{
-    if (extraData.empty()) {
-        HILOGE("extraData is empty!");
-        return false;
-    }
-    cJSON* extraDataJson = cJSON_Parse(extraData.c_str());
-    if (extraDataJson == NULL) {
-        HILOGE("extraData parse failed");
-        return false;
-    }
-    int32_t osType = OHOS_TYPE_UNKNOWN;
-    cJSON* osTypeJson = cJSON_GetObjectItem(extraDataJson, DistributedHardware::PARAM_KEY_OS_TYPE);
-    if (cJSON_IsNumber(osTypeJson)) {
-        osType = static_cast<int32_t>(osTypeJson->valueint);
-    }
-    cJSON_Delete(extraDataJson);
-    return osType == OHOS_TYPE;
 }
 
 bool ProfileUtils::IsP2p(const int32_t authForm)
@@ -872,16 +795,6 @@ bool ProfileUtils::GetLongValue(const ValuesBucket& values, const std::string& p
         return true;
     }
     return false;
-}
-
-bool ProfileUtils::GetUdidByNetworkId(const std::string& networkId, std::string& udid)
-{
-    return ((DeviceManager::GetInstance().GetUdidByNetworkId(DP_PKG_NAME, networkId, udid) == 0) ? true : false);
-}
-
-bool ProfileUtils::GetUuidByNetworkId(const std::string& networkId, std::string& uuid)
-{
-    return ((DeviceManager::GetInstance().GetUuidByNetworkId(DP_PKG_NAME, networkId, uuid) == 0) ? true : false);
 }
 
 std::string ProfileUtils::GetDbKeyByProfile(const CharacteristicProfile& profile)

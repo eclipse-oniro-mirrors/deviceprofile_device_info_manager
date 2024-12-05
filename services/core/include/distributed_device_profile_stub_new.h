@@ -56,6 +56,7 @@ public:
     int32_t SendSubscribeInfosInner(MessageParcel& data, MessageParcel& reply);
     int32_t SubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply);
     int32_t UnSubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply);
+    int32_t PutAllTrustedDevicesInner(MessageParcel& data, MessageParcel& reply);
     virtual void DelayUnloadTask() = 0;
     virtual bool IsInited() = 0;
 
@@ -66,7 +67,6 @@ private:
     int32_t NotifyEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
     int32_t NotifyAclEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
 private:
-    std::map<uint32_t, Func> funcsMap_;
     std::unordered_set<uint32_t> aclAndSubscribeFuncs_;
 };
 } // namespace DeviceProfile

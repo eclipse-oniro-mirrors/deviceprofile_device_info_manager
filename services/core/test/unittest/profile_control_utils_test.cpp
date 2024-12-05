@@ -34,6 +34,7 @@
 #include "listener/kv_sync_completed_listener.h"
 #include "listener/kv_store_death_recipient.h"
 #include "switch_adapter.h"
+#include "trusted_device_info.h"
 
 
 namespace OHOS {
@@ -908,11 +909,16 @@ HWTEST_F(ProfileControlUtilsTest, GetServiceProfile005, TestSize.Level1)
         std::make_shared<KvDataChangeListener>(STORE_ID),
         std::make_shared<KvSyncCompletedListener>(STORE_ID), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
+    
+    std::string peerNetworkId = "peerNetworkId";
+    TrustedDeviceInfo deviceInfo;
+    deviceInfo.SetNetworkId(peerNetworkId);
     std::string deviceId = "deviceId";
+    deviceInfo.SetUdid(deviceId);
     std::string serviceName = "serviceName";
     ServiceProfile serviceProfile;
 
-    ProfileCache::GetInstance().onlineDevMap_[deviceId] = "peerNetworkId";
+    ProfileCache::GetInstance().onlineDevMap_[deviceId] = deviceInfo;
     auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
     int32_t ret = profileControlUtils->GetServiceProfile(kvStore, deviceId, serviceName, serviceProfile);
     ProfileCache::GetInstance().onlineDevMap_.erase(deviceId);
@@ -931,11 +937,15 @@ HWTEST_F(ProfileControlUtilsTest, GetServiceProfile006, TestSize.Level1)
         std::make_shared<KvDataChangeListener>(STORE_ID),
         std::make_shared<KvSyncCompletedListener>(STORE_ID), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
+    std::string peerNetworkId = "peerNetworkId";
+    TrustedDeviceInfo deviceInfo;
+    deviceInfo.SetNetworkId(peerNetworkId);
     std::string deviceId = "deviceId";
+    deviceInfo.SetUdid(deviceId);
     std::string serviceName = "serviceName";
     ServiceProfile serviceProfile;
 
-    ProfileCache::GetInstance().onlineDevMap_[deviceId] = "peerNetworkId";
+    ProfileCache::GetInstance().onlineDevMap_[deviceId] = deviceInfo;
     std::string serviceProfileKey = SVR_PREFIX + SEPARATOR + deviceId + SEPARATOR + serviceName;
     ProfileCache::GetInstance().serviceProfileMap_[serviceProfileKey] = serviceProfile;
     auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
@@ -1045,7 +1055,11 @@ HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile005, TestSize.Level1)
         std::make_shared<KvDataChangeListener>(STORE_ID),
         std::make_shared<KvSyncCompletedListener>(STORE_ID), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
+    std::string peerNetworkId = "peerNetworkId";
+    TrustedDeviceInfo deviceInfo;
+    deviceInfo.SetNetworkId(peerNetworkId);
     std::string deviceId = "deviceId";
+    deviceInfo.SetUdid(deviceId);
     std::string serviceName = "serviceName";
     std::string characteristicKey = "characteristicKey";
     CharacteristicProfile charProfile;
@@ -1071,12 +1085,16 @@ HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile006, TestSize.Level1)
         std::make_shared<KvDataChangeListener>(STORE_ID),
         std::make_shared<KvSyncCompletedListener>(STORE_ID), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
+    std::string peerNetworkId = "peerNetworkId";
+    TrustedDeviceInfo deviceInfo;
+    deviceInfo.SetNetworkId(peerNetworkId);
     std::string deviceId = "deviceId";
+    deviceInfo.SetUdid(deviceId);
     std::string serviceName = "serviceName";
     std::string characteristicKey = "characteristicKey";
     CharacteristicProfile charProfile;
 
-    ProfileCache::GetInstance().onlineDevMap_[deviceId] = "peerNetworkId";
+    ProfileCache::GetInstance().onlineDevMap_[deviceId] = deviceInfo;
     auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
     int32_t ret = profileControlUtils->GetCharacteristicProfile(kvStore, deviceId, serviceName,
         characteristicKey, charProfile);
@@ -1096,12 +1114,16 @@ HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile007, TestSize.Level1)
         std::make_shared<KvDataChangeListener>(STORE_ID),
         std::make_shared<KvSyncCompletedListener>(STORE_ID), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
+    std::string peerNetworkId = "peerNetworkId";
+    TrustedDeviceInfo deviceInfo;
+    deviceInfo.SetNetworkId(peerNetworkId);
     std::string deviceId = "deviceId";
+    deviceInfo.SetUdid(deviceId);
     std::string serviceName = "serviceName";
     std::string characteristicKey = "characteristicKey";
     CharacteristicProfile charProfile;
 
-    ProfileCache::GetInstance().onlineDevMap_[deviceId] = "peerNetworkId";
+    ProfileCache::GetInstance().onlineDevMap_[deviceId] = deviceInfo;
     std::string charProfileKey =
         CHAR_PREFIX + SEPARATOR + deviceId + SEPARATOR + serviceName + SEPARATOR + characteristicKey;
     ProfileCache::GetInstance().charProfileMap_[charProfileKey] = charProfile;
@@ -1266,13 +1288,17 @@ HWTEST_F(ProfileControlUtilsTest, GetSwitchCharacteristicProfile005, TestSize.Le
  */
 HWTEST_F(ProfileControlUtilsTest, GetSwitchCharacteristicProfile006, TestSize.Level1)
 {
+    std::string peerNetworkId = "peerNetworkId";
+    TrustedDeviceInfo deviceInfo;
+    deviceInfo.SetNetworkId(peerNetworkId);
     std::string appId = "appId";
     std::string deviceId = "deviceId";
+    deviceInfo.SetUdid(deviceId);
     std::string serviceName = "serviceName";
     std::string characteristicKey = "characteristicKey";
     CharacteristicProfile charProfile;
 
-    ProfileCache::GetInstance().onlineDevMap_[deviceId] = "peerNetworkId";
+    ProfileCache::GetInstance().onlineDevMap_[deviceId] = deviceInfo;
     std::string charProfileKey =
         CHAR_PREFIX + SEPARATOR + deviceId + SEPARATOR + serviceName + SEPARATOR + characteristicKey;
     ProfileCache::GetInstance().charProfileMap_[charProfileKey] = charProfile;
@@ -1293,13 +1319,17 @@ HWTEST_F(ProfileControlUtilsTest, GetSwitchCharacteristicProfile006, TestSize.Le
  */
 HWTEST_F(ProfileControlUtilsTest, GetSwitchCharacteristicProfile007, TestSize.Level1)
 {
+    std::string peerNetworkId = "peerNetworkId";
+    TrustedDeviceInfo deviceInfo;
+    deviceInfo.SetNetworkId(peerNetworkId);
     std::string appId = "appId";
     std::string deviceId = "deviceId";
+    deviceInfo.SetUdid(deviceId);
     std::string serviceName = "serviceName";
     std::string characteristicKey = "SwitchStatus";
     CharacteristicProfile charProfile;
 
-    ProfileCache::GetInstance().onlineDevMap_[deviceId] = "peerNetworkId";
+    ProfileCache::GetInstance().onlineDevMap_[deviceId] = deviceInfo;
 
     auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
     int32_t ret = profileControlUtils->GetSwitchCharacteristicProfile(appId, deviceId,

@@ -33,46 +33,6 @@ const std::string TAG = "DistributedDeviceProfileStubNew";
 
 DistributedDeviceProfileStubNew::DistributedDeviceProfileStubNew()
 {
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::PUT_ACL_PROFILE)] =
-        &DistributedDeviceProfileStubNew::PutAccessControlProfileInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::UPDATE_ACL_PROFILE)] =
-        &DistributedDeviceProfileStubNew::UpdateAccessControlProfileInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::GET_TRUST_DEVICE_PROFILE)] =
-        &DistributedDeviceProfileStubNew::GetTrustDeviceProfileInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::GET_ALL_TRUST_DEVICE_PROFILE)] =
-        &DistributedDeviceProfileStubNew::GetAllTrustDeviceProfileInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::GET_ACL_PROFILE)] =
-        &DistributedDeviceProfileStubNew::GetAccessControlProfileInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::GET_ALL_ACL_PROFILE)] =
-            &DistributedDeviceProfileStubNew::GetAllAccessControlProfileInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::DELETE_ACL_PROFILE)] =
-        &DistributedDeviceProfileStubNew::DeleteAccessControlProfileInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE)] =
-        &DistributedDeviceProfileStubNew::PutServiceProfileInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE_BATCH)] =
-        &DistributedDeviceProfileStubNew::PutServiceProfileBatchInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE)] =
-        &DistributedDeviceProfileStubNew::PutCharacteristicProfileInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE_BATCH)] =
-        &DistributedDeviceProfileStubNew::PutCharacteristicProfileBatchInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_PROFILE_NEW)] =
-        &DistributedDeviceProfileStubNew::GetDeviceProfileInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::GET_SERVICE_PROFILE)] =
-        &DistributedDeviceProfileStubNew::GetServiceProfileInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::GET_CHAR_PROFILE)] =
-        &DistributedDeviceProfileStubNew::GetCharacteristicProfileInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::DEL_SERVICE_PROFILE)] =
-        &DistributedDeviceProfileStubNew::DeleteServiceProfileInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::DEL_CHAR_PROFILE)] =
-        &DistributedDeviceProfileStubNew::DeleteCharacteristicProfileInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE)] =
-        &DistributedDeviceProfileStubNew::SubscribeDeviceProfileInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE)] =
-        &DistributedDeviceProfileStubNew::UnSubscribeDeviceProfileInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SYNC_DEVICE_PROFILE_NEW)] =
-        &DistributedDeviceProfileStubNew::SyncDeviceProfileInner;
-    funcsMap_[static_cast<uint32_t>(DPInterfaceCode::SEND_SUBSCRIBE_INFOS)] =
-            &DistributedDeviceProfileStubNew::SendSubscribeInfosInner;
     InitAclAndSubscribe();
 }
 
@@ -94,6 +54,7 @@ void DistributedDeviceProfileStubNew::InitAclAndSubscribe()
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE_BATCH));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE_INITED));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE_INITED));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_ALL_TRUSTED_DEVICES));
 }
 
 DistributedDeviceProfileStubNew::~DistributedDeviceProfileStubNew()
@@ -143,6 +104,8 @@ int32_t DistributedDeviceProfileStubNew::NotifyAclEventInner(uint32_t code, Mess
             return SubscribeDeviceProfileInitedInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE_INITED):
             return UnSubscribeDeviceProfileInitedInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::PUT_ALL_TRUSTED_DEVICES):
+            return PutAllTrustedDevicesInner(data, reply);
         default:
             HILOGE("unknown request code, please check, code = %{public}u", code);
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
@@ -527,7 +490,6 @@ int32_t DistributedDeviceProfileStubNew::SyncDeviceProfileInner(MessageParcel& d
     return DP_SUCCESS;
 }
 
-
 int32_t DistributedDeviceProfileStubNew::SendSubscribeInfosInner(MessageParcel& data, MessageParcel& reply)
 {
     std::map<std::string, SubscribeInfo> listenerMap;
@@ -565,6 +527,21 @@ int32_t DistributedDeviceProfileStubNew::UnSubscribeDeviceProfileInitedInner(Mes
     int32_t saId = -1;
     READ_HELPER(data, Int32, saId);
     int32_t ret = UnSubscribeDeviceProfileInited(saId);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::PutAllTrustedDevicesInner(MessageParcel& data, MessageParcel& reply)
+{
+    std::vector<TrustedDeviceInfo> deviceInfos;
+    if (!IpcUtils::UnMarshalling(data, deviceInfos)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = PutAllTrustedDevices(deviceInfos);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;

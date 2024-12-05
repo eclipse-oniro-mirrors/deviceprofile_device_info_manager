@@ -864,7 +864,7 @@ HWTEST_F(ProfileCrudTest, UnSubscribeProfileEvents_009, TestSize.Level3)
     profileEvents.emplace_back(ProfileEvent::EVENT_SYNC_COMPLETED);
     result =
         DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(profileEvents, callback, failedEvents);
-    EXPECT_EQ(0, result);
+    EXPECT_EQ(ERR_DP_UNSUBSCRIBE_FAILED, result);
 }
 
 /**
@@ -882,7 +882,7 @@ HWTEST_F(ProfileCrudTest, SyncDeviceProfile_002, TestSize.Level3)
     syncOption.AddDevice("test");
     int result = DistributedDeviceProfileClient::GetInstance().SyncDeviceProfile(syncOption,
         std::make_shared<ProfileEventCallback>());
-    EXPECT_EQ(ERR_DP_INIT_DB_FAILED, result);
+    EXPECT_EQ(ERR_DP_PERMISSION_DENIED, result);
 }
 
 /**

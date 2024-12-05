@@ -34,6 +34,7 @@
 #include "ipc_skeleton.h"
 #include "iprofile_event_notifier.h"
 #include "iservice_registry.h"
+#include "profile_cache.h"
 #include "sa_profiles.h"
 #include "service_characteristic_profile.h"
 #include "sync_coordinator.h"
@@ -229,6 +230,9 @@ void DistributedDeviceProfileService::DelayUnloadTask()
 {
     auto task = [this]() {
         HILOGD("do unload task");
+        if (DistributedDeviceProfile::ProfileCache::GetInstance().IsDeviceOnline()) {
+            return;
+        }
         auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
         if (samgrProxy == nullptr) {
             HILOGE("get samgr failed");
@@ -247,7 +251,7 @@ void DistributedDeviceProfileService::DelayUnloadTask()
             return;
         }
         unloadHandler_->RemoveTask(TASK_ID);
-        if (!isOnline_) {
+        if (!DistributedDeviceProfile::ProfileCache::GetInstance().IsDeviceOnline()) {
             HILOGI("delay unload task post task");
             unloadHandler_->PostTask(task, TASK_ID, DELAY_TIME);
         }
@@ -313,10 +317,6 @@ void DistributedDeviceProfileService::OnAddSystemAbility(int32_t systemAbilityId
 bool DistributedDeviceProfileService::DoBusinessInit()
 {
     HILOGD("called");
-    if (!DpDeviceManager::GetInstance().Init()) {
-        HILOGE("DeviceManager init failed");
-        return false;
-    }
     if (!AuthorityManager::GetInstance().Init()) {
         HILOGE("AuthorityManager init failed");
         return false;

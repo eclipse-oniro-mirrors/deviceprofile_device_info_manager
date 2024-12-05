@@ -100,6 +100,7 @@ const std::string DELETE_CHARACTERISTIC_PROFILE = "DeleteCharacteristicProfile";
 const std::string SUBSCRIBE_DEVICE_PROFILE = "SubscribeDeviceProfile";
 const std::string UNSUBSCRIBE_DEVICE_PROFILE = "UnSubscribeDeviceProfile";
 const std::string SYNC_DEVICE_PROFILE = "SyncDeviceProfile";
+const std::string PUT_ALL_TRUSTED_DEVICES = "PutAllTrustedDevices";
 /* Common constants */
 const std::string IS_MULTI_USER = "is_multi_user";
 const std::string SEPARATOR = "#";

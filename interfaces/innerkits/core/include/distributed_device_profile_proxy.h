@@ -66,6 +66,7 @@ public:
     int32_t UnSubscribeDeviceProfileInited(int32_t saId) override;
     int32_t SyncDeviceProfile(const DpSyncOptions& syncOptions, sptr<IRemoteObject> syncCompletedCallback) override;
     int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) override;
+    int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo> deviceInfos) override;
 
 private:
     static inline BrokerDelegator<DistributedDeviceProfileProxy> delegator_;

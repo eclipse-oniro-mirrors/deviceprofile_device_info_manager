@@ -382,29 +382,29 @@ int32_t ProfileControlUtils::GetSwitchCharacteristicProfile(const std::string& a
     }
     const CharacteristicProfile profile(deviceId, serviceName, characteristicKey, "");
     if (!ProfileCache::GetInstance().IsSwitchValid(profile, SWITCH_SERVICE_MAP, SWITCH_OPERATE_GET)) {
-        HILOGE("GetSwitchCharacteristicProfile params invalid");
+        HILOGE("params invalid");
         return DP_INVALID_PARAMS;
     }
     std::string netWorkId;
     int32_t res = ProfileCache::GetInstance().GetNetWorkIdByUdid(deviceId, netWorkId);
     if (res != DP_SUCCESS) {
-        HILOGE("GetSwitchCharacteristicProfile GetNetWorkIdByUdid failed, res: %{public}d", res);
+        HILOGE("GetNetWorkIdByUdid failed, res: %{public}d", res);
         return DP_GET_KV_DB_FAIL;
     }
     uint32_t switchValue;
     uint32_t switchLength;
     res = SwitchAdapter::GetInstance().GetSwitch(appId, netWorkId, switchValue, switchLength);
     if (res != DP_SUCCESS) {
-        HILOGE("GetSwitchCharacteristicProfile GetSwitch failed, res: %{public}d", res);
+        HILOGE("GetSwitch failed, res: %{public}d", res);
         return DP_GET_KV_DB_FAIL;
     }
-    HILOGD("GetSwitchCharacteristicProfile GetSwitch success, switchValue: %{public}d", switchValue);
+    HILOGD("GetSwitch success, switchValue: %{public}d", switchValue);
     charProfile.SetDeviceId(deviceId);
     charProfile.SetServiceName(serviceName);
     charProfile.SetCharacteristicKey(characteristicKey);
     res = ProfileCache::GetInstance().SetSwitchProfile(charProfile, switchValue);
     if (res != DP_SUCCESS) {
-        HILOGE("GetSwitchCharacteristicProfile SetSwitchProfile failed, res: %{public}d", res);
+        HILOGE("SetSwitchProfile failed, res: %{public}d", res);
         return DP_GET_KV_DB_FAIL;
     }
     HILOGI("success : %{public}s!", charProfile.dump().c_str());

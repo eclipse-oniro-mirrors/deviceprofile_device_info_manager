@@ -36,6 +36,7 @@
 #include "kv_sync_completed_listener.h"
 #include "service_profile.h"
 #include "single_instance.h"
+#include "trusted_device_info.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -70,7 +71,7 @@ public:
     int32_t SavePutTempCache(std::map<std::string, std::string>& entries);
     bool IsFirstInitDB();
     void ResetFirst();
-    void OnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
+    void OnDeviceOnline(const TrustedDeviceInfo& trustedDeviceInfo);
     void OnUserChange(int32_t lastUserId, int32_t curUserId);
 
 private:
@@ -82,7 +83,7 @@ private:
     void SyncWithNotOHBasedDeviceFailed(const std::vector<std::string>& notOHBasedDevices,
         sptr<IRemoteObject> syncCompletedCallback);
     void AddToPutTempCache(const std::map<std::string, std::string>& values);
-    void FixDataOnDeviceOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
+    void FixDataOnDeviceOnline(const TrustedDeviceInfo& deviceInfo);
     int32_t DeleteBatchByKeys(const std::vector<std::string>& delKeys);
     int32_t GetProfilesByOwner(const std::string& uuid, std::map<std::string, std::string>& entries);
     int32_t GetProfilesByKeyPrefix(const std::string& udid, std::map<std::string, std::string>& entries);
@@ -93,8 +94,8 @@ private:
     // Clean non-ohbase data when the peer is ohbase
     void FixRemoteDataWhenPeerIsOHBase(const std::string& remoteUdid,
         const std::map<std::string, std::string>& localDataByOwner);
-    void NotifyNotOHBaseOnline(const DistributedHardware::DmDeviceInfo deviceInfo);
-    void E2ESyncDynamicProfile(const DistributedHardware::DmDeviceInfo deviceInfo);
+    void NotifyNotOHBaseOnline(const TrustedDeviceInfo& deviceInfo);
+    void E2ESyncDynamicProfile(const TrustedDeviceInfo& deviceInfo);
     int32_t SaveBatchByKeys(const std::map<std::string, std::string>& entries);
     void FixDiffProfiles();
     template <typename T>

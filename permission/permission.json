@@ -6,6 +6,7 @@
     "GetTrustDeviceProfile": ["device_manager", "softbus_server"],
     "GetAllTrustDeviceProfile": ["device_manager", "softbus_server"],
     "GetAllAccessControlProfile": ["device_manager", "softbus_server"],
+    "PutAllTrustedDevices": ["device_manager"],
     "PutServiceProfile": ["all"],
     "PutServiceProfileBatch": ["all"],
     "PutCharacteristicProfile": ["all"],
