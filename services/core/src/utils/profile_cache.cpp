@@ -630,7 +630,7 @@ void ProfileCache::SetCurSwitch(uint32_t newSwitch)
 void ProfileCache::OnNodeOnline(const TrustedDeviceInfo& trustedDevice)
 {
     HILOGD("trustedDevice=%{public}s", trustedDevice.dump().c_str());
-    if (trustedDevice.GetUdid().empty() || trustedDevice.GetUdid().empty() ||
+    if (trustedDevice.GetUdid().empty() || trustedDevice.GetUuid().empty() ||
         trustedDevice.GetNetworkId().empty()  || trustedDevice.GetAuthForm() == BINDTYPE_INIT ||
         trustedDevice.GetOsType() == 0) {
         HILOGE("trustedDevice invalid:%{public}s", trustedDevice.dump().c_str());
@@ -638,7 +638,7 @@ void ProfileCache::OnNodeOnline(const TrustedDeviceInfo& trustedDevice)
     }
     {
         std::lock_guard<std::mutex> lock(onlineDeviceLock_);
-        if (onlineDevMap_.size() > MAX_TRUSTED_DEVICE_SIZE) {
+        if (onlineDevMap_.size() >= MAX_TRUSTED_DEVICE_SIZE) {
             HILOGE("onlineDevMap_.size greater than %{public}u", MAX_TRUSTED_DEVICE_SIZE);
             return;
         }
@@ -815,7 +815,7 @@ int32_t ProfileCache::AddAllTrustedDevices(const std::vector<TrustedDeviceInfo>&
     std::lock_guard<std::mutex> lock(onlineDeviceLock_);
     onlineDevMap_.clear();
     for (const auto& trustedDevice : deviceInfos) {
-        if (trustedDevice.GetUdid().empty() || trustedDevice.GetUdid().empty() ||
+        if (trustedDevice.GetUdid().empty() || trustedDevice.GetUuid().empty() ||
             trustedDevice.GetNetworkId().empty() || trustedDevice.GetAuthForm() == BINDTYPE_INIT ||
             trustedDevice.GetOsType() == 0) {
             HILOGE("trustedDevice invalid:%{public}s", trustedDevice.dump().c_str());
