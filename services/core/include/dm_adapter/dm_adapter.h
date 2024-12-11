@@ -21,7 +21,6 @@
 #include "device_manager_callback.h"
 #include "dm_device_info.h"
 
-
 #include "single_instance.h"
 #include "trusted_device_info.h"
 namespace OHOS {
