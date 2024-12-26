@@ -41,6 +41,7 @@ ohos_shared_library("device_profile_radar") {
     "c_utils:utils",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
+    "ipc:ipc_single",
     "relational_store:native_rdb",
   ]
 
