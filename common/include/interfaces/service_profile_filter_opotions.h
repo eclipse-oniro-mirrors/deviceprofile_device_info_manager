@@ -45,7 +45,7 @@ public:
     const std::vector<std::string>& GetServiceIds() const;
     void SetServiceIds(const std::vector<std::string>& serviceIds);
     void AddServiceIds(const std::string& serviceId);
-    const std::vector<int32_t>& GetServiceProfileIds() const; 
+    const std::vector<int32_t>& GetServiceProfileIds() const;
     void SetServiceProfileIds(const std::vector<int32_t>& serviceProfileIds);
     void AddServiceProfileIds(int32_t serviceProfileId);
     const std::vector<int32_t>& GetDeviceProfileIds() const;

@@ -81,7 +81,7 @@ int32_t ServiceProfileDao::PutServiceProfile(ServiceProfile& serviceProfile)
     }
     SubscribeProfileManager::GetInstance().NotifyServiceProfileAdd(serviceProfile);
     std::string localUdid = ProfileCache::GetInstance().GetLocalUdid();
-    if (localUdid == serviceProfile.GetDeviceId() ) {
+    if (localUdid == serviceProfile.GetDeviceId()) {
         DeviceProfileManager::GetInstance().PutServiceProfile(serviceProfile);
     }
     HILOGI("end!");
@@ -104,7 +104,7 @@ int32_t ServiceProfileDao::DeleteServiceProfile(const ServiceProfile& servicePro
     }
     SubscribeProfileManager::GetInstance().NotifyServiceProfileDelete(serviceProfile);
     std::string localUdid = ProfileCache::GetInstance().GetLocalUdid();
-    if (localUdid == serviceProfile.GetDeviceId() ) {
+    if (localUdid == serviceProfile.GetDeviceId()) {
         DeviceProfileManager::GetInstance().DeleteServiceProfile(serviceProfile.GetDeviceId(),
             serviceProfile.GetServiceName(), true, serviceProfile.GetUserId());
     }
@@ -131,15 +131,15 @@ int32_t ServiceProfileDao::UpdateServiceProfile(const ServiceProfile& servicePro
     }
     SubscribeProfileManager::GetInstance().NotifyServiceProfileUpdate(serviceProfile);
     std::string localUdid = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
-    if (localUdid == serviceProfile.GetDeviceId() ) {
+    if (localUdid == serviceProfile.GetDeviceId()) {
         DeviceProfileManager::GetInstance().PutServiceProfile(serviceProfile);
     }
     HILOGI("end!");
     return DP_SUCCESS;
 }
 
-int32_t DistributedDeviceProfile::ServiceProfileDao::GetServiceProfiles(const ServiceProfileFilterOptions& filterOptions,
-    std::vector<ServiceProfile>& serviceProfiles)
+int32_t DistributedDeviceProfile::ServiceProfileDao::GetServiceProfiles(
+    const ServiceProfileFilterOptions& filterOptions, std::vector<ServiceProfile>& serviceProfiles)
 {
     if (filterOptions.IsEmpty()) {
         HILOGE("filterOptions is empty!");
@@ -222,8 +222,8 @@ int32_t ServiceProfileDao::ConvertToServiceProfile(std::shared_ptr<ResultSet> re
     return DP_SUCCESS;
 }
 
-int32_t ServiceProfileDao::CreateQuerySqlAndCondition(const ServiceProfileFilterOptions& filterOptions, std::string& sql,
-    std::vector<ValueObject>& condition)
+int32_t ServiceProfileDao::CreateQuerySqlAndCondition(const ServiceProfileFilterOptions& filterOptions,
+    std::string& sql, std::vector<ValueObject>& condition)
 {
     std::string whereSql = "";
     CreateComplexQuerySqlAndCondition(filterOptions, whereSql, condition);
@@ -232,7 +232,7 @@ int32_t ServiceProfileDao::CreateQuerySqlAndCondition(const ServiceProfileFilter
         HILOGE("whereSql is empty!");
         return DP_INVALID_PARAMS;
     }
-    whereSql.erase(whereSql.end() - 3, whereSql.end());
+    whereSql.erase(whereSql.end() - NUM_3, whereSql.end());
     sql = SELECT_SERVICE_PROGILES + whereSql;
     return DP_SUCCESS;
 }
@@ -312,8 +312,8 @@ void ServiceProfileDao::ServiceProfileToEntries(const ServiceProfile& servicePro
 int32_t ServiceProfileDao::SetServiceProfileId(ServiceProfile& serviceProfile)
 {
     std::shared_ptr<ResultSet> resultSet = ProfileDataRdbAdapter::GetInstance().Get(
-        SELECT_SERVICE_PROFILE_TABLE_WHERE_DEVID_SERID_SERTYPE, std::vector<ValueObject>
-        {serviceProfile.GetDeviceProfileId(), serviceProfile.GetServiceName(), serviceProfile.GetServiceType()});
+        SELECT_SERVICE_PROFILE_TABLE_WHERE_DEVID_SERID_SERTYPE, std::vector<ValueObject>{
+        serviceProfile.GetDeviceProfileId(), serviceProfile.GetServiceName(), serviceProfile.GetServiceType()});
     if (resultSet == nullptr) {
         HILOGE("resultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;

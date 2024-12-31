@@ -71,7 +71,7 @@ version       TEXT,\
 url           TEXT,\
 icon          blob);";
 const std::string CREATE_DEVICE_ICON_INFO_TABLE_UNIQUE_INDEX_SQL = "CREATE UNIQUE INDEX if not exists \
-unique_device_icon_info ON device_icon_info (productId,subProductId,imageType,specName);";
+unique_device_icon_info ON device_icon_info (productId, subProductId, imageType, specName);";
 const std::string SELECT_DEVICE_ICON_INFO_TABLE = "SELECT a.*,b.imageVersion FROM device_icon_info a \
 LEFT JOIN product_info b ON a.productId = b.productId \
 WHERE ";

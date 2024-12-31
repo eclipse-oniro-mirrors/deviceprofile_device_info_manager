@@ -29,7 +29,7 @@ namespace {
 }
 ServiceProfileFilterOptions::ServiceProfileFilterOptions(int32_t userId, std::string& accountId,
     std::string& deviceId, const std::vector<std::string>& wiseDeviceIds,
-    const std::vector<std::string>& serviceIds,const std::vector<int32_t>& serviceProfileIds,
+    const std::vector<std::string>& serviceIds, const std::vector<int32_t>& serviceProfileIds,
     const std::vector<int32_t>& deviceProfileIds)
     : userId_(userId), accountId_(accountId), deviceId_(deviceId), wiseDeviceIds_(wiseDeviceIds),
     serviceIds_(serviceIds), serviceProfileIds_(serviceProfileIds), deviceProfileIds_(deviceProfileIds)
