@@ -55,9 +55,7 @@ public:
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     std::string dump() const override;
-
-    bool operator==(const ServiceProfileFilterOptions& rhs) const;
-
+    
 private:
     int32_t userId_ = DEFAULT_USER_ID;
     std::string accountId_ = "";

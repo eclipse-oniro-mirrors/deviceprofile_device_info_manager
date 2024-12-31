@@ -168,13 +168,6 @@ bool ServiceProfileFilterOptions::IsEmpty() const
         serviceProfileIds_.empty() && accountId_.empty() && deviceProfileIds_.empty();
 }
 
-bool ServiceProfileFilterOptions::operator==(const ServiceProfileFilterOptions& rhs) const
-{
-    return userId_ == rhs.userId_ && accountId_ == rhs.accountId_ && deviceId_ == rhs.deviceId_ &&
-           wiseDeviceIds_ == rhs.wiseDeviceIds_ && serviceIds_ == rhs.serviceIds_ &&
-           serviceProfileIds_ == rhs.serviceProfileIds_ && deviceProfileIds_ == rhs.deviceProfileIds_;
-}
-
 void ServiceProfileFilterOptions::AddWiseDeviceIds(const std::string& wiseDeviceId)
 {
     wiseDeviceIds_.emplace_back(wiseDeviceId);
