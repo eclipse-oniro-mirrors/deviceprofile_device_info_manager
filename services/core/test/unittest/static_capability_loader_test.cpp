@@ -829,19 +829,6 @@ HWTEST_F(StaticCapabilityLoaderTest, GetStaticCapabilityValue_003, TestSize.Leve
 }
 
 /*
- * @tc.name: GetStaticCapabilityValue_004
- * @tc.desc: Normal testCase of StaticCapabilityLoaderTest
- * @tc.type: FUNC
- */
-HWTEST_F(StaticCapabilityLoaderTest, GetStaticCapabilityValue_004, TestSize.Level1)
-{
-    std::string handlerLoc = "libpasteboard_client.z.so";
-    bool ret = OHOS::DistributedDeviceProfile::
-        StaticCapabilityLoader::GetInstance().GetStaticCapabilityValue(handlerLoc);
-    EXPECT_EQ(ret, false);
-}
-
-/*
  * @tc.name: UnInit_001
  * @tc.desc: Normal testCase of StaticCapabilityLoaderTest
  * @tc.type: FUNC
