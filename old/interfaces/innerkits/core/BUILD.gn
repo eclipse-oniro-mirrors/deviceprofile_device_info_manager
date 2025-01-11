@@ -37,7 +37,7 @@ ohos_shared_library("distributed_device_profile_client") {
     "-D_FORTIFY_SOURCE=2",
     "-O2",
   ]
-  
+
   cflags_cc = cflags
 
   sanitize = {
