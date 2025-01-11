@@ -17,7 +17,13 @@ import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
 ohos_shared_library("deviceprofileradar") {
   branch_protector_ret = "pac_ret"
 
+  ldflags = [
+    "-Wl,-z,relro",
+    "-Wl,-z,now",
+  ]
+
   cflags = [
+    "-fPIC",
     "-fstack-protector-strong",
     "-D_FORTIFY_SOURCE=2",
     "-O2",

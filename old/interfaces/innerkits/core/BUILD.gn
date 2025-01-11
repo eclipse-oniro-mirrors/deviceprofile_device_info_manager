@@ -26,8 +26,13 @@ config("distributed_device_profile_client_config") {
 
 ohos_shared_library("distributed_device_profile_client") {
   branch_protector_ret = "pac_ret"
+  ldflags = [
+    "-Wl,-z,relro",
+    "-Wl,-z,now",
+  ]
 
   cflags = [
+    "-fPIC",
     "-fstack-protector-strong",
     "-D_FORTIFY_SOURCE=2",
     "-O2",
