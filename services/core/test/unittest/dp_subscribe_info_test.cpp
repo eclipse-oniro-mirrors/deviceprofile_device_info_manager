@@ -146,14 +146,13 @@ HWTEST_F(DPSubscribeInfoTest, Get_001, TestSize.Level1)
     std::unordered_set<ProfileChangeType> subscribeTypes = {ProfileChangeType::TRUST_DEVICE_PROFILE_ADD,
         ProfileChangeType::TRUST_DEVICE_PROFILE_UPDATE, ProfileChangeType::TRUST_DEVICE_PROFILE_DELETE};
     OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
-        sptr<IProfileChangeListener>(new DPSubscribeInfoTest::SubscribeDPChangeListener);
+	    new(std::nothrow) DPSubscribeInfoTest::SubscribeDPChangeListener;
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
-    saId = subscribeInfo.GetSaId();
+    uint32_t id = subscribeInfo.GetSaId();
     subscribeKey = subscribeInfo.GetSubscribeKey();
     subscribeTypes = subscribeInfo.GetProfileChangeTypes();
     subscribeInfo.GetListener();
-    int32_t ret = DP_SUCCESS;
-    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_EQ(id, saId);
 }
 
 /*
@@ -171,8 +170,7 @@ HWTEST_F(DPSubscribeInfoTest, Set_001, TestSize.Level1)
     subscribeInfo.SetSubscribeKey(subscribekey);
     subscribeInfo.SetListener(subscribeDPChangeListener);
     subscribeInfo.dump();
-    int32_t ret = DP_SUCCESS;
-    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_EQ(subscribeInfo.saId_, saId);
 }
 
 /*
@@ -192,22 +190,11 @@ HWTEST_F(DPSubscribeInfoTest, Set_002, TestSize.Level1)
     std::string characteristicKey = "";
     std::string characteristicAttribute = "";
     subscribeInfo.SetSubscribeKey(deviceId, serviceName, characteristicKey, characteristicAttribute);
+    std::string subscribeKey = CHAR_PREFIX + SEPARATOR + deviceId + SEPARATOR + serviceName + SEPARATOR+
+        characteristicKey + SEPARATOR + characteristicAttribute;
+    EXPECT_EQ(subscribeInfo.subscribeKey_, subscribeKey);
 
-    int32_t ret = DP_SUCCESS;
-    EXPECT_EQ(ret, DP_SUCCESS);
-}
-
-/*
- * @tc.name: AddProfileChangeType_001
- * @tc.desc: Normal testCase of DPSubscribeInfoTest for CRUD
- * @tc.type: FUNC
- */
-HWTEST_F(DPSubscribeInfoTest, AddProfileChangeType_001, TestSize.Level1)
-{
-    SubscribeInfo subscribeInfo;
     subscribeInfo.AddProfileChangeType(ProfileChangeType::TRUST_DEVICE_PROFILE_ADD);
-    int32_t ret = DP_SUCCESS;
-    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
