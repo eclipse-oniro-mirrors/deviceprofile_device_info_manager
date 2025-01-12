@@ -81,6 +81,8 @@ HWTEST_F(DpContentSensorTest, Collect_001, TestSize.Level2)
     profile.SetDeviceId("test");
     profile.SetDeviceName("test");
     collector.Collect(profile);
+    collector.Collect(profile);
+    EXPECT_EQ(profile.deviceName_, "test");
 }
 
 /**
