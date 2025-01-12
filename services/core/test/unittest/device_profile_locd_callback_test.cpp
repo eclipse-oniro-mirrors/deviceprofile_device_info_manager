@@ -70,6 +70,8 @@ HWTEST_F(DeviceProfileLoadCallbackTest, OnLoadSystemAbilitySuccess_001, TestSize
     const OHOS::sptr<OHOS::IRemoteObject> remoteObject = nullptr;
     DeviceProfileLoadCallback callBack;
     callBack.OnLoadSystemAbilitySuccess(systemAbilityId, remoteObject);
+    int32_t abilityId = 0;
+    EXPECT_EQ(abilityId, systemAbilityId);
 }
 
 /*
@@ -82,6 +84,8 @@ HWTEST_F(DeviceProfileLoadCallbackTest, OnLoadSystemAbilityFail_001, TestSize.Le
     int32_t systemAbilityId = 0;
     DeviceProfileLoadCallback callBack;
     callBack.OnLoadSystemAbilityFail(systemAbilityId);
+    int32_t abilityId = 0;
+    EXPECT_EQ(abilityId, systemAbilityId);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

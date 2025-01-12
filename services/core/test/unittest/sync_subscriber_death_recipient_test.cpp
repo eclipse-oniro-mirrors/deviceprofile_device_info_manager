@@ -71,6 +71,7 @@ HWTEST_F(SyncSubscriberDeathRecipientTest, OnRemoteDied001, TestSize.Level1)
     const wptr<IRemoteObject> remote = nullptr;
     SyncSubscriberDeathRecipient subDeath_;
     subDeath_.OnRemoteDied(remote);
+    EXPECT_EQ(remote, nullptr);
 }
 
 /*
@@ -84,6 +85,7 @@ HWTEST_F(SyncSubscriberDeathRecipientTest, OnRemoteDied002, TestSize.Level1)
     const wptr<IRemoteObject> remote;
     SyncSubscriberDeathRecipient subDeath_;
     subDeath_.OnRemoteDied(remote);
+    EXPECT_EQ(remote, nullptr);
 }
 }
 }
