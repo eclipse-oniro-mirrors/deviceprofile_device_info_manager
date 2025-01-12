@@ -146,7 +146,7 @@ HWTEST_F(DPSubscribeInfoTest, Get_001, TestSize.Level1)
     std::unordered_set<ProfileChangeType> subscribeTypes = {ProfileChangeType::TRUST_DEVICE_PROFILE_ADD,
         ProfileChangeType::TRUST_DEVICE_PROFILE_UPDATE, ProfileChangeType::TRUST_DEVICE_PROFILE_DELETE};
     OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
-	    new(std::nothrow) DPSubscribeInfoTest::SubscribeDPChangeListener;
+	    sptr<IProfileChangeListener>(new DPSubscribeInfoTest::SubscribeDPChangeListener);
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
     uint32_t id = subscribeInfo.GetSaId();
     subscribeKey = subscribeInfo.GetSubscribeKey();
