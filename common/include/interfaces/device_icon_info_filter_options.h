@@ -25,7 +25,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 class DeviceIconInfoFilterOptions : public DpParcel {
 public:
-    DeviceIconInfoFilterOptions() :subProductId_(""), imageType_(""), specName_("")
+    DeviceIconInfoFilterOptions() : subProductId_(""), imageType_(""), specName_("")
     {}
     ~DeviceIconInfoFilterOptions() = default;
 
