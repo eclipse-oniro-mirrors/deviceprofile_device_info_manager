@@ -98,7 +98,7 @@ int32_t ContentSensorManager::Collect()
     return DP_SUCCESS;
 }
 
-int32_t ContentSensorManager::CollectInfoToProfileData(DeviceProfile &collectProfile)
+int32_t ContentSensorManager::CollectInfoToProfileData(DeviceProfile& collectProfile)
 {
     DeviceProfileFilterOptions devFilterOptions;
     devFilterOptions.AddDeviceIds(ProfileCache::GetInstance().GetLocalUdid());

@@ -129,11 +129,11 @@ public:
     std::string dump() const override;
     std::string AnnoymizeDump() const;
     const std::string GetBleMac() const;
-    void SetBleMac(const std::string &bleMac);
+    void SetBleMac(const std::string& bleMac);
     const std::string GetBrMac() const;
-    void SetBrMac(const std::string &brMac);
+    void SetBrMac(const std::string& brMac);
     const std::string GetSleMac() const;
-    void SetSleMac(const std::string &sleMac);
+    void SetSleMac(const std::string& sleMac);
     int32_t GetSetupType() const;
     void SetSetupType(int32_t setupType);
 private:
