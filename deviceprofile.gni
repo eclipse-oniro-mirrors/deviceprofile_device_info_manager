@@ -18,7 +18,8 @@ declare_args() {
   } else {
     dp_os_account_part_exists = false
   }
-}old_device_profile_path = "//foundation/deviceprofile/device_info_manager/old"
+}
+old_device_profile_path = "//foundation/deviceprofile/device_info_manager/old"
 old_device_profile_service =
     "//foundation/deviceprofile/device_info_manager/old/services"
 old_device_profile_innerkits =
