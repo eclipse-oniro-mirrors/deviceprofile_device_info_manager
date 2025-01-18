@@ -172,7 +172,7 @@ int32_t ProfileDataManager::GetDeviceIconInfos(const DeviceIconInfoFilterOptions
 {
     if (filterOptions.GetProductIds().empty() || filterOptions.GetSubProductId().empty() ||
         filterOptions.GetImageType().empty() || filterOptions.GetSpecName().empty()) {
-        HILOGE("");
+        HILOGE("Invalid parameter");
         return DP_INVALID_PARAM;
     }
     int32_t ret = DeviceIconInfoDao::GetInstance().GetDeviceIconInfos(filterOptions, deviceIconInfos);
