@@ -169,6 +169,10 @@ int32_t SettingsDataManager::SetValue(const std::string &tableName, int32_t user
  
 std::shared_ptr<DataShare::DataShareHelper> SettingsDataManager::CreateDataShareHelper(const std::string &proxyUri)
 {
+    if (proxyUri.empty()) {
+        HILOGE("proxyUri is empty");
+        return nullptr;
+    }
     auto [ret, helper] = DataShare::DataShareHelper::Create(GetRemoteObj(), proxyUri, SETTINGS_DATA_EXT_URI);
     if (ret != 0) {
         HILOGE("create helper failed ret %{public}d", ret);
@@ -191,6 +195,9 @@ std::string SettingsDataManager::GetProxyUriStr(const std::string &tableName, in
  
 Uri SettingsDataManager::MakeUri(const std::string &proxyUri, const std::string &key)
 {
+    if (proxyUri.empty() || key.empty()) {
+        HILOGE("Invalid parameter.");
+    }
     Uri uri(proxyUri + "&key=" + key);
     return uri;
 }
