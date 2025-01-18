@@ -90,9 +90,9 @@ sptr<IRemoteObject> SettingsDataManager::GetRemoteObj()
         HILOGE("get sa manager return nullptr");
         return nullptr;
     }
-    auto remoteObj = samgr->GetSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID  );
+    auto remoteObj = samgr->GetSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID);
     if (remoteObj == nullptr) {
-        HILOGE("get system ability failed, id=%{public}d", DISTRIBUTED_DEVICE_PROFILE_SA_ID  );
+        HILOGE("get system ability failed, id=%{public}d", DISTRIBUTED_DEVICE_PROFILE_SA_ID);
         return nullptr;
     }
     remoteObj_ = remoteObj;
