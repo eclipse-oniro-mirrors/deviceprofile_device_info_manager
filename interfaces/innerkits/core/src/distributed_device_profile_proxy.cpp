@@ -52,6 +52,56 @@ int32_t DistributedDeviceProfileProxy::UpdateAccessControlProfile(const AccessCo
     return DP_SUCCESS;
 }
 
+int32_t DistributedDeviceProfileProxy::PutProductInfoBatch(const std::vector<ProductInfo>& productInfos)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    if (!IpcUtils::Marshalling(data, productInfos)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::PUT_PRODUCT_INFO_BATCH), data, reply);
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    if (!IpcUtils::Marshalling(data, deviceIconInfos)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::PUT_DEVICE_ICON_INFO_BATCH), data, reply);
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
+    std::vector<DeviceIconInfo>& deviceIconInfos)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    if (!filterOptions.Marshalling(data)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_ICON_INFOS), data, reply);
+    if (!IpcUtils::UnMarshalling(reply, deviceIconInfos)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
 int32_t DistributedDeviceProfileProxy::GetTrustDeviceProfile(const std::string& deviceId,
     TrustDeviceProfile& trustDeviceProfile)
 {
@@ -132,6 +182,21 @@ int32_t DistributedDeviceProfileProxy::DeleteAccessControlProfile(int32_t access
     return DP_SUCCESS;
 }
 
+int32_t DistributedDeviceProfileProxy::PutDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    if (!IpcUtils::Marshalling(data, deviceProfiles)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::PUT_DEVICE_PROFILE_BATCH), data, reply);
+    return DP_SUCCESS;
+}
+
 int32_t DistributedDeviceProfileProxy::PutServiceProfile(const ServiceProfile& serviceProfile)
 {
     sptr<IRemoteObject> remote = nullptr;
@@ -205,6 +270,26 @@ int32_t DistributedDeviceProfileProxy::GetDeviceProfile(const std::string& devic
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_PROFILE_NEW), data, reply);
     if (!deviceProfile.UnMarshalling(reply)) {
+        HILOGE("dp ipc read parcel fail");
+        return DP_READ_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::GetDeviceProfiles(DeviceProfileFilterOptions& options,
+    std::vector<DeviceProfile>& deviceProfiles)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    if (!options.Marshalling(data)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_PROFILES), data, reply);
+    if (!IpcUtils::UnMarshalling(reply, deviceProfiles)) {
         HILOGE("dp ipc read parcel fail");
         return DP_READ_PARCEL_FAIL;
     }

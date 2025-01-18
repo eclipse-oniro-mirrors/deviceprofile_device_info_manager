@@ -52,11 +52,13 @@ public:
         std::vector<AccessControlProfile>& accessControlProfiles);
     int32_t GetAllAccessControlProfile(std::vector<AccessControlProfile>& accessControlProfiles);
     int32_t DeleteAccessControlProfile(int32_t accessControlId);
+    int32_t PutDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles);
     int32_t PutServiceProfile(const ServiceProfile& serviceProfile);
     int32_t PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles);
     int32_t PutCharacteristicProfile(const CharacteristicProfile& characteristicProfile);
     int32_t PutCharacteristicProfileBatch(const std::vector<CharacteristicProfile>& characteristicProfiles);
     int32_t GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile);
+    int32_t GetDeviceProfiles(DeviceProfileFilterOptions& options, std::vector<DeviceProfile>& deviceProfiles);
     int32_t GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
         ServiceProfile& serviceProfile);
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
@@ -65,6 +67,10 @@ public:
         bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID);
     int32_t DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
         const std::string& characteristicKey, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID);
+    int32_t PutProductInfoBatch(const std::vector<ProductInfo>& productInfos);
+    int32_t PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos);
+    int32_t GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
+        std::vector<DeviceIconInfo>& deviceIconInfos);
     int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo);
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo);
     int32_t SyncDeviceProfile(const DpSyncOptions& syncOptions, sptr<ISyncCompletedCallback> syncCb);

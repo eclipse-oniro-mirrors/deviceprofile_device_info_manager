@@ -22,12 +22,15 @@
 #include "collaboration_info_collector.h"
 #include "collector.h"
 #include "content_sensor_manager_utils.h"
-#include "device_profile.h"
+#include "device_profile_filter_options.h"
 #include "device_profile_manager.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 #include "dms_info_collector.h"
+#include "multi_user_manager.h"
 #include "pasteboard_info_collector.h"
+#include "profile_data_manager.h"
+#include "profile_cache.h"
 #include "switch_status_collector.h"
 #include "syscap_info_collector.h"
 #include "system_info_collector.h"
@@ -54,7 +57,7 @@ int32_t ContentSensorManager::UnInit()
 
 int32_t ContentSensorManager::Collect()
 {
-    auto csTask = []() {
+    auto csTask = [this]() {
         HILOGI("ContentSensorManager Collect");
         std::list<std::shared_ptr<Collector>> taskList;
         taskList.push_back(std::make_shared<SystemInfoCollector>());
@@ -73,6 +76,8 @@ int32_t ContentSensorManager::Collect()
         }
         deviceProfile.SetDeviceId(ContentSensorManagerUtils::GetInstance().ObtainLocalUdid());
         DeviceProfileManager::GetInstance().PutDeviceProfile(deviceProfile);
+        deviceProfile.SetUserId(MultiUserManager::GetInstance().GetCurrentForegroundUserID());
+        CollectInfoToProfileData(deviceProfile);
         if (!svrProfileList.empty()) {
             DeviceProfileManager::GetInstance().PutServiceProfileBatch(svrProfileList);
         } else {
@@ -90,6 +95,36 @@ int32_t ContentSensorManager::Collect()
         return DP_CONTENT_SENSOR_MANAGER_INIT_FAIL;
     }
     csTaskThread.join();
+    return DP_SUCCESS;
+}
+
+int32_t ContentSensorManager::CollectInfoToProfileData(DeviceProfile& collectProfile)
+{
+    DeviceProfileFilterOptions devFilterOptions;
+    devFilterOptions.AddDeviceIds(ProfileCache::GetInstance().GetLocalUdid());
+    devFilterOptions.SetAccountId(ProfileCache::GetInstance().GetLocalAccountId());
+    devFilterOptions.SetUserId(MultiUserManager::GetInstance().GetCurrentForegroundUserID());
+    std::vector<DeviceProfile> oldDeviceProfiles;
+    int32_t ret = DeviceProfileDao::GetInstance().GetDeviceProfiles(devFilterOptions, oldDeviceProfiles);
+    if ((ret != DP_SUCCESS) && (ret != DP_NOT_FIND_DATA)) {
+        HILOGE("GetDeviceProfiles failed,ret=%{public}d", ret);
+        return ret;
+    }
+    if (!oldDeviceProfiles.empty()) {
+        DeviceProfile oldDeviceProfile = oldDeviceProfiles[0];
+        collectProfile.SetWiseDeviceId(oldDeviceProfile.GetWiseDeviceId());
+        collectProfile.SetWiseUserId(oldDeviceProfile.GetWiseUserId());
+        collectProfile.SetSetupType(oldDeviceProfile.GetSetupType());
+        collectProfile.SetRegisterTime(oldDeviceProfile.GetRegisterTime());
+        collectProfile.SetModifyTime(oldDeviceProfile.GetModifyTime());
+        collectProfile.SetShareTime(oldDeviceProfile.GetShareTime());
+        collectProfile.SetInnerModel(oldDeviceProfile.GetInnerModel());
+    }
+    ret = ProfileDataManager::GetInstance().PutDeviceProfile(collectProfile);
+    if (ret != DP_SUCCESS) {
+        HILOGE("PutDeviceProfile failed,ret=%{public}d", ret);
+        return ret;
+    }
     return DP_SUCCESS;
 }
 } // namespace DeviceProfile

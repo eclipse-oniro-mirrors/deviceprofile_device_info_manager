@@ -46,11 +46,13 @@ public:
     int32_t GetAccessControlProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetAllAccessControlProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t DeleteAccessControlProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t PutDeviceProfileBatchInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutServiceProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutServiceProfileBatchInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutCharacteristicProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutCharacteristicProfileBatchInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetDeviceProfileNewInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetDeviceProfilesInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetServiceProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetCharacteristicProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t DeleteServiceProfileInner(MessageParcel& data, MessageParcel& reply);
@@ -62,6 +64,9 @@ public:
     int32_t SubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply);
     int32_t UnSubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutAllTrustedDevicesInner(MessageParcel& data, MessageParcel& reply);
+    int32_t PutProductInfoBatchInner(MessageParcel& data, MessageParcel& reply);
+    int32_t PutDeviceIconInfoBatchInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetDeviceIconInfosInner(MessageParcel& data, MessageParcel& reply);
     virtual void DelayUnloadTask()
     {
         return;
@@ -77,6 +82,9 @@ private:
     void InitAclAndSubscribe();
 
     int32_t NotifyAclEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
+    
+    int32_t NotifyProfileDataEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply,
+        MessageOption& option);
 
     int32_t NotifyOldEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
 

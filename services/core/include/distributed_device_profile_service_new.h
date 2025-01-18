@@ -20,11 +20,15 @@
 #include <map>
 #include <mutex>
 #include <unordered_set>
+#include "device_icon_info.h"
+#include "device_icon_info_filter_options.h"
+#include "device_profile_filter_options.h"
 #include "distributed_device_profile_stub_new.h"
 #include "dp_account_common_event.h"
 #include "i_dp_inited_callback.h"
 #include "event_handler.h"
 #include "event_runner.h"
+#include "product_info.h"
 #include "single_instance.h"
 #include "system_ability.h"
 #include "system_ability_definition.h"
@@ -50,11 +54,13 @@ public:
         std::vector<AccessControlProfile>& accessControlProfiles) override;
     int32_t GetAllAccessControlProfile(std::vector<AccessControlProfile>& accessControlProfiles) override;
     int32_t DeleteAccessControlProfile(int32_t accessControlId) override;
+    int32_t PutDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles) override;
     int32_t PutServiceProfile(const ServiceProfile& serviceProfile) override;
     int32_t PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles) override;
     int32_t PutCharacteristicProfile(const CharacteristicProfile& charProfile) override;
     int32_t PutCharacteristicProfileBatch(const std::vector<CharacteristicProfile>& charProfiles) override;
     int32_t GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile) override;
+    int32_t GetDeviceProfiles(DeviceProfileFilterOptions& options, std::vector<DeviceProfile>& deviceProfiles) override;
     int32_t GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
         ServiceProfile& serviceProfile) override;
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
@@ -63,6 +69,10 @@ public:
         int32_t userId = DEFAULT_USER_ID) override;
     int32_t DeleteCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
         const std::string& characteristicKey, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID) override;
+    int32_t PutProductInfoBatch(const std::vector<ProductInfo>& productInfos) override;
+    int32_t PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos) override;
+    int32_t GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
+        std::vector<DeviceIconInfo>& deviceIconInfos) override;
     int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
@@ -93,6 +103,7 @@ private:
     int32_t NotifyDeviceProfileInited();
     void GetDynamicProfilesFromTempCache(std::map<std::string, std::string>& entries);
     void ClearProfileCache();
+    int32_t UnInitNext();
 
 private:
     std::mutex accountCommonEventManagerMtx_;

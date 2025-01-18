@@ -22,10 +22,14 @@
 
 #include "access_control_profile.h"
 #include "characteristic_profile.h"
+#include "device_icon_info.h"
+#include "device_icon_info_filter_options.h"
 #include "device_profile.h"
+#include "device_profile_filter_options.h"
 #include "dp_subscribe_info.h"
 #include "dp_sync_options.h"
 #include "i_sync_completed_callback.h"
+#include "product_info.h"
 #include "service_profile.h"
 #include "trust_device_profile.h"
 #include "trusted_device_info.h"
@@ -45,11 +49,14 @@ public:
          std::vector<AccessControlProfile>& accessControlProfiles) = 0;
     virtual int32_t GetAllAccessControlProfile(std::vector<AccessControlProfile>& accessControlProfiles) = 0;
     virtual int32_t DeleteAccessControlProfile(int32_t accessControlId) = 0;
+    virtual int32_t PutDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles) = 0;
     virtual int32_t PutServiceProfile(const ServiceProfile& serviceProfile) = 0;
     virtual int32_t PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles) = 0;
     virtual int32_t PutCharacteristicProfile(const CharacteristicProfile& charProfile) = 0;
     virtual int32_t PutCharacteristicProfileBatch(const std::vector<CharacteristicProfile>& charProfiles) = 0;
     virtual int32_t GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile) = 0;
+    virtual int32_t GetDeviceProfiles(DeviceProfileFilterOptions& options,
+        std::vector<DeviceProfile>& deviceProfiles) = 0;
     virtual int32_t GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
         ServiceProfile& serviceProfile) = 0;
     virtual int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
@@ -66,6 +73,10 @@ public:
         sptr<IRemoteObject> syncCompletedCallback) = 0;
     virtual int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) = 0;
     virtual int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo> deviceInfos) = 0;
+    virtual int32_t PutProductInfoBatch(const std::vector<ProductInfo>& productInfos) = 0;
+    virtual int32_t PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos) = 0;
+    virtual int32_t GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
+        std::vector<DeviceIconInfo>& deviceIconInfos) = 0;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

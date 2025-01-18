@@ -310,8 +310,6 @@ HWTEST_F(ProfileCacheTest, IsDeviceProfileExist_001, TestSize.Level2)
 
     DeviceProfile deviceProfile1;
     deviceProfile1.SetDeviceId("anything1");
-    deviceProfile1.SetDeviceTypeName("anything");
-    deviceProfile1.SetDeviceTypeId(0);
     deviceProfile1.SetDeviceName("anything");
     deviceProfile1.SetManufactureName("anything");
     deviceProfile1.SetDeviceModel("anything");

@@ -17,6 +17,8 @@
 #define OHOS_DP_CONTENT_SENSOR_MANAGER_H
 
 #include <string>
+
+#include "device_profile.h"
 #include "single_instance.h"
 
 namespace OHOS {
@@ -30,6 +32,7 @@ public:
 
 private:
     int32_t Collect();
+    int32_t CollectInfoToProfileData(DeviceProfile& collectProfile);
 };
 } // namespace DeviceProfile
 } // namespace OHOS

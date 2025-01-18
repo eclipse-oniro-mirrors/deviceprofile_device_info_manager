@@ -162,8 +162,6 @@ HWTEST_F(DeviceProfileManagerTest, PutDeviceProfile001, TestSize.Level1)
     DeviceProfile deviceProfile;
     ContentSensorManagerUtils::GetInstance().localUdid_ = "anything";
     deviceProfile.SetDeviceId("anything");
-    deviceProfile.SetDeviceTypeName("anything");
-    deviceProfile.SetDeviceTypeId(0);
     deviceProfile.SetDeviceName("anything");
     deviceProfile.SetManufactureName("anything");
     deviceProfile.SetDeviceModel("anything");
@@ -187,8 +185,6 @@ HWTEST_F(DeviceProfileManagerTest, PutDeviceProfile002, TestSize.Level1)
 {
     DeviceProfile deviceProfile;
     deviceProfile.SetDeviceId("");
-    deviceProfile.SetDeviceTypeName("anything");
-    deviceProfile.SetDeviceTypeId(0);
     deviceProfile.SetDeviceName("anything");
     deviceProfile.SetManufactureName("anything");
     deviceProfile.SetDeviceModel("anything");
@@ -213,8 +209,6 @@ HWTEST_F(DeviceProfileManagerTest, PutDeviceProfile003, TestSize.Level1)
     DeviceProfile deviceProfile1;
     ContentSensorManagerUtils::GetInstance().localUdid_ = "anything1";
     deviceProfile1.SetDeviceId("anything1");
-    deviceProfile1.SetDeviceTypeName("anything");
-    deviceProfile1.SetDeviceTypeId(0);
     deviceProfile1.SetDeviceName("anything");
     deviceProfile1.SetManufactureName("anything");
     deviceProfile1.SetDeviceModel("anything");
@@ -226,8 +220,6 @@ HWTEST_F(DeviceProfileManagerTest, PutDeviceProfile003, TestSize.Level1)
 
     DeviceProfile deviceProfile2;
     deviceProfile2.SetDeviceId("anything1");
-    deviceProfile2.SetDeviceTypeName("anything");
-    deviceProfile2.SetDeviceTypeId(0);
     deviceProfile2.SetDeviceName("anything");
     deviceProfile2.SetManufactureName("anything");
     deviceProfile2.SetDeviceModel("anything");
@@ -252,8 +244,6 @@ HWTEST_F(DeviceProfileManagerTest, PutDeviceProfile004, TestSize.Level1)
 {
     DeviceProfile deviceProfile10;
     deviceProfile10.SetDeviceId("anything10");
-    deviceProfile10.SetDeviceTypeName("anything");
-    deviceProfile10.SetDeviceTypeId(0);
     deviceProfile10.SetDeviceName("anything");
     deviceProfile10.SetManufactureName("anything");
     deviceProfile10.SetDeviceModel("anything");
@@ -279,8 +269,6 @@ HWTEST_F(DeviceProfileManagerTest, PutDeviceProfile005, TestSize.Level1)
     DeviceProfile deviceProfile11;
     ContentSensorManagerUtils::GetInstance().localUdid_ = "anything11";
     deviceProfile11.SetDeviceId("anything11");
-    deviceProfile11.SetDeviceTypeName("anything");
-    deviceProfile11.SetDeviceTypeId(0);
     deviceProfile11.SetDeviceName("anything");
     deviceProfile11.SetManufactureName("anything");
     deviceProfile11.SetDeviceModel("anything");
@@ -309,8 +297,6 @@ HWTEST_F(DeviceProfileManagerTest, PutDeviceProfile006, TestSize.Level1)
     DeviceProfile deviceProfile;
     ContentSensorManagerUtils::GetInstance().localUdid_ = "anything111";
     deviceProfile.SetDeviceId("anything111");
-    deviceProfile.SetDeviceTypeName("anything");
-    deviceProfile.SetDeviceTypeId(0);
     deviceProfile.SetDeviceName("anything");
     deviceProfile.SetManufactureName("anything");
     deviceProfile.SetDeviceModel("anything");
@@ -715,8 +701,6 @@ HWTEST_F(DeviceProfileManagerTest, GetDeviceProfile001, TestSize.Level1)
     ContentSensorManagerUtils::GetInstance().localUdid_ = "deviceId";
     string deviceId = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
     deviceProfile2.SetDeviceId(deviceId);
-    deviceProfile2.SetDeviceTypeName("anything");
-    deviceProfile2.SetDeviceTypeId(0);
     deviceProfile2.SetDeviceName("anything");
     deviceProfile2.SetManufactureName("anything");
     deviceProfile2.SetDeviceModel("anything");
@@ -733,8 +717,6 @@ HWTEST_F(DeviceProfileManagerTest, GetDeviceProfile001, TestSize.Level1)
     EXPECT_EQ(ret, DP_SUCCESS);
     outDeviceProfile.SetDeviceId(deviceId);
     string outDeviceId = outDeviceProfile.GetDeviceId();
-    outDeviceProfile.GetDeviceTypeName();
-    outDeviceProfile.GetDeviceTypeId();
     outDeviceProfile.GetDeviceName();
     outDeviceProfile.GetManufactureName();
     outDeviceProfile.GetDeviceModel();
@@ -1373,8 +1355,6 @@ HWTEST_F(DeviceProfileManagerTest, DeviceProfileMarshalling001, TestSize.Level1)
     OHOS::MessageParcel data;
     DeviceProfile deviceProfile;
     deviceProfile.SetDeviceId("anything");
-    deviceProfile.SetDeviceTypeName("anything");
-    deviceProfile.SetDeviceTypeId(0);
     deviceProfile.SetDeviceName("anything");
     deviceProfile.SetManufactureName("anything");
     deviceProfile.SetDeviceModel("anything");
@@ -1401,8 +1381,6 @@ HWTEST_F(DeviceProfileManagerTest, DeviceProfileOperator001, TestSize.Level1)
 {
     DeviceProfile deviceProfile1;
     deviceProfile1.SetDeviceId("anything1");
-    deviceProfile1.SetDeviceTypeName("anything1");
-    deviceProfile1.SetDeviceTypeId(0);
     deviceProfile1.SetDeviceName("anything1");
     deviceProfile1.SetManufactureName("anything1");
     deviceProfile1.SetDeviceModel("anything1");
@@ -1414,8 +1392,6 @@ HWTEST_F(DeviceProfileManagerTest, DeviceProfileOperator001, TestSize.Level1)
 
     DeviceProfile deviceProfile2;
     deviceProfile2.SetDeviceId("anything2");
-    deviceProfile2.SetDeviceTypeName("anything2");
-    deviceProfile2.SetDeviceTypeId(0);
     deviceProfile2.SetDeviceName("anything2");
     deviceProfile2.SetManufactureName("anything2");
     deviceProfile2.SetDeviceModel("anything2");
@@ -1439,8 +1415,6 @@ HWTEST_F(DeviceProfileManagerTest, DeviceProfileDump001, TestSize.Level1)
 {
     DeviceProfile deviceProfile;
     deviceProfile.SetDeviceId("anything");
-    deviceProfile.SetDeviceTypeName("anything");
-    deviceProfile.SetDeviceTypeId(0);
     deviceProfile.SetDeviceName("anything");
     deviceProfile.SetManufactureName("anything");
     deviceProfile.SetDeviceModel("anything");
@@ -1500,8 +1474,6 @@ HWTEST_F(DeviceProfileManagerTest, GetInKvDB001, TestSize.Level1)
     string deviceId = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
     DeviceProfile deviceProfile2;
     deviceProfile2.SetDeviceId(deviceId);
-    deviceProfile2.SetDeviceTypeName("GetInKvDB001_DeviceTypeName");
-    deviceProfile2.SetDeviceTypeId(0);
     deviceProfile2.SetDeviceName("GetInKvDB001_DeviceName");
     deviceProfile2.SetManufactureName("GetInKvDB001_ManufactureName");
     deviceProfile2.SetDeviceModel("GetInKvDB001_DeviceModel");
@@ -1579,8 +1551,6 @@ HWTEST_F(DeviceProfileManagerTest, GetInKvDB002, TestSize.Level1)
     string deviceId = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
     DeviceProfile deviceProfile2;
     deviceProfile2.SetDeviceId(deviceId);
-    deviceProfile2.SetDeviceTypeName("GetInKvDB001_DeviceTypeName2");
-    deviceProfile2.SetDeviceTypeId(0);
     deviceProfile2.SetDeviceName("GetInKvDB001_DeviceName2");
     deviceProfile2.SetManufactureName("GetInKvDB001_ManufactureName2");
     deviceProfile2.SetDeviceModel("GetInKvDB001_DeviceModel2");

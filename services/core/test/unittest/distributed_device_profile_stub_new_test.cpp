@@ -63,6 +63,13 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
         sptr<IRemoteObject> syncCompletedCallback) override;
     int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) override;
+    int32_t PutDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles) override;
+    int32_t GetDeviceProfiles(DeviceProfileFilterOptions& options,
+        std::vector<DeviceProfile>& deviceProfiles) override;
+    int32_t PutProductInfoBatch(const std::vector<ProductInfo>& productInfos) override;
+    int32_t PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos) override;
+    int32_t GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
+        std::vector<DeviceIconInfo>& deviceIconInfos) override;
     void DelayUnloadTask() override;
     bool IsInited() override;
 };
@@ -246,6 +253,40 @@ void MockDistributedDeviceProfileStubNew::DelayUnloadTask()
 bool MockDistributedDeviceProfileStubNew::IsInited()
 {
     return true;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::GetDeviceProfiles(DeviceProfileFilterOptions& options,
+    std::vector<DeviceProfile>& deviceProfiles)
+{
+    (void)options;
+    (void)deviceProfiles;
+    return 0;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::PutDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles)
+{
+    (void)deviceProfiles;
+    return 0;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::PutProductInfoBatch(const std::vector<ProductInfo>& productInfos)
+{
+    (void)productInfos;
+    return 0;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos)
+{
+    (void)deviceIconInfos;
+    return 0;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
+    std::vector<DeviceIconInfo>& deviceIconInfos)
+{
+    (void)filterOptions;
+    (void)deviceIconInfos;
+    return 0;
 }
 
 /**

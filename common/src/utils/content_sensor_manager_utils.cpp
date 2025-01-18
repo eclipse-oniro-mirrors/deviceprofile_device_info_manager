@@ -164,6 +164,24 @@ std::string ContentSensorManagerUtils::ObtainLocalUdid()
     return localUdid_;
 }
 
+
+std::string ContentSensorManagerUtils::ObtainProductId()
+{
+    HILOGI("called!");
+    std::lock_guard<std::mutex> lock(csMutex_);
+    if (!productId_.empty()) {
+        return productId_;
+    }
+    const char* productIdTemp = GetProductSeries();
+    if (productIdTemp == nullptr) {
+        HILOGE("get productId failed!");
+        return "";
+    }
+    productId_ = productIdTemp;
+    free((char*)productIdTemp);
+    return productId_;
+}
+
 void ContentSensorManagerUtils::ObtainDeviceDataSyncMode()
 {
     char isE2EDeviceParam[SYS_SETTINGS_DATA_SYNC_PARAM_LEN + 1] = {0};

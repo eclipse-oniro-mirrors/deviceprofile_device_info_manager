@@ -137,8 +137,6 @@ HWTEST_F(ProfileControlUtilsTest, PutDeviceProfile004, TestSize.Level1)
     DeviceProfile deviceProfile1;
     ContentSensorManagerUtils::GetInstance().localUdid_ = "anything1";
     deviceProfile1.SetDeviceId("anything1");
-    deviceProfile1.SetDeviceTypeName("anything");
-    deviceProfile1.SetDeviceTypeId(0);
     deviceProfile1.SetDeviceName("anything");
     deviceProfile1.SetManufactureName("anything");
     deviceProfile1.SetDeviceModel("anything");

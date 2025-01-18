@@ -17,12 +17,15 @@
 
 #include "parameter.h"
 #include "securec.h"
+#include "string_ex.h"
 
 #include "content_sensor_manager_utils.h"
 #include "device_profile.h"
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_log.h"
+#include "multi_user_manager.h"
 #include "profile_utils.h"
+#include "settings_data_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -44,6 +47,14 @@ bool SystemInfoCollector::ConvertToProfile(DeviceProfile& profile)
 {
     profile.SetOsType(GetOsType());
     profile.SetOsVersion(GetOsVersion());
+    profile.SetDeviceName(GetDeviceName());
+    profile.SetProductId(GetProductId());
+    profile.SetSn(GetSn());
+    profile.SetDeviceModel(GetDeviceModel());
+    profile.SetDevType(GetDeviceTypeId());
+    profile.SetManu(GetDeviceManufacturer());
+    profile.SetHiv(HIV_VERSION);
+    profile.SetProtType(GetProtType());
     return true;
 }
 
@@ -76,6 +87,58 @@ int32_t SystemInfoCollector::GetOsType()
 std::string SystemInfoCollector::GetOsVersion()
 {
     return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainDisplayVersion();
+}
+
+std::string SystemInfoCollector::GetDeviceName()
+{
+    std::string deviceName = "";
+    SettingsDataManager::GetInstance().GetUserDefinedDeviceName(
+        MultiUserManager::GetInstance().GetCurrentForegroundUserID(), deviceName);
+    if (deviceName.empty()) {
+        SettingsDataManager::GetInstance().GetDeviceName(deviceName);
+    }
+    return deviceName;
+}
+
+std::string SystemInfoCollector::GetProductId()
+{
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainProductId();
+}
+
+std::string SystemInfoCollector::GetSn()
+{
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainSerial();
+}
+
+std::string SystemInfoCollector::GetDeviceModel()
+{
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainProductModel();
+}
+
+std::string SystemInfoCollector::GetDevType()
+{
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainDeviceType();
+}
+
+std::string SystemInfoCollector::GetDeviceManufacturer()
+{
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainManufacture();
+}
+
+int32_t SystemInfoCollector::GetProtType()
+{
+    return 0;
+}
+
+std::string SystemInfoCollector::GetDeviceTypeId()
+{
+    std::string deviceType = GetDevType();
+    auto it = deviceTypeMap.find(deviceType);
+    if (it != deviceTypeMap.end()) {
+        return it->second;
+    }
+    HILOGE("deviceType not find on deviceTypeMap,deviceType=%{public}s", deviceType.c_str());
+    return "";
 }
 } // namespace DeviceProfile
 } // namespace OHOS
