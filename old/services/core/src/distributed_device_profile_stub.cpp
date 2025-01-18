@@ -468,7 +468,7 @@ int32_t DistributedDeviceProfileStub::GetDeviceIconInfosInner(MessageParcel& dat
         return ERR_FLATTEN_OBJECT;
     }
     if (!IpcUtils::Marshalling(reply, deviceIconInfos)) {
-        HILOGE("read parcel fail!");
+        HILOGE("Write parcel fail!");
         return DP_READ_PARCEL_FAIL;
     }
     return DP_SUCCESS;

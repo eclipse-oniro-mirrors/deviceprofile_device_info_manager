@@ -59,7 +59,7 @@ std::string DeviceProfile::GetDeviceModel() const
     return deviceModel_;
 }
 
-void DeviceProfile::SetDeviceModel(const std::string &deviceModel)
+void DeviceProfile::SetDeviceModel(const std::string& deviceModel)
 {
     deviceModel_ = deviceModel;
 }
@@ -149,7 +149,7 @@ std::string DeviceProfile::GetDevType() const
     return devType_;
 }
 
-void DeviceProfile::SetDevType(const std::string &devType)
+void DeviceProfile::SetDevType(const std::string& devType)
 {
     devType_ = devType;
 }
@@ -159,7 +159,7 @@ std::string DeviceProfile::GetManu() const
     return manu_;
 }
 
-void DeviceProfile::SetManu(const std::string &manu)
+void DeviceProfile::SetManu(const std::string& manu)
 {
     manu_ = manu;
 }
@@ -169,7 +169,7 @@ std::string DeviceProfile::GetSn() const
     return sn_;
 }
 
-void DeviceProfile::SetSn(const std::string &sn)
+void DeviceProfile::SetSn(const std::string& sn)
 {
     sn_ = sn;
 }
@@ -179,7 +179,7 @@ std::string DeviceProfile::GetProductId() const
     return productId_;
 }
 
-void DeviceProfile::SetProductId(const std::string &productId)
+void DeviceProfile::SetProductId(const std::string& productId)
 {
     productId_ = productId;
 }
@@ -189,7 +189,7 @@ std::string DeviceProfile::GetSubProductId() const
     return subProductId_;
 }
 
-void DeviceProfile::SetSubProductId(const std::string &subProductId)
+void DeviceProfile::SetSubProductId(const std::string& subProductId)
 {
     subProductId_ = subProductId;
 }
@@ -199,7 +199,7 @@ std::string DeviceProfile::GetHiv() const
     return hiv_;
 }
 
-void DeviceProfile::SetHiv(const std::string &hiv)
+void DeviceProfile::SetHiv(const std::string& hiv)
 {
     hiv_ = hiv;
 }
@@ -209,7 +209,7 @@ std::string DeviceProfile::GetMac() const
     return mac_;
 }
 
-void DeviceProfile::SetMac(const std::string &mac)
+void DeviceProfile::SetMac(const std::string& mac)
 {
     mac_ = mac;
 }
@@ -219,7 +219,7 @@ std::string DeviceProfile::GetFwv() const
     return fwv_;
 }
 
-void DeviceProfile::SetFwv(const std::string &fwv)
+void DeviceProfile::SetFwv(const std::string& fwv)
 {
     fwv_ = fwv;
 }
@@ -229,7 +229,7 @@ std::string DeviceProfile::GetHwv() const
     return hwv_;
 }
 
-void DeviceProfile::SetHwv(const std::string &hwv)
+void DeviceProfile::SetHwv(const std::string& hwv)
 {
     hwv_ = hwv;
 }
@@ -239,7 +239,7 @@ std::string DeviceProfile::GetSwv() const
     return swv_;
 }
 
-void DeviceProfile::SetSwv(const std::string &swv)
+void DeviceProfile::SetSwv(const std::string& swv)
 {
     swv_ = swv;
 }
@@ -259,7 +259,7 @@ std::string DeviceProfile::GetWiseUserId() const
     return wiseUserId_;
 }
 
-void DeviceProfile::SetWiseUserId(const std::string &wiseUserId)
+void DeviceProfile::SetWiseUserId(const std::string& wiseUserId)
 {
     wiseUserId_ = wiseUserId;
 }
@@ -269,7 +269,7 @@ std::string DeviceProfile::GetWiseDeviceId() const
     return wiseDeviceId_;
 }
 
-void DeviceProfile::SetWiseDeviceId(const std::string &wiseDeviceId)
+void DeviceProfile::SetWiseDeviceId(const std::string& wiseDeviceId)
 {
     wiseDeviceId_ = wiseDeviceId;
 }
@@ -279,7 +279,7 @@ std::string DeviceProfile::GetRegisterTime() const
     return registerTime_;
 }
 
-void DeviceProfile::SetRegisterTime(const std::string &registerTime)
+void DeviceProfile::SetRegisterTime(const std::string& registerTime)
 {
     registerTime_ = registerTime;
 }
@@ -299,7 +299,7 @@ std::string DeviceProfile::GetShareTime() const
     return shareTime_;
 }
 
-void DeviceProfile::SetShareTime(const std::string &shareTime)
+void DeviceProfile::SetShareTime(const std::string& shareTime)
 {
     shareTime_ = shareTime;
 }
@@ -309,7 +309,7 @@ std::string DeviceProfile::GetAccountId() const
     return accountId_;
 }
 
-void DeviceProfile::SetAccountId(const std::string &accountId)
+void DeviceProfile::SetAccountId(const std::string& accountId)
 {
     accountId_ = accountId;
 }
@@ -319,7 +319,7 @@ const std::string DeviceProfile::GetBleMac() const
     return bleMac_;
 }
 
-void DeviceProfile::SetBleMac(const std::string &bleMac)
+void DeviceProfile::SetBleMac(const std::string& bleMac)
 {
     bleMac_ = bleMac;
 }
@@ -329,7 +329,7 @@ const std::string DeviceProfile::GetBrMac() const
     return brMac_;
 }
 
-void DeviceProfile::SetBrMac(const std::string &brMac)
+void DeviceProfile::SetBrMac(const std::string& brMac)
 {
     brMac_ = brMac;
 }
@@ -339,7 +339,7 @@ const std::string DeviceProfile::GetSleMac() const
     return sleMac_;
 }
 
-void DeviceProfile::SetSleMac(const std::string &sleMac)
+void DeviceProfile::SetSleMac(const std::string& sleMac)
 {
     sleMac_ = sleMac;
 }
