@@ -30,12 +30,9 @@ constexpr int32_t USERID_HELPER_NUMBER = 100;
 const std::string SETTING_URI_PROXY = "datashare:///com.ohos.settingsdata/entry/settingsdata/";
 const std::string SETTINGS_DATA_EXT_URI = "datashare:///com.ohos.settingsdata.DataAbility";
 const std::string URI_PROXY_SUFFIX = "?Proxy=true";
-// global uri : datashare:///com.ohos.settingsdata/entry/settingsdata/SETTINGSDATA?Proxy=true
 const std::string SETTINGSDATA_GLOBAL = "SETTINGSDATA";
-const std::string SETTINGS_GENERAL_DEVICE_NAME = "settings.general.device_name"; // SETTINGSDATA
-// system uri : datashare:///com.ohos.settingsdata/entry/settingsdata/USER_SETTINGSDATA_{userId}?Proxy=true
+const std::string SETTINGS_GENERAL_DEVICE_NAME = "settings.general.device_name";
 const std::string SETTINGSDATA_SYSTEM = "USER_SETTINGSDATA_";
-// secure uri : datashare:///com.ohos.settingsdata/entry/settingsdata/USER_SETTINGSDATA_SECURE_{userId}?Proxy=true
 const std::string SETTINGSDATA_SECURE = "USER_SETTINGSDATA_SECURE_";
 const std::string SETTINGS_GENERAL_DISPLAY_DEVICE_NAME = "settings.general.display_device_name";
 const std::string SETTINGS_GENERAL_USER_DEFINED_DEVICE_NAME = "settings.general.user_defined_device_name";
