@@ -91,16 +91,13 @@ std::string SystemInfoCollector::GetOsVersion()
 
 std::string SystemInfoCollector::GetDeviceName()
 {
-    std::string rowDeviceName = "";
+    std::string deviceName = "";
     SettingsDataManager::GetInstance().GetUserDefinedDeviceName(
-        MultiUserManager::GetInstance().GetCurrentForegroundUserID(), rowDeviceName);
-    if (rowDeviceName.empty()) {
-        rowDeviceName = DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainMarketName();
+        MultiUserManager::GetInstance().GetCurrentForegroundUserID(), deviceName);
+    if (deviceName.empty()) {
+        SettingsDataManager::GetInstance().GetDeviceName(deviceName);
     }
-    rowDeviceName = TrimStr(ReplaceStr(rowDeviceName, HW_EN_UP, ""));
-    rowDeviceName = TrimStr(ReplaceStr(rowDeviceName, HW_EN_LW, ""));
-    rowDeviceName = TrimStr(ReplaceStr(rowDeviceName, HW_ZH, ""));
-    return rowDeviceName;
+    return deviceName;
 }
 
 std::string SystemInfoCollector::GetProductId()
