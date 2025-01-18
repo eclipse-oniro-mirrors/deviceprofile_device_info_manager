@@ -18,6 +18,7 @@
 #include "iservice_registry.h"
 #include "system_ability_definition.h"
 
+#include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 
@@ -118,7 +119,7 @@ int32_t SettingsDataManager::GetValue(const std::string &tableName, int32_t user
         HILOGE("Query failed key=%{public}s", key.c_str());
         return DP_NULLPTR;
     }
-    int32_t count;
+    int32_t count = ROWCOUNT_INIT;
     resultSet->GetRowCount(count);
     if (count == 0) {
         HILOGW("no value, key=%{public}s", key.c_str());
@@ -153,7 +154,7 @@ int32_t SettingsDataManager::SetValue(const std::string &tableName, int32_t user
     Uri uri = MakeUri(proxyUri, key);
     DataShare::DataSharePredicates predicates;
     predicates.EqualTo(SETTING_COLUMN_KEYWORD, key);
-    int ret = helper->Update(uri, predicates, val);
+    int32_t ret = helper->Update(uri, predicates, val);
     if (ret <= 0) {
         HILOGW("Update failed, ret=%{public}d", ret);
         ret = helper->Insert(uri, val);
