@@ -82,6 +82,7 @@ int32_t ProfileDataManager::PutDeviceProfile(DeviceProfile deviceProfile)
     if (deviceProfile.GetDeviceId().empty() || ProfileDataManager::FilterInvaildSymbol(deviceProfile.GetDeviceId())) {
         HILOGE("deviceId invaild,deviceId=%{public}s",
             ProfileUtils::GetAnonyString(deviceProfile.GetDeviceId()).c_str());
+        return DP_INVALID_PARAMS;
     }
     deviceProfile.SetUserId(MultiUserManager::GetInstance().GetCurrentForegroundUserID());
     deviceProfile.SetAccountId(ProfileCache::GetInstance().GetLocalAccountId());
