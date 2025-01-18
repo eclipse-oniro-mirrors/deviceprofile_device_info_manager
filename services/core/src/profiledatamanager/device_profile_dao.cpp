@@ -78,9 +78,9 @@ int32_t DeviceProfileDao::PutDeviceProfile(const DeviceProfile& deviceProfile)
         }
     }
     std::shared_ptr<ResultSet> resultSet = ProfileDataRdbAdapter::GetInstance().Get(
-        SELECT_DEVICE_PROFILE_TABLE_WHERE_DEVID_USERID_ACCOUNTID,
+        SELECT_DEVICE_PROFILE_TABLE_WHERE_DEVID_USERID,
         std::vector<ValueObject>{ ValueObject(deviceProfile.GetDeviceId()),
-        ValueObject(deviceProfile.GetUserId()), ValueObject(deviceProfile.GetAccountId())});
+        ValueObject(deviceProfile.GetUserId())});
     if (resultSet == nullptr) {
         HILOGE("resultSet is nullptr");
         return DP_GET_RESULTSET_FAIL;
@@ -94,7 +94,6 @@ int32_t DeviceProfileDao::PutDeviceProfile(const DeviceProfile& deviceProfile)
         profile.SetId(id);
     }
     resultSet->Close();
-    SubscribeProfileManager::GetInstance().NotifyDeviceProfileAdd(profile);
     std::string localUdid = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
     if (localUdid == deviceProfile.GetDeviceId()) {
         DeviceProfileManager::GetInstance().PutDeviceProfile(profile);
@@ -146,12 +145,11 @@ int32_t DeviceProfileDao::DeleteDeviceProfile(const DeviceProfile &deviceProfile
             return DP_DELETE_TRUST_DEVICE_PROFILE_FAIL;
         }
     }
-    SubscribeProfileManager::GetInstance().NotifyDeviceProfileDelete(deviceProfile);
     HILOGI("end!");
     return DP_SUCCESS;
 }
 
-int32_t DeviceProfileDao::UpdateDeviceProfile(const DeviceProfile &oldProfile, const DeviceProfile &newProfile)
+int32_t DeviceProfileDao::UpdateDeviceProfile(const DeviceProfile &newProfile)
 {
     ValuesBucket values;
     DeviceProfileToEntries(newProfile, values);
@@ -166,7 +164,6 @@ int32_t DeviceProfileDao::UpdateDeviceProfile(const DeviceProfile &oldProfile, c
             return DP_UPDATE_TRUST_DEVICE_PROFILE_FAIL;
         }
     }
-    SubscribeProfileManager::GetInstance().NotifyDeviceProfileUpdate(oldProfile, newProfile);
     std::string localUdid = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
     if (localUdid == newProfile.GetDeviceId()) {
         DeviceProfileManager::GetInstance().PutDeviceProfile(newProfile);
@@ -177,7 +174,6 @@ int32_t DeviceProfileDao::UpdateDeviceProfile(const DeviceProfile &oldProfile, c
 
 int32_t DeviceProfileDao::CreateTable()
 {
-    std::lock_guard<std::mutex> lock(rdbMutex_);
     int32_t ret = ProfileDataRdbAdapter::GetInstance().CreateTable(CREATE_DEVICE_PROFILE_TABLE_SQL);
     if (ret != DP_SUCCESS) {
         HILOGE("device_profile create failed");
@@ -188,11 +184,15 @@ int32_t DeviceProfileDao::CreateTable()
 
 int32_t DeviceProfileDao::CreateIndex()
 {
-    std::lock_guard<std::mutex> lock(rdbMutex_);
     int32_t ret = ProfileDataRdbAdapter::GetInstance().CreateTable(CREATE_DEVICE_PROFILE_TABLE_UNIQUE_INDEX_SQL);
     if (ret != DP_SUCCESS) {
         HILOGE("device_profile unique index create failed");
         return DP_CREATE_UNIQUE_INDEX_FAIL;
+    }
+    ret = ProfileDataRdbAdapter::GetInstance().CreateTable(CREATE_DEVICE_PROFILE_WISE_DEVICEID_INDEX_SQL);
+    if (ret != DP_SUCCESS) {
+        HILOGE("device_profile wiseDeviceId index create failed");
+        return DP_CREATE_INDEX_FAIL;
     }
     return DP_SUCCESS;
 }
@@ -228,10 +228,10 @@ void DeviceProfileDao::CreateQuerySqlAndCondition(const DeviceProfileFilterOptio
         matchCondition = true;
     }
     if (matchCondition) {
-        sql.erase(sql.end() - AND_LENGTH);
+        sql.erase(sql.end() - AND_LENGTH, sql.end());
         return;
     }
-    sql.erase(sql.end() - WHERE_LENGTH);
+    sql.erase(sql.end() - WHERE_LENGTH, sql.end());
     return;
 }
 
@@ -253,13 +253,16 @@ int32_t DeviceProfileDao::DeviceProfileToEntries(const DeviceProfile &deviceProf
     values.PutString(DEVICE_NAME, deviceProfile.GetDeviceName());
     values.PutString(WISE_USER_ID, deviceProfile.GetWiseUserId());
     values.PutString(WISE_DEVICE_ID, deviceProfile.GetWiseDeviceId());
-    values.PutString(ROOM_NAME, deviceProfile.GetRoomName());
     values.PutString(REGISTER_TIME, deviceProfile.GetRegisterTime());
-    values.PutInt(MODIFY_TIME, deviceProfile.GetModifyTime());
+    values.PutString(INNER_MODEL, deviceProfile.GetInnerModel());
+    values.PutString(MODIFY_TIME, deviceProfile.GetModifyTime());
     values.PutString(SHARE_TIME, deviceProfile.GetShareTime());
-    values.PutString(PRODUCTOR_INFO_VERSION, deviceProfile.GetProductorInfoVersion());
     values.PutInt(USERID, deviceProfile.GetUserId());
     values.PutString(ACCOUNTID, deviceProfile.GetAccountId());
+    values.PutString(BLE_MAC, deviceProfile.GetBleMac());
+    values.PutString(BR_MAC, deviceProfile.GetBrMac());
+    values.PutString(SLE_MAC, deviceProfile.GetSleMac());
+    values.PutInt(SETUP_TYPE, deviceProfile.GetSetupType());
     return DP_SUCCESS;
 }
 
@@ -292,13 +295,16 @@ int32_t DeviceProfileDao::ConvertToDeviceProfile(
     deviceProfile.SetDeviceName(rowEntity.Get(DEVICE_NAME));
     deviceProfile.SetWiseUserId(rowEntity.Get(WISE_USER_ID));
     deviceProfile.SetWiseDeviceId(rowEntity.Get(WISE_DEVICE_ID));
-    deviceProfile.SetRoomName(rowEntity.Get(ROOM_NAME));
     deviceProfile.SetRegisterTime(rowEntity.Get(REGISTER_TIME));
+    deviceProfile.SetInnerModel(rowEntity.Get(INNER_MODEL));
     deviceProfile.SetModifyTime(rowEntity.Get(MODIFY_TIME));
     deviceProfile.SetShareTime(rowEntity.Get(SHARE_TIME));
-    deviceProfile.SetProductorInfoVersion(rowEntity.Get(PRODUCTOR_INFO_VERSION));
     deviceProfile.SetUserId(rowEntity.Get(USERID));
     deviceProfile.SetAccountId(rowEntity.Get(ACCOUNTID));
+    deviceProfile.SetBleMac(rowEntity.Get(BLE_MAC));
+    deviceProfile.SetBrMac(rowEntity.Get(BR_MAC));
+    deviceProfile.SetSleMac(rowEntity.Get(SLE_MAC));
+    deviceProfile.SetSetupType(rowEntity.Get(SETUP_TYPE));
     return DP_SUCCESS;
 }
 
@@ -309,7 +315,7 @@ void DeviceProfileDao::GenerateSqlAndCondition(const std::vector<int32_t> &param
         sql += "?,";
         condition.emplace_back(ValueObject(param));
     }
-    sql.erase(sql.end() - 1);
+    sql.erase(sql.end() - 1, sql.end());
     sql += ") AND ";
     return;
 }
@@ -321,7 +327,7 @@ void DeviceProfileDao::GenerateSqlAndCondition(const std::vector<std::string> &p
         sql += "?,";
         condition.emplace_back(ValueObject(param));
     }
-    sql.erase(sql.end() - 1);
+    sql.erase(sql.end() - 1, sql.end());
     sql += ") AND ";
     return;
 }

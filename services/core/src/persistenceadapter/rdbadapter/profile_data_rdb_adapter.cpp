@@ -34,7 +34,8 @@ namespace {
         "device_profile",
         "service_profile",
         "characteristic_profile",
-        "device_icon"
+        "device_icon_info",
+        "product_info"
     };
     const std::string TAG = "ProfileDatardbAdapter";
 }

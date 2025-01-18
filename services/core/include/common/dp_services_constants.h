@@ -29,9 +29,10 @@ extern const std::string PROFILE_DATA_RDB_PATH;
 extern const std::string PROFILE_DATA_DATABASE_NAME;
 extern const std::string ID_EQUAL_CONDITION;
 extern const std::string SELECT_DEVICE_PROFILE_TABLE;
-extern const std::string SELECT_DEVICE_PROFILE_TABLE_WHERE_DEVID_USERID_ACCOUNTID;
+extern const std::string SELECT_DEVICE_PROFILE_TABLE_WHERE_DEVID_USERID;
 extern const std::string CREATE_DEVICE_PROFILE_TABLE_SQL;
 extern const std::string CREATE_DEVICE_PROFILE_TABLE_UNIQUE_INDEX_SQL;
+extern const std::string CREATE_DEVICE_PROFILE_WISE_DEVICEID_INDEX_SQL;
 // DeviceIconInfoDao
 extern const std::string CREATE_DEVICE_ICON_INFO_TABLE_SQL ;
 extern const std::string CREATE_DEVICE_ICON_INFO_TABLE_UNIQUE_INDEX_SQL;
