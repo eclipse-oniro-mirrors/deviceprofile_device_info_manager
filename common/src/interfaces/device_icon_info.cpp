@@ -17,6 +17,7 @@
 
 #include "cJSON.h"
 #include "distributed_device_profile_constants.h"
+#include "ipc_utils.h"
 #include "macro_utils.h"
 
 namespace OHOS {
@@ -119,7 +120,6 @@ void DeviceIconInfo::SetIcon(const std::vector<uint8_t>& icon)
 
 bool DeviceIconInfo::Marshalling(MessageParcel& parcel) const
 {
-    WRITE_HELPER_RET(parcel, Int32, id_, false);
     WRITE_HELPER_RET(parcel, String, productId_, false);
     WRITE_HELPER_RET(parcel, String, subProductId_, false);
     WRITE_HELPER_RET(parcel, String, imageType_, false);
@@ -127,13 +127,12 @@ bool DeviceIconInfo::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, String, version_, false);
     WRITE_HELPER_RET(parcel, String, wiseVersion_, false);
     WRITE_HELPER_RET(parcel, String, url_, false);
-    WRITE_HELPER_RET(parcel, UInt8Vector, icon_, false);
+    IpcUtils::Marshalling(parcel, icon_);
     return true;
 }
 
 bool DeviceIconInfo::UnMarshalling(MessageParcel& parcel)
 {
-    READ_HELPER_RET(parcel, Int32, id_, false);
     READ_HELPER_RET(parcel, String, productId_, false);
     READ_HELPER_RET(parcel, String, subProductId_, false);
     READ_HELPER_RET(parcel, String, imageType_, false);
@@ -141,7 +140,7 @@ bool DeviceIconInfo::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, String, version_, false);
     READ_HELPER_RET(parcel, String, wiseVersion_, false);
     READ_HELPER_RET(parcel, String, url_, false);
-    READ_HELPER_RET(parcel, UInt8Vector, &icon_, false);
+    IpcUtils::UnMarshalling(parcel, icon_);
     return true;
 }
 

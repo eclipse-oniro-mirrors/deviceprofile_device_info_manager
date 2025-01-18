@@ -149,7 +149,6 @@ int32_t DeviceIconInfoDao::UpdateDeviceIconInfo(const DeviceIconInfo& deviceIcon
 
 int32_t DeviceIconInfoDao::CreateTable()
 {
-    std::lock_guard<std::mutex> lock(rdbMutex_);
     int32_t ret = ProfileDataRdbAdapter::GetInstance().CreateTable(CREATE_DEVICE_ICON_INFO_TABLE_SQL);
     if (ret != DP_SUCCESS) {
         HILOGE("%{public}s create failed", DEVICE_ICON_INFO_TABLE.c_str());
@@ -160,7 +159,6 @@ int32_t DeviceIconInfoDao::CreateTable()
 
 int32_t DeviceIconInfoDao::CreateIndex()
 {
-    std::lock_guard<std::mutex> lock(rdbMutex_);
     int32_t ret = ProfileDataRdbAdapter::GetInstance().CreateTable(CREATE_DEVICE_ICON_INFO_TABLE_UNIQUE_INDEX_SQL);
     if (ret != DP_SUCCESS) {
         HILOGE("%{public}s unique index create failed", DEVICE_ICON_INFO_TABLE.c_str());
@@ -180,7 +178,7 @@ bool DeviceIconInfoDao::CreateQuerySqlAndCondition(const DeviceIconInfoFilterOpt
             sql += "?,";
             condition.emplace_back(ValueObject(prodId));
         }
-        sql.erase(sql.end() - 1);
+        sql.erase(sql.end() - 1, sql.end());
         sql += ") AND ";
         flag = true;
     }
@@ -200,7 +198,7 @@ bool DeviceIconInfoDao::CreateQuerySqlAndCondition(const DeviceIconInfoFilterOpt
         flag = true;
     }
     if (flag) {
-        sql.erase(sql.end() - NUM_4);
+        sql.erase(sql.end() - NUM_4, sql.end());
         return flag;
     }
     return flag;

@@ -25,41 +25,42 @@ const std::string PROFILE_DATA_RDB_PATH = "/data/service/el2/public/database/dis
 const std::string PROFILE_DATA_DATABASE_NAME = "profile_data.db";
 const std::string ID_EQUAL_CONDITION = "id = ?";
 const std::string SELECT_DEVICE_PROFILE_TABLE = "SELECT * FROM device_profile WHERE ";
-const std::string SELECT_DEVICE_PROFILE_TABLE_WHERE_DEVID_USERID_ACCOUNTID =
-    "SELECT * FROM device_profile WHERE deviceId = ? AND udid = ? AND accountId = ?";
-const std::string CREATE_DEVICE_PROFILE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS device_profile\
-(\
-    id                      INTEGER PRIMARY KEY AUTOINCREMENT,\
-    deviceId                TEXT,\
-    model                   TEXT,\
-    devType                 TEXT,\
-    manu                    TEXT,\
-    sn                      TEXT,\
-    productId               TEXT,\
-    subProductId            TEXT,\
-    hiv                     TEXT,\
-    mac                     TEXT,\
-    fwv                     TEXT,\
-    hwv                     TEXT,\
-    swv                     TEXT,\
-    protType                INTEGER,\
-    userId                  INTEGER,\
-    accountId               TEXT,\
-    wiseUserId              TEXT,\
-    deviceName              TEXT,\
-    wiseDeviceId            TEXT,\
-    roomName                TEXT,\
-    registerTime            TEXT,\
-    modifyTime              INTEGER,\
-    shareTime               TEXT,\
-    productInfoVersion      TEXT,);";
+const std::string SELECT_DEVICE_PROFILE_TABLE_WHERE_DEVID_USERID =
+    "SELECT * FROM device_profile WHERE deviceId = ? AND userId = ?";
+const std::string CREATE_DEVICE_PROFILE_TABLE_SQL =
+"CREATE TABLE IF NOT EXISTS device_profile (\n"
+"    id                 INTEGER PRIMARY KEY AUTOINCREMENT,\n"
+"    deviceId           TEXT    NOT NULL,\n"
+"    userId             INTEGER,\n"
+"    accountId          TEXT,\n"
+"    productId          TEXT,\n"
+"    subProductId       TEXT,\n"
+"    model              TEXT,\n"
+"    devType            TEXT,\n"
+"    deviceName         TEXT,\n"
+"    manu               TEXT,\n"
+"    sn                 TEXT,\n"
+"    hiv                TEXT,\n"
+"    mac                TEXT,\n"
+"    bleMac             TEXT,\n"
+"    brMac              TEXT,\n"
+"    sleMac             TEXT,\n"
+"    fwv                TEXT,\n"
+"    hwv                TEXT,\n"
+"    swv                TEXT,\n"
+"    protType           INTEGER,\n"
+"    setupType          INTEGER,\n"
+"    wiseUserId         TEXT,\n"
+"    wiseDeviceId       TEXT,\n"
+"    registerTime       TEXT,\n"
+"    modifyTime         TEXT,\n"
+"    shareTime          TEXT,\n"
+"    innerModel         TEXT\n"
+")";
 const std::string CREATE_DEVICE_PROFILE_TABLE_UNIQUE_INDEX_SQL =
-"CREATE UNIQUE INDEX if not exists unique_device_profile ON device_profile\
-(\
-    deviceId,\
-    userId,\
-    accountId,\
-    productId);";
+"CREATE UNIQUE INDEX IF NOT EXISTS unique_device_profile  ON device_profile (deviceId, userId)";
+const std::string CREATE_DEVICE_PROFILE_WISE_DEVICEID_INDEX_SQL =
+"CREATE INDEX IF NOT EXISTS index_wiseDeviceId  ON device_profile (wiseDeviceId)";
 // DeviceIconInfoDao
 const std::string CREATE_DEVICE_ICON_INFO_TABLE_SQL = "CREATE TABLE IF NOT EXISTS device_icon_info\
 (id           INTEGER PRIMARY KEY AUTOINCREMENT,\
@@ -121,8 +122,8 @@ const std::string CREATE_CHARACTERISTIC_PROFILE_TABLE_SQL = "CREATE TABLE IF NOT
     REFERENCES service_profile (id)\
 );";
 const std::string CREATE_CHARACTERISTIC_PROFILE_TABLE_INDEX_SQL_CHARACTERISTIC_KEY =
-    "CREATE INDEX characteristicKey_idx  ON characteristic_profile (characteristicKey);";
+"CREATE INDEX IF NOT EXISTS index_characteristicKey  ON characteristic_profile (characteristicKey)";
 const std::string CREATE_CHARACTERISTIC_PROFILE_TABLE_INDEX_SQL_SERVICE_PROFILE_ID =
-    "CREATE INDEX IF NOT EXISTS index_serviceProfileId  ON characteristic_profile (serviceProfileId);";
+"CREATE INDEX IF NOT EXISTS index_serviceProfileId  ON characteristic_profile (serviceProfileId)";
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

@@ -30,6 +30,21 @@ int32_t DeviceProfileFilterOptions::GetUserId() const
     return userId_;
 }
 
+void DeviceProfileFilterOptions::AddDeviceIds(std::string deviceId)
+{
+    deviceIds_.emplace_back(deviceId);
+}
+
+void DeviceProfileFilterOptions::AddWiseDeviceIds(std::string wiseDeviceId)
+{
+    wiseDeviceIds_.emplace_back(wiseDeviceId);
+}
+
+void DeviceProfileFilterOptions::AddDeviceProfileIds(int32_t deviceProfileId)
+{
+    deviceProfileIds_.emplace_back(deviceProfileId);
+}
+
 void DeviceProfileFilterOptions::SetUserId(int32_t userId)
 {
     userId_ = userId;

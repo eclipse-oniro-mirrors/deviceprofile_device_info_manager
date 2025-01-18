@@ -149,7 +149,6 @@ int32_t ProductInfoDao::UpdateProductInfo(const ProductInfo& productInfo)
 
 int32_t ProductInfoDao::CreateTable()
 {
-    std::lock_guard<std::mutex> lock(rdbMutex_);
     int32_t ret = ProfileDataRdbAdapter::GetInstance().CreateTable(CREATE_PRODUCT_INFO_TABLE_SQL);
     if (ret != DP_SUCCESS) {
         HILOGE("%{public}s create failed", PRODUCT_INFO_TABLE.c_str());
@@ -174,7 +173,7 @@ bool ProductInfoDao::CreateQuerySqlAndCondition(const std::vector<std::string>& 
             sql += "?,";
             condition.emplace_back(ValueObject(prodId));
         }
-        sql.erase(sql.end() - 1);
+        sql.erase(sql.end() - 1, sql.end());
         sql += ")";
         flag = true;
     }

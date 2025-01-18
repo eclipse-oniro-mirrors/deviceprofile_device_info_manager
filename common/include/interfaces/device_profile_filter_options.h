@@ -36,10 +36,13 @@ public:
     void SetAccountId(std::string accountId);
     std::vector<std::string> GetDeviceIds() const;
     void SetDeviceIds(std::vector<std::string> deviceIds);
+    void AddDeviceIds(std::string deviceId);
     std::vector<std::string> GetWiseDeviceIds() const;
     void SetWiseDeviceIds(std::vector<std::string> wiseDeviceIds);
+    void AddWiseDeviceIds(std::string wiseDeviceId);
     std::vector<int32_t> GetDeviceProfileIds() const;
     void SetDeviceProfileIds(std::vector<int32_t> deviceProfileIds);
+    void AddDeviceProfileIds(int32_t deviceProfileId);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     std::string dump() const override;

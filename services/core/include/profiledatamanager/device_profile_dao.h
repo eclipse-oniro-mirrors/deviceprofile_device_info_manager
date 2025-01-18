@@ -44,7 +44,7 @@ public:
     int32_t GetDeviceProfiles(const DeviceProfileFilterOptions& filterOptions,
         std::vector<DeviceProfile>& deviceProfiles);
     int32_t DeleteDeviceProfile(const DeviceProfile& deviceProfile);
-    int32_t UpdateDeviceProfile(const DeviceProfile& oldProfile, const DeviceProfile& newProfile);
+    int32_t UpdateDeviceProfile(const DeviceProfile& newProfile);
     int32_t CreateTable();
     int32_t CreateIndex();
     void CreateQuerySqlAndCondition(const DeviceProfileFilterOptions& filterOptions,
