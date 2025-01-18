@@ -118,6 +118,11 @@ void DistributedDeviceProfileStub::InitAclAndSubscribe()
     aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE_INITED));
     aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE_INITED));
     aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::PUT_ALL_TRUSTED_DEVICES));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::PUT_DEVICE_PROFILE_BATCH));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_PROFILES));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_ICON_INFOS));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::PUT_DEVICE_ICON_INFO_BATCH));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::PUT_PRODUCT_INFO_BATCH));
 }
 
 int32_t DistributedDeviceProfileStub::NotifyAclEventInner(uint32_t code, MessageParcel& data,
@@ -158,6 +163,25 @@ int32_t DistributedDeviceProfileStub::NotifyAclEventInner(uint32_t code, Message
             return UnSubscribeDeviceProfileInitedInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::PUT_ALL_TRUSTED_DEVICES):
             return PutAllTrustedDevicesInner(data, reply);
+        default:
+            return NotifyProfileDataEventInner(code, data, reply, option);
+    }
+}
+
+int32_t DistributedDeviceProfileStub::NotifyProfileDataEventInner(uint32_t code, MessageParcel& data,
+    MessageParcel& reply, MessageOption& option)
+{
+    switch (code) {
+        case static_cast<uint32_t>(DPInterfaceCode::PUT_DEVICE_PROFILE_BATCH):
+            return PutDeviceProfileBatchInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_PROFILES):
+            return GetDeviceProfilesInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_ICON_INFOS):
+            return GetDeviceIconInfosInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::PUT_DEVICE_ICON_INFO_BATCH):
+            return PutDeviceIconInfoBatchInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::PUT_PRODUCT_INFO_BATCH):
+            return PutProductInfoBatchInner(data, reply);
         default:
             HILOGW("unknown request code, please check, code = %{public}u", code);
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
@@ -399,6 +423,57 @@ int32_t DistributedDeviceProfileStub::GetTrustDeviceProfileInner(MessageParcel& 
     return DP_SUCCESS;
 }
 
+int32_t DistributedDeviceProfileStub::PutProductInfoBatchInner(MessageParcel& data, MessageParcel& reply)
+{
+    std::vector<ProductInfo> productInfos;
+    if (!IpcUtils::UnMarshalling(data, productInfos)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutProductInfoBatch(productInfos);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::PutDeviceIconInfoBatchInner(MessageParcel& data, MessageParcel& reply)
+{
+    std::vector<DeviceIconInfo> deviceIconInfos;
+    if (!IpcUtils::UnMarshalling(data, deviceIconInfos)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutDeviceIconInfoBatch(deviceIconInfos);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::GetDeviceIconInfosInner(MessageParcel& data, MessageParcel& reply)
+{
+    DeviceIconInfoFilterOptions filterOptions;
+    std::vector<DeviceIconInfo> deviceIconInfos;
+    if (!filterOptions.UnMarshalling(data)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetDeviceIconInfos(filterOptions,
+        deviceIconInfos);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    if (!IpcUtils::Marshalling(reply, deviceIconInfos)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
 int32_t DistributedDeviceProfileStub::GetAllTrustDeviceProfileInner(MessageParcel& data, MessageParcel& reply)
 {
     HILOGI("called");
@@ -459,6 +534,21 @@ int32_t DistributedDeviceProfileStub::DeleteAccessControlProfileInner(MessagePar
     int32_t accessControlId;
     READ_HELPER(data, Int32, accessControlId);
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().DeleteAccessControlProfile(accessControlId);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::PutDeviceProfileBatchInner(MessageParcel& data, MessageParcel& reply)
+{
+    std::vector<OHOS::DistributedDeviceProfile::DeviceProfile> deviceProfiles;
+    if (!IpcUtils::UnMarshalling(data, deviceProfiles)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutDeviceProfileBatch(deviceProfiles);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
@@ -544,6 +634,26 @@ int32_t DistributedDeviceProfileStub::GetDeviceProfileNewInner(MessageParcel& da
         return ERR_FLATTEN_OBJECT;
     }
     if (!deviceProfile.Marshalling(reply)) {
+        HILOGE("write parcel fail!");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::GetDeviceProfilesInner(MessageParcel& data, MessageParcel& reply)
+{
+    DeviceProfileFilterOptions options;
+    std::vector<OHOS::DistributedDeviceProfile::DeviceProfile> deviceProfiles;
+    if (!options.UnMarshalling(data)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetDeviceProfiles(options, deviceProfiles);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    if (!IpcUtils::Marshalling(reply, deviceProfiles)) {
         HILOGE("write parcel fail!");
         return DP_WRITE_PARCEL_FAIL;
     }

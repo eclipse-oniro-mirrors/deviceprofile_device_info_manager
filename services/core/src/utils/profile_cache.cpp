@@ -25,6 +25,7 @@
 #include "distributed_device_profile_errors.h"
 #include "device_profile_manager.h"
 #include "dm_adapter.h"
+#include "multi_user_manager.h"
 #include "profile_utils.h"
 #include "static_profile_manager.h"
 #include "switch_profile_manager.h"
@@ -803,6 +804,12 @@ std::string ProfileCache::GetLocalUuid()
     }
     localUuid_ = localUuid;
     return localUuid;
+}
+
+std::string ProfileCache::GetLocalAccountId()
+{
+    return MultiUserManager::GetInstance().GetOhosAccountIdByUserId(
+        MultiUserManager::GetInstance().GetCurrentForegroundUserID());
 }
 
 int32_t ProfileCache::AddAllTrustedDevices(const std::vector<TrustedDeviceInfo>& deviceInfos)

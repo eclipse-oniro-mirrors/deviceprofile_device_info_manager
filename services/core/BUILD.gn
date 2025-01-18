@@ -22,6 +22,7 @@ config("device_info_manager_config") {
     "include",
     "include/contentsensormanager",
     "include/common",
+    "include/data_share",
     "include/deviceprofilemanager",
     "include/deviceprofilemanager/listener",
     "include/dfx",
@@ -31,6 +32,7 @@ config("device_info_manager_config") {
     "include/persistenceadapter",
     "include/persistenceadapter/kvadapter",
     "include/persistenceadapter/rdbadapter",
+    "include/profiledatamanager",
     "include/publishcommonevent",
     "include/subscribeprofilemanager",
     "include/staticcapabilitycollector",
@@ -58,6 +60,9 @@ ohos_shared_library("distributed_device_profile_svr") {
     "-D_FORTIFY_SOURCE=2",
     "-O2",
   ]
+  if (dp_os_account_part_exists) {
+    cflags += [ "-DDP_OS_ACCOUNT_PART_EXISTS" ]
+  }
 
   cflags_cc = cflags
 
@@ -70,6 +75,7 @@ ohos_shared_library("distributed_device_profile_svr") {
 
   install_enable = true
   sources = [
+    "src/common/dp_services_constants.cpp",
     "src/contentsensormanager/collaboration_info_collector.cpp",
     "src/contentsensormanager/collector.cpp",
     "src/contentsensormanager/content_sensor_manager.cpp",
@@ -78,6 +84,7 @@ ohos_shared_library("distributed_device_profile_svr") {
     "src/contentsensormanager/switch_status_collector.cpp",
     "src/contentsensormanager/syscap_info_collector.cpp",
     "src/contentsensormanager/system_info_collector.cpp",
+    "src/datashare/settings_data_manager.cpp",
     "src/deviceprofilemanager/device_profile_manager.cpp",
     "src/deviceprofilemanager/listener/kv_data_change_listener.cpp",
     "src/deviceprofilemanager/listener/kv_store_death_recipient.cpp",
@@ -93,7 +100,12 @@ ohos_shared_library("distributed_device_profile_svr") {
     "src/permissionmanager/permission_manager.cpp",
     "src/persistenceadapter/kvadapter/kv_adapter.cpp",
     "src/persistenceadapter/kvadapter/switch_adapter.cpp",
+    "src/persistenceadapter/rdbadapter/profile_data_rdb_adapter.cpp",
     "src/persistenceadapter/rdbadapter/rdb_adapter.cpp",
+    "src/profiledatamanager/device_icon_info_dao.cpp",
+    "src/profiledatamanager/device_profile_dao.cpp",
+    "src/profiledatamanager/product_info_dao.cpp",
+    "src/profiledatamanager/profile_data_manager.cpp",
     "src/publishcommonevent/dp_account_common_event.cpp",
     "src/staticcapabilitycollector/static_capability_collector.cpp",
     "src/staticcapabilityloader/static_capability_loader.cpp",
@@ -118,6 +130,7 @@ ohos_shared_library("distributed_device_profile_svr") {
     "common_event_service:cesfwk_core",
     "common_event_service:cesfwk_innerkits",
     "config_policy:configpolicy_util",
+    "data_share:datashare_consumer",
     "device_auth:deviceauth_sdk",
     "device_manager:devicemanagersdk",
     "dmsfwk:common_sdk",

@@ -27,11 +27,13 @@
 #include "accessee.h"
 #include "accesser.h"
 #include "characteristic_profile.h"
+#include "device_icon_info.h"
 #include "device_profile.h"
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 #include "dp_subscribe_info.h"
+#include "product_info.h"
 #include "service_profile.h"
 #include "trust_device_profile.h"
 #include "trusted_device_info.h"
@@ -42,17 +44,29 @@ class IpcUtils {
 public:
     static bool Marshalling(MessageParcel& parcel, const std::vector<TrustDeviceProfile>& trustDeviceProfiles);
     static bool Marshalling(MessageParcel& parcel, const std::vector<AccessControlProfile>& aclProfiles);
+    static bool Marshalling(MessageParcel& parcel, const std::vector<DeviceProfile>& deviceProfiles);
     static bool Marshalling(MessageParcel& parcel, const std::vector<ServiceProfile>& serviceProfiles);
     static bool Marshalling(MessageParcel& parcel, const std::vector<CharacteristicProfile>& charProfiles);
+    static bool Marshalling(MessageParcel& parcel, const std::vector<std::string>& strings);
+    static bool Marshalling(MessageParcel& parcel, const std::vector<int32_t>& params);
+    static bool Marshalling(MessageParcel& parcel, const std::vector<uint8_t>& params);
     static bool Marshalling(MessageParcel& parcel, const std::map<std::string, std::string>& params);
     static bool Marshalling(MessageParcel& parcel, const std::map<std::string,
         OHOS::DistributedDeviceProfile::SubscribeInfo>& listenerMap);
     static bool Marshalling(MessageParcel& parcel, const std::unordered_set<ProfileChangeType>& changeTypes);
     static bool Marshalling(MessageParcel& parcel, const std::vector<TrustedDeviceInfo>& deviceInfos);
+    static bool Marshalling(MessageParcel& parcel, const std::vector<DeviceIconInfo>& deviceIconInfos);
+    static bool Marshalling(MessageParcel& parcel, const std::vector<ProductInfo>& productInfos);
+    static bool UnMarshalling(MessageParcel& parcel, std::vector<ProductInfo>& productInfos);
+    static bool UnMarshalling(MessageParcel& parcel, std::vector<DeviceIconInfo>& deviceIconInfos);
     static bool UnMarshalling(MessageParcel& parcel, std::vector<TrustDeviceProfile>& trustDeviceProfiles);
     static bool UnMarshalling(MessageParcel& parcel, std::vector<AccessControlProfile>& aclProfiles);
+    static bool UnMarshalling(MessageParcel& parcel, std::vector<DeviceProfile>& deviceProfiles);
     static bool UnMarshalling(MessageParcel& parcel, std::vector<ServiceProfile>& serviceProfiles);
     static bool UnMarshalling(MessageParcel& parcel, std::vector<CharacteristicProfile>& charProfiles);
+    static bool UnMarshalling(MessageParcel& parcel, std::vector<std::string>& strings);
+    static bool UnMarshalling(MessageParcel& parcel, std::vector<int32_t>& params);
+    static bool UnMarshalling(MessageParcel& parcel, std::vector<uint8_t>& params);
     static bool UnMarshalling(MessageParcel& parcel, std::map<std::string, std::string>& params);
     static bool UnMarshalling(MessageParcel& parcel, std::map<std::string,
         OHOS::DistributedDeviceProfile::SubscribeInfo>& listenerMap);

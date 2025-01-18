@@ -47,11 +47,14 @@ public:
         std::vector<AccessControlProfile>& accessControlProfiles) override;
     int32_t GetAllAccessControlProfile(std::vector<AccessControlProfile>& accessControlProfiles) override;
     int32_t DeleteAccessControlProfile(int32_t accessControlId) override;
+    int32_t PutDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles) override;
     int32_t PutServiceProfile(const ServiceProfile& serviceProfile) override;
     int32_t PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles) override;
     int32_t PutCharacteristicProfile(const CharacteristicProfile& charProfile) override;
     int32_t PutCharacteristicProfileBatch(const std::vector<CharacteristicProfile>& charProfiles) override;
     int32_t GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile) override;
+    int32_t GetDeviceProfiles(DeviceProfileFilterOptions& options,
+        std::vector<DeviceProfile>& deviceProfiles) override;
     int32_t GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
         ServiceProfile& serviceProfile) override;
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
@@ -67,6 +70,10 @@ public:
     int32_t SyncDeviceProfile(const DpSyncOptions& syncOptions, sptr<IRemoteObject> syncCompletedCallback) override;
     int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) override;
     int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo> deviceInfos) override;
+    int32_t PutProductInfoBatch(const std::vector<ProductInfo>& productInfos) override;
+    int32_t PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos) override;
+    int32_t GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
+        std::vector<DeviceIconInfo>& deviceIconInfos) override;
 
 private:
     static inline BrokerDelegator<DistributedDeviceProfileProxy> delegator_;

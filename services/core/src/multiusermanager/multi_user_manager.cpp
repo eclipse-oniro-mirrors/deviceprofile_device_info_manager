@@ -62,6 +62,9 @@ void MultiUserManager::SetCurrentForegroundUserID(int32_t userId)
 int32_t MultiUserManager::GetCurrentForegroundUserID()
 {
     std::lock_guard<std::mutex> lock(foregroundUserIdLock_);
+    if (foregroundUserId_ == DEFAULT_USER_ID) {
+        GetForegroundUserIDFromOs(foregroundUserId_);
+    }
     return foregroundUserId_;
 }
 
@@ -75,6 +78,42 @@ int32_t MultiUserManager::GetForegroundUserIDFromOs(int32_t& foregroundId)
     }
     HILOGI("GetForegroundUserIDFromOs foregroundId = %{public}d", foregroundId);
     return DP_SUCCESS;
+}
+
+std::string MultiUserManager::GetOhosAccountId()
+{
+#if (defined(__LITEOS_M__) || defined(LITE_DEVICE))
+    return "";
+#elif DP_OS_ACCOUNT_PART_EXISTS
+    AccountSA::OhosAccountInfo accountInfo;
+    ErrCode ret = OHOS::AccountSA::OhosAccountKits::GetInstance().GetOhosAccountInfo(accountInfo);
+    if (ret != 0 || accountInfo.uid_ == "") {
+        HILOGE("GetOhosAccountId error ret: %{public}d", ret);
+        return "";
+    }
+    return accountInfo.uid_;
+#else
+    return "";
+#endif
+}
+
+std::string MultiUserManager::GetOhosAccountIdByUserId(int32_t userId)
+{
+#if (defined(__LITEOS_M__) || defined(LITE_DEVICE))
+    (void)userId;
+    return "";
+#elif DP_OS_ACCOUNT_PART_EXISTS
+    AccountSA::OhosAccountInfo accountInfo;
+    ErrCode ret = OHOS::AccountSA::OhosAccountKits::GetInstance().GetOsAccountDistributedInfo(userId, accountInfo);
+    if (ret != 0 || accountInfo.uid_ == "") {
+        HILOGE("error ret: %{public}d", ret);
+        return "";
+    }
+    return accountInfo.uid_;
+#else
+    (void)userId;
+    return "";
+#endif
 }
 
 } // namespace DistributedHardware

@@ -272,8 +272,6 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetDeviceProfile001, TestSize.Lev
 
     DeviceProfile deviceProfile1;
     deviceProfile1.SetDeviceId("anything");
-    deviceProfile1.SetDeviceTypeName("anything");
-    deviceProfile1.SetDeviceTypeId(0);
     deviceProfile1.SetDeviceName("anything");
     deviceProfile1.SetManufactureName("anything");
     deviceProfile1.SetDeviceModel("anything");
@@ -284,8 +282,6 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetDeviceProfile001, TestSize.Lev
     deviceProfile1.SetOsType(1);
 
     deviceProfile1.GetDeviceId();
-    deviceProfile1.GetDeviceTypeName();
-    deviceProfile1.GetDeviceTypeId();
     deviceProfile1.GetDeviceName();
     deviceProfile1.GetManufactureName();
     deviceProfile1.GetDeviceModel();

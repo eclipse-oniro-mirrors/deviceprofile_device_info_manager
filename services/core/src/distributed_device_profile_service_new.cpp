@@ -36,6 +36,7 @@
 #include "multi_user_manager.h"
 #include "permission_manager.h"
 #include "profile_cache.h"
+#include "profile_data_manager.h"
 #include "static_profile_manager.h"
 #include "static_capability_collector.h"
 #include "subscribe_profile_manager.h"
@@ -78,6 +79,10 @@ int32_t DistributedDeviceProfileServiceNew::Init()
         HILOGE("TrustProfileManager init failed");
         return DP_TRUST_PROFILE_MANAGER_INIT_FAIL;
     }
+    if (ProfileDataManager::GetInstance().Init() != DP_SUCCESS) {
+        HILOGE("ProfileDataManager init failed");
+        return DP_PROFILE_DATA_MANAGER_INIT_FAIL;
+    }
     if (SubscribeProfileManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("SubscribeProfileManager init failed");
         return DP_SUBSCRIBE_PROFILE_MANAGER_INIT_FAIL;
@@ -113,13 +118,13 @@ int32_t DistributedDeviceProfileServiceNew::PostInit()
         HILOGE("StaticCapabilityCollector init failed");
         return DP_CONTENT_SENSOR_MANAGER_INIT_FAIL;
     }
-    if (ContentSensorManager::GetInstance().Init() != DP_SUCCESS) {
-        HILOGE("ContentSensorManager init failed");
-        return DP_CONTENT_SENSOR_MANAGER_INIT_FAIL;
-    }
     if (MultiUserManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("MultiUserManager init failed");
         return DP_MULTI_USER_MANAGER_INIT_FAIL;
+    }
+    if (ContentSensorManager::GetInstance().Init() != DP_SUCCESS) {
+        HILOGE("ContentSensorManager init failed");
+        return DP_CONTENT_SENSOR_MANAGER_INIT_FAIL;
     }
     SaveSwitchProfilesFromTempCache();
     SaveDynamicProfilesFromTempCache();
@@ -141,6 +146,10 @@ int32_t DistributedDeviceProfileServiceNew::UnInit()
         HILOGE("TrustProfileManager UnInit failed");
         return DP_TRUST_PROFILE_MANAGER_UNINIT_FAIL;
     }
+    if (ProfileDataManager::GetInstance().UnInit() != DP_SUCCESS) {
+        HILOGE("ProfileDataManager UnInit failed");
+        return DP_PROFILE_DATA_MANAGER_UNINIT_FAIL;
+    }
     if (SwitchProfileManager::GetInstance().UnInit() != DP_SUCCESS) {
         HILOGE("SwitchProfileManager UnInit failed");
         return DP_DEVICE_PROFILE_MANAGER_UNINIT_FAIL;
@@ -153,6 +162,17 @@ int32_t DistributedDeviceProfileServiceNew::UnInit()
         HILOGE("StaticProfileManager UnInit failed");
         return DP_CONTENT_SENSOR_MANAGER_UNINIT_FAIL;
     }
+    int32_t ret = UnInitNext();
+    if (ret != DP_SUCCESS) {
+        return ret;
+    }
+    DestroyUnloadHandler();
+    ClearProfileCache();
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileServiceNew::UnInitNext()
+{
     if (ProfileCache::GetInstance().UnInit() != DP_SUCCESS) {
         HILOGE("ProfileCache UnInit failed");
         return DP_CACHE_INIT_FAIL;
@@ -181,8 +201,6 @@ int32_t DistributedDeviceProfileServiceNew::UnInit()
         HILOGE("EventHandlerFactory UnInit failed");
         return DP_CACHE_UNINIT_FAIL;
     }
-    DestroyUnloadHandler();
-    ClearProfileCache();
     return DP_SUCCESS;
 }
 
@@ -232,6 +250,40 @@ int32_t DistributedDeviceProfileServiceNew::UpdateAccessControlProfile(const Acc
     }
     int32_t ret = TrustProfileManager::GetInstance().UpdateAccessControlProfile(accessControlProfile);
     DpRadarHelper::GetInstance().ReportUpdateAclProfile(ret, accessControlProfile);
+    return ret;
+}
+
+int32_t DistributedDeviceProfileServiceNew::PutProductInfoBatch(const std::vector<ProductInfo>& productInfos)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    HILOGD("CheckCallerPermission success interface PutProductInfoBatch");
+    int32_t ret = ProfileDataManager::GetInstance().PutProductInfoBatch(productInfos);
+    return ret;
+}
+
+int32_t DistributedDeviceProfileServiceNew::PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    HILOGD("CheckCallerPermission success interface PutDeviceIconInfoBatch");
+    int32_t ret = ProfileDataManager::GetInstance().PutDeviceIconInfoBatch(deviceIconInfos);
+    return ret;
+}
+
+int32_t DistributedDeviceProfileServiceNew::GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
+    std::vector<DeviceIconInfo>& deviceIconInfos)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    HILOGD("CheckCallerPermission success interface GetDeviceIconInfos");
+    int32_t ret = ProfileDataManager::GetInstance().GetDeviceIconInfos(filterOptions, deviceIconInfos);
     return ret;
 }
 
@@ -291,6 +343,17 @@ int32_t DistributedDeviceProfileServiceNew::DeleteAccessControlProfile(int32_t a
     }
     int32_t ret = TrustProfileManager::GetInstance().DeleteAccessControlProfile(accessControlId);
     DpRadarHelper::GetInstance().ReportDeleteAclProfile(ret);
+    return ret;
+}
+
+int32_t DistributedDeviceProfileServiceNew::PutDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    HILOGD("CheckCallerPermission success interface PutDeviceProfileBatch");
+    int32_t ret = ProfileDataManager::GetInstance().PutDeviceProfileBatch(deviceProfiles);
     return ret;
 }
 
@@ -403,6 +466,18 @@ int32_t DistributedDeviceProfileServiceNew::GetDeviceProfile(const std::string& 
     HILOGD("CheckCallerPermission success interface GetDeviceProfile");
     int32_t ret = DeviceProfileManager::GetInstance().GetDeviceProfile(deviceId, deviceProfile);
     DpRadarHelper::GetInstance().ReportGetDeviceProfile(ret, deviceId, deviceProfile);
+    return ret;
+}
+
+int32_t DistributedDeviceProfileServiceNew::GetDeviceProfiles(DeviceProfileFilterOptions& options,
+    std::vector<DeviceProfile>& deviceProfiles)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("this caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    HILOGD("CheckCallerPermission success interface GetDeviceProfiles");
+    int32_t ret = ProfileDataManager::GetInstance().GetDeviceProfiles(options, deviceProfiles);
     return ret;
 }
 

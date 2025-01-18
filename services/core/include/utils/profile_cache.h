@@ -89,6 +89,7 @@ public:
     std::string GetLocalUdid();
     std::string GetLocalNetworkId();
     std::string GetLocalUuid();
+    std::string GetLocalAccountId();
     int32_t AddAllTrustedDevices(const std::vector<TrustedDeviceInfo>& deviceInfos);
     bool FilterAndGroupOnlineDevices(const std::vector<std::string>& deviceList,
         std::vector<std::string>& ohBasedDevices, std::vector<std::string>& notOHBasedDevices);

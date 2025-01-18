@@ -31,14 +31,12 @@ class MultiUserManager {
     DECLARE_SINGLE_INSTANCE(MultiUserManager);
 public:
     int32_t Init();
-
     int32_t UnInit();
-
     int32_t GetCurrentForegroundUserID();
-
     void SetCurrentForegroundUserID(int32_t userId);
-
     int32_t GetForegroundUserIDFromOs(int32_t& foregroundId);
+    std::string GetOhosAccountId();
+    std::string GetOhosAccountIdByUserId(int32_t userId);
 
 private:
     int32_t foregroundUserId_ = DEFAULT_USER_ID;

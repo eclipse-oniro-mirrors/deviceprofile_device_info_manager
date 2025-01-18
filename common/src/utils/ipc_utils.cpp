@@ -24,12 +24,12 @@ namespace {
 }
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<TrustDeviceProfile>& trustDeviceProfiles)
 {
+    uint32_t size = trustDeviceProfiles.size();
+    WRITE_HELPER_RET(parcel, Uint32, size, false);
     if (trustDeviceProfiles.empty() || trustDeviceProfiles.size() > MAX_PROFILE_SIZE) {
         HILOGE("profile size is invalid!size : %{public}zu", trustDeviceProfiles.size());
         return false;
     }
-    uint32_t size = trustDeviceProfiles.size();
-    WRITE_HELPER_RET(parcel, Uint32, size, false);
     for (const auto& profile : trustDeviceProfiles) {
         if (!profile.Marshalling(parcel)) {
             HILOGE("profile Marshalling fail!");
@@ -41,12 +41,12 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<TrustDeviceP
 
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<AccessControlProfile>& aclProfiles)
 {
+    uint32_t size = aclProfiles.size();
+    WRITE_HELPER_RET(parcel, Uint32, size, false);
     if (aclProfiles.empty() || aclProfiles.size() > MAX_PROFILE_SIZE) {
         HILOGE("profile size is invalid!size : %{public}zu", aclProfiles.size());
         return false;
     }
-    uint32_t size = aclProfiles.size();
-    WRITE_HELPER_RET(parcel, Uint32, size, false);
     for (const auto& profile : aclProfiles) {
         if (!profile.Marshalling(parcel)) {
             HILOGE("profile Marshalling fail!");
@@ -56,14 +56,48 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<AccessContro
     return true;
 }
 
+bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<DeviceProfile>& deviceProfiles)
+{
+    uint32_t size = deviceProfiles.size();
+    WRITE_HELPER_RET(parcel, Uint32, size, false);
+    if (deviceProfiles.empty() || deviceProfiles.size() > MAX_PROFILE_SIZE) {
+        HILOGE("profile size is invalid!size : %{public}zu", deviceProfiles.size());
+        return false;
+    }
+    for (const auto& profile : deviceProfiles) {
+        if (!profile.Marshalling(parcel)) {
+            HILOGE("profile Marshalling fail!");
+            return false;
+        }
+    }
+    return true;
+}
+
+bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<ProductInfo>& productInfos)
+{
+    uint32_t size = productInfos.size();
+    WRITE_HELPER_RET(parcel, Uint32, size, false);
+    if (productInfos.empty() || productInfos.size() > MAX_PROFILE_SIZE) {
+        HILOGE("profile size is invalid!size : %{public}zu", productInfos.size());
+        return false;
+    }
+    for (const auto& productInfo : productInfos) {
+        if (!productInfo.Marshalling(parcel)) {
+            HILOGE("productInfo Marshalling fail!");
+            return false;
+        }
+    }
+    return true;
+}
+
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<ServiceProfile>& serviceProfiles)
 {
+    uint32_t size = serviceProfiles.size();
+    WRITE_HELPER_RET(parcel, Uint32, size, false);
     if (serviceProfiles.empty() || serviceProfiles.size() > MAX_PROFILE_SIZE) {
         HILOGE("profile size is invalid!size : %{public}zu", serviceProfiles.size());
         return false;
     }
-    uint32_t size = serviceProfiles.size();
-    WRITE_HELPER_RET(parcel, Uint32, size, false);
     for (const auto& profile : serviceProfiles) {
         if (!profile.Marshalling(parcel)) {
             HILOGE("profile Marshalling fail!");
@@ -75,26 +109,69 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<ServiceProfi
 
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<CharacteristicProfile>& charProfiles)
 {
+    uint32_t size = charProfiles.size();
+    WRITE_HELPER_RET(parcel, Uint32, size, false);
     if (charProfiles.empty() || charProfiles.size() > MAX_PROFILE_SIZE) {
         HILOGE("profile size is invalid!size : %{public}zu", charProfiles.size());
         return false;
     }
-    uint32_t size = charProfiles.size();
-    WRITE_HELPER_RET(parcel, Uint32, size, false);
     for (const auto& profile : charProfiles) {
         profile.Marshalling(parcel);
     }
     return true;
 }
 
+bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<std::string>& strings)
+{
+    size_t size = strings.size();
+    WRITE_HELPER_RET(parcel, Uint32, size, false);
+    if (strings.empty() || strings.size() > MAX_ID_SIZE) {
+        HILOGE("string vector, strings size is invalid! size : %{public}zu", strings.size());
+        return false;
+    }
+    for (const auto& item : strings) {
+        WRITE_HELPER_RET(parcel, String, item, false);
+    }
+    return true;
+}
+
+bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<int32_t>& params)
+{
+    size_t size = params.size();
+    WRITE_HELPER_RET(parcel, Uint32, size, false);
+    if (params.empty() || params.size() > MAX_ID_SIZE) {
+        HILOGE("int32_t vector, params size is invalid! size : %{public}zu", params.size());
+        return false;
+    }
+    for (const auto& item : params) {
+        WRITE_HELPER_RET(parcel, Int32, item, false);
+    }
+    return true;
+}
+
+bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<uint8_t>& params)
+{
+    int32_t length = static_cast<int32_t>(params.size());
+    WRITE_HELPER_RET(parcel, Int32, length, false);
+    if (params.empty() || params.size() > MAX_ICON_SIZE) {
+        HILOGE("uint8_t vector, params size is invalid! size : %{public}zu", params.size());
+        return false;
+    }
+    if (length > 0) {
+        const unsigned char *buffer = reinterpret_cast<const unsigned char *>(params.data());
+        parcel.WriteRawData(buffer, length);
+    }
+    return true;
+}
+
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::map<std::string, std::string>& params)
 {
+    uint32_t size = params.size();
+    WRITE_HELPER_RET(parcel, Uint32, size, false);
     if (params.size() == 0 || params.size() > MAX_PARAM_SIZE) {
         HILOGE("Params size is invalid!size : %{public}zu", params.size());
         return false;
     }
-    uint32_t size = params.size();
-    WRITE_HELPER_RET(parcel, Uint32, size, false);
     for (const auto& item : params) {
         WRITE_HELPER_RET(parcel, String, item.first + SEPARATOR + item.second, false);
     }
@@ -104,12 +181,12 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::map<std::string, st
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::map<std::string,
     OHOS::DistributedDeviceProfile::SubscribeInfo>& listenerMap)
 {
+    uint32_t size = listenerMap.size();
+    WRITE_HELPER_RET(parcel, Uint32, size, false);
     if (listenerMap.size() == 0 || listenerMap.size() > MAX_LISTENER_SIZE) {
         HILOGE("listenerMap size is invalid!size : %{public}zu", listenerMap.size());
         return false;
     }
-    uint32_t size = listenerMap.size();
-    WRITE_HELPER_RET(parcel, Uint32, size, false);
     for (const auto& item : listenerMap) {
         OHOS::DistributedDeviceProfile::SubscribeInfo subscribeInfo = item.second;
         if (!subscribeInfo.Marshalling(parcel)) {
@@ -122,12 +199,12 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::map<std::string,
 
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::unordered_set<ProfileChangeType>& changeTypes)
 {
+    uint32_t size = changeTypes.size();
+    WRITE_HELPER_RET(parcel, Uint32, size, false);
     if (changeTypes.size() == 0 || changeTypes.size() > MAX_SUBSCRIBE_CHANGE_SIZE) {
         HILOGE("listenerMap size is invalid!size : %{public}zu", changeTypes.size());
         return false;
     }
-    uint32_t size = changeTypes.size();
-    WRITE_HELPER_RET(parcel, Uint32, size, false);
     for (ProfileChangeType item : changeTypes) {
         WRITE_HELPER_RET(parcel, Int32, static_cast<int32_t>(item), false);
     }
@@ -136,14 +213,64 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::unordered_set<Profi
 
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<TrustedDeviceInfo>& deviceInfos)
 {
+    uint32_t size = deviceInfos.size();
+    WRITE_HELPER_RET(parcel, Uint32, size, false);
     if (deviceInfos.empty() || deviceInfos.size() > MAX_PROFILE_SIZE) {
         HILOGE("deviceInfos size is invalid!size : %{public}zu", deviceInfos.size());
         return false;
     }
-    uint32_t size = deviceInfos.size();
-    WRITE_HELPER_RET(parcel, Uint32, size, false);
     for (const auto& item : deviceInfos) {
         item.Marshalling(parcel);
+    }
+    return true;
+}
+
+bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<DeviceIconInfo>& deviceIconInfos)
+{
+    uint32_t size = deviceIconInfos.size();
+    WRITE_HELPER_RET(parcel, Uint32, size, false);
+    if (deviceIconInfos.empty() || deviceIconInfos.size() > MAX_PROFILE_SIZE) {
+        HILOGE("deviceInfos size is invalid!size : %{public}zu", deviceIconInfos.size());
+        return false;
+    }
+    for (const auto& item : deviceIconInfos) {
+        item.Marshalling(parcel);
+    }
+    return true;
+}
+
+bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<DeviceIconInfo>& deviceIconInfos)
+{
+    uint32_t size = parcel.ReadUint32();
+    if (size == 0 || size > MAX_PROFILE_SIZE) {
+        HILOGE("Profile size is invalid!size : %{public}u", size);
+        return false;
+    }
+    for (uint32_t i = 0; i < size; i++) {
+        DeviceIconInfo deviceIconInfo;
+        if (!deviceIconInfo.UnMarshalling(parcel)) {
+            HILOGE("Profile UnMarshalling fail!");
+            return false;
+        }
+        deviceIconInfos.emplace_back(deviceIconInfo);
+    }
+    return true;
+}
+
+bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<ProductInfo>& productInfos)
+{
+    uint32_t size = parcel.ReadUint32();
+    if (size == 0 || size > MAX_PROFILE_SIZE) {
+        HILOGE("Profile size is invalid!size : %{public}u", size);
+        return false;
+    }
+    for (uint32_t i = 0; i < size; i++) {
+        ProductInfo productInfo;
+        if (!productInfo.UnMarshalling(parcel)) {
+            HILOGE("Profile UnMarshalling fail!");
+            return false;
+        }
+        productInfos.emplace_back(productInfo);
     }
     return true;
 }
@@ -184,6 +311,24 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<AccessControlPro
     return true;
 }
 
+bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<DeviceProfile>& deviceProfiles)
+{
+    uint32_t size = parcel.ReadUint32();
+    if (size == 0 || size > MAX_PROFILE_SIZE) {
+        HILOGE("Profile size is invalid!size : %{public}u", size);
+        return false;
+    }
+    for (uint32_t i = 0; i < size; i++) {
+        DeviceProfile deviceProfile;
+        if (!deviceProfile.UnMarshalling(parcel)) {
+            HILOGE("Profile UnMarshalling fail!");
+            return false;
+        }
+        deviceProfiles.emplace_back(deviceProfile);
+    }
+    return true;
+}
+
 bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<ServiceProfile>& serviceProfiles)
 {
     uint32_t size = parcel.ReadUint32();
@@ -217,6 +362,53 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<CharacteristicPr
         }
         charProfiles.emplace_back(charProfile);
     }
+    return true;
+}
+
+bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<std::string>& strings)
+{
+    size_t size = parcel.ReadUint32();
+    if (size == 0 || size > MAX_ID_SIZE) {
+        HILOGE("string vector, strings size is invalid!size : %{public}zu", size);
+        return false;
+    }
+    for (uint32_t i = 0; i < size; i++) {
+        std::string item = "";
+        READ_HELPER_RET(parcel, String, item, false);
+        strings.emplace_back(item);
+    }
+    return true;
+}
+
+bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<int32_t>& params)
+{
+    size_t size = parcel.ReadUint32();
+    if (size == 0 || size > MAX_ID_SIZE) {
+        HILOGE("int32_t vector, params size is invalid! size : %{public}zu", size);
+        return false;
+    }
+    for (uint32_t i = 0; i < size; i++) {
+        int32_t item = 0;
+        READ_HELPER_RET(parcel, Int32, item, false);
+        params.emplace_back(item);
+    }
+    return true;
+}
+
+bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<uint8_t>& params)
+{
+    int32_t length = parcel.ReadInt32();
+    if (length == 0 || length > MAX_ICON_SIZE) {
+        HILOGE("uint8_t vector, params size is invalid! size : %{public}d", length);
+        return false;
+    }
+    const unsigned char *buffer = nullptr;
+    if ((buffer = reinterpret_cast<const unsigned char *>(parcel.ReadRawData((size_t)length))) == nullptr) {
+        HILOGE("read raw data failed, length = %{public}d", length);
+        return false;
+    }
+    std::vector<uint8_t> icon(buffer, buffer + length);
+    params = icon;
     return true;
 }
 

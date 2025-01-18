@@ -28,6 +28,7 @@
           "c_utils",
           "common_event_service",
           "config_policy",
+          "data_share",
           "ffrt",
           "hisysevent",
           "hilog",

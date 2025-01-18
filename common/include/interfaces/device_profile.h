@@ -27,8 +27,6 @@ class DeviceProfile : public DpParcel {
 public:
     DeviceProfile()
         : deviceId_(""),
-        deviceTypeName_(""),
-        deviceTypeId_(0),
         deviceName_(""),
         manufactureName_(""),
         deviceModel_(""),
@@ -38,16 +36,35 @@ public:
         osVersion_(""),
         osType_(0),
         isMultiUser_(false),
-        userId_(DEFAULT_USER_ID)
+        userId_(DEFAULT_USER_ID),
+        id_(0),
+        devType_(""),
+        manu_(""),
+        sn_(""),
+        productId_(""),
+        subProductId_(""),
+        hiv_(""),
+        mac_(""),
+        fwv_(""),
+        hwv_(""),
+        swv_(""),
+        protType_(0),
+        wiseUserId_(""),
+        wiseDeviceId_(""),
+        registerTime_(""),
+        modifyTime_(""),
+        shareTime_(""),
+        accountId_(""),
+        bleMac_(""),
+        brMac_(""),
+        sleMac_(""),
+        setupType_(0),
+        innerModel_("")
     {}
     ~DeviceProfile() = default;
 
     std::string GetDeviceId() const;
     void SetDeviceId(const std::string& deviceId);
-    std::string GetDeviceTypeName() const;
-    void SetDeviceTypeName(const std::string& deviceTypeName);
-    int32_t GetDeviceTypeId() const;
-    void SetDeviceTypeId(int32_t deviceTypeId);
     std::string GetDeviceName() const;
     void SetDeviceName(const std::string& deviceName);
     std::string GetManufactureName() const;
@@ -68,16 +85,59 @@ public:
     void SetIsMultiUser(bool isMultiUser);
     int32_t GetUserId() const;
     void SetUserId(int32_t userId);
+    int32_t GetId() const;
+    void SetId(int32_t id);
+    std::string GetDevType() const;
+    void SetDevType(const std::string& devType);
+    std::string GetManu() const;
+    void SetManu(const std::string& manu);
+    std::string GetSn() const;
+    void SetSn(const std::string& sn);
+    std::string GetProductId() const;
+    void SetProductId(const std::string& productId);
+    std::string GetSubProductId() const;
+    void SetSubProductId(const std::string& subProductId);
+    std::string GetHiv() const;
+    void SetHiv(const std::string& hiv);
+    std::string GetMac() const;
+    void SetMac(const std::string& mac);
+    std::string GetFwv() const;
+    void SetFwv(const std::string& fwv);
+    std::string GetHwv() const;
+    void SetHwv(const std::string& hwv);
+    std::string GetSwv() const;
+    void SetSwv(const std::string& swv);
+    int32_t GetProtType() const;
+    void SetProtType(int32_t protType);
+    std::string GetWiseUserId() const;
+    void SetWiseUserId(const std::string& wiseUserId);
+    std::string GetWiseDeviceId() const;
+    void SetWiseDeviceId(const std::string& wiseDeviceId);
+    std::string GetRegisterTime() const;
+    void SetRegisterTime(const std::string& registerTime);
+    std::string GetModifyTime() const;
+    void SetModifyTime(std::string modifyTime);
+    std::string GetShareTime() const;
+    void SetShareTime(const std::string& shareTime);
+    std::string GetAccountId() const;
+    void SetAccountId(const std::string& accountId);
+    std::string GetInnerModel() const;
+    void SetInnerModel(const std::string& innerModel);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     bool operator!=(const DeviceProfile& deviceProfile) const;
     std::string dump() const override;
     std::string AnnoymizeDump() const;
-
+    const std::string GetBleMac() const;
+    void SetBleMac(const std::string &bleMac);
+    const std::string GetBrMac() const;
+    void SetBrMac(const std::string &brMac);
+    const std::string GetSleMac() const;
+    void SetSleMac(const std::string &sleMac);
+    int32_t GetSetupType() const;
+    void SetSetupType(int32_t setupType);
 private:
     std::string deviceId_;
-    std::string deviceTypeName_;
-    int32_t deviceTypeId_;
     std::string deviceName_;
     std::string manufactureName_;
     std::string deviceModel_;
@@ -88,7 +148,30 @@ private:
     int32_t osType_;
     bool isMultiUser_;
     int32_t userId_;
+    int32_t id_;
+    std::string devType_;
+    std::string manu_;
+    std::string sn_;
+    std::string productId_;
+    std::string subProductId_;
+    std::string hiv_;
+    std::string mac_;
+    std::string fwv_;
+    std::string hwv_;
+    std::string swv_;
+    int32_t protType_;
+    std::string wiseUserId_;
+    std::string wiseDeviceId_;
+    std::string registerTime_;
+    std::string modifyTime_;
+    std::string shareTime_;
+    std::string accountId_;
+    std::string bleMac_;
+    std::string brMac_;
+    std::string sleMac_;
+    int32_t setupType_;
+    std::string innerModel_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
-#endif //OHOS_DP_DEVICE_PROFILE_H
+#endif // OHOS_DP_DEVICE_PROFILE_H
