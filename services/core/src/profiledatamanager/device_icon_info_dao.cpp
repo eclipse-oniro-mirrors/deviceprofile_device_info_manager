@@ -212,8 +212,9 @@ int32_t DeviceIconInfoDao::DeviceIconInfoToEntries(const DeviceIconInfo& deviceI
     values.PutString(SPEC_NAME, deviceIconInfo.GetSpecName());
     values.PutString(DEVICE_ICON_VERSION, deviceIconInfo.GetVersion());
     values.PutString(DEVICE_ICON_URL, deviceIconInfo.GetUrl());
-    values.PutBlob(DEVICE_ICON, deviceIconInfo.GetIcon());
-    return DP_SUCCESS;
+    if (!deviceIconInfo.GetIcon().empty()) {
+        values.PutBlob(DEVICE_ICON, deviceIconInfo.GetIcon());
+    }    return DP_SUCCESS;
 }
 
 int32_t DeviceIconInfoDao::ConvertToDeviceIconInfo(std::shared_ptr<ResultSet> resultSet, DeviceIconInfo& deviceIconInfo)

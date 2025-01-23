@@ -296,6 +296,21 @@ int32_t DistributedDeviceProfileProxy::GetDeviceProfiles(DeviceProfileFilterOpti
     return DP_SUCCESS;
 }
 
+int32_t DistributedDeviceProfileProxy::DeleteDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    if (!IpcUtils::Marshalling(data, deviceProfiles)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::DELETE_DEVICE_PROFILE_BATCH), data, reply);
+    return DP_SUCCESS;
+}
+
 int32_t DistributedDeviceProfileProxy::GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
     ServiceProfile& serviceProfile)
 {

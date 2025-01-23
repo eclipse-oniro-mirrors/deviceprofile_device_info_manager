@@ -16,9 +16,15 @@
 #include "content_sensor_manager_utils.h"
 
 #include <cstring>
+#include <iomanip>
+#include <sstream>
 
 #include "parameter.h"
+#include "parameters.h"
+#include "softbus_bus_center.h"
+#include "softbus_error_code.h"
 
+#include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_log.h"
 
 namespace OHOS {
@@ -26,6 +32,7 @@ namespace DistributedDeviceProfile {
 namespace {
     const std::string TAG = "ContentSensorManagerUtils";
     const char* SYS_SETTINGS_DATA_SYNC = "persist.distributed_scene.sys_settings_data_sync";
+    const char* PRODUCT_ID_KEY = "const.distributed_collaboration.productId";
     const char* UNDEFINED_VALUE = "undefined";
     const char* SYNC_TYPE_E2E = "1";
     constexpr int32_t DEVICE_UUID_LENGTH = 65;
@@ -64,6 +71,28 @@ std::string ContentSensorManagerUtils::ObtainDeviceType()
     deviceType_ = deviceTypeTemp;
     free((char*)deviceTypeTemp);
     return deviceType_;
+}
+
+std::string ContentSensorManagerUtils::ObtainDeviceTypeId()
+{
+    {
+        std::lock_guard<std::mutex> lock(csMutex_);
+        if (!deviceTypeId_.empty()) {
+            return deviceTypeId_;
+        }
+    }
+    NodeBasicInfo nodeBasicInfo;
+    int32_t ret = GetLocalNodeDeviceInfo(DP_PKG_NAME.c_str(), &nodeBasicInfo);
+    if (ret != SOFTBUS_OK) {
+        HILOGE("GetLocalNodeDeviceInfo from dsofbus fail, ret=%{public}d", ret);
+        return "";
+    }
+    uint16_t deviceTypeId = nodeBasicInfo.deviceTypeId;
+    std::stringstream strDeviceTypeId;
+    strDeviceTypeId << std::uppercase << std::setw(NUM_3) << std::setfill('0') << std::hex << deviceTypeId;
+    std::lock_guard<std::mutex> lock(csMutex_);
+    deviceTypeId_ = strDeviceTypeId.str();
+    return deviceTypeId_;
 }
 
 std::string ContentSensorManagerUtils::ObtainManufacture()
@@ -164,7 +193,6 @@ std::string ContentSensorManagerUtils::ObtainLocalUdid()
     return localUdid_;
 }
 
-
 std::string ContentSensorManagerUtils::ObtainProductId()
 {
     HILOGI("called!");
@@ -172,13 +200,12 @@ std::string ContentSensorManagerUtils::ObtainProductId()
     if (!productId_.empty()) {
         return productId_;
     }
-    const char* productIdTemp = GetProductSeries();
-    if (productIdTemp == nullptr) {
+    std::string productIdTemp = system::GetParameter(PRODUCT_ID_KEY, "");
+    if (productIdTemp.empty()) {
         HILOGE("get productId failed!");
         return "";
     }
     productId_ = productIdTemp;
-    free((char*)productIdTemp);
     return productId_;
 }
 

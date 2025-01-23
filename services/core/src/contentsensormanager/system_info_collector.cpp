@@ -132,13 +132,7 @@ int32_t SystemInfoCollector::GetProtType()
 
 std::string SystemInfoCollector::GetDeviceTypeId()
 {
-    std::string deviceType = GetDevType();
-    auto it = deviceTypeMap.find(deviceType);
-    if (it != deviceTypeMap.end()) {
-        return it->second;
-    }
-    HILOGE("deviceType not find on deviceTypeMap,deviceType=%{public}s", deviceType.c_str());
-    return "";
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainDeviceTypeId();
 }
 } // namespace DeviceProfile
 } // namespace OHOS

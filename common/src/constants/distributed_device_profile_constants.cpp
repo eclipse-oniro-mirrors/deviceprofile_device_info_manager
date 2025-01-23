@@ -147,6 +147,12 @@ const std::string SUBSCRIBE_DEVICE_PROFILE = "SubscribeDeviceProfile";
 const std::string UNSUBSCRIBE_DEVICE_PROFILE = "UnSubscribeDeviceProfile";
 const std::string SYNC_DEVICE_PROFILE = "SyncDeviceProfile";
 const std::string PUT_ALL_TRUSTED_DEVICES = "PutAllTrustedDevices";
+const std::string PUT_DEVICE_PROFILE_BATCH = "PutDeviceProfileBatch";
+const std::string DELETE_DEVICE_PROFILE_BATCH = "DeleteDeviceProfileBatch";
+const std::string GET_DEVICE_PROFILES = "GetDeviceProfiles";
+const std::string PUT_PRODUCT_INFO_BATCH = "PutProductInfoBatch";
+const std::string PUT_DEVICE_ICON_INFO_BATCH = "PutDeviceIconInfoBatch";
+const std::string GET_DEVICE_ICON_INFOS = "GetDeviceIconInfos";
 /* Common constants */
 const std::string IS_MULTI_USER = "is_multi_user";
 const std::string SEPARATOR = "#";

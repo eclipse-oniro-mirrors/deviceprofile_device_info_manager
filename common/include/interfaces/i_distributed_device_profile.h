@@ -57,6 +57,7 @@ public:
     virtual int32_t GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile) = 0;
     virtual int32_t GetDeviceProfiles(DeviceProfileFilterOptions& options,
         std::vector<DeviceProfile>& deviceProfiles) = 0;
+    virtual int32_t DeleteDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles) = 0;
     virtual int32_t GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
         ServiceProfile& serviceProfile) = 0;
     virtual int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,

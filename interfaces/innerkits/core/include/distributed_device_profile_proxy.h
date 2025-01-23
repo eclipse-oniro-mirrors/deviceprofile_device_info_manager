@@ -55,6 +55,7 @@ public:
     int32_t GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile) override;
     int32_t GetDeviceProfiles(DeviceProfileFilterOptions& options,
         std::vector<DeviceProfile>& deviceProfiles) override;
+    int32_t DeleteDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles) override;
     int32_t GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
         ServiceProfile& serviceProfile) override;
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,

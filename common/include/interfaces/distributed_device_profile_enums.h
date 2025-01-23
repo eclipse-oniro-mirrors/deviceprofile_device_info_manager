@@ -66,7 +66,8 @@ enum class DPInterfaceCode : uint32_t {
     GET_DEVICE_ICON_INFOS = 48,
     PUT_DEVICE_ICON_INFO_BATCH = 49,
     PUT_PRODUCT_INFO_BATCH = 50,
-    MAX = 51
+    DELETE_DEVICE_PROFILE_BATCH = 51,
+    MAX = 52
 };
 
 enum class DeviceIdType : uint32_t {

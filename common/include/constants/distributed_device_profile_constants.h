@@ -157,6 +157,12 @@ extern const std::string SUBSCRIBE_DEVICE_PROFILE;
 extern const std::string UNSUBSCRIBE_DEVICE_PROFILE;
 extern const std::string SYNC_DEVICE_PROFILE;
 extern const std::string PUT_ALL_TRUSTED_DEVICES;
+extern const std::string PUT_DEVICE_PROFILE_BATCH;
+extern const std::string DELETE_DEVICE_PROFILE_BATCH;
+extern const std::string GET_DEVICE_PROFILES;
+extern const std::string PUT_PRODUCT_INFO_BATCH;
+extern const std::string PUT_DEVICE_ICON_INFO_BATCH;
+extern const std::string GET_DEVICE_ICON_INFOS;
 /* Common constants */
 constexpr int32_t MIN_STRING_LEN = 0;
 constexpr int32_t MAX_STRING_LEN = 4096;

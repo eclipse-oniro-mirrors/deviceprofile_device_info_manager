@@ -87,6 +87,7 @@ ohos_shared_library("distributed_device_profile_common") {
     "c_utils:utils",
     "device_manager:devicemanagersdk",
     "dmsfwk:common_sdk",
+    "dsoftbus:softbus_client",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
     "init:libbegetutil",

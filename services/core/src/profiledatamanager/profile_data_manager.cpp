@@ -115,6 +115,26 @@ int32_t ProfileDataManager::PutDeviceProfile(DeviceProfile deviceProfile)
     return DP_SUCCESS;
 }
 
+int32_t ProfileDataManager::DeleteDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles)
+{
+    if (deviceProfiles.empty()) {
+        HILOGE("deviceProfiles is empty");
+        return DP_INVALID_PARAM;
+    }
+    int32_t ret = RET_INIT;
+    for (auto deviceProfile : deviceProfiles) {
+        int32_t delRet = DeviceProfileDao::GetInstance().DeleteDeviceProfile(deviceProfile);
+        if (ret != DP_SUCCESS) {
+            ret = delRet;
+        }
+    }
+    if (ret != DP_SUCCESS) {
+        HILOGE("DeleteDeviceProfile failed,ret=%{public}d", ret);
+        return ret;
+    }
+    return DP_SUCCESS;
+}
+
 bool ProfileDataManager::FilterInvaildSymbol(std::string str)
 {
     if (str.length() == 0 || str.length() > MAX_STRING_LEN) {

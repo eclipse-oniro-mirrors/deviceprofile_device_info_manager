@@ -47,6 +47,7 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
     int32_t PutCharacteristicProfile(const CharacteristicProfile& charProfile) override;
     int32_t PutCharacteristicProfileBatch(const std::vector<CharacteristicProfile>& charProfiles) override;
     int32_t GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile) override;
+    int32_t DeleteDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles) override;
     int32_t GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
         ServiceProfile& serviceProfile) override;
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,
@@ -125,6 +126,13 @@ int32_t MockDistributedDeviceProfileStubNew::GetAllTrustDeviceProfile(
     (void)trustDeviceProfiles;
     return 0;
 }
+
+int32_t MockDistributedDeviceProfileStubNew::DeleteDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles)
+{
+    (void)deviceProfiles;
+    return 0;
+}
+
 int32_t MockDistributedDeviceProfileStubNew::GetAccessControlProfile(std::map<std::string, std::string> queryParams,
     std::vector<AccessControlProfile>& accessControlProfiles)
 {

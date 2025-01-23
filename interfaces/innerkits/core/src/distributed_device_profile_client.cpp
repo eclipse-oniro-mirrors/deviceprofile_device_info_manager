@@ -214,6 +214,16 @@ int32_t DistributedDeviceProfileClient::PutDeviceProfileBatch(std::vector<Device
     return dpService->PutDeviceProfileBatch(deviceProfiles);
 }
 
+int32_t DistributedDeviceProfileClient::DeleteDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->DeleteDeviceProfileBatch(deviceProfiles);
+}
+
 int32_t DistributedDeviceProfileClient::PutServiceProfile(const ServiceProfile& serviceProfile)
 {
     auto dpService = GetDeviceProfileService();

@@ -287,6 +287,17 @@ int32_t DistributedDeviceProfileServiceNew::GetDeviceIconInfos(const DeviceIconI
     return ret;
 }
 
+int32_t DistributedDeviceProfileServiceNew::DeleteDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    HILOGD("CheckCallerPermission success interface DeleteDeviceProfileBatch");
+    int32_t ret = ProfileDataManager::GetInstance().DeleteDeviceProfileBatch(deviceProfiles);
+    return ret;
+}
+
 int32_t DistributedDeviceProfileServiceNew::GetTrustDeviceProfile(const std::string& deviceId,
     TrustDeviceProfile& trustDeviceProfile)
 {

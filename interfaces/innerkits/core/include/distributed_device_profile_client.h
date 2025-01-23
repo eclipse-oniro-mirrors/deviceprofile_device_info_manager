@@ -59,6 +59,7 @@ public:
     int32_t PutCharacteristicProfileBatch(const std::vector<CharacteristicProfile>& characteristicProfiles);
     int32_t GetDeviceProfile(const std::string& deviceId, DeviceProfile& deviceProfile);
     int32_t GetDeviceProfiles(DeviceProfileFilterOptions& options, std::vector<DeviceProfile>& deviceProfiles);
+    int32_t DeleteDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles);
     int32_t GetServiceProfile(const std::string& deviceId, const std::string& serviceName,
         ServiceProfile& serviceProfile);
     int32_t GetCharacteristicProfile(const std::string& deviceId, const std::string& serviceName,

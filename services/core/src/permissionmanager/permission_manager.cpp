@@ -122,6 +122,12 @@ int32_t PermissionManager::ParsePermissionJson(const cJSON* const permissionJson
     SetPermissionMap(permissionJson, UNSUBSCRIBE_DEVICE_PROFILE);
     SetPermissionMap(permissionJson, SYNC_DEVICE_PROFILE);
     SetPermissionMap(permissionJson, PUT_ALL_TRUSTED_DEVICES);
+    SetPermissionMap(permissionJson, PUT_DEVICE_PROFILE_BATCH);
+    SetPermissionMap(permissionJson, DELETE_DEVICE_PROFILE_BATCH);
+    SetPermissionMap(permissionJson, GET_DEVICE_PROFILES);
+    SetPermissionMap(permissionJson, PUT_PRODUCT_INFO_BATCH);
+    SetPermissionMap(permissionJson, PUT_DEVICE_ICON_INFO_BATCH);
+    SetPermissionMap(permissionJson, GET_DEVICE_ICON_INFOS);
     char* jsonChars = cJSON_PrintUnformatted(permissionJson);
     if (jsonChars == NULL) {
         HILOGW("cJSON formatted to string failed!");
