@@ -221,7 +221,7 @@ int32_t DeviceIconInfoDao::DeviceIconInfoToEntries(const DeviceIconInfo& deviceI
 int32_t DeviceIconInfoDao::ConvertToDeviceIconInfo(std::shared_ptr<ResultSet> resultSet, DeviceIconInfo& deviceIconInfo)
 {
     if (resultSet == nullptr) {
-        HILOGE("resultSet is nullptr");
+        HILOGE("resultSet is nullptr.");
         return DP_GET_RESULTSET_FAIL;
     }
     RowEntity rowEntity;
