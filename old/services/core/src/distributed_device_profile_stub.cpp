@@ -120,6 +120,7 @@ void DistributedDeviceProfileStub::InitAclAndSubscribe()
     aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::PUT_ALL_TRUSTED_DEVICES));
     aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::PUT_DEVICE_PROFILE_BATCH));
     aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_PROFILES));
+    aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::DELETE_DEVICE_PROFILE_BATCH));
     aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_ICON_INFOS));
     aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::PUT_DEVICE_ICON_INFO_BATCH));
     aclAndSubscribeFuncs_.emplace_back(static_cast<uint32_t>(DPInterfaceCode::PUT_PRODUCT_INFO_BATCH));
@@ -182,6 +183,8 @@ int32_t DistributedDeviceProfileStub::NotifyProfileDataEventInner(uint32_t code,
             return PutDeviceIconInfoBatchInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::PUT_PRODUCT_INFO_BATCH):
             return PutProductInfoBatchInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::DELETE_DEVICE_PROFILE_BATCH):
+            return DeleteDeviceProfileBatchInner(data, reply);
         default:
             HILOGW("unknown request code, please check, code = %{public}u", code);
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
@@ -470,6 +473,21 @@ int32_t DistributedDeviceProfileStub::GetDeviceIconInfosInner(MessageParcel& dat
     if (!IpcUtils::Marshalling(reply, deviceIconInfos)) {
         HILOGE("Write parcel fail!");
         return DP_READ_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::DeleteDeviceProfileBatchInner(MessageParcel& data, MessageParcel& reply)
+{
+    std::vector<OHOS::DistributedDeviceProfile::DeviceProfile> deviceProfiles;
+    if (!IpcUtils::UnMarshalling(data, deviceProfiles)) {
+        HILOGE("Write parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().DeleteDeviceProfileBatch(deviceProfiles);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
     }
     return DP_SUCCESS;
 }

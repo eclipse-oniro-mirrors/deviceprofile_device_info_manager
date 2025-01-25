@@ -18,5 +18,11 @@
     "DeleteCharacteristicProfile": ["all"],
     "SubscribeDeviceProfile": ["all"],
     "UnSubscribeDeviceProfile": ["all"],
-    "SyncDeviceProfile": ["all"]
+    "SyncDeviceProfile": ["all"],
+    "PutDeviceProfileBatch": ["device_manager"],
+    "DeleteDeviceProfileBatch": ["device_manager"],
+    "GetDeviceProfiles": ["device_manager"],
+    "PutProductInfoBatch": ["device_manager"],
+    "PutDeviceIconInfoBatch": ["device_manager"],
+    "GetDeviceIconInfos": ["device_manager"]
 }

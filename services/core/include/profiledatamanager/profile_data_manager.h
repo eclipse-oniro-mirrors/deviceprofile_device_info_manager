@@ -35,6 +35,7 @@ public:
     int32_t UnInit();
     
     int32_t PutDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles);
+    int32_t DeleteDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles);
     int32_t GetDeviceProfiles(DeviceProfileFilterOptions& options,
         std::vector<DeviceProfile>& deviceProfiles);
     int32_t PutProductInfoBatch(const std::vector<ProductInfo>& productInfos);

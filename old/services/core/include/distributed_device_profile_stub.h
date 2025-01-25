@@ -53,6 +53,7 @@ public:
     int32_t PutCharacteristicProfileBatchInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetDeviceProfileNewInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetDeviceProfilesInner(MessageParcel& data, MessageParcel& reply);
+    int32_t DeleteDeviceProfileBatchInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetServiceProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetCharacteristicProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t DeleteServiceProfileInner(MessageParcel& data, MessageParcel& reply);

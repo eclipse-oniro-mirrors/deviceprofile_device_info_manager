@@ -28,6 +28,7 @@ DECLARE_SINGLE_INSTANCE(ContentSensorManagerUtils);
 public:
     std::string ObtainProductModel();
     std::string ObtainDeviceType();
+    std::string ObtainDeviceTypeId();
     std::string ObtainManufacture();
     std::string ObtainSerial();
     std::string ObtainMarketName();
@@ -48,6 +49,7 @@ private:
     std::string displayVersion_ = "";
     std::string localUdid_ = "";
     std::string productId_ = "";
+    std::string deviceTypeId_ = "";
     std::atomic<bool> isDeviceE2ESync_ {false};
     std::mutex csMutex_;
 };

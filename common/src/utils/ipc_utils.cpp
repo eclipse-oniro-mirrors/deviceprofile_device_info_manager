@@ -229,7 +229,7 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<DeviceIconIn
 {
     uint32_t size = deviceIconInfos.size();
     WRITE_HELPER_RET(parcel, Uint32, size, false);
-    if (deviceIconInfos.empty() || deviceIconInfos.size() > MAX_PROFILE_SIZE) {
+    if (deviceIconInfos.size() > MAX_PROFILE_SIZE) {
         HILOGE("deviceInfos size is invalid!size : %{public}zu", deviceIconInfos.size());
         return false;
     }
