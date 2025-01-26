@@ -292,19 +292,19 @@ int32_t ProfileControlUtils::GetCharacteristicProfile(std::shared_ptr<IKVAdapter
     HILOGI("deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
         ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
     if (kvStore == nullptr) {
-        HILOGE("kvStore is nullptr! deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
+        HILOGE("kvStore is nullptr! devId: %{public}s, svrName: %{public}s, charKey: %{public}s!",
             ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
         return DP_INVALID_PARAMS;
     }
     if (!ProfileUtils::IsKeyValid(deviceId) || !ProfileUtils::IsKeyValid(serviceName) ||
         !ProfileUtils::IsKeyValid(characteristicKey)) {
-        HILOGE("the profile is invalid! deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
+        HILOGE("the profile is invalid! devId: %{public}s, svrName: %{public}s, charKey: %{public}s!",
             ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
         return DP_INVALID_PARAMS;
     }
     if (ProfileCache::GetInstance().GetCharacteristicProfile(deviceId, serviceName, characteristicKey, charProfile)
         == DP_SUCCESS) {
-        HILOGI("GetCharProfile in cache! deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
+        HILOGI("GetCharProfile in cache! devId: %{public}s, svrName: %{public}s, charKey: %{public}s!",
             ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
         return DP_SUCCESS;
     }
@@ -313,7 +313,7 @@ int32_t ProfileControlUtils::GetCharacteristicProfile(std::shared_ptr<IKVAdapter
         std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId,
             ProfileUtils::CheckAndAddOhSuffix(serviceName, true), characteristicKey);
         if (kvStore->GetByPrefix(profileKeyPrefix, values) != DP_SUCCESS) {
-            HILOGE("Get data by oh suffix fail! deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
+            HILOGE("Get data by oh suffix fail! devId: %{public}s, svrName: %{public}s, charKey: %{public}s!",
                 ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
             values.clear();
         }
@@ -321,7 +321,7 @@ int32_t ProfileControlUtils::GetCharacteristicProfile(std::shared_ptr<IKVAdapter
     if (values.empty()) {
         std::string profileKeyPrefix = ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, characteristicKey);
         if (kvStore->GetByPrefix(profileKeyPrefix, values) != DP_SUCCESS) {
-            HILOGE("Get data fail! deviceId: %{public}s, serviceName: %{public}s, charKey: %{public}s!",
+            HILOGE("Get data fail! devId: %{public}s, svrName: %{public}s, charKey: %{public}s!",
                 ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
             return DP_GET_KV_DB_FAIL;
         }
