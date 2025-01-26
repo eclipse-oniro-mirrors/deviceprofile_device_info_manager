@@ -235,7 +235,8 @@ int32_t KVAdapter::GetByPrefix(const std::string& keyPrefix, std::map<std::strin
         return DP_GET_KV_DB_FAIL;
     }
     if (allEntries.size() == 0 || allEntries.size() > MAX_DB_SIZE) {
-        HILOGE("AllEntries size is invalid!size: %{public}zu!", allEntries.size());
+        HILOGE("AllEntries size is invalid!size: %{public}zu! prefix: %{public}s",
+            allEntries.size(), ProfileUtils::GetDbKeyAnonyString(keyPrefix).c_str());
         return DP_INVALID_PARAMS;
     }
     for (const auto& item : allEntries) {

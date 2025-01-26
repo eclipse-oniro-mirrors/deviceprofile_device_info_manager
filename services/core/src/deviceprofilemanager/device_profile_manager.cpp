@@ -342,7 +342,8 @@ int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& device
     charProfile.SetDeviceId(deviceId);
     int32_t res = IsMultiUserValid(charProfile);
     if (res != DP_SUCCESS) {
-        HILOGE("GetCharacteristicProfile IsMultiUserValid failed, res: %{public}d", res);
+        HILOGE("IsMultiUserValid fail,res:%{public}d,deviceId:%{public}s,serviceName:%{public}s,charKey:%{public}s!",
+            res, ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
         return res;
     }
     {
@@ -351,7 +352,8 @@ int32_t DeviceProfileManager::GetCharacteristicProfile(const std::string& device
             characteristicKey, charProfile);
     }
     if (res != DP_SUCCESS) {
-        HILOGE("GetCharacteristicProfile fail, reason: %{public}d!", res);
+        HILOGE("fail, reason: %{public}d! deviceId:%{public}s,serviceName:%{public}s,charKey:%{public}s!",
+            res, ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
         return res;
     }
     HILOGD("GetCharacteristicProfile success");
