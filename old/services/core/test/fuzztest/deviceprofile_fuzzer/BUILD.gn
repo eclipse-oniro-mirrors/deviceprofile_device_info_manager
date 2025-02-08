@@ -55,10 +55,12 @@ ohos_fuzztest("DeviceProfileFuzzTest") {
     "access_token:libnativetoken",
     "access_token:libtoken_setproc",
     "c_utils:utils",
+    "eventhandler:libeventhandler",
     "hilog:libhilog",
     "ipc:ipc_core",
     "json:nlohmann_json_static",
     "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
   ]
 }
 
