@@ -35,6 +35,7 @@ device_profile_external_deps = [
   "hilog:libhilog",
   "hisysevent:libhisysevent",
   "ipc:ipc_core",
+  "json:nlohmann_json_static",
   "kv_store:distributeddata_inner",
   "syscap_codec:syscap_interface_shared",
 ]
