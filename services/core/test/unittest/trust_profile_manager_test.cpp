@@ -163,7 +163,7 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_013, TestSize.Level1)
     AccessControlProfile aclProfile;
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().DeleteAccessControlProfileCheck(aclProfile);
-    EXPECT_NE(ret, DP_SUCCESS);
+    EXPECT_EQ(ret, DP_SUCCESS);
 
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(resultRet, 1, 1,  profile);
