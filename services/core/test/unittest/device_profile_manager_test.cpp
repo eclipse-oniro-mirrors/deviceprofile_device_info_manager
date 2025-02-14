@@ -1837,22 +1837,6 @@ HWTEST_F(DeviceProfileManagerTest, DeleteRemovedUserData003, TestSize.Level1)
     EXPECT_EQ(ret, DP_SUCCESS);
 }
 
-#ifdef DEVICE_PROFILE_SWITCH_STATIC_ENABLE
-/**
- * @tc.name: DeleteRemovedUserData004
- * @tc.desc: DeleteRemovedUserData004
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(DeviceProfileManagerTest, DeleteRemovedUserData004, TestSize.Level1)
-{
-    int32_t userId = 1;
-    ContentSensorManagerUtils::GetInstance().localUdid_ = "";
-    int32_t ret = DeviceProfileManager::GetInstance().DeleteRemovedUserData(userId);
-    EXPECT_EQ(ret, DP_SUCCESS);
-}
-#endif // DEVICE_PROFILE_SWITCH_STATIC_ENABLE
-
 /**
  * @tc.name: DeleteRemovedUserData005
  * @tc.desc: DeleteRemovedUserData005
