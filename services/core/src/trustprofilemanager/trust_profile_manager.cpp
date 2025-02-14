@@ -95,32 +95,32 @@ int32_t TrustProfileManager::PutTrustDeviceProfile(const TrustDeviceProfile& pro
 
 int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile& profile)
 {
-    bool isExists = false;
-    CheckDeviceIdAndUserIdExists(profile, isExists);
     AccessControlProfile accessControlProfile(profile);
-    int32_t ret = this->SetAccessControlProfileId(accessControlProfile);
-    if (ret != DP_SUCCESS) {
-        HILOGE("SetAccessControlProfileId failed");
-        return ret;
-    }
-    ret = this->PutAccesserProfile(accessControlProfile);
-    if (ret != DP_SUCCESS) {
-        HILOGE("PutAccesserProfile failed");
-        return ret;
-    }
-    ret = this->PutAccesseeProfile(accessControlProfile);
-    if (ret != DP_SUCCESS) {
-        HILOGE("PutAccesseeProfile failed");
-        return ret;
-    }
-    if (IsAclExists(accessControlProfile) == DP_DATA_EXISTS) {
-        HILOGE("acl is exists");
-        return DP_SUCCESS;
-    }
-    ValuesBucket values;
-    ProfileUtils::AccessControlProfileToEntries(accessControlProfile, values);
+    bool isExists = false;
     {
-        std::lock_guard<std::mutex> lock(rdbMutex_);
+        std::lock_guard<std::mutex> lock(aclMutex_);
+        CheckDeviceIdAndUserIdExists(profile, isExists);
+        int32_t ret = this->SetAccessControlProfileId(accessControlProfile);
+        if (ret != DP_SUCCESS) {
+            HILOGE("SetAccessControlProfileId failed");
+            return ret;
+        }
+        ret = this->PutAccesserProfile(accessControlProfile);
+        if (ret != DP_SUCCESS) {
+            HILOGE("PutAccesserProfile failed");
+            return ret;
+        }
+        ret = this->PutAccesseeProfile(accessControlProfile);
+        if (ret != DP_SUCCESS) {
+            HILOGE("PutAccesseeProfile failed");
+            return ret;
+        }
+        if (IsAclExists(accessControlProfile) == DP_DATA_EXISTS) {
+            HILOGE("acl is exists");
+            return DP_SUCCESS;
+        }
+        ValuesBucket values;
+        ProfileUtils::AccessControlProfileToEntries(accessControlProfile, values);
         if (rdbStore_ == nullptr) {
             HILOGE("rdbStore_ is nullptr");
             return DP_GET_RDBSTORE_FAIL;
@@ -130,12 +130,12 @@ int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile&
             HILOGE("access_control_table insert failed");
             return DP_PUT_ACL_PROFILE_FAIL;
         }
+        HILOGI("PutAclProfile : %{public}s", accessControlProfile.dump().c_str());
     }
-    HILOGI("PutAclProfile : %{public}s", accessControlProfile.dump().c_str());
-    ret = this->PutAclCheck(accessControlProfile, isExists);
-    if (ret != DP_SUCCESS) {
+    int32_t putRet = this->PutAclCheck(accessControlProfile, isExists);
+    if (putRet != DP_SUCCESS) {
         HILOGE("PutAclCheck failed");
-        return ret;
+        return putRet;
     }
     DistributedHardware::DeviceManager::GetInstance().DpAclAdd(accessControlProfile.GetAccessControlId(),
         accessControlProfile.GetTrustDeviceId(), accessControlProfile.GetBindType());
@@ -192,19 +192,19 @@ int32_t TrustProfileManager::UpdateTrustDeviceProfile(const TrustDeviceProfile& 
 int32_t TrustProfileManager::UpdateAccessControlProfile(const AccessControlProfile& profile)
 {
     AccessControlProfile oldProfile;
-    int32_t ret = this->UpdateAclCheck(profile, oldProfile);
-    if (ret != DP_SUCCESS) {
-        HILOGE("UpdateAclCheck faild");
-        return ret;
-    }
     AccessControlProfile newProfile(profile);
-    this->UpdateAccesserProfile(newProfile);
-    this->UpdateAccesseeProfile(newProfile);
-    ValuesBucket values;
-    ProfileUtils::AccessControlProfileToEntries(newProfile, values);
-    int32_t changeRowCnt = CHANGEROWCNT_INIT;
     {
-        std::lock_guard<std::mutex> lock(rdbMutex_);
+        std::lock_guard<std::mutex> lock(aclMutex_);
+        int32_t ret = this->UpdateAclCheck(profile, oldProfile);
+        if (ret != DP_SUCCESS) {
+            HILOGE("UpdateAclCheck faild");
+            return ret;
+        }
+        this->UpdateAccesserProfile(newProfile);
+        this->UpdateAccesseeProfile(newProfile);
+        ValuesBucket values;
+        ProfileUtils::AccessControlProfileToEntries(newProfile, values);
+        int32_t changeRowCnt = CHANGEROWCNT_INIT;
         if (rdbStore_ == nullptr) {
             HILOGE("rdbStore_ is nullptr");
             return DP_GET_RDBSTORE_FAIL;
@@ -223,8 +223,8 @@ int32_t TrustProfileManager::UpdateAccessControlProfile(const AccessControlProfi
     TrustDeviceProfile trustProfile;
     ProfileUtils::ConvertToTrustDeviceProfile(newProfile, trustProfile);
     trustProfile.SetStatus(status);
-    ret = this->UpdateTrustDeviceProfile(trustProfile);
-    if (ret != DP_SUCCESS) {
+    int32_t updateRet = this->UpdateTrustDeviceProfile(trustProfile);
+    if (updateRet != DP_SUCCESS) {
         HILOGE("UpdateTrustDeviceProfile failed");
         return DP_UPDATE_TRUST_DEVICE_PROFILE_FAIL;
     }
@@ -483,6 +483,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId, std::vector
 
 int32_t TrustProfileManager::GetAllAccessControlProfile(std::vector<AccessControlProfile>& profile)
 {
+    std::lock_guard<std::mutex> lock(aclMutex_);
     std::shared_ptr<ResultSet> resultSet = GetResultSet(SELECT_ACCESS_CONTROL_TABLE, std::vector<ValueObject> {});
     if (resultSet == nullptr) {
         HILOGE("resultSet is nullptr");
@@ -594,6 +595,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(const std::string& bundleNa
 int32_t TrustProfileManager::GetAccessControlProfile(const std::map<std::string, std::string>& params,
     std::vector<AccessControlProfile>& profile)
 {
+    std::lock_guard<std::mutex> lock(aclMutex_);
     if (params.find(TRUST_DEVICE_ID) != params.end() && params.find(STATUS) != params.end()) {
         if (params.find(USERID) != params.end() && params.find(BUNDLENAME) != params.end()) {
             int32_t ret = this->GetAccessControlProfile(std::atoi(params.at(USERID).c_str()),
@@ -678,31 +680,39 @@ int32_t TrustProfileManager::DeleteTrustDeviceProfile(const std::string& deviceI
 
 int32_t TrustProfileManager::DeleteAccessControlProfile(int64_t accessControlId)
 {
-    std::shared_ptr<ResultSet> resultSet = GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_ACCESSCONTROLID,
-        std::vector<ValueObject>{ ValueObject(accessControlId) });
-    if (resultSet == nullptr) {
-        HILOGE("resultSet is nullptr");
-        return DP_GET_RESULTSET_FAIL;
-    }
-    int32_t rowCount = ROWCOUNT_INIT;
-    resultSet->GetRowCount(rowCount);
-    if (rowCount == 0) {
-        HILOGE("no data");
-        resultSet->Close();
-        return DP_NOT_FIND_DATA;
-    }
-    int32_t ret = resultSet->GoToNextRow();
-    if (ret != DP_SUCCESS) {
-        HILOGE("get AccessControlProfileResult failed");
-        return DP_NOT_FIND_DATA;
-    }
     AccessControlProfile profile;
-    ProfileUtils::ConvertToAccessControlProfile(resultSet, profile);
-    resultSet->Close();
-    ret = this->DeleteAccessControlProfileCheck(profile);
-    if (ret != DP_SUCCESS) {
-        HILOGE("DeleteAccessControlProfileCheck failed");
-        return ret;
+    {
+        std::lock_guard<std::mutex> lock(aclMutex_);
+        std::shared_ptr<ResultSet> resultSet = GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_ACCESSCONTROLID,
+            std::vector<ValueObject>{ ValueObject(accessControlId) });
+        if (resultSet == nullptr) {
+            HILOGE("resultSet is nullptr");
+            return DP_GET_RESULTSET_FAIL;
+        }
+        int32_t rowCount = ROWCOUNT_INIT;
+        resultSet->GetRowCount(rowCount);
+        if (rowCount == 0) {
+            HILOGE("no data");
+            resultSet->Close();
+            return DP_NOT_FIND_DATA;
+        }
+        int32_t ret = resultSet->GoToNextRow();
+        if (ret != DP_SUCCESS) {
+            HILOGE("get AccessControlProfileResult failed");
+            return DP_NOT_FIND_DATA;
+        }
+        ProfileUtils::ConvertToAccessControlProfile(resultSet, profile);
+        resultSet->Close();
+        ret = this->DeleteAccessControlProfileCheck(profile);
+        if (ret != DP_SUCCESS) {
+            HILOGE("DeleteAccessControlProfileCheck failed");
+            return ret;
+        }
+    }
+    int32_t delRet = this->DeleteTrustDeviceCheck(profile);
+    if (delRet != DP_SUCCESS) {
+        HILOGE("DeleteTrustDeviceCheck failed");
+        return delRet;
     }
     HILOGI("end!");
     return DP_SUCCESS;
@@ -1301,7 +1311,7 @@ int32_t TrustProfileManager::GetAccessControlProfilesByDeviceId(
     return DP_SUCCESS;
 }
 
-int32_t TrustProfileManager::DeleteAccessControlProfileCheck(const AccessControlProfile& profile)
+int32_t TrustProfileManager::DeleteAccessControlProfileCheck(AccessControlProfile& profile)
 {
     Accessee accessee;
     int32_t ret = this->DeleteAccesseeCheck(profile.GetAccesseeId(), accessee);
@@ -1333,11 +1343,7 @@ int32_t TrustProfileManager::DeleteAccessControlProfileCheck(const AccessControl
     AccessControlProfile resultProfile(profile);
     resultProfile.SetAccesser(accesser);
     resultProfile.SetAccessee(accessee);
-    ret = this->DeleteTrustDeviceCheck(resultProfile);
-    if (ret != DP_SUCCESS) {
-        HILOGE("DeleteTrustDeviceCheck failed");
-        return ret;
-    }
+    profile = resultProfile;
     return DP_SUCCESS;
 }
 

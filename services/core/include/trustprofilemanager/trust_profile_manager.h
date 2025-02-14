@@ -90,7 +90,7 @@ private:
         int64_t accesserId, int64_t accesseeId, std::vector<AccessControlProfile>& profile);
     int32_t GetAccessControlProfilesByDeviceId(std::shared_ptr<ResultSet> resultSet, int64_t accesserId,
         int64_t accesseeId, const std::string& trustDeviceId, std::vector<AccessControlProfile>& profile);
-    int32_t DeleteAccessControlProfileCheck(const AccessControlProfile& profile);
+    int32_t DeleteAccessControlProfileCheck(AccessControlProfile& profile);
     std::shared_ptr<ResultSet> GetResultSet(const std::string& sql, std::vector<ValueObject> condition);
     int32_t SetAccessControlProfileId(AccessControlProfile& accessControlProfile);
     int32_t GetAccessControlProfiles(std::shared_ptr<ResultSet> resultSet, int64_t accesserId,
@@ -117,6 +117,7 @@ private:
 
 private:
     std::shared_ptr<IRdbAdapter> rdbStore_;
+    std::mutex aclMutex_;
     std::mutex rdbMutex_;
 };
 
