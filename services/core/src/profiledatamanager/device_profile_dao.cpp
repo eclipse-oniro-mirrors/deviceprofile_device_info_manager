@@ -33,7 +33,7 @@ namespace {
 int32_t DeviceProfileDao::Init()
 {
     std::lock_guard<std::mutex> lock(rdbMutex_);
-    int32_t ret;
+    int32_t ret = RET_INIT;
     if (!ProfileDataRdbAdapter::GetInstance().IsInit()) {
         ret = ProfileDataRdbAdapter::GetInstance().Init();
         if (ret != DP_SUCCESS) {

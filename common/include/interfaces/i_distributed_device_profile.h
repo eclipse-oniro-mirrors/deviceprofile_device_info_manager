@@ -30,6 +30,8 @@
 #include "dp_sync_options.h"
 #include "i_sync_completed_callback.h"
 #include "product_info.h"
+#include "service_info_profile.h"
+#include "service_info_unique_key.h"
 #include "service_profile.h"
 #include "trust_device_profile.h"
 #include "trusted_device_info.h"
@@ -78,6 +80,16 @@ public:
     virtual int32_t PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos) = 0;
     virtual int32_t GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
         std::vector<DeviceIconInfo>& deviceIconInfos) = 0;
+    virtual int32_t PutServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile) = 0;
+    virtual int32_t DeleteServiceInfoProfile(const ServiceInfoUniqueKey& key) = 0;
+    virtual int32_t UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile) = 0;
+    virtual int32_t GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key,
+        ServiceInfoProfile& serviceInfoProfile) = 0;
+    virtual int32_t GetServiceInfoProfileListByTokenId(const ServiceInfoUniqueKey& key,
+        std::vector<ServiceInfoProfile>& serviceInfoProfiles) = 0;
+    virtual int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfile>& serviceInfoProfiles) = 0;
+    virtual int32_t GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
+        std::vector<ServiceInfoProfile>& serviceInfoProfiles) = 0;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

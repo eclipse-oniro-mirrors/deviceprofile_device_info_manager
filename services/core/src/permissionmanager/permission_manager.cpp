@@ -102,6 +102,13 @@ int32_t PermissionManager::ParsePermissionJson(const cJSON* const permissionJson
         HILOGE("Permission json size is invalid!size: %{public}d!", size);
         return DP_PARSE_PERMISSION_JSON_FAIL;
     }
+    SetPermissionMap(permissionJson, PUT_SERVICE_INFO_PROFILE);
+    SetPermissionMap(permissionJson, DELETE_SERVICE_INFO_PROFILE);
+    SetPermissionMap(permissionJson, UPDATE_SERVICE_INFO_PROFILE);
+    SetPermissionMap(permissionJson, GET_SERVICE_INFO_PROFILE_BY_UNIQUE_KEY);
+    SetPermissionMap(permissionJson, GET_SERVICE_INFO_PROFILE_LIST_BY_TOKEN_ID);
+    SetPermissionMap(permissionJson, GET_ALL_SERVICE_INFO_PROFILE_LIST);
+    SetPermissionMap(permissionJson, GET_SERVICE_INFO_PROFILE_LIST_BY_BUNDLE_NAME);
     SetPermissionMap(permissionJson, PUT_ACCESS_CONTROL_PROFILE);
     SetPermissionMap(permissionJson, UPDATE_ACCESS_CONTROL_PROFILE);
     SetPermissionMap(permissionJson, GET_ACCESS_CONTROL_PROFILE);

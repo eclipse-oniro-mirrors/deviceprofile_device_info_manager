@@ -126,6 +126,29 @@ const std::string SUBSCRIBE_CHANGE_TYPES = "subscribeChangeTypes";
 /* syncOptions */
 const std::string SYNC_MODE = "syncMode";
 const std::string SYNC_DEVICE_IDS = "syncDevices";
+/* ServiceInfoProfile Attribute */
+const std::string SRNETWORK_ID = "networkId";
+const std::string SISERVICE_ID = "serviceId";
+const std::string SERVICE_DISPLAY_NAME = "serviceDisplayName";
+const std::string CUSTOM_DATA = "customData";
+const std::string CUSTOM_DATA_LEN = "customDataLen";
+const std::string BUNDLE_NAME = "bundleName";
+const std::string MODULE_NAME = "moduleName";
+const std::string ABILITY_NAME = "abilityName";
+const std::string AUTH_BOX_TYPE = "authBoxType";
+const std::string AUTH_TYPE = "authType";
+const std::string PIN_EXCHANGE_TYPE = "pinExchangeType";
+const std::string PINCODE = "pinCode";
+const std::string DESCRIPTION = "description";
+const std::string SERVICE_DISCOVERY_SCOPE = "serviceDicoveryScope";
+const std::string EXTRAINFO = "extraInfo";
+const std::string PUT_SERVICE_INFO_PROFILE = "PutServiceInfoProfile";
+const std::string DELETE_SERVICE_INFO_PROFILE = "DeleteServiceInfoProfile";
+const std::string UPDATE_SERVICE_INFO_PROFILE = "UpdateServiceInfoProfile";
+const std::string GET_SERVICE_INFO_PROFILE_BY_UNIQUE_KEY = "GetServiceInfoProfileByUniqueKey";
+const std::string GET_SERVICE_INFO_PROFILE_LIST_BY_TOKEN_ID = "GetServiceInfoProfileListByTokenId";
+const std::string GET_ALL_SERVICE_INFO_PROFILE_LIST = "GetAllServiceInfoProfileList";
+const std::string GET_SERVICE_INFO_PROFILE_LIST_BY_BUNDLE_NAME = "GetServiceInfoProfileListByBundleName";
 /* Interface Name */
 const std::string PUT_ACCESS_CONTROL_PROFILE = "PutAccessControlProfile";
 const std::string UPDATE_ACCESS_CONTROL_PROFILE = "UpdateAccessControlProfile";

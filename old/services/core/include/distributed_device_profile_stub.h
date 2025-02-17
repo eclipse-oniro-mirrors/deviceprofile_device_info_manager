@@ -68,6 +68,13 @@ public:
     int32_t PutProductInfoBatchInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutDeviceIconInfoBatchInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetDeviceIconInfosInner(MessageParcel& data, MessageParcel& reply);
+    int32_t PutServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t DeleteServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t UpdateServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetServiceInfoProfileByUniqueKeyInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetServiceInfoProfileListByTokenIdInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetAllServiceInfoProfileListInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetServiceInfoProfileListByBundleNameInner(MessageParcel& data, MessageParcel& reply);
     virtual void DelayUnloadTask()
     {
         return;

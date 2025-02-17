@@ -27,6 +27,8 @@ constexpr int32_t AND_LENGTH = 5;
 constexpr int32_t WHERE_LENGTH = 7;
 extern const std::string PROFILE_DATA_RDB_PATH;
 extern const std::string PROFILE_DATA_DATABASE_NAME;
+extern const std::string SERVICE_INFO_PROFILE_RDB_PATH;
+extern const std::string SERVICE_INFO_PROFILE_DATABASE_NAME;
 extern const std::string ID_EQUAL_CONDITION;
 extern const std::string SELECT_DEVICE_PROFILE_TABLE;
 extern const std::string SELECT_DEVICE_PROFILE_TABLE_WHERE_DEVID_USERID;
@@ -52,6 +54,15 @@ extern const std::string CREATE_CHARACTERISTIC_PROFILE_TABLE_SQL;
 extern const std::string CREATE_CHARACTERISTIC_PROFILE_TABLE_INDEX_SQL_CHARACTERISTIC_KEY;
 extern const std::string CREATE_CHARACTERISTIC_PROFILE_TABLE_INDEX_SQL_SERVICE_PROFILE_ID;
 extern const std::string SELECT_CHARACTERISTIC_PROFILE_TABLE_MAX_ID;
+// ServiceInfoProfile
+extern const std::string SERVICE_INFO_PROFILE_TABLE;
+extern const std::string CREATE_SERVICE_INFO_PROFILE_TABLE_SQL;
+extern const std::string CREATE_SERVICE_INFO_PROFILE_TABLE_UNIQUE_INDEX_SQL;
+extern const std::string SELECT_SERVICE_INFO_PROFILE_ALL;
+extern const std::string SERVICE_INFO_PROFILE_UNIQUE_INDEX_EQUAL_CONDITION;
+extern const std::string SELECT_SERVICE_INFO_PROFILE_TABLE_WHERE_DEVID_USERID_TOKENID_SERVICEID;
+extern const std::string SELECT_SERVICE_INFO_PROFILE_TABLE_WHERE_DEVID_USERID_TOKENID;
+extern const std::string SELECT_SERVICE_INFO_PROFILE_TABLE_WHERE_DEVID_USERID_BUNDLENAME;
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_SERVICES_CONSTANTS_H

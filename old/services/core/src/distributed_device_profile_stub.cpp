@@ -228,6 +228,20 @@ int32_t DistributedDeviceProfileStub::NotifyNewEventInner(uint32_t code, Message
             return DeleteCharacteristicProfileInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::SYNC_DEVICE_PROFILE_NEW):
             return SyncDeviceProfileNewInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_INFO_PROFILE):
+            return PutServiceInfoProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::DELETE_SERVICE_INFO_PROFILE):
+            return DeleteServiceInfoProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::UPDATE_SERVICE_INFO_PROFILE):
+            return UpdateServiceInfoProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::GET_SERVICE_INFO_PROFILE_BY_UNIQUE_KEY):
+            return GetServiceInfoProfileByUniqueKeyInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::GET_SERVICE_INFO_PROFILE_LIST_BY_TOKEN_ID):
+            return GetServiceInfoProfileListByTokenIdInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::GET_ALL_SERVICE_INFO_PROFILE_LIST):
+            return GetAllServiceInfoProfileListInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::GET_SERVICE_INFO_PROFILE_LIST_BY_BUNDLE_NAME):
+            return GetServiceInfoProfileListByBundleNameInner(data, reply);
         default:
             HILOGW("unknown request code, please check, code = %{public}u", code);
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
@@ -471,6 +485,138 @@ int32_t DistributedDeviceProfileStub::GetDeviceIconInfosInner(MessageParcel& dat
         return ERR_FLATTEN_OBJECT;
     }
     if (!IpcUtils::Marshalling(reply, deviceIconInfos)) {
+        HILOGE("Write parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::PutServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    ServiceInfoProfile serviceInfoProfile;
+    if (!serviceInfoProfile.UnMarshalling(data)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutServiceInfoProfile(serviceInfoProfile);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::DeleteServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    ServiceInfoUniqueKey key;
+    if (!key.UnMarshalling(data)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().DeleteServiceInfoProfile(key);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::UpdateServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    ServiceInfoProfile serviceInfoProfile;
+    if (!serviceInfoProfile.UnMarshalling(data)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().UpdateServiceInfoProfile(serviceInfoProfile);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::GetServiceInfoProfileByUniqueKeyInner(MessageParcel& data, MessageParcel& reply)
+{
+    ServiceInfoUniqueKey key;
+    ServiceInfoProfile serviceInfoProfile;
+    if (!key.UnMarshalling(data)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetServiceInfoProfileByUniqueKey(key,
+        serviceInfoProfile);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    if (!serviceInfoProfile.Marshalling(reply)) {
+        HILOGE("write parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::GetServiceInfoProfileListByTokenIdInner(MessageParcel& data,
+    MessageParcel& reply)
+{
+    ServiceInfoUniqueKey key;
+    std::vector<ServiceInfoProfile> serviceInfoProfiles;
+    if (!key.UnMarshalling(data)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetServiceInfoProfileListByTokenId(key,
+        serviceInfoProfiles);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+
+    if (!IpcUtils::Marshalling(reply, serviceInfoProfiles)) {
+        HILOGE("Write parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::GetAllServiceInfoProfileListInner(MessageParcel& data,
+    MessageParcel& reply)
+{
+    std::vector<ServiceInfoProfile> serviceInfoProfiles;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetAllServiceInfoProfileList(serviceInfoProfiles);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+
+    if (!IpcUtils::Marshalling(reply, serviceInfoProfiles)) {
+        HILOGE("Write parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::GetServiceInfoProfileListByBundleNameInner(MessageParcel& data,
+    MessageParcel& reply)
+{
+    ServiceInfoUniqueKey key;
+    std::vector<ServiceInfoProfile> serviceInfoProfiles;
+    if (!key.UnMarshalling(data)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetServiceInfoProfileListByBundleName(key,
+        serviceInfoProfiles);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+
+    if (!IpcUtils::Marshalling(reply, serviceInfoProfiles)) {
         HILOGE("Write parcel fail!");
         return DP_READ_PARCEL_FAIL;
     }
@@ -818,7 +964,6 @@ int32_t DistributedDeviceProfileStub::SyncDeviceProfileNewInner(MessageParcel& d
     }
     return DP_SUCCESS;
 }
-
 
 int32_t DistributedDeviceProfileStub::SendSubscribeInfosInner(MessageParcel& data, MessageParcel& reply)
 {

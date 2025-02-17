@@ -34,6 +34,7 @@
 #include "distributed_device_profile_log.h"
 #include "dp_subscribe_info.h"
 #include "product_info.h"
+#include "service_info_profile.h"
 #include "service_profile.h"
 #include "trust_device_profile.h"
 #include "trusted_device_info.h"
@@ -57,6 +58,8 @@ public:
     static bool Marshalling(MessageParcel& parcel, const std::vector<TrustedDeviceInfo>& deviceInfos);
     static bool Marshalling(MessageParcel& parcel, const std::vector<DeviceIconInfo>& deviceIconInfos);
     static bool Marshalling(MessageParcel& parcel, const std::vector<ProductInfo>& productInfos);
+    static bool Marshalling(MessageParcel& parcel, const std::vector<ServiceInfoProfile>& serviceInfoProfiles);
+    static bool UnMarshalling(MessageParcel& parcel, std::vector<ServiceInfoProfile>& serviceInfoProfiles);
     static bool UnMarshalling(MessageParcel& parcel, std::vector<ProductInfo>& productInfos);
     static bool UnMarshalling(MessageParcel& parcel, std::vector<DeviceIconInfo>& deviceIconInfos);
     static bool UnMarshalling(MessageParcel& parcel, std::vector<TrustDeviceProfile>& trustDeviceProfiles);

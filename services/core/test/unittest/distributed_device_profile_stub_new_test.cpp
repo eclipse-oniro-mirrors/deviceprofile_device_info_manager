@@ -71,6 +71,16 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
     int32_t PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos) override;
     int32_t GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
         std::vector<DeviceIconInfo>& deviceIconInfos) override;
+    int32_t PutServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile) override;
+    int32_t DeleteServiceInfoProfile(const ServiceInfoUniqueKey& key) override;
+    int32_t UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile) override;
+    int32_t GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key,
+        ServiceInfoProfile& serviceInfoProfile) override;
+    int32_t GetServiceInfoProfileListByTokenId(const ServiceInfoUniqueKey& key,
+        std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
+    int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
+    int32_t GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
+        std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
     void DelayUnloadTask() override;
     bool IsInited() override;
 };
@@ -297,6 +307,52 @@ int32_t MockDistributedDeviceProfileStubNew::GetDeviceIconInfos(const DeviceIcon
     return 0;
 }
 
+int32_t MockDistributedDeviceProfileStubNew::PutServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile)
+{
+    (void)serviceInfoProfile;
+    return 0;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::DeleteServiceInfoProfile(const ServiceInfoUniqueKey& key)
+{
+    (void)key;
+    return 0;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile)
+{
+    (void)serviceInfoProfile;
+    return 0;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key,
+    ServiceInfoProfile& serviceInfoProfile)
+{
+    (void)key;
+    (void)serviceInfoProfile;
+    return 0;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::GetServiceInfoProfileListByTokenId(const ServiceInfoUniqueKey& key,
+    std::vector<ServiceInfoProfile>& serviceInfoProfiles)
+{
+    (void)key;
+    (void)serviceInfoProfiles;
+    return 0;
+}
+int32_t MockDistributedDeviceProfileStubNew::GetAllServiceInfoProfileList(
+    std::vector<ServiceInfoProfile>& serviceInfoProfiles)
+{
+    (void)serviceInfoProfiles;
+    return 0;
+}
+int32_t MockDistributedDeviceProfileStubNew::GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
+    std::vector<ServiceInfoProfile>& serviceInfoProfiles)
+{
+    (void)key;
+    (void)serviceInfoProfiles;
+    return 0;
+}
 /**
  * @tc.name: IsInterfaceTokenValid001
  * @tc.desc: IsInterfaceTokenValid

@@ -78,7 +78,16 @@ public:
     int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IDpInitedCallback> initedCb);
     int32_t UnSubscribeDeviceProfileInited(int32_t saId);
     int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo>& deviceInfos);
-
+    int32_t PutServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile);
+    int32_t DeleteServiceInfoProfile(const ServiceInfoUniqueKey& key);
+    int32_t UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile);
+    int32_t GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key, ServiceInfoProfile& serviceInfoProfile);
+    int32_t GetServiceInfoProfileListByTokenId(const ServiceInfoUniqueKey& key,
+        std::vector<ServiceInfoProfile>& serviceInfoProfiles);
+    int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfile>& serviceInfoProfiles);
+    int32_t GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
+        std::vector<ServiceInfoProfile>& serviceInfoProfiles);
+    
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
     void LoadSystemAbilityFail();
 
