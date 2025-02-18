@@ -35,7 +35,7 @@ namespace {
 
 int32_t CharacteristicProfileDao::Init()
 {
-    int32_t ret;
+    int32_t ret = RET_INIT;
     if (!ProfileDataRdbAdapter::GetInstance().IsInit()) {
         ret = ProfileDataRdbAdapter::GetInstance().Init();
         if (ret != DP_SUCCESS) {

@@ -206,7 +206,7 @@ std::string ContentSensorManagerUtils::ObtainProductId()
         return "";
     }
     productId_ = productIdTemp;
-    if (productId_.size() > 1) {
+    if (productId_.size() > NUM_1) {
         productId_.pop_back();
     }
     return productId_;

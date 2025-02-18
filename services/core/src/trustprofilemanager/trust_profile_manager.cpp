@@ -1940,6 +1940,10 @@ bool TrustProfileManager::CheckUserIdExists(int64_t accesserId, int64_t accessee
             GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_DEVICEID_AND_USERID,
                 std::vector<ValueObject>{ ValueObject(accesseeId),
                 ValueObject(localDeviceId), ValueObject(localUserId) });
+        if (accesseeResultSet == nullptr) {
+            HILOGE("accesseeResultSet is nullptr");
+            return false;
+        }
         int32_t aceeRowCount = ROWCOUNT_INIT;
         accesseeResultSet->GetRowCount(aceeRowCount);
         accesseeResultSet->Close();

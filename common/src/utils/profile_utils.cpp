@@ -1066,6 +1066,5 @@ int32_t ProfileUtils::ConvertToAccessControlProfile(
     accessControlProfile.SetBindLevel(bindLevel);
     return DP_SUCCESS;
 }
-
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

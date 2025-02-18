@@ -29,6 +29,8 @@
 #include "event_handler.h"
 #include "event_runner.h"
 #include "product_info.h"
+#include "service_info_profile.h"
+#include "service_info_unique_key.h"
 #include "single_instance.h"
 #include "system_ability.h"
 #include "system_ability_definition.h"
@@ -74,6 +76,16 @@ public:
     int32_t PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos) override;
     int32_t GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
         std::vector<DeviceIconInfo>& deviceIconInfos) override;
+    int32_t PutServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile) override;
+    int32_t DeleteServiceInfoProfile(const ServiceInfoUniqueKey& key) override;
+    int32_t UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile) override;
+    int32_t GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key,
+        ServiceInfoProfile& serviceInfoProfile) override;
+    int32_t GetServiceInfoProfileListByTokenId(const ServiceInfoUniqueKey& key,
+        std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
+    int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
+    int32_t GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
+        std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
     int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,

@@ -75,6 +75,16 @@ public:
     int32_t PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos) override;
     int32_t GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
         std::vector<DeviceIconInfo>& deviceIconInfos) override;
+    int32_t PutServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile) override;
+    int32_t DeleteServiceInfoProfile(const ServiceInfoUniqueKey& key) override;
+    int32_t UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile) override;
+    int32_t GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key,
+        ServiceInfoProfile& serviceInfoProfile) override;
+    int32_t GetServiceInfoProfileListByTokenId(const ServiceInfoUniqueKey& key,
+        std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
+    int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
+    int32_t GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
+        std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
 
 private:
     static inline BrokerDelegator<DistributedDeviceProfileProxy> delegator_;

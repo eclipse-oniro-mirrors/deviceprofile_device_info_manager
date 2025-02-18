@@ -239,6 +239,38 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<DeviceIconIn
     return true;
 }
 
+bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<ServiceInfoProfile>& serviceInfoProfiles)
+{
+    uint32_t size = serviceInfoProfiles.size();
+    WRITE_HELPER_RET(parcel, Uint32, size, false);
+    if (serviceInfoProfiles.empty() || serviceInfoProfiles.size() > MAX_PROFILE_SIZE) {
+        HILOGE("deviceInfos size is invalid!size : %{public}zu", serviceInfoProfiles.size());
+        return false;
+    }
+    for (const auto& item : serviceInfoProfiles) {
+        item.Marshalling(parcel);
+    }
+    return true;
+}
+
+bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<ServiceInfoProfile>& serviceInfoProfiles)
+{
+    uint32_t size = parcel.ReadUint32();
+    if (size == 0 || size > MAX_PROFILE_SIZE) {
+        HILOGE("Profile size is invalid!size : %{public}u", size);
+        return false;
+    }
+    for (uint32_t i = 0; i < size; i++) {
+        ServiceInfoProfile serviceInfoProfile;
+        if (!serviceInfoProfile.UnMarshalling(parcel)) {
+            HILOGE("Profile UnMarshalling fail!");
+            return false;
+        }
+        serviceInfoProfiles.emplace_back(serviceInfoProfile);
+    }
+    return true;
+}
+
 bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<DeviceIconInfo>& deviceIconInfos)
 {
     uint32_t size = parcel.ReadUint32();
@@ -398,12 +430,13 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<int32_t>& params
 bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<uint8_t>& params)
 {
     int32_t length = parcel.ReadInt32();
-    if (length == 0 || length > MAX_ICON_SIZE) {
+    if (length <= 0 || length > MAX_ICON_SIZE) {
         HILOGE("uint8_t vector, params size is invalid! size : %{public}d", length);
         return false;
     }
+    const void *temp = parcel.ReadRawData((size_t)length);
     const unsigned char *buffer = nullptr;
-    if ((buffer = reinterpret_cast<const unsigned char *>(parcel.ReadRawData((size_t)length))) == nullptr) {
+    if ((temp == nullptr) || ((buffer = reinterpret_cast<const unsigned char *>(temp)) == nullptr)) {
         HILOGE("read raw data failed, length = %{public}d", length);
         return false;
     }

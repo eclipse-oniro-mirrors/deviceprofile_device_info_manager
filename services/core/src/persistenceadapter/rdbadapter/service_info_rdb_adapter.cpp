@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "profile_data_rdb_adapter.h"
+#include "service_info_rdb_adapter.h"
 
 #include <mutex>
 #include <chrono>
@@ -27,52 +27,48 @@
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
-IMPLEMENT_SINGLE_INSTANCE(ProfileDataRdbAdapter);
+IMPLEMENT_SINGLE_INSTANCE(ServiceInfoRdbAdapter);
 using namespace std::chrono_literals;
 namespace {
     const std::set<std::string> TABLES = {
-        "device_profile",
-        "service_profile",
-        "characteristic_profile",
-        "device_icon_info",
-        "product_info"
+        "service_info_profile"
     };
-    const std::string TAG = "ProfileDatardbAdapter";
+    const std::string TAG = "ServiceInfoRdbAdapter";
 }
 
-int32_t ProfileDataRdbAdapter::Init()
+int32_t ServiceInfoRdbAdapter::Init()
 {
     int32_t retryTimes = RDB_INIT_MAX_TIMES;
     while (retryTimes > 0) {
         if (GetRDBPtr() == DP_SUCCESS) {
-            HILOGI("ProfileDatardbAdapter init success");
+            HILOGI("ServiceInfoRdbAdapter init success");
             return DP_SUCCESS;
         }
         usleep(RDB_INIT_INTERVAL_TIME);
         retryTimes--;
     }
-    HILOGE("ProfileDatardbAdapter init failed");
+    HILOGE("ServiceInfoRdbAdapter init failed");
     return DP_RDBADAPTER_INIT_FAIL;
 }
 
-int32_t ProfileDataRdbAdapter::UnInit()
+int32_t ServiceInfoRdbAdapter::UnInit()
 {
-    HILOGI("ProfileDatardbAdapter unInit");
+    HILOGI("ServiceInfoRdbAdapter unInit");
     {
-        std::lock_guard<std::mutex> lock(ProfileDataRdbAdapterMtx_);
+        std::lock_guard<std::mutex> lock(ServiceInfoRdbAdapterMtx_);
         store_ = nullptr;
     }
     return DP_SUCCESS;
 }
 
-int32_t ProfileDataRdbAdapter::Put(int64_t& outRowId, const std::string& table, const ValuesBucket& values)
+int32_t ServiceInfoRdbAdapter::Put(int64_t& outRowId, const std::string& table, const ValuesBucket& values)
 {
     if (TABLES.find(table) == TABLES.end()) {
         HILOGE("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
     }
     {
-        std::lock_guard<std::mutex> lock(ProfileDataRdbAdapterMtx_);
+        std::lock_guard<std::mutex> lock(ServiceInfoRdbAdapterMtx_);
         if (store_ == nullptr) {
             HILOGE("RDBStore_ is null");
             return DP_RDB_DB_PTR_NULL;
@@ -88,14 +84,14 @@ int32_t ProfileDataRdbAdapter::Put(int64_t& outRowId, const std::string& table, 
             ret = store_->Insert(outRowId, table, values);
         }
         if (ret != E_OK) {
-            HILOGE("ProfileDatardbAdapter put failed ret:%{public}d", ret);
+            HILOGE("ServiceInfoRdbAdapter put failed ret:%{public}d", ret);
             return DP_RDBADAPTER_PUT_FAIL;
         }
     }
     return DP_SUCCESS;
 }
 
-int32_t ProfileDataRdbAdapter::Delete(int32_t& deleteRows, const std::string& table, const std::string& whereClause,
+int32_t ServiceInfoRdbAdapter::Delete(int32_t& deleteRows, const std::string& table, const std::string& whereClause,
     const std::vector<ValueObject>& bindArgs)
 {
     if (TABLES.find(table) == TABLES.end()) {
@@ -103,7 +99,7 @@ int32_t ProfileDataRdbAdapter::Delete(int32_t& deleteRows, const std::string& ta
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
     }
     {
-        std::lock_guard<std::mutex> lock(ProfileDataRdbAdapterMtx_);
+        std::lock_guard<std::mutex> lock(ServiceInfoRdbAdapterMtx_);
         if (store_ == nullptr) {
             HILOGE("RDBStore_ is null");
             return DP_RDB_DB_PTR_NULL;
@@ -119,14 +115,14 @@ int32_t ProfileDataRdbAdapter::Delete(int32_t& deleteRows, const std::string& ta
             ret = store_->Delete(deleteRows, table, whereClause, bindArgs);
         }
         if (ret != E_OK) {
-            HILOGE("ProfileDatardbAdapter delete failed ret:%{public}d", ret);
+            HILOGE("ServiceInfoRdbAdapter delete failed ret:%{public}d", ret);
             return DP_RDBADAPTER_DELETE_FAIL;
         }
     }
     return DP_SUCCESS;
 }
 
-int32_t ProfileDataRdbAdapter::Update(int32_t& changedRows, const std::string& table, const ValuesBucket& values,
+int32_t ServiceInfoRdbAdapter::Update(int32_t& changedRows, const std::string& table, const ValuesBucket& values,
     const std::string& whereClause, const std::vector<ValueObject>& bindArgs)
 {
     if (TABLES.find(table) == TABLES.end()) {
@@ -134,7 +130,7 @@ int32_t ProfileDataRdbAdapter::Update(int32_t& changedRows, const std::string& t
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
     }
     {
-        std::lock_guard<std::mutex> lock(ProfileDataRdbAdapterMtx_);
+        std::lock_guard<std::mutex> lock(ServiceInfoRdbAdapterMtx_);
         if (store_ == nullptr) {
             HILOGE("RDBStore_ is null");
             return DP_RDB_DB_PTR_NULL;
@@ -150,18 +146,18 @@ int32_t ProfileDataRdbAdapter::Update(int32_t& changedRows, const std::string& t
             ret = store_->Update(changedRows, table, values, whereClause, bindArgs);
         }
         if (ret != E_OK) {
-            HILOGE("ProfileDatardbAdapter update failed ret:%{public}d", ret);
+            HILOGE("ServiceInfoRdbAdapter update failed ret:%{public}d", ret);
             return DP_RDBADAPTER_UPDATE_FAIL;
         }
     }
     return DP_SUCCESS;
 }
 
-std::shared_ptr<ResultSet> ProfileDataRdbAdapter::Get(const std::string& sql, const std::vector<ValueObject>& args)
+std::shared_ptr<ResultSet> ServiceInfoRdbAdapter::Get(const std::string& sql, const std::vector<ValueObject>& args)
 {
     std::shared_ptr<ResultSet> resultSet = nullptr;
     {
-        std::lock_guard<std::mutex> lock(ProfileDataRdbAdapterMtx_);
+        std::lock_guard<std::mutex> lock(ServiceInfoRdbAdapterMtx_);
         if (store_ == nullptr) {
             HILOGE("RDBStore_ is null");
             return nullptr;
@@ -187,17 +183,17 @@ std::shared_ptr<ResultSet> ProfileDataRdbAdapter::Get(const std::string& sql, co
     return resultSet;
 }
 
-int32_t ProfileDataRdbAdapter::GetRDBPtr()
+int32_t ServiceInfoRdbAdapter::GetRDBPtr()
 {
     int32_t version = RDB_VERSION;
-    ProfileDataOpenCallback helper;
-    RdbStoreConfig config(PROFILE_DATA_RDB_PATH + PROFILE_DATA_DATABASE_NAME);
+    ServiceInfoOpenCallback helper;
+    RdbStoreConfig config(SERVICE_INFO_PROFILE_RDB_PATH + SERVICE_INFO_PROFILE_DATABASE_NAME);
     config.SetSecurityLevel(SecurityLevel::S2);
     config.SetHaMode(HAMode::MAIN_REPLICA);
     config.SetAllowRebuild(true);
     int32_t errCode = E_OK;
     {
-        std::lock_guard<std::mutex> lock(ProfileDataRdbAdapterMtx_);
+        std::lock_guard<std::mutex> lock(ServiceInfoRdbAdapterMtx_);
         store_ = RdbHelper::GetRdbStore(config, version, helper, errCode);
         if (store_ == nullptr) {
             HILOGE("RDBStore_ is null");
@@ -221,40 +217,37 @@ int32_t ProfileDataRdbAdapter::GetRDBPtr()
     return DP_SUCCESS;
 }
 
-bool ProfileDataRdbAdapter::IsInit()
+bool ServiceInfoRdbAdapter::IsInit()
 {
-    {
-        std::lock_guard<std::mutex> lock(ProfileDataRdbAdapterMtx_);
-        if (store_ == nullptr) {
-            return false;
-        }
+    if (store_ == nullptr) {
+        return false;
     }
     return true;
 }
 
-int32_t ProfileDataRdbAdapter::CreateTable(const std::string& sql)
+int32_t ServiceInfoRdbAdapter::CreateTable(const std::string& sql)
 {
     {
-        std::lock_guard<std::mutex> lock(ProfileDataRdbAdapterMtx_);
+        std::lock_guard<std::mutex> lock(ServiceInfoRdbAdapterMtx_);
         if (store_ == nullptr) {
             HILOGE("RDBStore_ is null");
             return DP_RDB_DB_PTR_NULL;
         }
         if (store_->ExecuteSql(sql) != E_OK) {
-            HILOGE("ProfileDatardbAdapter create table failed");
+            HILOGE("ServiceInfoRdbAdapter create table failed");
             return DP_RDBADAPTER_TABLE_NOT_EXIST;
         }
     }
     return DP_SUCCESS;
 }
 
-int32_t ProfileDataOpenCallback::OnCreate(RdbStore& store)
+int32_t ServiceInfoOpenCallback::OnCreate(RdbStore& store)
 {
     HILOGI("rdbStore create");
     return NativeRdb::E_OK;
 }
 
-int32_t ProfileDataOpenCallback::OnUpgrade(RdbStore& store, int oldVersion, int newVersion)
+int32_t ServiceInfoOpenCallback::OnUpgrade(RdbStore& store, int oldVersion, int newVersion)
 {
     HILOGI("rdbStore upgrade");
     return NativeRdb::E_OK;

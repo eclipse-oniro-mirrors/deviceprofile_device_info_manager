@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -189,6 +189,10 @@ constexpr int32_t DP_CREATE_INDEX_FAIL = 98566308;
 constexpr int32_t DP_SETTINGSDATA_MANAGER_INIT_FAIL = 98566309;
 constexpr int32_t DP_SETTINGSDATA_MANAGER_UNINIT_FAIL = 98566310;
 constexpr int32_t DP_PROFILE_DATA_MANAGER_UNINIT_FAIL = 98566311;
+constexpr int32_t DP_SERVICE_INFO_PROFILE_MANAGER_INIT_FAIL = 98566312;
+constexpr int32_t DP_PUT_SERVICE_INFO_PROFILE_FAIL = 98566313;
+constexpr int32_t DP_DELETE_SERVICE_INFO_PROFILE_FAIL = 98566314;
+constexpr int32_t DP_UPDATE_SERVICE_INFO_PROFILE_FAIL = 98566315;
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_ERRORS_H

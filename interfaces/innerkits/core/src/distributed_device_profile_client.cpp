@@ -234,6 +234,80 @@ int32_t DistributedDeviceProfileClient::PutServiceProfile(const ServiceProfile& 
     return dpService->PutServiceProfile(serviceProfile);
 }
 
+int32_t DistributedDeviceProfileClient::PutServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->PutServiceInfoProfile(serviceInfoProfile);
+}
+
+int32_t DistributedDeviceProfileClient::DeleteServiceInfoProfile(const ServiceInfoUniqueKey& key)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->DeleteServiceInfoProfile(key);
+}
+
+int32_t DistributedDeviceProfileClient::UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->UpdateServiceInfoProfile(serviceInfoProfile);
+}
+
+int32_t DistributedDeviceProfileClient::GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key,
+    ServiceInfoProfile& serviceInfoProfile)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->GetServiceInfoProfileByUniqueKey(key, serviceInfoProfile);
+}
+
+int32_t DistributedDeviceProfileClient::GetServiceInfoProfileListByTokenId(const ServiceInfoUniqueKey& key,
+    std::vector<ServiceInfoProfile>& serviceInfoProfiles)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->GetServiceInfoProfileListByTokenId(key, serviceInfoProfiles);
+}
+
+int32_t DistributedDeviceProfileClient::GetAllServiceInfoProfileList(
+    std::vector<ServiceInfoProfile>& serviceInfoProfiles)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->GetAllServiceInfoProfileList(serviceInfoProfiles);
+}
+
+int32_t DistributedDeviceProfileClient::GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
+    std::vector<ServiceInfoProfile>& serviceInfoProfiles)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->GetServiceInfoProfileListByBundleName(key, serviceInfoProfiles);
+}
+
 int32_t DistributedDeviceProfileClient::PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles)
 {
     auto dpService = GetDeviceProfileService();
