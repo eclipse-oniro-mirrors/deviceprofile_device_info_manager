@@ -429,23 +429,19 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<int32_t>& params
 
 bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<uint8_t>& params)
 {
-    uint32_t size = parcel.ReadUint32();
-    if (size == 0 || size > MAX_PARAM_SIZE) {
-        HILOGE("Params size is invalid!size : %{public}u", size);
+    int32_t length = parcel.ReadInt32();
+    if (length <= 0 || length > MAX_ICON_SIZE) {
+        HILOGE("uint8_t vector, params size is invalid! size : %{public}d", length);
         return false;
     }
-    for (uint32_t i = 0; i < size; i++) {
-        std::string item = "";
-        READ_HELPER_RET(parcel, String, item, false);
-        std::string::size_type position = item.find(SEPARATOR);
-        if (position == item.npos) {
-            HILOGE("Not found the separator!");
-            continue;
-        }
-        std::string key = item.substr(0, position);
-        std::string value = item.substr(position + 1);
-        params[key] = value;
+    const void *temp = parcel.ReadRawData((size_t)length);
+    const unsigned char *buffer = nullptr;
+    if ((temp == nullptr) || ((buffer = reinterpret_cast<const unsigned char *>(temp)) == nullptr)) {
+        HILOGE("read raw data failed, length = %{public}d", length);
+        return false;
     }
+    std::vector<uint8_t> icon(buffer, buffer + length);
+    params = icon;
     return true;
 }
 
