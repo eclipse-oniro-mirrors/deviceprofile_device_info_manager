@@ -29,12 +29,12 @@
 #include "accesstoken_kit.h"
 #include "nativetoken_kit.h"
 #include "token_setproc.h"
+#include "distributed_device_profile_enums.h"
 
 namespace OHOS {
 namespace DeviceProfile {
 namespace {
     constexpr size_t THRESHOLD = 10;
-    constexpr uint8_t MAX_CALL_TRANSACTION = 43;
     constexpr int32_t OFFSET = 4;
     constexpr int32_t ZERO_BIT = 0;
     constexpr int32_t FIRST_BIT = 1;
@@ -96,13 +96,14 @@ void FuzzDeviceProfile(const uint8_t* rawData, size_t size)
         DistributedDeviceProfileService::GetInstance().Init();
         g_flag = true;
     }
-    DistributedDeviceProfileService::GetInstance().OnRemoteRequest(code % MAX_CALL_TRANSACTION, data, reply, option);
-    DistributedDeviceProfileService::
-        GetInstance().NotifyAclEventInner(code % MAX_CALL_TRANSACTION, data, reply, option);
-    DistributedDeviceProfileService::
-        GetInstance().NotifyOldEventInner(code % MAX_CALL_TRANSACTION, data, reply, option);
-    DistributedDeviceProfileService::
-        GetInstance().NotifyNewEventInner(code % MAX_CALL_TRANSACTION, data, reply, option);
+    DistributedDeviceProfileService::GetInstance().OnRemoteRequest(code %
+        static_cast<uint32_t>(DistributedDeviceProfile::DPInterfaceCode::MAX), data, reply, option);
+    DistributedDeviceProfileService::GetInstance().NotifyAclEventInner(code %
+        static_cast<uint32_t>(DistributedDeviceProfile::DPInterfaceCode::MAX), data, reply, option);
+    DistributedDeviceProfileService::GetInstance().NotifyOldEventInner(code %
+        static_cast<uint32_t>(DistributedDeviceProfile::DPInterfaceCode::MAX), data, reply, option);
+    DistributedDeviceProfileService::GetInstance().NotifyNewEventInner(code %
+        static_cast<uint32_t>(DistributedDeviceProfile::DPInterfaceCode::MAX), data, reply, option);
 }
 }
 }
