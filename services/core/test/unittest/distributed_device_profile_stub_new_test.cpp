@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -42,6 +42,10 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
         std::vector<AccessControlProfile>& accessControlProfiles) override;
     int32_t GetAllAccessControlProfile(std::vector<AccessControlProfile>& accessControlProfiles) override;
     int32_t DeleteAccessControlProfile(int32_t accessControlId) override;
+    int32_t PutSessionKey(uint32_t userId, const std::vector<uint8_t>& sessionKey, int32_t& sessionKeyId) override;
+    int32_t GetSessionKey(uint32_t userId, int32_t sessionKeyId, std::vector<uint8_t>& sessionKey) override;
+    int32_t UpdateSessionKey(uint32_t userId, int32_t sessionKeyId, const std::vector<uint8_t>& sessionKey) override;
+    int32_t DeleteSessionKey(uint32_t userId, int32_t sessionKeyId) override;
     int32_t PutServiceProfile(const ServiceProfile& serviceProfile) override;
     int32_t PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles) override;
     int32_t PutCharacteristicProfile(const CharacteristicProfile& charProfile) override;
@@ -159,6 +163,36 @@ int32_t MockDistributedDeviceProfileStubNew::GetAllAccessControlProfile(
 int32_t MockDistributedDeviceProfileStubNew::DeleteAccessControlProfile(int32_t accessControlId)
 {
     (void)accessControlId;
+    return 0;
+}
+int32_t MockDistributedDeviceProfileStubNew::PutSessionKey(
+    uint32_t userId, const std::vector<uint8_t>& sessionKey, int32_t& sessionKeyId)
+{
+    (void)userId;
+    (void)sessionKey;
+    (void)sessionKeyId;
+    return 0;
+}
+int32_t MockDistributedDeviceProfileStubNew::GetSessionKey(
+    uint32_t userId, int32_t sessionKeyId, std::vector<uint8_t>& sessionKey)
+{
+    (void)userId;
+    (void)sessionKey;
+    (void)sessionKeyId;
+    return 0;
+}
+int32_t MockDistributedDeviceProfileStubNew::UpdateSessionKey(
+    uint32_t userId, int32_t sessionKeyId, const std::vector<uint8_t>& sessionKey)
+{
+    (void)userId;
+    (void)sessionKey;
+    (void)sessionKeyId;
+    return 0;
+}
+int32_t MockDistributedDeviceProfileStubNew::DeleteSessionKey(uint32_t userId, int32_t sessionKeyId)
+{
+    (void)userId;
+    (void)sessionKeyId;
     return 0;
 }
 int32_t MockDistributedDeviceProfileStubNew::PutServiceProfile(const ServiceProfile& serviceProfile)

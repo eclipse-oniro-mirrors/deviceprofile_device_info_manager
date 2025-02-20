@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -45,6 +45,18 @@ public:
     void SetAccesseeHapSignature(const std::string& accesseeHapSignature);
     uint32_t GetAccesseeBindLevel() const;
     void SetAccesseeBindLevel(uint32_t accesseeBindLevel);
+    std::string GetAccesseeDeviceName() const;
+    void SetAccesseeDeviceName(const std::string& accesseeDeviceName);
+    int32_t GetAccesseeServiceId() const;
+    void SetAccesseeServiceId(int32_t accesseeServiceId);
+    int32_t GetAccesseeCredentialId() const;
+    void SetAccesseeCredentialId(int32_t accesseeCredentialId);
+    int32_t GetAccesseeStatus() const;
+    void SetAccesseeStatus(int32_t accesseeStatus);
+    int32_t GetAccesseeSessionKeyId() const;
+    void SetAccesseeSessionKeyId(int32_t accesseeSessionKeyId);
+    int64_t GetAccesseeSKTimeStamp() const;
+    void SetAccesseeSKTimeStamp(int64_t accesseeSKTimeStamp);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     std::string dump() const override;
@@ -58,6 +70,12 @@ private:
     std::string accesseeBundleName_;
     std::string accesseeHapSignature_;
     uint32_t accesseeBindLevel_;
+    std::string accesseeDeviceName_;
+    int32_t accesseeServiceId_;
+    int32_t accesseeCredentialId_;
+    int32_t accesseeStatus_;
+    int32_t accesseeSessionKeyId_;
+    int64_t accesseeSKTimeStamp_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

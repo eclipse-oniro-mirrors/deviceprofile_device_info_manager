@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -195,7 +195,7 @@ std::shared_ptr<ResultSet> RdbAdapter::Get(const std::string& sql, const std::ve
 
 int32_t RdbAdapter::GetRDBPtr()
 {
-    int32_t version = RDB_VERSION;
+    int32_t version = RDB_VERSION_5_1;
     OpenCallback helper;
     RdbStoreConfig config(RDB_PATH + DATABASE_NAME);
     config.SetHaMode(HAMode::MAIN_REPLICA);
@@ -242,16 +242,167 @@ int32_t RdbAdapter::CreateTable(const std::string& sql)
     return DP_SUCCESS;
 }
 
-int32_t OpenCallback::OnCreate(RdbStore& store_)
+int32_t OpenCallback::OnCreate(RdbStore& store)
 {
     HILOGI("rdbStore create");
-    return NativeRdb::E_OK;
+    if (CreateTable(store) != DP_SUCCESS) {
+        HILOGE("CreateTable failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (CreateUniqueIndex(store) != DP_SUCCESS) {
+        HILOGE("CreateUniqueIndex failed");
+        return DP_CREATE_UNIQUE_INDEX_FAIL;
+    }
+    return DP_SUCCESS;
 }
 
-int32_t OpenCallback::OnUpgrade(RdbStore& store_, int oldVersion, int newVersion)
+int32_t OpenCallback::OnUpgrade(RdbStore& store, int oldVersion, int newVersion)
 {
-    HILOGI("rdbStore upgrade");
-    return NativeRdb::E_OK;
+    HILOGI("rdbStore upgrade, oldVersion : %{public}d, newVersion : %{public}d", oldVersion, newVersion);
+    if (oldVersion == RDB_VERSION && newVersion == RDB_VERSION_5_1) {
+        int32_t ret = AddAcerColumn(store);
+        if (ret != DP_SUCCESS) {
+            HILOGE("AddAcerColumn failed");
+            return ret;
+        }
+        ret = AddAceeColumn(store);
+        if (ret != DP_SUCCESS) {
+            HILOGE("AddAceeColumn failed");
+            return ret;
+        }
+        ret = DropAndRebuildIndex(store);
+        if (ret != DP_SUCCESS) {
+            HILOGE("DropAndRebuildIndex failed");
+            return ret;
+        }
+    }
+    return DP_SUCCESS;
+}
+
+int32_t OpenCallback::CreateTable(RdbStore& store)
+{
+    std::lock_guard<std::mutex> lock(rdbStoreMtx_);
+    if (store.ExecuteSql(CREATE_TURST_DEVICE_TABLE_SQL) != NativeRdb::E_OK) {
+        HILOGE("trust_device_table create failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (store.ExecuteSql(CREATE_ACCESS_CONTROL_TABLE_SQL) != NativeRdb::E_OK) {
+        HILOGE("access_control_table create failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (store.ExecuteSql(CREATE_ACCESSER_TABLE_SQL) != NativeRdb::E_OK) {
+        HILOGE("accesser_table create failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (store.ExecuteSql(CREATE_ACCESSEE_TABLE_SQL) != NativeRdb::E_OK) {
+        HILOGE("accessee_table create failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t OpenCallback::CreateUniqueIndex(RdbStore& store)
+{
+    std::lock_guard<std::mutex> lock(rdbStoreMtx_);
+    if (store.ExecuteSql(CREATE_TURST_DEVICE_TABLE_UNIQUE_INDEX_SQL) != NativeRdb::E_OK) {
+        HILOGE("trust_device_table unique index create failed");
+        return DP_CREATE_UNIQUE_INDEX_FAIL;
+    }
+    if (store.ExecuteSql(CREATE_ACCESS_CONTROL_TABLE_UNIQUE_INDEX_SQL) != NativeRdb::E_OK) {
+        HILOGE("access_control_table unique index create failed");
+        return DP_CREATE_UNIQUE_INDEX_FAIL;
+    }
+    if (store.ExecuteSql(CREATE_ACCESSER_TABLE_UNIQUE_INDEX_SQL) != NativeRdb::E_OK) {
+        HILOGE("accesser_table unique index create failed");
+        return DP_CREATE_UNIQUE_INDEX_FAIL;
+    }
+    if (store.ExecuteSql(CREATE_ACCESSEE_TABLE_UNIQUE_INDEX_SQL) != NativeRdb::E_OK) {
+        HILOGE("accessee_table unique index create failed");
+        return DP_CREATE_UNIQUE_INDEX_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t OpenCallback::AddAcerColumn(RdbStore& store)
+{
+    std::lock_guard<std::mutex> lock(rdbStoreMtx_);
+    if (store.ExecuteSql(ALTER_TABLE_ACER_ADD_COLUMN_ACER_DEVICE_NAME) != NativeRdb::E_OK) {
+        HILOGE("add column to acer table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (store.ExecuteSql(ALTER_TABLE_ACER_ADD_COLUMN_ACER_SERVICE_ID) != NativeRdb::E_OK) {
+        HILOGE("add column to acer table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (store.ExecuteSql(ALTER_TABLE_ACER_ADD_COLUMN_ACER_CREDENTIAL_ID) != NativeRdb::E_OK) {
+        HILOGE("add column to acer table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (store.ExecuteSql(ALTER_TABLE_ACER_ADD_COLUMN_ACER_STATUS) != NativeRdb::E_OK) {
+        HILOGE("add column to acer table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (store.ExecuteSql(ALTER_TABLE_ACER_ADD_COLUMN_ACER_SESSION_KEY_ID) != NativeRdb::E_OK) {
+        HILOGE("add column to acer table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (store.ExecuteSql(ALTER_TABLE_ACER_ADD_COLUMN_ACER_SESSION_KEY_TIMESTAMP) != NativeRdb::E_OK) {
+        HILOGE("add column to acer table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t OpenCallback::AddAceeColumn(RdbStore &store)
+{
+    std::lock_guard<std::mutex> lock(rdbStoreMtx_);
+    if (store.ExecuteSql(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_DEVICE_NAME) != NativeRdb::E_OK) {
+        HILOGE("add column to acee table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (store.ExecuteSql(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SERVICE_ID) != NativeRdb::E_OK) {
+        HILOGE("add column to acee table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (store.ExecuteSql(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_CREDENTIAL_ID) != NativeRdb::E_OK) {
+        HILOGE("add column to acee table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (store.ExecuteSql(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_STATUS) != NativeRdb::E_OK) {
+        HILOGE("add column to acee table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (store.ExecuteSql(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SESSION_KEY_ID) != NativeRdb::E_OK) {
+        HILOGE("add column to acee table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (store.ExecuteSql(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SESSION_KEY_TIMESTAMP) != NativeRdb::E_OK) {
+        HILOGE("add column to acee table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t OpenCallback::DropAndRebuildIndex(RdbStore& store)
+{
+    std::lock_guard<std::mutex> lock(rdbStoreMtx_);
+    if (store.ExecuteSql(DROP_OLD_UNIQUE_INDEX_ON_ACER) != NativeRdb::E_OK) {
+        HILOGE("delete old unique index to acer table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (store.ExecuteSql(DROP_OLD_UNIQUE_INDEX_ON_ACEE) != NativeRdb::E_OK) {
+        HILOGE("delete old unique index to acee table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (store.ExecuteSql(CREATE_ACCESSER_TABLE_UNIQUE_INDEX_SQL) != NativeRdb::E_OK) {
+        HILOGE("create new unique index to acer table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (store.ExecuteSql(CREATE_ACCESSEE_TABLE_UNIQUE_INDEX_SQL) != NativeRdb::E_OK) {
+        HILOGE("create new unique index to acee table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    return DP_SUCCESS;
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

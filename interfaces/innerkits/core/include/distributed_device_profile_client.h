@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -52,6 +52,10 @@ public:
         std::vector<AccessControlProfile>& accessControlProfiles);
     int32_t GetAllAccessControlProfile(std::vector<AccessControlProfile>& accessControlProfiles);
     int32_t DeleteAccessControlProfile(int32_t accessControlId);
+    int32_t PutSessionKey(uint32_t userId, const std::vector<uint8_t>& sessionKey, int32_t& sessionKeyId);
+    int32_t GetSessionKey(uint32_t userId, int32_t sessionKeyId, std::vector<uint8_t>& sessionKey);
+    int32_t UpdateSessionKey(uint32_t userId, int32_t sessionKeyId, const std::vector<uint8_t>& sessionKey);
+    int32_t DeleteSessionKey(uint32_t userId, int32_t sessionKeyId);
     int32_t PutDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles);
     int32_t PutServiceProfile(const ServiceProfile& serviceProfile);
     int32_t PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles);

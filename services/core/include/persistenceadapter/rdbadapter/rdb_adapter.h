@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -47,6 +47,15 @@ class OpenCallback : public NativeRdb::RdbOpenCallback {
 public:
     int32_t OnCreate(RdbStore& store) override;
     int32_t OnUpgrade(RdbStore& store, int oldVersion, int newVersion) override;
+    int32_t CreateTable(RdbStore& store);
+    int32_t CreateUniqueIndex(RdbStore& store);
+    int32_t CreateProxyTableAndIndex(RdbStore& store);
+    int32_t AddAcerColumn(RdbStore& store);
+    int32_t AddAceeColumn(RdbStore& store);
+    int32_t DropAndRebuildIndex(RdbStore& store);
+
+private:
+    std::mutex rdbStoreMtx_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

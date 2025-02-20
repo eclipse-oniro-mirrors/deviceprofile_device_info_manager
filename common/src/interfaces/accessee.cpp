@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -32,9 +32,14 @@ Accessee::Accessee()
     accesseeTokenId_(-1),
     accesseeBundleName_(""),
     accesseeHapSignature_(""),
-    accesseeBindLevel_(static_cast<uint32_t>(BindLevel::MIN))
-{
-}
+    accesseeBindLevel_(static_cast<uint32_t>(BindLevel::MIN)),
+    accesseeDeviceName_(""),
+    accesseeServiceId_(0),
+    accesseeCredentialId_(0),
+    accesseeStatus_(static_cast<int32_t>(Status::MIN)),
+    accesseeSessionKeyId_(0),
+    accesseeSKTimeStamp_(0)
+{}
 
 int64_t Accessee::GetAccesseeId()
 {
@@ -116,6 +121,66 @@ void Accessee::SetAccesseeBindLevel(uint32_t accesseeBindLevel)
     accesseeBindLevel_ = accesseeBindLevel;
 }
 
+std::string Accessee::GetAccesseeDeviceName() const
+{
+    return accesseeDeviceName_;
+}
+
+void Accessee::SetAccesseeDeviceName(const std::string &accesseeDeviceName)
+{
+    accesseeDeviceName_ = accesseeDeviceName;
+}
+
+int32_t Accessee::GetAccesseeServiceId() const
+{
+    return accesseeServiceId_;
+}
+
+void Accessee::SetAccesseeServiceId(int32_t accesseeServiceId)
+{
+    accesseeServiceId_ = accesseeServiceId;
+}
+
+int32_t Accessee::GetAccesseeCredentialId() const
+{
+    return accesseeCredentialId_;
+}
+
+void Accessee::SetAccesseeCredentialId(int32_t accesseeCredentialId)
+{
+    accesseeCredentialId_ = accesseeCredentialId;
+}
+
+int32_t Accessee::GetAccesseeStatus() const
+{
+    return accesseeStatus_;
+}
+
+void Accessee::SetAccesseeStatus(int32_t accesseeStatus)
+{
+    accesseeStatus_ = accesseeStatus;
+}
+
+int32_t Accessee::GetAccesseeSessionKeyId() const
+{
+    return accesseeSessionKeyId_;
+}
+
+void Accessee::SetAccesseeSessionKeyId(int32_t accesseeSessionKeyId)
+{
+    accesseeSessionKeyId_ = accesseeSessionKeyId;
+}
+
+int64_t Accessee::GetAccesseeSKTimeStamp() const
+{
+    return accesseeSKTimeStamp_;
+}
+
+void Accessee::SetAccesseeSKTimeStamp(int64_t accesseeSKTimeStamp)
+{
+    accesseeSKTimeStamp_ = accesseeSKTimeStamp;
+}
+
 bool Accessee::Marshalling(MessageParcel& parcel) const
 {
     WRITE_HELPER_RET(parcel, Int64, accesseeId_, false);
@@ -126,6 +191,12 @@ bool Accessee::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, String, accesseeBundleName_, false);
     WRITE_HELPER_RET(parcel, String, accesseeHapSignature_, false);
     WRITE_HELPER_RET(parcel, Uint32, accesseeBindLevel_, false);
+    WRITE_HELPER_RET(parcel, String, accesseeDeviceName_, false);
+    WRITE_HELPER_RET(parcel, Int32, accesseeServiceId_, false);
+    WRITE_HELPER_RET(parcel, Int32, accesseeCredentialId_, false);
+    WRITE_HELPER_RET(parcel, Int32, accesseeStatus_, false);
+    WRITE_HELPER_RET(parcel, Int32, accesseeSessionKeyId_, false);
+    WRITE_HELPER_RET(parcel, Int64, accesseeSKTimeStamp_, false);
     return true;
 }
 
@@ -139,6 +210,12 @@ bool Accessee::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, String, accesseeBundleName_, false);
     READ_HELPER_RET(parcel, String, accesseeHapSignature_, false);
     READ_HELPER_RET(parcel, Uint32, accesseeBindLevel_, false);
+    READ_HELPER_RET(parcel, String, accesseeDeviceName_, false);
+    READ_HELPER_RET(parcel, Int32, accesseeServiceId_, false);
+    READ_HELPER_RET(parcel, Int32, accesseeCredentialId_, false);
+    READ_HELPER_RET(parcel, Int32, accesseeStatus_, false);
+    READ_HELPER_RET(parcel, Int32, accesseeSessionKeyId_, false);
+    READ_HELPER_RET(parcel, Int64, accesseeSKTimeStamp_, false);
     return true;
 }
 
@@ -160,6 +237,12 @@ std::string Accessee::dump() const
     cJSON_AddStringToObject(json, ACCESSEE_BUNDLE_NAME.c_str(), accesseeBundleName_.c_str());
     cJSON_AddStringToObject(json, ACCESSEE_HAP_SIGNATURE.c_str(), accesseeHapSignature_.c_str());
     cJSON_AddNumberToObject(json, ACCESSEE_BIND_LEVEL.c_str(), accesseeBindLevel_);
+    cJSON_AddStringToObject(json, ACCESSEE_DEVICE_NAME.c_str(), accesseeDeviceName_.c_str());
+    cJSON_AddNumberToObject(json, ACCESSEE_SERVICE_ID.c_str(), accesseeServiceId_);
+    cJSON_AddNumberToObject(json, ACCESSEE_CREDENTIAL_ID.c_str(), accesseeCredentialId_);
+    cJSON_AddNumberToObject(json, ACCESSEE_STATUS.c_str(), accesseeStatus_);
+    cJSON_AddNumberToObject(json, ACCESSEE_SESSION_KEY_ID.c_str(), accesseeSessionKeyId_);
+    cJSON_AddNumberToObject(json, ACCESSEE_SESSION_KEY_TIMESTAMP.c_str(), accesseeSKTimeStamp_);
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);

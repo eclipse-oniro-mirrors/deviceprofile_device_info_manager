@@ -1407,14 +1407,6 @@ HWTEST_F(TrustProfileManagerTest, RdbStoreIsNullptr_001, TestSize.Level1)
         GetInstance().UnInit();
     EXPECT_NE(ret, DP_SUCCESS);
 
-    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().CreateTable();
-    EXPECT_NE(ret, DP_SUCCESS);
-
-    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().CreateUniqueIndex();
-    EXPECT_NE(ret, DP_SUCCESS);
-
     TrustDeviceProfile profile;
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetTrustDeviceProfile("8888", profile);
