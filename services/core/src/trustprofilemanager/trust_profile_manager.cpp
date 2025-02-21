@@ -33,16 +33,18 @@ namespace {
 
 int32_t TrustProfileManager::Init()
 {
-    std::lock_guard<std::mutex> lock(rdbMutex_);
-    rdbStore_ = std::make_shared<RdbAdapter>();
-    if (rdbStore_ == nullptr) {
-        HILOGE("rdbStore_ is nullptr");
-        return DP_INIT_DB_FAILED;
-    }
-    int32_t ret = rdbStore_->Init();
-    if (ret != DP_SUCCESS) {
-        HILOGE("rdbStore_ Init failed");
-        return DP_INIT_DB_FAILED;
+    {
+        std::lock_guard<std::mutex> lock(rdbMutex_);
+        rdbStore_ = std::make_shared<RdbAdapter>();
+        if (rdbStore_ == nullptr) {
+            HILOGE("rdbStore_ is nullptr");
+            return DP_INIT_DB_FAILED;
+        }
+        int32_t ret = rdbStore_->Init();
+        if (ret != DP_SUCCESS) {
+            HILOGE("rdbStore_ Init failed");
+            return DP_INIT_DB_FAILED;
+        }
     }
     this->CreateTable();
     this->CreateUniqueIndex();
