@@ -237,7 +237,8 @@ std::string Accesser::dump() const
     cJSON_AddStringToObject(json, ACCESSER_BUNDLE_NAME.c_str(), accesserBundleName_.c_str());
     cJSON_AddStringToObject(json, ACCESSER_HAP_SIGNATURE.c_str(), accesserHapSignature_.c_str());
     cJSON_AddNumberToObject(json, ACCESSER_BIND_LEVEL.c_str(), accesserBindLevel_);
-    cJSON_AddStringToObject(json, ACCESSER_DEVICE_NAME.c_str(), accesserDeviceName_.c_str());
+    cJSON_AddStringToObject(json, ACCESSER_DEVICE_NAME.c_str(),
+        ProfileUtils::GetAnonyString(accesserDeviceName_).c_str());
     cJSON_AddNumberToObject(json, ACCESSER_SERVICE_ID.c_str(), accesserServiceId_);
     cJSON_AddNumberToObject(json, ACCESSER_CREDENTIAL_ID.c_str(), accesserCredentialId_);
     cJSON_AddNumberToObject(json, ACCESSER_STATUS.c_str(), accesserStatus_);
