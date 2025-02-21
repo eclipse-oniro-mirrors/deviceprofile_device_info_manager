@@ -77,7 +77,7 @@ public:
     static int32_t EntriesToAccesser(const ValuesBucket& values, Accesser& accesser);
     static int32_t EntriesToAccessee(const ValuesBucket& values, Accessee& accessee);
     static int32_t EntriesToAccesserExt(const ValuesBucket& values, Accesser& accesser);
-    static int32_t EntriesToAccesserExt(const ValuesBucket& values, Accessee& accessee);
+    static int32_t EntriesToAccesseeExt(const ValuesBucket& values, Accessee& accessee);
     static int32_t EntriesToDeviceProfile(std::map<std::string, std::string> values, DeviceProfile& profile);
     static int32_t EntriesToServiceProfile(std::map<std::string, std::string> values, ServiceProfile& profile);
     static int32_t EntriesToCharProfile(std::map<std::string, std::string> values, CharacteristicProfile& profile);
