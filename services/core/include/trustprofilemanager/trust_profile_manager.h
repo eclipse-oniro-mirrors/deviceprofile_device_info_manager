@@ -51,6 +51,8 @@ public:
     int32_t DeleteAccessControlProfile(int64_t accessControlId);
 
 private:
+    int32_t CreateTable();
+    int32_t CreateUniqueIndex();
     int32_t GetAccessControlProfile(const std::string& bundleName, int32_t bindType,
         int32_t status, std::vector<AccessControlProfile>& profile);
     int32_t GetAccessControlProfile(const std::string& bundleName,

@@ -44,6 +44,8 @@ int32_t TrustProfileManager::Init()
         HILOGE("rdbStore_ Init failed");
         return DP_INIT_DB_FAILED;
     }
+    this->CreateTable();
+    this->CreateUniqueIndex();
     HILOGI("end!");
     return DP_SUCCESS;
 }
@@ -710,6 +712,66 @@ int32_t TrustProfileManager::DeleteAccessControlProfile(int64_t accessControlId)
         return delRet;
     }
     HILOGI("end!");
+    return DP_SUCCESS;
+}
+
+int32_t TrustProfileManager::CreateTable()
+{
+    std::lock_guard<std::mutex> lock(rdbMutex_);
+    if (rdbStore_ == nullptr) {
+        HILOGE("rdbStore_ is nullptr");
+        return DP_GET_RDBSTORE_FAIL;
+    }
+    int32_t ret = rdbStore_->CreateTable(CREATE_TURST_DEVICE_TABLE_SQL);
+    if (ret != DP_SUCCESS) {
+        HILOGE("trust_device_table create failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    ret = rdbStore_->CreateTable(CREATE_ACCESS_CONTROL_TABLE_SQL);
+    if (ret != DP_SUCCESS) {
+        HILOGE("access_control_table create failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    ret = rdbStore_->CreateTable(CREATE_ACCESSER_TABLE_SQL);
+    if (ret != DP_SUCCESS) {
+        HILOGE("accesser_table create failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    ret = rdbStore_->CreateTable(CREATE_ACCESSEE_TABLE_SQL);
+    if (ret != DP_SUCCESS) {
+        HILOGE("accessee_table create failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t TrustProfileManager::CreateUniqueIndex()
+{
+    std::lock_guard<std::mutex> lock(rdbMutex_);
+    if (rdbStore_ == nullptr) {
+        HILOGE("rdbStore_ is nullptr");
+        return DP_GET_RDBSTORE_FAIL;
+    }
+    int32_t ret = rdbStore_->CreateTable(CREATE_TURST_DEVICE_TABLE_UNIQUE_INDEX_SQL);
+    if (ret != DP_SUCCESS) {
+        HILOGE("trust_device_table unique index create failed");
+        return DP_CREATE_UNIQUE_INDEX_FAIL;
+    }
+    ret = rdbStore_->CreateTable(CREATE_ACCESS_CONTROL_TABLE_UNIQUE_INDEX_SQL);
+    if (ret != DP_SUCCESS) {
+        HILOGE("access_control_table unique index create failed");
+        return DP_CREATE_UNIQUE_INDEX_FAIL;
+    }
+    ret = rdbStore_->CreateTable(CREATE_ACCESSER_TABLE_UNIQUE_INDEX_SQL);
+    if (ret != DP_SUCCESS) {
+        HILOGE("accesser_table unique index create failed");
+        return DP_CREATE_UNIQUE_INDEX_FAIL;
+    }
+    ret = rdbStore_->CreateTable(CREATE_ACCESSEE_TABLE_UNIQUE_INDEX_SQL);
+    if (ret != DP_SUCCESS) {
+        HILOGE("accessee_table unique index create failed");
+        return DP_CREATE_UNIQUE_INDEX_FAIL;
+    }
     return DP_SUCCESS;
 }
 
