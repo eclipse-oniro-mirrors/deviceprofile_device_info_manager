@@ -336,27 +336,27 @@ const std::string DROP_OLD_UNIQUE_INDEX_ON_ACEE = "DROP INDEX unique_accessee_ta
 const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_DEVICE_NAME =
     "ALTER TABLE accesser_table ADD COLUMN accesserDeviceName TEXT";
 const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_SERVICE_ID =
-    "ALTER TABLE accesser_table ADD COLUMN accesserServiceId INTERGER DEFAULT 0";
+    "ALTER TABLE accesser_table ADD COLUMN accesserServiceId INTERGER DEFAULT -1";
 const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_CREDENTIAL_ID =
-    "ALTER TABLE accesser_table ADD COLUMN accesserCredentialId INTERGER DEFAULT 0";
+    "ALTER TABLE accesser_table ADD COLUMN accesserCredentialId INTERGER DEFAULT -1";
 const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_STATUS =
     "ALTER TABLE accesser_table ADD COLUMN accesserStatus INTERGER DEFAULT -1";
 const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_SESSION_KEY_ID =
-    "ALTER TABLE accesser_table ADD COLUMN accesserSessionKeyId INTERGER DEFAULT 0";
+    "ALTER TABLE accesser_table ADD COLUMN accesserSessionKeyId INTERGER DEFAULT -1";
 const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_SESSION_KEY_TIMESTAMP =
-    "ALTER TABLE accesser_table ADD COLUMN accesserSKTimeStamp INTERGER DEFAULT 0";
+    "ALTER TABLE accesser_table ADD COLUMN accesserSKTimeStamp INTERGER DEFAULT -1";
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_DEVICE_NAME =
     "ALTER TABLE accessee_table ADD COLUMN accesseeDeviceName TEXT";
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SERVICE_ID =
-    "ALTER TABLE accessee_table ADD COLUMN accesseeServiceId INTERGER DEFAULT 0";
+    "ALTER TABLE accessee_table ADD COLUMN accesseeServiceId INTERGER DEFAULT -1";
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_CREDENTIAL_ID =
-    "ALTER TABLE accessee_table ADD COLUMN accesseeCredentialId INTERGER DEFAULT 0";
+    "ALTER TABLE accessee_table ADD COLUMN accesseeCredentialId INTERGER DEFAULT -1";
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_STATUS =
     "ALTER TABLE accessee_table ADD COLUMN accesseeStatus INTERGER DEFAULT -1";
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SESSION_KEY_ID =
-    "ALTER TABLE accessee_table ADD COLUMN accesseeSessionKeyId INTERGER DEFAULT 0";
+    "ALTER TABLE accessee_table ADD COLUMN accesseeSessionKeyId INTERGER DEFAULT -1";
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SESSION_KEY_TIMESTAMP =
-    "ALTER TABLE accessee_table ADD COLUMN accesseeSKTimeStamp INTERGER DEFAULT 0";
+    "ALTER TABLE accessee_table ADD COLUMN accesseeSKTimeStamp INTERGER DEFAULT -1";
 const std::string TRUST_DEVICE_TABLE = "trust_device_table";
 const std::string ACCESS_CONTROL_TABLE = "access_control_table";
 const std::string ACCESSER_TABLE = "accesser_table";

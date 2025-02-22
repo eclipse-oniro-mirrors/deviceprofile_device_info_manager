@@ -34,11 +34,11 @@ Accessee::Accessee()
     accesseeHapSignature_(""),
     accesseeBindLevel_(static_cast<uint32_t>(BindLevel::MIN)),
     accesseeDeviceName_(""),
-    accesseeServiceId_(0),
-    accesseeCredentialId_(0),
+    accesseeServiceId_(-1),
+    accesseeCredentialId_(-1),
     accesseeStatus_(static_cast<int32_t>(Status::MIN)),
-    accesseeSessionKeyId_(0),
-    accesseeSKTimeStamp_(0)
+    accesseeSessionKeyId_(-1),
+    accesseeSKTimeStamp_(-1)
 {}
 
 int64_t Accessee::GetAccesseeId()

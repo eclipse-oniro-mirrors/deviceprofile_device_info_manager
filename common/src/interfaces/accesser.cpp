@@ -34,11 +34,11 @@ Accesser::Accesser()
     accesserHapSignature_(""),
     accesserBindLevel_(static_cast<uint32_t>(BindLevel::MIN)),
     accesserDeviceName_(""),
-    accesserServiceId_(0),
-    accesserCredentialId_(0),
+    accesserServiceId_(-1),
+    accesserCredentialId_(-1),
     accesserStatus_(static_cast<int32_t>(Status::MIN)),
-    accesserSessionKeyId_(0),
-    accesserSKTimeStamp_(0)
+    accesserSessionKeyId_(-1),
+    accesserSKTimeStamp_(-1)
 {}
 
 int64_t Accesser::GetAccesserId()
