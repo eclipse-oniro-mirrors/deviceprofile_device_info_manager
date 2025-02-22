@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -378,6 +378,12 @@ int32_t ProfileUtils::AccesserToEntries(const AccessControlProfile& aclProfile, 
     values.PutString(ACCESSER_BUNDLE_NAME, accesser.GetAccesserBundleName());
     values.PutString(ACCESSER_HAP_SIGNATURE, accesser.GetAccesserHapSignature());
     values.PutInt(ACCESSER_BIND_LEVEL, accesser.GetAccesserBindLevel());
+    values.PutString(ACCESSER_DEVICE_NAME, accesser.GetAccesserDeviceName());
+    values.PutInt(ACCESSER_SERVICE_ID, accesser.GetAccesserServiceId());
+    values.PutInt(ACCESSER_CREDENTIAL_ID, accesser.GetAccesserCredentialId());
+    values.PutInt(ACCESSER_STATUS, accesser.GetAccesserStatus());
+    values.PutInt(ACCESSER_SESSION_KEY_ID, accesser.GetAccesserSessionKeyId());
+    values.PutLong(ACCESSER_SESSION_KEY_TIMESTAMP, accesser.GetAccesserSKTimeStamp());
     return DP_SUCCESS;
 }
 
@@ -392,6 +398,12 @@ int32_t ProfileUtils::AccesseeToEntries(const AccessControlProfile& aclProfile, 
     values.PutString(ACCESSEE_BUNDLE_NAME, accessee.GetAccesseeBundleName());
     values.PutString(ACCESSEE_HAP_SIGNATURE, accessee.GetAccesseeHapSignature());
     values.PutInt(ACCESSEE_BIND_LEVEL, accessee.GetAccesseeBindLevel());
+    values.PutString(ACCESSEE_DEVICE_NAME, accessee.GetAccesseeDeviceName());
+    values.PutInt(ACCESSEE_SERVICE_ID, accessee.GetAccesseeServiceId());
+    values.PutInt(ACCESSEE_CREDENTIAL_ID, accessee.GetAccesseeCredentialId());
+    values.PutInt(ACCESSEE_STATUS, accessee.GetAccesseeStatus());
+    values.PutInt(ACCESSEE_SESSION_KEY_ID, accessee.GetAccesseeSessionKeyId());
+    values.PutLong(ACCESSEE_SESSION_KEY_TIMESTAMP, accessee.GetAccesseeSKTimeStamp());
     return DP_SUCCESS;
 }
 
@@ -545,6 +557,7 @@ int32_t ProfileUtils::EntriesToAccesser(const ValuesBucket& values, Accesser& ac
     if (values.GetObject(ACCESSER_BIND_LEVEL, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
         accesser.SetAccesserBindLevel(intValue);
     }
+    EntriesToAccesserExt(values, accesser);
     return DP_SUCCESS;
 }
 
@@ -574,6 +587,63 @@ int32_t ProfileUtils::EntriesToAccessee(const ValuesBucket& values, Accessee& ac
     }
     if (values.GetObject(ACCESSEE_BIND_LEVEL, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
         accessee.SetAccesseeBindLevel(intValue);
+    }
+    EntriesToAccesseeExt(values, accessee);
+    return DP_SUCCESS;
+}
+
+int32_t ProfileUtils::EntriesToAccesserExt(const ValuesBucket &values, Accesser &accesser)
+{
+    ValueObject valueObject;
+    std::string strValue = "";
+    int32_t intValue = 0;
+    int64_t int64Value = 0;
+    if (values.GetObject(ACCESSER_DEVICE_NAME, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
+        accesser.SetAccesserDeviceName(strValue);
+    }
+    if (values.GetObject(ACCESSER_SERVICE_ID, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
+        accesser.SetAccesserServiceId(intValue);
+    }
+    if (values.GetObject(ACCESSER_CREDENTIAL_ID, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
+        accesser.SetAccesserCredentialId(intValue);
+    }
+    if (values.GetObject(ACCESSER_STATUS, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
+        accesser.SetAccesserStatus(intValue);
+    }
+    if (values.GetObject(ACCESSER_SESSION_KEY_ID, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
+        accesser.SetAccesserSessionKeyId(intValue);
+    }
+    if (values.GetObject(ACCESSER_SESSION_KEY_TIMESTAMP, valueObject) &&
+        valueObject.GetLong(int64Value) == NativeRdb::E_OK) {
+        accesser.SetAccesserSKTimeStamp(int64Value);
+    }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileUtils::EntriesToAccesseeExt(const ValuesBucket &values, Accessee &accessee)
+{
+    ValueObject valueObject;
+    std::string strValue = "";
+    int32_t intValue = 0;
+    int64_t int64Value = 0;
+    if (values.GetObject(ACCESSEE_DEVICE_NAME, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
+        accessee.SetAccesseeDeviceName(strValue);
+    }
+    if (values.GetObject(ACCESSEE_SERVICE_ID, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
+        accessee.SetAccesseeServiceId(intValue);
+    }
+    if (values.GetObject(ACCESSEE_CREDENTIAL_ID, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
+        accessee.SetAccesseeCredentialId(intValue);
+    }
+    if (values.GetObject(ACCESSEE_STATUS, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
+        accessee.SetAccesseeStatus(intValue);
+    }
+    if (values.GetObject(ACCESSEE_SESSION_KEY_ID, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
+        accessee.SetAccesseeSessionKeyId(intValue);
+    }
+    if (values.GetObject(ACCESSEE_SESSION_KEY_TIMESTAMP, valueObject) &&
+        valueObject.GetLong(int64Value) == NativeRdb::E_OK) {
+        accessee.SetAccesseeSKTimeStamp(int64Value);
     }
     return DP_SUCCESS;
 }
@@ -981,6 +1051,12 @@ int32_t ProfileUtils::ConvertToAccesser(std::shared_ptr<ResultSet> accesserResul
     std::string accesserBundleName = rowEntity.Get(ACCESSER_BUNDLE_NAME);
     std::string accesserHapSignature = rowEntity.Get(ACCESSER_HAP_SIGNATURE);
     int32_t accesserBindLevel = rowEntity.Get(ACCESSER_BIND_LEVEL);
+    std::string accesserDeviceName = rowEntity.Get(ACCESSER_DEVICE_NAME);
+    int32_t accesserServiceId = rowEntity.Get(ACCESSER_SERVICE_ID);
+    int32_t accesserCredentialId = rowEntity.Get(ACCESSER_CREDENTIAL_ID);
+    int32_t accesserStatus = rowEntity.Get(ACCESSER_STATUS);
+    int32_t accesserSessionKeyId = rowEntity.Get(ACCESSER_SESSION_KEY_ID);
+    int64_t accesserSKTimeStamp = rowEntity.Get(ACCESSER_SESSION_KEY_TIMESTAMP);
 
     accesser.SetAccesserId(accesserId);
     accesser.SetAccesserDeviceId(accesserDeviceId);
@@ -990,6 +1066,12 @@ int32_t ProfileUtils::ConvertToAccesser(std::shared_ptr<ResultSet> accesserResul
     accesser.SetAccesserBundleName(accesserBundleName);
     accesser.SetAccesserHapSignature(accesserHapSignature);
     accesser.SetAccesserBindLevel(accesserBindLevel);
+    accesser.SetAccesserDeviceName(accesserDeviceName);
+    accesser.SetAccesserServiceId(accesserServiceId);
+    accesser.SetAccesserCredentialId(accesserCredentialId);
+    accesser.SetAccesserStatus(accesserStatus);
+    accesser.SetAccesserSessionKeyId(accesserSessionKeyId);
+    accesser.SetAccesserSKTimeStamp(accesserSKTimeStamp);
     return DP_SUCCESS;
 }
 
@@ -1013,6 +1095,12 @@ int32_t ProfileUtils::ConvertToAccessee(std::shared_ptr<ResultSet> accesseeResul
     std::string accesseeBundleName = rowEntity.Get(ACCESSEE_BUNDLE_NAME);
     std::string accesseeHapSignature = rowEntity.Get(ACCESSEE_HAP_SIGNATURE);
     int32_t accesseeBindLevel = rowEntity.Get(ACCESSEE_BIND_LEVEL);
+    std::string accesseeDeviceName = rowEntity.Get(ACCESSEE_DEVICE_NAME);
+    int32_t accesseeServiceId = rowEntity.Get(ACCESSEE_SERVICE_ID);
+    int32_t accesseeCredentialId = rowEntity.Get(ACCESSEE_CREDENTIAL_ID);
+    int32_t accesseeStatus = rowEntity.Get(ACCESSEE_STATUS);
+    int32_t accesseeSessionKeyId = rowEntity.Get(ACCESSEE_SESSION_KEY_ID);
+    int64_t accesseeSKTimeStamp = rowEntity.Get(ACCESSEE_SESSION_KEY_TIMESTAMP);
 
     accessee.SetAccesseeId(accesseeId);
     accessee.SetAccesseeDeviceId(accesseeDeviceId);
@@ -1022,6 +1110,12 @@ int32_t ProfileUtils::ConvertToAccessee(std::shared_ptr<ResultSet> accesseeResul
     accessee.SetAccesseeBundleName(accesseeBundleName);
     accessee.SetAccesseeHapSignature(accesseeHapSignature);
     accessee.SetAccesseeBindLevel(accesseeBindLevel);
+    accessee.SetAccesseeDeviceName(accesseeDeviceName);
+    accessee.SetAccesseeServiceId(accesseeServiceId);
+    accessee.SetAccesseeCredentialId(accesseeCredentialId);
+    accessee.SetAccesseeStatus(accesseeStatus);
+    accessee.SetAccesseeSessionKeyId(accesseeSessionKeyId);
+    accessee.SetAccesseeSKTimeStamp(accesseeSKTimeStamp);
     return DP_SUCCESS;
 }
 

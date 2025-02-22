@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -102,6 +102,25 @@ int32_t PermissionManager::ParsePermissionJson(const cJSON* const permissionJson
         HILOGE("Permission json size is invalid!size: %{public}d!", size);
         return DP_PARSE_PERMISSION_JSON_FAIL;
     }
+    SetRdbPermissionMap(permissionJson);
+    SetKVPermissionMap(permissionJson);
+    char* jsonChars = cJSON_PrintUnformatted(permissionJson);
+    if (jsonChars == NULL) {
+        HILOGW("cJSON formatted to string failed!");
+    } else {
+        HILOGD("permission json %{public}s parse success!", jsonChars);
+        cJSON_free(jsonChars);
+    }
+    return DP_SUCCESS;
+}
+
+void PermissionManager::SetRdbPermissionMap(const cJSON *const permissionJson)
+{
+    int size = cJSON_GetArraySize(permissionJson);
+    if (size == 0 || size > MAX_INTERFACE_SIZE) {
+        HILOGE("Permission json size is invalid!size: %{public}d!", size);
+        return;
+    }
     SetPermissionMap(permissionJson, PUT_SERVICE_INFO_PROFILE);
     SetPermissionMap(permissionJson, DELETE_SERVICE_INFO_PROFILE);
     SetPermissionMap(permissionJson, UPDATE_SERVICE_INFO_PROFILE);
@@ -116,6 +135,26 @@ int32_t PermissionManager::ParsePermissionJson(const cJSON* const permissionJson
     SetPermissionMap(permissionJson, DELETE_ACCESS_CONTROL_PROFILE);
     SetPermissionMap(permissionJson, GET_TRUST_DEVICE_PROFILE);
     SetPermissionMap(permissionJson, GET_ALL_TRUST_DEVICE_PROFILE);
+    SetPermissionMap(permissionJson, PUT_DEVICE_PROFILE_BATCH);
+    SetPermissionMap(permissionJson, DELETE_DEVICE_PROFILE_BATCH);
+    SetPermissionMap(permissionJson, GET_DEVICE_PROFILES);
+    SetPermissionMap(permissionJson, PUT_PRODUCT_INFO_BATCH);
+    SetPermissionMap(permissionJson, PUT_DEVICE_ICON_INFO_BATCH);
+    SetPermissionMap(permissionJson, GET_DEVICE_ICON_INFOS);
+    SetPermissionMap(permissionJson, PUT_SESSION_KEY);
+    SetPermissionMap(permissionJson, GET_SESSION_KEY);
+    SetPermissionMap(permissionJson, UPDATE_SESSION_KEY);
+    SetPermissionMap(permissionJson, DELETE_SESSION_KEY);
+    return;
+}
+
+void PermissionManager::SetKVPermissionMap(const cJSON *const permissionJson)
+{
+    int size = cJSON_GetArraySize(permissionJson);
+    if (size == 0 || size > MAX_INTERFACE_SIZE) {
+        HILOGE("Permission json size is invalid!size: %{public}d!", size);
+        return;
+    }
     SetPermissionMap(permissionJson, PUT_SERVICE_PROFILE);
     SetPermissionMap(permissionJson, PUT_SERVICE_PROFILE_BATCH);
     SetPermissionMap(permissionJson, PUT_CHARACTERISTIC_PROFILE);
@@ -129,20 +168,7 @@ int32_t PermissionManager::ParsePermissionJson(const cJSON* const permissionJson
     SetPermissionMap(permissionJson, UNSUBSCRIBE_DEVICE_PROFILE);
     SetPermissionMap(permissionJson, SYNC_DEVICE_PROFILE);
     SetPermissionMap(permissionJson, PUT_ALL_TRUSTED_DEVICES);
-    SetPermissionMap(permissionJson, PUT_DEVICE_PROFILE_BATCH);
-    SetPermissionMap(permissionJson, DELETE_DEVICE_PROFILE_BATCH);
-    SetPermissionMap(permissionJson, GET_DEVICE_PROFILES);
-    SetPermissionMap(permissionJson, PUT_PRODUCT_INFO_BATCH);
-    SetPermissionMap(permissionJson, PUT_DEVICE_ICON_INFO_BATCH);
-    SetPermissionMap(permissionJson, GET_DEVICE_ICON_INFOS);
-    char* jsonChars = cJSON_PrintUnformatted(permissionJson);
-    if (jsonChars == NULL) {
-        HILOGW("cJSON formatted to string failed!");
-    } else {
-        HILOGD("permission json %{public}s parse success!", jsonChars);
-        cJSON_free(jsonChars);
-    }
-    return DP_SUCCESS;
+    return;
 }
 
 bool PermissionManager::CheckInterfacePermission(const std::string& interfaceName)
