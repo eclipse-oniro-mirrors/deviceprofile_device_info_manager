@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -144,6 +144,12 @@ extern const std::string ACCESSER_TOKEN_ID;
 extern const std::string ACCESSER_BUNDLE_NAME;
 extern const std::string ACCESSER_HAP_SIGNATURE;
 extern const std::string ACCESSER_BIND_LEVEL;
+extern const std::string ACCESSER_DEVICE_NAME;
+extern const std::string ACCESSER_SERVICE_ID;
+extern const std::string ACCESSER_CREDENTIAL_ID;
+extern const std::string ACCESSER_STATUS;
+extern const std::string ACCESSER_SESSION_KEY_ID;
+extern const std::string ACCESSER_SESSION_KEY_TIMESTAMP;
 /* Accessee Attribute */
 extern const std::string ACCESSEE_DEVICE_ID;
 extern const std::string ACCESSEE_USER_ID;
@@ -152,6 +158,12 @@ extern const std::string ACCESSEE_TOKEN_ID;
 extern const std::string ACCESSEE_BUNDLE_NAME;
 extern const std::string ACCESSEE_HAP_SIGNATURE;
 extern const std::string ACCESSEE_BIND_LEVEL;
+extern const std::string ACCESSEE_DEVICE_NAME;
+extern const std::string ACCESSEE_SERVICE_ID;
+extern const std::string ACCESSEE_CREDENTIAL_ID;
+extern const std::string ACCESSEE_STATUS;
+extern const std::string ACCESSEE_SESSION_KEY_ID;
+extern const std::string ACCESSEE_SESSION_KEY_TIMESTAMP;
 /* subscribe info */
 extern const std::string SA_ID;
 extern const std::string SUBSCRIBE_KEY;
@@ -160,6 +172,10 @@ extern const std::string SUBSCRIBE_CHANGE_TYPES;
 extern const std::string SYNC_MODE;
 extern const std::string SYNC_DEVICE_IDS;
 /* Interface Name */
+extern const std::string PUT_SESSION_KEY;
+extern const std::string GET_SESSION_KEY;
+extern const std::string UPDATE_SESSION_KEY;
+extern const std::string DELETE_SESSION_KEY;
 extern const std::string PUT_ACCESS_CONTROL_PROFILE;
 extern const std::string UPDATE_ACCESS_CONTROL_PROFILE;
 extern const std::string GET_ACCESS_CONTROL_PROFILE;
@@ -215,6 +231,7 @@ constexpr int32_t MAX_ICON_SIZE = 4*1024*1024;
 constexpr int32_t MIN_USER_ID = 0;
 constexpr int32_t MAX_USER_ID = 100000;
 constexpr uint32_t MAX_TRUSTED_DEVICE_SIZE = 1000;
+constexpr int32_t MAX_SESSIONKEY_SIZE = 8*1024;
 extern const std::string IS_MULTI_USER;
 extern const std::string SEPARATOR;
 extern const std::string SLASHES;
@@ -257,6 +274,7 @@ constexpr int32_t OHOS_TYPE_UNKNOWN = -1;
 extern const std::string RDB_PATH;
 extern const std::string DATABASE_NAME;
 constexpr int32_t RDB_VERSION = 1;
+constexpr int32_t RDB_VERSION_5_1 = 2;
 constexpr int32_t RDB_INIT_MAX_TIMES = 30;
 constexpr int32_t RDB_INIT_INTERVAL_TIME = 100000;
 /* TrustProfile Manager */
@@ -298,6 +316,20 @@ extern const std::string CREATE_TURST_DEVICE_TABLE_UNIQUE_INDEX_SQL;
 extern const std::string CREATE_ACCESS_CONTROL_TABLE_UNIQUE_INDEX_SQL;
 extern const std::string CREATE_ACCESSER_TABLE_UNIQUE_INDEX_SQL;
 extern const std::string CREATE_ACCESSEE_TABLE_UNIQUE_INDEX_SQL;
+extern const std::string DROP_OLD_UNIQUE_INDEX_ON_ACER;
+extern const std::string DROP_OLD_UNIQUE_INDEX_ON_ACEE;
+extern const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_DEVICE_NAME;
+extern const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_SERVICE_ID;
+extern const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_CREDENTIAL_ID;
+extern const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_STATUS;
+extern const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_SESSION_KEY_ID;
+extern const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_SESSION_KEY_TIMESTAMP;
+extern const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_DEVICE_NAME;
+extern const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SERVICE_ID;
+extern const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_CREDENTIAL_ID;
+extern const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_STATUS;
+extern const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SESSION_KEY_ID;
+extern const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SESSION_KEY_TIMESTAMP;
 extern const std::string TRUST_DEVICE_TABLE;
 extern const std::string ACCESS_CONTROL_TABLE;
 extern const std::string ACCESSER_TABLE;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -55,6 +55,10 @@ void DistributedDeviceProfileStubNew::InitAclAndSubscribe()
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE_INITED));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE_INITED));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_ALL_TRUSTED_DEVICES));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_SESSION_KEY));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_SESSION_KEY));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::UPDATE_SESSION_KEY));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::DELETE_SESSION_KEY));
 }
 
 DistributedDeviceProfileStubNew::~DistributedDeviceProfileStubNew()
@@ -86,6 +90,23 @@ int32_t DistributedDeviceProfileStubNew::NotifyAclEventInner(uint32_t code, Mess
             return GetAllAccessControlProfileInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::DELETE_ACL_PROFILE):
             return DeleteAccessControlProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::PUT_SESSION_KEY):
+            return PutSessionKeyInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::GET_SESSION_KEY):
+            return GetSessionKeyInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::UPDATE_SESSION_KEY):
+            return UpdateSessionKeyInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::DELETE_SESSION_KEY):
+            return DeleteSessionKeyInner(data, reply);
+        default:
+            return NotifyProfileDataEventInner(code, data, reply, option);
+    }
+}
+
+int32_t DistributedDeviceProfileStubNew::NotifyProfileDataEventInner(
+    uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
+{
+    switch (code) {
         case static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE):
             return SubscribeDeviceProfileInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE):
@@ -266,6 +287,81 @@ int32_t DistributedDeviceProfileStubNew::DeleteAccessControlProfileInner(Message
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::PutSessionKeyInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    uint32_t userId = 0;
+    std::vector<uint8_t> sessionKey;
+    int32_t sessionKeyId = 0;
+    READ_HELPER(data, Uint32, userId);
+    if (!IpcUtils::UnMarshalling(data, sessionKey)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    int32_t ret = PutSessionKey(userId, sessionKey, sessionKeyId);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    WRITE_HELPER(reply, Int32, sessionKeyId);
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::GetSessionKeyInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    uint32_t userId = 0;
+    int32_t sessionKeyId = 0;
+    std::vector<uint8_t> sessionKey;
+    READ_HELPER(data, Uint32, userId);
+    READ_HELPER(data, Int32, sessionKeyId);
+    int32_t ret = GetSessionKey(userId, sessionKeyId, sessionKey);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    if (!IpcUtils::Marshalling(reply, sessionKey)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::UpdateSessionKeyInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    uint32_t userId = 0;
+    std::vector<uint8_t> sessionKey;
+    int32_t sessionKeyId = 0;
+    READ_HELPER(data, Uint32, userId);
+    READ_HELPER(data, Int32, sessionKeyId);
+    if (!IpcUtils::UnMarshalling(data, sessionKey)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    int32_t ret = UpdateSessionKey(userId, sessionKeyId, sessionKey);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::DeleteSessionKeyInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    uint32_t userId = 0;
+    int32_t sessionKeyId = 0;
+    READ_HELPER(data, Uint32, userId);
+    READ_HELPER(data, Int32, sessionKeyId);
+    int32_t ret = DeleteSessionKey(userId, sessionKeyId);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return DP_WRITE_PARCEL_FAIL;
     }
     return DP_SUCCESS;
 }

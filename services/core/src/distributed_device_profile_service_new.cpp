@@ -44,6 +44,7 @@
 #include "subscribe_profile_manager.h"
 #include "switch_profile_manager.h"
 #include "trust_profile_manager.h"
+#include "session_key_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -360,6 +361,49 @@ int32_t DistributedDeviceProfileServiceNew::DeleteAccessControlProfile(int32_t a
     }
     int32_t ret = TrustProfileManager::GetInstance().DeleteAccessControlProfile(accessControlId);
     DpRadarHelper::GetInstance().ReportDeleteAclProfile(ret);
+    return ret;
+}
+
+int32_t DistributedDeviceProfileServiceNew::PutSessionKey(uint32_t userId,
+    const std::vector<uint8_t>& sessionKey, int32_t& sessionKeyId)
+{
+    if (!PermissionManager::GetInstance().IsCallerTrust(PUT_SESSION_KEY)) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    int32_t ret = SessionKeyManager::GetInstance().PutSessionKey(userId, sessionKey, sessionKeyId);
+    return ret;
+}
+
+int32_t DistributedDeviceProfileServiceNew::GetSessionKey(uint32_t userId,
+    int32_t sessionKeyId, std::vector<uint8_t>& sessionKey)
+{
+    if (!PermissionManager::GetInstance().IsCallerTrust(GET_SESSION_KEY)) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    int32_t ret = SessionKeyManager::GetInstance().GetSessionKey(userId, sessionKeyId, sessionKey);
+    return ret;
+}
+
+int32_t DistributedDeviceProfileServiceNew::UpdateSessionKey(
+    uint32_t userId, int32_t sessionKeyId, const std::vector<uint8_t>& sessionKey)
+{
+    if (!PermissionManager::GetInstance().IsCallerTrust(UPDATE_SESSION_KEY)) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    int32_t ret = SessionKeyManager::GetInstance().UpdateSessionKey(userId, sessionKeyId, sessionKey);
+    return ret;
+}
+
+int32_t DistributedDeviceProfileServiceNew::DeleteSessionKey(uint32_t userId, int32_t sessionKeyId)
+{
+    if (!PermissionManager::GetInstance().IsCallerTrust(DELETE_SESSION_KEY)) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    int32_t ret = SessionKeyManager::GetInstance().DeleteSessionKey(userId, sessionKeyId);
     return ret;
 }
 

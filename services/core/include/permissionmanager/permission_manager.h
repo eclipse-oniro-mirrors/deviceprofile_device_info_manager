@@ -40,6 +40,8 @@ private:
     bool CheckInterfacePermission(const std::string& interfaceName);
     int32_t LoadPermissionCfg(const std::string& filePath);
     int32_t ParsePermissionJson(const cJSON* const permissionJson);
+    void SetRdbPermissionMap(const cJSON* const permissionJson);
+    void SetKVPermissionMap(const cJSON* const permissionJson);
     void SetPermissionMap(const cJSON* const permissionJson, const std::string& interfaceName);
 
 private:

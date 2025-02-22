@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,7 +16,6 @@
 #ifndef OHOS_DP_TRUST_PROFILE_MANAGER_H
 #define OHOS_DP_TRUST_PROFILE_MANAGER_H
 
-
 #include <map>
 #include <string>
 #include <memory>
@@ -28,7 +27,6 @@
 #include "trust_device_profile.h"
 #include "values_bucket.h"
 #include "single_instance.h"
-
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -81,8 +79,8 @@ private:
     int32_t SetAccessControlId(AccessControlProfile& profile);
     int32_t SetAccesserId(AccessControlProfile& profile);
     int32_t SetAccesseeId(AccessControlProfile& profile);
-    int32_t UpdateAccesserProfile(AccessControlProfile& profile);
-    int32_t UpdateAccesseeProfile(AccessControlProfile& profile);
+    int32_t UpdateAccesserProfile(const AccessControlProfile& profile);
+    int32_t UpdateAccesseeProfile(const AccessControlProfile& profile);
     int32_t UpdateTrustDeviceProfileNotify(const TrustDeviceProfile& oldProfile,
         const TrustDeviceProfile& newProfile);
     int32_t GetResultStatus(const std::string& trustDeviceId, int32_t& trustDeviceStatus);

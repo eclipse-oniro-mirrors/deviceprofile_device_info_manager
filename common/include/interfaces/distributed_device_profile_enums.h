@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -74,10 +74,14 @@ enum class DPInterfaceCode : uint32_t {
     GET_SERVICE_INFO_PROFILE_LIST_BY_TOKEN_ID = 56,
     GET_ALL_SERVICE_INFO_PROFILE_LIST = 57,
     GET_SERVICE_INFO_PROFILE_LIST_BY_BUNDLE_NAME = 58,
-    ON_PINCODE_INVALID = 59,
-    SUBSCRIBE_PINCODE_INVALID = 60,
-    UNSUBSCRIBE_PINCODE_INVALID = 61,
-    MAX = 62
+    PUT_SESSION_KEY = 59,
+    GET_SESSION_KEY = 60,
+    UPDATE_SESSION_KEY = 61,
+    DELETE_SESSION_KEY = 62,
+    ON_PINCODE_INVALID = 63,
+    SUBSCRIBE_PINCODE_INVALID = 64,
+    UNSUBSCRIBE_PINCODE_INVALID = 65,
+    MAX = 66
 };
 
 enum class DeviceIdType : uint32_t {
@@ -96,6 +100,7 @@ enum class AuthenticationType : uint32_t {
 enum class BindType : uint32_t {
     MIN = 0,
     SAME_ACCOUNT = 1,
+    SHARE = 2,
     POINT_TO_POINT = 256,
     COMPATIBLE = 512,
     DIFF_ACCOUNT = 1282,
@@ -106,7 +111,8 @@ enum class BindLevel : uint32_t {
     DEVICE = 1,
     SERVICE = 2,
     APP = 3,
-    MAX = 4
+    USER = 4,
+    MAX = 5
 };
 enum class Status : int32_t {
     MIN = -1,

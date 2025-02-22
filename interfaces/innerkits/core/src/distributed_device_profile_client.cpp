@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -778,6 +778,49 @@ int32_t DistributedDeviceProfileClient::PutAllTrustedDevices(const std::vector<T
         return DP_INVALID_PARAMS;
     }
     return dpService->PutAllTrustedDevices(deviceInfos);
+}
+
+int32_t DistributedDeviceProfileClient::PutSessionKey(
+    uint32_t userId, const std::vector<uint8_t>& sessionKey, int32_t& sessionKeyId)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->PutSessionKey(userId, sessionKey, sessionKeyId);
+}
+
+int32_t DistributedDeviceProfileClient::GetSessionKey(
+    uint32_t userId, int32_t sessionKeyId, std::vector<uint8_t>& sessionKey)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->GetSessionKey(userId, sessionKeyId, sessionKey);
+}
+
+int32_t DistributedDeviceProfileClient::UpdateSessionKey(
+    uint32_t userId, int32_t sessionKeyId, const std::vector<uint8_t>& sessionKey)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->UpdateSessionKey(userId, sessionKeyId, sessionKey);
+}
+
+int32_t DistributedDeviceProfileClient::DeleteSessionKey(uint32_t userId, int32_t sessionKeyId)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->DeleteSessionKey(userId, sessionKeyId);
 }
 
 void DistributedDeviceProfileClient::SystemAbilityListener::OnRemoveSystemAbility(int32_t systemAbilityId,

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -179,6 +179,73 @@ int32_t DistributedDeviceProfileProxy::DeleteAccessControlProfile(int32_t access
     WRITE_HELPER(data, Int32, accessControlId);
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::DELETE_ACL_PROFILE), data, reply);
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::PutSessionKey(
+    uint32_t userId, const std::vector<uint8_t>& sessionKey, int32_t& sessionKeyId)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    WRITE_HELPER(data, Uint32, userId);
+    if (!IpcUtils::Marshalling(data, sessionKey)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::PUT_SESSION_KEY), data, reply);
+    READ_HELPER(reply, Int32, sessionKeyId);
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::GetSessionKey(
+    uint32_t userId, int32_t sessionKeyId, std::vector<uint8_t>& sessionKey)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    WRITE_HELPER(data, Uint32, userId);
+    WRITE_HELPER(data, Int32, sessionKeyId);
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::GET_SESSION_KEY), data, reply);
+    if (!IpcUtils::UnMarshalling(reply, sessionKey)) {
+        HILOGE("dp ipc read parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::UpdateSessionKey(
+    uint32_t userId, int32_t sessionKeyId, const std::vector<uint8_t>& sessionKey)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    WRITE_HELPER(data, Uint32, userId);
+    WRITE_HELPER(data, Int32, sessionKeyId);
+    if (!IpcUtils::Marshalling(data, sessionKey)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::UPDATE_SESSION_KEY), data, reply);
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::DeleteSessionKey(uint32_t userId, int32_t sessionKeyId)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    WRITE_HELPER(data, Uint32, userId);
+    WRITE_HELPER(data, Int32, sessionKeyId);
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::DELETE_SESSION_KEY), data, reply);
     return DP_SUCCESS;
 }
 

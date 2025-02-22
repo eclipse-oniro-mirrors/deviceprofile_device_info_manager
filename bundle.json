@@ -47,7 +47,8 @@
           "device_manager",
           "init",
           "relational_store",
-          "os_account"
+          "os_account",
+          "asset"
         ],
         "third_party": [
           "json"

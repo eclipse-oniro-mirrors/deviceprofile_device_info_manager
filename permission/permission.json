@@ -31,5 +31,9 @@
     "GetDeviceProfiles": ["device_manager"],
     "PutProductInfoBatch": ["device_manager"],
     "PutDeviceIconInfoBatch": ["device_manager"],
-    "GetDeviceIconInfos": ["device_manager"]
+    "GetDeviceIconInfos": ["device_manager"],
+    "PutSessionKey": ["device_manager", "softbus_server"],
+    "GetSessionKey": ["device_manager", "softbus_server"],
+    "UpdateSessionKey": ["device_manager", "softbus_server"],
+    "DeleteSessionKey": ["device_manager", "softbus_server"]
 }

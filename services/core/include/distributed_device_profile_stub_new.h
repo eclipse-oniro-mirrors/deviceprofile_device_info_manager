@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -41,6 +41,10 @@ public:
     int32_t GetAccessControlProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetAllAccessControlProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t DeleteAccessControlProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t PutSessionKeyInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetSessionKeyInner(MessageParcel& data, MessageParcel& reply);
+    int32_t UpdateSessionKeyInner(MessageParcel& data, MessageParcel& reply);
+    int32_t DeleteSessionKeyInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutServiceProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutServiceProfileBatchInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutCharacteristicProfileInner(MessageParcel& data, MessageParcel& reply);
@@ -66,6 +70,8 @@ private:
     void InitAclAndSubscribe();
     int32_t NotifyEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
     int32_t NotifyAclEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
+    int32_t NotifyProfileDataEventInner(uint32_t code, MessageParcel& data,
+        MessageParcel& reply, MessageOption& option);
 private:
     std::unordered_set<uint32_t> aclAndSubscribeFuncs_;
 };
