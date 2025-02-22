@@ -64,6 +64,8 @@ ohos_shared_library("distributed_device_profile_common") {
     "src/interfaces/dp_subscribe_info.cpp",
     "src/interfaces/dp_sync_options.cpp",
     "src/interfaces/i_profile_change_listener.cpp",
+    "src/interfaces/pincode_invalid_callback_proxy.cpp",
+    "src/interfaces/pincode_invalid_callback_stub.cpp",
     "src/interfaces/product_info.cpp",
     "src/interfaces/profile_change_listener_proxy.cpp",
     "src/interfaces/profile_change_listener_stub.cpp",

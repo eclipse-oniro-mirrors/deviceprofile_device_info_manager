@@ -201,6 +201,8 @@ constexpr int32_t DP_GET_ASSET_ERROE = 98566319;
 constexpr int32_t DP_GET_ASSET_NOT_FIND = 98566320;
 constexpr int32_t DP_DELETE_ASSET_ERROR = 98566321;
 constexpr int32_t DP_PARSE_ASSET_ERROR = 98566322;
+constexpr int32_t DP_SUBSCRIBE_PINCODE_INVALID = 98566323;
+constexpr int32_t DP_SERVICE_INFO_PROFILE_EXISTS = 98566324;
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_ERRORS_H

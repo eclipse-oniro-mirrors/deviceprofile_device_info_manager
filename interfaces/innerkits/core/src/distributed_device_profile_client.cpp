@@ -590,7 +590,7 @@ void DistributedDeviceProfileClient::StartThreadSendSubscribeInfos()
 void DistributedDeviceProfileClient::ReSubscribeDeviceProfileInited()
 {
     if (dpInitedCallback_ == nullptr) {
-        HILOGE("not use Retry subscribe dp inited");
+        HILOGI("not use Retry subscribe dp inited");
         return;
     }
     auto autoTask = [this] () {
@@ -602,6 +602,34 @@ void DistributedDeviceProfileClient::ReSubscribeDeviceProfileInited()
         }
     };
     std::thread(autoTask).detach();
+}
+
+void DistributedDeviceProfileClient::ReSubscribePinCodeInvalid()
+{
+    HILOGI("call");
+    std::string tokenId = "";
+    sptr<IPincodeInvalidCallback> pinCodeCallback = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(serviceLock_);
+        if (pinCodeCallback_ == nullptr) {
+            HILOGI("not use Retry subscribe pincode invalid");
+            return;
+        }
+        tokenId = tokenId_;
+        pinCodeCallback = pinCodeCallback_;
+    }
+    int32_t ret = SubscribePinCodeInvalid(tokenId, pinCodeCallback);
+    if (ret != DP_SUCCESS) {
+        HILOGE("Retry subscribe pincode invalid failed");
+    } else {
+        HILOGI("Retry subscribe pincode invalid succeed");
+    }
+}
+
+void DistributedDeviceProfileClient::StartThreadReSubscribePinCodeInvalid()
+{
+    HILOGI("Send Subscribe pincode invalid cache in proxy to service!");
+    std::thread(&DistributedDeviceProfileClient::ReSubscribePinCodeInvalid, this).detach();
 }
 
 int32_t DistributedDeviceProfileClient::SubscribeDeviceProfileInited(int32_t saId,
@@ -668,6 +696,73 @@ int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfileInited(int32_t s
         dpInitedCallback_ = nullptr;
     }
     HILOGD("Unsubscribe DP Inited succeed!");
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileClient::SubscribePinCodeInvalid(const std::string& tokenId,
+    sptr<IPincodeInvalidCallback> pinCodeCallback)
+{
+    HILOGI("enter");
+    SubscribeDeviceProfileSA();
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_SUBSCRIBE_INITED_FALI;
+    }
+    if (tokenId.empty()) {
+        HILOGE("tokenId is invalid");
+        return DP_INVALID_PARAM;
+    }
+    if (pinCodeCallback == nullptr) {
+        HILOGE("pinCodeCallback is nullptr!");
+        return DP_INVALID_PARAM;
+    }
+    sptr<IRemoteObject> innerPinCodeCallback = pinCodeCallback->AsObject();
+    if (innerPinCodeCallback == nullptr) {
+        HILOGE("pinCodeCallback ipc cast fail!");
+        return DP_SUBSCRIBE_PINCODE_INVALID;
+    }
+    {
+        std::lock_guard<std::mutex> lock(serviceLock_);
+        int32_t ret = dpService->SubscribePinCodeInvalid(tokenId, innerPinCodeCallback);
+        if (ret != DP_SUCCESS) {
+            HILOGE("Subscribe DP Inited failed!");
+            return ret;
+        }
+        tokenId_ = tokenId;
+        pinCodeCallback_ = pinCodeCallback;
+    }
+    HILOGI("Subscribe pincodeInvalid succeed!");
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileClient::UnSubscribePinCodeInvalid(const std::string& tokenId)
+{
+    HILOGI("enter");
+    if (pinCodeCallback_ == nullptr) {
+        HILOGE("not subscribe pincode invalid, no need unsubscribe pincode invalid");
+        return DP_SUCCESS;
+    }
+    SubscribeDeviceProfileSA();
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    if (tokenId.empty()) {
+        HILOGE("tokenId is invalid");
+        return DP_INVALID_PARAM;
+    }
+    {
+        std::lock_guard<std::mutex> lock(serviceLock_);
+        int32_t ret = dpService->UnSubscribePinCodeInvalid(tokenId);
+        if (ret != DP_SUCCESS) {
+            HILOGE("Unsubscribe DP Inited failed!");
+            return ret;
+        }
+        pinCodeCallback_ = nullptr;
+    }
+    HILOGD("Unsubscribe pincode invalid succeed!");
     return DP_SUCCESS;
 }
 
@@ -739,6 +834,7 @@ void DistributedDeviceProfileClient::SystemAbilityListener::OnAddSystemAbility(i
 {
     HILOGI("dp sa started");
     DistributedDeviceProfileClient::GetInstance().StartThreadSendSubscribeInfos();
+    DistributedDeviceProfileClient::GetInstance().StartThreadReSubscribePinCodeInvalid();
     DistributedDeviceProfileClient::GetInstance().ReSubscribeDeviceProfileInited();
 }
 } // namespace DeviceProfile

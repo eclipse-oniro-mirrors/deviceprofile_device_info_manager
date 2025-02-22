@@ -212,6 +212,7 @@ const std::string TYPE_WATCH = "wearable";
 const std::string TYPE_PC = "pc";
 const std::string TYPE_2IN1 = "2in1";
 const std::string HIV_VERSION = "1.0";
+const std::string INVALID_PINCODE = "******";
 const std::string DP_PKG_NAME = "ohos.deviceprofile";
 const std::string IS_NUMSTRING_RULES = "^[-+]?[0-9]+$";
 /* rdb constants */

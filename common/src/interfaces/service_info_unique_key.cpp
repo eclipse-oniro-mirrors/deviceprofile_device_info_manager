@@ -82,6 +82,11 @@ void ServiceInfoUniqueKey::SetBundleName(const std::string& bundleName)
     bundleName_ = bundleName;
 }
 
+bool ServiceInfoUniqueKey::operator<(const ServiceInfoUniqueKey& rhs) const
+{
+    return serviceId_ < rhs.serviceId_;
+}
+
 bool ServiceInfoUniqueKey::Marshalling(MessageParcel& parcel) const
 {
     WRITE_HELPER_RET(parcel, String, deviceId_, false);

@@ -663,6 +663,33 @@ int32_t OHOS::DistributedDeviceProfile::DistributedDeviceProfileProxy::UnSubscri
     return DP_SUCCESS;
 }
 
+int32_t OHOS::DistributedDeviceProfile::DistributedDeviceProfileProxy::SubscribePinCodeInvalid(
+    const std::string& tokenId, sptr<IRemoteObject> pinCodeCallback)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    WRITE_HELPER(data, String, tokenId);
+    WRITE_HELPER(data, RemoteObject, pinCodeCallback);
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_PINCODE_INVALID), data, reply);
+    return DP_SUCCESS;
+}
+
+int32_t OHOS::DistributedDeviceProfile::DistributedDeviceProfileProxy::UnSubscribePinCodeInvalid(
+    const std::string& tokenId)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    WRITE_HELPER(data, String, tokenId);
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_PINCODE_INVALID), data, reply);
+    return DP_SUCCESS;
+}
+
 int32_t OHOS::DistributedDeviceProfile::DistributedDeviceProfileProxy::PutAllTrustedDevices(
     const std::vector<TrustedDeviceInfo> deviceInfos)
 {

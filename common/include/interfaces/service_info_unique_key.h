@@ -51,6 +51,7 @@ public:
     void SetServiceId(const int64_t serviceId);
     std::string GetBundleName() const;
     void SetBundleName(const std::string& bundleName);
+    bool operator<(const ServiceInfoUniqueKey& rhs) const;
 
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;

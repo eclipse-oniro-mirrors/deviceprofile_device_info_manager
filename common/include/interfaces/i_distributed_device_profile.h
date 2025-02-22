@@ -76,6 +76,8 @@ public:
     virtual int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) = 0;
     virtual int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IRemoteObject> dpInitedCallback) = 0;
     virtual int32_t UnSubscribeDeviceProfileInited(int32_t saId) = 0;
+    virtual int32_t SubscribePinCodeInvalid(const std::string& tokenId, sptr<IRemoteObject> pinCodeCallback) = 0;
+    virtual int32_t UnSubscribePinCodeInvalid(const std::string& tokenId) = 0;
     virtual int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
         sptr<IRemoteObject> syncCompletedCallback) = 0;
     virtual int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) = 0;

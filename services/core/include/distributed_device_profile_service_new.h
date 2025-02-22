@@ -96,6 +96,8 @@ public:
         sptr<IRemoteObject> syncCompletedCallback) override;
     int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IRemoteObject> dpInitedCallback) override;
     int32_t UnSubscribeDeviceProfileInited(int32_t saId) override;
+    int32_t SubscribePinCodeInvalid(const std::string& tokenId, sptr<IRemoteObject> pinCodeCallback) override;
+    int32_t UnSubscribePinCodeInvalid(const std::string& tokenId) override;
     int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo> deviceInfos) override;
     int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) override;
     int32_t Dump(int32_t fd, const std::vector<std::u16string>& args) override;
@@ -118,6 +120,7 @@ private:
     int32_t SaveSwitchProfilesFromTempCache();
     int32_t SaveDynamicProfilesFromTempCache();
     int32_t NotifyDeviceProfileInited();
+    int32_t NotifyPinCodeInvalid(const ServiceInfoProfile& serviceInfoProfile);
     void GetDynamicProfilesFromTempCache(std::map<std::string, std::string>& entries);
     void ClearProfileCache();
     int32_t UnInitNext();
@@ -132,6 +135,8 @@ private:
     std::map<std::string, std::string> dynamicProfileMap_;
     std::mutex dpInitedCallbackMapMtx_;
     std::map<int32_t, sptr<IRemoteObject>> dpInitedCallbackMap_;
+    std::mutex pinCodeCallbackMapMtx_;
+    std::map<std::string, sptr<IRemoteObject>> pinCodeCallbackMap_;
     std::mutex switchProfileMapMtx_;
     std::map<std::string, CharacteristicProfile> switchProfileMap_;
     std::mutex depSaIdsMtx_;

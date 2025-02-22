@@ -211,6 +211,10 @@ int32_t DistributedDeviceProfileStub::NotifyNewEventInner(uint32_t code, Message
             return GetAllServiceInfoProfileListInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::GET_SERVICE_INFO_PROFILE_LIST_BY_BUNDLE_NAME):
             return GetServiceInfoProfileListByBundleNameInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_PINCODE_INVALID):
+            return SubscribePinCodeInvalidInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_PINCODE_INVALID):
+            return UnSubscribePinCodeInvalidInner(data, reply);
         default:
             HILOGW("unknown request code, please check, code = %{public}u", code);
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
@@ -1103,6 +1107,36 @@ int32_t DistributedDeviceProfileStub::UnSubscribeDeviceProfileInitedInner(Messag
     int32_t saId = -1;
     READ_HELPER(data, Int32, saId);
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().UnSubscribeDeviceProfileInited(saId);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::SubscribePinCodeInvalidInner(MessageParcel& data, MessageParcel& reply)
+{
+    std::string tokenId = "";
+    READ_HELPER(data, String, tokenId);
+    sptr<IRemoteObject> pincodeInvalidCallback = data.ReadRemoteObject();
+    if (pincodeInvalidCallback == nullptr) {
+        HILOGE("read remoteObject failed!");
+        return ERR_FLATTEN_OBJECT;
+    }
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().SubscribePinCodeInvalid(tokenId,
+        pincodeInvalidCallback);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::UnSubscribePinCodeInvalidInner(MessageParcel& data, MessageParcel& reply)
+{
+    std::string tokenId = "";
+    READ_HELPER(data, String, tokenId);
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().UnSubscribePinCodeInvalid(tokenId);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;

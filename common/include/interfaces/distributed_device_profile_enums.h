@@ -78,7 +78,10 @@ enum class DPInterfaceCode : uint32_t {
     GET_SESSION_KEY = 60,
     UPDATE_SESSION_KEY = 61,
     DELETE_SESSION_KEY = 62,
-    MAX = 63
+    ON_PINCODE_INVALID = 63,
+    SUBSCRIBE_PINCODE_INVALID = 64,
+    UNSUBSCRIBE_PINCODE_INVALID = 65,
+    MAX = 66
 };
 
 enum class DeviceIdType : uint32_t {

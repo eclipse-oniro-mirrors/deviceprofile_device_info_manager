@@ -92,7 +92,7 @@ int32_t ServiceInfoProfileManager::PutServiceInfoProfile(const ServiceInfoProfil
     int32_t getRet = GetServiceInfoProfileByUniqueKey(key, oldSerInfo);
     if (getRet == DP_SUCCESS) {
         HILOGI("serviceInfoProfile already exit");
-        return DP_SUCCESS;
+        return DP_SERVICE_INFO_PROFILE_EXISTS;
     }
     ret = ServiceInfoRdbAdapter::GetInstance().Put(rowId, SERVICE_INFO_PROFILE_TABLE, values);
     if (ret != DP_SUCCESS) {

@@ -68,6 +68,8 @@ public:
     int32_t SendSubscribeInfosInner(MessageParcel& data, MessageParcel& reply);
     int32_t SubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply);
     int32_t UnSubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply);
+    int32_t SubscribePinCodeInvalidInner(MessageParcel& data, MessageParcel& reply);
+    int32_t UnSubscribePinCodeInvalidInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutAllTrustedDevicesInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutProductInfoBatchInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutDeviceIconInfoBatchInner(MessageParcel& data, MessageParcel& reply);
