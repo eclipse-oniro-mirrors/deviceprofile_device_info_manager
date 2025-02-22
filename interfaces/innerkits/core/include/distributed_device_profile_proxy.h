@@ -68,6 +68,8 @@ public:
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IRemoteObject> dpInitedCallback) override;
     int32_t UnSubscribeDeviceProfileInited(int32_t saId) override;
+    int32_t SubscribePinCodeInvalid(const std::string& tokenId, sptr<IRemoteObject> pinCodeCallback) override;
+    int32_t UnSubscribePinCodeInvalid(const std::string& tokenId) override;
     int32_t SyncDeviceProfile(const DpSyncOptions& syncOptions, sptr<IRemoteObject> syncCompletedCallback) override;
     int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) override;
     int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo> deviceInfos) override;

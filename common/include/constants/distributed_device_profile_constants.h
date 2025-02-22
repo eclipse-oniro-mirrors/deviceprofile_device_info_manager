@@ -234,6 +234,7 @@ extern const std::string TYPE_WATCH;
 extern const std::string TYPE_PC;
 extern const std::string TYPE_2IN1;
 extern const std::string HIV_VERSION;
+extern const std::string INVALID_PINCODE;
 constexpr int32_t NUM_1 = 1;
 constexpr int32_t NUM_2 = 2;
 constexpr int32_t NUM_3 = 3;

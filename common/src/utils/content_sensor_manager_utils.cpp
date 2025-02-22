@@ -35,6 +35,7 @@ namespace {
     const char* PRODUCT_ID_KEY = "const.distributed_collaboration.productId";
     const char* UNDEFINED_VALUE = "undefined";
     const char* SYNC_TYPE_E2E = "1";
+    const char* MANUFACTURER_KEY = "const.product.manufacturer";
     constexpr int32_t DEVICE_UUID_LENGTH = 65;
     constexpr int32_t SYS_SETTINGS_DATA_SYNC_PARAM_LEN = 128;
 }
@@ -102,13 +103,12 @@ std::string ContentSensorManagerUtils::ObtainManufacture()
     if (!manufacture_.empty()) {
         return manufacture_;
     }
-    const char* manufactureTemp = GetManufacture();
-    if (manufactureTemp == nullptr) {
+    std::string manufactureTemp = system::GetParameter(MANUFACTURER_KEY, "");
+    if (manufactureTemp.empty()) {
         HILOGE("get manufacture failed!");
         return "";
     }
     manufacture_ = manufactureTemp;
-    free((char*)manufactureTemp);
     return manufacture_;
 }
 

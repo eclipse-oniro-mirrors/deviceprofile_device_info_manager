@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -33,6 +33,7 @@
 #include "device_profile_manager.h"
 #include "dp_radar_helper.h"
 #include "event_handler_factory.h"
+#include "i_pincode_invalid_callback.h"
 #include "multi_user_manager.h"
 #include "permission_manager.h"
 #include "profile_cache.h"
@@ -411,6 +412,13 @@ int32_t DistributedDeviceProfileServiceNew::PutServiceInfoProfile(const ServiceI
     }
     HILOGD("CheckCallerPermission success interface PutServiceInfoProfile");
     int32_t ret = ServiceInfoProfileManager::GetInstance().PutServiceInfoProfile(serviceInfoProfile);
+    if (ret == DP_SUCCESS && serviceInfoProfile.GetPinCode() == INVALID_PINCODE) {
+        HILOGI("NotifyPinCodeInvalid, serviceInfoProfile:%{public}s", serviceInfoProfile.dump().c_str());
+        NotifyPinCodeInvalid(serviceInfoProfile);
+    }
+    if (ret == DP_SERVICE_INFO_PROFILE_EXISTS) {
+        ret = DP_SUCCESS;
+    }
     return ret;
 }
 
@@ -433,6 +441,10 @@ int32_t DistributedDeviceProfileServiceNew::UpdateServiceInfoProfile(const Servi
     }
     HILOGD("CheckCallerPermission success interface UpdateServiceInfoProfile");
     int32_t ret = ServiceInfoProfileManager::GetInstance().UpdateServiceInfoProfile(serviceInfoProfile);
+    if (ret == DP_SUCCESS && serviceInfoProfile.GetPinCode() == INVALID_PINCODE) {
+        HILOGI("NotifyPinCodeInvalid, serviceInfoProfile:%{public}s", serviceInfoProfile.dump().c_str());
+        NotifyPinCodeInvalid(serviceInfoProfile);
+    }
     return ret;
 }
 
@@ -1036,6 +1048,37 @@ int32_t DistributedDeviceProfileServiceNew::UnSubscribeDeviceProfileInited(int32
     return DP_SUCCESS;
 }
 
+int32_t DistributedDeviceProfileServiceNew::SubscribePinCodeInvalid(const std::string& tokenId,
+    sptr<IRemoteObject> pinCodeCallback)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("this caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    if (tokenId.empty()) {
+        HILOGE("tokenId is invalid");
+        return DP_INVALID_PARAM;
+    }
+    if (pinCodeCallback == nullptr) {
+        HILOGE("pinCodeCallback is nullptr");
+        return DP_INVALID_PARAM;
+    }
+    std::lock_guard<std::mutex> lock(pinCodeCallbackMapMtx_);
+    pinCodeCallbackMap_[tokenId] = pinCodeCallback;
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileServiceNew::UnSubscribePinCodeInvalid(const std::string& tokenId)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("this caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    std::lock_guard<std::mutex> lock(pinCodeCallbackMapMtx_);
+    pinCodeCallbackMap_.erase(tokenId);
+    return DP_SUCCESS;
+}
+
 int32_t DistributedDeviceProfileServiceNew::NotifyDeviceProfileInited()
 {
     std::lock_guard<std::mutex> lock(dpInitedCallbackMapMtx_);
@@ -1046,6 +1089,26 @@ int32_t DistributedDeviceProfileServiceNew::NotifyDeviceProfileInited()
             continue;
         }
         callbackProxy->OnDpInited();
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileServiceNew::NotifyPinCodeInvalid(const ServiceInfoProfile& serviceInfoProfile)
+{
+    HILOGI("call");
+    std::lock_guard<std::mutex> lock(pinCodeCallbackMapMtx_);
+    for (const auto& [tokenId, callback] : pinCodeCallbackMap_) {
+        if (serviceInfoProfile.GetDeviceId() == ProfileCache::GetInstance().GetLocalUdid() &&
+            serviceInfoProfile.GetUserId() == MultiUserManager::GetInstance().GetCurrentForegroundUserID() &&
+            serviceInfoProfile.GetTokenId() == tokenId) {
+            sptr<IPincodeInvalidCallback> callbackProxy = iface_cast<IPincodeInvalidCallback>(callback);
+            if (callbackProxy == nullptr) {
+                HILOGE("Cast to IPincodeInvalidCallback failed!");
+                continue;
+            }
+            HILOGI("notify");
+            callbackProxy->OnPincodeInvalid(serviceInfoProfile);
+        }
     }
     return DP_SUCCESS;
 }

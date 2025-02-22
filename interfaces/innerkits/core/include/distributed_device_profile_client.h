@@ -25,6 +25,7 @@
 #include <stdint.h>
 #include <set>
 #include <condition_variable>
+#include "i_pincode_invalid_callback.h"
 #include "i_profile_change_listener.h"
 #include "i_distributed_device_profile.h"
 #include "i_dp_inited_callback.h"
@@ -77,6 +78,8 @@ public:
     int32_t SyncDeviceProfile(const DpSyncOptions& syncOptions, sptr<ISyncCompletedCallback> syncCb);
     int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IDpInitedCallback> initedCb);
     int32_t UnSubscribeDeviceProfileInited(int32_t saId);
+    int32_t SubscribePinCodeInvalid(const std::string& tokenId, sptr<IPincodeInvalidCallback> pinCodeCallback);
+    int32_t UnSubscribePinCodeInvalid(const std::string& tokenId);
     int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo>& deviceInfos);
     int32_t PutServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile);
     int32_t DeleteServiceInfoProfile(const ServiceInfoUniqueKey& key);
@@ -106,6 +109,8 @@ private:
     void SubscribeDeviceProfileSA();
     void StartThreadSendSubscribeInfos();
     void ReSubscribeDeviceProfileInited();
+    void ReSubscribePinCodeInvalid();
+    void StartThreadReSubscribePinCodeInvalid();
 
     class DeviceProfileDeathRecipient : public IRemoteObject::DeathRecipient {
     public:
@@ -113,6 +118,8 @@ private:
     };
     int32_t saId_ = 0;
     sptr<IDpInitedCallback> dpInitedCallback_ = nullptr;
+    sptr<IPincodeInvalidCallback> pinCodeCallback_ = nullptr;
+    std::string tokenId_ = "";
     std::condition_variable proxyConVar_;
     std::mutex serviceLock_;
     sptr<IDistributedDeviceProfile> dpProxy_ = nullptr;
