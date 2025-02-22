@@ -108,8 +108,8 @@ enum class BindLevel : uint32_t {
     DEVICE = 1,
     SERVICE = 2,
     APP = 3,
-    USER = 16,
-    MAX = 17
+    USER = 4,
+    MAX = 5
 };
 enum class Status : int32_t {
     MIN = -1,
