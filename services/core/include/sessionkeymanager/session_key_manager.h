@@ -16,10 +16,10 @@
 #ifndef OHOS_DP_SESSION_KEY_MANAGER_H
 #define OHOS_DP_SESSION_KEY_MANAGER_H
 
-#include <string>
-#include <random>
 #include <chrono>
 #include <cstdint>
+#include <random>
+#include <string>
 
 #include "distributed_device_profile_constants.h"
 #include "single_instance.h"

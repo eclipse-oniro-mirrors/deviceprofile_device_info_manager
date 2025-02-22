@@ -91,13 +91,13 @@ int32_t DistributedDeviceProfileStubNew::NotifyAclEventInner(uint32_t code, Mess
         case static_cast<uint32_t>(DPInterfaceCode::DELETE_ACL_PROFILE):
             return DeleteAccessControlProfileInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::PUT_SESSION_KEY):
-            return DeleteAccessControlProfileInner(data, reply);
+            return PutSessionKeyInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::GET_SESSION_KEY):
-            return DeleteAccessControlProfileInner(data, reply);
+            return GetSessionKeyInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::UPDATE_SESSION_KEY):
-            return DeleteAccessControlProfileInner(data, reply);
+            return UpdateSessionKeyInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::DELETE_SESSION_KEY):
-            return DeleteAccessControlProfileInner(data, reply);
+            return DeleteSessionKeyInner(data, reply);
         default:
             return NotifyProfileDataEventInner(code, data, reply, option);
     }
