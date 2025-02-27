@@ -505,8 +505,8 @@ std::string DeviceProfile::AnnoymizeDump() const
         return EMPTY_STRING;
     }
     cJSON_AddStringToObject(json, DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(deviceId_).c_str());
-    cJSON_AddStringToObject(json, DEVICE_NAME.c_str(), deviceName_.c_str());
-    cJSON_AddStringToObject(json, MANUFACTURE_NAME.c_str(), manufactureName_.c_str());
+    cJSON_AddStringToObject(json, DEVICE_NAME.c_str(), ProfileUtils::GetAnonyString(deviceName_).c_str());
+    cJSON_AddStringToObject(json, MANUFACTURE_NAME.c_str(), manu_.c_str());
     cJSON_AddStringToObject(json, DEVICE_MODEL.c_str(), deviceModel_.c_str());
     cJSON_AddStringToObject(json, STORAGE_CAPACITY.c_str(),
         ProfileUtils::GetAnonyString(std::to_string(storageCapability_)).c_str());

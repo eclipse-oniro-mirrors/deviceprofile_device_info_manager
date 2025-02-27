@@ -1140,19 +1140,33 @@ int32_t DistributedDeviceProfileServiceNew::NotifyDeviceProfileInited()
 int32_t DistributedDeviceProfileServiceNew::NotifyPinCodeInvalid(const ServiceInfoProfile& serviceInfoProfile)
 {
     HILOGI("call");
-    std::lock_guard<std::mutex> lock(pinCodeCallbackMapMtx_);
-    for (const auto& [tokenId, callback] : pinCodeCallbackMap_) {
-        if (serviceInfoProfile.GetDeviceId() == ProfileCache::GetInstance().GetLocalUdid() &&
-            serviceInfoProfile.GetUserId() == MultiUserManager::GetInstance().GetCurrentForegroundUserID() &&
-            serviceInfoProfile.GetTokenId() == tokenId) {
-            sptr<IPincodeInvalidCallback> callbackProxy = iface_cast<IPincodeInvalidCallback>(callback);
-            if (callbackProxy == nullptr) {
-                HILOGE("Cast to IPincodeInvalidCallback failed!");
-                continue;
+    sptr<IPincodeInvalidCallback> callbackProxy = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(pinCodeCallbackMapMtx_);
+        for (const auto& [tokenId, callback]: pinCodeCallbackMap_) {
+            if (serviceInfoProfile.GetDeviceId() == ProfileCache::GetInstance().GetLocalUdid() &&
+                serviceInfoProfile.GetUserId() == MultiUserManager::GetInstance().GetCurrentForegroundUserID() &&
+                serviceInfoProfile.GetTokenId() == tokenId) {
+                callbackProxy = iface_cast<IPincodeInvalidCallback>(callback);
+                if (callbackProxy == nullptr) {
+                    HILOGE("Cast to IPincodeInvalidCallback failed!");
+                    return DP_NULLPTR;
+                }
             }
-            HILOGI("notify");
-            callbackProxy->OnPincodeInvalid(serviceInfoProfile);
         }
+    }
+    if (callbackProxy == nullptr) {
+        HILOGI("not subscribe PinCodeInvalid");
+        return DP_SUCCESS;
+    }
+    auto task = [callbackProxy, serviceInfoProfile]() {
+        callbackProxy->OnPincodeInvalid(serviceInfoProfile);
+    };
+    auto handler = EventHandlerFactory::GetInstance().GetEventHandler();
+    HILOGI("notify");
+    if (handler == nullptr || !handler->PostTask(task)) {
+        HILOGE("Post OnPincodeInvalid task faild");
+        return DP_POST_TASK_FAILED;
     }
     return DP_SUCCESS;
 }

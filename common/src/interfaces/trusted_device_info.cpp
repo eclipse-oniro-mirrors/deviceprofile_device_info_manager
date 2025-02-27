@@ -26,8 +26,8 @@ namespace {
     const std::string TAG = "TrustedDeviceInfo";
     const std::string NETWORK_ID = "networkId";
     const std::string AUTH_FORM = "authForm";
-    const std::string UDID = "uuid";
-    const std::string UUID = "udid";
+    const std::string UDID = "udid";
+    const std::string UUID = "uuid";
 }
 
 std::string TrustedDeviceInfo::GetNetworkId() const
