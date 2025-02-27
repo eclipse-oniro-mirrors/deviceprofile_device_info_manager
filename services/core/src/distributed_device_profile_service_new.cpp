@@ -1160,6 +1160,10 @@ int32_t DistributedDeviceProfileServiceNew::NotifyPinCodeInvalid(const ServiceIn
         return DP_SUCCESS;
     }
     auto task = [callbackProxy, serviceInfoProfile]() {
+        if (callbackProxy == nullptr) {
+            HILOGI("OnPincodeInvalid task callbackProxy is nullptr");
+            return DP_NULLPTR;
+        }
         callbackProxy->OnPincodeInvalid(serviceInfoProfile);
     };
     auto handler = EventHandlerFactory::GetInstance().GetEventHandler();
