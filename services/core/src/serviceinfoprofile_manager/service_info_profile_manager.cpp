@@ -74,6 +74,7 @@ int32_t ServiceInfoProfileManager::CreateIndex()
 
 int32_t ServiceInfoProfileManager::PutServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile)
 {
+    HILOGI("serviceInfoProfile: %{public}s", serviceInfoProfile.dump().c_str());
     if (serviceInfoProfile.GetDeviceId().empty() || serviceInfoProfile.GetUserId() == DEFAULT_USER_ID ||
         serviceInfoProfile.GetTokenId().empty() || serviceInfoProfile.GetServiceId() == DEFAULT_USER_ID) {
         HILOGE("Invalid parameter");
@@ -105,6 +106,7 @@ int32_t ServiceInfoProfileManager::PutServiceInfoProfile(const ServiceInfoProfil
 
 int32_t ServiceInfoProfileManager::DeleteServiceInfoProfile(const ServiceInfoUniqueKey& key)
 {
+    HILOGI("serviceInfoUniqueKey: %{public}s", key.dump().c_str());
     if (key.GetDeviceId().empty() || key.GetUserId() == DEFAULT_USER_ID ||
         key.GetTokenId().empty() || key.GetServiceId() == DEFAULT_SERVICE_ID) {
         HILOGE("Invalid parameter");
@@ -135,6 +137,7 @@ int32_t ServiceInfoProfileManager::DeleteServiceInfoProfile(const ServiceInfoUni
 
 int32_t ServiceInfoProfileManager::UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile)
 {
+    HILOGI("serviceInfoProfile: %{public}s", serviceInfoProfile.dump().c_str());
     if (serviceInfoProfile.GetDeviceId().empty() || serviceInfoProfile.GetUserId() == DEFAULT_USER_ID ||
         serviceInfoProfile.GetTokenId().empty() || serviceInfoProfile.GetServiceId() == DEFAULT_SERVICE_ID) {
         HILOGE("Invalid parameter");
@@ -175,6 +178,7 @@ int32_t ServiceInfoProfileManager::UpdateServiceInfoProfile(const ServiceInfoPro
 int32_t ServiceInfoProfileManager::GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key,
     ServiceInfoProfile& serviceInfoProfile)
 {
+    HILOGI("serviceInfoUniqueKey: %{public}s", key.dump().c_str());
     if (key.GetDeviceId().empty() || key.GetUserId() == DEFAULT_USER_ID ||
         key.GetTokenId().empty() || key.GetServiceId() == DEFAULT_SERVICE_ID) {
         HILOGE("Invalid parameter");
@@ -213,6 +217,7 @@ int32_t ServiceInfoProfileManager::GetServiceInfoProfileByUniqueKey(const Servic
 int32_t ServiceInfoProfileManager::GetServiceInfoProfileListByTokenId(const ServiceInfoUniqueKey& key,
     std::vector<ServiceInfoProfile>& serviceInfoProfiles)
 {
+    HILOGI("serviceInfoUniqueKey: %{public}s", key.dump().c_str());
     if (key.GetDeviceId().empty() || key.GetUserId() == DEFAULT_USER_ID || key.GetTokenId().empty()) {
         HILOGE("Invalid parameter");
         return DP_INVALID_PARAM;
@@ -249,6 +254,7 @@ int32_t ServiceInfoProfileManager::GetServiceInfoProfileListByTokenId(const Serv
 
 int32_t ServiceInfoProfileManager::GetAllServiceInfoProfileList(std::vector<ServiceInfoProfile>& serviceInfoProfiles)
 {
+    HILOGI("call");
     std::vector<ValueObject> condition;
     std::shared_ptr<ResultSet> resultSet = ServiceInfoRdbAdapter::GetInstance().Get(
         SELECT_SERVICE_INFO_PROFILE_ALL, condition);
@@ -279,6 +285,7 @@ int32_t ServiceInfoProfileManager::GetAllServiceInfoProfileList(std::vector<Serv
 int32_t ServiceInfoProfileManager::GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
     std::vector<ServiceInfoProfile>& serviceInfoProfiles)
 {
+    HILOGI("serviceInfoUniqueKey: %{public}s", key.dump().c_str());
     if (key.GetDeviceId().empty() || key.GetUserId() == DEFAULT_USER_ID || key.GetBundleName().empty()) {
         HILOGE("Invalid parameter");
         return DP_INVALID_PARAM;
