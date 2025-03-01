@@ -95,6 +95,7 @@ std::string DeviceIconInfoFilterOptions::dump() const
     }
     cJSON* prodIdsJson = cJSON_CreateArray();
     if (prodIdsJson == NULL) {
+        cJSON_Delete(json);
         HILOGE("cJSON CreateArray failed!");
         return EMPTY_STRING;
     }
