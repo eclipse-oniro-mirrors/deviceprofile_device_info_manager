@@ -75,6 +75,10 @@ HWTEST_F(ProfileChangeListenerProxyTest, OnTrustDeviceProfile_001, TestSize.Leve
     EXPECT_NE(ret, DP_SUCCESS);
     ret = proxy.OnTrustDeviceProfileDelete(oldProfile);
     EXPECT_NE(ret, DP_SUCCESS);
+    ret = proxy.OnTrustDeviceProfileInactive(oldProfile);
+    EXPECT_NE(ret, DP_SUCCESS);
+    ret = proxy.OnTrustDeviceProfileActive(oldProfile);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /*
