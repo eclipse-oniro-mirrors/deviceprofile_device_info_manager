@@ -443,7 +443,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactivet_001, TestS
     EXPECT_EQ(DP_SUCCESS, ret);
 }
 
-HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileActiveInner_001, TestSize.Level0)
+HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileActiveInner_002, TestSize.Level0)
 {
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
@@ -452,7 +452,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileActiveInner_001, Tes
     EXPECT_NE(DP_SUCCESS, ret);
 }
 
-HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactiveInner_001, TestSize.Level0)
+HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactiveInner_002, TestSize.Level0)
 {
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
@@ -461,14 +461,14 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactiveInner_001, T
     EXPECT_NE(DP_SUCCESS, ret);
 }
 
-HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileActive_001, TestSize.Level0)
+HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileActive_002, TestSize.Level0)
 {
     TrustDeviceProfile profile;
     int32_t ret = listenerStub_->OnTrustDeviceProfileActive(profile);
     EXPECT_EQ(DP_SUCCESS, ret);
 }
 
-HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactive_001, TestSize.Level0)
+HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactive_002, TestSize.Level0)
 {
     TrustDeviceProfile profile;
     int32_t ret = listenerStub_->OnTrustDeviceProfileInactive(profile);
