@@ -606,5 +606,197 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutAllTrustedDevices_002, TestSiz
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutAllTrustedDevices(deviceInfos);
     EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
+
+/**
+ * @tc.name: PutDeviceProfileBatch_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, PutDeviceProfileBatch_001, TestSize.Level0)
+{
+    std::vector<DeviceProfile> deviceProfiles;
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutDeviceProfileBatch(deviceProfiles);
+    EXPECT_EQ(errCode, DP_WRITE_PARCEL_FAIL);
+}
+
+/**
+ * @tc.name: GetDeviceProfiles_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, GetDeviceProfiles_001, TestSize.Level0)
+{
+    std::vector<DeviceProfile> deviceProfiles;
+    DeviceProfileFilterOptions options;
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetDeviceProfiles(options, deviceProfiles);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+}
+
+/**
+ * @tc.name: DeleteDeviceProfileBatch_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, DeleteDeviceProfileBatch_001, TestSize.Level0)
+{
+    std::vector<DeviceProfile> deviceProfiles;
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().DeleteDeviceProfileBatch(deviceProfiles);
+    EXPECT_EQ(errCode, DP_WRITE_PARCEL_FAIL);
+}
+
+/**
+ * @tc.name: PutDeviceIconInfoBatch_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, PutDeviceIconInfoBatch_001, TestSize.Level0)
+{
+    std::vector<DeviceIconInfo> deviceIconInfos;
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutDeviceIconInfoBatch(deviceIconInfos);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+}
+
+/**
+ * @tc.name: GetDeviceIconInfos_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, GetDeviceIconInfos_001, TestSize.Level0)
+{
+    DeviceIconInfoFilterOptions filterOptions;
+    std::vector<DeviceIconInfo> deviceIconInfos;
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetDeviceIconInfos(filterOptions, deviceIconInfos);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+}
+
+/**
+ * @tc.name: SubscribePinCodeInvalid_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribePinCodeInvalid_001, TestSize.Level0)
+{
+    std::string tokenId;
+    sptr<IPincodeInvalidCallback> pinCodeCallback;
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().SubscribePinCodeInvalid(tokenId, pinCodeCallback);
+    EXPECT_EQ(errCode, DP_INVALID_PARAM);
+}
+
+/**
+ * @tc.name: UnSubscribePinCodeInvalid_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribePinCodeInvalid_001, TestSize.Level0)
+{
+    std::string tokenId;
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().UnSubscribePinCodeInvalid(tokenId);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: PutServiceInfoProfile_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, PutServiceInfoProfile_001, TestSize.Level0)
+{
+    ServiceInfoProfile serviceInfoProfile;
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutServiceInfoProfile(serviceInfoProfile);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+}
+
+/**
+ * @tc.name: DeleteServiceInfoProfile_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, DeleteServiceInfoProfile_001, TestSize.Level0)
+{
+    ServiceInfoUniqueKey key;
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().DeleteServiceInfoProfile(key);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+}
+
+/**
+ * @tc.name: UpdateServiceInfoProfile_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, UpdateServiceInfoProfile_001, TestSize.Level0)
+{
+    ServiceInfoProfile serviceInfoProfile;
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().UpdateServiceInfoProfile(serviceInfoProfile);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+}
+
+
+/**
+ * @tc.name: GetServiceInfoProfileByUniqueKey_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, GetServiceInfoProfileByUniqueKey_001, TestSize.Level0)
+{
+    ServiceInfoUniqueKey key;
+    ServiceInfoProfile serviceInfoProfile;
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetServiceInfoProfileByUniqueKey(key,
+        serviceInfoProfile);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+}
+
+/**
+ * @tc.name: GetServiceInfoProfileListByTokenId_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, GetServiceInfoProfileListByTokenId_001, TestSize.Level0)
+{
+    ServiceInfoUniqueKey key;
+    std::vector<ServiceInfoProfile> serviceInfoProfiles;
+    int32_t errCode =
+        DistributedDeviceProfileClient::GetInstance().GetServiceInfoProfileListByTokenId(key, serviceInfoProfiles);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+}
+
+/**
+ * @tc.name: GetAllServiceInfoProfileList_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, GetAllServiceInfoProfileList_001, TestSize.Level0)
+{
+    std::vector<ServiceInfoProfile> serviceInfoProfiles;
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetAllServiceInfoProfileList(serviceInfoProfiles);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+}
+
+/**
+ * @tc.name: GetServiceInfoProfileListByBundleName_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, GetServiceInfoProfileListByBundleName_001, TestSize.Level0)
+{
+    ServiceInfoUniqueKey key;
+    std::vector<ServiceInfoProfile> serviceInfoProfiles;
+    int32_t errCode =
+        DistributedDeviceProfileClient::GetInstance().GetServiceInfoProfileListByBundleName(key, serviceInfoProfiles);
+    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
