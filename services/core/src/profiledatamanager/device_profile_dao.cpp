@@ -94,10 +94,6 @@ int32_t DeviceProfileDao::PutDeviceProfile(const DeviceProfile& deviceProfile)
         profile.SetId(id);
     }
     resultSet->Close();
-    std::string localUdid = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
-    if (localUdid == deviceProfile.GetDeviceId()) {
-        DeviceProfileManager::GetInstance().PutDeviceProfile(profile);
-    }
     HILOGI("end!");
     return DP_SUCCESS;
 }
@@ -163,10 +159,6 @@ int32_t DeviceProfileDao::UpdateDeviceProfile(const DeviceProfile &newProfile)
             HILOGE("Update device_profile table failed");
             return DP_UPDATE_TRUST_DEVICE_PROFILE_FAIL;
         }
-    }
-    std::string localUdid = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
-    if (localUdid == newProfile.GetDeviceId()) {
-        DeviceProfileManager::GetInstance().PutDeviceProfile(newProfile);
     }
     HILOGI("end!");
     return DP_SUCCESS;
