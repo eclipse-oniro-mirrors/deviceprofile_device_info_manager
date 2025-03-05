@@ -69,6 +69,7 @@ ohos_shared_library("distributed_device_profile_common") {
     "src/interfaces/product_info.cpp",
     "src/interfaces/profile_change_listener_proxy.cpp",
     "src/interfaces/profile_change_listener_stub.cpp",
+    "src/interfaces/query_profile.cpp",
     "src/interfaces/service_info_profile.cpp",
     "src/interfaces/service_info_unique_key.cpp",
     "src/interfaces/service_profile.cpp",

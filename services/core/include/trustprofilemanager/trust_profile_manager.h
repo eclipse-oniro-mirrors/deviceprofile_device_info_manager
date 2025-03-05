@@ -22,11 +22,13 @@
 #include <mutex>
 #include <vector>
 
-#include "irdb_adapter.h"
+
 #include "access_control_profile.h"
+#include "irdb_adapter.h"
+#include "query_profile.h"
+#include "single_instance.h"
 #include "trust_device_profile.h"
 #include "values_bucket.h"
-#include "single_instance.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -53,6 +55,11 @@ public:
 private:
     int32_t CreateTable();
     int32_t CreateUniqueIndex();
+    int32_t GetAccessControlProfile(const QueryType& queryType,
+        const QueryProfile& queryProfile, std::vector<AccessControlProfile>& profile);
+    bool GenerateQueryProfile(const std::map<std::string, std::string>& params,
+        QueryType& queryType, QueryProfile& queryProfile);
+    int32_t GetAllAccessControlProfiles(std::vector<AccessControlProfile>& profiles);
     int32_t GetAccessControlProfile(const std::string& bundleName, int32_t bindType,
         int32_t status, std::vector<AccessControlProfile>& profile);
     int32_t GetAccessControlProfile(const std::string& bundleName,
@@ -64,6 +71,10 @@ private:
     int32_t GetAccessControlProfile(int32_t userId, const std::string& accountId,
         std::vector<AccessControlProfile>& profile);
     int32_t GetAccessControlProfile(int32_t userId, std::vector<AccessControlProfile>& profile);
+    void GetAclByAcerTokenId(const QueryProfile& queryProfile,
+    const std::vector<AccessControlProfile>& aclProfiles, std::vector<AccessControlProfile>& profile);
+    void GetAclByAcerAndAceeTokenId(const QueryProfile& queryProfile,
+        const std::vector<AccessControlProfile>& aclProfiles, std::vector<AccessControlProfile>& profile);
     int32_t GetAccessControlProfileByTokenId(int64_t tokenId, const std::string& trustDeviceId,
         int32_t status, std::vector<AccessControlProfile>& profile);
     int32_t GetAclProfileByUserIdAndBundleName(std::shared_ptr<ResultSet> resultSet,
