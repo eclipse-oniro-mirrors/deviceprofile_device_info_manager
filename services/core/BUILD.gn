@@ -1,4 +1,4 @@
-# Copyright (c) 2021-2024 Huawei Device Co., Ltd.
+# Copyright (c) 2025 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -27,6 +27,7 @@ config("device_info_manager_config") {
     "include/deviceprofilemanager/listener",
     "include/dfx",
     "include/dm_adapter",
+    "include/localserviceinfomanager",
     "include/multiusermanager",
     "include/permissionmanager",
     "include/persistenceadapter",
@@ -99,11 +100,13 @@ ohos_shared_library("distributed_device_profile_svr") {
     "src/distributed_device_profile_service_new.cpp",
     "src/distributed_device_profile_stub_new.cpp",
     "src/dm_adapter/dm_adapter.cpp",
+    "src/localserviceinfomanager/local_service_info_manager.cpp",
     "src/multiusermanager/multi_user_manager.cpp",
     "src/permissionmanager/permission_manager.cpp",
     "src/persistenceadapter/assetadapter/asset_adapter.cpp",
     "src/persistenceadapter/kvadapter/kv_adapter.cpp",
     "src/persistenceadapter/kvadapter/switch_adapter.cpp",
+    "src/persistenceadapter/rdbadapter/local_service_info_rdb_adapter.cpp",
     "src/persistenceadapter/rdbadapter/profile_data_rdb_adapter.cpp",
     "src/persistenceadapter/rdbadapter/rdb_adapter.cpp",
     "src/persistenceadapter/rdbadapter/service_info_rdb_adapter.cpp",

@@ -166,5 +166,27 @@ const std::string SELECT_SERVICE_INFO_PROFILE_TABLE_WHERE_DEVID_USERID_TOKENID =
     "SELECT * FROM service_info_profile WHERE deviceId = ? AND userId = ? AND tokenId = ?";
 const std::string SELECT_SERVICE_INFO_PROFILE_TABLE_WHERE_DEVID_USERID_BUNDLENAME =
     "SELECT * FROM service_info_profile WHERE deviceId = ? AND userId = ? AND bundleName = ?";
+// LocalServiceInfo
+const std::string LOCAL_SERVICE_INFO_RDB_PATH =
+    "/data/service/el1/public/database/distributed_device_profile_service/";
+const std::string LOCAL_SERVICE_INFO_DATABASE_NAME = "local_service_info_store.db";
+const std::string LOCAL_SERVICE_INFO_TABLE = "local_service_info";
+const std::string CREATE_LOCAL_SERVICE_INFO_TABLE_UNIQUE_INDEX_SQL =
+    "CREATE UNIQUE INDEX IF NOT EXISTS unique_local_service_info ON local_service_info "
+    "(bundleName, pinExchangeType)";
+const std::string CREATE_LOCAL_SERVICE_INFO_TABLE_SQL =
+    "CREATE TABLE IF NOT EXISTS local_service_info (\n"
+    "    bundleName TEXT,\n"
+    "    authBoxType INTEGER,\n"
+    "    authType INTEGER,\n"
+    "    pinExchangeType INTEGER,\n"
+    "    pinCode TEXT,\n"
+    "    description TEXT,\n"
+    "    extraInfo TEXT\n"
+    ")";
+const std::string LOCAL_SERVICE_INFO_UNIQUE_INDEX_EQUAL_CONDITION =
+    "bundleName = ? AND pinExchangeType = ?";
+const std::string SELECT_LOCAL_SERVICE_INFO_WHERE_BUNDLENAME_PINEXCHANGETYPE =
+    "SELECT * FROM local_service_info WHERE bundleName = ? AND pinExchangeType = ?";
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

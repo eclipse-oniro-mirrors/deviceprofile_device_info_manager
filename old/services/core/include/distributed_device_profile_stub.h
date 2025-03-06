@@ -81,6 +81,11 @@ public:
     int32_t GetServiceInfoProfileListByTokenIdInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetAllServiceInfoProfileListInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetServiceInfoProfileListByBundleNameInner(MessageParcel& data, MessageParcel& reply);
+    int32_t PutLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply);
+    int32_t UpdateLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetLocalServiceInfoByBundleAndPinTypeInner(MessageParcel& data, MessageParcel& reply);
+    int32_t DeleteLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply);
+
     virtual void DelayUnloadTask()
     {
         return;
@@ -105,6 +110,9 @@ private:
     int32_t NotifyOldEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
 
     int32_t NotifyNewEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
+
+    int32_t NotifyLocalServiceEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply,
+        MessageOption& option);
 
 private:
     std::map<uint32_t, Func> funcsMap_;

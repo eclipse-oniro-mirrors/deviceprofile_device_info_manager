@@ -34,6 +34,7 @@
 #include "dp_radar_helper.h"
 #include "event_handler_factory.h"
 #include "i_pincode_invalid_callback.h"
+#include "local_service_info_manager.h"
 #include "multi_user_manager.h"
 #include "permission_manager.h"
 #include "profile_cache.h"
@@ -45,6 +46,7 @@
 #include "switch_profile_manager.h"
 #include "trust_profile_manager.h"
 #include "session_key_manager.h"
+#include "local_service_info_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -124,6 +126,10 @@ int32_t DistributedDeviceProfileServiceNew::PostInit()
     if (ServiceInfoProfileManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("ServiceInfoProfileManager init failed");
         return DP_SERVICE_INFO_PROFILE_MANAGER_INIT_FAIL;
+    }
+    if (LocalServiceInfoManager::GetInstance().Init() != DP_SUCCESS) {
+        HILOGE("LocalServiceInfoManager init failed");
+        return DP_LOCAL_SERVICE_INFO_MANAGER_INIT_FAIL;
     }
     if (MultiUserManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("MultiUserManager init failed");
@@ -456,10 +462,6 @@ int32_t DistributedDeviceProfileServiceNew::PutServiceInfoProfile(const ServiceI
     }
     HILOGD("CheckCallerPermission success interface PutServiceInfoProfile");
     int32_t ret = ServiceInfoProfileManager::GetInstance().PutServiceInfoProfile(serviceInfoProfile);
-    if (ret == DP_SUCCESS && serviceInfoProfile.GetPinCode() == INVALID_PINCODE) {
-        HILOGI("NotifyPinCodeInvalid, serviceInfoProfile:%{public}s", serviceInfoProfile.dump().c_str());
-        NotifyPinCodeInvalid(serviceInfoProfile);
-    }
     if (ret == DP_SERVICE_INFO_PROFILE_EXISTS) {
         ret = DP_SUCCESS;
     }
@@ -485,10 +487,6 @@ int32_t DistributedDeviceProfileServiceNew::UpdateServiceInfoProfile(const Servi
     }
     HILOGD("CheckCallerPermission success interface UpdateServiceInfoProfile");
     int32_t ret = ServiceInfoProfileManager::GetInstance().UpdateServiceInfoProfile(serviceInfoProfile);
-    if (ret == DP_SUCCESS && serviceInfoProfile.GetPinCode() == INVALID_PINCODE) {
-        HILOGI("NotifyPinCodeInvalid, serviceInfoProfile:%{public}s", serviceInfoProfile.dump().c_str());
-        NotifyPinCodeInvalid(serviceInfoProfile);
-    }
     return ret;
 }
 
@@ -701,6 +699,61 @@ int32_t DistributedDeviceProfileServiceNew::DeleteCharacteristicProfile(const st
     int32_t ret = DeviceProfileManager::GetInstance().DeleteCharacteristicProfile(deviceId, serviceName,
         characteristicKey, isMultiUser, userId);
     DpRadarHelper::GetInstance().ReportDeleteCharProfile(ret, deviceId);
+    return ret;
+}
+
+int32_t DistributedDeviceProfileServiceNew::PutLocalServiceInfo(const LocalServiceInfo& localServiceInfo)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    HILOGD("CheckCallerPermission success interface PutLocalServiceInfo");
+    int32_t ret = LocalServiceInfoManager::GetInstance().PutLocalServiceInfo(localServiceInfo);
+    if (ret == DP_SUCCESS && localServiceInfo.GetPinCode() == INVALID_PINCODE) {
+        HILOGI("NotifyPinCodeInvalid, serviceInfoProfile:%{public}s", localServiceInfo.dump().c_str());
+        NotifyPinCodeInvalid(localServiceInfo);
+    }
+    return ret;
+}
+
+int32_t DistributedDeviceProfileServiceNew::UpdateLocalServiceInfo(const LocalServiceInfo& localServiceInfo)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    HILOGD("CheckCallerPermission success interface UpdateLocalServiceInfo");
+    int32_t ret = LocalServiceInfoManager::GetInstance().UpdateLocalServiceInfo(localServiceInfo);
+    if (ret == DP_SUCCESS && localServiceInfo.GetPinCode() == INVALID_PINCODE) {
+        HILOGI("NotifyPinCodeInvalid, serviceInfoProfile:%{public}s", localServiceInfo.dump().c_str());
+        NotifyPinCodeInvalid(localServiceInfo);
+    }
+    return ret;
+}
+
+int32_t DistributedDeviceProfileServiceNew::GetLocalServiceInfoByBundleAndPinType(const std::string& bundleName,
+    int32_t pinExchangeType, LocalServiceInfo& localServiceInfo)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    HILOGD("CheckCallerPermission success interface GetLocalServiceInfoByBundleAndPinType");
+    int32_t ret = LocalServiceInfoManager::GetInstance().GetLocalServiceInfoByBundleAndPinType(bundleName,
+        pinExchangeType, localServiceInfo);
+    return ret;
+}
+
+int32_t DistributedDeviceProfileServiceNew::DeleteLocalServiceInfo(const std::string& bundleName,
+    int32_t pinExchangeType)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    HILOGD("CheckCallerPermission success interface DeleteLocalServiceInfo");
+    int32_t ret = LocalServiceInfoManager::GetInstance().DeleteLocalServiceInfo(bundleName, pinExchangeType);
     return ret;
 }
 
@@ -1092,15 +1145,19 @@ int32_t DistributedDeviceProfileServiceNew::UnSubscribeDeviceProfileInited(int32
     return DP_SUCCESS;
 }
 
-int32_t DistributedDeviceProfileServiceNew::SubscribePinCodeInvalid(const std::string& tokenId,
-    sptr<IRemoteObject> pinCodeCallback)
+int32_t DistributedDeviceProfileServiceNew::SubscribePinCodeInvalid(const std::string& bundleName,
+    int32_t pinExchangeType, sptr<IRemoteObject> pinCodeCallback)
 {
     if (!PermissionManager::GetInstance().CheckCallerPermission()) {
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    if (tokenId.empty()) {
-        HILOGE("tokenId is invalid");
+    if (bundleName.empty()) {
+        HILOGE("bundleName is invalid");
+        return DP_INVALID_PARAM;
+    }
+    if (pinExchangeType == DEFAULT_PIN_EXCHANGE_TYPE) {
+        HILOGE("pinExchangeType is invalid");
         return DP_INVALID_PARAM;
     }
     if (pinCodeCallback == nullptr) {
@@ -1108,18 +1165,27 @@ int32_t DistributedDeviceProfileServiceNew::SubscribePinCodeInvalid(const std::s
         return DP_INVALID_PARAM;
     }
     std::lock_guard<std::mutex> lock(pinCodeCallbackMapMtx_);
-    pinCodeCallbackMap_[tokenId] = pinCodeCallback;
+    pinCodeCallbackMap_[std::make_pair(bundleName, pinExchangeType)] = pinCodeCallback;
     return DP_SUCCESS;
 }
 
-int32_t DistributedDeviceProfileServiceNew::UnSubscribePinCodeInvalid(const std::string& tokenId)
+int32_t DistributedDeviceProfileServiceNew::UnSubscribePinCodeInvalid(const std::string& bundleName,
+    int32_t pinExchangeType)
 {
     if (!PermissionManager::GetInstance().CheckCallerPermission()) {
         HILOGE("this caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
+    if (bundleName.empty()) {
+        HILOGE("bundleName is invalid");
+        return DP_INVALID_PARAM;
+    }
+    if (pinExchangeType == DEFAULT_PIN_EXCHANGE_TYPE) {
+        HILOGE("pinExchangeType is invalid");
+        return DP_INVALID_PARAM;
+    }
     std::lock_guard<std::mutex> lock(pinCodeCallbackMapMtx_);
-    pinCodeCallbackMap_.erase(tokenId);
+    pinCodeCallbackMap_.erase(std::make_pair(bundleName, pinExchangeType));
     return DP_SUCCESS;
 }
 
@@ -1137,34 +1203,30 @@ int32_t DistributedDeviceProfileServiceNew::NotifyDeviceProfileInited()
     return DP_SUCCESS;
 }
 
-int32_t DistributedDeviceProfileServiceNew::NotifyPinCodeInvalid(const ServiceInfoProfile& serviceInfoProfile)
+int32_t DistributedDeviceProfileServiceNew::NotifyPinCodeInvalid(const LocalServiceInfo& localServiceInfo)
 {
     HILOGI("call");
     sptr<IPincodeInvalidCallback> callbackProxy = nullptr;
     {
         std::lock_guard<std::mutex> lock(pinCodeCallbackMapMtx_);
-        for (const auto& [tokenId, callback]: pinCodeCallbackMap_) {
-            if (serviceInfoProfile.GetDeviceId() == ProfileCache::GetInstance().GetLocalUdid() &&
-                serviceInfoProfile.GetUserId() == MultiUserManager::GetInstance().GetCurrentForegroundUserID() &&
-                serviceInfoProfile.GetTokenId() == tokenId) {
-                callbackProxy = iface_cast<IPincodeInvalidCallback>(callback);
-                if (callbackProxy == nullptr) {
-                    HILOGE("Cast to IPincodeInvalidCallback failed!");
-                    return DP_NULLPTR;
-                }
-            }
+        auto item = pinCodeCallbackMap_.find({localServiceInfo.GetBundleName(),
+            localServiceInfo.GetPinExchangeType()});
+        if (item == pinCodeCallbackMap_.end()) {
+            HILOGI("not subscribe PinCodeInvalid");
+            return DP_SUCCESS;
+        }
+        callbackProxy = iface_cast<IPincodeInvalidCallback>(item->second);
+        if (callbackProxy == nullptr) {
+            HILOGE("Cast to IPincodeInvalidCallback failed!");
+            return DP_NULLPTR;
         }
     }
-    if (callbackProxy == nullptr) {
-        HILOGI("not subscribe PinCodeInvalid");
-        return DP_SUCCESS;
-    }
-    auto task = [callbackProxy, serviceInfoProfile]() {
+    auto task = [callbackProxy, localServiceInfo]() {
         if (callbackProxy == nullptr) {
             HILOGI("OnPincodeInvalid task callbackProxy is nullptr");
             return;
         }
-        callbackProxy->OnPincodeInvalid(serviceInfoProfile);
+        callbackProxy->OnPincodeInvalid(localServiceInfo);
     };
     auto handler = EventHandlerFactory::GetInstance().GetEventHandler();
     HILOGI("notify");

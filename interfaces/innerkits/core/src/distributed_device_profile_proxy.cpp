@@ -664,13 +664,14 @@ int32_t OHOS::DistributedDeviceProfile::DistributedDeviceProfileProxy::UnSubscri
 }
 
 int32_t OHOS::DistributedDeviceProfile::DistributedDeviceProfileProxy::SubscribePinCodeInvalid(
-    const std::string& tokenId, sptr<IRemoteObject> pinCodeCallback)
+    const std::string& bundleName, int32_t pinExchangeType, sptr<IRemoteObject> pinCodeCallback)
 {
     sptr<IRemoteObject> remote = nullptr;
     GET_REMOTE_OBJECT(remote);
     MessageParcel data;
     WRITE_INTERFACE_TOKEN(data);
-    WRITE_HELPER(data, String, tokenId);
+    WRITE_HELPER(data, String, bundleName);
+    WRITE_HELPER(data, Int32, pinExchangeType);
     WRITE_HELPER(data, RemoteObject, pinCodeCallback);
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_PINCODE_INVALID), data, reply);
@@ -678,13 +679,14 @@ int32_t OHOS::DistributedDeviceProfile::DistributedDeviceProfileProxy::Subscribe
 }
 
 int32_t OHOS::DistributedDeviceProfile::DistributedDeviceProfileProxy::UnSubscribePinCodeInvalid(
-    const std::string& tokenId)
+    const std::string& bundleName, int32_t pinExchangeType)
 {
     sptr<IRemoteObject> remote = nullptr;
     GET_REMOTE_OBJECT(remote);
     MessageParcel data;
     WRITE_INTERFACE_TOKEN(data);
-    WRITE_HELPER(data, String, tokenId);
+    WRITE_HELPER(data, String, bundleName);
+    WRITE_HELPER(data, Int32, pinExchangeType);
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_PINCODE_INVALID), data, reply);
     return DP_SUCCESS;
@@ -703,6 +705,69 @@ int32_t OHOS::DistributedDeviceProfile::DistributedDeviceProfileProxy::PutAllTru
     }
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::PUT_ALL_TRUSTED_DEVICES), data, reply);
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::PutLocalServiceInfo(const LocalServiceInfo& localServiceInfo)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    if (!localServiceInfo.Marshalling(data)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::PUT_LOCAL_SERVICE_INFO), data, reply);
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::UpdateLocalServiceInfo(const LocalServiceInfo& localServiceInfo)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    if (!localServiceInfo.Marshalling(data)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::UPDATA_LOCAL_SERVICE_INFO), data, reply);
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::GetLocalServiceInfoByBundleAndPinType(const std::string& bundleName,
+    int32_t pinExchangeType, LocalServiceInfo& localServiceInfo)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    WRITE_HELPER(data, String, bundleName);
+    WRITE_HELPER(data, Int32, pinExchangeType);
+    MessageParcel reply;
+    SEND_REQUEST(remote,
+        static_cast<uint32_t>(DPInterfaceCode::GET_LOCAL_SERVICE_INFO_BY_BINDLE_AND_PINTYPE), data, reply);
+    if (!localServiceInfo.UnMarshalling(reply)) {
+        HILOGE("dp ipc read parcel fail");
+        return DP_READ_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::DeleteLocalServiceInfo(const std::string& bundleName, int32_t pinExchangeType)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    WRITE_HELPER(data, String, bundleName);
+    WRITE_HELPER(data, Int32, pinExchangeType);
+    MessageParcel reply;
+    SEND_REQUEST(remote,
+        static_cast<uint32_t>(DPInterfaceCode::DELETE_LOCAL_SERVICE_INFO), data, reply);
     return DP_SUCCESS;
 }
 } // namespace DeviceProfile

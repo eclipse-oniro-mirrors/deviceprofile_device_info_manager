@@ -161,6 +161,11 @@ const std::string GET_SERVICE_INFO_PROFILE_BY_UNIQUE_KEY = "GetServiceInfoProfil
 const std::string GET_SERVICE_INFO_PROFILE_LIST_BY_TOKEN_ID = "GetServiceInfoProfileListByTokenId";
 const std::string GET_ALL_SERVICE_INFO_PROFILE_LIST = "GetAllServiceInfoProfileList";
 const std::string GET_SERVICE_INFO_PROFILE_LIST_BY_BUNDLE_NAME = "GetServiceInfoProfileListByBundleName";
+/* LocalServiceInfo Attribute */
+const std::string PUT_LOCAL_SERVICE_INFO = "PutLocalServiceInfo";
+const std::string UPDATA_LOCAL_SERVICE_INFO = "UpdateLocalServiceInfo";
+const std::string GET_LOCAL_SERVICE_INFO_BY_BINDLE_AND_PINTYPE = "GetLocalServiceInfoByBundleAndPinType";
+const std::string DELETE_LOCAL_SERVICE_INFO = "DeleteLocalServiceInfo";
 /* Interface Name */
 const std::string PUT_SESSION_KEY = "PutSessionKey";
 const std::string GET_SESSION_KEY = "GetSessionKey";

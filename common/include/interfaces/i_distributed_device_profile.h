@@ -35,6 +35,7 @@
 #include "service_profile.h"
 #include "trust_device_profile.h"
 #include "trusted_device_info.h"
+#include "local_service_info.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -76,8 +77,9 @@ public:
     virtual int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) = 0;
     virtual int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IRemoteObject> dpInitedCallback) = 0;
     virtual int32_t UnSubscribeDeviceProfileInited(int32_t saId) = 0;
-    virtual int32_t SubscribePinCodeInvalid(const std::string& tokenId, sptr<IRemoteObject> pinCodeCallback) = 0;
-    virtual int32_t UnSubscribePinCodeInvalid(const std::string& tokenId) = 0;
+    virtual int32_t SubscribePinCodeInvalid(const std::string& bundleName, int32_t pinExchangeType,
+        sptr<IRemoteObject> pinCodeCallback) = 0;
+    virtual int32_t UnSubscribePinCodeInvalid(const std::string& bundleName, int32_t pinExchangeType) = 0;
     virtual int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
         sptr<IRemoteObject> syncCompletedCallback) = 0;
     virtual int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) = 0;
@@ -96,6 +98,11 @@ public:
     virtual int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfile>& serviceInfoProfiles) = 0;
     virtual int32_t GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
         std::vector<ServiceInfoProfile>& serviceInfoProfiles) = 0;
+    virtual int32_t PutLocalServiceInfo(const LocalServiceInfo& localServiceInfo) = 0;
+    virtual int32_t UpdateLocalServiceInfo(const LocalServiceInfo& localServiceInfo) = 0;
+    virtual int32_t GetLocalServiceInfoByBundleAndPinType(const std::string& bundleName,
+        int32_t pinExchangeType, LocalServiceInfo& localServiceInfo) = 0;
+    virtual int32_t DeleteLocalServiceInfo(const std::string& bundleName, int32_t pinExchangeType) = 0;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

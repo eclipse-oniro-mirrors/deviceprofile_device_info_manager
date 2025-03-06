@@ -25,7 +25,7 @@ namespace {
     const std::string TAG = "PinCodeInvalidCallbackProxy";
 }
 
-int32_t PinCodeInvalidCallbackProxy::OnPincodeInvalid(const ServiceInfoProfile& serviceInfoProfile)
+int32_t PinCodeInvalidCallbackProxy::OnPincodeInvalid(const LocalServiceInfo& localServiceInfo)
 {
     sptr<IRemoteObject> remote = nullptr;
     GET_REMOTE_OBJECT(remote);
@@ -34,7 +34,7 @@ int32_t PinCodeInvalidCallbackProxy::OnPincodeInvalid(const ServiceInfoProfile& 
         HILOGE("write descriptor failed");
         return ERR_FLATTEN_OBJECT;
     }
-    if (!serviceInfoProfile.Marshalling(data)) {
+    if (!localServiceInfo.Marshalling(data)) {
         HILOGE("dp ipc write parcel fail");
         return DP_WRITE_PARCEL_FAIL;
     }

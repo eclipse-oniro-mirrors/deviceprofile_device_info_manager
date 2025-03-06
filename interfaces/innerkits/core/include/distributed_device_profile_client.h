@@ -38,6 +38,7 @@
 #include "system_ability_status_change_stub.h"
 #include "profile_change_listener_stub.h"
 #include "trusted_device_info.h"
+#include "local_service_info.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -82,8 +83,9 @@ public:
     int32_t SyncDeviceProfile(const DpSyncOptions& syncOptions, sptr<ISyncCompletedCallback> syncCb);
     int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IDpInitedCallback> initedCb);
     int32_t UnSubscribeDeviceProfileInited(int32_t saId);
-    int32_t SubscribePinCodeInvalid(const std::string& tokenId, sptr<IPincodeInvalidCallback> pinCodeCallback);
-    int32_t UnSubscribePinCodeInvalid(const std::string& tokenId);
+    int32_t SubscribePinCodeInvalid(const std::string& bundleName, int32_t pinExchangeType,
+        sptr<IPincodeInvalidCallback> pinCodeCallback);
+    int32_t UnSubscribePinCodeInvalid(const std::string& bundleName, int32_t pinExchangeType);
     int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo>& deviceInfos);
     int32_t PutServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile);
     int32_t DeleteServiceInfoProfile(const ServiceInfoUniqueKey& key);
@@ -94,7 +96,12 @@ public:
     int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfile>& serviceInfoProfiles);
     int32_t GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
         std::vector<ServiceInfoProfile>& serviceInfoProfiles);
-    
+    int32_t PutLocalServiceInfo(const LocalServiceInfo& localServiceInfo);
+    int32_t UpdateLocalServiceInfo(const LocalServiceInfo& localServiceInfo);
+    int32_t GetLocalServiceInfoByBundleAndPinType(const std::string& bundleName,
+        int32_t pinExchangeType, LocalServiceInfo& localServiceInfo);
+    int32_t DeleteLocalServiceInfo(const std::string& bundleName, int32_t pinExchangeType);
+
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
     void LoadSystemAbilityFail();
 
@@ -123,7 +130,8 @@ private:
     int32_t saId_ = 0;
     sptr<IDpInitedCallback> dpInitedCallback_ = nullptr;
     sptr<IPincodeInvalidCallback> pinCodeCallback_ = nullptr;
-    std::string tokenId_ = "";
+    std::string bundleName_ = "";
+    int32_t pinExchangeType_ = DEFAULT_PIN_EXCHANGE_TYPE;
     std::condition_variable proxyConVar_;
     std::mutex serviceLock_;
     sptr<IDistributedDeviceProfile> dpProxy_ = nullptr;

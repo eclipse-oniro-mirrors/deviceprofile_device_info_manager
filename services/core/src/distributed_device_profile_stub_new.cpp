@@ -644,5 +644,71 @@ int32_t DistributedDeviceProfileStubNew::PutAllTrustedDevicesInner(MessageParcel
     }
     return DP_SUCCESS;
 }
+
+int32_t DistributedDeviceProfileStubNew::PutLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    LocalServiceInfo localServiceInfo;
+    if (!localServiceInfo.UnMarshalling(data)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = PutLocalServiceInfo(localServiceInfo);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::UpdateLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    LocalServiceInfo localServiceInfo;
+    if (!localServiceInfo.UnMarshalling(data)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = UpdateLocalServiceInfo(localServiceInfo);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::GetLocalServiceInfoByBundleAndPinTypeInner(MessageParcel& data,
+    MessageParcel& reply)
+{
+    LocalServiceInfo localServiceInfo;
+    int32_t pinExchangeType = 0;
+    std::string bundleName = "";
+    READ_HELPER(data, String, bundleName);
+    READ_HELPER(data, Int32, pinExchangeType);
+    int32_t ret = GetLocalServiceInfoByBundleAndPinType(bundleName, pinExchangeType, localServiceInfo);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    if (!localServiceInfo.Marshalling(reply)) {
+        HILOGE("write parcel fail!");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::DeleteLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply)
+{
+    int32_t pinExchangeType = 0;
+    std::string bundleName = "";
+    READ_HELPER(data, String, bundleName);
+    READ_HELPER(data, Int32, pinExchangeType);
+    int32_t ret = DeleteLocalServiceInfo(bundleName, pinExchangeType);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
 } // namespace DeviceProfile
 } // namespace OHOS

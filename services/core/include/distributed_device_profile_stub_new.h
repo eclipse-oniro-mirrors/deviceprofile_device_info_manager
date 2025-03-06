@@ -61,6 +61,10 @@ public:
     int32_t SubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply);
     int32_t UnSubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutAllTrustedDevicesInner(MessageParcel& data, MessageParcel& reply);
+    int32_t PutLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply);
+    int32_t UpdateLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetLocalServiceInfoByBundleAndPinTypeInner(MessageParcel& data, MessageParcel& reply);
+    int32_t DeleteLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply);
     virtual void DelayUnloadTask() = 0;
     virtual bool IsInited() = 0;
 
