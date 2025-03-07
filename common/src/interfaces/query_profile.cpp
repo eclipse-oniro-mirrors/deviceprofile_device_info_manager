@@ -32,7 +32,6 @@ QueryProfile::QueryProfile()
     accesseeDeviceId_(""),
     accesseeUserId_(-1),
     accesseeTokenId_(-1)
-    
 {}
 
 std::string QueryProfile::GetAccesserDeviceId() const
