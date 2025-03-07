@@ -28,11 +28,9 @@ namespace {
 QueryProfile::QueryProfile()
     : accesserDeviceId_(""),
     accesserUserId_(-1),
-    accesserAccountId_(""),
     accesserTokenId_(-1),
     accesseeDeviceId_(""),
     accesseeUserId_(-1),
-    accesseeAccountId_(""),
     accesseeTokenId_(-1)
     
 {}
