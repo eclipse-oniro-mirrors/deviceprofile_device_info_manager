@@ -29,27 +29,28 @@ public:
 
     std::string GetAccesserDeviceId() const;
     void SetAccesserDeviceId(const std::string& accesserDeviceId);
-    int64_t GetAccesserTokenId() const;
-    void SetAccesserTokenId(int64_t accesserTokenId);
     int32_t GetAccesserUserId() const;
     void SetAccesserUserId(int32_t accesserUserId);
+    int64_t GetAccesserTokenId() const;
+    void SetAccesserTokenId(int64_t accesserTokenId);
     std::string GetAccesseeDeviceId() const;
     void SetAccesseeDeviceId(const std::string& accesseeDeviceId);
-    int64_t GetAccesseeTokenId() const;
-    void SetAccesseeTokenId(int64_t accesseeTokenId);
     int32_t GetAccesseeUserId() const;
     void SetAccesseeUserId(int32_t accesseeUserId);
+    int64_t GetAccesseeTokenId() const;
+    void SetAccesseeTokenId(int64_t accesseeTokenId);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     std::string dump() const override;
 
 private:
     std::string accesserDeviceId_;
-    int64_t accesserTokenId_;
     int32_t accesserUserId_;
+    int64_t accesserTokenId_;
     std::string accesseeDeviceId_;
-    int64_t accesseeTokenId_;
     int32_t accesseeUserId_;
+    int64_t accesseeTokenId_;
+
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

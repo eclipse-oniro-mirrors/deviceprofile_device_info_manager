@@ -652,8 +652,10 @@ int32_t TrustProfileManager::GetAccessControlProfile(const std::map<std::string,
     std::vector<AccessControlProfile>& profile)
 {
     std::lock_guard<std::mutex> lock(aclMutex_);
-    if (params.find(TRUST_DEVICE_ID) != params.end() && params.find(STATUS) != params.end()) {
-        if (params.find(USERID) != params.end() && params.find(BUNDLENAME) != params.end()) {
+    if (params.find(TRUST_DEVICE_ID) != params.end() &&
+        ProfileUtils::IsPropertyValid(params, STATUS, INT32_MIN, INT32_MAX)) {
+        if (ProfileUtils::IsPropertyValid(params, USERID, INT32_MIN, INT32_MAX) &&
+            params.find(BUNDLENAME) != params.end()) {
             return GetAccessControlProfile(std::atoi(params.at(USERID).c_str()),
                 params.at(BUNDLENAME), params.at(TRUST_DEVICE_ID), std::atoi(params.at(STATUS).c_str()), profile);
         }
@@ -661,13 +663,15 @@ int32_t TrustProfileManager::GetAccessControlProfile(const std::map<std::string,
             return GetAccessControlProfile(params.at(BUNDLENAME),
                 params.at(TRUST_DEVICE_ID), std::atoi(params.at(STATUS).c_str()), profile);
         }
-        if (params.find(TOKENID) != params.end()) {
+        if (ProfileUtils::IsPropertyValidInt64(params, TOKENID)) {
             return GetAccessControlProfileByTokenId(std::atoll(params.at(TOKENID).c_str()),
                 params.at(TRUST_DEVICE_ID), std::atoi(params.at(STATUS).c_str()), profile);
         }
     }
-    if (params.find(BIND_TYPE) != params.end() && params.find(STATUS) != params.end()) {
-        if (params.find(USERID) != params.end() && params.find(BUNDLENAME) != params.end()) {
+    if (ProfileUtils::IsPropertyValid(params, BIND_TYPE, INT32_MIN, INT32_MAX) &&
+        ProfileUtils::IsPropertyValid(params, STATUS, INT32_MIN, INT32_MAX)) {
+        if (ProfileUtils::IsPropertyValid(params, USERID, INT32_MIN, INT32_MAX) &&
+            params.find(BUNDLENAME) != params.end()) {
             return GetAccessControlProfile(std::atoi(params.at(USERID).c_str()),
                 params.at(BUNDLENAME), std::atoi(params.at(BIND_TYPE).c_str()),
                 std::atoi(params.at(STATUS).c_str()), profile);
@@ -677,7 +681,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(const std::map<std::string,
                 std::atoi(params.at(STATUS).c_str()), profile);
         }
     }
-    if (params.find(USERID) != params.end()) {
+    if (ProfileUtils::IsPropertyValid(params, USERID, INT32_MIN, INT32_MAX)) {
         if (params.find(ACCOUNTID) != params.end()) {
             return GetAccessControlProfile(std::atoi(params.at(USERID).c_str()), params.at(ACCOUNTID), profile);
         }
@@ -832,15 +836,17 @@ int32_t TrustProfileManager::CreateUniqueIndex()
 bool TrustProfileManager::GenerateQueryProfile(const std::map<std::string, std::string>& params,
     QueryType& queryType, QueryProfile& queryProfile)
 {
-    if (params.find(ACCESSER_DEVICE_ID) != params.end() && params.find(ACCESSER_USER_ID) != params.end() &&
-        params.find(ACCESSER_TOKEN_ID) != params.end() && params.find(ACCESSEE_DEVICE_ID) != params.end()) {
-        if (params.find(ACCESSEE_USER_ID) != params.end() && params.find(ACCESSEE_TOKEN_ID) != params.end()) {
+    if (params.find(ACCESSER_DEVICE_ID) != params.end() && params.find(ACCESSEE_DEVICE_ID) != params.end() &&
+        ProfileUtils::IsPropertyValid(params, ACCESSER_USER_ID, INT32_MIN, INT32_MAX) &&
+        ProfileUtils::IsPropertyValidInt64(params, ACCESSER_TOKEN_ID)) {
+        if (ProfileUtils::IsPropertyValid(params, ACCESSEE_USER_ID, INT32_MIN, INT32_MAX) &&
+            ProfileUtils::IsPropertyValidInt64(params, ACCESSEE_TOKEN_ID)) {
             queryProfile.SetAccesserDeviceId(params.at(ACCESSER_DEVICE_ID));
-            queryProfile.SetAccesserTokenId(std::atoll(params.at(ACCESSER_TOKEN_ID).c_str()));
             queryProfile.SetAccesserUserId(std::atoi(params.at(ACCESSER_USER_ID).c_str()));
+            queryProfile.SetAccesserTokenId(std::atoll(params.at(ACCESSER_TOKEN_ID).c_str()));
             queryProfile.SetAccesseeDeviceId(params.at(ACCESSEE_DEVICE_ID));
-            queryProfile.SetAccesseeTokenId(std::atoll(params.at(ACCESSEE_TOKEN_ID).c_str()));
             queryProfile.SetAccesseeUserId(std::atoi(params.at(ACCESSEE_USER_ID).c_str()));
+            queryProfile.SetAccesseeTokenId(std::atoll(params.at(ACCESSEE_TOKEN_ID).c_str()));
             queryType = QueryType::ACER_AND_ACEE_TOKENID;
             return true;
         }

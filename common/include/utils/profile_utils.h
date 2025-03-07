@@ -102,6 +102,7 @@ public:
         int32_t maxValue);
     static bool IsPropertyValid(const std::map<std::string, std::string>& propertyMap, const std::string& property,
         int32_t minValue, int32_t maxValue);
+    static bool IsPropertyValidInt64(const std::map<std::string, std::string>& propertyMap, const std::string& property);
     static bool GetIntValue(const ValuesBucket& values, const std::string& property, int32_t& value);
     static bool GetStringValue(const ValuesBucket& values, const std::string& property, std::string& value);
     static bool GetLongValue(const ValuesBucket& values, const std::string& property, int64_t& value);

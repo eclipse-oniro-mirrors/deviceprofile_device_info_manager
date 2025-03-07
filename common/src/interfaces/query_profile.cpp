@@ -27,12 +27,14 @@ namespace {
 
 QueryProfile::QueryProfile()
     : accesserDeviceId_(""),
-    accesserTokenId_(-1),
     accesserUserId_(-1),
+    accesserAccountId_(""),
+    accesserTokenId_(-1),
     accesseeDeviceId_(""),
-    accesseeTokenId_(-1),
-    accesseeUserId_(-1)
-
+    accesseeUserId_(-1),
+    accesseeAccountId_(""),
+    accesseeTokenId_(-1)
+    
 {}
 
 std::string QueryProfile::GetAccesserDeviceId() const
@@ -98,22 +100,22 @@ void QueryProfile::SetAccesseeUserId(int32_t accesseeUserId)
 bool QueryProfile::Marshalling(MessageParcel& parcel) const
 {
     WRITE_HELPER_RET(parcel, String, accesserDeviceId_, false);
-    WRITE_HELPER_RET(parcel, Int64, accesserTokenId_, false);
     WRITE_HELPER_RET(parcel, Int32, accesserUserId_, false);
+    WRITE_HELPER_RET(parcel, Int64, accesserTokenId_, false);
     WRITE_HELPER_RET(parcel, String, accesseeDeviceId_, false);
-    WRITE_HELPER_RET(parcel, Int64, accesseeTokenId_, false);
     WRITE_HELPER_RET(parcel, Int32, accesseeUserId_, false);
+    WRITE_HELPER_RET(parcel, Int64, accesseeTokenId_, false);
     return true;
 }
 
 bool QueryProfile::UnMarshalling(MessageParcel& parcel)
 {
     READ_HELPER_RET(parcel, String, accesserDeviceId_, false);
-    READ_HELPER_RET(parcel, Int64, accesserTokenId_, false);
     READ_HELPER_RET(parcel, Int32, accesserUserId_, false);
+    READ_HELPER_RET(parcel, Int64, accesserTokenId_, false);
     READ_HELPER_RET(parcel, String, accesseeDeviceId_, false);
-    READ_HELPER_RET(parcel, Int64, accesseeTokenId_, false);
     READ_HELPER_RET(parcel, Int32, accesseeUserId_, false);
+    READ_HELPER_RET(parcel, Int64, accesseeTokenId_, false);
     return true;
 }
 
@@ -125,13 +127,13 @@ std::string QueryProfile::dump() const
         return EMPTY_STRING;
     }
     cJSON_AddStringToObject(json, ACCESSER_DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(accesserDeviceId_).c_str());
-    cJSON_AddNumberToObject(json, ACCESSER_TOKEN_ID.c_str(), accesserTokenId_);
     cJSON_AddStringToObject(json, ACCESSER_USER_ID.c_str(),
         ProfileUtils::GetAnonyString(std::to_string(accesserUserId_)).c_str());
+    cJSON_AddNumberToObject(json, ACCESSER_TOKEN_ID.c_str(), accesserTokenId_);
     cJSON_AddStringToObject(json, ACCESSEE_DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(accesseeDeviceId_).c_str());
-    cJSON_AddNumberToObject(json, ACCESSEE_TOKEN_ID.c_str(), accesseeTokenId_);
     cJSON_AddStringToObject(json, ACCESSEE_USER_ID.c_str(),
         ProfileUtils::GetAnonyString(std::to_string(accesseeUserId_)).c_str());
+    cJSON_AddNumberToObject(json, ACCESSEE_TOKEN_ID.c_str(), accesseeTokenId_);
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);
