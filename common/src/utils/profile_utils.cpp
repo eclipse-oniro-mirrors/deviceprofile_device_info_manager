@@ -830,7 +830,8 @@ bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& pro
     return false;
 }
 
-bool ProfileUtils::IsPropertyValidInt64(const std::map<std::string, std::string>& propertyMap, const std::string& property)
+bool ProfileUtils::IsPropertyValidInt64(const std::map<std::string,
+    std::string>& propertyMap, const std::string& property)
 {
     if (property.empty() || propertyMap.find(property) == propertyMap.end()) {
         HILOGE("property is valid, property : %{public}s", property.c_str());
