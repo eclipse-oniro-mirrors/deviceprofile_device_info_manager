@@ -46,7 +46,6 @@
 #include "switch_profile_manager.h"
 #include "trust_profile_manager.h"
 #include "session_key_manager.h"
-#include "local_service_info_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
