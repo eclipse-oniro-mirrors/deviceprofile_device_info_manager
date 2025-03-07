@@ -54,12 +54,12 @@ int32_t PinCodeInvalidCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel
 int32_t PinCodeInvalidCallbackStub::OnPincodeInvalidInner(MessageParcel& data, MessageParcel& reply)
 {
     HILOGI("called");
-    ServiceInfoProfile serviceInfoProfile;
-    if (!serviceInfoProfile.UnMarshalling(data)) {
+    LocalServiceInfo localServiceInfo;
+    if (!localServiceInfo.UnMarshalling(data)) {
         HILOGE("read parcel fail!");
         return DP_READ_PARCEL_FAIL;
     }
-    int32_t ret = OnPincodeInvalid(serviceInfoProfile);
+    int32_t ret = OnPincodeInvalid(localServiceInfo);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;

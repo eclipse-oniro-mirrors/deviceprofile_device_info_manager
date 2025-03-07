@@ -216,6 +216,23 @@ int32_t DistributedDeviceProfileStub::NotifyNewEventInner(uint32_t code, Message
         case static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_PINCODE_INVALID):
             return UnSubscribePinCodeInvalidInner(data, reply);
         default:
+            return NotifyLocalServiceEventInner(code, data, reply, option);
+    }
+}
+
+int32_t DistributedDeviceProfileStub::NotifyLocalServiceEventInner(uint32_t code, MessageParcel& data,
+    MessageParcel& reply, MessageOption& option)
+{
+    switch (code) {
+        case static_cast<uint32_t>(DPInterfaceCode::PUT_LOCAL_SERVICE_INFO):
+            return PutLocalServiceInfoInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::UPDATA_LOCAL_SERVICE_INFO):
+            return UpdateLocalServiceInfoInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::GET_LOCAL_SERVICE_INFO_BY_BINDLE_AND_PINTYPE):
+            return GetLocalServiceInfoByBundleAndPinTypeInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::DELETE_LOCAL_SERVICE_INFO):
+            return DeleteLocalServiceInfoInner(data, reply);
+        default:
             HILOGW("unknown request code, please check, code = %{public}u", code);
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
     }
@@ -1116,15 +1133,17 @@ int32_t DistributedDeviceProfileStub::UnSubscribeDeviceProfileInitedInner(Messag
 
 int32_t DistributedDeviceProfileStub::SubscribePinCodeInvalidInner(MessageParcel& data, MessageParcel& reply)
 {
-    std::string tokenId = "";
-    READ_HELPER(data, String, tokenId);
+    std::string bundleName = "";
+    int32_t pinExchangeType = DEFAULT_PIN_EXCHANGE_TYPE;
+    READ_HELPER(data, String, bundleName);
+    READ_HELPER(data, Int32, pinExchangeType);
     sptr<IRemoteObject> pincodeInvalidCallback = data.ReadRemoteObject();
     if (pincodeInvalidCallback == nullptr) {
         HILOGE("read remoteObject failed!");
         return ERR_FLATTEN_OBJECT;
     }
-    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().SubscribePinCodeInvalid(tokenId,
-        pincodeInvalidCallback);
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().SubscribePinCodeInvalid(bundleName,
+        pinExchangeType, pincodeInvalidCallback);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
@@ -1134,9 +1153,12 @@ int32_t DistributedDeviceProfileStub::SubscribePinCodeInvalidInner(MessageParcel
 
 int32_t DistributedDeviceProfileStub::UnSubscribePinCodeInvalidInner(MessageParcel& data, MessageParcel& reply)
 {
-    std::string tokenId = "";
-    READ_HELPER(data, String, tokenId);
-    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().UnSubscribePinCodeInvalid(tokenId);
+    std::string bundleName = "";
+    int32_t pinExchangeType = DEFAULT_PIN_EXCHANGE_TYPE;
+    READ_HELPER(data, String, bundleName);
+    READ_HELPER(data, Int32, pinExchangeType);
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().UnSubscribePinCodeInvalid(bundleName,
+        pinExchangeType);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
@@ -1155,6 +1177,74 @@ int32_t DistributedDeviceProfileStub::PutAllTrustedDevicesInner(MessageParcel& d
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::PutLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    LocalServiceInfo localServiceInfo;
+    if (!localServiceInfo.UnMarshalling(data)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutLocalServiceInfo(localServiceInfo);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::UpdateLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    LocalServiceInfo localServiceInfo;
+    if (!localServiceInfo.UnMarshalling(data)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().UpdateLocalServiceInfo(localServiceInfo);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::GetLocalServiceInfoByBundleAndPinTypeInner(MessageParcel& data,
+    MessageParcel& reply)
+{
+    LocalServiceInfo localServiceInfo;
+    int32_t pinExchangeType = 0;
+    std::string bundleName = "";
+    READ_HELPER(data, String, bundleName);
+    READ_HELPER(data, Int32, pinExchangeType);
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetLocalServiceInfoByBundleAndPinType(
+        bundleName, pinExchangeType, localServiceInfo);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    if (!localServiceInfo.Marshalling(reply)) {
+        HILOGE("write parcel fail!");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStub::DeleteLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply)
+{
+    int32_t pinExchangeType = 0;
+    std::string bundleName = "";
+    READ_HELPER(data, String, bundleName);
+    READ_HELPER(data, Int32, pinExchangeType);
+    int32_t ret =
+        DistributedDeviceProfileServiceNew::GetInstance().DeleteLocalServiceInfo(bundleName, pinExchangeType);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return DP_WRITE_PARCEL_FAIL;
     }
     return DP_SUCCESS;
 }

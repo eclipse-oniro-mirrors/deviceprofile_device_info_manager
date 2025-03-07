@@ -25,10 +25,12 @@
 #include "device_profile_filter_options.h"
 #include "distributed_device_profile_stub_new.h"
 #include "dp_account_common_event.h"
-#include "i_dp_inited_callback.h"
 #include "event_handler.h"
 #include "event_runner.h"
+#include "i_dp_inited_callback.h"
+#include "local_service_info.h"
 #include "product_info.h"
+#include "local_service_info.h"
 #include "service_info_profile.h"
 #include "service_info_unique_key.h"
 #include "single_instance.h"
@@ -96,9 +98,15 @@ public:
         sptr<IRemoteObject> syncCompletedCallback) override;
     int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IRemoteObject> dpInitedCallback) override;
     int32_t UnSubscribeDeviceProfileInited(int32_t saId) override;
-    int32_t SubscribePinCodeInvalid(const std::string& tokenId, sptr<IRemoteObject> pinCodeCallback) override;
-    int32_t UnSubscribePinCodeInvalid(const std::string& tokenId) override;
+    int32_t SubscribePinCodeInvalid(const std::string& bundleName, int32_t pinExchangeType,
+        sptr<IRemoteObject> pinCodeCallback) override;
+    int32_t UnSubscribePinCodeInvalid(const std::string& bundleName, int32_t pinExchangeType) override;
     int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo> deviceInfos) override;
+    int32_t PutLocalServiceInfo(const LocalServiceInfo& localServiceInfo)override;
+    int32_t UpdateLocalServiceInfo(const LocalServiceInfo& localServiceInfo)override;
+    int32_t GetLocalServiceInfoByBundleAndPinType(const std::string& bundleName,
+        int32_t pinExchangeType, LocalServiceInfo& localServiceInfo)override;
+    int32_t DeleteLocalServiceInfo(const std::string& bundleName, int32_t pinExchangeType)override;
     int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) override;
     int32_t Dump(int32_t fd, const std::vector<std::u16string>& args) override;
     void DelayUnloadTask() override;
@@ -120,7 +128,7 @@ private:
     int32_t SaveSwitchProfilesFromTempCache();
     int32_t SaveDynamicProfilesFromTempCache();
     int32_t NotifyDeviceProfileInited();
-    int32_t NotifyPinCodeInvalid(const ServiceInfoProfile& serviceInfoProfile);
+    int32_t NotifyPinCodeInvalid(const LocalServiceInfo& localServiceInfo);
     void GetDynamicProfilesFromTempCache(std::map<std::string, std::string>& entries);
     void ClearProfileCache();
     int32_t UnInitNext();
@@ -136,7 +144,7 @@ private:
     std::mutex dpInitedCallbackMapMtx_;
     std::map<int32_t, sptr<IRemoteObject>> dpInitedCallbackMap_;
     std::mutex pinCodeCallbackMapMtx_;
-    std::map<std::string, sptr<IRemoteObject>> pinCodeCallbackMap_;
+    std::map<std::pair<std::string, int32_t>, sptr<IRemoteObject>> pinCodeCallbackMap_;
     std::mutex switchProfileMapMtx_;
     std::map<std::string, CharacteristicProfile> switchProfileMap_;
     std::mutex depSaIdsMtx_;

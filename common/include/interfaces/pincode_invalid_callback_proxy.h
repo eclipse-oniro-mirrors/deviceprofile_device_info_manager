@@ -31,7 +31,7 @@ public:
         : IRemoteProxy<IPincodeInvalidCallback>(impl) {}
     ~PinCodeInvalidCallbackProxy() = default;
 
-    int32_t OnPincodeInvalid(const ServiceInfoProfile& serviceInfoProfile) override;
+    int32_t OnPincodeInvalid(const LocalServiceInfo& localServiceInfo) override;
 
 private:
     static inline BrokerDelegator<PinCodeInvalidCallbackProxy> delegator_;

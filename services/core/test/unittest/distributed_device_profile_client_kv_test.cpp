@@ -682,9 +682,11 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetDeviceIconInfos_001, TestSize.
  */
 HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribePinCodeInvalid_001, TestSize.Level0)
 {
-    std::string tokenId;
+    std::string bundleName = "";
+    int32_t pinExchangeType = 5;
     sptr<IPincodeInvalidCallback> pinCodeCallback;
-    int32_t errCode = DistributedDeviceProfileClient::GetInstance().SubscribePinCodeInvalid(tokenId, pinCodeCallback);
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().SubscribePinCodeInvalid(bundleName,
+        pinExchangeType, pinCodeCallback);
     EXPECT_EQ(errCode, DP_INVALID_PARAM);
 }
 
@@ -696,8 +698,10 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribePinCodeInvalid_001, Test
  */
 HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribePinCodeInvalid_001, TestSize.Level0)
 {
-    std::string tokenId;
-    int32_t errCode = DistributedDeviceProfileClient::GetInstance().UnSubscribePinCodeInvalid(tokenId);
+    std::string bundleName = "";
+    int32_t pinExchangeType = 5;
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().UnSubscribePinCodeInvalid(bundleName,
+        pinExchangeType);
     EXPECT_EQ(errCode, DP_SUCCESS);
 }
 

@@ -19,7 +19,7 @@
 #include <cstdint>
 #include "iremote_broker.h"
 #include "distributed_device_profile_enums.h"
-#include "service_info_profile.h"
+#include "local_service_info.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -29,7 +29,7 @@ public:
     DECLARE_INTERFACE_DESCRIPTOR(u"OHOS.DeviceProfile.IPincodeInvalidCallback");
     IPincodeInvalidCallback() = default;
     virtual ~IPincodeInvalidCallback() = default;
-    virtual int32_t OnPincodeInvalid(const ServiceInfoProfile& serviceInfoProfile) = 0;
+    virtual int32_t OnPincodeInvalid(const LocalServiceInfo& localServiceInfo) = 0;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

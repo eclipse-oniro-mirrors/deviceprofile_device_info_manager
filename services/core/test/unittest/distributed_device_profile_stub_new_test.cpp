@@ -64,8 +64,9 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IRemoteObject> dpInitedCallback) override;
     int32_t UnSubscribeDeviceProfileInited(int32_t saId) override;
-    int32_t SubscribePinCodeInvalid(const std::string& tokenId, sptr<IRemoteObject> pinCodeCallback) override;
-    int32_t UnSubscribePinCodeInvalid(const std::string& tokenId) override;
+    int32_t SubscribePinCodeInvalid(const std::string& bundleName, int32_t pinExchangeType,
+        sptr<IRemoteObject> pinCodeCallback) override;
+    int32_t UnSubscribePinCodeInvalid(const std::string& bundleName, int32_t pinExchangeType) override;
     int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo> deviceInfos) override;
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
         sptr<IRemoteObject> syncCompletedCallback) override;
@@ -87,6 +88,11 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
     int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
     int32_t GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
         std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
+    int32_t PutLocalServiceInfo(const LocalServiceInfo& localServiceInfo) override;
+    int32_t UpdateLocalServiceInfo(const LocalServiceInfo& localServiceInfo) override;
+    int32_t GetLocalServiceInfoByBundleAndPinType(const std::string& bundleName,
+        int32_t pinExchangeType, LocalServiceInfo& localServiceInfo) override;
+    int32_t DeleteLocalServiceInfo(const std::string& bundleName, int32_t pinExchangeType) override;
     void DelayUnloadTask() override;
     bool IsInited() override;
 };
@@ -284,17 +290,20 @@ int32_t MockDistributedDeviceProfileStubNew::UnSubscribeDeviceProfileInited(int3
     return 0;
 }
 
-int32_t MockDistributedDeviceProfileStubNew::SubscribePinCodeInvalid(const std::string& tokenId,
-    sptr <IRemoteObject> pinCodeCallback)
+int32_t MockDistributedDeviceProfileStubNew::SubscribePinCodeInvalid(const std::string& bundleName,
+    int32_t pinExchangeType, sptr <IRemoteObject> pinCodeCallback)
 {
-    (void)tokenId;
+    (void)bundleName;
+    (void)pinExchangeType;
     (void)pinCodeCallback;
     return 0;
 }
 
-int32_t MockDistributedDeviceProfileStubNew::UnSubscribePinCodeInvalid(const std::string& tokenId)
+int32_t MockDistributedDeviceProfileStubNew::UnSubscribePinCodeInvalid(const std::string& bundleName,
+    int32_t pinExchangeType)
 {
-    (void)tokenId;
+    (void)bundleName;
+    (void)pinExchangeType;
     return 0;
 }
     
@@ -402,6 +411,31 @@ int32_t MockDistributedDeviceProfileStubNew::GetServiceInfoProfileListByBundleNa
 {
     (void)key;
     (void)serviceInfoProfiles;
+    return 0;
+}
+int32_t MockDistributedDeviceProfileStubNew::PutLocalServiceInfo(const LocalServiceInfo& localServiceInfo)
+{
+    (void)localServiceInfo;
+    return 0;
+}
+int32_t MockDistributedDeviceProfileStubNew::UpdateLocalServiceInfo(const LocalServiceInfo& localServiceInfo)
+{
+    (void)localServiceInfo;
+    return 0;
+}
+int32_t MockDistributedDeviceProfileStubNew::GetLocalServiceInfoByBundleAndPinType(const std::string& bundleName,
+    int32_t pinExchangeType, LocalServiceInfo& localServiceInfo)
+{
+    (void)bundleName;
+    (void)pinExchangeType;
+    (void)localServiceInfo;
+    return 0;
+}
+int32_t MockDistributedDeviceProfileStubNew::DeleteLocalServiceInfo(const std::string& bundleName,
+    int32_t pinExchangeType)
+{
+    (void)bundleName;
+    (void)pinExchangeType;
     return 0;
 }
 /**

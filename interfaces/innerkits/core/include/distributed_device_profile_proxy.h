@@ -72,8 +72,9 @@ public:
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IRemoteObject> dpInitedCallback) override;
     int32_t UnSubscribeDeviceProfileInited(int32_t saId) override;
-    int32_t SubscribePinCodeInvalid(const std::string& tokenId, sptr<IRemoteObject> pinCodeCallback) override;
-    int32_t UnSubscribePinCodeInvalid(const std::string& tokenId) override;
+    int32_t SubscribePinCodeInvalid(const std::string& bundleName, int32_t pinExchangeType,
+        sptr<IRemoteObject> pinCodeCallback) override;
+    int32_t UnSubscribePinCodeInvalid(const std::string& bundleName, int32_t pinExchangeType) override;
     int32_t SyncDeviceProfile(const DpSyncOptions& syncOptions, sptr<IRemoteObject> syncCompletedCallback) override;
     int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) override;
     int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo> deviceInfos) override;
@@ -91,6 +92,11 @@ public:
     int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
     int32_t GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
         std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
+    int32_t PutLocalServiceInfo(const LocalServiceInfo& localServiceInfo) override;
+    int32_t UpdateLocalServiceInfo(const LocalServiceInfo& localServiceInfo) override;
+    int32_t GetLocalServiceInfoByBundleAndPinType(const std::string& bundleName,
+        int32_t pinExchangeType, LocalServiceInfo& localServiceInfo) override;
+    int32_t DeleteLocalServiceInfo(const std::string& bundleName, int32_t pinExchangeType) override;
 
 private:
     static inline BrokerDelegator<DistributedDeviceProfileProxy> delegator_;

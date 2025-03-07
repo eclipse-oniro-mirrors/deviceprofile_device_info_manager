@@ -607,7 +607,8 @@ void DistributedDeviceProfileClient::ReSubscribeDeviceProfileInited()
 void DistributedDeviceProfileClient::ReSubscribePinCodeInvalid()
 {
     HILOGI("call");
-    std::string tokenId = "";
+    std::string bundleName = "";
+    int32_t pinExchangeType = DEFAULT_PIN_EXCHANGE_TYPE;
     sptr<IPincodeInvalidCallback> pinCodeCallback = nullptr;
     {
         std::lock_guard<std::mutex> lock(serviceLock_);
@@ -615,10 +616,11 @@ void DistributedDeviceProfileClient::ReSubscribePinCodeInvalid()
             HILOGI("not use Retry subscribe pincode invalid");
             return;
         }
-        tokenId = tokenId_;
+        bundleName = bundleName_;
+        pinExchangeType = pinExchangeType_;
         pinCodeCallback = pinCodeCallback_;
     }
-    int32_t ret = SubscribePinCodeInvalid(tokenId, pinCodeCallback);
+    int32_t ret = SubscribePinCodeInvalid(bundleName, pinExchangeType, pinCodeCallback);
     if (ret != DP_SUCCESS) {
         HILOGE("Retry subscribe pincode invalid failed");
     } else {
@@ -699,7 +701,7 @@ int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfileInited(int32_t s
     return DP_SUCCESS;
 }
 
-int32_t DistributedDeviceProfileClient::SubscribePinCodeInvalid(const std::string& tokenId,
+int32_t DistributedDeviceProfileClient::SubscribePinCodeInvalid(const std::string& bundleName, int32_t pinExchangeType,
     sptr<IPincodeInvalidCallback> pinCodeCallback)
 {
     HILOGI("enter");
@@ -709,8 +711,12 @@ int32_t DistributedDeviceProfileClient::SubscribePinCodeInvalid(const std::strin
         HILOGE("Get dp service failed");
         return DP_SUBSCRIBE_INITED_FALI;
     }
-    if (tokenId.empty()) {
+    if (bundleName.empty()) {
         HILOGE("tokenId is invalid");
+        return DP_INVALID_PARAM;
+    }
+    if (pinExchangeType == DEFAULT_PIN_EXCHANGE_TYPE) {
+        HILOGE("pinExchangeType is invalid");
         return DP_INVALID_PARAM;
     }
     if (pinCodeCallback == nullptr) {
@@ -724,19 +730,21 @@ int32_t DistributedDeviceProfileClient::SubscribePinCodeInvalid(const std::strin
     }
     {
         std::lock_guard<std::mutex> lock(serviceLock_);
-        int32_t ret = dpService->SubscribePinCodeInvalid(tokenId, innerPinCodeCallback);
+        int32_t ret = dpService->SubscribePinCodeInvalid(bundleName, pinExchangeType, innerPinCodeCallback);
         if (ret != DP_SUCCESS) {
             HILOGE("Subscribe DP Inited failed!");
             return ret;
         }
-        tokenId_ = tokenId;
+        bundleName_ = bundleName;
+        pinExchangeType_ = pinExchangeType;
         pinCodeCallback_ = pinCodeCallback;
     }
     HILOGI("Subscribe pincodeInvalid succeed!");
     return DP_SUCCESS;
 }
 
-int32_t DistributedDeviceProfileClient::UnSubscribePinCodeInvalid(const std::string& tokenId)
+int32_t DistributedDeviceProfileClient::UnSubscribePinCodeInvalid(const std::string& bundleName,
+    int32_t pinExchangeType)
 {
     HILOGI("enter");
     if (pinCodeCallback_ == nullptr) {
@@ -749,13 +757,17 @@ int32_t DistributedDeviceProfileClient::UnSubscribePinCodeInvalid(const std::str
         HILOGE("Get dp service failed");
         return DP_GET_SERVICE_FAILED;
     }
-    if (tokenId.empty()) {
+    if (bundleName.empty()) {
         HILOGE("tokenId is invalid");
+        return DP_INVALID_PARAM;
+    }
+    if (pinExchangeType == DEFAULT_PIN_EXCHANGE_TYPE) {
+        HILOGE("pinExchangeType is invalid");
         return DP_INVALID_PARAM;
     }
     {
         std::lock_guard<std::mutex> lock(serviceLock_);
-        int32_t ret = dpService->UnSubscribePinCodeInvalid(tokenId);
+        int32_t ret = dpService->UnSubscribePinCodeInvalid(bundleName, pinExchangeType);
         if (ret != DP_SUCCESS) {
             HILOGE("Unsubscribe DP Inited failed!");
             return ret;
@@ -821,6 +833,48 @@ int32_t DistributedDeviceProfileClient::DeleteSessionKey(uint32_t userId, int32_
         return DP_GET_SERVICE_FAILED;
     }
     return dpService->DeleteSessionKey(userId, sessionKeyId);
+}
+
+int32_t DistributedDeviceProfileClient::PutLocalServiceInfo(const LocalServiceInfo& localServiceInfo)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->PutLocalServiceInfo(localServiceInfo);
+}
+
+int32_t DistributedDeviceProfileClient::UpdateLocalServiceInfo(const LocalServiceInfo& localServiceInfo)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->UpdateLocalServiceInfo(localServiceInfo);
+}
+
+int32_t DistributedDeviceProfileClient::GetLocalServiceInfoByBundleAndPinType(const std::string& bundleName,
+    int32_t pinExchangeType, LocalServiceInfo& localServiceInfo)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->GetLocalServiceInfoByBundleAndPinType(bundleName, pinExchangeType, localServiceInfo);
+}
+
+int32_t DistributedDeviceProfileClient::DeleteLocalServiceInfo(const std::string& bundleName,
+    int32_t pinExchangeType)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->DeleteLocalServiceInfo(bundleName, pinExchangeType);
 }
 
 void DistributedDeviceProfileClient::SystemAbilityListener::OnRemoveSystemAbility(int32_t systemAbilityId,
