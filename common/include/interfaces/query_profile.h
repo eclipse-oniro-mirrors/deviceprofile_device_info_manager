@@ -50,7 +50,6 @@ private:
     std::string accesseeDeviceId_;
     int32_t accesseeUserId_;
     int64_t accesseeTokenId_;
-
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
