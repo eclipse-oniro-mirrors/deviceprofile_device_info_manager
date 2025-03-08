@@ -480,42 +480,99 @@ int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId, std::vector
     return DP_SUCCESS;
 }
 
+int32_t TrustProfileManager::GetAccessControlProfile(const QueryType& queryType,
+    const QueryProfile& queryProfile, std::vector<AccessControlProfile>& profile)
+{
+    std::vector<AccessControlProfile> aclProfiles;
+    int32_t ret = GetAllAccessControlProfiles(aclProfiles);
+    if (ret != DP_SUCCESS) {
+        HILOGE("GetAllAccessControlProfiles faild");
+        return ret;
+    }
+    if (queryType == QueryType::ACER_AND_ACEE_TOKENID) {
+        GetAclByAcerAndAceeTokenId(queryProfile, aclProfiles, profile);
+    }
+    if (queryType == QueryType::ACER_TOKENID) {
+        GetAclByAcerTokenId(queryProfile, aclProfiles, profile);
+    }
+    if (profile.empty()) {
+        HILOGE("by userId and tokenId not find data, queryProfile : %{public}s", queryProfile.dump().c_str());
+        return DP_NOT_FIND_DATA;
+    }
+    HILOGE("profile size : %{public}zu", profile.size());
+    return DP_SUCCESS;
+}
+
+void TrustProfileManager::GetAclByAcerTokenId(const QueryProfile& queryProfile,
+    const std::vector<AccessControlProfile>& aclProfiles, std::vector<AccessControlProfile>& profile)
+{
+    for (auto aclProfile : aclProfiles) {
+        if (aclProfile.GetTrustDeviceId() != queryProfile.GetAccesseeDeviceId() &&
+            aclProfile.GetTrustDeviceId() != queryProfile.GetAccesserDeviceId()) {
+            continue;
+        }
+        if (aclProfile.GetAccesser().GetAccesserDeviceId() != queryProfile.GetAccesserDeviceId() ||
+            aclProfile.GetAccessee().GetAccesseeDeviceId() != queryProfile.GetAccesseeDeviceId() ||
+            aclProfile.GetStatus() != static_cast<int32_t>(Status::ACTIVE)) {
+            continue;
+        }
+        if (aclProfile.GetAccesser().GetAccesserUserId() != queryProfile.GetAccesserUserId() &&
+            aclProfile.GetAccesser().GetAccesserUserId() != DEFAULT_USER_ID &&
+            aclProfile.GetAccesser().GetAccesserUserId() != DEFAULT_USER_ID_EXTRA) {
+            continue;
+        }
+        if (aclProfile.GetBindType() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
+            aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::DEVICE) ||
+            aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::USER)) {
+            profile.emplace_back(aclProfile);
+            continue;
+        }
+        if (aclProfile.GetAccesser().GetAccesserTokenId() == queryProfile.GetAccesserTokenId()) {
+            profile.emplace_back(aclProfile);
+        }
+    }
+    return;
+}
+
+void TrustProfileManager::GetAclByAcerAndAceeTokenId(const QueryProfile& queryProfile,
+    const std::vector<AccessControlProfile>& aclProfiles, std::vector<AccessControlProfile>& profile)
+{
+    for (auto aclProfile : aclProfiles) {
+        if (aclProfile.GetTrustDeviceId() != queryProfile.GetAccesseeDeviceId() &&
+            aclProfile.GetTrustDeviceId() != queryProfile.GetAccesserDeviceId()) {
+            continue;
+        }
+        if (aclProfile.GetAccesser().GetAccesserDeviceId() != queryProfile.GetAccesserDeviceId() ||
+            aclProfile.GetAccessee().GetAccesseeDeviceId() != queryProfile.GetAccesseeDeviceId() ||
+            aclProfile.GetStatus() != static_cast<int32_t>(Status::ACTIVE)) {
+            continue;
+        }
+        if ((aclProfile.GetAccesser().GetAccesserUserId() != queryProfile.GetAccesserUserId() &&
+            aclProfile.GetAccesser().GetAccesserUserId() != DEFAULT_USER_ID &&
+            aclProfile.GetAccesser().GetAccesserUserId() != DEFAULT_USER_ID_EXTRA) ||
+            (aclProfile.GetAccessee().GetAccesseeUserId() != queryProfile.GetAccesseeUserId() &&
+            aclProfile.GetAccessee().GetAccesseeUserId() != DEFAULT_USER_ID &&
+            aclProfile.GetAccessee().GetAccesseeUserId() != DEFAULT_USER_ID_EXTRA)) {
+            continue;
+        }
+        if (aclProfile.GetBindType() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
+            aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::DEVICE) ||
+            aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::USER)) {
+            profile.emplace_back(aclProfile);
+            continue;
+        }
+        if (aclProfile.GetAccesser().GetAccesserTokenId() == queryProfile.GetAccesserTokenId() &&
+            aclProfile.GetAccessee().GetAccesseeTokenId() == queryProfile.GetAccesseeTokenId()) {
+            profile.emplace_back(aclProfile);
+        }
+    }
+    return;
+}
+
 int32_t TrustProfileManager::GetAllAccessControlProfile(std::vector<AccessControlProfile>& profile)
 {
     std::lock_guard<std::mutex> lock(aclMutex_);
-    std::shared_ptr<ResultSet> resultSet = GetResultSet(SELECT_ACCESS_CONTROL_TABLE, std::vector<ValueObject> {});
-    if (resultSet == nullptr) {
-        HILOGE("resultSet is nullptr");
-        return DP_GET_RESULTSET_FAIL;
-    }
-    int32_t rowCount = ROWCOUNT_INIT;
-    resultSet->GetRowCount(rowCount);
-    if (rowCount == 0) {
-        HILOGE("access_control_table no data");
-        resultSet->Close();
-        return DP_NOT_FIND_DATA;
-    }
-    while (resultSet->GoToNextRow() == DP_SUCCESS) {
-        int32_t columnIndex = COLUMNINDEX_INIT;
-        int64_t accesserId = ACCESSERID_INIT;
-        resultSet->GetColumnIndex(ACCESSER_ID, columnIndex);
-        resultSet->GetLong(columnIndex, accesserId);
-        int64_t accesseeId = ACCESSEEID_INIT;
-        resultSet->GetColumnIndex(ACCESSEE_ID, columnIndex);
-        resultSet->GetLong(columnIndex, accesseeId);
-        int32_t ret = this->GetAccessControlProfile(resultSet, accesserId, accesseeId, profile);
-        if (ret != DP_SUCCESS) {
-            HILOGE("GetAccessControlProfile faild");
-            resultSet->Close();
-            return ret;
-        }
-    }
-    resultSet->Close();
-    if (profile.empty()) {
-        return DP_NOT_FIND_DATA;
-    }
-    HILOGI("end!");
-    return DP_SUCCESS;
+    return GetAllAccessControlProfiles(profile);
 }
 
 int32_t TrustProfileManager::GetAccessControlProfile(const std::string& bundleName,
@@ -595,46 +652,45 @@ int32_t TrustProfileManager::GetAccessControlProfile(const std::map<std::string,
     std::vector<AccessControlProfile>& profile)
 {
     std::lock_guard<std::mutex> lock(aclMutex_);
-    if (params.find(TRUST_DEVICE_ID) != params.end() && params.find(STATUS) != params.end()) {
-        if (params.find(USERID) != params.end() && params.find(BUNDLENAME) != params.end()) {
-            int32_t ret = this->GetAccessControlProfile(std::atoi(params.at(USERID).c_str()),
-                params.at(BUNDLENAME), params.at(TRUST_DEVICE_ID),
-                std::atoi(params.at(STATUS).c_str()), profile);
-            return ret;
+    if (params.find(TRUST_DEVICE_ID) != params.end() &&
+        ProfileUtils::IsPropertyValid(params, STATUS, INT32_MIN, INT32_MAX)) {
+        if (ProfileUtils::IsPropertyValid(params, USERID, INT32_MIN, INT32_MAX) &&
+            params.find(BUNDLENAME) != params.end()) {
+            return GetAccessControlProfile(std::atoi(params.at(USERID).c_str()),
+                params.at(BUNDLENAME), params.at(TRUST_DEVICE_ID), std::atoi(params.at(STATUS).c_str()), profile);
         }
         if (params.find(BUNDLENAME) != params.end()) {
-            int32_t ret = this->GetAccessControlProfile(params.at(BUNDLENAME),
+            return GetAccessControlProfile(params.at(BUNDLENAME),
                 params.at(TRUST_DEVICE_ID), std::atoi(params.at(STATUS).c_str()), profile);
-            return ret;
         }
-        if (params.find(TOKENID) != params.end()) {
-            int32_t ret = this->GetAccessControlProfileByTokenId(std::atoi(params.at(TOKENID).c_str()),
+        if (ProfileUtils::IsPropertyValidInt64(params, TOKENID)) {
+            return GetAccessControlProfileByTokenId(std::atoll(params.at(TOKENID).c_str()),
                 params.at(TRUST_DEVICE_ID), std::atoi(params.at(STATUS).c_str()), profile);
-            return ret;
         }
     }
-    if (params.find(BIND_TYPE) != params.end() && params.find(STATUS) != params.end()) {
-        if (params.find(USERID) != params.end() && params.find(BUNDLENAME) != params.end()) {
-            int32_t ret = this->GetAccessControlProfile(std::atoi(params.at(USERID).c_str()),
+    if (ProfileUtils::IsPropertyValid(params, BIND_TYPE, INT32_MIN, INT32_MAX) &&
+        ProfileUtils::IsPropertyValid(params, STATUS, INT32_MIN, INT32_MAX)) {
+        if (ProfileUtils::IsPropertyValid(params, USERID, INT32_MIN, INT32_MAX) &&
+            params.find(BUNDLENAME) != params.end()) {
+            return GetAccessControlProfile(std::atoi(params.at(USERID).c_str()),
                 params.at(BUNDLENAME), std::atoi(params.at(BIND_TYPE).c_str()),
                 std::atoi(params.at(STATUS).c_str()), profile);
-            return ret;
         }
         if (params.find(BUNDLENAME) != params.end()) {
-            int32_t ret = this->GetAccessControlProfile(params.at(BUNDLENAME),
-                std::atoi(params.at(BIND_TYPE).c_str()),
+            return GetAccessControlProfile(params.at(BUNDLENAME), std::atoi(params.at(BIND_TYPE).c_str()),
                 std::atoi(params.at(STATUS).c_str()), profile);
-            return ret;
         }
     }
-    if (params.find(USERID) != params.end()) {
+    if (ProfileUtils::IsPropertyValid(params, USERID, INT32_MIN, INT32_MAX)) {
         if (params.find(ACCOUNTID) != params.end()) {
-            int32_t ret = this->GetAccessControlProfile(std::atoi(params.at(USERID).c_str()),
-                params.at(ACCOUNTID), profile);
-            return ret;
+            return GetAccessControlProfile(std::atoi(params.at(USERID).c_str()), params.at(ACCOUNTID), profile);
         }
-        int32_t ret = this->GetAccessControlProfile(std::atoi(params.at(USERID).c_str()), profile);
-        return ret;
+        return GetAccessControlProfile(std::atoi(params.at(USERID).c_str()), profile);
+    }
+    QueryProfile queryProfile;
+    QueryType queryType;
+    if (GenerateQueryProfile(params, queryType, queryProfile)) {
+        return GetAccessControlProfile(queryType, queryProfile, profile);
     }
     HILOGE("params is error");
     return DP_INVALID_PARAMS;
@@ -774,6 +830,70 @@ int32_t TrustProfileManager::CreateUniqueIndex()
         HILOGE("accessee_table unique index create failed");
         return DP_CREATE_UNIQUE_INDEX_FAIL;
     }
+    return DP_SUCCESS;
+}
+
+bool TrustProfileManager::GenerateQueryProfile(const std::map<std::string, std::string>& params,
+    QueryType& queryType, QueryProfile& queryProfile)
+{
+    if (params.find(ACCESSER_DEVICE_ID) != params.end() && params.find(ACCESSEE_DEVICE_ID) != params.end() &&
+        ProfileUtils::IsPropertyValid(params, ACCESSER_USER_ID, INT32_MIN, INT32_MAX) &&
+        ProfileUtils::IsPropertyValidInt64(params, ACCESSER_TOKEN_ID)) {
+        if (ProfileUtils::IsPropertyValid(params, ACCESSEE_USER_ID, INT32_MIN, INT32_MAX) &&
+            ProfileUtils::IsPropertyValidInt64(params, ACCESSEE_TOKEN_ID)) {
+            queryProfile.SetAccesserDeviceId(params.at(ACCESSER_DEVICE_ID));
+            queryProfile.SetAccesserUserId(std::atoi(params.at(ACCESSER_USER_ID).c_str()));
+            queryProfile.SetAccesserTokenId(std::atoll(params.at(ACCESSER_TOKEN_ID).c_str()));
+            queryProfile.SetAccesseeDeviceId(params.at(ACCESSEE_DEVICE_ID));
+            queryProfile.SetAccesseeUserId(std::atoi(params.at(ACCESSEE_USER_ID).c_str()));
+            queryProfile.SetAccesseeTokenId(std::atoll(params.at(ACCESSEE_TOKEN_ID).c_str()));
+            queryType = QueryType::ACER_AND_ACEE_TOKENID;
+            return true;
+        }
+        queryProfile.SetAccesserDeviceId(params.at(ACCESSER_DEVICE_ID));
+        queryProfile.SetAccesserTokenId(std::atoll(params.at(ACCESSER_TOKEN_ID).c_str()));
+        queryProfile.SetAccesserUserId(std::atoi(params.at(ACCESSER_USER_ID).c_str()));
+        queryProfile.SetAccesseeDeviceId(params.at(ACCESSEE_DEVICE_ID));
+        queryType = QueryType::ACER_TOKENID;
+        return true;
+    }
+    return false;
+}
+
+int32_t TrustProfileManager::GetAllAccessControlProfiles(std::vector<AccessControlProfile>& profiles)
+{
+    std::shared_ptr<ResultSet> resultSet = GetResultSet(SELECT_ACCESS_CONTROL_TABLE, std::vector<ValueObject> {});
+    if (resultSet == nullptr) {
+        HILOGE("resultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    int32_t rowCount = ROWCOUNT_INIT;
+    resultSet->GetRowCount(rowCount);
+    if (rowCount == 0) {
+        HILOGE("access_control_table no data");
+        resultSet->Close();
+        return DP_NOT_FIND_DATA;
+    }
+    while (resultSet->GoToNextRow() == DP_SUCCESS) {
+        int32_t columnIndex = COLUMNINDEX_INIT;
+        int64_t accesserId = ACCESSERID_INIT;
+        resultSet->GetColumnIndex(ACCESSER_ID, columnIndex);
+        resultSet->GetLong(columnIndex, accesserId);
+        int64_t accesseeId = ACCESSEEID_INIT;
+        resultSet->GetColumnIndex(ACCESSEE_ID, columnIndex);
+        resultSet->GetLong(columnIndex, accesseeId);
+        int32_t ret = this->GetAccessControlProfile(resultSet, accesserId, accesseeId, profiles);
+        if (ret != DP_SUCCESS) {
+            HILOGE("GetAccessControlProfile faild");
+            resultSet->Close();
+            return ret;
+        }
+    }
+    resultSet->Close();
+    if (profiles.empty()) {
+        return DP_NOT_FIND_DATA;
+    }
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 

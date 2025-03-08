@@ -124,6 +124,12 @@ enum class Status : int32_t {
     ACTIVE = 1,
     MAX = 2
 };
+enum class QueryType : int32_t {
+    MIN = -1,
+    ACER_AND_ACEE_TOKENID = 0,
+    ACER_TOKENID = 1,
+    MAX = 2
+};
 enum SyncStatus {
     SUCCEEDED = 0,
     FAILED = 1,

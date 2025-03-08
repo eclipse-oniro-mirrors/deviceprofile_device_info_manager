@@ -264,6 +264,7 @@ constexpr int32_t NUM_4 = 4;
 constexpr int32_t NUM_5 = 5;
 constexpr int32_t NUM_6 = 6;
 constexpr int32_t DEFAULT_USER_ID = -1;
+constexpr int32_t DEFAULT_USER_ID_EXTRA = 0;
 constexpr int64_t DEFAULT_SERVICE_ID = -1;
 constexpr int32_t DEFAULT_ID = -1;
 constexpr int32_t DEFAULT_SERVICE_PROFILE_ID = -1;

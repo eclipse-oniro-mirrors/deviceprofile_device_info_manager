@@ -830,6 +830,24 @@ bool ProfileUtils::IsPropertyValid(const std::map<std::string, std::string>& pro
     return false;
 }
 
+bool ProfileUtils::IsPropertyValidInt64(const std::map<std::string,
+    std::string>& propertyMap, const std::string& property)
+{
+    if (property.empty() || propertyMap.find(property) == propertyMap.end()) {
+        HILOGE("property is valid, property : %{public}s", property.c_str());
+        return false;
+    }
+    std::string propertyValue = propertyMap.at(property);
+    if (!IsNumStr(propertyValue)) {
+        HILOGE("%{public}s is not numeric string", GetAnonyString(propertyValue).c_str());
+        return false;
+    }
+    if (INT64_MIN < std::atoll(propertyValue.c_str()) && std::atoll(propertyValue.c_str()) < INT64_MAX) {
+        return true;
+    }
+    return false;
+}
+
 bool ProfileUtils::IsNumStr(const std::string& inString)
 {
     if (inString.empty()) {
