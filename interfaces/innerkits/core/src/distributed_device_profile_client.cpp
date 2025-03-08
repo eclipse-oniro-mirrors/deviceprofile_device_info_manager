@@ -118,7 +118,7 @@ void DistributedDeviceProfileClient::SendSubscribeInfosToService()
         return;
     }
     {
-        std::lock_guard<std::mutex> lock(serviceLock_);
+        std::lock_guard<std::mutex> lock(subscribeLock_);
         if (subscribeInfos_.empty() || subscribeInfos_.size() > MAX_SUBSCRIBE_INFO_SIZE) {
             HILOGE("SubscribeInfos size is invalid!size: %{public}zu!", subscribeInfos_.size());
             return;
@@ -453,7 +453,7 @@ int32_t DistributedDeviceProfileClient::SubscribeDeviceProfile(const SubscribeIn
         return DP_GET_SERVICE_FAILED;
     }
     {
-        std::lock_guard<std::mutex> lock(serviceLock_);
+        std::lock_guard<std::mutex> lock(subscribeLock_);
         if (subscribeInfos_.size() > MAX_LISTENER_SIZE) {
             HILOGE("ProfileChangeListeners size is invalid!size: %{public}zu!", subscribeInfos_.size());
             return DP_EXCEED_MAX_SIZE_FAIL;
@@ -475,7 +475,7 @@ int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfile(const Subscribe
         return DP_GET_SERVICE_FAILED;
     }
     {
-        std::lock_guard<std::mutex> lock(serviceLock_);
+        std::lock_guard<std::mutex> lock(subscribeLock_);
         subscribeInfos_.erase(subscribeInfo.GetSubscribeKey() + SEPARATOR + std::to_string(subscribeInfo.GetSaId()));
         HILOGI("subscribeInfos_.size is %{public}zu", subscribeInfos_.size());
     }
@@ -548,8 +548,8 @@ sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfile
 void DistributedDeviceProfileClient::OnServiceDied(const sptr<IRemoteObject>& remote)
 {
     HILOGI("called");
-    std::lock_guard<std::mutex> lock(serviceLock_);
     DpRadarHelper::GetInstance().SetDeviceProfileInit(false);
+    std::lock_guard<std::mutex> lock(serviceLock_);
     dpProxy_ = nullptr;
 }
 
@@ -568,9 +568,13 @@ void DistributedDeviceProfileClient::SubscribeDeviceProfileSA()
     }
     int32_t ret = DP_SUCCESS;
     {
-        std::lock_guard<std::mutex> lock(serviceLock_);
+        std::lock_guard<std::mutex> lock(saListenerLock_);
         if (saListenerCallback_ == nullptr) {
             saListenerCallback_ = sptr<SystemAbilityListener>(new SystemAbilityListener());
+        }
+        if (saListenerCallback_ == nullptr) {
+            HILOGE("Create saListenerCallback failed!");
+            return;
         }
         ret = samgrProxy->SubscribeSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, saListenerCallback_);
     }
@@ -589,12 +593,19 @@ void DistributedDeviceProfileClient::StartThreadSendSubscribeInfos()
 
 void DistributedDeviceProfileClient::ReSubscribeDeviceProfileInited()
 {
-    if (dpInitedCallback_ == nullptr) {
-        HILOGI("not use Retry subscribe dp inited");
-        return;
+    int32_t saId = 0;
+    sptr<IDpInitedCallback> dpInitedCallback = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(dpInitedLock_);
+        if (dpInitedCallback_ == nullptr) {
+            HILOGI("not use Retry subscribe dp inited");
+            return;
+        }
+        saId = saId_;
+        dpInitedCallback = dpInitedCallback_;
     }
-    auto autoTask = [this] () {
-        int32_t ret = SubscribeDeviceProfileInited(saId_, dpInitedCallback_);
+    auto autoTask = [this, saId, dpInitedCallback] () {
+        int32_t ret = SubscribeDeviceProfileInited(saId, dpInitedCallback);
         if (ret != DP_SUCCESS) {
             HILOGE("Retry subscribe dp inited failed");
         } else {
@@ -611,7 +622,7 @@ void DistributedDeviceProfileClient::ReSubscribePinCodeInvalid()
     int32_t pinExchangeType = DEFAULT_PIN_EXCHANGE_TYPE;
     sptr<IPincodeInvalidCallback> pinCodeCallback = nullptr;
     {
-        std::lock_guard<std::mutex> lock(serviceLock_);
+        std::lock_guard<std::mutex> lock(pinCodeLock_);
         if (pinCodeCallback_ == nullptr) {
             HILOGI("not use Retry subscribe pincode invalid");
             return;
@@ -658,7 +669,7 @@ int32_t DistributedDeviceProfileClient::SubscribeDeviceProfileInited(int32_t saI
         return DP_SUBSCRIBE_INITED_FALI;
     }
     {
-        std::lock_guard<std::mutex> lock(serviceLock_);
+        std::lock_guard<std::mutex> lock(dpInitedLock_);
         int32_t ret = dpService->SubscribeDeviceProfileInited(saId, dpInitedCallback);
         if (ret != DP_SUCCESS) {
             HILOGE("Subscribe DP Inited failed!");
@@ -674,9 +685,12 @@ int32_t DistributedDeviceProfileClient::SubscribeDeviceProfileInited(int32_t saI
 int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfileInited(int32_t saId)
 {
     HILOGI("enter");
-    if (dpInitedCallback_ == nullptr) {
-        HILOGE("not subscribe dp inited, no need unsubscribe dp inited");
-        return DP_SUCCESS;
+    {
+        std::lock_guard<std::mutex> lock(dpInitedLock_);
+        if (dpInitedCallback_ == nullptr) {
+            HILOGE("not subscribe dp inited, no need unsubscribe dp inited");
+            return DP_SUCCESS;
+        }
     }
     SubscribeDeviceProfileSA();
     auto dpService = GetDeviceProfileService();
@@ -689,7 +703,7 @@ int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfileInited(int32_t s
         return DP_INVALID_PARAM;
     }
     {
-        std::lock_guard<std::mutex> lock(serviceLock_);
+        std::lock_guard<std::mutex> lock(dpInitedLock_);
         int32_t ret = dpService->UnSubscribeDeviceProfileInited(saId);
         if (ret != DP_SUCCESS) {
             HILOGE("Unsubscribe DP Inited failed!");
@@ -729,7 +743,7 @@ int32_t DistributedDeviceProfileClient::SubscribePinCodeInvalid(const std::strin
         return DP_SUBSCRIBE_PINCODE_INVALID;
     }
     {
-        std::lock_guard<std::mutex> lock(serviceLock_);
+        std::lock_guard<std::mutex> lock(pinCodeLock_);
         int32_t ret = dpService->SubscribePinCodeInvalid(bundleName, pinExchangeType, innerPinCodeCallback);
         if (ret != DP_SUCCESS) {
             HILOGE("Subscribe DP Inited failed!");
@@ -766,7 +780,7 @@ int32_t DistributedDeviceProfileClient::UnSubscribePinCodeInvalid(const std::str
         return DP_INVALID_PARAM;
     }
     {
-        std::lock_guard<std::mutex> lock(serviceLock_);
+        std::lock_guard<std::mutex> lock(pinCodeLock_);
         int32_t ret = dpService->UnSubscribePinCodeInvalid(bundleName, pinExchangeType);
         if (ret != DP_SUCCESS) {
             HILOGE("Unsubscribe DP Inited failed!");
