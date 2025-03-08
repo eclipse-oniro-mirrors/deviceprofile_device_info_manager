@@ -127,16 +127,24 @@ private:
     public:
         void OnRemoteDied(const wptr<IRemoteObject>& remote);
     };
+    std::mutex dpInitedLock_;
     int32_t saId_ = 0;
     sptr<IDpInitedCallback> dpInitedCallback_ = nullptr;
+
+    std::mutex pinCodeLock_;    
     sptr<IPincodeInvalidCallback> pinCodeCallback_ = nullptr;
     std::string bundleName_ = "";
     int32_t pinExchangeType_ = DEFAULT_PIN_EXCHANGE_TYPE;
-    std::condition_variable proxyConVar_;
+
     std::mutex serviceLock_;
+    std::condition_variable proxyConVar_;
     sptr<IDistributedDeviceProfile> dpProxy_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> dpDeathRecipient_ = nullptr;
+
+    std::mutex subscribeLock_;
     std::map<std::string, SubscribeInfo> subscribeInfos_;
+
+    std::mutex saListenerLock_;
     sptr<SystemAbilityListener> saListenerCallback_ = nullptr;
 };
 } // namespace DeviceProfile
