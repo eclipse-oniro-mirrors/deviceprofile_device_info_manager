@@ -131,7 +131,7 @@ private:
     int32_t saId_ = 0;
     sptr<IDpInitedCallback> dpInitedCallback_ = nullptr;
 
-    std::mutex pinCodeLock_;    
+    std::mutex pinCodeLock_;
     sptr<IPincodeInvalidCallback> pinCodeCallback_ = nullptr;
     std::string bundleName_ = "";
     int32_t pinExchangeType_ = DEFAULT_PIN_EXCHANGE_TYPE;
