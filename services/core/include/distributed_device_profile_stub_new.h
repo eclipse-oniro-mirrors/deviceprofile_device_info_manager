@@ -44,6 +44,7 @@ public:
     int32_t PutSessionKeyInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetSessionKeyInner(MessageParcel& data, MessageParcel& reply);
     int32_t UpdateSessionKeyInner(MessageParcel& data, MessageParcel& reply);
+    int32_t PutDeviceProfileBatchInner(MessageParcel& data, MessageParcel& reply);
     int32_t DeleteSessionKeyInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutServiceProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutServiceProfileBatchInner(MessageParcel& data, MessageParcel& reply);
@@ -65,6 +66,20 @@ public:
     int32_t UpdateLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetLocalServiceInfoByBundleAndPinTypeInner(MessageParcel& data, MessageParcel& reply);
     int32_t DeleteLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetDeviceProfilesInner(MessageParcel& data, MessageParcel& reply);
+    int32_t DeleteDeviceProfileBatchInner(MessageParcel& data, MessageParcel& reply);
+    int32_t PutProductInfoBatchInner(MessageParcel& data, MessageParcel& reply);
+    int32_t PutDeviceIconInfoBatchInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetDeviceIconInfosInner(MessageParcel& data, MessageParcel& reply);
+    int32_t PutServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t DeleteServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t UpdateServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetServiceInfoProfileByUniqueKeyInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetServiceInfoProfileListByTokenIdInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetAllServiceInfoProfileListInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetServiceInfoProfileListByBundleNameInner(MessageParcel& data, MessageParcel& reply);
+    int32_t SubscribePinCodeInvalidInner(MessageParcel& data, MessageParcel& reply);
+    int32_t UnSubscribePinCodeInvalidInner(MessageParcel& data, MessageParcel& reply);
     virtual void DelayUnloadTask() = 0;
     virtual bool IsInited() = 0;
 
@@ -76,6 +91,8 @@ private:
     int32_t NotifyAclEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
     int32_t NotifyProfileDataEventInner(uint32_t code, MessageParcel& data,
         MessageParcel& reply, MessageOption& option);
+    int32_t NotifyLocalServiceEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply,
+        MessageOption& option);
 private:
     std::unordered_set<uint32_t> aclAndSubscribeFuncs_;
 };
