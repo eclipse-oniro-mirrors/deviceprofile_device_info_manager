@@ -21,7 +21,7 @@ namespace {
     const std::string TAG = "DpServicesConstants";
 }
 /* DeviceProfileDao */
-const std::string PROFILE_DATA_RDB_PATH = "/data/service/el2/public/database/distributed_device_profile_service/";
+const std::string PROFILE_DATA_RDB_PATH = "/data/service/el1/public/database/distributed_device_profile_service/";
 const std::string PROFILE_DATA_DATABASE_NAME = "profile_data.db";
 const std::string SERVICE_INFO_PROFILE_RDB_PATH =
     "/data/service/el1/public/database/distributed_device_profile_service/";
