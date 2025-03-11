@@ -330,7 +330,7 @@ int32_t OpenCallback::AddAcerColumn(RdbStore& store)
         HILOGE("add column to acer table failed");
         return DP_CREATE_TABLE_FAIL;
     }
-    if (store.ExecuteSql(ALTER_TABLE_ACER_ADD_COLUMN_ACER_SERVICE_ID) != NativeRdb::E_OK) {
+    if (store.ExecuteSql(ALTER_TABLE_ACER_ADD_COLUMN_ACER_SERVICE_NAME) != NativeRdb::E_OK) {
         HILOGE("add column to acer table failed");
         return DP_CREATE_TABLE_FAIL;
     }
@@ -360,7 +360,7 @@ int32_t OpenCallback::AddAceeColumn(RdbStore &store)
         HILOGE("add column to acee table failed");
         return DP_CREATE_TABLE_FAIL;
     }
-    if (store.ExecuteSql(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SERVICE_ID) != NativeRdb::E_OK) {
+    if (store.ExecuteSql(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SERVICE_NAME) != NativeRdb::E_OK) {
         HILOGE("add column to acee table failed");
         return DP_CREATE_TABLE_FAIL;
     }

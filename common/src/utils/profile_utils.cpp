@@ -379,7 +379,7 @@ int32_t ProfileUtils::AccesserToEntries(const AccessControlProfile& aclProfile, 
     values.PutString(ACCESSER_HAP_SIGNATURE, accesser.GetAccesserHapSignature());
     values.PutInt(ACCESSER_BIND_LEVEL, accesser.GetAccesserBindLevel());
     values.PutString(ACCESSER_DEVICE_NAME, accesser.GetAccesserDeviceName());
-    values.PutInt(ACCESSER_SERVICE_ID, accesser.GetAccesserServiceId());
+    values.PutString(ACCESSER_SERVICE_NAME, accesser.GetAccesserServiceName());
     values.PutInt(ACCESSER_CREDENTIAL_ID, accesser.GetAccesserCredentialId());
     values.PutInt(ACCESSER_STATUS, accesser.GetAccesserStatus());
     values.PutInt(ACCESSER_SESSION_KEY_ID, accesser.GetAccesserSessionKeyId());
@@ -399,7 +399,7 @@ int32_t ProfileUtils::AccesseeToEntries(const AccessControlProfile& aclProfile, 
     values.PutString(ACCESSEE_HAP_SIGNATURE, accessee.GetAccesseeHapSignature());
     values.PutInt(ACCESSEE_BIND_LEVEL, accessee.GetAccesseeBindLevel());
     values.PutString(ACCESSEE_DEVICE_NAME, accessee.GetAccesseeDeviceName());
-    values.PutInt(ACCESSEE_SERVICE_ID, accessee.GetAccesseeServiceId());
+    values.PutString(ACCESSEE_SERVICE_NAME, accessee.GetAccesseeServiceName());
     values.PutInt(ACCESSEE_CREDENTIAL_ID, accessee.GetAccesseeCredentialId());
     values.PutInt(ACCESSEE_STATUS, accessee.GetAccesseeStatus());
     values.PutInt(ACCESSEE_SESSION_KEY_ID, accessee.GetAccesseeSessionKeyId());
@@ -601,8 +601,8 @@ int32_t ProfileUtils::EntriesToAccesserExt(const ValuesBucket &values, Accesser 
     if (values.GetObject(ACCESSER_DEVICE_NAME, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
         accesser.SetAccesserDeviceName(strValue);
     }
-    if (values.GetObject(ACCESSER_SERVICE_ID, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
-        accesser.SetAccesserServiceId(intValue);
+    if (values.GetObject(ACCESSER_SERVICE_NAME, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
+        accesser.SetAccesserServiceName(strValue);
     }
     if (values.GetObject(ACCESSER_CREDENTIAL_ID, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
         accesser.SetAccesserCredentialId(intValue);
@@ -629,8 +629,8 @@ int32_t ProfileUtils::EntriesToAccesseeExt(const ValuesBucket &values, Accessee 
     if (values.GetObject(ACCESSEE_DEVICE_NAME, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
         accessee.SetAccesseeDeviceName(strValue);
     }
-    if (values.GetObject(ACCESSEE_SERVICE_ID, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
-        accessee.SetAccesseeServiceId(intValue);
+    if (values.GetObject(ACCESSEE_SERVICE_NAME, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
+        accessee.SetAccesseeServiceName(strValue);
     }
     if (values.GetObject(ACCESSEE_CREDENTIAL_ID, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
         accessee.SetAccesseeCredentialId(intValue);
@@ -1070,7 +1070,7 @@ int32_t ProfileUtils::ConvertToAccesser(std::shared_ptr<ResultSet> accesserResul
     std::string accesserHapSignature = rowEntity.Get(ACCESSER_HAP_SIGNATURE);
     int32_t accesserBindLevel = rowEntity.Get(ACCESSER_BIND_LEVEL);
     std::string accesserDeviceName = rowEntity.Get(ACCESSER_DEVICE_NAME);
-    int32_t accesserServiceId = rowEntity.Get(ACCESSER_SERVICE_ID);
+    std::string accesserServiceName = rowEntity.Get(ACCESSER_SERVICE_NAME);
     int32_t accesserCredentialId = rowEntity.Get(ACCESSER_CREDENTIAL_ID);
     int32_t accesserStatus = rowEntity.Get(ACCESSER_STATUS);
     int32_t accesserSessionKeyId = rowEntity.Get(ACCESSER_SESSION_KEY_ID);
@@ -1085,7 +1085,7 @@ int32_t ProfileUtils::ConvertToAccesser(std::shared_ptr<ResultSet> accesserResul
     accesser.SetAccesserHapSignature(accesserHapSignature);
     accesser.SetAccesserBindLevel(accesserBindLevel);
     accesser.SetAccesserDeviceName(accesserDeviceName);
-    accesser.SetAccesserServiceId(accesserServiceId);
+    accesser.SetAccesserServiceName(accesserServiceName);
     accesser.SetAccesserCredentialId(accesserCredentialId);
     accesser.SetAccesserStatus(accesserStatus);
     accesser.SetAccesserSessionKeyId(accesserSessionKeyId);
@@ -1114,7 +1114,7 @@ int32_t ProfileUtils::ConvertToAccessee(std::shared_ptr<ResultSet> accesseeResul
     std::string accesseeHapSignature = rowEntity.Get(ACCESSEE_HAP_SIGNATURE);
     int32_t accesseeBindLevel = rowEntity.Get(ACCESSEE_BIND_LEVEL);
     std::string accesseeDeviceName = rowEntity.Get(ACCESSEE_DEVICE_NAME);
-    int32_t accesseeServiceId = rowEntity.Get(ACCESSEE_SERVICE_ID);
+    std::string accesseeServiceName = rowEntity.Get(ACCESSEE_SERVICE_NAME);
     int32_t accesseeCredentialId = rowEntity.Get(ACCESSEE_CREDENTIAL_ID);
     int32_t accesseeStatus = rowEntity.Get(ACCESSEE_STATUS);
     int32_t accesseeSessionKeyId = rowEntity.Get(ACCESSEE_SESSION_KEY_ID);
@@ -1129,7 +1129,7 @@ int32_t ProfileUtils::ConvertToAccessee(std::shared_ptr<ResultSet> accesseeResul
     accessee.SetAccesseeHapSignature(accesseeHapSignature);
     accessee.SetAccesseeBindLevel(accesseeBindLevel);
     accessee.SetAccesseeDeviceName(accesseeDeviceName);
-    accessee.SetAccesseeServiceId(accesseeServiceId);
+    accessee.SetAccesseeServiceName(accesseeServiceName);
     accessee.SetAccesseeCredentialId(accesseeCredentialId);
     accessee.SetAccesseeStatus(accesseeStatus);
     accessee.SetAccesseeSessionKeyId(accesseeSessionKeyId);

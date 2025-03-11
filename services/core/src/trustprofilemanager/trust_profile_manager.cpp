@@ -1076,7 +1076,7 @@ int32_t TrustProfileManager::PutAccesserProfile(const AccessControlProfile& prof
         ValueObject(accesser.GetAccesserAccountId()), ValueObject(accesser.GetAccesserTokenId()),
         ValueObject(accesser.GetAccesserBundleName()), ValueObject(accesser.GetAccesserHapSignature()),
         ValueObject(static_cast<int32_t>(accesser.GetAccesserBindLevel())),
-        ValueObject(accesser.GetAccesserDeviceName()), ValueObject(accesser.GetAccesserServiceId()),
+        ValueObject(accesser.GetAccesserDeviceName()), ValueObject(accesser.GetAccesserServiceName()),
         ValueObject(accesser.GetAccesserCredentialId()),
         ValueObject(static_cast<int32_t>(accesser.GetAccesserStatus())),
         ValueObject(accesser.GetAccesserSessionKeyId())});
@@ -1119,7 +1119,7 @@ int32_t TrustProfileManager::PutAccesseeProfile(const AccessControlProfile& prof
         ValueObject(accessee.GetAccesseeAccountId()), ValueObject(accessee.GetAccesseeTokenId()),
         ValueObject(accessee.GetAccesseeBundleName()), ValueObject(accessee.GetAccesseeHapSignature()),
         ValueObject(static_cast<int32_t>(accessee.GetAccesseeBindLevel())),
-        ValueObject(accessee.GetAccesseeDeviceName()), ValueObject(accessee.GetAccesseeServiceId()),
+        ValueObject(accessee.GetAccesseeDeviceName()), ValueObject(accessee.GetAccesseeServiceName()),
         ValueObject(accessee.GetAccesseeCredentialId()),
         ValueObject(static_cast<int32_t>(accessee.GetAccesseeStatus())),
         ValueObject(accessee.GetAccesseeSessionKeyId())});
@@ -1186,7 +1186,7 @@ int32_t TrustProfileManager::SetAccesserId(AccessControlProfile& profile)
         ValueObject(accesser.GetAccesserAccountId()), ValueObject(accesser.GetAccesserTokenId()),
         ValueObject(accesser.GetAccesserBundleName()), ValueObject(accesser.GetAccesserHapSignature()),
         ValueObject(static_cast<int32_t>(accesser.GetAccesserBindLevel())),
-        ValueObject(accesser.GetAccesserDeviceName()), ValueObject(accesser.GetAccesserServiceId()),
+        ValueObject(accesser.GetAccesserDeviceName()), ValueObject(accesser.GetAccesserServiceName()),
         ValueObject(accesser.GetAccesserCredentialId()),
         ValueObject(static_cast<int32_t>(accesser.GetAccesserStatus())),
         ValueObject(accesser.GetAccesserSessionKeyId())});
@@ -1236,7 +1236,7 @@ int32_t TrustProfileManager::SetAccesseeId(AccessControlProfile& profile)
         ValueObject(accessee.GetAccesseeAccountId()), ValueObject(accessee.GetAccesseeTokenId()),
         ValueObject(accessee.GetAccesseeBundleName()), ValueObject(accessee.GetAccesseeHapSignature()),
         ValueObject(static_cast<int32_t>(accessee.GetAccesseeBindLevel())),
-        ValueObject(accessee.GetAccesseeDeviceName()), ValueObject(accessee.GetAccesseeServiceId()),
+        ValueObject(accessee.GetAccesseeDeviceName()), ValueObject(accessee.GetAccesseeServiceName()),
         ValueObject(accessee.GetAccesseeCredentialId()),
         ValueObject(static_cast<int32_t>(accessee.GetAccesseeStatus())),
         ValueObject(accessee.GetAccesseeSessionKeyId())});

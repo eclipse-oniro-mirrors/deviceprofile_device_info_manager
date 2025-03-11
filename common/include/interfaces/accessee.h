@@ -47,8 +47,8 @@ public:
     void SetAccesseeBindLevel(uint32_t accesseeBindLevel);
     std::string GetAccesseeDeviceName() const;
     void SetAccesseeDeviceName(const std::string& accesseeDeviceName);
-    int32_t GetAccesseeServiceId() const;
-    void SetAccesseeServiceId(int32_t accesseeServiceId);
+    std::string GetAccesseeServiceName() const;
+    void SetAccesseeServiceName(std::string accesseeServiceName);
     int32_t GetAccesseeCredentialId() const;
     void SetAccesseeCredentialId(int32_t accesseeCredentialId);
     int32_t GetAccesseeStatus() const;
@@ -71,7 +71,7 @@ private:
     std::string accesseeHapSignature_;
     uint32_t accesseeBindLevel_;
     std::string accesseeDeviceName_;
-    int32_t accesseeServiceId_;
+    std::string accesseeServiceName_;
     int32_t accesseeCredentialId_;
     int32_t accesseeStatus_;
     int32_t accesseeSessionKeyId_;
