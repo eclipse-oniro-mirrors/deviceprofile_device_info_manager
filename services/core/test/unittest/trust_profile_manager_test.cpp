@@ -287,6 +287,7 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_001, TestSize.Level1)
 
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
+
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
     EXPECT_EQ(ret, DP_SUCCESS);
@@ -500,7 +501,7 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_016, TestSize.Level1)
     EXPECT_NE(ret, DP_SUCCESS);
 
     parms.clear();
-    parms.insert({{"accesserDeviceId", "acer22"}, {"accesserUserId", "33"}, {"accesserTokenId", "333"},
+    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"}, {"accesserTokenId", "333"},
         {"accesseeDeviceId", "123456"}});
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
