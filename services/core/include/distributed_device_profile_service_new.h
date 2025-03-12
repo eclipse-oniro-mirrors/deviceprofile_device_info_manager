@@ -49,6 +49,7 @@ public:
 
     int32_t Init();
     int32_t PostInit();
+    int32_t PostInitNext();
     int32_t UnInit();
     int32_t PutAccessControlProfile(const AccessControlProfile& aclProfile) override;
     int32_t UpdateAccessControlProfile(const AccessControlProfile& aclProfile) override;

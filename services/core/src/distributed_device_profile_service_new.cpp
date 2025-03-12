@@ -135,6 +135,11 @@ int32_t DistributedDeviceProfileServiceNew::PostInit()
         HILOGE("MultiUserManager init failed");
         return DP_MULTI_USER_MANAGER_INIT_FAIL;
     }
+    return PostInitNext();
+}
+
+int32_t DistributedDeviceProfileServiceNew::PostInitNext()
+{
     if (SettingsDataManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("SettingsDataManager init failed");
         return DP_SETTINGSDATA_MANAGER_INIT_FAIL;
