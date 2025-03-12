@@ -24,7 +24,6 @@
 #include "product_info_dao.h"
 #include "profile_cache.h"
 #include "profile_utils.h"
-#include "settings_data_manager.h"
 #include "content_sensor_manager_utils.h"
 
 namespace OHOS {
@@ -49,10 +48,6 @@ int32_t ProfileDataManager::Init()
         HILOGE("DeviceIconInfoDao init failed");
         return DP_DEVICE_ICON_INFO_DAO_INIT_FAIL;
     }
-    if (SettingsDataManager::GetInstance().Init() != DP_SUCCESS) {
-        HILOGE("SettingsDataManager init failed");
-        return DP_SETTINGSDATA_MANAGER_INIT_FAIL;
-    }
     return DP_SUCCESS;
 }
 
@@ -69,10 +64,6 @@ int32_t ProfileDataManager::UnInit()
     if (DeviceIconInfoDao::GetInstance().UnInit() != DP_SUCCESS) {
         HILOGE("DeviceIconInfoDao unInit failed");
         return DP_DEVICE_ICON_INFO_DAO_UNINIT_FAIL;
-    }
-    if (SettingsDataManager::GetInstance().UnInit() != DP_SUCCESS) {
-        HILOGE("SettingsDataManager unInit failed");
-        return DP_SETTINGSDATA_MANAGER_UNINIT_FAIL;
     }
     return 0;
 }

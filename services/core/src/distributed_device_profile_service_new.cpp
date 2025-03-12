@@ -40,6 +40,7 @@
 #include "profile_cache.h"
 #include "profile_data_manager.h"
 #include "service_info_profile_manager.h"
+#include "settings_data_manager.h"
 #include "static_profile_manager.h"
 #include "static_capability_collector.h"
 #include "subscribe_profile_manager.h"
@@ -134,6 +135,15 @@ int32_t DistributedDeviceProfileServiceNew::PostInit()
         HILOGE("MultiUserManager init failed");
         return DP_MULTI_USER_MANAGER_INIT_FAIL;
     }
+    return PostInitNext();
+}
+
+int32_t DistributedDeviceProfileServiceNew::PostInitNext()
+{
+    if (SettingsDataManager::GetInstance().Init() != DP_SUCCESS) {
+        HILOGE("SettingsDataManager init failed");
+        return DP_SETTINGSDATA_MANAGER_INIT_FAIL;
+    }
     if (ContentSensorManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("ContentSensorManager init failed");
         return DP_CONTENT_SENSOR_MANAGER_INIT_FAIL;
@@ -200,6 +210,10 @@ int32_t DistributedDeviceProfileServiceNew::UnInitNext()
     if (StaticCapabilityCollector::GetInstance().UnInit() != DP_SUCCESS) {
         HILOGE("StaticCapabilityCollector UnInit failed");
         return DP_CONTENT_SENSOR_MANAGER_UNINIT_FAIL;
+    }
+    if (SettingsDataManager::GetInstance().UnInit() != DP_SUCCESS) {
+        HILOGE("SettingsDataManager unInit failed");
+        return DP_SETTINGSDATA_MANAGER_UNINIT_FAIL;
     }
     if (ContentSensorManager::GetInstance().UnInit() != DP_SUCCESS) {
         HILOGE("ContentSensorManager UnInit failed");
