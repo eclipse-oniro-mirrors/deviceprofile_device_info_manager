@@ -126,7 +126,7 @@ std::string Accesser::GetAccesserDeviceName() const
     return accesserDeviceName_;
 }
 
-void Accesser::SetAccesserDeviceName(const std::string &accesserDeviceName)
+void Accesser::SetAccesserDeviceName(const std::string& accesserDeviceName)
 {
     accesserDeviceName_ = accesserDeviceName;
 }
@@ -136,7 +136,7 @@ std::string Accesser::GetAccesserServiceName() const
     return accesserServiceName_;
 }
 
-void Accesser::SetAccesserServiceName(std::string accesserServiceName)
+void Accesser::SetAccesserServiceName(const std::string& accesserServiceName)
 {
     accesserServiceName_ = accesserServiceName;
 }

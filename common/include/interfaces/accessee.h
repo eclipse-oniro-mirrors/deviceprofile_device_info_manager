@@ -48,7 +48,7 @@ public:
     std::string GetAccesseeDeviceName() const;
     void SetAccesseeDeviceName(const std::string& accesseeDeviceName);
     std::string GetAccesseeServiceName() const;
-    void SetAccesseeServiceName(std::string accesseeServiceName);
+    void SetAccesseeServiceName(const std::string& accesseeServiceName);
     int32_t GetAccesseeCredentialId() const;
     void SetAccesseeCredentialId(int32_t accesseeCredentialId);
     int32_t GetAccesseeStatus() const;

@@ -47,7 +47,7 @@ public:
     std::string GetAccesserDeviceName() const;
     void SetAccesserDeviceName(const std::string& accesserDeviceName);
     std::string GetAccesserServiceName() const;
-    void SetAccesserServiceName(std::string accesserServiceName);
+    void SetAccesserServiceName(const std::string& accesserServiceName);
     int32_t GetAccesserCredentialId() const;
     void SetAccesserCredentialId(int32_t accesserCredentialId);
     int32_t GetAccesserStatus() const;
