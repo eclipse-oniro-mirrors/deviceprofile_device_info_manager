@@ -75,8 +75,9 @@ int32_t ProfileDataManager::PutDeviceProfile(DeviceProfile deviceProfile)
             ProfileUtils::GetAnonyString(deviceProfile.GetDeviceId()).c_str());
         return DP_INVALID_PARAMS;
     }
-    deviceProfile.SetUserId(MultiUserManager::GetInstance().GetCurrentForegroundUserID());
-    deviceProfile.SetAccountId(ProfileCache::GetInstance().GetLocalAccountId());
+    if (deviceProfile.GetUserId() == DEFAULT_USER_ID) {
+        deviceProfile.SetUserId(MultiUserManager::GetInstance().GetCurrentForegroundUserID());
+    }
     DeviceProfileFilterOptions filterOptions;
     filterOptions.AddDeviceIds(deviceProfile.GetDeviceId());
     filterOptions.SetUserId(deviceProfile.GetUserId());
@@ -108,19 +109,32 @@ int32_t ProfileDataManager::PutDeviceProfile(DeviceProfile deviceProfile)
 
 int32_t ProfileDataManager::DeleteDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles)
 {
+    HILOGI("deviceProfiles.size:%{public}zu", deviceProfiles.size());
     if (deviceProfiles.empty()) {
         HILOGE("deviceProfiles is empty");
         return DP_INVALID_PARAM;
     }
-    int32_t ret = RET_INIT;
-    for (auto deviceProfile : deviceProfiles) {
-        int32_t delRet = DeviceProfileDao::GetInstance().DeleteDeviceProfile(deviceProfile);
-        if (ret != DP_SUCCESS) {
+    DeviceProfileFilterOptions filterOptions;
+    filterOptions.SetUserId(deviceProfiles[0].GetUserId());
+    for (auto const &item : deviceProfiles) {
+        filterOptions.AddDeviceIds(item.GetDeviceId());
+    }
+    std::vector<DeviceProfile> oldDeviceProfiles;
+    int32_t ret = GetDeviceProfiles(filterOptions, oldDeviceProfiles);
+    if (ret != DP_SUCCESS) {
+        HILOGE("DeleteDeviceProfile failed,ret=%{public}d", ret);
+        return ret;
+    }
+    HILOGE("oldDeviceProfiles.size:%{public}zu", oldDeviceProfiles.size());
+    for (auto dp : oldDeviceProfiles) {
+        int32_t delRet = DeviceProfileDao::GetInstance().DeleteDeviceProfile(dp);
+        if (delRet != DP_SUCCESS) {
+            HILOGE("DeleteDeviceProfile failed, delRet=%{public}d, dp:%{public}s", delRet, dp.dump().c_str());
             ret = delRet;
         }
     }
     if (ret != DP_SUCCESS) {
-        HILOGE("DeleteDeviceProfile failed,ret=%{public}d", ret);
+        HILOGE("DeleteDeviceProfile failed, ret=%{public}d", ret);
         return ret;
     }
     return DP_SUCCESS;
@@ -165,8 +179,9 @@ int32_t ProfileDataManager::PutDeviceProfileBatch(std::vector<DeviceProfile>& de
 int32_t ProfileDataManager::GetDeviceProfiles(DeviceProfileFilterOptions& options,
     std::vector<DeviceProfile>& deviceProfiles)
 {
-    int32_t localUserId = MultiUserManager::GetInstance().GetCurrentForegroundUserID();
-    options.SetUserId(localUserId);
+    if (options.GetUserId() == DEFAULT_USER_ID) {
+        options.SetUserId(MultiUserManager::GetInstance().GetCurrentForegroundUserID());
+    }
     int32_t ret = DeviceProfileDao::GetInstance().GetDeviceProfiles(options, deviceProfiles);
     if (ret != DP_SUCCESS) {
         HILOGE("GetDeviceProfile failed,ret=%{public}d", ret);

@@ -58,12 +58,16 @@ const std::string CREATE_DEVICE_PROFILE_TABLE_SQL =
     "    registerTime       TEXT,\n"
     "    modifyTime         TEXT,\n"
     "    shareTime          TEXT,\n"
-    "    innerModel         TEXT\n"
+    "    internalModel      TEXT,\n"
+    "    productName        TEXT\n"
     ")";
 const std::string CREATE_DEVICE_PROFILE_TABLE_UNIQUE_INDEX_SQL =
     "CREATE UNIQUE INDEX IF NOT EXISTS unique_device_profile  ON device_profile (deviceId, userId)";
 const std::string CREATE_DEVICE_PROFILE_WISE_DEVICEID_INDEX_SQL =
     "CREATE INDEX IF NOT EXISTS index_wiseDeviceId  ON device_profile (wiseDeviceId)";
+const std::string ALTER_TABLE_DP_RENAME_COLUMN_INTERNAL_MODEL_SQL =
+"ALTER TABLE device_profile RENAME COLUMN innerModel TO internalModel";
+const std::string ALTER_TABLE_DP_ADD_COLUMN_PRODUCT_NAME_SQL = "ALTER TABLE device_profile ADD COLUMN productName TEXT";
 // DeviceIconInfoDao
 const std::string CREATE_DEVICE_ICON_INFO_TABLE_SQL = "CREATE TABLE IF NOT EXISTS device_icon_info\
     (id           INTEGER PRIMARY KEY AUTOINCREMENT,\
@@ -73,9 +77,12 @@ const std::string CREATE_DEVICE_ICON_INFO_TABLE_SQL = "CREATE TABLE IF NOT EXIST
     specName      TEXT,\
     version       TEXT,\
     url           TEXT,\
-    icon          blob);";
+    icon          blob,\
+    internalModel    TEXT);";
 const std::string CREATE_DEVICE_ICON_INFO_TABLE_UNIQUE_INDEX_SQL = "CREATE UNIQUE INDEX if not exists \
     unique_device_icon_info ON device_icon_info (productId, subProductId, imageType, specName);";
+const std::string ALTER_TABLE_DEVICE_ICON_INFO_ADD_COLUMN_INTENAL_MODEL_SQL =
+"ALTER TABLE device_icon_info ADD COLUMN internalModel TEXT";
 const std::string SELECT_DEVICE_ICON_INFO_TABLE = "SELECT a.*,b.imageVersion FROM device_icon_info a \
     LEFT JOIN product_info b ON a.productId = b.productId \
     WHERE ";

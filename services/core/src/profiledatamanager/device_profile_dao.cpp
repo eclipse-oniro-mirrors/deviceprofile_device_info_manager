@@ -137,7 +137,7 @@ int32_t DeviceProfileDao::DeleteDeviceProfile(const DeviceProfile &deviceProfile
         int32_t ret = ProfileDataRdbAdapter::GetInstance().Delete(deleteRows, DEVICE_PROFILE_TABLE, ID_EQUAL_CONDITION,
             std::vector<ValueObject>{ ValueObject(deviceProfile.GetId()) });
         if (ret != DP_SUCCESS) {
-            HILOGE("delete device_profile data failed");
+            HILOGE("delete device_profile data failed, ret=%{public}d", ret);
             return DP_DELETE_TRUST_DEVICE_PROFILE_FAIL;
         }
     }
@@ -195,7 +195,7 @@ void DeviceProfileDao::CreateQuerySqlAndCondition(const DeviceProfileFilterOptio
     sql = SELECT_DEVICE_PROFILE_TABLE;
     bool matchCondition = false;
     if (!filterOptions.GetDeviceProfileIds().empty()) {
-        sql += "deviceProfileId IN(";
+        sql += "id IN(";
         GenerateSqlAndCondition(filterOptions.GetDeviceProfileIds(), sql, condition);
         matchCondition = true;
     }
@@ -235,6 +235,7 @@ int32_t DeviceProfileDao::DeviceProfileToEntries(const DeviceProfile &deviceProf
     values.PutString(MANU, deviceProfile.GetManu());
     values.PutString(SN, deviceProfile.GetSn());
     values.PutString(PRODUCT_ID, deviceProfile.GetProductId());
+    values.PutString(PRODUCT_NAME, deviceProfile.GetProductName());
     values.PutString(SUB_PRODUCT_ID, deviceProfile.GetSubProductId());
     values.PutString(HIV, deviceProfile.GetHiv());
     values.PutString(MAC, deviceProfile.GetMac());
@@ -246,7 +247,7 @@ int32_t DeviceProfileDao::DeviceProfileToEntries(const DeviceProfile &deviceProf
     values.PutString(WISE_USER_ID, deviceProfile.GetWiseUserId());
     values.PutString(WISE_DEVICE_ID, deviceProfile.GetWiseDeviceId());
     values.PutString(REGISTER_TIME, deviceProfile.GetRegisterTime());
-    values.PutString(INNER_MODEL, deviceProfile.GetInnerModel());
+    values.PutString(INTERNAL_MODEL, deviceProfile.GetInternalModel());
     values.PutString(MODIFY_TIME, deviceProfile.GetModifyTime());
     values.PutString(SHARE_TIME, deviceProfile.GetShareTime());
     values.PutInt(USERID, deviceProfile.GetUserId());
@@ -277,6 +278,7 @@ int32_t DeviceProfileDao::ConvertToDeviceProfile(
     deviceProfile.SetManu(rowEntity.Get(MANU));
     deviceProfile.SetSn(rowEntity.Get(SN));
     deviceProfile.SetProductId(rowEntity.Get(PRODUCT_ID));
+    deviceProfile.SetProductName(rowEntity.Get(PRODUCT_NAME));
     deviceProfile.SetSubProductId(rowEntity.Get(SUB_PRODUCT_ID));
     deviceProfile.SetHiv(rowEntity.Get(HIV));
     deviceProfile.SetMac(rowEntity.Get(MAC));
@@ -288,7 +290,7 @@ int32_t DeviceProfileDao::ConvertToDeviceProfile(
     deviceProfile.SetWiseUserId(rowEntity.Get(WISE_USER_ID));
     deviceProfile.SetWiseDeviceId(rowEntity.Get(WISE_DEVICE_ID));
     deviceProfile.SetRegisterTime(rowEntity.Get(REGISTER_TIME));
-    deviceProfile.SetInnerModel(rowEntity.Get(INNER_MODEL));
+    deviceProfile.SetInternalModel(rowEntity.Get(INTERNAL_MODEL));
     deviceProfile.SetModifyTime(rowEntity.Get(MODIFY_TIME));
     deviceProfile.SetShareTime(rowEntity.Get(SHARE_TIME));
     deviceProfile.SetUserId(rowEntity.Get(USERID));

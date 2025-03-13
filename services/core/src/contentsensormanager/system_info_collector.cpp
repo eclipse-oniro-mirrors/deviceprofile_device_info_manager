@@ -49,12 +49,14 @@ bool SystemInfoCollector::ConvertToProfile(DeviceProfile& profile)
     profile.SetOsVersion(GetOsVersion());
     profile.SetDeviceName(GetDeviceName());
     profile.SetProductId(GetProductId());
+    profile.SetSubProductId(GetSubProductId());
     profile.SetSn(GetSn());
     profile.SetDeviceModel(GetDeviceModel());
     profile.SetDevType(GetDeviceTypeId());
     profile.SetManu(GetDeviceManufacturer());
     profile.SetHiv(HIV_VERSION);
     profile.SetProtType(GetProtType());
+    profile.SetProductName(GetProductName());
     return true;
 }
 
@@ -105,6 +107,18 @@ std::string SystemInfoCollector::GetProductId()
     return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainProductId();
 }
 
+std::string SystemInfoCollector::GetProductName()
+{
+    std::string productName = "";
+    SettingsDataManager::GetInstance().GetDeviceName(productName);
+    return productName;
+}
+
+std::string SystemInfoCollector::GetSubProductId()
+{
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().GetSubProductId();
+}
+
 std::string SystemInfoCollector::GetSn()
 {
     return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainSerial();
@@ -127,7 +141,7 @@ std::string SystemInfoCollector::GetDeviceManufacturer()
 
 int32_t SystemInfoCollector::GetProtType()
 {
-    return 0;
+    return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().GetProtType();
 }
 
 std::string SystemInfoCollector::GetDeviceTypeId()

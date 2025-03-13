@@ -25,12 +25,14 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 class DeviceIconInfoFilterOptions : public DpParcel {
 public:
-    DeviceIconInfoFilterOptions() : subProductId_(""), imageType_(""), specName_("")
+    DeviceIconInfoFilterOptions() : internalModel_(""), subProductId_(""), imageType_(""), specName_("")
     {}
     ~DeviceIconInfoFilterOptions() = default;
 
     std::vector<std::string> GetProductIds() const;
     void SetProductIds(const std::vector<std::string>& productIds);
+    std::string GetInternalModel() const;
+    void SetInternalModel(const std::string& internalModel);
     std::string GetSubProductId() const;
     void SetSubProductId(const std::string& subProductId);
     std::string GetImageType() const;
@@ -44,6 +46,7 @@ public:
 
 private:
     std::vector<std::string> productIds_;
+    std::string internalModel_;
     std::string subProductId_;
     std::string imageType_;
     std::string specName_;

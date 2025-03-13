@@ -28,6 +28,7 @@ public:
     DeviceIconInfo()
         : id_(0),
         productId_(""),
+        internalModel_(""),
         subProductId_(""),
         imageType_(""),
         specName_("")
@@ -39,6 +40,8 @@ public:
     void SetProductId(const std::string& productId);
     std::string GetSubProductId() const;
     void SetSubProductId(const std::string& subProductId);
+    std::string GetInternalModel() const;
+    void SetInternalModel(const std::string& internalModel);
     std::string GetImageType() const;
     void SetImageType(const std::string& imageType);
     std::string GetSpecName() const;
@@ -59,6 +62,7 @@ public:
 private:
     int32_t id_;
     std::string productId_;
+    std::string internalModel_;
     std::string subProductId_;
     std::string imageType_;
     std::string specName_;

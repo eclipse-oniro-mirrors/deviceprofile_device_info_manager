@@ -17,6 +17,7 @@
 #define OHOS_DP_CONTENT_SENSOR_MANAGER_UTILS_H
 
 #include <atomic>
+#include <map>
 #include <mutex>
 #include <string>
 #include "single_instance.h"
@@ -38,8 +39,14 @@ public:
     std::string ObtainProductId();
     void ObtainDeviceDataSyncMode();
     bool IsDeviceE2ESync();
+    int32_t GetProtType();
+    std::string GetSubProductId();
 
 private:
+    bool IsWifiOnly();
+    std::string GetBackcolor();
+    std::map<std::string, std::string> GetSubProdIdMap();
+
     std::string deviceModel_ = "";
     std::string deviceType_ = "";
     std::string manufacture_ = "";
@@ -51,6 +58,9 @@ private:
     std::string productId_ = "";
     std::string deviceTypeId_ = "";
     std::atomic<bool> isDeviceE2ESync_ {false};
+    int32_t protType_ = 0;
+    std::string backcolor_ = "";
+    std::map<std::string, std::string> subProdIdMap_ = {};
     std::mutex csMutex_;
 };
 }

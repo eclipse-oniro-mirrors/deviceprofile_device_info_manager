@@ -48,6 +48,8 @@ class ProfileDataOpenCallback : public NativeRdb::RdbOpenCallback {
 public:
     int32_t OnCreate(RdbStore& store) override;
     int32_t OnUpgrade(RdbStore& store, int oldVersion, int newVersion) override;
+private:
+    int32_t UpdateFromVer1To2(RdbStore& store);
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
