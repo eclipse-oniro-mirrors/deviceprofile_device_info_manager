@@ -21,13 +21,8 @@
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_errors.h"
-#define private public
-#define protected public
 
 #include "profile_data_manager.h"
-
-#undef private
-#undef protected
 
 using namespace testing::ext;
 namespace OHOS {
