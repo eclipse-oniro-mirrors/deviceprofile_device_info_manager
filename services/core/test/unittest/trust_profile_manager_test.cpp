@@ -171,7 +171,30 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_013, TestSize.Level1)
 }
 
 /*
- * @tc.name: GetAccessControlProfile_013
+ * @tc.name: GetAccessControlProfile_014
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_014, TestSize.Level1)
+{
+    std::vector<AccessControlProfile> profile;
+    std::map<std::string, std::string> parms;
+    parms.insert({{"accesserDeviceId", "9999"}, {"accesserUserId", "101"}, {"accesserTokenId", "123"},
+        {"accesseeDeviceId", "6666"}, {"accesseeUserId", "101"}, {"accesseeTokenId", "123"}});
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"accesserDeviceId", "9999"}, {"accesserUserId", "101"}, {"accesserTokenId", "123"},
+        {"accesseeDeviceId", "6666"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: Convert_001
  * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
  * @tc.type: FUNC
  */
@@ -234,6 +257,12 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_001, TestSize.Level1)
     accesser.SetAccesserBundleName("b1");
     accesser.SetAccesserHapSignature("h1");
     accesser.SetAccesserBindLevel(1);
+    accesser.SetAccesserDeviceName("70");
+    accesser.SetAccesserServiceName("paste");
+    accesser.SetAccesserCredentialId(66666);
+    accesser.SetAccesserStatus(0);
+    accesser.SetAccesserSessionKeyId(88888);
+    accesser.SetAccesserSKTimeStamp(99999);
 
     Accessee accessee;
     accessee.SetAccesseeDeviceId("acee1");
@@ -318,6 +347,12 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_011, TestSize.Level1)
     accessee.SetAccesseeBundleName("bb11");
     accessee.SetAccesseeHapSignature("h11");
     accessee.SetAccesseeBindLevel(1);
+    accessee.SetAccesseeDeviceName("70");
+    accessee.SetAccesseeServiceName("paste");
+    accessee.SetAccesseeCredentialId(66666);
+    accessee.SetAccesseeStatus(0);
+    accessee.SetAccesseeSessionKeyId(88888);
+    accessee.SetAccesseeSKTimeStamp(99999);
 
     AccessControlProfile profile;
     profile.SetTrustDeviceId("123456");
@@ -356,7 +391,7 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_002, TestSize.Level1)
     accesser.SetAccesserBindLevel(1);
 
     Accessee accessee;
-    accessee.SetAccesseeDeviceId("acee2");
+    accessee.SetAccesseeDeviceId("123456");
     accessee.SetAccesseeUserId(44);
     accessee.SetAccesseeAccountId("a2");
     accessee.SetAccesseeTokenId(444);
@@ -381,6 +416,95 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_002, TestSize.Level1)
 
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().PutAccessControlProfile(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: GetAccessControlProfile_015
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_015, TestSize.Level1)
+{
+    std::vector<AccessControlProfile> profile;
+    std::map<std::string, std::string> parms;
+    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "44"}, {"accesserTokenId", "333"},
+        {"accesseeDeviceId", "123456"}, {"accesseeUserId", "44"}, {"accesseeTokenId", "444"}});
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"}, {"accesserTokenId", "333"},
+        {"accesseeDeviceId", "123456"}, {"accesseeUserId", "55"}, {"accesseeTokenId", "444"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"}, {"accesserTokenId", "333"},
+        {"accesseeDeviceId", "acee22"}, {"accesseeUserId", "44"}, {"accesseeTokenId", "555"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"}, {"accesserTokenId", "444"},
+        {"accesseeDeviceId", "123456"}, {"accesseeUserId", "44"}, {"accesseeTokenId", "444"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+
+    parms.clear();
+    profile.clear();
+    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"}, {"accesserTokenId", "333"},
+        {"accesseeDeviceId", "123456"}, {"accesseeUserId", "44"}, {"accesseeTokenId", "444"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: GetAccessControlProfile_016
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_016, TestSize.Level1)
+{
+    std::vector<AccessControlProfile> profile;
+    std::map<std::string, std::string> parms;
+    parms.insert({{"accesserDeviceId", "acer11"}, {"accesserUserId", "33"}, {"accesserTokenId", "333"},
+        {"accesseeDeviceId", "123456"}});
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "44"}, {"accesserTokenId", "333"},
+        {"accesseeDeviceId", "123456"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"}, {"accesserTokenId", "444"},
+        {"accesseeDeviceId", "acee22"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"accesserDeviceId", "acer22"}, {"accesserUserId", "33"}, {"accesserTokenId", "333"},
+        {"accesseeDeviceId", "123456"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+
+    parms.clear();
+    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"}, {"accesserTokenId", "333"},
+        {"accesseeDeviceId", "123456"}});
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAccessControlProfile(parms, profile);
     EXPECT_EQ(ret, DP_SUCCESS);
 }
 

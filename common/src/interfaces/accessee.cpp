@@ -34,7 +34,7 @@ Accessee::Accessee()
     accesseeHapSignature_(""),
     accesseeBindLevel_(static_cast<uint32_t>(BindLevel::MIN)),
     accesseeDeviceName_(""),
-    accesseeServiceId_(-1),
+    accesseeServiceName_(""),
     accesseeCredentialId_(-1),
     accesseeStatus_(static_cast<int32_t>(Status::MIN)),
     accesseeSessionKeyId_(-1),
@@ -126,19 +126,19 @@ std::string Accessee::GetAccesseeDeviceName() const
     return accesseeDeviceName_;
 }
 
-void Accessee::SetAccesseeDeviceName(const std::string &accesseeDeviceName)
+void Accessee::SetAccesseeDeviceName(const std::string& accesseeDeviceName)
 {
     accesseeDeviceName_ = accesseeDeviceName;
 }
 
-int32_t Accessee::GetAccesseeServiceId() const
+std::string Accessee::GetAccesseeServiceName() const
 {
-    return accesseeServiceId_;
+    return accesseeServiceName_;
 }
 
-void Accessee::SetAccesseeServiceId(int32_t accesseeServiceId)
+void Accessee::SetAccesseeServiceName(const std::string& accesseeServiceName)
 {
-    accesseeServiceId_ = accesseeServiceId;
+    accesseeServiceName_ = accesseeServiceName;
 }
 
 int32_t Accessee::GetAccesseeCredentialId() const
@@ -192,7 +192,7 @@ bool Accessee::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, String, accesseeHapSignature_, false);
     WRITE_HELPER_RET(parcel, Uint32, accesseeBindLevel_, false);
     WRITE_HELPER_RET(parcel, String, accesseeDeviceName_, false);
-    WRITE_HELPER_RET(parcel, Int32, accesseeServiceId_, false);
+    WRITE_HELPER_RET(parcel, String, accesseeServiceName_, false);
     WRITE_HELPER_RET(parcel, Int32, accesseeCredentialId_, false);
     WRITE_HELPER_RET(parcel, Int32, accesseeStatus_, false);
     WRITE_HELPER_RET(parcel, Int32, accesseeSessionKeyId_, false);
@@ -211,7 +211,7 @@ bool Accessee::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, String, accesseeHapSignature_, false);
     READ_HELPER_RET(parcel, Uint32, accesseeBindLevel_, false);
     READ_HELPER_RET(parcel, String, accesseeDeviceName_, false);
-    READ_HELPER_RET(parcel, Int32, accesseeServiceId_, false);
+    READ_HELPER_RET(parcel, String, accesseeServiceName_, false);
     READ_HELPER_RET(parcel, Int32, accesseeCredentialId_, false);
     READ_HELPER_RET(parcel, Int32, accesseeStatus_, false);
     READ_HELPER_RET(parcel, Int32, accesseeSessionKeyId_, false);
@@ -239,7 +239,7 @@ std::string Accessee::dump() const
     cJSON_AddNumberToObject(json, ACCESSEE_BIND_LEVEL.c_str(), accesseeBindLevel_);
     cJSON_AddStringToObject(json, ACCESSEE_DEVICE_NAME.c_str(),
         ProfileUtils::GetAnonyString(accesseeDeviceName_).c_str());
-    cJSON_AddNumberToObject(json, ACCESSEE_SERVICE_ID.c_str(), accesseeServiceId_);
+    cJSON_AddStringToObject(json, ACCESSEE_SERVICE_NAME.c_str(), accesseeServiceName_.c_str());
     cJSON_AddNumberToObject(json, ACCESSEE_CREDENTIAL_ID.c_str(), accesseeCredentialId_);
     cJSON_AddNumberToObject(json, ACCESSEE_STATUS.c_str(), accesseeStatus_);
     cJSON_AddNumberToObject(json, ACCESSEE_SESSION_KEY_ID.c_str(), accesseeSessionKeyId_);

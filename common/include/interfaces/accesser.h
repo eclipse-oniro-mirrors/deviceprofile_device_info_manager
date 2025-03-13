@@ -46,8 +46,8 @@ public:
     void SetAccesserBindLevel(uint32_t accesserBindLevel);
     std::string GetAccesserDeviceName() const;
     void SetAccesserDeviceName(const std::string& accesserDeviceName);
-    int32_t GetAccesserServiceId() const;
-    void SetAccesserServiceId(int32_t accesserServiceId);
+    std::string GetAccesserServiceName() const;
+    void SetAccesserServiceName(const std::string& accesserServiceName);
     int32_t GetAccesserCredentialId() const;
     void SetAccesserCredentialId(int32_t accesserCredentialId);
     int32_t GetAccesserStatus() const;
@@ -70,7 +70,7 @@ private:
     std::string accesserHapSignature_;
     uint32_t accesserBindLevel_;
     std::string accesserDeviceName_;
-    int32_t accesserServiceId_;
+    std::string accesserServiceName_;
     int32_t accesserCredentialId_;
     int32_t accesserStatus_;
     int32_t accesserSessionKeyId_;
