@@ -16,7 +16,7 @@ import("//build/ohos_var.gni")
 import("//build/test.gni")
 import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
 
-module_output_path = "device_info_manager/deviceprofiletest"
+module_output_path = "device_info_manager/device_info_manager"
 
 device_profile_configs = [
   "${old_device_profile_service}/core:device_info_manager_config",

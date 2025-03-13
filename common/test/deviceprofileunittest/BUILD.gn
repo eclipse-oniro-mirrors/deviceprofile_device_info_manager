@@ -16,7 +16,7 @@ import("//build/ohos_var.gni")
 import("//build/test.gni")
 import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
 
-module_output_path = "device_info_manager/commontest"
+module_output_path = "device_info_manager/device_info_manager"
 
 ohos_unittest("DeviceProfileTest") {
   module_out_path = module_output_path
