@@ -263,15 +263,21 @@ bool ContentSensorManagerUtils::IsWifiOnly()
     }
     if (fgets(buf, WIFI_ONLY_FLAG_VALUE_MAX_LEN, fp) == nullptr) {
         HILOGE("fgets return nullptr");
-        fclose(fp);
+        if (fclose(fp) != 0) {
+            HILOGE("Close file failed");
+        }
         return false;
     }
     if (strcmp(buf, WIFI_ONLY_FLAG_VALUE)) {
         HILOGE("buf not equal WIFI_ONLY_FLAG_VALUE");
-        fclose(fp);
+        if (fclose(fp) != 0) {
+            HILOGE("Close file failed");
+        }
         return false;
     }
-    fclose(fp);
+    if (fclose(fp) != 0) {
+        HILOGE("Close file failed");
+    }
     return true;
 }
 
