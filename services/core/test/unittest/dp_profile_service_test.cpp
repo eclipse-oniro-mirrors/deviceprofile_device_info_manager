@@ -143,6 +143,35 @@ HWTEST_F(DpProfileServiceTest, UpdateAccessControlProfile_001, TestSize.Level1)
     EXPECT_EQ(DP_PERMISSION_DENIED, ret);
 }
 
+HWTEST_F(DpProfileServiceTest, PutProductInfoBatch_001, TestSize.Level1)
+{
+    std::vector<ProductInfo> productInfos;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutProductInfoBatch(productInfos);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, PutDeviceIconInfoBatch_001, TestSize.Level1)
+{
+    std::vector<DeviceIconInfo> deviceIconInfos;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutDeviceIconInfoBatch(deviceIconInfos);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, GetDeviceIconInfos_001, TestSize.Level1)
+{
+    DeviceIconInfoFilterOptions filterOptions;
+    std::vector<DeviceIconInfo> deviceIconInfos;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetDeviceIconInfos(filterOptions, deviceIconInfos);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, DeleteDeviceProfileBatch_001, TestSize.Level1)
+{
+    std::vector<DeviceProfile> deviceProfiles;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().DeleteDeviceProfileBatch(deviceProfiles);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
 HWTEST_F(DpProfileServiceTest, GetTrustDeviceProfile_001, TestSize.Level1)
 {
     std::string devid;
@@ -181,6 +210,41 @@ HWTEST_F(DpProfileServiceTest, DeleteAccessControlProfile_001, TestSize.Level1)
     EXPECT_EQ(DP_PERMISSION_DENIED, ret);
 }
 
+HWTEST_F(DpProfileServiceTest, PutSessionKey_001, TestSize.Level1)
+{
+    uint32_t userId = 0;
+    std::vector<uint8_t> sessionKey;
+    int32_t sessionKeyId = 0;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutSessionKey(userId, sessionKey, sessionKeyId);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, GetSessionKey_001, TestSize.Level1)
+{
+    uint32_t userId = 0;
+    std::vector<uint8_t> sessionKey;
+    int32_t sessionKeyId = 0;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetSessionKey(userId, sessionKeyId, sessionKey);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, UpdateSessionKey_001, TestSize.Level1)
+{
+    uint32_t userId = 0;
+    std::vector<uint8_t> sessionKey;
+    int32_t sessionKeyId = 0;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().UpdateSessionKey(userId, sessionKeyId, sessionKey);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, DeleteSessionKey_001, TestSize.Level1)
+{
+    uint32_t userId = 0;
+    int32_t sessionKeyId = 0;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().DeleteSessionKey(userId, sessionKeyId);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
 HWTEST_F(DpProfileServiceTest, PutServiceProfile_001, TestSize.Level1)
 {
     std::string devid = "";
@@ -205,6 +269,61 @@ HWTEST_F(DpProfileServiceTest, PutCharacteristicProfile_001, TestSize.Level1)
     EXPECT_EQ(DP_PERMISSION_DENIED, ret);
 }
 
+HWTEST_F(DpProfileServiceTest, PutServiceInfoProfile_001, TestSize.Level1)
+{
+    ServiceInfoProfile serviceInfoProfile;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutServiceInfoProfile(serviceInfoProfile);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, DeleteServiceInfoProfile_001, TestSize.Level1)
+{
+    ServiceInfoUniqueKey key;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().DeleteServiceInfoProfile(key);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, UpdateServiceInfoProfile_001, TestSize.Level1)
+{
+    ServiceInfoProfile serviceInfoProfile;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().UpdateServiceInfoProfile(serviceInfoProfile);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, GetServiceInfoProfileByUniqueKey_001, TestSize.Level1)
+{
+    ServiceInfoUniqueKey key;
+    ServiceInfoProfile serviceInfoProfile;
+    int32_t ret =
+        DistributedDeviceProfileServiceNew::GetInstance().GetServiceInfoProfileByUniqueKey(key, serviceInfoProfile);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, GetServiceInfoProfileListByTokenId_001, TestSize.Level1)
+{
+    ServiceInfoUniqueKey key;
+    std::vector<ServiceInfoProfile> serviceInfoProfiles;
+    int32_t ret =
+        DistributedDeviceProfileServiceNew::GetInstance().GetServiceInfoProfileListByTokenId(key, serviceInfoProfiles);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, GetAllServiceInfoProfileList_001, TestSize.Level1)
+{
+    std::vector<ServiceInfoProfile> serviceInfoProfiles;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetAllServiceInfoProfileList(serviceInfoProfiles);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, GetServiceInfoProfileListByBundleName_001, TestSize.Level1)
+{
+    ServiceInfoUniqueKey key;
+    std::vector<ServiceInfoProfile> serviceInfoProfiles;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetServiceInfoProfileListByBundleName(
+        key, serviceInfoProfiles);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
 HWTEST_F(DpProfileServiceTest, PutCharacteristicProfileBatch_001, TestSize.Level1)
 {
     std::string devid = "";
@@ -223,6 +342,14 @@ HWTEST_F(DpProfileServiceTest, GetDeviceProfile_001, TestSize.Level1)
     std::string devid = "";
     DeviceProfile deviceProfile;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetDeviceProfile(devid, deviceProfile);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, GetDeviceProfiles_001, TestSize.Level1)
+{
+    DeviceProfileFilterOptions options;
+    std::vector<DeviceProfile> deviceProfiles;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetDeviceProfiles(options, deviceProfiles);
     EXPECT_EQ(DP_PERMISSION_DENIED, ret);
 }
 
@@ -263,6 +390,38 @@ HWTEST_F(DpProfileServiceTest, DeleteCharacteristicProfile_001, TestSize.Level1)
     std::string charKey = "";
     int32_t ret =
             DistributedDeviceProfileServiceNew::GetInstance().DeleteCharacteristicProfile(devid, serName, charKey);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, PutLocalServiceInfo_001, TestSize.Level1)
+{
+    LocalServiceInfo localServiceInfo;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutLocalServiceInfo(localServiceInfo);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, UpdateLocalServiceInfo_001, TestSize.Level1)
+{
+    LocalServiceInfo localServiceInfo;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().UpdateLocalServiceInfo(localServiceInfo);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, GetLocalServiceInfoByBundleAndPinType_001, TestSize.Level1)
+{
+    std::string bundleName;
+    int32_t pinExchangeType = 0;
+    LocalServiceInfo localServiceInfo;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetLocalServiceInfoByBundleAndPinType(
+        bundleName, pinExchangeType, localServiceInfo);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, DeleteLocalServiceInfo_001, TestSize.Level1)
+{
+    std::string bundleName;
+    int32_t pinExchangeType = 0;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().DeleteLocalServiceInfo(bundleName, pinExchangeType);
     EXPECT_EQ(DP_PERMISSION_DENIED, ret);
 }
 
@@ -309,6 +468,56 @@ HWTEST_F(DpProfileServiceTest, UnSubscribeDeviceProfileInited_001, TestSize.Leve
     int32_t saId = 1000;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().UnSubscribeDeviceProfileInited(saId);
     EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, SubscribePinCodeInvalid_001, TestSize.Level1)
+{
+    SystemAbilityOnDemandReason startReason;
+    DistributedDeviceProfileServiceNew::GetInstance().OnStart(startReason);
+    DistributedDeviceProfileServiceNew::GetInstance().OnStop();
+    std::string bundleName;
+    int32_t pinExchangeType = 0;
+    sptr<IRemoteObject> pinCodeCallback;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().SubscribePinCodeInvalid(
+        bundleName, pinExchangeType, pinCodeCallback);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, UnSubscribePinCodeInvalid_001, TestSize.Level1)
+{
+    std::string bundleName;
+    int32_t pinExchangeType = 0;
+    int32_t ret =
+        DistributedDeviceProfileServiceNew::GetInstance().UnSubscribePinCodeInvalid(bundleName, pinExchangeType);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, NotifyPinCodeInvalid_001, TestSize.Level1)
+{
+    LocalServiceInfo localServiceInfo;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().NotifyPinCodeInvalid(localServiceInfo);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, NotifyPinCodeInvalid_002, TestSize.Level1)
+{
+    LocalServiceInfo localServiceInfo;
+    localServiceInfo.SetBundleName("aaa");
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().NotifyPinCodeInvalid(localServiceInfo);
+    EXPECT_EQ(0, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, PutAllTrustedDevices_001, TestSize.Level1)
+{
+    std::vector<TrustedDeviceInfo> deviceInfos;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutAllTrustedDevices(deviceInfos);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, UnInitNext_001, TestSize.Level1)
+{
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().UnInitNext();
+    EXPECT_EQ(DP_SUCCESS, ret);
 }
 }
 }
