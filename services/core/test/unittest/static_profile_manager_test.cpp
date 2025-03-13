@@ -240,5 +240,57 @@ HWTEST_F(StaticProfileManagerTest, GenerateStaticInfoProfile_001, TestSize.Level
         staticInfoProfiles);
     EXPECT_EQ(errCode, DP_PARSE_STATIC_CAP_FAIL);
 }
+
+HWTEST_F(StaticProfileManagerTest, GenerateStaticInfoProfile_002, TestSize.Level1)
+{
+    CharacteristicProfile staticCapabilityProfile;
+    staticCapabilityProfile.SetCharacteristicValue(R"({
+        "version": "1.0",
+        "value": "test_value"
+    })");
+    staticCapabilityProfile.SetDeviceId("device_123");
+
+    std::unordered_map<std::string, CharacteristicProfile> staticInfoProfiles;
+
+    int32_t result =
+        StaticProfileManager::GetInstance().GenerateStaticInfoProfile(staticCapabilityProfile, staticInfoProfiles);
+    EXPECT_EQ(result, DP_PARSE_STATIC_CAP_FAIL);
+}
+
+HWTEST_F(StaticProfileManagerTest, GenerateStaticInfoProfile_003, TestSize.Level1)
+{
+    CharacteristicProfile staticCapabilityProfile;
+    staticCapabilityProfile.SetCharacteristicValue("invalid_json");
+
+    std::unordered_map<std::string, CharacteristicProfile> staticInfoProfiles;
+
+    int32_t result =
+        StaticProfileManager::GetInstance().GenerateStaticInfoProfile(staticCapabilityProfile, staticInfoProfiles);
+    EXPECT_EQ(result, DP_PARSE_STATIC_CAP_FAIL);
+}
+
+HWTEST_F(StaticProfileManagerTest, GenerateStaticInfoProfile_004, TestSize.Level1)
+{
+    CharacteristicProfile staticCapabilityProfile;
+    staticCapabilityProfile.SetCharacteristicValue(R"({ "value": "test_value" })");
+
+    std::unordered_map<std::string, CharacteristicProfile> staticInfoProfiles;
+
+    int32_t result =
+        StaticProfileManager::GetInstance().GenerateStaticInfoProfile(staticCapabilityProfile, staticInfoProfiles);
+    EXPECT_EQ(result, DP_PARSE_STATIC_CAP_FAIL);
+}
+
+HWTEST_F(StaticProfileManagerTest, GenerateStaticInfoProfile_005, TestSize.Level1)
+{
+    CharacteristicProfile staticCapabilityProfile;
+    staticCapabilityProfile.SetCharacteristicValue(R"({ "version": "1.0" })");
+
+    std::unordered_map<std::string, CharacteristicProfile> staticInfoProfiles;
+
+    int32_t result =
+        StaticProfileManager::GetInstance().GenerateStaticInfoProfile(staticCapabilityProfile, staticInfoProfiles);
+    EXPECT_EQ(result, DP_PARSE_STATIC_CAP_FAIL);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
