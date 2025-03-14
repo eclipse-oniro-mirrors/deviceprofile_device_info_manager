@@ -42,6 +42,7 @@ public:
         manu_(""),
         sn_(""),
         productId_(""),
+        productName_(""),
         subProductId_(""),
         hiv_(""),
         mac_(""),
@@ -59,7 +60,7 @@ public:
         brMac_(""),
         sleMac_(""),
         setupType_(0),
-        innerModel_("")
+        internalModel_("")
     {}
     ~DeviceProfile() = default;
 
@@ -95,6 +96,8 @@ public:
     void SetSn(const std::string& sn);
     std::string GetProductId() const;
     void SetProductId(const std::string& productId);
+    std::string GetProductName() const;
+    void SetProductName(const std::string& productName);
     std::string GetSubProductId() const;
     void SetSubProductId(const std::string& subProductId);
     std::string GetHiv() const;
@@ -121,8 +124,8 @@ public:
     void SetShareTime(const std::string& shareTime);
     std::string GetAccountId() const;
     void SetAccountId(const std::string& accountId);
-    std::string GetInnerModel() const;
-    void SetInnerModel(const std::string& innerModel);
+    std::string GetInternalModel() const;
+    void SetInternalModel(const std::string& internalModel);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     bool operator!=(const DeviceProfile& deviceProfile) const;
@@ -153,6 +156,7 @@ private:
     std::string manu_;
     std::string sn_;
     std::string productId_;
+    std::string productName_ = "";
     std::string subProductId_;
     std::string hiv_;
     std::string mac_;
@@ -170,7 +174,7 @@ private:
     std::string brMac_;
     std::string sleMac_;
     int32_t setupType_;
-    std::string innerModel_;
+    std::string internalModel_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

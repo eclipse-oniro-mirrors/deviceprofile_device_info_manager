@@ -184,6 +184,16 @@ void DeviceProfile::SetProductId(const std::string& productId)
     productId_ = productId;
 }
 
+std::string DeviceProfile::GetProductName() const
+{
+    return productName_;
+}
+
+void DeviceProfile::SetProductName(const std::string& productName)
+{
+    productName_ = productName;
+}
+
 std::string DeviceProfile::GetSubProductId() const
 {
     return subProductId_;
@@ -354,14 +364,14 @@ void DeviceProfile::SetSetupType(int32_t setupType)
     setupType_ = setupType;
 }
 
-std::string DeviceProfile::GetInnerModel() const
+std::string DeviceProfile::GetInternalModel() const
 {
-    return innerModel_;
+    return internalModel_;
 }
 
-void DeviceProfile::SetInnerModel(const std::string& innerModel)
+void DeviceProfile::SetInternalModel(const std::string& internalModel)
 {
-    innerModel_ = innerModel;
+    internalModel_ = internalModel;
 }
 
 bool DeviceProfile::Marshalling(MessageParcel& parcel) const
@@ -381,6 +391,7 @@ bool DeviceProfile::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, String, manu_, false);
     WRITE_HELPER_RET(parcel, String, sn_, false);
     WRITE_HELPER_RET(parcel, String, productId_, false);
+    WRITE_HELPER_RET(parcel, String, productName_, false);
     WRITE_HELPER_RET(parcel, String, subProductId_, false);
     WRITE_HELPER_RET(parcel, String, hiv_, false);
     WRITE_HELPER_RET(parcel, String, mac_, false);
@@ -394,7 +405,7 @@ bool DeviceProfile::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, String, modifyTime_, false);
     WRITE_HELPER_RET(parcel, String, shareTime_, false);
     WRITE_HELPER_RET(parcel, String, accountId_, false);
-    WRITE_HELPER_RET(parcel, String, innerModel_, false);
+    WRITE_HELPER_RET(parcel, String, internalModel_, false);
     WRITE_HELPER_RET(parcel, String, bleMac_, false);
     WRITE_HELPER_RET(parcel, String, brMac_, false);
     WRITE_HELPER_RET(parcel, String, sleMac_, false);
@@ -419,6 +430,7 @@ bool DeviceProfile::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, String, manu_, false);
     READ_HELPER_RET(parcel, String, sn_, false);
     READ_HELPER_RET(parcel, String, productId_, false);
+    READ_HELPER_RET(parcel, String, productName_, false);
     READ_HELPER_RET(parcel, String, subProductId_, false);
     READ_HELPER_RET(parcel, String, hiv_, false);
     READ_HELPER_RET(parcel, String, mac_, false);
@@ -432,7 +444,7 @@ bool DeviceProfile::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, String, modifyTime_, false);
     READ_HELPER_RET(parcel, String, shareTime_, false);
     READ_HELPER_RET(parcel, String, accountId_, false);
-    READ_HELPER_RET(parcel, String, innerModel_, false);
+    READ_HELPER_RET(parcel, String, internalModel_, false);
     READ_HELPER_RET(parcel, String, bleMac_, false);
     READ_HELPER_RET(parcel, String, brMac_, false);
     READ_HELPER_RET(parcel, String, sleMac_, false);
@@ -449,12 +461,13 @@ bool DeviceProfile::operator!=(const DeviceProfile& deviceProfile) const
         osType_ != deviceProfile.GetOsType() || isMultiUser_ != deviceProfile.IsMultiUser() ||
         userId_ != deviceProfile.GetUserId() || devType_ != deviceProfile.GetDevType() ||
         manu_ != deviceProfile.GetManu() || sn_ != deviceProfile.GetSn() ||
-        productId_ != deviceProfile.GetProductId() || subProductId_ != deviceProfile.GetSubProductId() ||
+        productId_ != deviceProfile.GetProductId() ||
+        productName_ != deviceProfile.GetProductName() || subProductId_ != deviceProfile.GetSubProductId() ||
         hiv_ != deviceProfile.GetHiv() || mac_ != deviceProfile.GetMac() ||
         fwv_ != deviceProfile.GetFwv() || hwv_ != deviceProfile.GetHwv() ||
         swv_ != deviceProfile.GetSwv() || protType_ != deviceProfile.GetProtType() ||
         wiseUserId_ != deviceProfile.GetWiseUserId() || wiseDeviceId_ != deviceProfile.GetWiseDeviceId() ||
-        registerTime_ != deviceProfile.GetRegisterTime() || innerModel_ != deviceProfile.GetInnerModel() ||
+        registerTime_ != deviceProfile.GetRegisterTime() || internalModel_ != deviceProfile.GetInternalModel() ||
         modifyTime_ != deviceProfile.GetModifyTime() || shareTime_ != deviceProfile.GetShareTime() ||
         accountId_ != deviceProfile.GetAccountId() || id_ != deviceProfile.GetId() ||
         bleMac_ != deviceProfile.bleMac_ || brMac_ != deviceProfile.brMac_ || sleMac_ != deviceProfile.sleMac_ ||
@@ -481,7 +494,7 @@ std::string DeviceProfile::dump() const
     cJSON_AddStringToObject(json, OS_SYS_CAPACITY.c_str(), osSysCap_.c_str());
     cJSON_AddNumberToObject(json, OS_API_LEVEL.c_str(), osApiLevel_);
     cJSON_AddStringToObject(json, OS_VERSION.c_str(), osVersion_.c_str());
-    cJSON_AddStringToObject(json, INNER_MODEL.c_str(), innerModel_.c_str());
+    cJSON_AddStringToObject(json, INTERNAL_MODEL.c_str(), internalModel_.c_str());
     cJSON_AddNumberToObject(json, OS_TYPE.c_str(), osType_);
     cJSON_AddBoolToObject(json, IS_MULTI_USER.c_str(), isMultiUser_);
     cJSON_AddNumberToObject(json, USER_ID.c_str(), userId_);

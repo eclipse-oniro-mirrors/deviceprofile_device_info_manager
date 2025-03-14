@@ -63,6 +63,7 @@ int32_t DeviceIconInfoDao::UnInit()
 
 int32_t DeviceIconInfoDao::PutDeviceIconInfo(const DeviceIconInfo& deviceIconInfo)
 {
+    HILOGI("deviceIconInfo:%{public}s", deviceIconInfo.dump().c_str());
     ValuesBucket values;
     DeviceIconInfoToEntries(deviceIconInfo, values);
     int64_t rowId = ROWID_INIT;
@@ -131,6 +132,7 @@ int32_t DeviceIconInfoDao::DeleteDeviceIconInfo(const DeviceIconInfo& deviceIcon
 
 int32_t DeviceIconInfoDao::UpdateDeviceIconInfo(const DeviceIconInfo& deviceIconInfo)
 {
+    HILOGI("deviceIconInfo:%{public}s", deviceIconInfo.dump().c_str());
     ValuesBucket values;
     DeviceIconInfoToEntries(deviceIconInfo, values);
     int32_t changeRowCnt = CHANGEROWCNT_INIT;
@@ -187,6 +189,11 @@ bool DeviceIconInfoDao::CreateQuerySqlAndCondition(const DeviceIconInfoFilterOpt
         condition.emplace_back(ValueObject(filterOptions.GetSubProductId()));
         flag = true;
     }
+    if (!filterOptions.GetInternalModel().empty()) {
+        sql += "a." + INTERNAL_MODEL + " = ? AND ";
+        condition.emplace_back(ValueObject(filterOptions.GetInternalModel()));
+        flag = true;
+    }
     if (!filterOptions.GetImageType().empty()) {
         sql += "a." + IMAGE_TYPE + " = ? AND ";
         condition.emplace_back(ValueObject(filterOptions.GetImageType()));
@@ -207,6 +214,7 @@ bool DeviceIconInfoDao::CreateQuerySqlAndCondition(const DeviceIconInfoFilterOpt
 int32_t DeviceIconInfoDao::DeviceIconInfoToEntries(const DeviceIconInfo& deviceIconInfo, ValuesBucket& values)
 {
     values.PutString(PRODUCT_ID, deviceIconInfo.GetProductId());
+    values.PutString(INTERNAL_MODEL, deviceIconInfo.GetInternalModel());
     values.PutString(SUB_PRODUCT_ID, deviceIconInfo.GetSubProductId());
     values.PutString(IMAGE_TYPE, deviceIconInfo.GetImageType());
     values.PutString(SPEC_NAME, deviceIconInfo.GetSpecName());
@@ -231,6 +239,7 @@ int32_t DeviceIconInfoDao::ConvertToDeviceIconInfo(std::shared_ptr<ResultSet> re
     }
     deviceIconInfo.SetId(rowEntity.Get(ID));
     deviceIconInfo.SetProductId(rowEntity.Get(PRODUCT_ID));
+    deviceIconInfo.SetInternalModel(rowEntity.Get(INTERNAL_MODEL));
     deviceIconInfo.SetSubProductId(rowEntity.Get(SUB_PRODUCT_ID));
     deviceIconInfo.SetImageType(rowEntity.Get(IMAGE_TYPE));
     deviceIconInfo.SetSpecName(rowEntity.Get(SPEC_NAME));

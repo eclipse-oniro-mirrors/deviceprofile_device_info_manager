@@ -19,6 +19,7 @@
 #include <iomanip>
 #include <sstream>
 
+#include "cJSON.h"
 #include "parameter.h"
 #include "parameters.h"
 #include "softbus_bus_center.h"
@@ -38,6 +39,13 @@ namespace {
     const char* MANUFACTURER_KEY = "const.product.manufacturer";
     constexpr int32_t DEVICE_UUID_LENGTH = 65;
     constexpr int32_t SYS_SETTINGS_DATA_SYNC_PARAM_LEN = 128;
+    constexpr int32_t PROT_TYPE_WIFI_ONLY = 1;
+    constexpr int32_t PROT_TYPE_MOBILIE_NETWORK_AND_WIFI = 18;
+    constexpr const char* WIFI_ONLY_DEVICE_TREE_PROC_NODE_NAME = "/proc/device-tree/singleap_wifionly/is_wifionly";
+    constexpr const char* WIFI_ONLY_FLAG_VALUE = "1";
+    constexpr int32_t WIFI_ONLY_FLAG_VALUE_MAX_LEN = 8;
+    const char* OHOS_BOOT_BACKCOLOR = "ohos.boot.backcolor";
+    const char* SUB_PROD_ID_MAP = "const.distributed_collaboration.subProdIdMap";
 }
 IMPLEMENT_SINGLE_INSTANCE(ContentSensorManagerUtils);
 std::string ContentSensorManagerUtils::ObtainProductModel()
@@ -228,6 +236,102 @@ void ContentSensorManagerUtils::ObtainDeviceDataSyncMode()
 bool ContentSensorManagerUtils::IsDeviceE2ESync()
 {
     return isDeviceE2ESync_.load();
+}
+
+int32_t ContentSensorManagerUtils::GetProtType()
+{
+    std::lock_guard<std::mutex> lock(csMutex_);
+    if (protType_ > 0) {
+        return protType_;
+    }
+    if (IsWifiOnly()) {
+        protType_ = PROT_TYPE_WIFI_ONLY;
+    } else {
+        protType_ = PROT_TYPE_MOBILIE_NETWORK_AND_WIFI;
+    }
+    HILOGI("protType:%{public}d", protType_);
+    return protType_;
+}
+
+bool ContentSensorManagerUtils::IsWifiOnly()
+{
+    char buf[WIFI_ONLY_FLAG_VALUE_MAX_LEN] = {0};
+    FILE *fp = nullptr;
+    if ((fp = fopen(WIFI_ONLY_DEVICE_TREE_PROC_NODE_NAME, "r")) == nullptr) {
+        HILOGE("open wifi only device tree proc node fail");
+        return false;
+    }
+    if (fgets(buf, WIFI_ONLY_FLAG_VALUE_MAX_LEN, fp) == nullptr) {
+        HILOGE("fgets return nullptr");
+        if (fclose(fp) != 0) {
+            HILOGE("Close file failed");
+        }
+        return false;
+    }
+    if (strcmp(buf, WIFI_ONLY_FLAG_VALUE)) {
+        HILOGE("buf not equal WIFI_ONLY_FLAG_VALUE");
+        if (fclose(fp) != 0) {
+            HILOGE("Close file failed");
+        }
+        return false;
+    }
+    if (fclose(fp) != 0) {
+        HILOGE("Close file failed");
+    }
+    return true;
+}
+
+std::string ContentSensorManagerUtils::GetSubProductId()
+{
+    std::string backcolor = GetBackcolor();
+    std::map<std::string, std::string> subProdIdMap = GetSubProdIdMap();
+    if (backcolor.empty() || subProdIdMap.empty() || subProdIdMap.find(backcolor) == subProdIdMap.end()) {
+        return EMPTY_STRING;
+    }
+    return subProdIdMap[backcolor];
+}
+
+std::string ContentSensorManagerUtils::GetBackcolor()
+{
+    std::lock_guard<std::mutex> lock(csMutex_);
+    if (!backcolor_.empty()) {
+        return backcolor_;
+    }
+    std::string temp = system::GetParameter(OHOS_BOOT_BACKCOLOR, "");
+    if (temp.empty()) {
+        HILOGE("get backcolor failed!");
+        return "";
+    }
+    backcolor_ = temp;
+    return backcolor_;
+}
+
+std::map<std::string, std::string> ContentSensorManagerUtils::GetSubProdIdMap()
+{
+    std::lock_guard<std::mutex> lock(csMutex_);
+    if (!subProdIdMap_.empty()) {
+        return subProdIdMap_;
+    }
+    std::string temp = system::GetParameter(SUB_PROD_ID_MAP, "");
+    if (temp.empty()) {
+        HILOGE("get subProdIdMap failed!");
+        return {};
+    }
+    cJSON* json = cJSON_Parse(temp.c_str());
+    if (!cJSON_IsObject(json)) {
+        HILOGW("cJSON_Parse productName fail!");
+        cJSON_Delete(json);
+        return {};
+    }
+    cJSON* item = json->child;
+    while (item != NULL) {
+        if (cJSON_IsString(item)) {
+            subProdIdMap_[item->string] = item->valuestring;
+        }
+        item = item->next;
+    }
+    cJSON_Delete(json);
+    return subProdIdMap_;
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

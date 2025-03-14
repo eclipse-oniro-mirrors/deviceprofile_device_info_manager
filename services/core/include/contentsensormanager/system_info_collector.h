@@ -44,11 +44,13 @@ private:
     std::string GetOsVersion();
     std::string GetDeviceName();
     std::string GetProductId();
+    std::string GetProductName();
     std::string GetSn();
     std::string GetDeviceModel();
     std::string GetDevType();
     std::string GetDeviceManufacturer();
     std::string GetDeviceTypeId();
+    std::string GetSubProductId();
 };
 } // namespace DeviceProfile
 } // namespace OHOS

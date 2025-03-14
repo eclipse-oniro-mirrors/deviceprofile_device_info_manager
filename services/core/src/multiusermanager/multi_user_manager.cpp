@@ -31,6 +31,7 @@ IMPLEMENT_SINGLE_INSTANCE(MultiUserManager);
 
 namespace {
     const std::string TAG = "MultiUserManager";
+    const std::string OHOS_ANONYMOUS_UID = "ohosAnonymousUid";
 }
 
 int32_t MultiUserManager::Init()
@@ -105,7 +106,7 @@ std::string MultiUserManager::GetOhosAccountIdByUserId(int32_t userId)
 #elif DP_OS_ACCOUNT_PART_EXISTS
     AccountSA::OhosAccountInfo accountInfo;
     ErrCode ret = OHOS::AccountSA::OhosAccountKits::GetInstance().GetOsAccountDistributedInfo(userId, accountInfo);
-    if (ret != 0 || accountInfo.uid_ == "") {
+    if (ret != 0 || accountInfo.uid_ == "" || accountInfo.uid_ == OHOS_ANONYMOUS_UID) {
         HILOGE("error ret: %{public}d", ret);
         return "";
     }

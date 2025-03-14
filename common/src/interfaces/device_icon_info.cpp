@@ -48,6 +48,16 @@ void DeviceIconInfo::SetProductId(const std::string& productId)
     this->productId_ = productId;
 }
 
+std::string DeviceIconInfo::GetInternalModel() const
+{
+    return internalModel_;
+}
+
+void DeviceIconInfo::SetInternalModel(const std::string& internalModel)
+{
+    internalModel_ = internalModel;
+}
+
 std::string DeviceIconInfo::GetSubProductId() const
 {
     return subProductId_;
@@ -121,6 +131,7 @@ void DeviceIconInfo::SetIcon(const std::vector<uint8_t>& icon)
 bool DeviceIconInfo::Marshalling(MessageParcel& parcel) const
 {
     WRITE_HELPER_RET(parcel, String, productId_, false);
+    WRITE_HELPER_RET(parcel, String, internalModel_, false);
     WRITE_HELPER_RET(parcel, String, subProductId_, false);
     WRITE_HELPER_RET(parcel, String, imageType_, false);
     WRITE_HELPER_RET(parcel, String, specName_, false);
@@ -134,6 +145,7 @@ bool DeviceIconInfo::Marshalling(MessageParcel& parcel) const
 bool DeviceIconInfo::UnMarshalling(MessageParcel& parcel)
 {
     READ_HELPER_RET(parcel, String, productId_, false);
+    READ_HELPER_RET(parcel, String, internalModel_, false);
     READ_HELPER_RET(parcel, String, subProductId_, false);
     READ_HELPER_RET(parcel, String, imageType_, false);
     READ_HELPER_RET(parcel, String, specName_, false);
@@ -147,6 +159,7 @@ bool DeviceIconInfo::UnMarshalling(MessageParcel& parcel)
 bool DeviceIconInfo::operator!=(const DeviceIconInfo& other) const
 {
     bool isNotEqual = (id_ != other.GetId() || productId_ != other.GetProductId() ||
+        internalModel_ != other.GetInternalModel() ||
         subProductId_ != other.GetSubProductId() || imageType_ != other.GetImageType() ||
         specName_ != other.GetSpecName() || version_ != other.GetVersion() || wiseVersion_ != other.GetWiseVersion() ||
         url_ != other.GetUrl() || icon_ != other.GetIcon());
@@ -165,6 +178,7 @@ std::string DeviceIconInfo::dump() const
     }
     cJSON_AddNumberToObject(json, ID.c_str(), id_);
     cJSON_AddStringToObject(json, PRODUCT_ID.c_str(), productId_.c_str());
+    cJSON_AddStringToObject(json, INTERNAL_MODEL.c_str(), internalModel_.c_str());
     cJSON_AddStringToObject(json, SUB_PRODUCT_ID.c_str(), subProductId_.c_str());
     cJSON_AddStringToObject(json, IMAGE_TYPE.c_str(), imageType_.c_str());
     cJSON_AddStringToObject(json, SPEC_NAME.c_str(), specName_.c_str());
@@ -174,13 +188,12 @@ std::string DeviceIconInfo::dump() const
     cJSON_AddStringToObject(json, DEVICE_ICON_URL.c_str(), url_.c_str());
     cJSON_AddNumberToObject(json, DEVICE_ICON_SIZE.c_str(), icon_.size());
     char* jsonChars = cJSON_PrintUnformatted(json);
+    cJSON_Delete(json);
     if (jsonChars == NULL) {
-        cJSON_Delete(json);
         HILOGE("cJSON formatted to string failed!");
         return EMPTY_STRING;
     }
     std::string jsonStr = jsonChars;
-    cJSON_Delete(json);
     cJSON_free(jsonChars);
     return jsonStr;
 }

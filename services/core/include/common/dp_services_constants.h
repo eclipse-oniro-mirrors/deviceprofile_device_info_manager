@@ -35,10 +35,13 @@ extern const std::string SELECT_DEVICE_PROFILE_TABLE_WHERE_DEVID_USERID;
 extern const std::string CREATE_DEVICE_PROFILE_TABLE_SQL;
 extern const std::string CREATE_DEVICE_PROFILE_TABLE_UNIQUE_INDEX_SQL;
 extern const std::string CREATE_DEVICE_PROFILE_WISE_DEVICEID_INDEX_SQL;
+extern const std::string ALTER_TABLE_DP_ADD_COLUMN_PRODUCT_NAME_SQL;
+extern const std::string ALTER_TABLE_DP_RENAME_COLUMN_INTERNAL_MODEL_SQL;
 // DeviceIconInfoDao
 extern const std::string CREATE_DEVICE_ICON_INFO_TABLE_SQL ;
 extern const std::string CREATE_DEVICE_ICON_INFO_TABLE_UNIQUE_INDEX_SQL;
 extern const std::string SELECT_DEVICE_ICON_INFO_TABLE;
+extern const std::string ALTER_TABLE_DEVICE_ICON_INFO_ADD_COLUMN_INTENAL_MODEL_SQL;
 // ProductInfoDao
 extern const std::string CREATE_PRODUCT_INFO_TABLE_SQL;
 extern const std::string SELECT_PRODUCT_INFO_TABLE;

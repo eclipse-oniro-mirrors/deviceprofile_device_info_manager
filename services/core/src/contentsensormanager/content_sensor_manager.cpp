@@ -76,7 +76,6 @@ int32_t ContentSensorManager::Collect()
         }
         deviceProfile.SetDeviceId(ContentSensorManagerUtils::GetInstance().ObtainLocalUdid());
         DeviceProfileManager::GetInstance().PutDeviceProfile(deviceProfile);
-        deviceProfile.SetUserId(MultiUserManager::GetInstance().GetCurrentForegroundUserID());
         CollectInfoToProfileData(deviceProfile);
         if (!svrProfileList.empty()) {
             DeviceProfileManager::GetInstance().PutServiceProfileBatch(svrProfileList);
@@ -100,10 +99,15 @@ int32_t ContentSensorManager::Collect()
 
 int32_t ContentSensorManager::CollectInfoToProfileData(DeviceProfile& collectProfile)
 {
+    int32_t userID = MultiUserManager::GetInstance().GetCurrentForegroundUserID();
+    if (userID == DEFAULT_USER_ID) {
+        userID = U_100;
+    }
+    collectProfile.SetUserId(userID);
+    collectProfile.SetAccountId(ProfileCache::GetInstance().GetLocalAccountId());
     DeviceProfileFilterOptions devFilterOptions;
-    devFilterOptions.AddDeviceIds(ProfileCache::GetInstance().GetLocalUdid());
-    devFilterOptions.SetAccountId(ProfileCache::GetInstance().GetLocalAccountId());
-    devFilterOptions.SetUserId(MultiUserManager::GetInstance().GetCurrentForegroundUserID());
+    devFilterOptions.AddDeviceIds(collectProfile.GetDeviceId());
+    devFilterOptions.SetUserId(collectProfile.GetUserId());
     std::vector<DeviceProfile> oldDeviceProfiles;
     int32_t ret = DeviceProfileDao::GetInstance().GetDeviceProfiles(devFilterOptions, oldDeviceProfiles);
     if ((ret != DP_SUCCESS) && (ret != DP_NOT_FIND_DATA)) {
@@ -118,7 +122,10 @@ int32_t ContentSensorManager::CollectInfoToProfileData(DeviceProfile& collectPro
         collectProfile.SetRegisterTime(oldDeviceProfile.GetRegisterTime());
         collectProfile.SetModifyTime(oldDeviceProfile.GetModifyTime());
         collectProfile.SetShareTime(oldDeviceProfile.GetShareTime());
-        collectProfile.SetInnerModel(oldDeviceProfile.GetInnerModel());
+        collectProfile.SetInternalModel(oldDeviceProfile.GetInternalModel());
+        if (collectProfile.GetAccountId().empty()) {
+            collectProfile.SetAccountId(oldDeviceProfile.GetAccountId());
+        }
     }
     ret = ProfileDataManager::GetInstance().PutDeviceProfile(collectProfile);
     if (ret != DP_SUCCESS) {

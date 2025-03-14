@@ -38,6 +38,16 @@ void DeviceIconInfoFilterOptions::SetProductIds(const std::vector<std::string>& 
     productIds_ = productIds;
 }
 
+std::string DeviceIconInfoFilterOptions::GetInternalModel() const
+{
+    return internalModel_;
+}
+
+void DeviceIconInfoFilterOptions::SetInternalModel(const std::string& internalModel)
+{
+    internalModel_ = internalModel;
+}
+
 std::string DeviceIconInfoFilterOptions::GetSubProductId() const
 {
     return subProductId_;
@@ -71,6 +81,7 @@ void DeviceIconInfoFilterOptions::SetSpecName(const std::string& specName)
 bool DeviceIconInfoFilterOptions::Marshalling(MessageParcel& parcel) const
 {
     IpcUtils::Marshalling(parcel, productIds_);
+    WRITE_HELPER_RET(parcel, String, internalModel_, false);
     WRITE_HELPER_RET(parcel, String, subProductId_, false);
     WRITE_HELPER_RET(parcel, String, imageType_, false);
     WRITE_HELPER_RET(parcel, String, specName_, false);
@@ -80,6 +91,7 @@ bool DeviceIconInfoFilterOptions::Marshalling(MessageParcel& parcel) const
 bool DeviceIconInfoFilterOptions::UnMarshalling(MessageParcel& parcel)
 {
     IpcUtils::UnMarshalling(parcel, productIds_);
+    READ_HELPER_RET(parcel, String, internalModel_, false);
     READ_HELPER_RET(parcel, String, subProductId_, false);
     READ_HELPER_RET(parcel, String, imageType_, false);
     READ_HELPER_RET(parcel, String, specName_, false);
@@ -115,6 +127,7 @@ std::string DeviceIconInfoFilterOptions::dump() const
         cJSON_Delete(prodIdsJson);
         HILOGW("Add json array to Object failed!");
     }
+    cJSON_AddStringToObject(json, INTERNAL_MODEL.c_str(), internalModel_.c_str());
     cJSON_AddStringToObject(json, SUB_PRODUCT_ID.c_str(), subProductId_.c_str());
     cJSON_AddStringToObject(json, IMAGE_TYPE.c_str(), imageType_.c_str());
     cJSON_AddStringToObject(json, SPEC_NAME.c_str(), specName_.c_str());

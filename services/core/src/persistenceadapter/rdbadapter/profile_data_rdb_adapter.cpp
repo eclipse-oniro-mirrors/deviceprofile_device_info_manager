@@ -189,7 +189,7 @@ std::shared_ptr<ResultSet> ProfileDataRdbAdapter::Get(const std::string& sql, co
 
 int32_t ProfileDataRdbAdapter::GetRDBPtr()
 {
-    int32_t version = RDB_VERSION;
+    int32_t version = RDB_VERSION_5_1;
     ProfileDataOpenCallback helper;
     RdbStoreConfig config(PROFILE_DATA_RDB_PATH + PROFILE_DATA_DATABASE_NAME);
     config.SetSecurityLevel(SecurityLevel::S2);
@@ -256,7 +256,30 @@ int32_t ProfileDataOpenCallback::OnCreate(RdbStore& store)
 
 int32_t ProfileDataOpenCallback::OnUpgrade(RdbStore& store, int oldVersion, int newVersion)
 {
-    HILOGI("rdbStore upgrade");
+    HILOGI("rdbStore upgrade : %{public}d -> %{public}d", oldVersion, newVersion);
+    if (oldVersion == RDB_VERSION && newVersion == RDB_VERSION_5_1) {
+        return UpdateFromVer1To2(store);
+    }
+    return NativeRdb::E_OK;
+}
+
+int32_t ProfileDataOpenCallback::UpdateFromVer1To2(RdbStore& store)
+{
+    int32_t ret = store.ExecuteSql(ALTER_TABLE_DP_ADD_COLUMN_PRODUCT_NAME_SQL);
+    if (ret != NativeRdb::E_OK) {
+        HILOGE("add column to device_profile table failed, ret:%{public}d", ret);
+        return ret;
+    }
+    ret = store.ExecuteSql(ALTER_TABLE_DP_RENAME_COLUMN_INTERNAL_MODEL_SQL);
+    if (ret != NativeRdb::E_OK) {
+        HILOGE("add column to device_icon_info table failed, ret:%{public}d", ret);
+        return ret;
+    }
+    ret = store.ExecuteSql(ALTER_TABLE_DEVICE_ICON_INFO_ADD_COLUMN_INTENAL_MODEL_SQL);
+    if (ret != NativeRdb::E_OK) {
+        HILOGE("add column to device_icon_info table failed, ret:%{public}d", ret);
+        return ret;
+    }
     return NativeRdb::E_OK;
 }
 } // namespace DistributedDeviceProfile
