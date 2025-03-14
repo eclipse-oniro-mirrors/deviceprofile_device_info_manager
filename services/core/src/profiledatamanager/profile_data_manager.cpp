@@ -125,7 +125,7 @@ int32_t ProfileDataManager::DeleteDeviceProfileBatch(std::vector<DeviceProfile>&
         HILOGE("DeleteDeviceProfile failed,ret=%{public}d", ret);
         return ret;
     }
-    HILOGE("oldDeviceProfiles.size:%{public}zu", oldDeviceProfiles.size());
+    HILOGI("oldDeviceProfiles.size:%{public}zu", oldDeviceProfiles.size());
     for (auto dp : oldDeviceProfiles) {
         int32_t delRet = DeviceProfileDao::GetInstance().DeleteDeviceProfile(dp);
         if (delRet != DP_SUCCESS) {
