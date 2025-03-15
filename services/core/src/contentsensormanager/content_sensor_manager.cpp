@@ -122,9 +122,11 @@ int32_t ContentSensorManager::CollectInfoToProfileData(DeviceProfile& collectPro
         collectProfile.SetRegisterTime(oldDeviceProfile.GetRegisterTime());
         collectProfile.SetModifyTime(oldDeviceProfile.GetModifyTime());
         collectProfile.SetShareTime(oldDeviceProfile.GetShareTime());
-        collectProfile.SetInternalModel(oldDeviceProfile.GetInternalModel());
         if (collectProfile.GetAccountId().empty()) {
             collectProfile.SetAccountId(oldDeviceProfile.GetAccountId());
+        }
+        if (!oldDeviceProfile.GetDeviceName().empty()) {
+            collectProfile.SetDeviceName(oldDeviceProfile.GetDeviceName());
         }
     }
     ret = ProfileDataManager::GetInstance().PutDeviceProfile(collectProfile);
