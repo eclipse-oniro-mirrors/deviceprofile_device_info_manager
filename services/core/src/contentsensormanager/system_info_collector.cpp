@@ -156,8 +156,8 @@ std::string SystemInfoCollector::GetDeviceTypeId()
 
 std::string SystemInfoCollector::DecodeHexStr(const std::string &str)
 {
-    if (str.length() % NUM_2 != 0) {
-        HILOGI("str.length:%{public}zu is not an even number.", str.length());
+    if (str.empty() || str.length() % NUM_2 != 0) {
+        HILOGE("str.length:%{public}zu is not an even number.", str.length());
         return EMPTY_STRING;
     }
     std::vector<uint8_t> bytes;
@@ -165,11 +165,15 @@ std::string SystemInfoCollector::DecodeHexStr(const std::string &str)
         std::string byteStr = str.substr(i, NUM_2);
         long result = strtol(byteStr.c_str(), nullptr, NUM_16);
         if (result == LONG_MIN || result == LONG_MAX) {
-            HILOGI("decode hexstring error.");
+            HILOGE("decode hexstring error.");
             return EMPTY_STRING;
         }
         uint8_t byte = (uint8_t)result;
         bytes.push_back(byte);
+    }
+    if (bytes.empty()) {
+        HILOGE("bytes is empty");
+        return EMPTY_STRING;
     }
     return std::string(bytes.begin(), bytes.end());
 }
