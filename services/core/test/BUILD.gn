@@ -457,6 +457,16 @@ ohos_unittest("profile_data_manager_test") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("local_service_info_manager_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/local_service_info_manager_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 group("unittest") {
   testonly = true
   deps = [
@@ -482,6 +492,7 @@ group("unittest") {
     ":kv_adapter_new_test",
     ":kv_store_death_recipient_test",
     ":kv_sync_completed_listener_test",
+    ":local_service_info_manager_test",
     ":multi_user_manager_test",
     ":profile_cache_new_test",
     ":profile_control_utils_test",
