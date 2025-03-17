@@ -1812,8 +1812,8 @@ HWTEST_F(DeviceProfileManagerTest, DeleteRemovedUserData001, TestSize.Level1)
 }
 
 /**
- * @tc.name: DeleteRemovedUserData001
- * @tc.desc: DeleteRemovedUserData001
+ * @tc.name: DeleteRemovedUserData002
+ * @tc.desc: DeleteRemovedUserData002
  * @tc.type: FUNC
  * @tc.require:
  */
