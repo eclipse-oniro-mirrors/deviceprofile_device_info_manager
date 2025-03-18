@@ -31,11 +31,15 @@ public:
     void SetAccesserDeviceId(const std::string& accesserDeviceId);
     int32_t GetAccesserUserId() const;
     void SetAccesserUserId(int32_t accesserUserId);
+    std::string GetAccesserAccountId() const;
+    void SetAccesserAccountId(const std::string& accesserAccountId);
     int64_t GetAccesserTokenId() const;
     void SetAccesserTokenId(int64_t accesserTokenId);
     std::string GetAccesseeDeviceId() const;
     void SetAccesseeDeviceId(const std::string& accesseeDeviceId);
     int32_t GetAccesseeUserId() const;
+    std::string GetAccesseeAccountId() const;
+    void SetAccesseeAccountId(const std::string& accesseeAccountId);
     void SetAccesseeUserId(int32_t accesseeUserId);
     int64_t GetAccesseeTokenId() const;
     void SetAccesseeTokenId(int64_t accesseeTokenId);
@@ -46,9 +50,11 @@ public:
 private:
     std::string accesserDeviceId_;
     int32_t accesserUserId_;
+    std::string accesserAccountId_;
     int64_t accesserTokenId_;
     std::string accesseeDeviceId_;
     int32_t accesseeUserId_;
+    std::string accesseeAccountId_;
     int64_t accesseeTokenId_;
 };
 } // namespace DistributedDeviceProfile
