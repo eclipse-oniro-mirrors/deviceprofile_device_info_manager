@@ -1812,8 +1812,8 @@ HWTEST_F(DeviceProfileManagerTest, DeleteRemovedUserData001, TestSize.Level1)
 }
 
 /**
- * @tc.name: DeleteRemovedUserData001
- * @tc.desc: DeleteRemovedUserData001
+ * @tc.name: DeleteRemovedUserData002
+ * @tc.desc: DeleteRemovedUserData002
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1851,5 +1851,136 @@ HWTEST_F(DeviceProfileManagerTest, DeleteRemovedUserData005, TestSize.Level1)
     EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
 }
 
+/**
+ * @tc.name: SyncWithNotOHBasedDevice001
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, SyncWithNotOHBasedDevice001, TestSize.Level1)
+{
+    std::vector<std::string> notOHBasedDevices;
+    const std::string callerDescriptor;
+    sptr<IRemoteObject> syncCompletedCallback;
+    int32_t ret = DeviceProfileManager::GetInstance().SyncWithNotOHBasedDevice(
+        notOHBasedDevices, callerDescriptor, syncCompletedCallback);
+    EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
+    DeviceProfileManager::GetInstance().SyncWithNotOHBasedDeviceFailed(notOHBasedDevices, syncCompletedCallback);
+    EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
+}
+
+/**
+ * @tc.name: GetEntriesByKeys001
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, GetEntriesByKeys001, TestSize.Level1)
+{
+    std::unique_ptr<DeviceProfileManager> manager_;
+    manager_ = std::make_unique<DeviceProfileManager>();
+    std::vector<std::string> keys;
+    TrustedDeviceInfo deviceInfo;
+    deviceInfo.SetNetworkId("networkId");
+    std::vector<DistributedKv::Entry> ret = manager_->GetEntriesByKeys(keys);
+    DeviceProfileManager::GetInstance().FixDataOnDeviceOnline(deviceInfo);
+    DeviceProfileManager::GetInstance().NotifyNotOHBaseOnline(deviceInfo);
+    DeviceProfileManager::GetInstance().E2ESyncDynamicProfile(deviceInfo);
+    EXPECT_TRUE(ret.empty());
+}
+
+/**
+ * @tc.name: GetEntriesByKeys002
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, GetEntriesByKeys002, TestSize.Level1)
+{
+    std::unique_ptr<DeviceProfileManager> manager_;
+    manager_ = std::make_unique<DeviceProfileManager>();
+    manager_->deviceProfileStore_ = nullptr;
+    std::vector<std::string> keys = {"key1"};
+    TrustedDeviceInfo deviceInfo;
+    std::vector<DistributedKv::Entry> ret = manager_->GetEntriesByKeys(keys);
+    DeviceProfileManager::GetInstance().OnDeviceOnline(deviceInfo);
+    DeviceProfileManager::GetInstance().FixDataOnDeviceOnline(deviceInfo);
+    DeviceProfileManager::GetInstance().NotifyNotOHBaseOnline(deviceInfo);
+    DeviceProfileManager::GetInstance().E2ESyncDynamicProfile(deviceInfo);
+    EXPECT_TRUE(ret.empty());
+}
+
+/**
+ * @tc.name: GetEntriesByKeys003
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, GetEntriesByKeys003, TestSize.Level1)
+{
+    std::unique_ptr<DeviceProfileManager> manager_;
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>("111",
+        "222",
+        std::make_shared<KvDataChangeListener>("333"),
+        std::make_shared<KvSyncCompletedListener>("444"),
+        std::make_shared<KvDeathRecipient>("555"),
+        DistributedKv::TYPE_DYNAMICAL);
+    manager_ = std::make_unique<DeviceProfileManager>();
+    manager_->deviceProfileStore_ = kvStore;
+    std::vector<std::string> keys = {"key1"};
+    TrustedDeviceInfo deviceInfo;
+    deviceInfo.SetNetworkId("networkId");
+    deviceInfo.SetOsType(OHOS_TYPE);
+    std::vector<DistributedKv::Entry> ret = manager_->GetEntriesByKeys(keys);
+    DeviceProfileManager::GetInstance().OnDeviceOnline(deviceInfo);
+    DeviceProfileManager::GetInstance().FixDataOnDeviceOnline(deviceInfo);
+    DeviceProfileManager::GetInstance().NotifyNotOHBaseOnline(deviceInfo);
+    DeviceProfileManager::GetInstance().E2ESyncDynamicProfile(deviceInfo);
+    EXPECT_TRUE(ret.empty());
+}
+
+/**
+ * @tc.name: GetProfilesByOwner001
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, GetProfilesByOwner001, TestSize.Level1)
+{
+    std::string uuid;
+    std::map<std::string, std::string> values;
+    int32_t ret = DeviceProfileManager::GetInstance().GetProfilesByOwner(uuid, values);
+    EXPECT_EQ(ret, DP_INVALID_PARAM);
+}
+
+/**
+ * @tc.name: GetProfilesByOwner002
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, GetProfilesByOwner002, TestSize.Level1)
+{
+    std::string uuid = "uuid";
+    std::map<std::string, std::string> values;
+    std::unique_ptr<DeviceProfileManager> manager_;
+    std::shared_ptr<IKVAdapter> kvStore = std::make_shared<KVAdapter>("111",
+        "222",
+        std::make_shared<KvDataChangeListener>("333"),
+        std::make_shared<KvSyncCompletedListener>("444"),
+        std::make_shared<KvDeathRecipient>("555"),
+        DistributedKv::TYPE_DYNAMICAL);
+    manager_ = std::make_unique<DeviceProfileManager>();
+    manager_->deviceProfileStore_ = kvStore;
+    int32_t ret = manager_->GetProfilesByOwner(uuid, values);
+    EXPECT_EQ(ret, DP_GET_DEVICE_ENTRIES_FAIL);
+}
+
+/**
+ * @tc.name: GetProfilesByOwner003
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileManagerTest, GetProfilesByOwner003, TestSize.Level1)
+{
+    std::string uuid = "uuid";
+    std::map<std::string, std::string> values;
+    int32_t ret = DeviceProfileManager::GetInstance().GetProfilesByOwner(uuid, values);
+    EXPECT_EQ(ret, 0);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

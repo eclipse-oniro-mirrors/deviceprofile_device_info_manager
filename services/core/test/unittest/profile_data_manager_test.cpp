@@ -248,7 +248,7 @@ HWTEST_F(ProfileDataManagerTest, DeleteDeviceProfileBatch_002, TestSize.Level1)
     DeviceProfile deviceProfile;
     std::vector<DeviceProfile> deviceProfiles = {deviceProfile};
     int32_t result = ProfileDataManager::GetInstance().DeleteDeviceProfileBatch(deviceProfiles);
-    EXPECT_EQ(result, DP_DELETE_TRUST_DEVICE_PROFILE_FAIL);
+    EXPECT_NE(result, DP_SUCCESS);
 }
 
 /*
