@@ -104,6 +104,7 @@ public:
 
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
     void LoadSystemAbilityFail();
+    void OnClosed();
 
 public:
     class SystemAbilityListener : public SystemAbilityStatusChangeStub {
