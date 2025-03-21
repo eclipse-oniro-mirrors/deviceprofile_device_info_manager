@@ -51,7 +51,6 @@ private:
     std::string GetDeviceManufacturer();
     std::string GetDeviceTypeId();
     std::string GetSubProductId();
-    std::string DecodeHexStr(const std::string &str);
 };
 } // namespace DeviceProfile
 } // namespace OHOS
