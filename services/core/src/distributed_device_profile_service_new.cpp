@@ -954,6 +954,10 @@ void DistributedDeviceProfileServiceNew::AccountCommonEventCallback(int32_t user
     if (commonEventType == EventFwk::CommonEventSupport::COMMON_EVENT_USER_SWITCHED) {
         // swithed
         MultiUserManager::GetInstance().SetCurrentForegroundUserID(userId);
+        if (ContentSensorManager::GetInstance().Init() != DP_SUCCESS) {
+            HILOGE("ContentSensorManager init failed");
+            return;
+        }
         return;
     }
     if (commonEventType == EventFwk::CommonEventSupport::COMMON_EVENT_USER_REMOVED) {

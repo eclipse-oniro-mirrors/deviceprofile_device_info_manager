@@ -113,7 +113,8 @@ std::string SystemInfoCollector::GetProductName()
 {
     std::string productName = ContentSensorManagerUtils::GetInstance().ObtainMarketName();
     for (const auto &item : PRODUCT_NAME_PREFIXS) {
-        productName = TrimStr(ReplaceStr(productName, DecodeHexStr(item), ""));
+        productName = TrimStr(ReplaceStr(productName,
+            DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().DecodeHexStr(item), ""));
     }
     HILOGI("productName : %{public}s", ProfileUtils::GetAnonyString(productName).c_str());
     return productName;
@@ -152,30 +153,6 @@ int32_t SystemInfoCollector::GetProtType()
 std::string SystemInfoCollector::GetDeviceTypeId()
 {
     return DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().ObtainDeviceTypeId();
-}
-
-std::string SystemInfoCollector::DecodeHexStr(const std::string &str)
-{
-    if (str.empty() || str.length() % NUM_2 != 0) {
-        HILOGE("str.length:%{public}zu is not an even number.", str.length());
-        return EMPTY_STRING;
-    }
-    std::vector<uint8_t> bytes;
-    for (size_t i = 0; i < str.length(); i += NUM_2) {
-        std::string byteStr = str.substr(i, NUM_2);
-        long result = strtol(byteStr.c_str(), nullptr, NUM_16);
-        if (result == LONG_MIN || result == LONG_MAX) {
-            HILOGE("decode hexstring error.");
-            return EMPTY_STRING;
-        }
-        uint8_t byte = (uint8_t)result;
-        bytes.push_back(byte);
-    }
-    if (bytes.empty()) {
-        HILOGE("bytes is empty");
-        return EMPTY_STRING;
-    }
-    return std::string(bytes.begin(), bytes.end());
 }
 } // namespace DeviceProfile
 } // namespace OHOS

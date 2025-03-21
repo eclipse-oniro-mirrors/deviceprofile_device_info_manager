@@ -46,6 +46,8 @@ namespace {
     constexpr int32_t WIFI_ONLY_FLAG_VALUE_MAX_LEN = 8;
     const char* OHOS_BOOT_BACKCOLOR = "ohos.boot.backcolor";
     const char* SUB_PROD_ID_MAP = "const.distributed_collaboration.subProdIdMap";
+    const std::string MANU_NAME = "485541574549";
+    const std::string MANU_CODE = "001";
 }
 IMPLEMENT_SINGLE_INSTANCE(ContentSensorManagerUtils);
 std::string ContentSensorManagerUtils::ObtainProductModel()
@@ -112,6 +114,9 @@ std::string ContentSensorManagerUtils::ObtainManufacture()
         return manufacture_;
     }
     std::string manufactureTemp = system::GetParameter(MANUFACTURER_KEY, "");
+    if (manufactureTemp == DecodeHexStr(MANU_NAME)) {
+        manufactureTemp = MANU_CODE;
+    }
     if (manufactureTemp.empty()) {
         HILOGE("get manufacture failed!");
         return "";
@@ -332,6 +337,30 @@ std::map<std::string, std::string> ContentSensorManagerUtils::GetSubProdIdMap()
     }
     cJSON_Delete(json);
     return subProdIdMap_;
+}
+
+std::string ContentSensorManagerUtils::DecodeHexStr(const std::string &str)
+{
+    if (str.empty() || str.length() % NUM_2 != 0) {
+        HILOGE("str.length:%{public}zu is not an even number.", str.length());
+        return EMPTY_STRING;
+    }
+    std::vector<uint8_t> bytes;
+    for (size_t i = 0; i < str.length(); i += NUM_2) {
+        std::string byteStr = str.substr(i, NUM_2);
+        long result = strtol(byteStr.c_str(), nullptr, NUM_16);
+        if (result == LONG_MIN || result == LONG_MAX) {
+            HILOGE("decode hexstring error.");
+            return EMPTY_STRING;
+        }
+        uint8_t byte = (uint8_t)result;
+        bytes.push_back(byte);
+    }
+    if (bytes.empty()) {
+        HILOGE("bytes is empty");
+        return EMPTY_STRING;
+    }
+    return std::string(bytes.begin(), bytes.end());
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

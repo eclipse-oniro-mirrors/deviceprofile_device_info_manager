@@ -41,6 +41,7 @@ public:
     bool IsDeviceE2ESync();
     int32_t GetProtType();
     std::string GetSubProductId();
+    std::string DecodeHexStr(const std::string &str);
 
 private:
     bool IsWifiOnly();

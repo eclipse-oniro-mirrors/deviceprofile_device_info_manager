@@ -802,5 +802,78 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetServiceInfoProfileListByBundle
         DistributedDeviceProfileClient::GetInstance().GetServiceInfoProfileListByBundleName(key, serviceInfoProfiles);
     EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
+
+/**
+ * @tc.name: PutProductInfoBatch_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, PutProductInfoBatch_001, TestSize.Level1)
+{
+    std::vector<ProductInfo> productInfos;
+    int32_t errCode =
+        DistributedDeviceProfileClient::GetInstance().PutProductInfoBatch(productInfos);
+    EXPECT_NE(errCode, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: PutLocalServiceInfo_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, PutLocalServiceInfo_001, TestSize.Level1)
+{
+    LocalServiceInfo localServiceInfo;
+    int32_t errCode =
+        DistributedDeviceProfileClient::GetInstance().PutLocalServiceInfo(localServiceInfo);
+    EXPECT_NE(errCode, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: UpdateLocalServiceInfo_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, UpdateLocalServiceInfo_001, TestSize.Level1)
+{
+    LocalServiceInfo localServiceInfo;
+    int32_t errCode =
+        DistributedDeviceProfileClient::GetInstance().UpdateLocalServiceInfo(localServiceInfo);
+    EXPECT_NE(errCode, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: GetLocalServiceInfoByBundleAndPinType_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, GetLocalServiceInfoByBundleAndPinType_001, TestSize.Level1)
+{
+    std::string bundleName = "bundleName";
+    int32_t pinExchangeType = 0;
+    LocalServiceInfo localServiceInfo;
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().
+        GetLocalServiceInfoByBundleAndPinType(bundleName, pinExchangeType, localServiceInfo);
+    EXPECT_NE(errCode, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: DeleteLocalServiceInfo_001
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, DeleteLocalServiceInfo_001, TestSize.Level1)
+{
+    std::string bundleName = "bundleName";
+    int32_t pinExchangeType = 0;
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().
+        DeleteLocalServiceInfo(bundleName, pinExchangeType);
+    EXPECT_NE(errCode, DP_SUCCESS);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
