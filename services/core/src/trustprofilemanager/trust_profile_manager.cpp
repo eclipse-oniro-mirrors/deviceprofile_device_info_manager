@@ -670,7 +670,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(const std::map<std::string,
                 params.at(TRUST_DEVICE_ID), std::atoi(params.at(STATUS).c_str()), profile);
         }
         if (ProfileUtils::IsPropertyValidInt64(params, TOKENID)) {
-            return GetAccessControlProfileByTokenId(std::atoll(params.at(TOKENID).c_str()),
+            return GetAccessControlProfileByTokenId(std::atoi(params.at(TOKENID).c_str()),
                 params.at(TRUST_DEVICE_ID), std::atoi(params.at(STATUS).c_str()), profile);
         }
     }
@@ -954,16 +954,16 @@ bool TrustProfileManager::GenerateQueryProfile(const std::map<std::string, std::
             queryProfile.SetAccesserDeviceId(params.at(ACCESSER_DEVICE_ID));
             queryProfile.SetAccesserUserId(std::atoi(params.at(ACCESSER_USER_ID).c_str()));
             queryProfile.SetAccesserAccountId(params.at(ACCESSER_ACCOUNT_ID));
-            queryProfile.SetAccesserTokenId(std::atoll(params.at(ACCESSER_TOKEN_ID).c_str()));
+            queryProfile.SetAccesserTokenId(std::atoi(params.at(ACCESSER_TOKEN_ID).c_str()));
             queryProfile.SetAccesseeDeviceId(params.at(ACCESSEE_DEVICE_ID));
             queryProfile.SetAccesseeUserId(std::atoi(params.at(ACCESSEE_USER_ID).c_str()));
             queryProfile.SetAccesseeAccountId(params.at(ACCESSEE_ACCOUNT_ID));
-            queryProfile.SetAccesseeTokenId(std::atoll(params.at(ACCESSEE_TOKEN_ID).c_str()));
+            queryProfile.SetAccesseeTokenId(std::atoi(params.at(ACCESSEE_TOKEN_ID).c_str()));
             queryType = QueryType::ACER_AND_ACEE_TOKENID;
             return true;
         }
         queryProfile.SetAccesserDeviceId(params.at(ACCESSER_DEVICE_ID));
-        queryProfile.SetAccesserTokenId(std::atoll(params.at(ACCESSER_TOKEN_ID).c_str()));
+        queryProfile.SetAccesserTokenId(std::atoi(params.at(ACCESSER_TOKEN_ID).c_str()));
         queryProfile.SetAccesserUserId(std::atoi(params.at(ACCESSER_USER_ID).c_str()));
         queryProfile.SetAccesserAccountId(params.at(ACCESSER_ACCOUNT_ID));
         queryProfile.SetAccesseeDeviceId(params.at(ACCESSEE_DEVICE_ID));
