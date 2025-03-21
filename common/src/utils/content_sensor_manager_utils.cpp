@@ -46,8 +46,8 @@ namespace {
     constexpr int32_t WIFI_ONLY_FLAG_VALUE_MAX_LEN = 8;
     const char* OHOS_BOOT_BACKCOLOR = "ohos.boot.backcolor";
     const char* SUB_PROD_ID_MAP = "const.distributed_collaboration.subProdIdMap";
-    const std::string PRODUCT_NAME_PREFIXS = "485541574549";
-    const std::string MANU_001 = "001";
+    const std::string MANU_NAME = "485541574549";
+    const std::string MANU_CODE = "001";
 }
 IMPLEMENT_SINGLE_INSTANCE(ContentSensorManagerUtils);
 std::string ContentSensorManagerUtils::ObtainProductModel()
@@ -114,8 +114,8 @@ std::string ContentSensorManagerUtils::ObtainManufacture()
         return manufacture_;
     }
     std::string manufactureTemp = system::GetParameter(MANUFACTURER_KEY, "");
-    if (manufactureTemp == DecodeHexStr(PRODUCT_NAME_PREFIXS)) {
-        manufactureTemp = MANU_001;
+    if (manufactureTemp == DecodeHexStr(MANU_NAME)) {
+        manufactureTemp = MANU_CODE;
     }
     if (manufactureTemp.empty()) {
         HILOGE("get manufacture failed!");
