@@ -113,7 +113,8 @@ std::string SystemInfoCollector::GetProductName()
 {
     std::string productName = ContentSensorManagerUtils::GetInstance().ObtainMarketName();
     for (const auto &item : PRODUCT_NAME_PREFIXS) {
-        productName = TrimStr(ReplaceStr(productName, DecodeHexStr(item), ""));
+        productName = TrimStr(ReplaceStr(productName,
+            DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().DecodeHexStr(item), ""));
     }
     HILOGI("productName : %{public}s", ProfileUtils::GetAnonyString(productName).c_str());
     return productName;
