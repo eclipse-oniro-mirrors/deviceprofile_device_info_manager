@@ -905,5 +905,26 @@ void DistributedDeviceProfileClient::SystemAbilityListener::OnAddSystemAbility(i
     DistributedDeviceProfileClient::GetInstance().StartThreadReSubscribePinCodeInvalid();
     DistributedDeviceProfileClient::GetInstance().ReSubscribeDeviceProfileInited();
 }
+
+void DistributedDeviceProfileClient::OnClosed()
+{
+    std::lock_guard<std::mutex> lock(serviceLock_);
+    if (dpProxy_ != nullptr && dpProxy_->AsObject() != nullptr && dpDeathRecipient_ != nullptr) {
+        dpProxy_->AsObject()->RemoveDeathRecipient(dpDeathRecipient_);
+    }
+    dpDeathRecipient_ = nullptr;
+    dpProxy_ = nullptr;
+}
+
+void __attribute__((constructor)) OnDistributedDeviceProfileClientOpened()
+{
+    HILOGI("dlopen dp client");
+}
+
+void __attribute__((destructor)) OnDistributedDeviceProfileClientClosed()
+{
+    HILOGI("dlclose dp client");
+    DistributedDeviceProfileClient::GetInstance().OnClosed();
+}
 } // namespace DeviceProfile
 } // namespace OHOS
