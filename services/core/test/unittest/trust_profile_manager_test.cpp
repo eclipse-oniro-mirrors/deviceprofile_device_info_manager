@@ -428,37 +428,42 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_015, TestSize.Level1)
 {
     std::vector<AccessControlProfile> profile;
     std::map<std::string, std::string> parms;
-    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "44"}, {"accesserTokenId", "333"},
-        {"accesseeDeviceId", "123456"}, {"accesseeUserId", "44"}, {"accesseeTokenId", "444"}});
+    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "44"}, {"accesserAccountId", "a2"},
+        {"accesserTokenId", "333"}, {"accesseeDeviceId", "123456"}, {"accesseeUserId", "44"},
+        {"accesseeAccountId", "a2"}, {"accesseeTokenId", "444"}});
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     EXPECT_NE(ret, DP_SUCCESS);
 
     parms.clear();
-    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"}, {"accesserTokenId", "333"},
-        {"accesseeDeviceId", "123456"}, {"accesseeUserId", "55"}, {"accesseeTokenId", "444"}});
+    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"},  {"accesserAccountId", "a2"},
+        {"accesserTokenId", "333"}, {"accesseeDeviceId", "123456"}, {"accesseeUserId", "55"},
+        {"accesseeAccountId", "a2"}, {"accesseeTokenId", "444"}});
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     EXPECT_NE(ret, DP_SUCCESS);
 
     parms.clear();
-    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"}, {"accesserTokenId", "333"},
-        {"accesseeDeviceId", "acee22"}, {"accesseeUserId", "44"}, {"accesseeTokenId", "555"}});
+    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"}, {"accesserAccountId", "a2"},
+        {"accesserTokenId", "333"}, {"accesseeDeviceId", "acee22"}, {"accesseeUserId", "44"},
+        {"accesseeAccountId", "a2"}, {"accesseeTokenId", "555"}});
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     EXPECT_NE(ret, DP_SUCCESS);
 
     parms.clear();
-    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"}, {"accesserTokenId", "444"},
-        {"accesseeDeviceId", "123456"}, {"accesseeUserId", "44"}, {"accesseeTokenId", "444"}});
+    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"}, {"accesserAccountId", "a2"},
+        {"accesserTokenId", "444"}, {"accesseeDeviceId", "123456"}, {"accesseeUserId", "44"},
+        {"accesseeAccountId", "a2"}, {"accesseeTokenId", "444"}});
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     EXPECT_EQ(ret, DP_SUCCESS);
 
     parms.clear();
     profile.clear();
-    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"}, {"accesserTokenId", "333"},
-        {"accesseeDeviceId", "123456"}, {"accesseeUserId", "44"}, {"accesseeTokenId", "444"}});
+    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"}, {"accesserAccountId", "a2"},
+        {"accesserTokenId", "333"}, {"accesseeDeviceId", "123456"}, {"accesseeUserId", "44"},
+        {"accesseeAccountId", "a2"}, {"accesseeTokenId", "444"}});
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     EXPECT_EQ(ret, DP_SUCCESS);
@@ -473,36 +478,36 @@ HWTEST_F(TrustProfileManagerTest, GetAccessControlProfile_016, TestSize.Level1)
 {
     std::vector<AccessControlProfile> profile;
     std::map<std::string, std::string> parms;
-    parms.insert({{"accesserDeviceId", "acer11"}, {"accesserUserId", "33"}, {"accesserTokenId", "333"},
-        {"accesseeDeviceId", "123456"}});
+    parms.insert({{"accesserDeviceId", "acer11"}, {"accesserUserId", "33"}, {"accesserAccountId", "a2"},
+        {"accesserTokenId", "333"}, {"accesseeDeviceId", "123456"}});
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     EXPECT_NE(ret, DP_SUCCESS);
 
     parms.clear();
-    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "44"}, {"accesserTokenId", "333"},
-        {"accesseeDeviceId", "123456"}});
+    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "44"}, {"accesserAccountId", "a2"},
+        {"accesserTokenId", "333"}, {"accesseeDeviceId", "123456"}});
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     EXPECT_NE(ret, DP_SUCCESS);
 
     parms.clear();
-    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"}, {"accesserTokenId", "444"},
-        {"accesseeDeviceId", "acee22"}});
+    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"}, {"accesserAccountId", "a2"},
+        {"accesserTokenId", "444"}, {"accesseeDeviceId", "acee22"}});
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     EXPECT_NE(ret, DP_SUCCESS);
 
     parms.clear();
-    parms.insert({{"accesserDeviceId", "acer22"}, {"accesserUserId", "33"}, {"accesserTokenId", "333"},
-        {"accesseeDeviceId", "123456"}});
+    parms.insert({{"accesserDeviceId", "acer22"}, {"accesserUserId", "33"}, {"accesserAccountId", "a2"},
+        {"accesserTokenId", "333"}, {"accesseeDeviceId", "123456"}});
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     EXPECT_NE(ret, DP_SUCCESS);
 
     parms.clear();
-    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"}, {"accesserTokenId", "333"},
-        {"accesseeDeviceId", "123456"}});
+    parms.insert({{"accesserDeviceId", "acer2"}, {"accesserUserId", "33"}, {"accesserAccountId", "a2"},
+        {"accesserTokenId", "333"}, {"accesseeDeviceId", "123456"}});
     ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().GetAccessControlProfile(parms, profile);
     EXPECT_EQ(ret, DP_SUCCESS);
