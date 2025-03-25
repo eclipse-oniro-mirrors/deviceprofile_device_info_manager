@@ -435,9 +435,13 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<uint8_t>& params
         return false;
     }
     const void *temp = parcel.ReadRawData((size_t)length);
-    const unsigned char *buffer = nullptr;
-    if ((temp == nullptr) || ((buffer = reinterpret_cast<const unsigned char *>(temp)) == nullptr)) {
+    if (temp == nullptr) {
         HILOGE("read raw data failed, length = %{public}d", length);
+        return false;
+    }
+    const unsigned char *buffer = reinterpret_cast<const unsigned char *>(temp);
+    if (buffer == nullptr) {
+        HILOGE("Unexpected null after reinterpret_cast");
         return false;
     }
     std::vector<uint8_t> icon(buffer, buffer + length);
