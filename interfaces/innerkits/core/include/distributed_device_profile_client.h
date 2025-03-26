@@ -104,7 +104,7 @@ public:
 
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
     void LoadSystemAbilityFail();
-    void OnClosed();
+    void ReleaseResource();
 
 public:
     class SystemAbilityListener : public SystemAbilityStatusChangeStub {
@@ -123,6 +123,10 @@ private:
     void ReSubscribeDeviceProfileInited();
     void ReSubscribePinCodeInvalid();
     void StartThreadReSubscribePinCodeInvalid();
+    void ReleaseSubscribeDeviceProfileSA();
+    void ReleaseSubscribeDeviceProfileInited();
+    void ReleaseSubscribePinCodeInvalid();
+    void ReleaseDeathRecipient();
 
     class DeviceProfileDeathRecipient : public IRemoteObject::DeathRecipient {
     public:
