@@ -13,5 +13,5 @@
  * limitations under the License.
  */
 
- # any change to common/include/deviceprofile_ipc_interface_code.h needs to be reviewed by @leonchan5
-common/include/deviceprofile_ipc_interface_code.h @leonchan5
+ # any change to common/include/deviceprofile_ipc_interface_code.h needs to be reviewed by @leonchan5 liubao6@huawei.com
+common/include/deviceprofile_ipc_interface_code.h @leonchan5 liubao6@huawei.com
