@@ -906,7 +906,72 @@ void DistributedDeviceProfileClient::SystemAbilityListener::OnAddSystemAbility(i
     DistributedDeviceProfileClient::GetInstance().ReSubscribeDeviceProfileInited();
 }
 
-void DistributedDeviceProfileClient::OnClosed()
+void DistributedDeviceProfileClient::ReleaseSubscribeDeviceProfileSA()
+{
+    std::lock_guard<std::mutex> lock(saListenerLock_);
+    if (saListenerCallback_ == nullptr) {
+        return;
+    }
+
+    auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    if (samgrProxy == nullptr) {
+        HILOGE("get samgr failed");
+        saListenerCallback_ = nullptr;
+        return;
+    }
+
+    int32_t ret = samgrProxy->UnSubscribeSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, saListenerCallback_);
+    if (ret != DP_SUCCESS) {
+        HILOGE("unsubscribe dp sa failed, ret=%{public}d", ret);
+        return;
+    }
+
+    HILOGD("unsubscribe dp sa success");
+}
+
+void DistributedDeviceProfileClient::ReleaseSubscribeDeviceProfileInited()
+{
+    int32_t saId = 0;
+    {
+        std::lock_guard<std::mutex> lock(dpInitedLock_);
+        if (dpInitedCallback_ == nullptr) {
+            return;
+        }
+        saId = saId_;
+    }
+
+    int32_t ret = UnSubscribeDeviceProfileInited(saId);
+    if (ret != DP_SUCCESS) {
+        HILOGE("unsubscribe device profile inited failed, ret=%{public}d", ret);
+        return;
+    }
+
+    HILOGD("unsubscribe device profile inited success");
+}
+
+void DistributedDeviceProfileClient::ReleaseSubscribePinCodeInvalid()
+{
+    std::string bundleName = "";
+    int32_t pinExchangeType = DEFAULT_PIN_EXCHANGE_TYPE;
+    {
+        std::lock_guard<std::mutex> lock(pinCodeLock_);
+        if (pinCodeCallback_ == nullptr) {
+            return;
+        }
+        bundleName = bundleName_;
+        pinExchangeType = pinExchangeType_;
+    }
+
+    int32_t ret = UnSubscribePinCodeInvalid(bundleName, pinExchangeType);
+    if (ret != DP_SUCCESS) {
+        HILOGE("unscribe pincode invalid failed, ret=%{public}d", ret);
+        return;
+    }
+
+    HILOGD("unscribe pincode invalid success");
+}
+
+void DistributedDeviceProfileClient::ReleaseDeathRecipient()
 {
     std::lock_guard<std::mutex> lock(serviceLock_);
     if (dpProxy_ != nullptr && dpProxy_->AsObject() != nullptr && dpDeathRecipient_ != nullptr) {
@@ -916,15 +981,12 @@ void DistributedDeviceProfileClient::OnClosed()
     dpProxy_ = nullptr;
 }
 
-void __attribute__((constructor)) OnDistributedDeviceProfileClientOpened()
+void DistributedDeviceProfileClient::ReleaseResource()
 {
-    HILOGI("dlopen dp client");
-}
-
-void __attribute__((destructor)) OnDistributedDeviceProfileClientClosed()
-{
-    HILOGI("dlclose dp client");
-    DistributedDeviceProfileClient::GetInstance().OnClosed();
+    ReleaseSubscribeDeviceProfileSA();
+    ReleaseSubscribePinCodeInvalid();
+    ReleaseSubscribeDeviceProfileInited();
+    ReleaseDeathRecipient();
 }
 } // namespace DeviceProfile
 } // namespace OHOS

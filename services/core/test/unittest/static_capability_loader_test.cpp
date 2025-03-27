@@ -796,7 +796,7 @@ HWTEST_F(StaticCapabilityLoaderTest, SetStaticCapabilityFlag_005, TestSize.Level
  */
 HWTEST_F(StaticCapabilityLoaderTest, GetStaticCapabilityValue_001, TestSize.Level1)
 {
-    std::string handlerLoc = "libpasteboard_framework.z.so";
+    std::string handlerLoc = "libpasteboard_adapter.z.so";
     bool ret = OHOS::DistributedDeviceProfile::
         StaticCapabilityLoader::GetInstance().GetStaticCapabilityValue(handlerLoc);
     EXPECT_EQ(ret, true);
