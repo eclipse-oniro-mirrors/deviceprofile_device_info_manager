@@ -380,7 +380,7 @@ int32_t ProfileUtils::AccesserToEntries(const AccessControlProfile& aclProfile, 
     values.PutInt(ACCESSER_BIND_LEVEL, accesser.GetAccesserBindLevel());
     values.PutString(ACCESSER_DEVICE_NAME, accesser.GetAccesserDeviceName());
     values.PutString(ACCESSER_SERVICE_NAME, accesser.GetAccesserServiceName());
-    values.PutInt(ACCESSER_CREDENTIAL_ID, accesser.GetAccesserCredentialId());
+    values.PutString(ACCESSER_CREDENTIAL_ID, accesser.GetAccesserCredentialId());
     values.PutInt(ACCESSER_STATUS, accesser.GetAccesserStatus());
     values.PutInt(ACCESSER_SESSION_KEY_ID, accesser.GetAccesserSessionKeyId());
     values.PutLong(ACCESSER_SESSION_KEY_TIMESTAMP, accesser.GetAccesserSKTimeStamp());
@@ -400,7 +400,7 @@ int32_t ProfileUtils::AccesseeToEntries(const AccessControlProfile& aclProfile, 
     values.PutInt(ACCESSEE_BIND_LEVEL, accessee.GetAccesseeBindLevel());
     values.PutString(ACCESSEE_DEVICE_NAME, accessee.GetAccesseeDeviceName());
     values.PutString(ACCESSEE_SERVICE_NAME, accessee.GetAccesseeServiceName());
-    values.PutInt(ACCESSEE_CREDENTIAL_ID, accessee.GetAccesseeCredentialId());
+    values.PutString(ACCESSEE_CREDENTIAL_ID, accessee.GetAccesseeCredentialId());
     values.PutInt(ACCESSEE_STATUS, accessee.GetAccesseeStatus());
     values.PutInt(ACCESSEE_SESSION_KEY_ID, accessee.GetAccesseeSessionKeyId());
     values.PutLong(ACCESSEE_SESSION_KEY_TIMESTAMP, accessee.GetAccesseeSKTimeStamp());
@@ -604,8 +604,8 @@ int32_t ProfileUtils::EntriesToAccesserExt(const ValuesBucket &values, Accesser 
     if (values.GetObject(ACCESSER_SERVICE_NAME, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
         accesser.SetAccesserServiceName(strValue);
     }
-    if (values.GetObject(ACCESSER_CREDENTIAL_ID, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
-        accesser.SetAccesserCredentialId(intValue);
+    if (values.GetObject(ACCESSER_CREDENTIAL_ID, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
+        accesser.SetAccesserCredentialId(strValue);
     }
     if (values.GetObject(ACCESSER_STATUS, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
         accesser.SetAccesserStatus(intValue);
@@ -632,8 +632,8 @@ int32_t ProfileUtils::EntriesToAccesseeExt(const ValuesBucket &values, Accessee 
     if (values.GetObject(ACCESSEE_SERVICE_NAME, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
         accessee.SetAccesseeServiceName(strValue);
     }
-    if (values.GetObject(ACCESSEE_CREDENTIAL_ID, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
-        accessee.SetAccesseeCredentialId(intValue);
+    if (values.GetObject(ACCESSEE_CREDENTIAL_ID, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
+        accessee.SetAccesseeCredentialId(strValue);
     }
     if (values.GetObject(ACCESSEE_STATUS, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
         accessee.SetAccesseeStatus(intValue);
@@ -1071,7 +1071,7 @@ int32_t ProfileUtils::ConvertToAccesser(std::shared_ptr<ResultSet> accesserResul
     int32_t accesserBindLevel = rowEntity.Get(ACCESSER_BIND_LEVEL);
     std::string accesserDeviceName = rowEntity.Get(ACCESSER_DEVICE_NAME);
     std::string accesserServiceName = rowEntity.Get(ACCESSER_SERVICE_NAME);
-    int32_t accesserCredentialId = rowEntity.Get(ACCESSER_CREDENTIAL_ID);
+    std::string accesserCredentialId = rowEntity.Get(ACCESSER_CREDENTIAL_ID);
     int32_t accesserStatus = rowEntity.Get(ACCESSER_STATUS);
     int32_t accesserSessionKeyId = rowEntity.Get(ACCESSER_SESSION_KEY_ID);
     int64_t accesserSKTimeStamp = rowEntity.Get(ACCESSER_SESSION_KEY_TIMESTAMP);
@@ -1115,7 +1115,7 @@ int32_t ProfileUtils::ConvertToAccessee(std::shared_ptr<ResultSet> accesseeResul
     int32_t accesseeBindLevel = rowEntity.Get(ACCESSEE_BIND_LEVEL);
     std::string accesseeDeviceName = rowEntity.Get(ACCESSEE_DEVICE_NAME);
     std::string accesseeServiceName = rowEntity.Get(ACCESSEE_SERVICE_NAME);
-    int32_t accesseeCredentialId = rowEntity.Get(ACCESSEE_CREDENTIAL_ID);
+    std::string accesseeCredentialId = rowEntity.Get(ACCESSEE_CREDENTIAL_ID);
     int32_t accesseeStatus = rowEntity.Get(ACCESSEE_STATUS);
     int32_t accesseeSessionKeyId = rowEntity.Get(ACCESSEE_SESSION_KEY_ID);
     int64_t accesseeSKTimeStamp = rowEntity.Get(ACCESSEE_SESSION_KEY_TIMESTAMP);
