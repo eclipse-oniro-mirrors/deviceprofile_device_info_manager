@@ -197,8 +197,8 @@ int32_t ProfileDataManager::GetDeviceProfiles(DeviceProfileFilterOptions& option
 int32_t ProfileDataManager::GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
     std::vector<DeviceIconInfo>& deviceIconInfos)
 {
-    if (filterOptions.GetProductIds().empty() || filterOptions.GetSubProductId().empty() ||
-        filterOptions.GetImageType().empty() || filterOptions.GetSpecName().empty()) {
+    if (filterOptions.GetProductIds().empty() || filterOptions.GetImageType().empty() ||
+        filterOptions.GetSpecName().empty()) {
         HILOGE("Invalid parameter");
         return DP_INVALID_PARAM;
     }
