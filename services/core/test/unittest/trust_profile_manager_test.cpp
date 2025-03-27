@@ -259,7 +259,7 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_001, TestSize.Level1)
     accesser.SetAccesserBindLevel(1);
     accesser.SetAccesserDeviceName("70");
     accesser.SetAccesserServiceName("paste");
-    accesser.SetAccesserCredentialId(66666);
+    accesser.SetAccesserCredentialId("66666");
     accesser.SetAccesserStatus(0);
     accesser.SetAccesserSessionKeyId(88888);
     accesser.SetAccesserSKTimeStamp(99999);
