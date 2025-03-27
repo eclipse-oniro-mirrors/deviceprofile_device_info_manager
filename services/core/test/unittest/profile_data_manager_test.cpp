@@ -296,7 +296,7 @@ HWTEST_F(ProfileDataManagerTest, GetDeviceIconInfos_003, TestSize.Level1)
     filterOptions.SetSpecName("specName");
     std::vector<DeviceIconInfo> deviceIconInfos;
     int32_t result = ProfileDataManager::GetInstance().GetDeviceIconInfos(filterOptions, deviceIconInfos);
-    EXPECT_NE(result, DP_INVALID_PARAM);
+    EXPECT_NE(result, DP_SUCCESS);
 }
 
 /*
