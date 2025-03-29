@@ -260,21 +260,7 @@ int32_t OpenCallback::OnUpgrade(RdbStore& store, int oldVersion, int newVersion)
 {
     HILOGI("rdbStore upgrade, oldVersion : %{public}d, newVersion : %{public}d", oldVersion, newVersion);
     if (oldVersion == RDB_VERSION && newVersion == RDB_VERSION_5_1) {
-        int32_t ret = AddAcerColumn(store);
-        if (ret != DP_SUCCESS) {
-            HILOGE("AddAcerColumn failed");
-            return ret;
-        }
-        ret = AddAceeColumn(store);
-        if (ret != DP_SUCCESS) {
-            HILOGE("AddAceeColumn failed");
-            return ret;
-        }
-        ret = DropAndRebuildIndex(store);
-        if (ret != DP_SUCCESS) {
-            HILOGE("DropAndRebuildIndex failed");
-            return ret;
-        }
+        UpgradeVersionOneToTwo(store);
     }
     return DP_SUCCESS;
 }
@@ -323,31 +309,51 @@ int32_t OpenCallback::CreateUniqueIndex(RdbStore& store)
     return DP_SUCCESS;
 }
 
+int32_t OpenCallback::UpgradeVersionOneToTwo(RdbStore& store)
+{
+    int32_t ret = AddAcerColumn(store);
+    if (ret != DP_SUCCESS) {
+        HILOGE("AddAcerColumn failed");
+        return ret;
+    }
+    ret = AddAceeColumn(store);
+    if (ret != DP_SUCCESS) {
+        HILOGE("AddAceeColumn failed");
+        return ret;
+    }
+    ret = DropAndRebuildIndex(store);
+    if (ret != DP_SUCCESS) {
+        HILOGE("DropAndRebuildIndex failed");
+        return ret;
+    }
+    return DP_SUCCESS;
+}
+
 int32_t OpenCallback::AddAcerColumn(RdbStore& store)
 {
     std::lock_guard<std::mutex> lock(rdbStoreMtx_);
     if (store.ExecuteSql(ALTER_TABLE_ACER_ADD_COLUMN_ACER_DEVICE_NAME) != NativeRdb::E_OK) {
-        HILOGE("add column to acer table failed");
+        HILOGE("add column accesserDeviceName to acer table failed");
         return DP_CREATE_TABLE_FAIL;
     }
     if (store.ExecuteSql(ALTER_TABLE_ACER_ADD_COLUMN_ACER_SERVICE_NAME) != NativeRdb::E_OK) {
-        HILOGE("add column to acer table failed");
+        HILOGE("add column accesserServiceName to acer table failed");
         return DP_CREATE_TABLE_FAIL;
     }
     if (store.ExecuteSql(ALTER_TABLE_ACER_ADD_COLUMN_ACER_CREDENTIAL_ID) != NativeRdb::E_OK) {
-        HILOGE("add column to acer table failed");
+        HILOGE("add column accesserCredentialId to acer table failed");
         return DP_CREATE_TABLE_FAIL;
     }
     if (store.ExecuteSql(ALTER_TABLE_ACER_ADD_COLUMN_ACER_STATUS) != NativeRdb::E_OK) {
-        HILOGE("add column to acer table failed");
+        HILOGE("add column accesserStatus to acer table failed");
         return DP_CREATE_TABLE_FAIL;
     }
     if (store.ExecuteSql(ALTER_TABLE_ACER_ADD_COLUMN_ACER_SESSION_KEY_ID) != NativeRdb::E_OK) {
-        HILOGE("add column to acer table failed");
+        HILOGE("add column accesserSessionKeyId to acer table failed");
         return DP_CREATE_TABLE_FAIL;
     }
     if (store.ExecuteSql(ALTER_TABLE_ACER_ADD_COLUMN_ACER_SESSION_KEY_TIMESTAMP) != NativeRdb::E_OK) {
-        HILOGE("add column to acer table failed");
+        HILOGE("add column accesserSessionKeyTimeStamp to acer table failed");
         return DP_CREATE_TABLE_FAIL;
     }
     return DP_SUCCESS;
@@ -357,27 +363,27 @@ int32_t OpenCallback::AddAceeColumn(RdbStore &store)
 {
     std::lock_guard<std::mutex> lock(rdbStoreMtx_);
     if (store.ExecuteSql(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_DEVICE_NAME) != NativeRdb::E_OK) {
-        HILOGE("add column to acee table failed");
+        HILOGE("add column accesseeDeviceName to acee table failed");
         return DP_CREATE_TABLE_FAIL;
     }
     if (store.ExecuteSql(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SERVICE_NAME) != NativeRdb::E_OK) {
-        HILOGE("add column to acee table failed");
+        HILOGE("add column accesseeServiceName to acee table failed");
         return DP_CREATE_TABLE_FAIL;
     }
     if (store.ExecuteSql(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_CREDENTIAL_ID) != NativeRdb::E_OK) {
-        HILOGE("add column to acee table failed");
+        HILOGE("add column accesseeCredentialId to acee table failed");
         return DP_CREATE_TABLE_FAIL;
     }
     if (store.ExecuteSql(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_STATUS) != NativeRdb::E_OK) {
-        HILOGE("add column to acee table failed");
+        HILOGE("add column accesseeStatus to acee table failed");
         return DP_CREATE_TABLE_FAIL;
     }
     if (store.ExecuteSql(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SESSION_KEY_ID) != NativeRdb::E_OK) {
-        HILOGE("add column to acee table failed");
+        HILOGE("add column accesseeSessionKeyId to acee table failed");
         return DP_CREATE_TABLE_FAIL;
     }
     if (store.ExecuteSql(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SESSION_KEY_TIMESTAMP) != NativeRdb::E_OK) {
-        HILOGE("add column to acee table failed");
+        HILOGE("add column accesseeSessionKeyTimeStamp to acee table failed");
         return DP_CREATE_TABLE_FAIL;
     }
     return DP_SUCCESS;

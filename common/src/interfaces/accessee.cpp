@@ -35,7 +35,7 @@ Accessee::Accessee()
     accesseeBindLevel_(static_cast<uint32_t>(BindLevel::MIN)),
     accesseeDeviceName_(""),
     accesseeServiceName_(""),
-    accesseeCredentialId_(-1),
+    accesseeCredentialId_(""),
     accesseeStatus_(static_cast<int32_t>(Status::MIN)),
     accesseeSessionKeyId_(-1),
     accesseeSKTimeStamp_(-1)
@@ -141,12 +141,12 @@ void Accessee::SetAccesseeServiceName(const std::string& accesseeServiceName)
     accesseeServiceName_ = accesseeServiceName;
 }
 
-int32_t Accessee::GetAccesseeCredentialId() const
+std::string Accessee::GetAccesseeCredentialId() const
 {
     return accesseeCredentialId_;
 }
 
-void Accessee::SetAccesseeCredentialId(int32_t accesseeCredentialId)
+void Accessee::SetAccesseeCredentialId(const std::string& accesseeCredentialId)
 {
     accesseeCredentialId_ = accesseeCredentialId;
 }
@@ -193,7 +193,7 @@ bool Accessee::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, Uint32, accesseeBindLevel_, false);
     WRITE_HELPER_RET(parcel, String, accesseeDeviceName_, false);
     WRITE_HELPER_RET(parcel, String, accesseeServiceName_, false);
-    WRITE_HELPER_RET(parcel, Int32, accesseeCredentialId_, false);
+    WRITE_HELPER_RET(parcel, String, accesseeCredentialId_, false);
     WRITE_HELPER_RET(parcel, Int32, accesseeStatus_, false);
     WRITE_HELPER_RET(parcel, Int32, accesseeSessionKeyId_, false);
     WRITE_HELPER_RET(parcel, Int64, accesseeSKTimeStamp_, false);
@@ -212,7 +212,7 @@ bool Accessee::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, Uint32, accesseeBindLevel_, false);
     READ_HELPER_RET(parcel, String, accesseeDeviceName_, false);
     READ_HELPER_RET(parcel, String, accesseeServiceName_, false);
-    READ_HELPER_RET(parcel, Int32, accesseeCredentialId_, false);
+    READ_HELPER_RET(parcel, String, accesseeCredentialId_, false);
     READ_HELPER_RET(parcel, Int32, accesseeStatus_, false);
     READ_HELPER_RET(parcel, Int32, accesseeSessionKeyId_, false);
     READ_HELPER_RET(parcel, Int64, accesseeSKTimeStamp_, false);
@@ -240,7 +240,7 @@ std::string Accessee::dump() const
     cJSON_AddStringToObject(json, ACCESSEE_DEVICE_NAME.c_str(),
         ProfileUtils::GetAnonyString(accesseeDeviceName_).c_str());
     cJSON_AddStringToObject(json, ACCESSEE_SERVICE_NAME.c_str(), accesseeServiceName_.c_str());
-    cJSON_AddNumberToObject(json, ACCESSEE_CREDENTIAL_ID.c_str(), accesseeCredentialId_);
+    cJSON_AddStringToObject(json, ACCESSEE_CREDENTIAL_ID.c_str(), accesseeCredentialId_.c_str());
     cJSON_AddNumberToObject(json, ACCESSEE_STATUS.c_str(), accesseeStatus_);
     cJSON_AddNumberToObject(json, ACCESSEE_SESSION_KEY_ID.c_str(), accesseeSessionKeyId_);
     cJSON_AddNumberToObject(json, ACCESSEE_SESSION_KEY_TIMESTAMP.c_str(), accesseeSKTimeStamp_);

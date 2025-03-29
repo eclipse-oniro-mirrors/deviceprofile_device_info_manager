@@ -105,6 +105,7 @@ enum class BindType : uint32_t {
     MIN = 0,
     SAME_ACCOUNT = 1,
     SHARE = 2,
+    SAME_GROUP = 3,
     POINT_TO_POINT = 256,
     COMPATIBLE = 512,
     DIFF_ACCOUNT = 1282,

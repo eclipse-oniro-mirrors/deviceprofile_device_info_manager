@@ -49,8 +49,8 @@ public:
     void SetAccesseeDeviceName(const std::string& accesseeDeviceName);
     std::string GetAccesseeServiceName() const;
     void SetAccesseeServiceName(const std::string& accesseeServiceName);
-    int32_t GetAccesseeCredentialId() const;
-    void SetAccesseeCredentialId(int32_t accesseeCredentialId);
+    std::string GetAccesseeCredentialId() const;
+    void SetAccesseeCredentialId(const std::string& accesseeCredentialId);
     int32_t GetAccesseeStatus() const;
     void SetAccesseeStatus(int32_t accesseeStatus);
     int32_t GetAccesseeSessionKeyId() const;
@@ -72,7 +72,7 @@ private:
     uint32_t accesseeBindLevel_;
     std::string accesseeDeviceName_;
     std::string accesseeServiceName_;
-    int32_t accesseeCredentialId_;
+    std::string accesseeCredentialId_;
     int32_t accesseeStatus_;
     int32_t accesseeSessionKeyId_;
     int64_t accesseeSKTimeStamp_;

@@ -49,7 +49,7 @@ public:
     int32_t OnUpgrade(RdbStore& store, int oldVersion, int newVersion) override;
     int32_t CreateTable(RdbStore& store);
     int32_t CreateUniqueIndex(RdbStore& store);
-    int32_t CreateProxyTableAndIndex(RdbStore& store);
+    int32_t UpgradeVersionOneToTwo(RdbStore& store);
     int32_t AddAcerColumn(RdbStore& store);
     int32_t AddAceeColumn(RdbStore& store);
     int32_t DropAndRebuildIndex(RdbStore& store);
