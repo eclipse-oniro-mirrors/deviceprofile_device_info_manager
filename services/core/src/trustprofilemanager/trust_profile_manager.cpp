@@ -816,7 +816,7 @@ bool TrustProfileManager::CheckForWardByAcerAndAcee(const QueryProfile& queryPro
         aclProfile.GetAccessee().GetAccesseeUserId() != DEFAULT_USER_ID_EXTRA)) {
         return false;
     }
-    if (aclProfile.GetBindLevel() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
+    if (aclProfile.GetBindType() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
         aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::DEVICE) ||
         aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::USER)) {
         return true;
@@ -842,7 +842,7 @@ bool TrustProfileManager::CheckForWardByAcer(const QueryProfile& queryProfile,
         aclProfile.GetAccesser().GetAccesserUserId() != DEFAULT_USER_ID_EXTRA) {
         return false;
     }
-    if (aclProfile.GetBindLevel() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
+    if (aclProfile.GetBindType() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
         aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::DEVICE) ||
         aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::USER)) {
         return true;
@@ -871,7 +871,7 @@ bool TrustProfileManager::CheckReverseByAcerAndAcee(const QueryProfile& queryPro
         aclProfile.GetAccessee().GetAccesseeUserId() != DEFAULT_USER_ID_EXTRA)) {
         return false;
     }
-    if (aclProfile.GetBindLevel() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
+    if (aclProfile.GetBindType() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
         aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::DEVICE) ||
         aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::USER)) {
         return true;
@@ -897,7 +897,7 @@ bool TrustProfileManager::CheckReverseByAcer(const QueryProfile& queryProfile,
         aclProfile.GetAccessee().GetAccesseeUserId() != DEFAULT_USER_ID_EXTRA) {
         return false;
     }
-    if (aclProfile.GetBindLevel() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
+    if (aclProfile.GetBindType() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
         aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::DEVICE) ||
         aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::USER)) {
         return true;
