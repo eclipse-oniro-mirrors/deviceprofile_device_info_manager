@@ -114,6 +114,7 @@ std::string ContentSensorManagerUtils::ObtainManufacture()
         return manufacture_;
     }
     std::string manufactureTemp = system::GetParameter(MANUFACTURER_KEY, "");
+    HILOGI("get manufacture from system, manufacture = %{public}s", manufactureTemp.c_str());
     if (manufactureTemp == DecodeHexStr(MANU_NAME)) {
         manufactureTemp = MANU_CODE;
     }
@@ -121,7 +122,6 @@ std::string ContentSensorManagerUtils::ObtainManufacture()
         HILOGE("get manufacture failed!");
         return "";
     }
-    HILOGI("get manufacture from system, manufacture = %{public}s", manufactureTemp.c_str());
     manufacture_ = manufactureTemp;
     return manufacture_;
 }
