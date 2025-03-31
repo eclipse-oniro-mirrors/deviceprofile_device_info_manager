@@ -121,6 +121,7 @@ std::string ContentSensorManagerUtils::ObtainManufacture()
         HILOGE("get manufacture failed!");
         return "";
     }
+    HILOGI("get manufacture from system, manufacture = %{public}s", manufactureTemp.c_str());
     manufacture_ = manufactureTemp;
     return manufacture_;
 }
