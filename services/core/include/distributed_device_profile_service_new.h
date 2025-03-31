@@ -30,7 +30,6 @@
 #include "i_dp_inited_callback.h"
 #include "local_service_info.h"
 #include "product_info.h"
-#include "local_service_info.h"
 #include "service_info_profile.h"
 #include "service_info_unique_key.h"
 #include "single_instance.h"
