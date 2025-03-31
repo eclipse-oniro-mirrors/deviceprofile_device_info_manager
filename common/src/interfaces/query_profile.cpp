@@ -28,9 +28,11 @@ namespace {
 QueryProfile::QueryProfile()
     : accesserDeviceId_(""),
     accesserUserId_(-1),
+    accesserAccountId_(""),
     accesserTokenId_(-1),
     accesseeDeviceId_(""),
     accesseeUserId_(-1),
+    accesseeAccountId_(""),
     accesseeTokenId_(-1)
 {}
 
@@ -64,6 +66,16 @@ void QueryProfile::SetAccesserUserId(int32_t accesserUserId)
     accesserUserId_ = accesserUserId;
 }
 
+std::string QueryProfile::GetAccesserAccountId() const
+{
+    return accesserAccountId_;
+}
+
+void QueryProfile::SetAccesserAccountId(const std::string& accesserAccountId)
+{
+    accesserAccountId_ = accesserAccountId;
+}
+
 std::string QueryProfile::GetAccesseeDeviceId() const
 {
     return accesseeDeviceId_;
@@ -89,6 +101,16 @@ int32_t QueryProfile::GetAccesseeUserId() const
     return accesseeUserId_;
 }
 
+std::string QueryProfile::GetAccesseeAccountId() const
+{
+    return accesseeAccountId_;
+}
+
+void QueryProfile::SetAccesseeAccountId(const std::string& accesseeAccountId)
+{
+    accesseeAccountId_ = accesseeAccountId;
+}
+
 void QueryProfile::SetAccesseeUserId(int32_t accesseeUserId)
 {
     accesseeUserId_ = accesseeUserId;
@@ -98,9 +120,11 @@ bool QueryProfile::Marshalling(MessageParcel& parcel) const
 {
     WRITE_HELPER_RET(parcel, String, accesserDeviceId_, false);
     WRITE_HELPER_RET(parcel, Int32, accesserUserId_, false);
+    WRITE_HELPER_RET(parcel, String, accesserAccountId_, false);
     WRITE_HELPER_RET(parcel, Int64, accesserTokenId_, false);
     WRITE_HELPER_RET(parcel, String, accesseeDeviceId_, false);
     WRITE_HELPER_RET(parcel, Int32, accesseeUserId_, false);
+    WRITE_HELPER_RET(parcel, String, accesseeAccountId_, false);
     WRITE_HELPER_RET(parcel, Int64, accesseeTokenId_, false);
     return true;
 }
@@ -109,9 +133,11 @@ bool QueryProfile::UnMarshalling(MessageParcel& parcel)
 {
     READ_HELPER_RET(parcel, String, accesserDeviceId_, false);
     READ_HELPER_RET(parcel, Int32, accesserUserId_, false);
+    READ_HELPER_RET(parcel, String, accesserAccountId_, false);
     READ_HELPER_RET(parcel, Int64, accesserTokenId_, false);
     READ_HELPER_RET(parcel, String, accesseeDeviceId_, false);
     READ_HELPER_RET(parcel, Int32, accesseeUserId_, false);
+    READ_HELPER_RET(parcel, String, accesseeAccountId_, false);
     READ_HELPER_RET(parcel, Int64, accesseeTokenId_, false);
     return true;
 }
@@ -126,10 +152,14 @@ std::string QueryProfile::dump() const
     cJSON_AddStringToObject(json, ACCESSER_DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(accesserDeviceId_).c_str());
     cJSON_AddStringToObject(json, ACCESSER_USER_ID.c_str(),
         ProfileUtils::GetAnonyString(std::to_string(accesserUserId_)).c_str());
+    cJSON_AddStringToObject(json, ACCESSER_ACCOUNT_ID.c_str(),
+        ProfileUtils::GetAnonyString(accesserAccountId_).c_str());
     cJSON_AddNumberToObject(json, ACCESSER_TOKEN_ID.c_str(), accesserTokenId_);
     cJSON_AddStringToObject(json, ACCESSEE_DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(accesseeDeviceId_).c_str());
     cJSON_AddStringToObject(json, ACCESSEE_USER_ID.c_str(),
         ProfileUtils::GetAnonyString(std::to_string(accesseeUserId_)).c_str());
+    cJSON_AddStringToObject(json, ACCESSEE_ACCOUNT_ID.c_str(),
+        ProfileUtils::GetAnonyString(accesseeAccountId_).c_str());
     cJSON_AddNumberToObject(json, ACCESSEE_TOKEN_ID.c_str(), accesseeTokenId_);
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
