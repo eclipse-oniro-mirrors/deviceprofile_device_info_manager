@@ -35,7 +35,8 @@ Accesser::Accesser()
     accesserBindLevel_(static_cast<uint32_t>(BindLevel::MIN)),
     accesserDeviceName_(""),
     accesserServiceName_(""),
-    accesserCredentialId_(""),
+    accesserCredentialId_(-1),
+    accesserCredentialIdStr_(""),
     accesserStatus_(static_cast<int32_t>(Status::MIN)),
     accesserSessionKeyId_(-1),
     accesserSKTimeStamp_(-1)
@@ -141,16 +142,25 @@ void Accesser::SetAccesserServiceName(const std::string& accesserServiceName)
     accesserServiceName_ = accesserServiceName;
 }
 
-std::string Accesser::GetAccesserCredentialId() const
+int32_t Accesser::GetAccesserCredentialId() const
 {
     return accesserCredentialId_;
 }
 
-void Accesser::SetAccesserCredentialId(const std::string& accesserCredentialId)
+void Accesser::SetAccesserCredentialId(int32_t accesserCredentialId)
 {
     accesserCredentialId_ = accesserCredentialId;
 }
 
+std::string Accesser::GetAccesserCredentialIdStr() const
+{
+    return accesserCredentialIdStr_;
+}
+
+void Accesser::SetAccesserCredentialIdStr(const std::string& accesserCredentialIdStr)
+{
+    accesserCredentialIdStr_ = accesserCredentialIdStr;
+}
 int32_t Accesser::GetAccesserStatus() const
 {
     return accesserStatus_;
@@ -181,6 +191,16 @@ void Accesser::SetAccesserSKTimeStamp(int64_t accesserSKTimeStamp)
     accesserSKTimeStamp_ = accesserSKTimeStamp;
 }
 
+std::string Accesser::GetAccesserExtraData() const
+{
+    return accesserExtraData_;
+}
+
+void Accesser::SetAccesserExtraData(const std::string& accesserExtraData)
+{
+    accesserExtraData_ = accesserExtraData;
+}
+
 bool Accesser::Marshalling(MessageParcel& parcel) const
 {
     WRITE_HELPER_RET(parcel, Int64, accesserId_, false);
@@ -193,10 +213,12 @@ bool Accesser::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, Uint32, accesserBindLevel_, false);
     WRITE_HELPER_RET(parcel, String, accesserDeviceName_, false);
     WRITE_HELPER_RET(parcel, String, accesserServiceName_, false);
-    WRITE_HELPER_RET(parcel, String, accesserCredentialId_, false);
+    WRITE_HELPER_RET(parcel, Int32, accesserCredentialId_, false);
+    WRITE_HELPER_RET(parcel, String, accesserCredentialIdStr_, false);
     WRITE_HELPER_RET(parcel, Int32, accesserStatus_, false);
     WRITE_HELPER_RET(parcel, Int32, accesserSessionKeyId_, false);
     WRITE_HELPER_RET(parcel, Int64, accesserSKTimeStamp_, false);
+    WRITE_HELPER_RET(parcel, String, accesserExtraData_, false);
     return true;
 }
 
@@ -212,10 +234,12 @@ bool Accesser::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, Uint32, accesserBindLevel_, false);
     READ_HELPER_RET(parcel, String, accesserDeviceName_, false);
     READ_HELPER_RET(parcel, String, accesserServiceName_, false);
-    READ_HELPER_RET(parcel, String, accesserCredentialId_, false);
+    READ_HELPER_RET(parcel, Int32, accesserCredentialId_, false);
+    READ_HELPER_RET(parcel, String, accesserCredentialIdStr_, false);
     READ_HELPER_RET(parcel, Int32, accesserStatus_, false);
     READ_HELPER_RET(parcel, Int32, accesserSessionKeyId_, false);
     READ_HELPER_RET(parcel, Int64, accesserSKTimeStamp_, false);
+    READ_HELPER_RET(parcel, String, accesserExtraData_, false);
     return true;
 }
 
@@ -240,10 +264,12 @@ std::string Accesser::dump() const
     cJSON_AddStringToObject(json, ACCESSER_DEVICE_NAME.c_str(),
         ProfileUtils::GetAnonyString(accesserDeviceName_).c_str());
     cJSON_AddStringToObject(json, ACCESSER_SERVICE_NAME.c_str(), accesserServiceName_.c_str());
-    cJSON_AddStringToObject(json, ACCESSER_CREDENTIAL_ID.c_str(), accesserCredentialId_.c_str());
+    cJSON_AddNumberToObject(json, ACCESSER_CREDENTIAL_ID.c_str(), accesserCredentialId_);
+    cJSON_AddStringToObject(json, ACCESSER_CREDENTIAL_ID_STR.c_str(), accesserCredentialIdStr_.c_str());
     cJSON_AddNumberToObject(json, ACCESSER_STATUS.c_str(), accesserStatus_);
     cJSON_AddNumberToObject(json, ACCESSER_SESSION_KEY_ID.c_str(), accesserSessionKeyId_);
     cJSON_AddNumberToObject(json, ACCESSER_SESSION_KEY_TIMESTAMP.c_str(), accesserSKTimeStamp_);
+    cJSON_AddStringToObject(json, ACCESSER_EXTRA_DATA.c_str(), accesserExtraData_.c_str());
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);

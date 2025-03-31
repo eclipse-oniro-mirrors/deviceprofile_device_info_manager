@@ -50,8 +50,12 @@ public:
     int32_t CreateTable(RdbStore& store);
     int32_t CreateUniqueIndex(RdbStore& store);
     int32_t UpgradeVersionOneToTwo(RdbStore& store);
-    int32_t AddAcerColumn(RdbStore& store);
-    int32_t AddAceeColumn(RdbStore& store);
+    int32_t UpgradeVersionTwoToThree(RdbStore& store);
+    int32_t AddAcerColumnOneToTwo(RdbStore& store);
+    int32_t AddAceeColumnOneToTwo(RdbStore& store);
+    int32_t AddAclColumnTwoToThree(RdbStore& store);
+    int32_t AddAcerColumnTwoToThree(RdbStore& store);
+    int32_t AddAceeColumnTwoToThree(RdbStore& store);
     int32_t DropAndRebuildIndex(RdbStore& store);
 
 private:

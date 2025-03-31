@@ -61,6 +61,8 @@ public:
     void SetDeviceIdType(uint32_t deviceIdType);
     std::string GetDeviceIdHash() const;
     void SetDeviceIdHash(const std::string& deviceIdHash);
+    std::string GetExtraData() const;
+    void SetExtraData(const std::string& extraData);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     std::string dump() const override;
@@ -79,6 +81,7 @@ private:
     std::string trustDeviceId_;
     uint32_t deviceIdType_;
     std::string deviceIdHash_;
+    std::string extraData_;
     Accesser accesser_;
     Accessee accessee_;
 };

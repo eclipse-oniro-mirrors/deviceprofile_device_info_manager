@@ -195,7 +195,7 @@ std::shared_ptr<ResultSet> RdbAdapter::Get(const std::string& sql, const std::ve
 
 int32_t RdbAdapter::GetRDBPtr()
 {
-    int32_t version = RDB_VERSION_5_1;
+    int32_t version = RDB_VERSION_5_1_2;
     OpenCallback helper;
     RdbStoreConfig config(RDB_PATH + DATABASE_NAME);
     config.SetHaMode(HAMode::MAIN_REPLICA);
@@ -262,6 +262,13 @@ int32_t OpenCallback::OnUpgrade(RdbStore& store, int oldVersion, int newVersion)
     if (oldVersion == RDB_VERSION && newVersion == RDB_VERSION_5_1) {
         UpgradeVersionOneToTwo(store);
     }
+    if (oldVersion == RDB_VERSION_5_1 && newVersion == RDB_VERSION_5_1_2) {
+        UpgradeVersionTwoToThree(store);
+    }
+    if (oldVersion == RDB_VERSION && newVersion == RDB_VERSION_5_1_2) {
+        UpgradeVersionOneToTwo(store);
+        UpgradeVersionTwoToThree(store);
+    }
     return DP_SUCCESS;
 }
 
@@ -311,12 +318,12 @@ int32_t OpenCallback::CreateUniqueIndex(RdbStore& store)
 
 int32_t OpenCallback::UpgradeVersionOneToTwo(RdbStore& store)
 {
-    int32_t ret = AddAcerColumn(store);
+    int32_t ret = AddAcerColumnOneToTwo(store);
     if (ret != DP_SUCCESS) {
         HILOGE("AddAcerColumn failed");
         return ret;
     }
-    ret = AddAceeColumn(store);
+    ret = AddAceeColumnOneToTwo(store);
     if (ret != DP_SUCCESS) {
         HILOGE("AddAceeColumn failed");
         return ret;
@@ -329,7 +336,32 @@ int32_t OpenCallback::UpgradeVersionOneToTwo(RdbStore& store)
     return DP_SUCCESS;
 }
 
-int32_t OpenCallback::AddAcerColumn(RdbStore& store)
+int32_t OpenCallback::UpgradeVersionTwoToThree(RdbStore &store)
+{
+    int32_t ret = AddAclColumnTwoToThree(store);
+    if (ret != DP_SUCCESS) {
+        HILOGE("AddAclColumnTwoToThree failed");
+        return ret;
+    }
+    ret = AddAcerColumnTwoToThree(store);
+    if (ret != DP_SUCCESS) {
+        HILOGE("AddAcerColumnTwoToThree failed");
+        return ret;
+    }
+    ret = AddAceeColumnTwoToThree(store);
+    if (ret != DP_SUCCESS) {
+        HILOGE("AddAceeColumnTwoToThree failed");
+        return ret;
+    }
+    ret = DropAndRebuildIndex(store);
+    if (ret != DP_SUCCESS) {
+        HILOGE("DropAndRebuildIndex failed");
+        return ret;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t OpenCallback::AddAcerColumnOneToTwo(RdbStore& store)
 {
     std::lock_guard<std::mutex> lock(rdbStoreMtx_);
     if (store.ExecuteSql(ALTER_TABLE_ACER_ADD_COLUMN_ACER_DEVICE_NAME) != NativeRdb::E_OK) {
@@ -359,7 +391,7 @@ int32_t OpenCallback::AddAcerColumn(RdbStore& store)
     return DP_SUCCESS;
 }
 
-int32_t OpenCallback::AddAceeColumn(RdbStore &store)
+int32_t OpenCallback::AddAceeColumnOneToTwo(RdbStore &store)
 {
     std::lock_guard<std::mutex> lock(rdbStoreMtx_);
     if (store.ExecuteSql(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_DEVICE_NAME) != NativeRdb::E_OK) {
@@ -384,6 +416,44 @@ int32_t OpenCallback::AddAceeColumn(RdbStore &store)
     }
     if (store.ExecuteSql(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SESSION_KEY_TIMESTAMP) != NativeRdb::E_OK) {
         HILOGE("add column accesseeSessionKeyTimeStamp to acee table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t OpenCallback::AddAclColumnTwoToThree(RdbStore &store)
+{
+    std::lock_guard<std::mutex> lock(rdbStoreMtx_);
+    if (store.ExecuteSql(ALTER_TABLE_ACCESS_CONTROL_ADD_COLUMN_EXTRA_DATA) != NativeRdb::E_OK) {
+        HILOGE("add column extraData to acL table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t OpenCallback::AddAcerColumnTwoToThree(RdbStore &store)
+{
+    std::lock_guard<std::mutex> lock(rdbStoreMtx_);
+    if (store.ExecuteSql(ALTER_TABLE_ACER_ADD_COLUMN_ACER_CREDENTIAL_ID_STR) != NativeRdb::E_OK) {
+        HILOGE("add column accesserCredentialIdStr to acer table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (store.ExecuteSql(ALTER_TABLE_ACER_ADD_COLUMN_ACER_EXTRA_DATA) != NativeRdb::E_OK) {
+        HILOGE("add column accesserExtraData to acer table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t OpenCallback::AddAceeColumnTwoToThree(RdbStore &store)
+{
+    std::lock_guard<std::mutex> lock(rdbStoreMtx_);
+    if (store.ExecuteSql(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_CREDENTIAL_ID_STR) != NativeRdb::E_OK) {
+        HILOGE("add column accesseeCredentialIdStr to acee table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    if (store.ExecuteSql(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_EXTRA_DATA) != NativeRdb::E_OK) {
+        HILOGE("add column accesseeExtraData to acee table failed");
         return DP_CREATE_TABLE_FAIL;
     }
     return DP_SUCCESS;
