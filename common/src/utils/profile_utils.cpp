@@ -615,7 +615,8 @@ int32_t ProfileUtils::EntriesToAccesserExt(const ValuesBucket &values, Accesser 
     if (values.GetObject(ACCESSER_CREDENTIAL_ID, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
         accesser.SetAccesserCredentialId(intValue);
     }
-    if (values.GetObject(ACCESSER_CREDENTIAL_ID_STR, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
+    if (values.GetObject(ACCESSER_CREDENTIAL_ID_STR, valueObject) &&
+        valueObject.GetString(strValue) == NativeRdb::E_OK) {
         accesser.SetAccesserCredentialIdStr(strValue);
     }
     if (values.GetObject(ACCESSER_STATUS, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
@@ -649,7 +650,8 @@ int32_t ProfileUtils::EntriesToAccesseeExt(const ValuesBucket &values, Accessee 
     if (values.GetObject(ACCESSEE_CREDENTIAL_ID, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
         accessee.SetAccesseeCredentialId(intValue);
     }
-    if (values.GetObject(ACCESSEE_CREDENTIAL_ID_STR, valueObject) && valueObject.GetString(strValue) == NativeRdb::E_OK) {
+    if (values.GetObject(ACCESSEE_CREDENTIAL_ID_STR, valueObject) &&
+        valueObject.GetString(strValue) == NativeRdb::E_OK) {
         accessee.SetAccesseeCredentialIdStr(strValue);
     }
     if (values.GetObject(ACCESSEE_STATUS, valueObject) && valueObject.GetInt(intValue) == NativeRdb::E_OK) {
