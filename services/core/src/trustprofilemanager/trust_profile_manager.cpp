@@ -499,7 +499,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(const QueryType& queryType,
         HILOGE("by userId and tokenId not find data, queryProfile : %{public}s", queryProfile.dump().c_str());
         return DP_NOT_FIND_DATA;
     }
-    HILOGE("profile size : %{public}zu", profile.size());
+    HILOGI("profile size : %{public}zu", profile.size());
     return DP_SUCCESS;
 }
 
@@ -511,23 +511,7 @@ void TrustProfileManager::GetAclByAcerTokenId(const QueryProfile& queryProfile,
             aclProfile.GetTrustDeviceId() != queryProfile.GetAccesserDeviceId()) {
             continue;
         }
-        if (aclProfile.GetAccesser().GetAccesserDeviceId() != queryProfile.GetAccesserDeviceId() ||
-            aclProfile.GetAccessee().GetAccesseeDeviceId() != queryProfile.GetAccesseeDeviceId() ||
-            aclProfile.GetStatus() != static_cast<int32_t>(Status::ACTIVE)) {
-            continue;
-        }
-        if (aclProfile.GetAccesser().GetAccesserUserId() != queryProfile.GetAccesserUserId() &&
-            aclProfile.GetAccesser().GetAccesserUserId() != DEFAULT_USER_ID &&
-            aclProfile.GetAccesser().GetAccesserUserId() != DEFAULT_USER_ID_EXTRA) {
-            continue;
-        }
-        if (aclProfile.GetBindType() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
-            aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::DEVICE) ||
-            aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::USER)) {
-            profile.emplace_back(aclProfile);
-            continue;
-        }
-        if (aclProfile.GetAccesser().GetAccesserTokenId() == queryProfile.GetAccesserTokenId()) {
+        if (CheckForWardByAcer(queryProfile, aclProfile) || CheckReverseByAcer(queryProfile, aclProfile)) {
             profile.emplace_back(aclProfile);
         }
     }
@@ -542,27 +526,8 @@ void TrustProfileManager::GetAclByAcerAndAceeTokenId(const QueryProfile& queryPr
             aclProfile.GetTrustDeviceId() != queryProfile.GetAccesserDeviceId()) {
             continue;
         }
-        if (aclProfile.GetAccesser().GetAccesserDeviceId() != queryProfile.GetAccesserDeviceId() ||
-            aclProfile.GetAccessee().GetAccesseeDeviceId() != queryProfile.GetAccesseeDeviceId() ||
-            aclProfile.GetStatus() != static_cast<int32_t>(Status::ACTIVE)) {
-            continue;
-        }
-        if ((aclProfile.GetAccesser().GetAccesserUserId() != queryProfile.GetAccesserUserId() &&
-            aclProfile.GetAccesser().GetAccesserUserId() != DEFAULT_USER_ID &&
-            aclProfile.GetAccesser().GetAccesserUserId() != DEFAULT_USER_ID_EXTRA) ||
-            (aclProfile.GetAccessee().GetAccesseeUserId() != queryProfile.GetAccesseeUserId() &&
-            aclProfile.GetAccessee().GetAccesseeUserId() != DEFAULT_USER_ID &&
-            aclProfile.GetAccessee().GetAccesseeUserId() != DEFAULT_USER_ID_EXTRA)) {
-            continue;
-        }
-        if (aclProfile.GetBindType() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
-            aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::DEVICE) ||
-            aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::USER)) {
-            profile.emplace_back(aclProfile);
-            continue;
-        }
-        if (aclProfile.GetAccesser().GetAccesserTokenId() == queryProfile.GetAccesserTokenId() &&
-            aclProfile.GetAccessee().GetAccesseeTokenId() == queryProfile.GetAccesseeTokenId()) {
+        if (CheckForWardByAcerAndAcee(queryProfile, aclProfile) ||
+            CheckReverseByAcerAndAcee(queryProfile, aclProfile)) {
             profile.emplace_back(aclProfile);
         }
     }
@@ -664,7 +629,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(const std::map<std::string,
                 params.at(TRUST_DEVICE_ID), std::atoi(params.at(STATUS).c_str()), profile);
         }
         if (ProfileUtils::IsPropertyValidInt64(params, TOKENID)) {
-            return GetAccessControlProfileByTokenId(std::atoll(params.at(TOKENID).c_str()),
+            return GetAccessControlProfileByTokenId(std::atoi(params.at(TOKENID).c_str()),
                 params.at(TRUST_DEVICE_ID), std::atoi(params.at(STATUS).c_str()), profile);
         }
     }
@@ -833,26 +798,141 @@ int32_t TrustProfileManager::CreateUniqueIndex()
     return DP_SUCCESS;
 }
 
+bool TrustProfileManager::CheckForWardByAcerAndAcee(const QueryProfile& queryProfile,
+    const AccessControlProfile& aclProfile)
+{
+    if (aclProfile.GetAccesser().GetAccesserDeviceId() != queryProfile.GetAccesserDeviceId() ||
+        aclProfile.GetAccessee().GetAccesseeDeviceId() != queryProfile.GetAccesseeDeviceId() ||
+        aclProfile.GetStatus() != static_cast<int32_t>(Status::ACTIVE) ||
+        aclProfile.GetAccesser().GetAccesserAccountId() != queryProfile.GetAccesserAccountId() ||
+        aclProfile.GetAccessee().GetAccesseeAccountId() != queryProfile.GetAccesseeAccountId()) {
+        return false;
+    }
+    if ((aclProfile.GetAccesser().GetAccesserUserId() != queryProfile.GetAccesserUserId() &&
+        aclProfile.GetAccesser().GetAccesserUserId() != DEFAULT_USER_ID &&
+        aclProfile.GetAccesser().GetAccesserUserId() != DEFAULT_USER_ID_EXTRA) ||
+        (aclProfile.GetAccessee().GetAccesseeUserId() != queryProfile.GetAccesseeUserId() &&
+        aclProfile.GetAccessee().GetAccesseeUserId() != DEFAULT_USER_ID &&
+        aclProfile.GetAccessee().GetAccesseeUserId() != DEFAULT_USER_ID_EXTRA)) {
+        return false;
+    }
+    if (aclProfile.GetBindType() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
+        aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::DEVICE) ||
+        aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::USER)) {
+        return true;
+    }
+    if (aclProfile.GetAccesser().GetAccesserTokenId() == queryProfile.GetAccesserTokenId() &&
+        aclProfile.GetAccessee().GetAccesseeTokenId() == queryProfile.GetAccesseeTokenId()) {
+        return true;
+    }
+    return false;
+}
+
+bool TrustProfileManager::CheckForWardByAcer(const QueryProfile& queryProfile,
+    const AccessControlProfile& aclProfile)
+{
+    if (aclProfile.GetAccesser().GetAccesserDeviceId() != queryProfile.GetAccesserDeviceId() ||
+        aclProfile.GetAccessee().GetAccesseeDeviceId() != queryProfile.GetAccesseeDeviceId() ||
+        aclProfile.GetStatus() != static_cast<int32_t>(Status::ACTIVE) ||
+        aclProfile.GetAccesser().GetAccesserAccountId() != queryProfile.GetAccesserAccountId()) {
+        return false;
+    }
+    if (aclProfile.GetAccesser().GetAccesserUserId() != queryProfile.GetAccesserUserId() &&
+        aclProfile.GetAccesser().GetAccesserUserId() != DEFAULT_USER_ID &&
+        aclProfile.GetAccesser().GetAccesserUserId() != DEFAULT_USER_ID_EXTRA) {
+        return false;
+    }
+    if (aclProfile.GetBindType() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
+        aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::DEVICE) ||
+        aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::USER)) {
+        return true;
+    }
+    if (aclProfile.GetAccesser().GetAccesserTokenId() == queryProfile.GetAccesserTokenId()) {
+        return true;
+    }
+    return false;
+}
+
+bool TrustProfileManager::CheckReverseByAcerAndAcee(const QueryProfile& queryProfile,
+    const AccessControlProfile& aclProfile)
+{
+    if (aclProfile.GetAccesser().GetAccesserDeviceId() != queryProfile.GetAccesseeDeviceId() ||
+        aclProfile.GetAccessee().GetAccesseeDeviceId() != queryProfile.GetAccesserDeviceId() ||
+        aclProfile.GetStatus() != static_cast<int32_t>(Status::ACTIVE) ||
+        aclProfile.GetAccesser().GetAccesserAccountId() != queryProfile.GetAccesseeAccountId() ||
+        aclProfile.GetAccessee().GetAccesseeAccountId() != queryProfile.GetAccesserAccountId()) {
+        return false;
+    }
+    if ((aclProfile.GetAccesser().GetAccesserUserId() != queryProfile.GetAccesseeUserId() &&
+        aclProfile.GetAccesser().GetAccesserUserId() != DEFAULT_USER_ID &&
+        aclProfile.GetAccesser().GetAccesserUserId() != DEFAULT_USER_ID_EXTRA) ||
+        (aclProfile.GetAccessee().GetAccesseeUserId() != queryProfile.GetAccesserUserId() &&
+        aclProfile.GetAccessee().GetAccesseeUserId() != DEFAULT_USER_ID &&
+        aclProfile.GetAccessee().GetAccesseeUserId() != DEFAULT_USER_ID_EXTRA)) {
+        return false;
+    }
+    if (aclProfile.GetBindType() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
+        aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::DEVICE) ||
+        aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::USER)) {
+        return true;
+    }
+    if (aclProfile.GetAccesser().GetAccesserTokenId() == queryProfile.GetAccesseeTokenId() &&
+        aclProfile.GetAccessee().GetAccesseeTokenId() == queryProfile.GetAccesserTokenId()) {
+        return true;
+    }
+    return false;
+}
+
+bool TrustProfileManager::CheckReverseByAcer(const QueryProfile& queryProfile,
+    const AccessControlProfile& aclProfile)
+{
+    if (aclProfile.GetAccesser().GetAccesserDeviceId() != queryProfile.GetAccesseeDeviceId() ||
+        aclProfile.GetAccessee().GetAccesseeDeviceId() != queryProfile.GetAccesserDeviceId() ||
+        aclProfile.GetStatus() != static_cast<int32_t>(Status::ACTIVE) ||
+        aclProfile.GetAccessee().GetAccesseeAccountId() != queryProfile.GetAccesserAccountId()) {
+        return false;
+    }
+    if (aclProfile.GetAccessee().GetAccesseeUserId() != queryProfile.GetAccesserUserId() &&
+        aclProfile.GetAccessee().GetAccesseeUserId() != DEFAULT_USER_ID &&
+        aclProfile.GetAccessee().GetAccesseeUserId() != DEFAULT_USER_ID_EXTRA) {
+        return false;
+    }
+    if (aclProfile.GetBindType() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
+        aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::DEVICE) ||
+        aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::USER)) {
+        return true;
+    }
+    if (aclProfile.GetAccessee().GetAccesseeTokenId() == queryProfile.GetAccesserTokenId()) {
+        return true;
+    }
+    return false;
+}
+
 bool TrustProfileManager::GenerateQueryProfile(const std::map<std::string, std::string>& params,
     QueryType& queryType, QueryProfile& queryProfile)
 {
     if (params.find(ACCESSER_DEVICE_ID) != params.end() && params.find(ACCESSEE_DEVICE_ID) != params.end() &&
+        params.find(ACCESSER_ACCOUNT_ID) != params.end() &&
         ProfileUtils::IsPropertyValid(params, ACCESSER_USER_ID, INT32_MIN, INT32_MAX) &&
         ProfileUtils::IsPropertyValidInt64(params, ACCESSER_TOKEN_ID)) {
-        if (ProfileUtils::IsPropertyValid(params, ACCESSEE_USER_ID, INT32_MIN, INT32_MAX) &&
+        if (params.find(ACCESSEE_ACCOUNT_ID) != params.end() &&
+            ProfileUtils::IsPropertyValid(params, ACCESSEE_USER_ID, INT32_MIN, INT32_MAX) &&
             ProfileUtils::IsPropertyValidInt64(params, ACCESSEE_TOKEN_ID)) {
             queryProfile.SetAccesserDeviceId(params.at(ACCESSER_DEVICE_ID));
             queryProfile.SetAccesserUserId(std::atoi(params.at(ACCESSER_USER_ID).c_str()));
-            queryProfile.SetAccesserTokenId(std::atoll(params.at(ACCESSER_TOKEN_ID).c_str()));
+            queryProfile.SetAccesserAccountId(params.at(ACCESSER_ACCOUNT_ID));
+            queryProfile.SetAccesserTokenId(std::atoi(params.at(ACCESSER_TOKEN_ID).c_str()));
             queryProfile.SetAccesseeDeviceId(params.at(ACCESSEE_DEVICE_ID));
             queryProfile.SetAccesseeUserId(std::atoi(params.at(ACCESSEE_USER_ID).c_str()));
-            queryProfile.SetAccesseeTokenId(std::atoll(params.at(ACCESSEE_TOKEN_ID).c_str()));
+            queryProfile.SetAccesseeAccountId(params.at(ACCESSEE_ACCOUNT_ID));
+            queryProfile.SetAccesseeTokenId(std::atoi(params.at(ACCESSEE_TOKEN_ID).c_str()));
             queryType = QueryType::ACER_AND_ACEE_TOKENID;
             return true;
         }
         queryProfile.SetAccesserDeviceId(params.at(ACCESSER_DEVICE_ID));
-        queryProfile.SetAccesserTokenId(std::atoll(params.at(ACCESSER_TOKEN_ID).c_str()));
+        queryProfile.SetAccesserTokenId(std::atoi(params.at(ACCESSER_TOKEN_ID).c_str()));
         queryProfile.SetAccesserUserId(std::atoi(params.at(ACCESSER_USER_ID).c_str()));
+        queryProfile.SetAccesserAccountId(params.at(ACCESSER_ACCOUNT_ID));
         queryProfile.SetAccesseeDeviceId(params.at(ACCESSEE_DEVICE_ID));
         queryType = QueryType::ACER_TOKENID;
         return true;
