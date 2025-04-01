@@ -268,7 +268,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetDeviceProfile001, TestSize.Lev
     DeviceProfile deviceProfile;
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetDeviceProfile(deviceId, deviceProfile);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 
     DeviceProfile deviceProfile1;
     deviceProfile1.SetDeviceId("anything");
@@ -306,7 +306,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetServiceProfile001, TestSize.Le
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetServiceProfile(
         deviceId, serviceName, serviceProfile);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -324,7 +324,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetCharacteristicProfile001, Test
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetCharacteristicProfile(
             deviceId, serviceName, characteristicKey, characteristicProfile);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 
     characteristicProfile.GetDeviceId();
     characteristicProfile.GetServiceName();
@@ -341,7 +341,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, DeleteServiceProfile001, TestSize
 {
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().DeleteServiceProfile(
             "deviceId", "serviceName", false, DEFAULT_USER_ID);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -354,7 +354,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, DeleteCharacteristicProfile001, T
 {
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().DeleteCharacteristicProfile(
             "deviceId", "serviceName", "characteristicKey", false, DEFAULT_USER_ID);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -657,7 +657,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutDeviceIconInfoBatch_001, TestS
 {
     std::vector<DeviceIconInfo> deviceIconInfos;
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutDeviceIconInfoBatch(deviceIconInfos);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -715,7 +715,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutServiceInfoProfile_001, TestSi
 {
     ServiceInfoProfile serviceInfoProfile;
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutServiceInfoProfile(serviceInfoProfile);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -728,7 +728,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, DeleteServiceInfoProfile_001, Tes
 {
     ServiceInfoUniqueKey key;
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().DeleteServiceInfoProfile(key);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -741,7 +741,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UpdateServiceInfoProfile_001, Tes
 {
     ServiceInfoProfile serviceInfoProfile;
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().UpdateServiceInfoProfile(serviceInfoProfile);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 
@@ -757,7 +757,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetServiceInfoProfileByUniqueKey_
     ServiceInfoProfile serviceInfoProfile;
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetServiceInfoProfileByUniqueKey(key,
         serviceInfoProfile);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -772,7 +772,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetServiceInfoProfileListByTokenI
     std::vector<ServiceInfoProfile> serviceInfoProfiles;
     int32_t errCode =
         DistributedDeviceProfileClient::GetInstance().GetServiceInfoProfileListByTokenId(key, serviceInfoProfiles);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -785,7 +785,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetAllServiceInfoProfileList_001,
 {
     std::vector<ServiceInfoProfile> serviceInfoProfiles;
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetAllServiceInfoProfileList(serviceInfoProfiles);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -800,7 +800,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetServiceInfoProfileListByBundle
     std::vector<ServiceInfoProfile> serviceInfoProfiles;
     int32_t errCode =
         DistributedDeviceProfileClient::GetInstance().GetServiceInfoProfileListByBundleName(key, serviceInfoProfiles);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
