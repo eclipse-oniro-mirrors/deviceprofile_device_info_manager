@@ -62,6 +62,8 @@ constexpr int32_t DP_IPC_THREAD_NUM = 32;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileServiceNew);
+const bool REGISTER_RESULT =
+    SystemAbility::MakeAndRegisterAbility(&DistributedDeviceProfileServiceNew::GetInstance());
 
 DistributedDeviceProfileServiceNew::DistributedDeviceProfileServiceNew()
     : SystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, true)

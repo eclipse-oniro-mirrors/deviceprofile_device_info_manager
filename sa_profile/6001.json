@@ -3,7 +3,7 @@
   "systemability": [
       {
           "name": 6001,
-          "libpath": "libdistributed_device_profile.z.so",
+          "libpath": "libdistributed_device_profile_svr.z.so",
           "run-on-create": false,
           "distributed": true,
           "dump-level": 1,

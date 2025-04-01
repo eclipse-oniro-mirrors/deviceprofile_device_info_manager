@@ -49,46 +49,24 @@
           "relational_store",
           "os_account",
           "asset"
-        ],
-        "third_party": [
-          "json"
         ]
       },
       "build": {
         "group_type": {
           "base_group": [],
           "fwk_group": [
-            "//foundation/deviceprofile/device_info_manager/old/interfaces/innerkits/core:distributed_device_profile_client",
             "//foundation/deviceprofile/device_info_manager/interfaces/innerkits/core:distributed_device_profile_sdk",
             "//foundation/deviceprofile/device_info_manager/common:distributed_device_profile_common"
           ],
           "service_group": [
             "//foundation/deviceprofile/device_info_manager/etc/profile:deviceprofile_trust",
             "//foundation/deviceprofile/device_info_manager/etc/init:etc",
-            "//foundation/deviceprofile/device_info_manager/old/permission:authority_json",
             "//foundation/deviceprofile/device_info_manager/permission:permission_json",
             "//foundation/deviceprofile/device_info_manager/sa_profile:dps_sa_profile",
-            "//foundation/deviceprofile/device_info_manager/old/services/core:distributed_device_profile",
             "//foundation/deviceprofile/device_info_manager/services/core:distributed_device_profile_svr"
           ]
         },
         "inner_kits": [
-          {
-            "name": "//foundation/deviceprofile/device_info_manager/old/interfaces/innerkits/core:distributed_device_profile_client",
-            "header": {
-              "header_files": [
-                "distributed_device_profile_client.h",
-                "distributed_device_profile_proxy.h",
-                "idistributed_device_profile.h",
-                "iprofile_event_callback.h",
-                "profile_change_notification.h",
-                "profile_event.h",
-                "service_characteristic_profile.h",
-                "subscribe_info.h"
-              ],
-              "header_base": "//foundation/deviceprofile/device_info_manager/old/interfaces/innerkits/core/include/"
-            }
-          },
           {
             "name": "//foundation/deviceprofile/device_info_manager/interfaces/innerkits/core:distributed_device_profile_sdk",
             "header": {
@@ -125,11 +103,8 @@
           }
         ],
         "test": [
-          "//foundation/deviceprofile/device_info_manager/old/radar/test/unittest:dp_radar_helper_test_old",
-          "//foundation/deviceprofile/device_info_manager/old/services/core:unittest",
           "//foundation/deviceprofile/device_info_manager/radar/test/unittest:dp_radar_helper_test_new",
           "//foundation/deviceprofile/device_info_manager/services/core:unittest",
-          "//foundation/deviceprofile/device_info_manager/old/services/core/test/fuzztest:fuzztest",
           "//foundation/deviceprofile/device_info_manager/services/core/test/fuzztest:fuzztest",
           "//foundation/deviceprofile/device_info_manager/common/test:common_test"
         ]
