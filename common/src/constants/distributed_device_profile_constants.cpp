@@ -103,6 +103,7 @@ const std::string BIND_LEVEL = "bindLevel";
 const std::string STATUS = "status";
 const std::string VALID_PERIOD = "validPeriod";
 const std::string LAST_AUTH_TIME = "lastAuthTime";
+const std::string EXTRA_DATA = "extraData";
 /* Accesser Attribute */
 const std::string ACCESSER_DEVICE_ID = "accesserDeviceId";
 const std::string ACCESSER_USER_ID = "accesserUserId";
@@ -114,9 +115,11 @@ const std::string ACCESSER_BIND_LEVEL = "accesserBindLevel";
 const std::string ACCESSER_DEVICE_NAME = "accesserDeviceName";
 const std::string ACCESSER_SERVICE_NAME = "accesserServiceName";
 const std::string ACCESSER_CREDENTIAL_ID = "accesserCredentialId";
+const std::string ACCESSER_CREDENTIAL_ID_STR = "accesserCredentialIdStr";
 const std::string ACCESSER_STATUS = "accesserStatus";
 const std::string ACCESSER_SESSION_KEY_ID = "accesserSessionKeyId";
 const std::string ACCESSER_SESSION_KEY_TIMESTAMP = "accesserSKTimeStamp";
+const std::string ACCESSER_EXTRA_DATA = "accesserExtraData";
 /* Accessee Attribute */
 const std::string ACCESSEE_DEVICE_ID = "accesseeDeviceId";
 const std::string ACCESSEE_USER_ID = "accesseeUserId";
@@ -128,9 +131,11 @@ const std::string ACCESSEE_BIND_LEVEL = "accesseeBindLevel";
 const std::string ACCESSEE_DEVICE_NAME = "accesseeDeviceName";
 const std::string ACCESSEE_SERVICE_NAME = "accesseeServiceName";
 const std::string ACCESSEE_CREDENTIAL_ID = "accesseeCredentialId";
+const std::string ACCESSEE_CREDENTIAL_ID_STR = "accesseeCredentialIdStr";
 const std::string ACCESSEE_STATUS = "accesseeStatus";
 const std::string ACCESSEE_SESSION_KEY_ID = "accesseeSessionKeyId";
 const std::string ACCESSEE_SESSION_KEY_TIMESTAMP = "accesseeSKTimeStamp";
+const std::string ACCESSEE_EXTRA_DATA = "accesseeExtraData";
 /* subscribe info */
 const std::string SA_ID = "saId";
 const std::string SUBSCRIBE_KEY = "subscribeKey";
@@ -253,39 +258,44 @@ const std::string CREATE_ACCESS_CONTROL_TABLE_SQL = "CREATE TABLE IF NOT EXISTS 
     status             INTEGER,\
     validPeriod        INTEGER,\
     lastAuthTime       INTEGER,\
-    bindLevel          INTEGER);";
+    bindLevel          INTEGER,\
+    extraData          TEXT);";
 const std::string CREATE_ACCESSER_TABLE_SQL = "CREATE TABLE IF NOT EXISTS accesser_table\
 (\
-    accesserId           INTEGER PRIMARY KEY,\
-    accesserDeviceId     TEXT,\
-    accesserUserId       INTEGER,\
-    accesserAccountId    TEXT,\
-    accesserTokenId      INTEGER,\
-    accesserBundleName   TEXT,\
-    accesserHapSignature TEXT,\
-    accesserBindLevel    INTEGER,\
-    accesserDeviceName   TEXT,\
-    accesserServiceName  TEXT,\
-    accesserCredentialId TEXT,\
-    accesserStatus       INTEGER,\
-    accesserSessionKeyId INTEGER,\
-    accesserSKTimeStamp  INTEGER);";
+    accesserId               INTEGER PRIMARY KEY,\
+    accesserDeviceId         TEXT,\
+    accesserUserId           INTEGER,\
+    accesserAccountId        TEXT,\
+    accesserTokenId          INTEGER,\
+    accesserBundleName       TEXT,\
+    accesserHapSignature     TEXT,\
+    accesserBindLevel        INTEGER,\
+    accesserDeviceName       TEXT,\
+    accesserServiceName      TEXT,\
+    accesserCredentialId     INTEGER,\
+    accesserCredentialIdStr  TEXT,\
+    accesserStatus           INTEGER,\
+    accesserSessionKeyId     INTEGER,\
+    accesserSKTimeStamp      INTEGER,\
+    accesserExtraData        TEXT);";
 const std::string CREATE_ACCESSEE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS accessee_table\
 (\
-    accesseeId           INTEGER PRIMARY KEY,\
-    accesseeDeviceId     TEXT,\
-    accesseeUserId       INTEGER,\
-    accesseeAccountId    TEXT,\
-    accesseeTokenId      INTEGER,\
-    accesseeBundleName   TEXT,\
-    accesseeHapSignature TEXT,\
-    accesseeBindLevel    INTEGER,\
-    accesseeDeviceName   TEXT,\
-    accesseeServiceName  TEXT,\
-    accesseeCredentialId TEXT,\
-    accesseeStatus       INTEGER,\
-    accesseeSessionKeyId INTEGER,\
-    accesseeSKTimeStamp  INTEGER);";
+    accesseeId               INTEGER PRIMARY KEY,\
+    accesseeDeviceId         TEXT,\
+    accesseeUserId           INTEGER,\
+    accesseeAccountId        TEXT,\
+    accesseeTokenId          INTEGER,\
+    accesseeBundleName       TEXT,\
+    accesseeHapSignature     TEXT,\
+    accesseeBindLevel        INTEGER,\
+    accesseeDeviceName       TEXT,\
+    accesseeServiceName      TEXT,\
+    accesseeCredentialId     INTEGER,\
+    accesseeCredentialIdStr  TEXT,\
+    accesseeStatus           INTEGER,\
+    accesseeSessionKeyId     INTEGER,\
+    accesseeSKTimeStamp      INTEGER,\
+    accesseeExtraData        TEXT);";
 const std::string CREATE_TURST_DEVICE_TABLE_UNIQUE_INDEX_SQL =
 "CREATE UNIQUE INDEX if not exists unique_trust_device_table ON trust_device_table \
 (\
@@ -319,7 +329,7 @@ const std::string CREATE_ACCESSER_TABLE_UNIQUE_INDEX_SQL =
     accesserBindLevel,\
     accesserDeviceName,\
     accesserServiceName,\
-    accesserCredentialId,\
+    accesserCredentialIdStr,\
     accesserStatus,\
     accesserSessionKeyId);";
 const std::string CREATE_ACCESSEE_TABLE_UNIQUE_INDEX_SQL =
@@ -334,35 +344,45 @@ const std::string CREATE_ACCESSEE_TABLE_UNIQUE_INDEX_SQL =
     accesseeBindLevel,\
     accesseeDeviceName,\
     accesseeServiceName,\
-    accesseeCredentialId,\
+    accesseeCredentialIdStr,\
     accesseeStatus,\
     accesseeSessionKeyId);";
 const std::string DROP_OLD_UNIQUE_INDEX_ON_ACER = "DROP INDEX unique_accesser_table";
 const std::string DROP_OLD_UNIQUE_INDEX_ON_ACEE = "DROP INDEX unique_accessee_table";
+const std::string ALTER_TABLE_ACCESS_CONTROL_ADD_COLUMN_EXTRA_DATA =
+    "ALTER TABLE access_control_table ADD COLUMN extraData TEXT DEFAULT ''";;
 const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_DEVICE_NAME =
     "ALTER TABLE accesser_table ADD COLUMN accesserDeviceName TEXT DEFAULT ''";
 const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_SERVICE_NAME =
     "ALTER TABLE accesser_table ADD COLUMN accesserServiceName TEXT DEFAULT ''";
 const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_CREDENTIAL_ID =
-    "ALTER TABLE accesser_table ADD COLUMN accesserCredentialId TEXT DEFAULT ''";
+    "ALTER TABLE accesser_table ADD COLUMN accesserCredentialId INTERGER DEFAULT -1";
+const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_CREDENTIAL_ID_STR =
+    "ALTER TABLE accesser_table ADD COLUMN accesserCredentialIdStr TEXT DEFAULT ''";
 const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_STATUS =
     "ALTER TABLE accesser_table ADD COLUMN accesserStatus INTERGER DEFAULT -1";
 const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_SESSION_KEY_ID =
     "ALTER TABLE accesser_table ADD COLUMN accesserSessionKeyId INTERGER DEFAULT -1";
 const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_SESSION_KEY_TIMESTAMP =
     "ALTER TABLE accesser_table ADD COLUMN accesserSKTimeStamp INTERGER DEFAULT -1";
+const std::string ALTER_TABLE_ACER_ADD_COLUMN_ACER_EXTRA_DATA =
+    "ALTER TABLE accesser_table ADD COLUMN accesserExtraData TEXT DEFAULT ''";
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_DEVICE_NAME =
     "ALTER TABLE accessee_table ADD COLUMN accesseeDeviceName TEXT DEFAULT ''";
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SERVICE_NAME =
     "ALTER TABLE accessee_table ADD COLUMN accesseeServiceName TEXT DEFAULT ''";
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_CREDENTIAL_ID =
-    "ALTER TABLE accessee_table ADD COLUMN accesseeCredentialId TEXT DEFAULT ''";
+    "ALTER TABLE accessee_table ADD COLUMN accesserCredentialId INTERGER DEFAULT -1";
+const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_CREDENTIAL_ID_STR =
+    "ALTER TABLE accessee_table ADD COLUMN accesseeCredentialIdStr TEXT DEFAULT ''";
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_STATUS =
     "ALTER TABLE accessee_table ADD COLUMN accesseeStatus INTERGER DEFAULT -1";
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SESSION_KEY_ID =
     "ALTER TABLE accessee_table ADD COLUMN accesseeSessionKeyId INTERGER DEFAULT -1";
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SESSION_KEY_TIMESTAMP =
     "ALTER TABLE accessee_table ADD COLUMN accesseeSKTimeStamp INTERGER DEFAULT -1";
+const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_EXTRA_DATA =
+    "ALTER TABLE accessee_table ADD COLUMN accesseeExtraData TEXT DEFAULT ''";
 const std::string TRUST_DEVICE_TABLE = "trust_device_table";
 const std::string ACCESS_CONTROL_TABLE = "access_control_table";
 const std::string ACCESSER_TABLE = "accesser_table";
@@ -432,12 +452,12 @@ const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_ALL_EXCEPT_STATUS =
 const std::string SELECT_ACCESSER_TABLE_WHERE_ALL =
     "SELECT * FROM accesser_table WHERE accesserDeviceId = ? and accesserUserId = ? and accesserAccountId = ? and \
     accesserTokenId = ? and accesserBundleName = ? and accesserHapSignature = ? and accesserBindLevel = ? and \
-    accesserDeviceName = ? and accesserServiceName = ? and accesserCredentialId = ? and accesserStatus = ? and \
+    accesserDeviceName = ? and accesserServiceName = ? and accesserCredentialIdStr = ? and accesserStatus = ? and \
     accesserSessionKeyId = ? ";
 const std::string SELECT_ACCESSEE_TABLE_WHERE_ALL =
     "SELECT * FROM accessee_table WHERE accesseeDeviceId = ? and accesseeUserId = ? and accesseeAccountId = ? and \
     accesseeTokenId = ? and accesseeBundleName = ? and accesseeHapSignature = ? and accesseeBindLevel = ? and \
-    accesseeDeviceName = ? and accesseeServiceName = ? and accesseeCredentialId = ? and accesseeStatus = ? and \
+    accesseeDeviceName = ? and accesseeServiceName = ? and accesseeCredentialIdStr = ? and accesseeStatus = ? and \
     accesseeSessionKeyId = ? ";
 const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERDEVICEID_AND_ACCESSERUSERID =
     "SELECT * FROM accesser_table WHERE accesserDeviceId = ? and accesserUserId = ? ";

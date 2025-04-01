@@ -259,10 +259,12 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_001, TestSize.Level1)
     accesser.SetAccesserBindLevel(1);
     accesser.SetAccesserDeviceName("70");
     accesser.SetAccesserServiceName("paste");
-    accesser.SetAccesserCredentialId("66666");
+    accesser.SetAccesserCredentialId(6666);
+    accesser.SetAccesserCredentialIdStr("66666");
     accesser.SetAccesserStatus(0);
     accesser.SetAccesserSessionKeyId(88888);
     accesser.SetAccesserSKTimeStamp(99999);
+    accesser.SetAccesserExtraData("abcd");
 
     Accessee accessee;
     accessee.SetAccesseeDeviceId("acee1");
@@ -349,10 +351,12 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_011, TestSize.Level1)
     accessee.SetAccesseeBindLevel(1);
     accessee.SetAccesseeDeviceName("70");
     accessee.SetAccesseeServiceName("paste");
-    accessee.SetAccesseeCredentialId("66666");
+    accessee.SetAccesseeCredentialId(6666);
+    accessee.SetAccesseeCredentialIdStr("66666");
     accessee.SetAccesseeStatus(0);
     accessee.SetAccesseeSessionKeyId(88888);
     accessee.SetAccesseeSKTimeStamp(99999);
+    accessee.SetAccesseeExtraData("abcd");
 
     AccessControlProfile profile;
     profile.SetTrustDeviceId("123456");
@@ -365,6 +369,7 @@ HWTEST_F(TrustProfileManagerTest, PutAccessControlProfile_011, TestSize.Level1)
     profile.SetValidPeriod(1);
     profile.SetLastAuthTime(5);
     profile.SetBindLevel(1);
+    profile.SetExtraData("abcd");
 
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);

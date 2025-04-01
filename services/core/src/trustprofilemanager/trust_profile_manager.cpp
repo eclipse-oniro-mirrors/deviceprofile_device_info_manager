@@ -1157,7 +1157,7 @@ int32_t TrustProfileManager::PutAccesserProfile(const AccessControlProfile& prof
         ValueObject(accesser.GetAccesserBundleName()), ValueObject(accesser.GetAccesserHapSignature()),
         ValueObject(static_cast<int32_t>(accesser.GetAccesserBindLevel())),
         ValueObject(accesser.GetAccesserDeviceName()), ValueObject(accesser.GetAccesserServiceName()),
-        ValueObject(accesser.GetAccesserCredentialId()),
+        ValueObject(accesser.GetAccesserCredentialIdStr()),
         ValueObject(static_cast<int32_t>(accesser.GetAccesserStatus())),
         ValueObject(accesser.GetAccesserSessionKeyId())});
     if (resultSet == nullptr) {
@@ -1200,7 +1200,7 @@ int32_t TrustProfileManager::PutAccesseeProfile(const AccessControlProfile& prof
         ValueObject(accessee.GetAccesseeBundleName()), ValueObject(accessee.GetAccesseeHapSignature()),
         ValueObject(static_cast<int32_t>(accessee.GetAccesseeBindLevel())),
         ValueObject(accessee.GetAccesseeDeviceName()), ValueObject(accessee.GetAccesseeServiceName()),
-        ValueObject(accessee.GetAccesseeCredentialId()),
+        ValueObject(accessee.GetAccesseeCredentialIdStr()),
         ValueObject(static_cast<int32_t>(accessee.GetAccesseeStatus())),
         ValueObject(accessee.GetAccesseeSessionKeyId())});
     if (resultSet == nullptr) {
@@ -1267,7 +1267,7 @@ int32_t TrustProfileManager::SetAccesserId(AccessControlProfile& profile)
         ValueObject(accesser.GetAccesserBundleName()), ValueObject(accesser.GetAccesserHapSignature()),
         ValueObject(static_cast<int32_t>(accesser.GetAccesserBindLevel())),
         ValueObject(accesser.GetAccesserDeviceName()), ValueObject(accesser.GetAccesserServiceName()),
-        ValueObject(accesser.GetAccesserCredentialId()),
+        ValueObject(accesser.GetAccesserCredentialIdStr()),
         ValueObject(static_cast<int32_t>(accesser.GetAccesserStatus())),
         ValueObject(accesser.GetAccesserSessionKeyId())});
     if (resultSet == nullptr) {
@@ -1317,7 +1317,7 @@ int32_t TrustProfileManager::SetAccesseeId(AccessControlProfile& profile)
         ValueObject(accessee.GetAccesseeBundleName()), ValueObject(accessee.GetAccesseeHapSignature()),
         ValueObject(static_cast<int32_t>(accessee.GetAccesseeBindLevel())),
         ValueObject(accessee.GetAccesseeDeviceName()), ValueObject(accessee.GetAccesseeServiceName()),
-        ValueObject(accessee.GetAccesseeCredentialId()),
+        ValueObject(accessee.GetAccesseeCredentialIdStr()),
         ValueObject(static_cast<int32_t>(accessee.GetAccesseeStatus())),
         ValueObject(accessee.GetAccesseeSessionKeyId())});
     if (resultSet == nullptr) {

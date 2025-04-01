@@ -48,14 +48,18 @@ public:
     void SetAccesserDeviceName(const std::string& accesserDeviceName);
     std::string GetAccesserServiceName() const;
     void SetAccesserServiceName(const std::string& accesserServiceName);
-    std::string GetAccesserCredentialId() const;
-    void SetAccesserCredentialId(const std::string& accesserCredentialId);
+    int32_t GetAccesserCredentialId() const;
+    void SetAccesserCredentialId(int32_t accesserCredentialId);
+    std::string GetAccesserCredentialIdStr() const;
+    void SetAccesserCredentialIdStr(const std::string& accesserCredentialIdStr);
     int32_t GetAccesserStatus() const;
     void SetAccesserStatus(int32_t accesserStatus);
     int32_t GetAccesserSessionKeyId() const;
     void SetAccesserSessionKeyId(int32_t accesserSessionKeyId);
     int64_t GetAccesserSKTimeStamp() const;
     void SetAccesserSKTimeStamp(int64_t accesserSKTimeStamp);
+    std::string GetAccesserExtraData() const;
+    void SetAccesserExtraData(const std::string& accesserExtraData);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     std::string dump() const override;
@@ -71,10 +75,12 @@ private:
     uint32_t accesserBindLevel_;
     std::string accesserDeviceName_;
     std::string accesserServiceName_;
-    std::string accesserCredentialId_;
+    int32_t accesserCredentialId_;
+    std::string accesserCredentialIdStr_;
     int32_t accesserStatus_;
     int32_t accesserSessionKeyId_;
     int64_t accesserSKTimeStamp_;
+    std::string accesserExtraData_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

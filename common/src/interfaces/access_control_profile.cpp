@@ -40,6 +40,7 @@ AccessControlProfile::AccessControlProfile()
     trustDeviceId_(""),
     deviceIdType_((uint32_t)DeviceIdType::MIN),
     deviceIdHash_(""),
+    extraData_(""),
     accesser_({}),
     accessee_({})
 {
@@ -197,6 +198,16 @@ void AccessControlProfile::SetDeviceIdHash(const std::string& deviceIdHash)
     deviceIdHash_ = deviceIdHash;
 }
 
+std::string AccessControlProfile::GetExtraData() const
+{
+    return extraData_;
+}
+
+void AccessControlProfile::SetExtraData(const std::string& extraData)
+{
+    extraData_ = extraData;
+}
+
 bool AccessControlProfile::Marshalling(MessageParcel& parcel) const
 {
     WRITE_HELPER_RET(parcel, Int64, accessControlId_, false);
@@ -212,6 +223,7 @@ bool AccessControlProfile::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, String, trustDeviceId_, false);
     WRITE_HELPER_RET(parcel, Uint32, deviceIdType_, false);
     WRITE_HELPER_RET(parcel, String, deviceIdHash_, false);
+    WRITE_HELPER_RET(parcel, String, extraData_, false);
     accesser_.Marshalling(parcel);
     accessee_.Marshalling(parcel);
     return true;
@@ -232,6 +244,7 @@ bool AccessControlProfile::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, String, trustDeviceId_, false);
     READ_HELPER_RET(parcel, Uint32, deviceIdType_, false);
     READ_HELPER_RET(parcel, String, deviceIdHash_, false);
+    READ_HELPER_RET(parcel, String, extraData_, false);
     accesser_.UnMarshalling(parcel);
     accessee_.UnMarshalling(parcel);
     return true;
@@ -257,6 +270,7 @@ std::string AccessControlProfile::dump() const
     cJSON_AddStringToObject(json, TRUST_DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(trustDeviceId_).c_str());
     cJSON_AddNumberToObject(json, DEVICE_ID_TYPE.c_str(), deviceIdType_);
     cJSON_AddStringToObject(json, DEVICE_ID_HASH.c_str(), deviceIdHash_.c_str());
+    cJSON_AddStringToObject(json, EXTRA_DATA.c_str(), extraData_.c_str());
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);
