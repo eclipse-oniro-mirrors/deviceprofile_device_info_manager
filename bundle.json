@@ -68,22 +68,6 @@
         },
         "inner_kits": [
           {
-            "name": "//foundation/deviceprofile/device_info_manager/old/interfaces/innerkits/core:distributed_device_profile_client",
-            "header": {
-              "header_files": [
-                "distributed_device_profile_client.h",
-                "distributed_device_profile_proxy.h",
-                "idistributed_device_profile.h",
-                "iprofile_event_callback.h",
-                "profile_change_notification.h",
-                "profile_event.h",
-                "service_characteristic_profile.h",
-                "subscribe_info.h"
-              ],
-              "header_base": "//foundation/deviceprofile/device_info_manager/old/interfaces/innerkits/core/include/"
-            }
-          },
-          {
             "name": "//foundation/deviceprofile/device_info_manager/interfaces/innerkits/core:distributed_device_profile_sdk",
             "header": {
               "header_files": [
