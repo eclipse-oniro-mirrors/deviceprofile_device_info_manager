@@ -55,6 +55,10 @@ public:
 private:
     int32_t CreateTable();
     int32_t CreateUniqueIndex();
+    bool CheckForWardByAcerAndAcee(const QueryProfile& queryProfile, const AccessControlProfile& aclProfile);
+    bool CheckReverseByAcerAndAcee(const QueryProfile& queryProfile, const AccessControlProfile& aclProfile);
+    bool CheckForWardByAcer(const QueryProfile& queryProfile, const AccessControlProfile& aclProfile);
+    bool CheckReverseByAcer(const QueryProfile& queryProfile, const AccessControlProfile& aclProfile);
     int32_t GetAccessControlProfile(const QueryType& queryType,
         const QueryProfile& queryProfile, std::vector<AccessControlProfile>& profile);
     bool GenerateQueryProfile(const std::map<std::string, std::string>& params,
