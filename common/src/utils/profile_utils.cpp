@@ -1192,6 +1192,7 @@ int32_t ProfileUtils::ConvertToAccessControlProfile(
     int32_t validPeriod = rowEntity.Get(VALID_PERIOD);
     int32_t lastAuthTime = rowEntity.Get(LAST_AUTH_TIME);
     int32_t bindLevel = rowEntity.Get(BIND_LEVEL);
+    std::string extraData = rowEntity.Get(EXTRA_DATA);
 
     accessControlProfile.SetAccessControlId(accessControlId);
     accessControlProfile.SetAccesserId(accesserId);
@@ -1206,6 +1207,7 @@ int32_t ProfileUtils::ConvertToAccessControlProfile(
     accessControlProfile.SetValidPeriod(validPeriod);
     accessControlProfile.SetLastAuthTime(lastAuthTime);
     accessControlProfile.SetBindLevel(bindLevel);
+    accessControlProfile.SetExtraData(extraData);
     return DP_SUCCESS;
 }
 } // namespace DistributedDeviceProfile
