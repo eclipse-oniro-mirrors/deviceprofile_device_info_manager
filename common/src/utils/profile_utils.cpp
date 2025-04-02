@@ -1163,7 +1163,7 @@ int32_t ProfileUtils::ConvertToAccessee(std::shared_ptr<ResultSet> accesseeResul
     accessee.SetAccesseeStatus(accesseeStatus);
     accessee.SetAccesseeSessionKeyId(accesseeSessionKeyId);
     accessee.SetAccesseeSKTimeStamp(accesseeSKTimeStamp);
-    accesser.SetAccesseeExtraData(accesseeExtraData);
+    accessee.SetAccesseeExtraData(accesseeExtraData);
     return DP_SUCCESS;
 }
 
