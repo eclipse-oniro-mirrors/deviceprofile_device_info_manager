@@ -1098,6 +1098,7 @@ int32_t ProfileUtils::ConvertToAccesser(std::shared_ptr<ResultSet> accesserResul
     int32_t accesserStatus = rowEntity.Get(ACCESSER_STATUS);
     int32_t accesserSessionKeyId = rowEntity.Get(ACCESSER_SESSION_KEY_ID);
     int64_t accesserSKTimeStamp = rowEntity.Get(ACCESSER_SESSION_KEY_TIMESTAMP);
+    std::string accesserExtraData = rowEntity.Get(ACCESSER_EXTRA_DATA);
 
     accesser.SetAccesserId(accesserId);
     accesser.SetAccesserDeviceId(accesserDeviceId);
@@ -1114,6 +1115,7 @@ int32_t ProfileUtils::ConvertToAccesser(std::shared_ptr<ResultSet> accesserResul
     accesser.SetAccesserStatus(accesserStatus);
     accesser.SetAccesserSessionKeyId(accesserSessionKeyId);
     accesser.SetAccesserSKTimeStamp(accesserSKTimeStamp);
+    accesser.SetAccesserExtraData(accesserExtraData);
     return DP_SUCCESS;
 }
 
@@ -1144,6 +1146,7 @@ int32_t ProfileUtils::ConvertToAccessee(std::shared_ptr<ResultSet> accesseeResul
     int32_t accesseeStatus = rowEntity.Get(ACCESSEE_STATUS);
     int32_t accesseeSessionKeyId = rowEntity.Get(ACCESSEE_SESSION_KEY_ID);
     int64_t accesseeSKTimeStamp = rowEntity.Get(ACCESSEE_SESSION_KEY_TIMESTAMP);
+    std::string accesseeExtraData = rowEntity.Get(ACCESSEE_EXTRA_DATA);
 
     accessee.SetAccesseeId(accesseeId);
     accessee.SetAccesseeDeviceId(accesseeDeviceId);
@@ -1160,6 +1163,7 @@ int32_t ProfileUtils::ConvertToAccessee(std::shared_ptr<ResultSet> accesseeResul
     accessee.SetAccesseeStatus(accesseeStatus);
     accessee.SetAccesseeSessionKeyId(accesseeSessionKeyId);
     accessee.SetAccesseeSKTimeStamp(accesseeSKTimeStamp);
+    accesser.SetAccesseeExtraData(accesseeExtraData);
     return DP_SUCCESS;
 }
 
