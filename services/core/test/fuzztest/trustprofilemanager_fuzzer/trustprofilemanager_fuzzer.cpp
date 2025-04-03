@@ -20,6 +20,7 @@
 #include <unistd.h>
 #include <cstdlib>
 #include <fcntl.h>
+#include <fuzzer/FuzzedDataProvider.h>
 #include <string>
 #include <sys/types.h>
 #include "sys/stat.h"
@@ -36,9 +37,10 @@ void GetAccessControlProfileByTokenIdFuzzTest(const uint8_t* data, size_t size)
     if ((data == nullptr) || (size < sizeof(int64_t))) {
         return;
     }
-    int64_t tokenId = *(reinterpret_cast<const int64_t*>(data));
-    std::string trustDeviceId(reinterpret_cast<const char*>(data), size);
-    int32_t status = *(reinterpret_cast<const int32_t*>(data));
+    FuzzedDataProvider fdp(data, size);
+    int64_t tokenId = fdp.ConsumeIntegral<int64_t>();
+    std::string trustDeviceId = fdp.ConsumeRandomLengthString();
+    int32_t status = fdp.ConsumeIntegral<int32_t>();
     std::vector<AccessControlProfile> profile;
     AccessControlProfile acProfile;
     profile.push_back(acProfile);
