@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_DP_PINCODE_INVALID_CALLBCK_PROXY_H
-#define OHOS_DP_PINCODE_INVALID_CALLBCK_PROXY_H
+#ifndef OHOS_DP_PINCODE_INVALID_CALLBACK_PROXY_H
+#define OHOS_DP_PINCODE_INVALID_CALLBACK_PROXY_H
 
 #include <cstdint>
 #include "i_pincode_invalid_callback.h"
@@ -39,4 +39,4 @@ private:
 }  // namespace DistributedDeviceProfile
 }  // namespace OHOS
 
-#endif // OHOS_DP_PINCODE_INVALID_CALLBCK_PROXY_H
+#endif // OHOS_DP_PINCODE_INVALID_CALLBACK_PROXY_H

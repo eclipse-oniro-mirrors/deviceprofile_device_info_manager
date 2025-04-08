@@ -196,7 +196,7 @@ int32_t DistributedDeviceProfileStubNew::NotifyLocalServiceEventInner(uint32_t c
     switch (code) {
         case static_cast<uint32_t>(DPInterfaceCode::PUT_LOCAL_SERVICE_INFO):
             return PutLocalServiceInfoInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::UPDATA_LOCAL_SERVICE_INFO):
+        case static_cast<uint32_t>(DPInterfaceCode::UPDATE_LOCAL_SERVICE_INFO):
             return UpdateLocalServiceInfoInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::GET_LOCAL_SERVICE_INFO_BY_BINDLE_AND_PINTYPE):
             return GetLocalServiceInfoByBundleAndPinTypeInner(data, reply);
