@@ -336,6 +336,7 @@ std::map<std::string, std::string> ContentSensorManagerUtils::GetSubProdIdMap()
         }
         item = item->next;
     }
+    cJSON_Delete(item);
     cJSON_Delete(json);
     return subProdIdMap_;
 }
