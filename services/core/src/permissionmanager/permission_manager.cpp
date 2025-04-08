@@ -129,7 +129,7 @@ void PermissionManager::SetRdbPermissionMap(const cJSON *const permissionJson)
     SetPermissionMap(permissionJson, GET_ALL_SERVICE_INFO_PROFILE_LIST);
     SetPermissionMap(permissionJson, GET_SERVICE_INFO_PROFILE_LIST_BY_BUNDLE_NAME);
     SetPermissionMap(permissionJson, PUT_LOCAL_SERVICE_INFO);
-    SetPermissionMap(permissionJson, UPDATA_LOCAL_SERVICE_INFO);
+    SetPermissionMap(permissionJson, UPDATE_LOCAL_SERVICE_INFO);
     SetPermissionMap(permissionJson, GET_LOCAL_SERVICE_INFO_BY_BINDLE_AND_PINTYPE);
     SetPermissionMap(permissionJson, DELETE_LOCAL_SERVICE_INFO);
     SetPermissionMap(permissionJson, PUT_ACCESS_CONTROL_PROFILE);

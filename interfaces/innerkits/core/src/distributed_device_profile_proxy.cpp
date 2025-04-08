@@ -734,7 +734,7 @@ int32_t DistributedDeviceProfileProxy::UpdateLocalServiceInfo(const LocalService
         return DP_WRITE_PARCEL_FAIL;
     }
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::UPDATA_LOCAL_SERVICE_INFO), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::UPDATE_LOCAL_SERVICE_INFO), data, reply);
     return DP_SUCCESS;
 }
 

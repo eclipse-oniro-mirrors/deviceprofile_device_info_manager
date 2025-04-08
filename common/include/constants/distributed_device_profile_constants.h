@@ -121,7 +121,7 @@ extern const std::string GET_ALL_SERVICE_INFO_PROFILE_LIST;
 extern const std::string GET_SERVICE_INFO_PROFILE_LIST_BY_BUNDLE_NAME;
 /* LocalServiceInfo Attribute */
 extern const std::string PUT_LOCAL_SERVICE_INFO;
-extern const std::string UPDATA_LOCAL_SERVICE_INFO;
+extern const std::string UPDATE_LOCAL_SERVICE_INFO;
 extern const std::string GET_LOCAL_SERVICE_INFO_BY_BINDLE_AND_PINTYPE;
 extern const std::string DELETE_LOCAL_SERVICE_INFO;
 /* TrustDeviceProfile Attribute */
