@@ -548,6 +548,7 @@ int32_t ProfileCache::SetSwitchByProfileBatch(const std::vector<CharacteristicPr
             item.GetCharacteristicValue().data() + item.GetCharacteristicValue().size(), value);
         if (result.ec != std::errc()) {
             HILOGE("Get value failed");
+            return DP_GET_PROXY_FAIL;
         }
         if (value != 0) {
             outSwitch |= mask;
@@ -577,6 +578,7 @@ int32_t ProfileCache::SetSwitchByProfile(const CharacteristicProfile& charProfil
         charProfile.GetCharacteristicValue().data() + charProfile.GetCharacteristicValue().size(), value);
     if (result.ec != std::errc()) {
         HILOGE("Get value failed");
+        return DP_GET_PROXY_FAIL;
     }
     if (value != 0) {
         outSwitch |= mask;
