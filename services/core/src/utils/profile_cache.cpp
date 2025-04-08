@@ -17,6 +17,7 @@
 
 #include <algorithm>
 #include <cinttypes>
+#include <charconv>
 
 #include "datetime_ex.h"
 #include "device_manager.h"
@@ -542,7 +543,12 @@ int32_t ProfileCache::SetSwitchByProfileBatch(const std::vector<CharacteristicPr
         }
         auto service = switchServiceMap.find(item.GetServiceName());
         uint32_t mask = NUM_1U << (static_cast<uint32_t>(service->second));
-        uint32_t value = static_cast<uint32_t>(std::stoi(item.GetCharacteristicValue()));
+        uint32_t value = STATUS_INIT;
+        auto result = std::from_chars(item.GetCharacteristicValue().data(),
+            item.GetCharacteristicValue().data() + item.GetCharacteristicValue().size(), value);
+        if (result.ec != std::errc()) {
+            HILOGE("Get value failed");
+        }
         if (value != 0) {
             outSwitch |= mask;
             HILOGI("service: %{public}s, switch on, currentSwitch: %{public}d",
@@ -566,7 +572,12 @@ int32_t ProfileCache::SetSwitchByProfile(const CharacteristicProfile& charProfil
     }
     auto service = switchServiceMap.find(charProfile.GetServiceName());
     uint32_t mask = NUM_1U << (static_cast<uint32_t>(service->second));
-    uint32_t value = static_cast<uint32_t>(std::stoi(charProfile.GetCharacteristicValue()));
+    uint32_t value = STATUS_INIT;
+    auto result = std::from_chars(charProfile.GetCharacteristicValue().data(),
+        charProfile.GetCharacteristicValue().data() + charProfile.GetCharacteristicValue().size(), value);
+    if (result.ec != std::errc()) {
+        HILOGE("Get value failed");
+    }
     if (value != 0) {
         outSwitch |= mask;
         HILOGI("SetSwitch service: %{public}s, switch on, currentSwitch: %{public}d",
