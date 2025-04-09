@@ -374,7 +374,8 @@ int32_t DistributedDeviceProfileServiceNew::GetAllAccessControlProfile(
     return ret;
 }
 
-int32_t DistributedDeviceProfileServiceNew::GetAllAclIncludeLnnAcl(std::vector<AccessControlProfile>& accessControlProfiles)
+int32_t DistributedDeviceProfileServiceNew::GetAllAclIncludeLnnAcl(
+    std::vector<AccessControlProfile>& accessControlProfiles)
 {
     if (!PermissionManager::GetInstance().IsCallerTrust(GET_ALL_ACL_INCLUDE_LNN_ACL)) {
         HILOGE("the caller is permission denied!");
