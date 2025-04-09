@@ -170,6 +170,21 @@ int32_t DistributedDeviceProfileProxy::GetAllAccessControlProfile(
     return DP_SUCCESS;
 }
 
+int32_t DistributedDeviceProfileProxy::GetAllAclIncludeLnnAcl(std::vector<AccessControlProfile> &accessControlProfiles)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::GET_ALL_ACL_INCLUDE_LNN_ACL), data, reply);
+    if (!IpcUtils::UnMarshalling(reply, accessControlProfiles)) {
+        HILOGE("dp ipc read parcel fail");
+        return DP_READ_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
 int32_t DistributedDeviceProfileProxy::DeleteAccessControlProfile(int32_t accessControlId)
 {
     sptr<IRemoteObject> remote = nullptr;

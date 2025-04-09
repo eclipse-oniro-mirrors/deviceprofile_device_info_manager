@@ -183,6 +183,7 @@ const std::string DELETE_ACCESS_CONTROL_PROFILE = "DeleteAccessControlProfile";
 const std::string GET_TRUST_DEVICE_PROFILE = "GetTrustDeviceProfile";
 const std::string GET_ALL_TRUST_DEVICE_PROFILE = "GetAllTrustDeviceProfile";
 const std::string GET_ALL_ACCESS_CONTROL_PROFILE = "GetAllAccessControlProfile";
+const std::string GET_ALL_ACL_INCLUDE_LNN_ACL = "GetAllAclIncludeLnnAcl";
 const std::string PUT_SERVICE_PROFILE = "PutServiceProfile";
 const std::string PUT_SERVICE_PROFILE_BATCH = "PutServiceProfileBatch";
 const std::string PUT_CHARACTERISTIC_PROFILE = "PutCharacteristicProfile";
@@ -238,6 +239,8 @@ const std::string DEVICEID_EQUAL_CONDITION = "deviceId = ?";
 const std::string ACCESSCONTROLID_EQUAL_CONDITION = "accessControlId = ?";
 const std::string ACCESSERID_EQUAL_CONDITION = "accesserId = ? ";
 const std::string ACCESSEEID_EQUAL_CONDITION = "accesseeId = ? ";
+const std::string LNN_ACL = "LnnAcl";
+const std::string IS_LNN_ACL = "true";
 const std::string CREATE_TURST_DEVICE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS trust_device_table\
 (\
     deviceId        TEXT PRIMARY KEY,\

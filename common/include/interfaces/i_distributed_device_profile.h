@@ -51,6 +51,7 @@ public:
     virtual int32_t GetAccessControlProfile(std::map<std::string, std::string> queryParams,
          std::vector<AccessControlProfile>& accessControlProfiles) = 0;
     virtual int32_t GetAllAccessControlProfile(std::vector<AccessControlProfile>& accessControlProfiles) = 0;
+    virtual int32_t GetAllAclIncludeLnnAcl(std::vector<AccessControlProfile>& accessControlProfiles) = 0;
     virtual int32_t DeleteAccessControlProfile(int32_t accessControlId) = 0;
     virtual int32_t PutSessionKey(uint32_t userId, const std::vector<uint8_t>& sessionKey, int32_t& sessionKeyId) = 0;
     virtual int32_t GetSessionKey(uint32_t userId, int32_t sessionKeyId, std::vector<uint8_t>& sessionKey) = 0;

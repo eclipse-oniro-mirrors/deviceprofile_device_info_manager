@@ -194,6 +194,16 @@ int32_t DistributedDeviceProfileClient::GetAllAccessControlProfile(
     return dpService->GetAllAccessControlProfile(accessControlProfiles);
 }
 
+int32_t DistributedDeviceProfileClient::GetAllAclIncludeLnnAcl(std::vector<AccessControlProfile> &accessControlProfiles)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->GetAllAclIncludeLnnAcl(accessControlProfiles);
+}
+
 int32_t DistributedDeviceProfileClient::DeleteAccessControlProfile(int32_t accessControlId)
 {
     auto dpService = GetDeviceProfileService();

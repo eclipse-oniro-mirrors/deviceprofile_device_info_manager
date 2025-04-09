@@ -40,6 +40,7 @@ public:
     int32_t GetAllTrustDeviceProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetAccessControlProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetAllAccessControlProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetAllAclIncludeLnnAclInner(MessageParcel& data, MessageParcel& reply);
     int32_t DeleteAccessControlProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutSessionKeyInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetSessionKeyInner(MessageParcel& data, MessageParcel& reply);
