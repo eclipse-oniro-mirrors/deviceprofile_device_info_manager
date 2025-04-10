@@ -116,6 +116,19 @@ HWTEST_F(TrustProfileManagerTest, GetAllAccessControlProfile_002, TestSize.Level
 }
 
 /*
+ * @tc.name: GetAllAclIncludeLnnAcl_001
+ * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTest, GetAllAclIncludeLnnAcl_001, TestSize.Level1)
+{
+    std::vector<AccessControlProfile> profile;
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAllAclIncludeLnnAcl(profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
  * @tc.name: GetAccessControlProfile_013
  * @tc.desc: Normal testCase of TrustProfileManagerTest for CRUD
  * @tc.type: FUNC
@@ -1450,6 +1463,11 @@ HWTEST_F(TrustProfileManagerTest, GetAllAccessControlProfile_001, TestSize.Level
         std::cout << profile[i].GetAccesser().dump() <<std::endl;
         std::cout << profile[i].GetAccessee().dump() <<std::endl;
     }
+    EXPECT_EQ(ret, DP_SUCCESS);
+
+    profile.clear();
+    ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().GetAllAclIncludeLnnAcl(profile);
     EXPECT_EQ(ret, DP_SUCCESS);
 }
 

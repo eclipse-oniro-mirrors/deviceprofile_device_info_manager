@@ -2219,11 +2219,11 @@ bool TrustProfileManager::IsLnnAcl(const AccessControlProfile& aclProfile)
         return false;
     }
     std::string lnnAclValue;
-    cJSON* item = cJSON_GetObjectItemCaseSensitive(json, LNN_ACL.c_str());
+    cJSON* item = cJSON_GetObjectItemCaseSensitive(json, IS_LNN_ACL.c_str());
     if (item != NULL && cJSON_IsString(item)) {
         lnnAclValue = item->valuestring;
     }
-    if (lnnAclValue == IS_LNN_ACL) {
+    if (lnnAclValue == LNN_ACL_TRUE) {
         cJSON_Delete(item);
         cJSON_Delete(json);
         return true;

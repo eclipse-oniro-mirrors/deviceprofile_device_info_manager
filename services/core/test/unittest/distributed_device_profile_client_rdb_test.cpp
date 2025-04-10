@@ -253,6 +253,19 @@ HWTEST_F(DistributedDeviceProfileClientRdbTest, GetAllAccessControlProfile_001, 
 }
 
 /*
+ * @tc.name: GetAllAclIncludeLnnAcl_001
+ * @tc.desc: Normal testCase of DistributedDeviceProfileClientRdbTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(DistributedDeviceProfileClientRdbTest, GetAllAclIncludeLnnAcl_001, TestSize.Level1)
+{
+    std::vector<AccessControlProfile> profile;
+    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+        GetInstance().GetAllAclIncludeLnnAcl(profile);
+    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+}
+
+/*
  * @tc.name: GetAllTrustDeviceProfile_001
  * @tc.desc: Normal testCase of DistributedDeviceProfileClientRdbTest for CRUD
  * @tc.type: FUNC
