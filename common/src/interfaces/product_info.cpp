@@ -154,6 +154,7 @@ std::string ProductInfo::GetAnonyProductName(const std::string& productName) con
         return EMPTY_STRING;
     }
     std::string jsonStr = jsonChars;
+    cJSON_free(jsonChars);
     cJSON_Delete(json);
     return jsonStr;
 }
