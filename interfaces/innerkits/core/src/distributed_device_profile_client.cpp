@@ -194,7 +194,7 @@ int32_t DistributedDeviceProfileClient::GetAllAccessControlProfile(
     return dpService->GetAllAccessControlProfile(accessControlProfiles);
 }
 
-int32_t DistributedDeviceProfileClient::GetAllAclIncludeLnnAcl(std::vector<AccessControlProfile> &accessControlProfiles)
+int32_t DistributedDeviceProfileClient::GetAllAclIncludeLnnAcl(std::vector<AccessControlProfile>& accessControlProfiles)
 {
     auto dpService = GetDeviceProfileService();
     if (dpService == nullptr) {

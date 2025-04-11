@@ -170,7 +170,7 @@ int32_t DistributedDeviceProfileProxy::GetAllAccessControlProfile(
     return DP_SUCCESS;
 }
 
-int32_t DistributedDeviceProfileProxy::GetAllAclIncludeLnnAcl(std::vector<AccessControlProfile> &accessControlProfiles)
+int32_t DistributedDeviceProfileProxy::GetAllAclIncludeLnnAcl(std::vector<AccessControlProfile>& accessControlProfiles)
 {
     sptr<IRemoteObject> remote = nullptr;
     GET_REMOTE_OBJECT(remote);
