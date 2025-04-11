@@ -44,6 +44,7 @@ void DistributedDeviceProfileStubNew::InitAclAndSubscribe()
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_ALL_TRUST_DEVICE_PROFILE));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_ACL_PROFILE));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_ALL_ACL_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_ALL_ACL_INCLUDE_LNN_ACL));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::DELETE_ACL_PROFILE));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE));
