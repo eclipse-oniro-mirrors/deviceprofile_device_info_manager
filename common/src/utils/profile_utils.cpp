@@ -360,8 +360,8 @@ int32_t ProfileUtils::AccessControlProfileToEntries(const AccessControlProfile& 
     values.PutString(DEVICE_ID_HASH, profile.GetDeviceIdHash());
     values.PutInt(BIND_TYPE, profile.GetBindType());
     values.PutString(SESSION_KEY, profile.GetSessionKey());
-    values.PutInt(LAST_AUTH_TIME, profile.GetLastAuthTime());
-    values.PutInt(VALID_PERIOD, profile.GetValidPeriod());
+    values.PutLong(LAST_AUTH_TIME, profile.GetLastAuthTime());
+    values.PutLong(VALID_PERIOD, profile.GetValidPeriod());
     values.PutInt(STATUS, profile.GetStatus());
     values.PutInt(BIND_LEVEL, profile.GetBindLevel());
     values.PutString(EXTRA_DATA, profile.GetExtraData());
@@ -517,11 +517,11 @@ int32_t ProfileUtils::EntriesToAccessControlProfile(const ValuesBucket& values, 
     if (GetIntValue(values, STATUS, intValue)) {
         profile.SetStatus(intValue);
     }
-    if (GetIntValue(values, VALID_PERIOD, intValue)) {
-        profile.SetValidPeriod(intValue);
+    if (GetLongValue(values, VALID_PERIOD, int64Value)) {
+        profile.SetValidPeriod(int64Value);
     }
-    if (GetIntValue(values, LAST_AUTH_TIME, intValue)) {
-        profile.SetLastAuthTime(intValue);
+    if (GetLongValue(values, LAST_AUTH_TIME, int64Value)) {
+        profile.SetLastAuthTime(int64Value);
     }
     if (GetStringValue(values, TRUST_DEVICE_ID, strValue)) {
         profile.SetTrustDeviceId(strValue);
@@ -1189,8 +1189,8 @@ int32_t ProfileUtils::ConvertToAccessControlProfile(
     int32_t deviceIdType = rowEntity.Get(DEVICE_ID_TYPE);
     std::string deviceIdHash = rowEntity.Get(DEVICE_ID_HASH);
     int32_t status = rowEntity.Get(STATUS);
-    int32_t validPeriod = rowEntity.Get(VALID_PERIOD);
-    int32_t lastAuthTime = rowEntity.Get(LAST_AUTH_TIME);
+    int64_t validPeriod = rowEntity.Get(VALID_PERIOD);
+    int64_t lastAuthTime = rowEntity.Get(LAST_AUTH_TIME);
     int32_t bindLevel = rowEntity.Get(BIND_LEVEL);
     std::string extraData = rowEntity.Get(EXTRA_DATA);
 
