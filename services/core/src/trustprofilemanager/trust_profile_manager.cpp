@@ -550,6 +550,10 @@ int32_t TrustProfileManager::GetAllAccessControlProfile(std::vector<AccessContro
         return ret;
     }
     RemoveLnnAcl(profiles);
+    if (profiles.empty()) {
+        HILOGE("not find data");
+        return DP_NOT_FIND_DATA;
+    }
     return DP_SUCCESS;
 }
 
@@ -2224,11 +2228,11 @@ bool TrustProfileManager::IsLnnAcl(const AccessControlProfile& aclProfile)
         lnnAclValue = item->valuestring;
     }
     if (lnnAclValue == LNN_ACL_TRUE) {
-        cJSON_Delete(item);
+        item = NULL;
         cJSON_Delete(json);
         return true;
     }
-    cJSON_Delete(item);
+    item = NULL;
     cJSON_Delete(json);
     return false;
 }
