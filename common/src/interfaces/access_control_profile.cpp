@@ -126,22 +126,22 @@ void AccessControlProfile::SetStatus(int32_t status)
     status_ = status;
 }
 
-int32_t AccessControlProfile::GetValidPeriod() const
+int64_t AccessControlProfile::GetValidPeriod() const
 {
     return validPeriod_;
 }
 
-void AccessControlProfile::SetValidPeriod(int32_t validPeriod)
+void AccessControlProfile::SetValidPeriod(int64_t validPeriod)
 {
     validPeriod_ = validPeriod;
 }
 
-int32_t AccessControlProfile::GetLastAuthTime() const
+int64_t AccessControlProfile::GetLastAuthTime() const
 {
     return lastAuthTime_;
 }
 
-void AccessControlProfile::SetLastAuthTime(int32_t lastAuthTime)
+void AccessControlProfile::SetLastAuthTime(int64_t lastAuthTime)
 {
     lastAuthTime_ = lastAuthTime;
 }
@@ -218,8 +218,8 @@ bool AccessControlProfile::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, Uint32, authenticationType_, false);
     WRITE_HELPER_RET(parcel, Uint32, bindLevel_, false);
     WRITE_HELPER_RET(parcel, Int32, status_, false);
-    WRITE_HELPER_RET(parcel, Int32, validPeriod_, false);
-    WRITE_HELPER_RET(parcel, Int32, lastAuthTime_, false);
+    WRITE_HELPER_RET(parcel, Int64, validPeriod_, false);
+    WRITE_HELPER_RET(parcel, Int64, lastAuthTime_, false);
     WRITE_HELPER_RET(parcel, String, trustDeviceId_, false);
     WRITE_HELPER_RET(parcel, Uint32, deviceIdType_, false);
     WRITE_HELPER_RET(parcel, String, deviceIdHash_, false);
@@ -239,8 +239,8 @@ bool AccessControlProfile::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, Uint32, authenticationType_, false);
     READ_HELPER_RET(parcel, Uint32, bindLevel_, false);
     READ_HELPER_RET(parcel, Int32, status_, false);
-    READ_HELPER_RET(parcel, Int32, validPeriod_, false);
-    READ_HELPER_RET(parcel, Int32, lastAuthTime_, false);
+    READ_HELPER_RET(parcel, Int64, validPeriod_, false);
+    READ_HELPER_RET(parcel, Int64, lastAuthTime_, false);
     READ_HELPER_RET(parcel, String, trustDeviceId_, false);
     READ_HELPER_RET(parcel, Uint32, deviceIdType_, false);
     READ_HELPER_RET(parcel, String, deviceIdHash_, false);

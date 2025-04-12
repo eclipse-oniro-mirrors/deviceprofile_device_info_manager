@@ -53,12 +53,14 @@ int32_t SessionKeyManager::PutSessionKey(uint32_t userId,
         HILOGE("PutSessionKey failed");
         return ret;
     }
+    HILOGI("userId : %{public}u, sessionKeyId : %{public}d", userId, sessionKeyId);
     return DP_SUCCESS;
 }
 
 int32_t SessionKeyManager::GetSessionKey(uint32_t userId,
     int32_t sessionKeyId, std::vector<uint8_t>& sessionKey)
 {
+    HILOGI("call! userId : %{public}u, sessionKeyId : %{public}d", userId, sessionKeyId);
     if (userId == 0) {
         HILOGE("params is invalid");
         return DP_INVALID_PARAMS;
@@ -97,12 +99,14 @@ int32_t SessionKeyManager::GetSessionKey(uint32_t userId,
     }
     sessionKey = std::vector<uint8_t>(data, data + length);
     AssetAdapter::GetInstance().FreeResultSet(&resultSet);
+    HILOGI("success!");
     return DP_SUCCESS;
 }
 
 int32_t SessionKeyManager::UpdateSessionKey(uint32_t userId,
     int32_t sessionKeyId, const std::vector<uint8_t>& sessionKey)
 {
+    HILOGI("call! userId : %{public}u, sessionKeyId : %{public}d", userId, sessionKeyId);
     if (userId == 0) {
         HILOGE("params is invalid");
         return DP_INVALID_PARAMS;
@@ -127,11 +131,13 @@ int32_t SessionKeyManager::UpdateSessionKey(uint32_t userId,
         HILOGE("UpdateSessionKey failed");
         return ret;
     }
+    HILOGI("success!");
     return DP_SUCCESS;
 }
 
 int32_t SessionKeyManager::DeleteSessionKey(uint32_t userId, int32_t sessionKeyId)
 {
+    HILOGI("call! userId : %{public}u, sessionKeyId : %{public}d", userId, sessionKeyId);
     if (userId == 0) {
         HILOGE("params is invalid");
         return DP_INVALID_PARAMS;
@@ -149,11 +155,13 @@ int32_t SessionKeyManager::DeleteSessionKey(uint32_t userId, int32_t sessionKeyI
         HILOGE("DeleteAsset failed");
         return ret;
     }
+    HILOGI("success!");
     return DP_SUCCESS;
 }
 
 void SessionKeyManager::GeneratedSessionKeyId(uint32_t userId, int32_t& sessionKeyId)
 {
+    HILOGI("call");
     int32_t ret = 0;
     int32_t randomNumber = 0;
     do {
@@ -165,6 +173,7 @@ void SessionKeyManager::GeneratedSessionKeyId(uint32_t userId, int32_t& sessionK
         ret = GetSessionKey(userId, randomNumber, sessionKey);
     } while (ret == DP_SUCCESS);
     sessionKeyId = randomNumber;
+    HILOGI("success! userId : %{public}u, sessionKeyId : %{public}d", userId, sessionKeyId);
     return;
 }
 } // namespace DistributedDeviceProfile

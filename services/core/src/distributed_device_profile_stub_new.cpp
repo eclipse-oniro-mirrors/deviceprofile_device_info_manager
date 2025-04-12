@@ -44,6 +44,7 @@ void DistributedDeviceProfileStubNew::InitAclAndSubscribe()
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_ALL_TRUST_DEVICE_PROFILE));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_ACL_PROFILE));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_ALL_ACL_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_ALL_ACL_INCLUDE_LNN_ACL));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::DELETE_ACL_PROFILE));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE));
@@ -94,6 +95,8 @@ int32_t DistributedDeviceProfileStubNew::NotifyAclEventInner(uint32_t code, Mess
             return GetAccessControlProfileInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::GET_ALL_ACL_PROFILE):
             return GetAllAccessControlProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::GET_ALL_ACL_INCLUDE_LNN_ACL):
+            return GetAllAclIncludeLnnAclInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::DELETE_ACL_PROFILE):
             return DeleteAccessControlProfileInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::PUT_SESSION_KEY):
@@ -320,6 +323,22 @@ int32_t DistributedDeviceProfileStubNew::GetAllAccessControlProfileInner(Message
     HILOGI("called");
     std::vector<AccessControlProfile> accessControlProfiles;
     int32_t ret = GetAllAccessControlProfile(accessControlProfiles);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    if (!IpcUtils::Marshalling(reply, accessControlProfiles)) {
+        HILOGE("write parcel fail!");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::GetAllAclIncludeLnnAclInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    std::vector<AccessControlProfile> accessControlProfiles;
+    int32_t ret = GetAllAclIncludeLnnAcl(accessControlProfiles);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;

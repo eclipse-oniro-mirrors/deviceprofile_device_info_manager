@@ -14,6 +14,7 @@
  */
 
 #include "trust_profile_manager.h"
+#include "cJSON.h"
 #include "subscribe_profile_manager.h"
 #include "distributed_device_profile_log.h"
 #include "rdb_adapter.h"
@@ -313,6 +314,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId, const std::
         HILOGE("GetAclProfileByUserIdAndBundleName faild");
         return DP_NOT_FIND_DATA;
     }
+    RemoveLnnAcl(profile);
     if (profile.empty()) {
         HILOGE("by userId bundleName bindType status not find data");
         return DP_NOT_FIND_DATA;
@@ -351,6 +353,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId, const std::
         HILOGE("GetAclProfileByUserIdAndBundleName faild");
         return ret;
     }
+    RemoveLnnAcl(profile);
     if (profile.empty()) {
         HILOGE("by userId bundleName trustDeviceId status not find data");
         return DP_NOT_FIND_DATA;
@@ -387,6 +390,7 @@ int32_t TrustProfileManager::GetAccessControlProfileByTokenId(int64_t tokenId,
         HILOGE("GetAclProfileByTokenId faild");
         return ret;
     }
+    RemoveLnnAcl(profile);
     if (profile.empty()) {
         HILOGE("tokenId not find data");
         return DP_NOT_FIND_DATA;
@@ -433,6 +437,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId,
         }
     }
     resultSet->Close();
+    RemoveLnnAcl(profile);
     if (profile.empty()) {
         HILOGE("by userId accountId not find data");
         return DP_NOT_FIND_DATA;
@@ -471,6 +476,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId, std::vector
         }
     }
     resultSet->Close();
+    RemoveLnnAcl(profile);
     if (profile.empty()) {
         HILOGE("by userId not find data, userId: %{public}s",
             ProfileUtils::GetAnonyString(std::to_string(userId)).c_str());
@@ -495,6 +501,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(const QueryType& queryType,
     if (queryType == QueryType::ACER_TOKENID) {
         GetAclByAcerTokenId(queryProfile, aclProfiles, profile);
     }
+    RemoveLnnAcl(profile);
     if (profile.empty()) {
         HILOGE("by userId and tokenId not find data, queryProfile : %{public}s", queryProfile.dump().c_str());
         return DP_NOT_FIND_DATA;
@@ -534,10 +541,26 @@ void TrustProfileManager::GetAclByAcerAndAceeTokenId(const QueryProfile& queryPr
     return;
 }
 
-int32_t TrustProfileManager::GetAllAccessControlProfile(std::vector<AccessControlProfile>& profile)
+int32_t TrustProfileManager::GetAllAccessControlProfile(std::vector<AccessControlProfile>& profiles)
 {
     std::lock_guard<std::mutex> lock(aclMutex_);
-    return GetAllAccessControlProfiles(profile);
+    int32_t ret = GetAllAccessControlProfiles(profiles);
+    if (ret != DP_SUCCESS) {
+        HILOGE("GetAllAccessControlProfile failed");
+        return ret;
+    }
+    RemoveLnnAcl(profiles);
+    if (profiles.empty()) {
+        HILOGE("not find data");
+        return DP_NOT_FIND_DATA;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t TrustProfileManager::GetAllAclIncludeLnnAcl(std::vector<AccessControlProfile>& profiles)
+{
+    std::lock_guard<std::mutex> lock(aclMutex_);
+    return GetAllAccessControlProfiles(profiles);
 }
 
 int32_t TrustProfileManager::GetAccessControlProfile(const std::string& bundleName,
@@ -568,6 +591,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(const std::string& bundleNa
         HILOGE("GetAclProfileByBundleName faild");
         return ret;
     }
+    RemoveLnnAcl(profile);
     if (profile.empty()) {
         HILOGE("by bundleName bindType status not find data");
         return DP_NOT_FIND_DATA;
@@ -605,6 +629,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(const std::string& bundleNa
         HILOGE("GetAclProfileByBundleName faild");
         return ret;
     }
+    RemoveLnnAcl(profile);
     if (profile.empty()) {
         HILOGE("by bundleName trustDeviceId status not find data");
         return DP_NOT_FIND_DATA;
@@ -2170,6 +2195,45 @@ bool TrustProfileManager::CheckUserIdExists(int64_t accesserId, int64_t accessee
             return true;
         }
     }
+    return false;
+}
+
+void TrustProfileManager::RemoveLnnAcl(std::vector<AccessControlProfile>& profiles)
+{
+    std::vector<AccessControlProfile> aclProfiles(profiles);
+    profiles.clear();
+    for (auto aclProfile : aclProfiles) {
+        if (IsLnnAcl(aclProfile)) {
+            continue;
+        }
+        profiles.emplace_back(aclProfile);
+    }
+    return;
+}
+
+bool TrustProfileManager::IsLnnAcl(const AccessControlProfile& aclProfile)
+{
+    if (aclProfile.GetExtraData().empty()) {
+        return false;
+    }
+    cJSON* json = cJSON_Parse(aclProfile.GetExtraData().c_str());
+    if (!cJSON_IsObject(json)) {
+        HILOGW("cJSON_Parse extraData fail!");
+        cJSON_Delete(json);
+        return false;
+    }
+    std::string lnnAclValue;
+    cJSON* item = cJSON_GetObjectItemCaseSensitive(json, IS_LNN_ACL.c_str());
+    if (item != NULL && cJSON_IsString(item)) {
+        lnnAclValue = item->valuestring;
+    }
+    if (lnnAclValue == LNN_ACL_TRUE) {
+        item = NULL;
+        cJSON_Delete(json);
+        return true;
+    }
+    item = NULL;
+    cJSON_Delete(json);
     return false;
 }
 } // namespace DistributedDeviceProfile

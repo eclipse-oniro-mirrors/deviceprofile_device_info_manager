@@ -47,10 +47,10 @@ public:
     void SetAuthenticationType(uint32_t authenticationType);
     int32_t GetStatus() const;
     void SetStatus(int32_t status);
-    int32_t GetValidPeriod() const;
-    void SetValidPeriod(int32_t validPeriod);
-    int32_t GetLastAuthTime() const;
-    void SetLastAuthTime(int32_t lastAuthTime);
+    int64_t GetValidPeriod() const;
+    void SetValidPeriod(int64_t validPeriod);
+    int64_t GetLastAuthTime() const;
+    void SetLastAuthTime(int64_t lastAuthTime);
     Accesser GetAccesser() const;
     void SetAccesser(const Accesser &accesser);
     Accessee GetAccessee() const;
@@ -76,8 +76,8 @@ private:
     uint32_t authenticationType_;
     uint32_t bindLevel_;
     int32_t status_;
-    int32_t validPeriod_;
-    int32_t lastAuthTime_;
+    int64_t validPeriod_;
+    int64_t lastAuthTime_;
     std::string trustDeviceId_;
     uint32_t deviceIdType_;
     std::string deviceIdHash_;

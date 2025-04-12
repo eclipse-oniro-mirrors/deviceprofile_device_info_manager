@@ -46,7 +46,8 @@ public:
     int32_t UpdateAccessControlProfile(const AccessControlProfile& profile);
     int32_t GetTrustDeviceProfile(const std::string& deviceId, TrustDeviceProfile& profile);
     int32_t GetAllTrustDeviceProfile(std::vector<TrustDeviceProfile>& profile);
-    int32_t GetAllAccessControlProfile(std::vector<AccessControlProfile>& profile);
+    int32_t GetAllAccessControlProfile(std::vector<AccessControlProfile>& profiles);
+    int32_t GetAllAclIncludeLnnAcl(std::vector<AccessControlProfile>& profiles);
     int32_t GetAccessControlProfile(const std::map<std::string, std::string>& params,
         std::vector<AccessControlProfile>& profile);
     int32_t DeleteTrustDeviceProfile(const std::string& deviceId);
@@ -127,6 +128,8 @@ private:
     int32_t NotifyCheck(const AccessControlProfile& profile, const AccessControlProfile& oldProfile);
     bool CheckUserIdExists(int64_t accesserId, int64_t accesseeId, const std::string& peerDeviceId,
         int32_t peerUserId, const std::string& localDeviceId, int32_t localUserId);
+    void RemoveLnnAcl(std::vector<AccessControlProfile>& profiles);
+    bool IsLnnAcl(const AccessControlProfile& aclProfile);
 
 private:
     std::shared_ptr<IRdbAdapter> rdbStore_;

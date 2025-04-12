@@ -57,6 +57,7 @@ public:
     int32_t GetAccessControlProfile(std::map<std::string, std::string> queryParams,
         std::vector<AccessControlProfile>& accessControlProfiles) override;
     int32_t GetAllAccessControlProfile(std::vector<AccessControlProfile>& accessControlProfiles) override;
+    int32_t GetAllAclIncludeLnnAcl(std::vector<AccessControlProfile>& accessControlProfiles) override;
     int32_t DeleteAccessControlProfile(int32_t accessControlId) override;
     int32_t PutSessionKey(uint32_t userId, const std::vector<uint8_t>& sessionKey, int32_t& sessionKeyId) override;
     int32_t GetSessionKey(uint32_t userId, int32_t sessionKeyId, std::vector<uint8_t>& sessionKey) override;

@@ -85,7 +85,8 @@ enum class DPInterfaceCode : uint32_t {
     UPDATE_LOCAL_SERVICE_INFO = 67,
     GET_LOCAL_SERVICE_INFO_BY_BINDLE_AND_PINTYPE = 68,
     DELETE_LOCAL_SERVICE_INFO = 69,
-    MAX = 70
+    GET_ALL_ACL_INCLUDE_LNN_ACL = 70,
+    MAX = 71
 };
 
 enum class DeviceIdType : uint32_t {

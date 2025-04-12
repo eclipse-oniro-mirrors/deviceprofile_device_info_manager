@@ -41,6 +41,7 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
     int32_t GetAccessControlProfile(std::map<std::string, std::string> queryParams,
         std::vector<AccessControlProfile>& accessControlProfiles) override;
     int32_t GetAllAccessControlProfile(std::vector<AccessControlProfile>& accessControlProfiles) override;
+    int32_t GetAllAclIncludeLnnAcl(std::vector<AccessControlProfile>& accessControlProfiles) override;
     int32_t DeleteAccessControlProfile(int32_t accessControlId) override;
     int32_t PutSessionKey(uint32_t userId, const std::vector<uint8_t>& sessionKey, int32_t& sessionKeyId) override;
     int32_t GetSessionKey(uint32_t userId, int32_t sessionKeyId, std::vector<uint8_t>& sessionKey) override;
@@ -163,6 +164,12 @@ int32_t MockDistributedDeviceProfileStubNew::GetAccessControlProfile(std::map<st
     return 0;
 }
 int32_t MockDistributedDeviceProfileStubNew::GetAllAccessControlProfile(
+    std::vector<AccessControlProfile>& accessControlProfiles)
+{
+    (void)accessControlProfiles;
+    return 0;
+}
+int32_t MockDistributedDeviceProfileStubNew::GetAllAclIncludeLnnAcl(
     std::vector<AccessControlProfile>& accessControlProfiles)
 {
     (void)accessControlProfiles;

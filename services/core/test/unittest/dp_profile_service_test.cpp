@@ -203,6 +203,13 @@ HWTEST_F(DpProfileServiceTest, GetAllAccessControlProfile_001, TestSize.Level1)
     EXPECT_EQ(DP_PERMISSION_DENIED, ret);
 }
 
+HWTEST_F(DpProfileServiceTest, GetAllAclIncludeLnnAcl_001, TestSize.Level1)
+{
+    std::vector<AccessControlProfile> accessControlProfiles;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetAllAclIncludeLnnAcl(accessControlProfiles);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
 HWTEST_F(DpProfileServiceTest, DeleteAccessControlProfile_001, TestSize.Level1)
 {
     int32_t accessControlId = 0;

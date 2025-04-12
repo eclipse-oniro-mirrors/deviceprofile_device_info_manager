@@ -374,6 +374,18 @@ int32_t DistributedDeviceProfileServiceNew::GetAllAccessControlProfile(
     return ret;
 }
 
+int32_t DistributedDeviceProfileServiceNew::GetAllAclIncludeLnnAcl(
+    std::vector<AccessControlProfile>& accessControlProfiles)
+{
+    if (!PermissionManager::GetInstance().IsCallerTrust(GET_ALL_ACL_INCLUDE_LNN_ACL)) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    int32_t ret = TrustProfileManager::GetInstance().GetAllAclIncludeLnnAcl(accessControlProfiles);
+    DpRadarHelper::GetInstance().ReportGetAllAclProfile(ret, accessControlProfiles);
+    return ret;
+}
+
 int32_t DistributedDeviceProfileServiceNew::DeleteAccessControlProfile(int32_t accessControlId)
 {
     if (!PermissionManager::GetInstance().IsCallerTrust(DELETE_ACCESS_CONTROL_PROFILE)) {
