@@ -842,7 +842,6 @@ bool TrustProfileManager::CheckForWardByAcerAndAcee(const QueryProfile& queryPro
         return false;
     }
     if (aclProfile.GetBindType() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
-        aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::DEVICE) ||
         aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::USER)) {
         return true;
     }
@@ -868,7 +867,6 @@ bool TrustProfileManager::CheckForWardByAcer(const QueryProfile& queryProfile,
         return false;
     }
     if (aclProfile.GetBindType() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
-        aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::DEVICE) ||
         aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::USER)) {
         return true;
     }
@@ -897,7 +895,6 @@ bool TrustProfileManager::CheckReverseByAcerAndAcee(const QueryProfile& queryPro
         return false;
     }
     if (aclProfile.GetBindType() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
-        aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::DEVICE) ||
         aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::USER)) {
         return true;
     }
@@ -923,7 +920,6 @@ bool TrustProfileManager::CheckReverseByAcer(const QueryProfile& queryProfile,
         return false;
     }
     if (aclProfile.GetBindType() == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
-        aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::DEVICE) ||
         aclProfile.GetBindLevel() == static_cast<int32_t>(BindLevel::USER)) {
         return true;
     }
@@ -1024,7 +1020,6 @@ int32_t TrustProfileManager::GetAclProfileByUserIdAndBundleName(std::shared_ptr<
         resultSet->GetColumnIndex(BIND_LEVEL, columnIndex);
         resultSet->GetInt(columnIndex, bindLevel);
         if (bindType == static_cast<int32_t>(BindType::SAME_ACCOUNT) ||
-            bindLevel == static_cast<int32_t>(BindLevel::DEVICE) ||
             bindLevel == static_cast<int32_t>(BindLevel::USER)) {
             int32_t ret = this->GetAccessControlProfiles(resultSet, accesserId, accesseeId, userId, profile);
             if (ret != DP_SUCCESS) {
@@ -1113,7 +1108,6 @@ int32_t TrustProfileManager::GetAclProfileByTokenId(std::shared_ptr<ResultSet> r
         resultSet->GetColumnIndex(BIND_LEVEL, columnIndex);
         resultSet->GetInt(columnIndex, bindLevel);
         if (bindType == static_cast<int32_t> (BindType::SAME_ACCOUNT) ||
-            bindLevel == static_cast<int32_t> (BindLevel::DEVICE) ||
             bindLevel == static_cast<int32_t>(BindLevel::USER)) {
             int32_t ret = this->GetAccessControlProfilesByDeviceId(
                 resultSet, accesserId, accesseeId, trustDeviceId, profile);
@@ -1155,7 +1149,6 @@ int32_t TrustProfileManager::GetAclProfileByBundleName(std::shared_ptr<ResultSet
         resultSet->GetColumnIndex(BIND_LEVEL, columnIndex);
         resultSet->GetInt(columnIndex, bindLevel);
         if (bindType == static_cast<int32_t> (BindType::SAME_ACCOUNT) ||
-            bindLevel == static_cast<int32_t> (BindLevel::DEVICE) ||
             bindLevel == static_cast<int32_t>(BindLevel::USER)) {
             int32_t ret = this->GetAccessControlProfile(resultSet, accesserId, accesseeId, profile);
             if (ret != DP_SUCCESS) {

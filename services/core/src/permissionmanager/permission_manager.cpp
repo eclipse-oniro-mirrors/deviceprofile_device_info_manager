@@ -136,6 +136,7 @@ void PermissionManager::SetRdbPermissionMap(const cJSON *const permissionJson)
     SetPermissionMap(permissionJson, UPDATE_ACCESS_CONTROL_PROFILE);
     SetPermissionMap(permissionJson, GET_ACCESS_CONTROL_PROFILE);
     SetPermissionMap(permissionJson, GET_ALL_ACCESS_CONTROL_PROFILE);
+    SetPermissionMap(permissionJson, GET_ALL_ACL_INCLUDE_LNN_ACL);
     SetPermissionMap(permissionJson, DELETE_ACCESS_CONTROL_PROFILE);
     SetPermissionMap(permissionJson, GET_TRUST_DEVICE_PROFILE);
     SetPermissionMap(permissionJson, GET_ALL_TRUST_DEVICE_PROFILE);
