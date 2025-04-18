@@ -350,5 +350,121 @@ HWTEST_F(ProfileDataManagerTest, GetDeviceIconInfos_006, TestSize.Level1)
     int32_t result = ProfileDataManager::GetInstance().GetDeviceIconInfos(filterOptions, deviceIconInfos);
     EXPECT_EQ(result, DP_GET_RESULTSET_FAIL);
 }
+
+/*
+ * @tc.name: PutDeviceIconInfoBatch_001
+ * @tc.desc: PutDeviceIconInfoBatch
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileDataManagerTest, PutDeviceIconInfoBatch_001, TestSize.Level1)
+{
+    std::vector<DeviceIconInfo> deviceIconInfos;
+    DeviceIconInfo deviceIconInfo;
+    deviceIconInfo.SetProductId("productId");
+    deviceIconInfo.SetSubProductId("subId");
+    deviceIconInfo.SetImageType("imageType");
+    deviceIconInfo.SetSpecName("specName");
+    deviceIconInfos.emplace_back(deviceIconInfo);
+    int32_t result = ProfileDataManager::GetInstance().PutDeviceIconInfoBatch(deviceIconInfos);
+    EXPECT_EQ(result, DP_GET_RESULTSET_FAIL);
+}
+
+/*
+ * @tc.name: PutDeviceIconInfoBatch_002
+ * @tc.desc: PutDeviceIconInfoBatch
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileDataManagerTest, PutDeviceIconInfoBatch_002, TestSize.Level1)
+{
+    std::vector<DeviceIconInfo> deviceIconInfos;
+    int32_t result = ProfileDataManager::GetInstance().PutDeviceIconInfoBatch(deviceIconInfos);
+    EXPECT_EQ(result, DP_INVALID_PARAM);
+}
+
+/*
+ * @tc.name: PutDeviceIconInfo_001
+ * @tc.desc: PutDeviceIconInfo
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileDataManagerTest, PutDeviceIconInfo_001, TestSize.Level1)
+{
+    DeviceIconInfo deviceIconInfo;
+    int32_t result = ProfileDataManager::GetInstance().PutDeviceIconInfo(deviceIconInfo);
+    EXPECT_EQ(result, DP_GET_RESULTSET_FAIL);
+}
+
+/*
+ * @tc.name: PutDeviceIconInfo_002
+ * @tc.desc: PutDeviceIconInfo
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileDataManagerTest, PutDeviceIconInfo_002, TestSize.Level1)
+{
+    DeviceIconInfo deviceIconInfo;
+    deviceIconInfo.SetSubProductId("subId");
+    deviceIconInfo.SetImageType("imageType");
+    deviceIconInfo.SetSpecName("1111");
+    int32_t result = ProfileDataManager::GetInstance().PutDeviceIconInfo(deviceIconInfo);
+    EXPECT_EQ(result, DP_GET_RESULTSET_FAIL);
+}
+
+/*
+ * @tc.name: PutProductInfoBatch_001
+ * @tc.desc: PutProductInfoBatch
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileDataManagerTest, PutProductInfoBatch_001, TestSize.Level1)
+{
+    std::vector<ProductInfo> productInfos;
+    int32_t result = ProfileDataManager::GetInstance().PutProductInfoBatch(productInfos);
+    EXPECT_EQ(result, DP_INVALID_PARAM);
+}
+
+/*
+ * @tc.name: PutProductInfoBatch_002
+ * @tc.desc: PutProductInfoBatch
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileDataManagerTest, PutProductInfoBatch_002, TestSize.Level1)
+{
+    std::vector<ProductInfo> productInfos;
+    ProductInfo productInfo;
+    productInfos.emplace_back(productInfo);
+    int32_t result = ProfileDataManager::GetInstance().PutProductInfoBatch(productInfos);
+    EXPECT_EQ(result, DP_INVALID_PARAM);
+}
+
+/*
+ * @tc.name: PutProductInfo_001
+ * @tc.desc: PutProductInfo
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileDataManagerTest, PutProductInfo_001, TestSize.Level1)
+{
+    ProductInfo productInfo;
+    int32_t result = ProfileDataManager::GetInstance().PutProductInfo(productInfo);
+    EXPECT_EQ(result, DP_INVALID_PARAM);
+}
+
+/*
+ * @tc.name: PutProductInfo_002
+ * @tc.desc: PutProductInfo
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileDataManagerTest, PutProductInfo_002, TestSize.Level1)
+{
+    ProductInfo productInfo;
+    productInfo.SetProductId("111");
+    int32_t result = ProfileDataManager::GetInstance().PutProductInfo(productInfo);
+    EXPECT_EQ(result, DP_GET_RESULTSET_FAIL);
+}
 }  // namespace DistributedDeviceProfile
 }  // namespace OHOS
