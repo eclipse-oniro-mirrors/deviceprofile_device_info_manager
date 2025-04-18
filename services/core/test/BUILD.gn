@@ -467,6 +467,26 @@ ohos_unittest("local_service_info_manager_test") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("device_profile_dao_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/device_profile_dao_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("product_info_dao_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/product_info_dao_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 group("unittest") {
   testonly = true
   deps = [
@@ -479,6 +499,7 @@ group("unittest") {
     ":content_sensor_manager_test",
     ":content_sensor_manager_utils_test",
     ":content_sensor_pasteboard_info_test",
+    ":device_profile_dao_test",
     ":device_profile_locd_callback_test",
     ":device_profile_manager_new_test",
     ":distributed_device_profile_client_kv_new_test",
@@ -494,6 +515,7 @@ group("unittest") {
     ":kv_sync_completed_listener_test",
     ":local_service_info_manager_test",
     ":multi_user_manager_test",
+    ":product_info_dao_test",
     ":profile_cache_new_test",
     ":profile_control_utils_test",
     ":profile_data_manager_test",
