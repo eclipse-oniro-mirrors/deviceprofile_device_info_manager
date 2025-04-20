@@ -19,6 +19,7 @@
 #include "distributed_device_profile_constants.h"
 #include "ipc_utils.h"
 #include "macro_utils.h"
+#include "profile_utils.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -185,7 +186,7 @@ std::string DeviceIconInfo::dump() const
     cJSON_AddStringToObject(json, SPEC_NAME.c_str(), specName_.c_str());
     cJSON_AddStringToObject(json, DEVICE_ICON_VERSION.c_str(), version_.c_str());
     cJSON_AddStringToObject(json, DEVICE_ICON_WISE_VERSION.c_str(), wiseVersion_.c_str());
-    cJSON_AddStringToObject(json, DEVICE_ICON_URL.c_str(), url_.c_str());
+    cJSON_AddStringToObject(json, DEVICE_ICON_URL.c_str(), ProfileUtils::GetAnonyString(url_).c_str());
     cJSON_AddNumberToObject(json, DEVICE_ICON_SIZE.c_str(), icon_.size());
     char* jsonChars = cJSON_PrintUnformatted(json);
     cJSON_Delete(json);

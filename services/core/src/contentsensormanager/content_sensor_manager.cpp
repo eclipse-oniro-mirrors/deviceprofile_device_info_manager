@@ -125,7 +125,8 @@ int32_t ContentSensorManager::CollectInfoToProfileData(DeviceProfile& collectPro
         if (collectProfile.GetAccountId().empty()) {
             collectProfile.SetAccountId(oldDeviceProfile.GetAccountId());
         }
-        if (!oldDeviceProfile.GetDeviceName().empty()) {
+        std::string marketName = ContentSensorManagerUtils::GetInstance().ObtainMarketName();
+        if (!oldDeviceProfile.GetDeviceName().empty() && oldDeviceProfile.GetDeviceName() != marketName) {
             collectProfile.SetDeviceName(oldDeviceProfile.GetDeviceName());
         }
     }
