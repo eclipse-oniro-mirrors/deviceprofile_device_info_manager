@@ -116,7 +116,7 @@ int32_t KVAdapter::Put(const std::string& key, const std::string& value)
         DistributedKv::Key kvKey(key);
         DistributedKv::Value oldV;
         if (kvStorePtr_->Get(kvKey, oldV) == DistributedKv::Status::SUCCESS && oldV.ToString() == value) {
-            HILOGD("The key-value pair already exists. key=%{public}s,value=%{public}s",
+            HILOGI("The key-value pair already exists. key=%{public}s,value=%{public}s",
                 ProfileUtils::GetDbKeyAnonyString(key).c_str(),
                 ProfileUtils::GetAnonyString(value).c_str());
             return DP_SUCCESS;
@@ -151,7 +151,7 @@ int32_t KVAdapter::PutBatch(const std::map<std::string, std::string>& values)
         for (auto item : values) {
             kvKey = item.first;
             if (kvStorePtr_->Get(kvKey, oldV) == DistributedKv::Status::SUCCESS && oldV.ToString() == item.second) {
-                HILOGD("The key-value pair already exists. key=%{public}s,value=%{public}s",
+                HILOGI("The key-value pair already exists. key=%{public}s,value=%{public}s",
                     ProfileUtils::GetDbKeyAnonyString(item.first).c_str(),
                     ProfileUtils::GetAnonyString(item.second).c_str());
                 continue;
