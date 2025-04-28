@@ -31,6 +31,7 @@
 #include "i_sync_completed_callback.h"
 #include "characteristic_profile.h"
 #include "distributed_device_profile_client.h"
+#include "pincode_invalid_callback_stub.h"
 #include "trusted_device_info.h"
 #undef private
 #undef protected
