@@ -432,14 +432,14 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactiveInner_001, T
 HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileActive_001, TestSize.Level0)
 {
     TrustDeviceProfile profile;
-    int32_t ret = listenerStub_->OnTrustDeviceProfileActive(profile);
+    int32_t ret = listenerStub_->ProfileChangeListenerStub::OnTrustDeviceProfileActive(profile);
     EXPECT_EQ(DP_SUCCESS, ret);
 }
 
 HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactivet_001, TestSize.Level0)
 {
     TrustDeviceProfile profile;
-    int32_t ret = listenerStub_->OnTrustDeviceProfileInactive(profile);
+    int32_t ret = listenerStub_->ProfileChangeListenerStub::OnTrustDeviceProfileInactive(profile);
     EXPECT_EQ(DP_SUCCESS, ret);
 }
 
