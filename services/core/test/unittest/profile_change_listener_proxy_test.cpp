@@ -69,6 +69,8 @@ HWTEST_F(ProfileChangeListenerProxyTest, OnTrustDeviceProfile_001, TestSize.Leve
     TrustDeviceProfile oldProfile;
     TrustDeviceProfile newProfile;
     OHOS::DistributedDeviceProfile::ProfileListenerProxy proxy(nullptr);
+    proxy.OnTrustDeviceProfileActive(oldProfile);
+    proxy.OnTrustDeviceProfileInactive(oldProfile);
     int32_t ret = proxy.OnTrustDeviceProfileAdd(oldProfile);
     EXPECT_NE(ret, DP_SUCCESS);
     ret = proxy.OnTrustDeviceProfileUpdate(oldProfile, newProfile);
