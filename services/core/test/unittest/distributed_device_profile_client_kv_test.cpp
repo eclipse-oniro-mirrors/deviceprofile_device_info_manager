@@ -141,6 +141,21 @@ public:
     }
 };
 
+class PinCodeInvalidCallback : public PinCodeInvalidCallbackStub {
+public:
+    PinCodeInvalidCallback()
+    {
+    }
+    ~PinCodeInvalidCallback()
+    {
+    }
+    int32_t OnPincodeInvalid(const LocalServiceInfo& localServiceInfo)
+    {
+        (void)localServiceInfo;
+        return DP_SUCCESS;
+    }
+};
+
 /**
  * @tc.name:PutServiceProfile001
  * @tc.desc: PutServiceProfile success
