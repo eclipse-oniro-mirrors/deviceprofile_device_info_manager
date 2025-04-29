@@ -31,6 +31,7 @@
 #include "i_sync_completed_callback.h"
 #include "characteristic_profile.h"
 #include "distributed_device_profile_client.h"
+#include "pincode_invalid_callback_stub.h"
 #include "trusted_device_info.h"
 #undef private
 #undef protected
@@ -138,6 +139,21 @@ public:
     int32_t OnDpInited()
     {
         return 0;
+    }
+};
+
+class PinCodeInvalidCallback : public PinCodeInvalidCallbackStub {
+public:
+    PinCodeInvalidCallback()
+    {
+    }
+    ~PinCodeInvalidCallback()
+    {
+    }
+    int32_t OnPincodeInvalid(const LocalServiceInfo& localServiceInfo)
+    {
+        (void)localServiceInfo;
+        return DP_SUCCESS;
     }
 };
 
@@ -696,13 +712,14 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribePinCodeInvalid_001, Test
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribePinCodeInvalid_001, TestSize.Level0)
+HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribePinCodeInvalid_001, TestSize.Level1)
 {
-    std::string bundleName = "";
-    int32_t pinExchangeType = 5;
-    int32_t errCode = DistributedDeviceProfileClient::GetInstance().UnSubscribePinCodeInvalid(bundleName,
-        pinExchangeType);
-    EXPECT_EQ(errCode, DP_SUCCESS);
+    OHOS::sptr<IPincodeInvalidCallback> pincodeInvalidCb = sptr<IPincodeInvalidCallback>(new PinCodeInvalidCallback());
+    std::string bundleName = "bundleName";
+    int32_t pinExchangeType = 1;
+    DistributedDeviceProfileClient::GetInstance().pinCodeCallback_ = pincodeInvalidCb;
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().UnSubscribePinCodeInvalid(bundleName, pinExchangeType);
+    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
 }
 
 /**

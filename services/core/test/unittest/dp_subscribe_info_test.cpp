@@ -302,9 +302,9 @@ HWTEST_F(DPSubscribeInfoTest, Stub_002, TestSize.Level1)
     profile.SetPeerUserId(1001);
     profile.GetPeerUserId();
     ASSERT_NE(proxy, nullptr);
-    int32_t ret = proxy->OnTrustDeviceProfileActive(profile);
+    int32_t ret = proxy->IProfileChangeListener::OnTrustDeviceProfileActive(profile);
     EXPECT_EQ(ret, DP_SUCCESS);
-    ret = proxy->OnTrustDeviceProfileInactive(profile);
+    ret = proxy->IProfileChangeListener::OnTrustDeviceProfileInactive(profile);
     EXPECT_EQ(ret, DP_SUCCESS);
 }
 
