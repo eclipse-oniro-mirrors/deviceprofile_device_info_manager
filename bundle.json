@@ -48,7 +48,8 @@
           "init",
           "relational_store",
           "os_account",
-          "asset"
+          "asset",
+          "selinux_adapter"
         ]
       },
       "build": {
