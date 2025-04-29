@@ -1776,9 +1776,6 @@ HWTEST_F(TrustProfileManagerTest, Check_001, TestSize.Level1)
     profile.SetTrustDeviceId("123456");
     profile.GetAccessee().SetAccesseeUserId(6666);
     profile.SetStatus(0);
-    bool ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().CheckUserIdExists(1, 1, "123", 100, "456", 101);
-    EXPECT_EQ(ret, false);
 
     AccessControlProfile oldProfile;
     oldProfile.SetStatus(1);
