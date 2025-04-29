@@ -116,7 +116,7 @@ int32_t KVAdapter::Put(const std::string& key, const std::string& value)
         DistributedKv::Key kvKey(key);
         DistributedKv::Value oldV;
         if (kvStorePtr_->Get(kvKey, oldV) == DistributedKv::Status::SUCCESS && oldV.ToString() == value) {
-            HILOGD("The key-value pair already exists. key=%{public}s,value=%{public}s",
+            HILOGI("The key-value pair already exists. key=%{public}s,value=%{public}s",
                 ProfileUtils::GetDbKeyAnonyString(key).c_str(),
                 ProfileUtils::GetAnonyString(value).c_str());
             return DP_SUCCESS;
@@ -151,7 +151,7 @@ int32_t KVAdapter::PutBatch(const std::map<std::string, std::string>& values)
         for (auto item : values) {
             kvKey = item.first;
             if (kvStorePtr_->Get(kvKey, oldV) == DistributedKv::Status::SUCCESS && oldV.ToString() == item.second) {
-                HILOGD("The key-value pair already exists. key=%{public}s,value=%{public}s",
+                HILOGI("The key-value pair already exists. key=%{public}s,value=%{public}s",
                     ProfileUtils::GetDbKeyAnonyString(item.first).c_str(),
                     ProfileUtils::GetAnonyString(item.second).c_str());
                 continue;
@@ -177,6 +177,7 @@ int32_t KVAdapter::PutBatch(const std::map<std::string, std::string>& values)
 
 int32_t KVAdapter::Delete(const std::string& key)
 {
+    HILOGI("key: %{public}s", ProfileUtils::GetDbKeyAnonyString(key).c_str());
     DistributedKv::Status status;
     {
         std::lock_guard<std::mutex> lock(kvAdapterMutex_);
@@ -197,7 +198,7 @@ int32_t KVAdapter::Delete(const std::string& key)
 
 int32_t KVAdapter::Get(const std::string& key, std::string& value)
 {
-    HILOGD("key: %{public}s", ProfileUtils::GetDbKeyAnonyString(key).c_str());
+    HILOGI("key: %{public}s", ProfileUtils::GetDbKeyAnonyString(key).c_str());
     DistributedKv::Key kvKey(key);
     DistributedKv::Value kvValue;
     DistributedKv::Status status;
@@ -219,7 +220,7 @@ int32_t KVAdapter::Get(const std::string& key, std::string& value)
 
 int32_t KVAdapter::GetByPrefix(const std::string& keyPrefix, std::map<std::string, std::string>& values)
 {
-    HILOGD("key prefix: %{public}s", ProfileUtils::GetDbKeyAnonyString(keyPrefix).c_str());
+    HILOGI("key prefix: %{public}s", ProfileUtils::GetDbKeyAnonyString(keyPrefix).c_str());
     std::lock_guard<std::mutex> lock(kvAdapterMutex_);
     if (kvStorePtr_ == nullptr) {
         HILOGE("kvStoragePtr_ is null");
