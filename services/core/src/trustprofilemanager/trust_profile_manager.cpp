@@ -1984,6 +1984,7 @@ int32_t TrustProfileManager::CheckDeviceIdAndUserIdActive(const AccessControlPro
             localDeviceId == aclProfile.GetAccessee().GetAccesseeDeviceId() &&
             localUserId == aclProfile.GetAccessee().GetAccesseeUserId())) {
             resultCount++;
+            HILOGE("localUserId and peerUserId have active acl exist");
         }
     }
     return DP_SUCCESS;
@@ -2020,6 +2021,7 @@ int32_t TrustProfileManager::CheckDeviceIdAndUserIdExists(const AccessControlPro
             localDeviceId == aclProfile.GetAccessee().GetAccesseeDeviceId() &&
             localUserId == aclProfile.GetAccessee().GetAccesseeUserId())) {
             isExists = true;
+            HILOGE("localUserId and peerUserId acl exist");
             break;
         }
     }
