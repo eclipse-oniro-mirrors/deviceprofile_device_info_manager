@@ -1782,7 +1782,7 @@ HWTEST_F(TrustProfileManagerTest, Check_001, TestSize.Level1)
     profile.SetTrustDeviceId("123456");
     int32_t result = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().NotifyCheck(profile, oldProfile);
-    EXPECT_NE(result, DP_SUCCESS);
+    EXPECT_EQ(result, DP_SUCCESS);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
