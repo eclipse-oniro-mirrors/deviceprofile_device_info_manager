@@ -1964,7 +1964,11 @@ int32_t TrustProfileManager::CheckDeviceIdAndUserIdActive(const AccessControlPro
         localDeviceId = profile.GetAccesser().GetAccesserDeviceId();
     }
     std::vector<AccessControlProfile> aclProfiles;
-    GetAllAccessControlProfiles(aclProfiles);
+    int32_t ret = GetAllAccessControlProfiles(aclProfiles);
+    if (ret != DP_SUCCESS) {
+        HILOGE("GetAllAccessControlProfiles failed");
+        return ret;
+    }
     RemoveLnnAcl(aclProfiles);
     for (auto aclProfile : aclProfiles) {
         if (peerDeviceId != aclProfile.GetTrustDeviceId() ||
@@ -1997,7 +2001,11 @@ int32_t TrustProfileManager::CheckDeviceIdAndUserIdExists(const AccessControlPro
         localDeviceId = profile.GetAccesser().GetAccesserDeviceId();
     }
     std::vector<AccessControlProfile> aclProfiles;
-    GetAllAccessControlProfiles(aclProfiles);
+    int32_t ret = GetAllAccessControlProfiles(aclProfiles);
+    if (ret != DP_SUCCESS) {
+        HILOGE("GetAllAccessControlProfiles failed");
+        return ret;
+    }
     RemoveLnnAcl(aclProfiles);
     for (auto aclProfile : aclProfiles) {
         if (peerDeviceId != aclProfile.GetTrustDeviceId()) {
