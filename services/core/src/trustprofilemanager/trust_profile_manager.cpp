@@ -1893,7 +1893,7 @@ int32_t TrustProfileManager::PutAclCheck(const AccessControlProfile& profile, bo
 {
     TrustDeviceProfile trustProfile;
     ProfileUtils::ConvertToTrustDeviceProfile(profile, trustProfile);
-    if (!peerDevInfoExists) {
+    if (!peerDevInfoExists && !IsLnnAcl(profile)) {
         int32_t ret = SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileAdd(trustProfile);
         if (ret != DP_SUCCESS) {
             HILOGE("NotifyTrustDeviceProfileAdd failed");
@@ -1963,37 +1963,28 @@ int32_t TrustProfileManager::CheckDeviceIdAndUserIdActive(const AccessControlPro
         localUserId = profile.GetAccesser().GetAccesserUserId();
         localDeviceId = profile.GetAccesser().GetAccesserDeviceId();
     }
-    std::shared_ptr<ResultSet> resultSet =
-        GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_TRUSTDEVICEID_AND_STATUS,
-        std::vector<ValueObject>{ ValueObject(peerDeviceId), ValueObject(STATUS_ACTIVE) });
-    if (resultSet == nullptr) {
-        HILOGE("resultSet is nullptr");
-        return DP_GET_RESULTSET_FAIL;
+    std::vector<AccessControlProfile> aclProfiles;
+    int32_t ret = GetAllAccessControlProfiles(aclProfiles);
+    if (ret != DP_SUCCESS) {
+        HILOGE("GetAllAccessControlProfiles failed");
+        return ret;
     }
-    int32_t rowCount = ROWCOUNT_INIT;
-    resultSet->GetRowCount(rowCount);
-    if (rowCount == 0) {
-        HILOGE("peerDeviceId  : %{public}s not have acl status active",
-            ProfileUtils::GetAnonyString(peerDeviceId).c_str());
-        return DP_SUCCESS;
-    }
-    bool acerExists = false;
-    bool aceeExists = false;
-    while (resultSet->GoToNextRow() == DP_SUCCESS) {
-        int32_t columnIndex = COLUMNINDEX_INIT;
-        int64_t accesserId = ACCESSERID_INIT;
-        resultSet->GetColumnIndex(ACCESSER_ID, columnIndex);
-        resultSet->GetLong(columnIndex, accesserId);
-        int64_t accesseeId = ACCESSEEID_INIT;
-        resultSet->GetColumnIndex(ACCESSEE_ID, columnIndex);
-        resultSet->GetLong(columnIndex, accesseeId);
-        aceeExists = this->CheckUserIdExists(
-            accesserId, accesseeId, localDeviceId, localUserId, peerDeviceId, peerUserId);
-        acerExists = this->CheckUserIdExists(
-            accesserId, accesseeId, peerDeviceId, peerUserId, localDeviceId, localUserId);
-        if (acerExists || aceeExists) {
+    RemoveLnnAcl(aclProfiles);
+    for (auto aclProfile : aclProfiles) {
+        if (peerDeviceId != aclProfile.GetTrustDeviceId() ||
+            STATUS_ACTIVE != aclProfile.GetStatus()) {
+            continue;
+        }
+        if ((localDeviceId == aclProfile.GetAccesser().GetAccesserDeviceId() &&
+            localUserId == aclProfile.GetAccesser().GetAccesserUserId() &&
+            peerDeviceId == aclProfile.GetAccessee().GetAccesseeDeviceId() &&
+            peerUserId == aclProfile.GetAccessee().GetAccesseeUserId()) ||
+            (peerDeviceId == aclProfile.GetAccesser().GetAccesserDeviceId() &&
+            peerUserId == aclProfile.GetAccesser().GetAccesserUserId() &&
+            localDeviceId == aclProfile.GetAccessee().GetAccesseeDeviceId() &&
+            localUserId == aclProfile.GetAccessee().GetAccesseeUserId())) {
             resultCount++;
-            HILOGE("localUserId and peerUserId have acl status is active");
+            HILOGE("localUserId and peerUserId have active acl exist");
         }
     }
     return DP_SUCCESS;
@@ -2010,42 +2001,30 @@ int32_t TrustProfileManager::CheckDeviceIdAndUserIdExists(const AccessControlPro
         localUserId = profile.GetAccesser().GetAccesserUserId();
         localDeviceId = profile.GetAccesser().GetAccesserDeviceId();
     }
-    std::shared_ptr<ResultSet> resultSet =
-        GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_TRUSTDEVICEID,
-        std::vector<ValueObject>{ ValueObject(peerDeviceId) });
-    if (resultSet == nullptr) {
-        HILOGE("resultSet is nullptr");
-        return DP_GET_RESULTSET_FAIL;
+    std::vector<AccessControlProfile> aclProfiles;
+    int32_t ret = GetAllAccessControlProfiles(aclProfiles);
+    if (ret != DP_SUCCESS) {
+        HILOGE("GetAllAccessControlProfiles failed");
+        return ret;
     }
-    int32_t rowCount = ROWCOUNT_INIT;
-    resultSet->GetRowCount(rowCount);
-    if (rowCount == 0) {
-        HILOGE("peerDeviceId  : %{public}s not have acl",
-            ProfileUtils::GetAnonyString(peerDeviceId).c_str());
-        return DP_SUCCESS;
-    }
-    bool acerExists = false;
-    bool aceeExists = false;
-    while (resultSet->GoToNextRow() == DP_SUCCESS) {
-        int32_t columnIndex = COLUMNINDEX_INIT;
-        int64_t accesserId = ACCESSERID_INIT;
-        resultSet->GetColumnIndex(ACCESSER_ID, columnIndex);
-        resultSet->GetLong(columnIndex, accesserId);
-        int64_t accesseeId = ACCESSEEID_INIT;
-        resultSet->GetColumnIndex(ACCESSEE_ID, columnIndex);
-        resultSet->GetLong(columnIndex, accesseeId);
-        aceeExists = this->CheckUserIdExists(
-            accesserId, accesseeId, localDeviceId, localUserId, peerDeviceId, peerUserId);
-        acerExists = this->CheckUserIdExists(
-            accesserId, accesseeId, peerDeviceId, peerUserId, localDeviceId, localUserId);
-        if (acerExists || aceeExists) {
+    RemoveLnnAcl(aclProfiles);
+    for (auto aclProfile : aclProfiles) {
+        if (peerDeviceId != aclProfile.GetTrustDeviceId()) {
+            continue;
+        }
+        if ((localDeviceId == aclProfile.GetAccesser().GetAccesserDeviceId() &&
+            localUserId == aclProfile.GetAccesser().GetAccesserUserId() &&
+            peerDeviceId == aclProfile.GetAccessee().GetAccesseeDeviceId() &&
+            peerUserId == aclProfile.GetAccessee().GetAccesseeUserId()) ||
+            (peerDeviceId == aclProfile.GetAccesser().GetAccesserDeviceId() &&
+            peerUserId == aclProfile.GetAccesser().GetAccesserUserId() &&
+            localDeviceId == aclProfile.GetAccessee().GetAccesseeDeviceId() &&
+            localUserId == aclProfile.GetAccessee().GetAccesseeUserId())) {
             isExists = true;
-            resultSet->Close();
-            HILOGE("localUserId and peerUserId have acl status is active");
-            return DP_SUCCESS;
+            HILOGE("localUserId and peerUserId acl exist");
+            break;
         }
     }
-    resultSet->Close();
     return DP_SUCCESS;
 }
 
@@ -2060,14 +2039,16 @@ int32_t TrustProfileManager::NotifyCheck(const AccessControlProfile& profile, co
     HILOGI("resultCount : %{public}d", resultCount);
     TrustDeviceProfile trustProfile;
     ProfileUtils::ConvertToTrustDeviceProfile(profile, trustProfile);
-    if (resultCount == 1 && profile.GetStatus() == STATUS_ACTIVE && oldProfile.GetStatus() == STATUS_INACTIVE) {
+    if (resultCount == 1 && profile.GetStatus() == STATUS_ACTIVE &&
+        oldProfile.GetStatus() == STATUS_INACTIVE && !IsLnnAcl(profile)) {
         ret = SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileActive(trustProfile);
         if (ret != DP_SUCCESS) {
             HILOGE("NotifyTrustDeviceProfileActive failed");
             return DP_NOTIFY_TRUST_DEVICE_FAIL;
         }
     }
-    if (resultCount == 0 && profile.GetStatus() == STATUS_INACTIVE && oldProfile.GetStatus() == STATUS_ACTIVE) {
+    if (resultCount == 0 && profile.GetStatus() == STATUS_INACTIVE &&
+        oldProfile.GetStatus() == STATUS_ACTIVE && !IsLnnAcl(profile)) {
         int32_t ret = SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileInactive(trustProfile);
         if (ret != DP_SUCCESS) {
             HILOGE("NotifyTrustDeviceProfileInactive failed");
@@ -2121,7 +2102,7 @@ int32_t TrustProfileManager::DeleteTrustDeviceCheck(const AccessControlProfile& 
     ProfileUtils::ConvertToTrustDeviceProfile(profile, trustProfile);
     bool isExists = false;
     CheckDeviceIdAndUserIdExists(profile, isExists);
-    if (!isExists) {
+    if (!isExists && !IsLnnAcl(profile)) {
         int32_t ret = SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileDelete(trustProfile);
         if (ret != DP_SUCCESS) {
             HILOGE("NotifyTrustDeviceProfileDelete failed");
@@ -2156,39 +2137,6 @@ int32_t TrustProfileManager::DeleteTrustDeviceCheck(const AccessControlProfile& 
         }
     }
     return DP_SUCCESS;
-}
-
-bool TrustProfileManager::CheckUserIdExists(int64_t accesserId, int64_t accesseeId,
-    const std::string& peerDeviceId, int32_t peerUserId, const std::string& localDeviceId, int32_t localUserId)
-{
-    std::shared_ptr<ResultSet> accesserResultSet =
-        GetResultSet(SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_DEVICEID_AND_USERID,
-            std::vector<ValueObject>{ ValueObject(accesserId), ValueObject(peerDeviceId), ValueObject(peerUserId) });
-    if (accesserResultSet == nullptr) {
-        HILOGE("accesserResultSet is nullptr");
-        return false;
-    }
-    int32_t acerRowCount = ROWCOUNT_INIT;
-    accesserResultSet->GetRowCount(acerRowCount);
-    accesserResultSet->Close();
-    if (acerRowCount > 0) {
-        std::shared_ptr<ResultSet> accesseeResultSet =
-            GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_DEVICEID_AND_USERID,
-                std::vector<ValueObject>{ ValueObject(accesseeId),
-                ValueObject(localDeviceId), ValueObject(localUserId) });
-        if (accesseeResultSet == nullptr) {
-            HILOGE("accesseeResultSet is nullptr");
-            return false;
-        }
-        int32_t aceeRowCount = ROWCOUNT_INIT;
-        accesseeResultSet->GetRowCount(aceeRowCount);
-        accesseeResultSet->Close();
-        if (aceeRowCount > 0) {
-            HILOGE("localUserId and peerUserId status : 1");
-            return true;
-        }
-    }
-    return false;
 }
 
 void TrustProfileManager::RemoveLnnAcl(std::vector<AccessControlProfile>& profiles)
