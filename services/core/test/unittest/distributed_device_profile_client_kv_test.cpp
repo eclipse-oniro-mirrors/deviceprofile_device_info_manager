@@ -892,5 +892,15 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, DeleteLocalServiceInfo_001, TestS
         DeleteLocalServiceInfo(bundleName, pinExchangeType);
     EXPECT_NE(errCode, DP_SUCCESS);
 }
+
+HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribePinCodeInvalid_002, TestSize.Level1)
+{
+    OHOS::sptr<IPincodeInvalidCallback> pincodeInvalidCb = sptr<IPincodeInvalidCallback>(new PinCodeInvalidCallback());
+    std::string bundleName = "bundleName";
+    int32_t pinExchangeType = 1;
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().SubscribePinCodeInvalid(bundleName, pinExchangeType,
+        pincodeInvalidCb);
+    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
