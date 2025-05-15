@@ -828,9 +828,7 @@ bool TrustProfileManager::CheckForWardByAcerAndAcee(const QueryProfile& queryPro
 {
     if (aclProfile.GetAccesser().GetAccesserDeviceId() != queryProfile.GetAccesserDeviceId() ||
         aclProfile.GetAccessee().GetAccesseeDeviceId() != queryProfile.GetAccesseeDeviceId() ||
-        aclProfile.GetStatus() != static_cast<int32_t>(Status::ACTIVE) ||
-        aclProfile.GetAccesser().GetAccesserAccountId() != queryProfile.GetAccesserAccountId() ||
-        aclProfile.GetAccessee().GetAccesseeAccountId() != queryProfile.GetAccesseeAccountId()) {
+        aclProfile.GetStatus() != static_cast<int32_t>(Status::ACTIVE)) {
         return false;
     }
     if ((aclProfile.GetAccesser().GetAccesserUserId() != queryProfile.GetAccesserUserId() &&
@@ -841,7 +839,9 @@ bool TrustProfileManager::CheckForWardByAcerAndAcee(const QueryProfile& queryPro
         aclProfile.GetAccessee().GetAccesseeUserId() != DEFAULT_USER_ID_EXTRA)) {
         return false;
     }
-    if (aclProfile.GetBindType() == static_cast<uint32_t>(BindType::SAME_ACCOUNT) ||
+    if ((aclProfile.GetBindType() == static_cast<uint32_t>(BindType::SAME_ACCOUNT) &&
+        aclProfile.GetAccesser().GetAccesserAccountId() == queryProfile.GetAccesserAccountId() &&
+        aclProfile.GetAccessee().GetAccesseeAccountId() == queryProfile.GetAccesseeAccountId()) ||
         aclProfile.GetBindLevel() == static_cast<uint32_t>(BindLevel::USER)) {
         return true;
     }
@@ -857,8 +857,7 @@ bool TrustProfileManager::CheckForWardByAcer(const QueryProfile& queryProfile,
 {
     if (aclProfile.GetAccesser().GetAccesserDeviceId() != queryProfile.GetAccesserDeviceId() ||
         aclProfile.GetAccessee().GetAccesseeDeviceId() != queryProfile.GetAccesseeDeviceId() ||
-        aclProfile.GetStatus() != static_cast<int32_t>(Status::ACTIVE) ||
-        aclProfile.GetAccesser().GetAccesserAccountId() != queryProfile.GetAccesserAccountId()) {
+        aclProfile.GetStatus() != static_cast<int32_t>(Status::ACTIVE)) {
         return false;
     }
     if (aclProfile.GetAccesser().GetAccesserUserId() != queryProfile.GetAccesserUserId() &&
@@ -866,7 +865,8 @@ bool TrustProfileManager::CheckForWardByAcer(const QueryProfile& queryProfile,
         aclProfile.GetAccesser().GetAccesserUserId() != DEFAULT_USER_ID_EXTRA) {
         return false;
     }
-    if (aclProfile.GetBindType() == static_cast<uint32_t>(BindType::SAME_ACCOUNT) ||
+    if ((aclProfile.GetBindType() == static_cast<uint32_t>(BindType::SAME_ACCOUNT) &&
+        aclProfile.GetAccesser().GetAccesserAccountId() == queryProfile.GetAccesserAccountId()) ||
         aclProfile.GetBindLevel() == static_cast<uint32_t>(BindLevel::USER)) {
         return true;
     }
@@ -881,9 +881,7 @@ bool TrustProfileManager::CheckReverseByAcerAndAcee(const QueryProfile& queryPro
 {
     if (aclProfile.GetAccesser().GetAccesserDeviceId() != queryProfile.GetAccesseeDeviceId() ||
         aclProfile.GetAccessee().GetAccesseeDeviceId() != queryProfile.GetAccesserDeviceId() ||
-        aclProfile.GetStatus() != static_cast<int32_t>(Status::ACTIVE) ||
-        aclProfile.GetAccesser().GetAccesserAccountId() != queryProfile.GetAccesseeAccountId() ||
-        aclProfile.GetAccessee().GetAccesseeAccountId() != queryProfile.GetAccesserAccountId()) {
+        aclProfile.GetStatus() != static_cast<int32_t>(Status::ACTIVE)) {
         return false;
     }
     if ((aclProfile.GetAccesser().GetAccesserUserId() != queryProfile.GetAccesseeUserId() &&
@@ -894,7 +892,9 @@ bool TrustProfileManager::CheckReverseByAcerAndAcee(const QueryProfile& queryPro
         aclProfile.GetAccessee().GetAccesseeUserId() != DEFAULT_USER_ID_EXTRA)) {
         return false;
     }
-    if (aclProfile.GetBindType() == static_cast<uint32_t>(BindType::SAME_ACCOUNT) ||
+    if ((aclProfile.GetBindType() == static_cast<uint32_t>(BindType::SAME_ACCOUNT) &&
+        aclProfile.GetAccesser().GetAccesserAccountId() == queryProfile.GetAccesseeAccountId() &&
+        aclProfile.GetAccessee().GetAccesseeAccountId() == queryProfile.GetAccesserAccountId()) ||
         aclProfile.GetBindLevel() == static_cast<uint32_t>(BindLevel::USER)) {
         return true;
     }
@@ -910,8 +910,7 @@ bool TrustProfileManager::CheckReverseByAcer(const QueryProfile& queryProfile,
 {
     if (aclProfile.GetAccesser().GetAccesserDeviceId() != queryProfile.GetAccesseeDeviceId() ||
         aclProfile.GetAccessee().GetAccesseeDeviceId() != queryProfile.GetAccesserDeviceId() ||
-        aclProfile.GetStatus() != static_cast<int32_t>(Status::ACTIVE) ||
-        aclProfile.GetAccessee().GetAccesseeAccountId() != queryProfile.GetAccesserAccountId()) {
+        aclProfile.GetStatus() != static_cast<int32_t>(Status::ACTIVE)) {
         return false;
     }
     if (aclProfile.GetAccessee().GetAccesseeUserId() != queryProfile.GetAccesserUserId() &&
@@ -919,7 +918,8 @@ bool TrustProfileManager::CheckReverseByAcer(const QueryProfile& queryProfile,
         aclProfile.GetAccessee().GetAccesseeUserId() != DEFAULT_USER_ID_EXTRA) {
         return false;
     }
-    if (aclProfile.GetBindType() == static_cast<uint32_t>(BindType::SAME_ACCOUNT) ||
+    if ((aclProfile.GetBindType() == static_cast<uint32_t>(BindType::SAME_ACCOUNT) &&
+        aclProfile.GetAccessee().GetAccesseeAccountId() == queryProfile.GetAccesserAccountId()) ||
         aclProfile.GetBindLevel() == static_cast<uint32_t>(BindLevel::USER)) {
         return true;
     }
