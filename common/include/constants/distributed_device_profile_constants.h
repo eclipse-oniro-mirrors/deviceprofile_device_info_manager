@@ -244,6 +244,8 @@ constexpr int32_t MIN_USER_ID = 0;
 constexpr int32_t MAX_USER_ID = 100000;
 constexpr uint32_t MAX_TRUSTED_DEVICE_SIZE = 1000;
 constexpr int32_t MAX_SESSIONKEY_SIZE = 8*1024;
+constexpr int32_t COUNTER_INIT = 0;
+constexpr int32_t COUNTER_MAX = 999999;
 extern const std::string IS_MULTI_USER;
 extern const std::string SEPARATOR;
 extern const std::string SLASHES;
