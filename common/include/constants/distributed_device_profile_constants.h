@@ -285,7 +285,7 @@ constexpr int32_t DEFAULT_AUTH_TYPE = -1;
 constexpr int32_t DEFAULT_PIN_EXCHANGE_TYPE = -1;
 constexpr uint32_t NUM_1U = 1;
 constexpr uint32_t NUM_8U = 8;
-constexpr uint16_t CUR_SWITCH_LEN = 4;
+constexpr uint16_t CUR_SWITCH_LEN = 5;
 extern const std::string DP_PKG_NAME;
 extern const std::string IS_NUMSTRING_RULES;
 constexpr int32_t OHOS_TYPE = 10;
