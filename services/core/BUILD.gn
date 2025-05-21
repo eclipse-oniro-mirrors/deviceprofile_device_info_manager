@@ -60,7 +60,6 @@ ohos_shared_library("distributed_device_profile_svr") {
 
   cflags = [
     "-fPIC",
-    "-fstack-protector-strong",
     "-D_FORTIFY_SOURCE=2",
     "-O2",
   ]
