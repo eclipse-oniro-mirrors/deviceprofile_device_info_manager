@@ -180,9 +180,8 @@ enum StaticCapabilityFlag {
     CAPABILITY_FLAG_MIN = -1,
     CAPABILITY_FLAG_DMS = 0,
     CAPABILITY_FLAG_PASTE_BOARD = 1,
-    CAPABILITY_FLAG_COLLABORATION_FWK = 2,
-    CAPABILITY_FLAG_DEVICE_STATUS = 3,
-    CAPABILITY_FLAG_MAX = 4,
+    CAPABILITY_FLAG_DISTRIBUTED_FILE_DAEMON = 2,
+    CAPABILITY_FLAG_MAX = 3,
 };
 enum class SwitchFlag : int32_t {
     SWITCH_FLAG_MIN = -1,
@@ -190,19 +189,20 @@ enum class SwitchFlag : int32_t {
     SWITCH_FLAG_KEY_DISTRIBUTED_PASTEBOARD = 1,
     SWITCH_FLAG_DCSHARESWITCH = 2,
     SWITCH_FLAG_WIFI_DISPLAY_SERVICE = 3,
-    SWITCH_FLAG_MAX = 4
+    SWITCH_FLAG_DISTRIBUTED_SUPER_MANAGER = 4,
+    SWITCH_FLAG_MAX = 5
 };
 const std::unordered_map<std::string, SwitchFlag> SWITCH_SERVICE_MAP = {
     { "SwitchStatus_Key_Mouse_Edge_Crossing", SwitchFlag::SWITCH_FLAG_KEY_MOUSE_EDGE_CROSSING },
     { "SwitchStatus_Key_Distributed_Pasteboard", SwitchFlag::SWITCH_FLAG_KEY_DISTRIBUTED_PASTEBOARD },
     { "SwitchStatus_DcShareSwitch", SwitchFlag::SWITCH_FLAG_DCSHARESWITCH },
-    { "SwitchStatus_Wifi_Display_Service", SwitchFlag::SWITCH_FLAG_WIFI_DISPLAY_SERVICE }
+    { "SwitchStatus_Wifi_Display_Service", SwitchFlag::SWITCH_FLAG_WIFI_DISPLAY_SERVICE },
+    { "SwitchStatus_Distributed_Super_Manager", SwitchFlag::SWITCH_FLAG_DISTRIBUTED_SUPER_MANAGER }
 };
 const std::unordered_map<std::string, StaticCapabilityFlag> CAPABILITY_FLAG_MAP = {
     { "dmsfwk_svr_id", StaticCapabilityFlag::CAPABILITY_FLAG_DMS },
     { "pasteboardService", StaticCapabilityFlag::CAPABILITY_FLAG_PASTE_BOARD },
-    { "collaborationFwk", StaticCapabilityFlag::CAPABILITY_FLAG_COLLABORATION_FWK },
-    { "deviceStatus", StaticCapabilityFlag::CAPABILITY_FLAG_DEVICE_STATUS },
+    { "distributedfiledaemon", StaticCapabilityFlag::CAPABILITY_FLAG_DISTRIBUTED_FILE_DAEMON }
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
