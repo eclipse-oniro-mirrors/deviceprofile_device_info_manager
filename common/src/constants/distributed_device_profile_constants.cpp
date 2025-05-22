@@ -375,7 +375,7 @@ const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_DEVICE_NAME =
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SERVICE_NAME =
     "ALTER TABLE accessee_table ADD COLUMN accesseeServiceName TEXT DEFAULT ''";
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_CREDENTIAL_ID =
-    "ALTER TABLE accessee_table ADD COLUMN accesserCredentialId INTERGER DEFAULT -1";
+    "ALTER TABLE accessee_table ADD COLUMN accesseeCredentialId INTERGER DEFAULT -1";
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_CREDENTIAL_ID_STR =
     "ALTER TABLE accessee_table ADD COLUMN accesseeCredentialIdStr TEXT DEFAULT ''";
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_STATUS =
