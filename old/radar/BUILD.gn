@@ -24,7 +24,6 @@ ohos_shared_library("deviceprofileradar") {
 
   cflags = [
     "-fPIC",
-    "-fstack-protector-strong",
     "-D_FORTIFY_SOURCE=2",
     "-O2",
   ]
