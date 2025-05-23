@@ -184,6 +184,30 @@ DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(profileEv
     callback, failedEvents);
 ```
 
+### Common error codes returned by the interface
+
+|              Definition             |  Return Value  |                     Meaning                 |
+| ----------------------------------- | -------------- | ------------------------------------------- |
+| DP_SUCCESS                          | 0              |   DP success                                |
+| DP_INVALID_PARAMS                   | 98566144       |   DP invalid parameters                     |
+| DP_GET_LOCAL_UDID_FAILED            | 98566146       |   DP failed to get local UDID               |
+| DP_GET_SERVICE_FAILED               | 98566147       |   DP failed to get service                  |
+| DP_INIT_DB_FAILED                   | 98566148       |   DP failed to initialize database          |
+| DP_NOT_INIT_DB                      | 98566157       |   DP database not initialized               |
+| DP_CACHE_EXIST                      | 98566164       |   DP cache exists                           |
+| DP_PUT_KV_DB_FAIL                   | 98566197       |   DP failed to write KV database            |
+| DP_DEL_KV_DB_FAIL                   | 98566198       |   DP failed to delete KV database           |
+| DP_GET_KV_DB_FAIL                   | 98566199       |   DP failed to query KV database            |
+| DP_KV_SYNC_FAIL                     | 98566204       |   DP KV synchronization failed              |
+| DP_NOT_FIND_DATA                    | 98566221       |   DP data not found                         |
+| DP_READ_PARCEL_FAIL                 | 98566236       |   DP failed to read IPC                     |
+| DP_WRITE_PARCEL_FAIL                | 98566235       |   DP failed to write IPC                    |
+| DP_PERMISSION_DENIED                | 98566155       |   DP permission denied                      |
+| DP_PUT_TRUST_DEVICE_PROFILE_FAIL    | 98566218       |   DP failed to write trusted device profile |
+| DP_PUT_ACL_PROFILE_FAIL             | 98566170       |   DP failed to write ACL profile            |
+| DP_GET_ALL_TRUST_DEVICE_PROFILE_FAIL| 98566169       |   DP failed to get all trusted devices      |
+| DP_UPDATE_ACL_PROFILE_FAIL          | 98566171       |   DP failed to update ACL profile           |
+
 ## Repositories Involved
 
 [**deviceprofile_device_info_manager**](https://gitee.com/openharmony/deviceprofile_device_info_manager)
