@@ -188,6 +188,30 @@ DistributedDeviceProfileClient::GetInstance().UnsubscribeProfileEvents(profileEv
     callback, failedEvents);
 ```
 
+### 接口返回常用错误码
+
+|                  定义               |     返回值     |          返回值含义         |
+| ----------------------------------- | -------------- | -------------------------- |
+| DP_SUCCESS                          | 0              |   DP成功                   |
+| DP_INVALID_PARAMS                   | 98566144       |   DP无效参数                |
+| DP_GET_LOCAL_UDID_FAILED            | 98566146       |   DP获取本段UDID失败        |
+| DP_GET_SERVICE_FAILED               | 98566147       |   DP获取服务失败            |
+| DP_INIT_DB_FAILED                   | 98566148       |   DP初始化数据库失败        |
+| DP_NOT_INIT_DB                      | 98566157       |   DP没有初始化数据库        |
+| DP_CACHE_EXIST                      | 98566164       |   DP缓存存在                |
+| DP_PUT_KV_DB_FAIL                   | 98566197       |   DP写入KV数据库失败        |
+| DP_DEL_KV_DB_FAIL                   | 98566198       |   DP删除KV数据库失败        |
+| DP_GET_KV_DB_FAIL                   | 98566199       |   DP查找KV数据库失败        |
+| DP_KV_SYNC_FAIL                     | 98566204       |   DPKV同步失败              |
+| DP_NOT_FIND_DATA                    | 98566221       |   DP找不到数据              |
+| DP_READ_PARCEL_FAIL                 | 98566236       |   DP读取IPC失败             |
+| DP_WRITE_PARCEL_FAIL                | 98566235       |   DP写入IPC失败             |
+| DP_PERMISSION_DENIED                | 98566155       |   DP权限被拒绝              |
+| DP_PUT_TRUST_DEVICE_PROFILE_FAIL    | 98566218       |   DP写入可信设备配置文件失败 |
+| DP_PUT_ACL_PROFILE_FAIL             | 98566170       |   DP写入ACL配置文件失败      |
+| DP_GET_ALL_TRUST_DEVICE_PROFILE_FAIL| 98566169       |   DP获取所有可信设备失败     |
+| DP_UPDATE_ACL_PROFILE_FAIL          | 98566171       |   DP修改ACL配置文件失败      |
+
 ## 相关仓<a name="section176111311166"></a>
 
 [**deviceprofile_device_info_manager**](https://gitee.com/openharmony/deviceprofile_device_info_manager)
