@@ -51,7 +51,7 @@ int32_t TrustProfileManager::Init()
     this->CreateTable();
     this->CreateUniqueIndex();
     if (IsAcerCreIdExistToAceeTable() && AddAceeCreIdColumnToAceeTable() != DP_SUCCESS) {
-        HILOGI("acee table add aceeCreId failed");
+        HILOGE("acee table add aceeCreId failed");
         return DP_CREATE_TABLE_FAIL;
     }
     HILOGI("end!");
