@@ -30,6 +30,7 @@ namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(TrustProfileManager);
 namespace {
     const std::string TAG = "TrustProfileManager";
+    const std::string NAME = "name";
 }
 
 int32_t TrustProfileManager::Init()
@@ -49,6 +50,10 @@ int32_t TrustProfileManager::Init()
     }
     this->CreateTable();
     this->CreateUniqueIndex();
+    if (IsAcerCreIdExistToAceeTable() && AddAceeCreIdColumnToAceeTable() != DP_SUCCESS) {
+        HILOGE("acee table add aceeCreId failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
     HILOGI("end!");
     return DP_SUCCESS;
 }
@@ -2176,6 +2181,41 @@ bool TrustProfileManager::IsLnnAcl(const AccessControlProfile& aclProfile)
     item = NULL;
     cJSON_Delete(json);
     return false;
+}
+
+bool TrustProfileManager::IsAcerCreIdExistToAceeTable()
+{
+    std::shared_ptr<ResultSet> resultSet = GetResultSet(PRAGMA_ACCESSEE_TABLE, std::vector<ValueObject>{});
+    if (resultSet == nullptr) {
+        HILOGE("resultSet is nullptr");
+        return false;
+    }
+    while (resultSet->GoToNextRow() == DP_SUCCESS) {
+        int32_t columnIndex = COLUMNINDEX_INIT;
+        std::string columnName;
+        resultSet->GetColumnIndex(NAME, columnIndex);
+        resultSet->GetString(columnIndex, columnName);
+        if (columnName == ACCESSER_CREDENTIAL_ID) {
+            HILOGE("acerCreId exist to acee_table");
+            return true;
+        }
+    }
+    return false;
+}
+
+int32_t TrustProfileManager::AddAceeCreIdColumnToAceeTable()
+{
+    std::lock_guard<std::mutex> lock(rdbMutex_);
+    if (rdbStore_ == nullptr) {
+        HILOGE("rdbStore_ is nullptr");
+        return DP_GET_RDBSTORE_FAIL;
+    }
+    int32_t ret = rdbStore_->CreateTable(ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_CREDENTIAL_ID);
+    if (ret != DP_SUCCESS) {
+        HILOGE("add column accesseeCredentialId to acee table failed");
+        return DP_CREATE_TABLE_FAIL;
+    }
+    return DP_SUCCESS;
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

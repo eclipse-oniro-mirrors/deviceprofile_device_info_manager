@@ -350,6 +350,7 @@ const std::string CREATE_ACCESSEE_TABLE_UNIQUE_INDEX_SQL =
     accesseeCredentialIdStr,\
     accesseeStatus,\
     accesseeSessionKeyId);";
+const std::string PRAGMA_ACCESSEE_TABLE = "PRAGMA table_info(accessee_table)";
 const std::string DROP_OLD_UNIQUE_INDEX_ON_ACER = "DROP INDEX unique_accesser_table";
 const std::string DROP_OLD_UNIQUE_INDEX_ON_ACEE = "DROP INDEX unique_accessee_table";
 const std::string ALTER_TABLE_ACCESS_CONTROL_ADD_COLUMN_EXTRA_DATA =
@@ -375,7 +376,7 @@ const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_DEVICE_NAME =
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_SERVICE_NAME =
     "ALTER TABLE accessee_table ADD COLUMN accesseeServiceName TEXT DEFAULT ''";
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_CREDENTIAL_ID =
-    "ALTER TABLE accessee_table ADD COLUMN accesserCredentialId INTERGER DEFAULT -1";
+    "ALTER TABLE accessee_table ADD COLUMN accesseeCredentialId INTERGER DEFAULT -1";
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_CREDENTIAL_ID_STR =
     "ALTER TABLE accessee_table ADD COLUMN accesseeCredentialIdStr TEXT DEFAULT ''";
 const std::string ALTER_TABLE_ACEE_ADD_COLUMN_ACEE_STATUS =

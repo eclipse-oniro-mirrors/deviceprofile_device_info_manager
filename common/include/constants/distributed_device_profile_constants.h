@@ -339,6 +339,7 @@ extern const std::string CREATE_TURST_DEVICE_TABLE_UNIQUE_INDEX_SQL;
 extern const std::string CREATE_ACCESS_CONTROL_TABLE_UNIQUE_INDEX_SQL;
 extern const std::string CREATE_ACCESSER_TABLE_UNIQUE_INDEX_SQL;
 extern const std::string CREATE_ACCESSEE_TABLE_UNIQUE_INDEX_SQL;
+extern const std::string PRAGMA_ACCESSEE_TABLE;
 extern const std::string DROP_OLD_UNIQUE_INDEX_ON_ACER;
 extern const std::string DROP_OLD_UNIQUE_INDEX_ON_ACEE;
 extern const std::string ALTER_TABLE_ACCESS_CONTROL_ADD_COLUMN_EXTRA_DATA;

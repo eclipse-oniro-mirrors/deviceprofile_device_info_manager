@@ -128,6 +128,8 @@ private:
     int32_t NotifyCheck(const AccessControlProfile& profile, const AccessControlProfile& oldProfile);
     void RemoveLnnAcl(std::vector<AccessControlProfile>& profiles);
     bool IsLnnAcl(const AccessControlProfile& aclProfile);
+    bool IsAcerCreIdExistToAceeTable();
+    int32_t AddAceeCreIdColumnToAceeTable();
 
 private:
     std::shared_ptr<IRdbAdapter> rdbStore_;
