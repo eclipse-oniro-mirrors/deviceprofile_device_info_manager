@@ -66,6 +66,8 @@ void DistributedDeviceProfileStubNew::InitAclAndSubscribe()
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_SESSION_KEY));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::UPDATE_SESSION_KEY));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::DELETE_SESSION_KEY));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_PINCODE_INVALID));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_PINCODE_INVALID));
 }
 
 DistributedDeviceProfileStubNew::~DistributedDeviceProfileStubNew()
@@ -148,6 +150,10 @@ int32_t DistributedDeviceProfileStubNew::NotifyProfileDataEventInner(
             return PutProductInfoBatchInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::DELETE_DEVICE_PROFILE_BATCH):
             return DeleteDeviceProfileBatchInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_PINCODE_INVALID):
+            return SubscribePinCodeInvalidInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_PINCODE_INVALID):
+            return UnSubscribePinCodeInvalidInner(data, reply);
         default:
             HILOGE("unknown request code, please check, code = %{public}u", code);
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
@@ -184,10 +190,6 @@ int32_t DistributedDeviceProfileStubNew::NotifyEventInner(uint32_t code, Message
             return GetAllServiceInfoProfileListInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::GET_SERVICE_INFO_PROFILE_LIST_BY_BUNDLE_NAME):
             return GetServiceInfoProfileListByBundleNameInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_PINCODE_INVALID):
-            return SubscribePinCodeInvalidInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_PINCODE_INVALID):
-            return UnSubscribePinCodeInvalidInner(data, reply);
         default:
             return NotifyLocalServiceEventInner(code, data, reply, option);
     }
