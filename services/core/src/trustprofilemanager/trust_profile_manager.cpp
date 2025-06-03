@@ -50,7 +50,7 @@ int32_t TrustProfileManager::Init()
     }
     this->CreateTable();
     this->CreateUniqueIndex();
-    if (IsAcerCreIdExistToAceeTable() && AddAceeCreIdColumnToAceeTable() != DP_SUCCESS) {
+    if (!IsAceeCreIdExistToAceeTable() && AddAceeCreIdColumnToAceeTable() != DP_SUCCESS) {
         HILOGE("acee table add aceeCreId failed");
         return DP_CREATE_TABLE_FAIL;
     }
@@ -2183,7 +2183,7 @@ bool TrustProfileManager::IsLnnAcl(const AccessControlProfile& aclProfile)
     return false;
 }
 
-bool TrustProfileManager::IsAcerCreIdExistToAceeTable()
+bool TrustProfileManager::IsAceeCreIdExistToAceeTable()
 {
     std::shared_ptr<ResultSet> resultSet = GetResultSet(PRAGMA_ACCESSEE_TABLE, std::vector<ValueObject>{});
     if (resultSet == nullptr) {
@@ -2195,8 +2195,8 @@ bool TrustProfileManager::IsAcerCreIdExistToAceeTable()
         std::string columnName;
         resultSet->GetColumnIndex(NAME, columnIndex);
         resultSet->GetString(columnIndex, columnName);
-        if (columnName == ACCESSER_CREDENTIAL_ID) {
-            HILOGE("acerCreId exist to acee_table");
+        if (columnName == ACCESSEE_CREDENTIAL_ID) {
+            HILOGE("aceeCreId exist to acee_table");
             return true;
         }
     }
