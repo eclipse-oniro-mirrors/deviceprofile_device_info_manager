@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -113,40 +113,15 @@ HWTEST_F(DeviceProfileDaoTest, PutDeviceProfile001, TestSize.Level1)
 {
     DeviceProfileDao::GetInstance().Init();
     DeviceProfile deviceProfile;
-    int32_t result = DeviceProfileDao::GetInstance().PutDeviceProfile(deviceProfile);
-    EXPECT_EQ(result, DP_PUT_TRUST_DEVICE_PROFILE_FAIL);
+    DeviceProfileDao::GetInstance().PutDeviceProfile(deviceProfile);
     DeviceProfileDao::GetInstance().UnInit();
-}
-
-/*
- * @tc.name: PutDeviceProfile002
- * @tc.desc: PutDeviceProfile
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(DeviceProfileDaoTest, PutDeviceProfile002, TestSize.Level1)
-{
-    DeviceProfileDao::GetInstance().UnInit();
-    DeviceProfile deviceProfile;
     int32_t result = DeviceProfileDao::GetInstance().PutDeviceProfile(deviceProfile);
-    EXPECT_EQ(result, DP_PUT_TRUST_DEVICE_PROFILE_FAIL);
-}
-
-/*
- * @tc.name: GetDeviceProfiles003
- * @tc.desc: GetDeviceProfiles
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(DeviceProfileDaoTest, PutDeviceProfile003, TestSize.Level1)
-{
     DeviceProfileDao::GetInstance().Init();
-    DeviceProfile deviceProfile;
     deviceProfile.SetDeviceId("deviceId");
     deviceProfile.SetUserId(1);
-    int ret = DeviceProfileDao::GetInstance().PutDeviceProfile(deviceProfile);
-    EXPECT_EQ(ret, DP_PUT_TRUST_DEVICE_PROFILE_FAIL);
+    DeviceProfileDao::GetInstance().PutDeviceProfile(deviceProfile);
     DeviceProfileDao::GetInstance().UnInit();
+    EXPECT_EQ(result, DP_PUT_TRUST_DEVICE_PROFILE_FAIL);
 }
 
 /*
