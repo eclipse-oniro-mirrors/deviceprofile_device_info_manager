@@ -707,6 +707,22 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribePinCodeInvalid_001, Test
 }
 
 /**
+ * @tc.name: SubscribePinCodeInvalid_003
+ * @tc.desc: succeed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribePinCodeInvalid_003, TestSize.Level1)
+{
+    OHOS::sptr<IPincodeInvalidCallback> pincodeInvalidCb = sptr<IPincodeInvalidCallback>(new PinCodeInvalidCallback());
+    std::string bundleName = "bundleName";
+    int32_t pinExchangeType = 1;
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().SubscribePinCodeInvalid(bundleName, pinExchangeType,
+        pincodeInvalidCb);
+    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+}
+
+/**
  * @tc.name: UnSubscribePinCodeInvalid_001
  * @tc.desc: succeed
  * @tc.type: FUNC
