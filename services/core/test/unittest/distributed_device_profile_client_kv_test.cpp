@@ -900,7 +900,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribePinCodeInvalid_002, Test
     int32_t pinExchangeType = 1;
     int32_t ret = DistributedDeviceProfileClient::GetInstance().SubscribePinCodeInvalid(bundleName, pinExchangeType,
         pincodeInvalidCb);
-    EXPECT_NE(errCode, DP_SUCCESS);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
