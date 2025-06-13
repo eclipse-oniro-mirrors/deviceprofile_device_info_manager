@@ -310,6 +310,9 @@ extern const std::string ACCESSERID_EQUAL_CONDITION;
 extern const std::string ACCESSEEID_EQUAL_CONDITION;
 extern const std::string IS_LNN_ACL;
 extern const std::string LNN_ACL_TRUE;
+extern const std::string BUSINESS_KEY;
+extern const std::string BUSINESS_VALUE;
+
 constexpr int32_t ROWCNT_INIT = -1;
 constexpr int32_t RET_INIT = -1;
 constexpr int32_t ROWCOUNT_INIT = -1;

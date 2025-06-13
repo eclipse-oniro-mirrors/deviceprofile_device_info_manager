@@ -94,6 +94,11 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
     int32_t GetLocalServiceInfoByBundleAndPinType(const std::string& bundleName,
         int32_t pinExchangeType, LocalServiceInfo& localServiceInfo) override;
     int32_t DeleteLocalServiceInfo(const std::string& bundleName, int32_t pinExchangeType) override;
+    int32_t RegisterBusinessCallback(const std::string& saId, const std::string& businessKey,
+        sptr<IRemoteObject> businessCallback) override;
+    int32_t UnRegisterBusinessCallback(const std::string& saId, const std::string& businessKey) override;
+    int32_t PutBusinessEvent(const BusinessEvent &event) override;
+    int32_t GetBusinessEvent(BusinessEvent &event) override;
     void DelayUnloadTask() override;
     bool IsInited() override;
 };
@@ -443,6 +448,35 @@ int32_t MockDistributedDeviceProfileStubNew::DeleteLocalServiceInfo(const std::s
 {
     (void)bundleName;
     (void)pinExchangeType;
+    return 0;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::RegisterBusinessCallback(const std::string& saId,
+    const std::string& businessKey, sptr<IRemoteObject> businessCallback)
+{
+    (void)saId;
+    (void)businessKey;
+    (void)businessCallback;
+    return 0;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::UnRegisterBusinessCallback(const std::string& saId,
+    const std::string& businessKey)
+{
+    (void)saId;
+    (void)businessKey;
+    return 0;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::PutBusinessEvent(const BusinessEvent& event)
+{
+    (void)event;
+    return 0;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::GetBusinessEvent(BusinessEvent& event)
+{
+    (void)event;
     return 0;
 }
 /**
@@ -1127,6 +1161,62 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, PutAllTrustedDevicesInner_001, Tes
     MessageParcel reply;
     int32_t ret = ProfileStub_->PutAllTrustedDevicesInner(data, reply);
     EXPECT_EQ(DP_READ_PARCEL_FAIL, ret);
+}
+
+HWTEST_F(DistributedDeviceProfileStubNewTest, RegisterBusinessCallbackInner_001, TestSize.Level1)
+{
+    MessageParcel data;
+    MessageParcel reply;
+
+    data.WriteString("validSaId");
+    data.WriteString("validBusinessKey");
+    data.WriteRemoteObject(nullptr);
+
+    int32_t ret = ProfileStub_->RegisterBusinessCallbackInner(data, reply);
+    EXPECT_EQ(ret, ERR_FLATTEN_OBJECT);
+}
+
+HWTEST_F(DistributedDeviceProfileStubNewTest, UnRegisterBusinessCallbackInner_001, TestSize.Level1)
+{
+    MessageParcel data;
+    MessageParcel reply;
+
+    data.WriteString("validSaId");
+    data.WriteString("validBusinessKey");
+
+    int32_t ret = ProfileStub_->UnRegisterBusinessCallbackInner(data, reply);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_EQ(reply.ReadInt32(), DP_SUCCESS);
+}
+
+HWTEST_F(DistributedDeviceProfileStubNewTest, PutBusinessEventInner_001, TestSize.Level1)
+{
+    MessageParcel data;
+    MessageParcel reply;
+
+    BusinessEvent event;
+    event.SetBusinessKey("business_id_cast+_reject_event");
+    event.SetBusinessValue("validValue");
+    event.Marshalling(data);
+
+    int32_t ret = ProfileStub_->PutBusinessEventInner(data, reply);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_EQ(reply.ReadInt32(), DP_SUCCESS);
+}
+
+HWTEST_F(DistributedDeviceProfileStubNewTest, GetBusinessEventInner_001, TestSize.Level1)
+{
+    MessageParcel data;
+    MessageParcel reply;
+
+    BusinessEvent event;
+    event.SetBusinessKey("business_id_cast+_reject_event");
+    event.SetBusinessValue("validValue");
+    event.Marshalling(data);
+
+    int32_t ret = ProfileStub_->GetBusinessEventInner(data, reply);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_EQ(reply.ReadInt32(), DP_SUCCESS);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

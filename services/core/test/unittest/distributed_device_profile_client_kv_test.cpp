@@ -19,6 +19,7 @@
 #define protected public
 #include "gtest/gtest.h"
 #include "refbase.h"
+#include "business_callback_stub.h"
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
@@ -153,6 +154,21 @@ public:
     int32_t OnPincodeInvalid(const LocalServiceInfo& localServiceInfo)
     {
         (void)localServiceInfo;
+        return DP_SUCCESS;
+    }
+};
+
+class BusinessCallback : public BusinessCallbackStub {
+public:
+    BusinessCallback()
+    {
+    }
+    ~BusinessCallback()
+    {
+    }
+    int32_t OnBusinessEvent(const BusinessEvent &event)
+    {
+        (void)event;
         return DP_SUCCESS;
     }
 };
@@ -917,6 +933,195 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribePinCodeInvalid_002, Test
     int32_t ret = DistributedDeviceProfileClient::GetInstance().SubscribePinCodeInvalid(bundleName, pinExchangeType,
         pincodeInvalidCb);
     EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+}
+
+HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_001, TestSize.Level1)
+{
+    std::string saId = "validSaId";
+    std::string businessKey = "validBusinessKey";
+    sptr<IBusinessCallback> businessCallback = sptr<IBusinessCallback>(new BusinessCallback());
+
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().
+        RegisterBusinessCallback(saId, businessKey, businessCallback);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_002, TestSize.Level1)
+{
+    std::string saId = "";
+    std::string businessKey = "validBusinessKey";
+    sptr<IBusinessCallback> businessCallback = sptr<IBusinessCallback>(new BusinessCallback());
+
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().
+        RegisterBusinessCallback(saId, businessKey, businessCallback);
+    EXPECT_EQ(ret, DP_INVALID_PARAM);
+}
+
+HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_003, TestSize.Level1)
+{
+    std::string saId = "validSaId";
+    std::string businessKey = "";
+    sptr<IBusinessCallback> businessCallback = sptr<IBusinessCallback>(new BusinessCallback());
+
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().
+        RegisterBusinessCallback(saId, businessKey, businessCallback);
+    EXPECT_EQ(ret, DP_INVALID_PARAM);
+}
+
+HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_004, TestSize.Level1)
+{
+    std::string saId = "validSaId";
+    std::string businessKey = "validBusinessKey";
+    sptr<IBusinessCallback> businessCallback = nullptr;
+
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().
+        RegisterBusinessCallback(saId, businessKey, businessCallback);
+    EXPECT_EQ(ret, DP_INVALID_PARAM);
+}
+
+HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_005, TestSize.Level1)
+{
+    std::string saId = "validSaId";
+    std::string businessKey = "validBusinessKey";
+    sptr<IBusinessCallback> businessCallback = sptr<IBusinessCallback>(new BusinessCallback());
+
+    DistributedDeviceProfileClient::GetInstance().dpProxy_ = nullptr;
+
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().
+        RegisterBusinessCallback(saId, businessKey, businessCallback);
+    EXPECT_EQ(ret, DP_GET_SERVICE_FAILED);
+
+    DistributedDeviceProfileClient::GetInstance().dpProxy_ =
+        DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    EXPECT_NE(DistributedDeviceProfileClient::GetInstance().dpProxy_, nullptr);
+}
+
+HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_006, TestSize.Level1)
+{
+    std::string saId = "validSaId";
+    std::string businessKey = "validBusinessKey";
+    sptr<IBusinessCallback> businessCallback = sptr<IBusinessCallback>(new BusinessCallback());
+
+    sptr<IRemoteObject> innerBusinessCallback = nullptr;
+
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().
+        RegisterBusinessCallback(saId, businessKey, businessCallback);
+    EXPECT_EQ(ret, DP_INVALID_PARAM);
+}
+
+HWTEST_F(DistributedDeviceProfileClientKvTest, UnRegisterBusinessCallback_001, TestSize.Level1)
+{
+    std::string saId = "validSaId";
+    std::string businessKey = "validBusinessKey";
+    sptr<IBusinessCallback> businessCallback = sptr<IBusinessCallback>(new BusinessCallback());
+    DistributedDeviceProfileClient::GetInstance().businessCallback_ = businessCallback;
+
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().UnRegisterBusinessCallback(saId, businessKey);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+HWTEST_F(DistributedDeviceProfileClientKvTest, UnRegisterBusinessCallback_002, TestSize.Level1)
+{
+    std::string saId = "validSaId";
+    std::string businessKey = "validBusinessKey";
+    DistributedDeviceProfileClient::GetInstance().businessCallback_ = nullptr;
+
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().UnRegisterBusinessCallback(saId, businessKey);
+    EXPECT_EQ(ret, DP_SUCCESS);
+
+    sptr<IBusinessCallback> businessCallback = sptr<IBusinessCallback>(new BusinessCallback());
+    ret = DistributedDeviceProfileClient::GetInstance().RegisterBusinessCallback(saId, businessKey, businessCallback);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_NE(DistributedDeviceProfileClient::GetInstance().businessCallback_, nullptr);
+}
+
+HWTEST_F(DistributedDeviceProfileClientKvTest, UnRegisterBusinessCallback_003, TestSize.Level1)
+{
+    std::string saId = "";
+    std::string businessKey = "validBusinessKey";
+    sptr<IBusinessCallback> businessCallback = sptr<IBusinessCallback>(new BusinessCallback());
+    DistributedDeviceProfileClient::GetInstance().businessCallback_ = businessCallback;
+
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().UnRegisterBusinessCallback(saId, businessKey);
+    EXPECT_EQ(ret, DP_INVALID_PARAM);
+}
+
+HWTEST_F(DistributedDeviceProfileClientKvTest, UnRegisterBusinessCallback_004, TestSize.Level1)
+{
+    std::string saId = "validSaId";
+    std::string businessKey = "";
+    sptr<IBusinessCallback> businessCallback = sptr<IBusinessCallback>(new BusinessCallback());
+    DistributedDeviceProfileClient::GetInstance().businessCallback_ = businessCallback;
+
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().UnRegisterBusinessCallback(saId, businessKey);
+    EXPECT_EQ(ret, DP_INVALID_PARAM);
+}
+
+HWTEST_F(DistributedDeviceProfileClientKvTest, UnRegisterBusinessCallback_005, TestSize.Level1)
+{
+    std::string saId = "validSaId";
+    std::string businessKey = "validBusinessKey";
+    sptr<IBusinessCallback> businessCallback = sptr<IBusinessCallback>(new BusinessCallback());
+    DistributedDeviceProfileClient::GetInstance().businessCallback_ = businessCallback;
+
+    DistributedDeviceProfileClient::GetInstance().dpProxy_ = nullptr;
+
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().UnRegisterBusinessCallback(saId, businessKey);
+    EXPECT_EQ(ret, DP_GET_SERVICE_FAILED);
+
+    DistributedDeviceProfileClient::GetInstance().dpProxy_ =
+        DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    EXPECT_NE(DistributedDeviceProfileClient::GetInstance().dpProxy_, nullptr);
+}
+
+HWTEST_F(DistributedDeviceProfileClientKvTest, PutBusinessEvent_001, TestSize.Level1)
+{
+    DistributedDeviceProfileClient::GetInstance().dpProxy_ = nullptr;
+
+    BusinessEvent event;
+    event.SetBusinessKey("business_id_cast+_reject_event");
+    event.SetBusinessValue("validValue");
+
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().PutBusinessEvent(event);
+    EXPECT_EQ(ret, DP_GET_SERVICE_FAILED);
+
+    DistributedDeviceProfileClient::GetInstance().dpProxy_ =
+        DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    EXPECT_NE(DistributedDeviceProfileClient::GetInstance().dpProxy_, nullptr);
+}
+
+HWTEST_F(DistributedDeviceProfileClientKvTest, PutBusinessEvent_002, TestSize.Level1)
+{
+    BusinessEvent event;
+    event.SetBusinessKey("business_id_cast+_reject_event");
+    event.SetBusinessValue("validValue");
+
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().PutBusinessEvent(event);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+HWTEST_F(DistributedDeviceProfileClientKvTest, GetBusinessEvent_001, TestSize.Level1)
+{
+    DistributedDeviceProfileClient::GetInstance().dpProxy_ = nullptr;
+
+    BusinessEvent event;
+    event.SetBusinessKey("business_id_cast+_reject_event");
+
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().GetBusinessEvent(event);
+    EXPECT_EQ(ret, DP_GET_SERVICE_FAILED);
+
+    DistributedDeviceProfileClient::GetInstance().dpProxy_ =
+        DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    EXPECT_NE(DistributedDeviceProfileClient::GetInstance().dpProxy_, nullptr);
+}
+
+HWTEST_F(DistributedDeviceProfileClientKvTest, GetBusinessEvent_002, TestSize.Level1)
+{
+    BusinessEvent event;
+    event.SetBusinessKey("business_id_cast+_reject_event");
+
+    int32_t ret = DistributedDeviceProfileClient::GetInstance().GetBusinessEvent(event);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

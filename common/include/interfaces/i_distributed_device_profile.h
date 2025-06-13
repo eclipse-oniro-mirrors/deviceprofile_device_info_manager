@@ -28,6 +28,7 @@
 #include "device_profile_filter_options.h"
 #include "dp_subscribe_info.h"
 #include "dp_sync_options.h"
+#include "i_business_callback.h"
 #include "i_sync_completed_callback.h"
 #include "product_info.h"
 #include "service_info_profile.h"
@@ -104,6 +105,11 @@ public:
     virtual int32_t GetLocalServiceInfoByBundleAndPinType(const std::string& bundleName,
         int32_t pinExchangeType, LocalServiceInfo& localServiceInfo) = 0;
     virtual int32_t DeleteLocalServiceInfo(const std::string& bundleName, int32_t pinExchangeType) = 0;
+    virtual int32_t RegisterBusinessCallback(const std::string& saId, const std::string& businessKey,
+        sptr<IRemoteObject> businessCallback) = 0;
+    virtual int32_t UnRegisterBusinessCallback(const std::string& saId, const std::string& businessKey) = 0;
+    virtual int32_t PutBusinessEvent(const BusinessEvent& event) = 0;
+    virtual int32_t GetBusinessEvent(BusinessEvent& event) = 0;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

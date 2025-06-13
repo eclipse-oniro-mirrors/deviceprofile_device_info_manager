@@ -785,5 +785,68 @@ int32_t DistributedDeviceProfileProxy::DeleteLocalServiceInfo(const std::string&
         static_cast<uint32_t>(DPInterfaceCode::DELETE_LOCAL_SERVICE_INFO), data, reply);
     return DP_SUCCESS;
 }
+
+int32_t DistributedDeviceProfileProxy::RegisterBusinessCallback(const std::string& saId,
+    const std::string& businessKey, sptr<IRemoteObject> businessCallback)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    WRITE_HELPER(data, String, saId);
+    WRITE_HELPER(data, String, businessKey);
+    WRITE_HELPER(data, RemoteObject, businessCallback);
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::REGISTER_BUSINESS_CALLBACK), data, reply);
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::UnRegisterBusinessCallback(const std::string& saId,
+    const std::string& businessKey)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    WRITE_HELPER(data, String, saId);
+    WRITE_HELPER(data, String, businessKey);
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::UNREGISTER_BUSINESS_CALLBACK), data, reply);
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::PutBusinessEvent(const BusinessEvent& event)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    if (!event.Marshalling(data)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::PUT_BUSINESS_EVENT), data, reply);
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::GetBusinessEvent(BusinessEvent& event)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    if (!event.Marshalling(data)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::GET_BUSINESS_EVENT), data, reply);
+    if (!event.UnMarshalling(reply)) {
+        HILOGE("dp ipc read parcel fail");
+        return DP_READ_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
 } // namespace DeviceProfile
 } // namespace OHOS

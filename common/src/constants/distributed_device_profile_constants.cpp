@@ -241,6 +241,9 @@ const std::string ACCESSERID_EQUAL_CONDITION = "accesserId = ? ";
 const std::string ACCESSEEID_EQUAL_CONDITION = "accesseeId = ? ";
 const std::string IS_LNN_ACL = "IsLnnAcl";
 const std::string LNN_ACL_TRUE = "true";
+const std::string BUSINESS_KEY = "businessKey";
+const std::string BUSINESS_VALUE = "businessValue";
+
 const std::string CREATE_TURST_DEVICE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS trust_device_table\
 (\
     deviceId        TEXT PRIMARY KEY,\

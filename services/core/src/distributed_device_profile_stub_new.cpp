@@ -207,6 +207,14 @@ int32_t DistributedDeviceProfileStubNew::NotifyLocalServiceEventInner(uint32_t c
             return GetLocalServiceInfoByBundleAndPinTypeInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::DELETE_LOCAL_SERVICE_INFO):
             return DeleteLocalServiceInfoInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::REGISTER_BUSINESS_CALLBACK):
+            return RegisterBusinessCallbackInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::UNREGISTER_BUSINESS_CALLBACK):
+            return UnRegisterBusinessCallbackInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::PUT_BUSINESS_EVENT):
+            return PutBusinessEventInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::GET_BUSINESS_EVENT):
+            return GetBusinessEventInner(data, reply);
         default:
             HILOGW("unknown request code, please check, code = %{public}u", code);
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
@@ -1050,6 +1058,75 @@ int32_t DistributedDeviceProfileStubNew::DeleteDeviceProfileBatchInner(MessagePa
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::RegisterBusinessCallbackInner(MessageParcel& data, MessageParcel& reply)
+{
+    std::string saId = "";
+    std::string businessKey = "";
+    READ_HELPER(data, String, saId);
+    READ_HELPER(data, String, businessKey);
+    sptr<IRemoteObject> businessCallback = data.ReadRemoteObject();
+    if (businessCallback == nullptr) {
+        HILOGE("read remoteObject failed!");
+        return ERR_FLATTEN_OBJECT;
+    }
+    int32_t ret = RegisterBusinessCallback(saId, businessKey, businessCallback);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::UnRegisterBusinessCallbackInner(MessageParcel& data, MessageParcel& reply)
+{
+    std::string saId = "";
+    std::string businessKey = "";
+    READ_HELPER(data, String, saId);
+    READ_HELPER(data, String, businessKey);
+    int32_t ret = UnRegisterBusinessCallback(saId, businessKey);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::PutBusinessEventInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    BusinessEvent event;
+    if (!event.UnMarshalling(data)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = PutBusinessEvent(event);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::GetBusinessEventInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    BusinessEvent event;
+    if (!event.UnMarshalling(data)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = GetBusinessEvent(event);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    if (!event.Marshalling(reply)) {
+        HILOGE("write parcel fail!");
+        return DP_WRITE_PARCEL_FAIL;
     }
     return DP_SUCCESS;
 }
