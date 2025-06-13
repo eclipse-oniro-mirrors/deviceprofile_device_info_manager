@@ -1316,7 +1316,7 @@ int32_t DistributedDeviceProfileServiceNew::RegisterBusinessCallback(const std::
 
 int32_t DistributedDeviceProfileServiceNew::UnRegisterBusinessCallback(const std::string& saId, const std::string&
     businessKey)
-{ 
+{
     if (!PermissionManager::GetInstance().CheckCallerPermission()) {
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
