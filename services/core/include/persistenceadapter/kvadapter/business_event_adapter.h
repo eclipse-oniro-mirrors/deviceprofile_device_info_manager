@@ -30,7 +30,7 @@
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
-class BusinessEventAdapter : public DistributedDeviceProfile::IKVAdapter{
+class BusinessEventAdapter : public DistributedDeviceProfile::IKVAdapter {
 public:
     BusinessEventAdapter(
         const std::shared_ptr<DistributedKv::KvStoreDeathRecipient> &deathListener, DistributedKv::DataType dataType);

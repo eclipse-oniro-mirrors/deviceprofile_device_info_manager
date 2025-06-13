@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
- #ifndef BUSINESS_EVENT_MANAGER_FUZZER_H
- #define BUSINESS_EVENT_MANAGER_FUZZER_H
+#ifndef BUSINESS_EVENT_MANAGER_FUZZER_H
+#define BUSINESS_EVENT_MANAGER_FUZZER_H
  
- #define FUZZ_PROJECT_NAME "business_event_manager_fuzzer"
+#define FUZZ_PROJECT_NAME "business_event_manager_fuzzer"
  
- #endif
+#endif
