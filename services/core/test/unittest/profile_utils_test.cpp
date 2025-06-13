@@ -1650,7 +1650,7 @@ HWTEST_F(ProfileUtilsTest, LogCounter001, TestSize.Level1)
 {
     int32_t counter = LogUtils::LogCounter();
     EXPECT_GE(counter, COUNTER_INIT);
-    for(int32_t i = 0; i < COUNTER_MAX; i++) {
+    for (int32_t i = 0; i < COUNTER_MAX; i++) {
         LogUtils::LogCounter();
     }
     counter = LogUtils::LogCounter();
