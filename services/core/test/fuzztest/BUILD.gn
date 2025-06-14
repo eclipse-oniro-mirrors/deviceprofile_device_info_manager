@@ -18,5 +18,6 @@ group("fuzztest") {
     "newdeviceprofile_fuzzer:fuzztest",
     "profileutils_fuzzer:fuzztest",
     "trustprofilemanager_fuzzer:fuzztest",
+    "businesseventmanager_fuzzer:fuzztest",
   ]
 }

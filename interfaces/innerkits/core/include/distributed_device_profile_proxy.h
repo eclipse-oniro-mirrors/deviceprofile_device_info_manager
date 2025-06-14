@@ -28,6 +28,7 @@
 #include "refbase.h"
 #include "distributed_device_profile_enums.h"
 #include "distributed_device_profile_errors.h"
+#include "i_business_callback.h"
 #include "ipc_utils.h"
 #include "profile_change_listener_stub.h"
 
@@ -98,6 +99,11 @@ public:
     int32_t GetLocalServiceInfoByBundleAndPinType(const std::string& bundleName,
         int32_t pinExchangeType, LocalServiceInfo& localServiceInfo) override;
     int32_t DeleteLocalServiceInfo(const std::string& bundleName, int32_t pinExchangeType) override;
+    int32_t RegisterBusinessCallback(const std::string& saId, const std::string& businessKey,
+        sptr<IRemoteObject> businessCallback) override;
+    int32_t UnRegisterBusinessCallback(const std::string& saId, const std::string& businessKey) override;
+    int32_t PutBusinessEvent(const BusinessEvent& event) override;
+    int32_t GetBusinessEvent(BusinessEvent& event) override;
 
 private:
     static inline BrokerDelegator<DistributedDeviceProfileProxy> delegator_;

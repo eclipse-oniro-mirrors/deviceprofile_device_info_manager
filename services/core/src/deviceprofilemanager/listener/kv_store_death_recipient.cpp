@@ -28,6 +28,7 @@ namespace {
     const std::string REINIT_TASK = "reInitTask";
     const std::string DYNAMIC_STORE_ID = "dp_kv_store";
     const std::string STATIC_STORE_ID = "dp_kv_static_store";
+    const std::string BUSINESS_STORE_ID = "dp_kv_store_business";
 }
 
 KvDeathRecipient::KvDeathRecipient(const std::string& storeId)
@@ -64,6 +65,9 @@ void KvDeathRecipient::OnRemoteDied()
         }
         if (storeId == STATIC_STORE_ID) {
             StaticProfileManager::GetInstance().ReInit();
+        }
+        if (storeId == BUSINESS_STORE_ID) {
+            DeviceProfileManager::GetInstance().ReInit();
         }
     };
     {

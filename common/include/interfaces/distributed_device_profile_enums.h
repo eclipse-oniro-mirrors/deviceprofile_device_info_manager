@@ -16,6 +16,7 @@
 #ifndef OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_ENUMS_H
 #define OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_ENUMS_H
 
+#include <string>
 #include <unordered_map>
 
 namespace OHOS {
@@ -86,7 +87,12 @@ enum class DPInterfaceCode : uint32_t {
     GET_LOCAL_SERVICE_INFO_BY_BINDLE_AND_PINTYPE = 68,
     DELETE_LOCAL_SERVICE_INFO = 69,
     GET_ALL_ACL_INCLUDE_LNN_ACL = 70,
-    MAX = 71
+    ON_BUSINESS_EVENT = 71,
+    REGISTER_BUSINESS_CALLBACK = 72,
+    UNREGISTER_BUSINESS_CALLBACK = 73,
+    PUT_BUSINESS_EVENT = 74,
+    GET_BUSINESS_EVENT = 75,
+    MAX = 76
 };
 
 enum class DeviceIdType : uint32_t {

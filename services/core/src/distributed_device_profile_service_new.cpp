@@ -24,6 +24,7 @@
 #include "iservice_registry.h"
 #include "sa_profiles.h"
 
+#include "business_event_manager.h"
 #include "common_event_support.h"
 #include "content_sensor_manager.h"
 #include "device_profile_dumper.h"
@@ -150,6 +151,10 @@ int32_t DistributedDeviceProfileServiceNew::PostInitNext()
         HILOGE("ContentSensorManager init failed");
         return DP_CONTENT_SENSOR_MANAGER_INIT_FAIL;
     }
+    if (BusinessEventManager::GetInstance().Init() != DP_SUCCESS) {
+        HILOGE("BusinessEventManager init failed");
+        return DP_BUSINESS_EVENT_MANAGER_INIT_FAIL;
+    }
     SaveSwitchProfilesFromTempCache();
     SaveDynamicProfilesFromTempCache();
     isInited_ = true;
@@ -185,6 +190,10 @@ int32_t DistributedDeviceProfileServiceNew::UnInit()
     if (StaticProfileManager::GetInstance().UnInit() != DP_SUCCESS) {
         HILOGE("StaticProfileManager UnInit failed");
         return DP_CONTENT_SENSOR_MANAGER_UNINIT_FAIL;
+    }
+    if (BusinessEventManager::GetInstance().UnInit() != DP_SUCCESS) {
+        HILOGE("BusinessEventManager UnInit failed");
+        return DP_BUSINESS_EVENT_MANAGER_UNINIT_FAIL;
     }
     int32_t ret = UnInitNext();
     if (ret != DP_SUCCESS) {
@@ -1275,6 +1284,121 @@ int32_t DistributedDeviceProfileServiceNew::PutAllTrustedDevices(const std::vect
         return DP_PERMISSION_DENIED;
     }
     return ProfileCache::GetInstance().AddAllTrustedDevices(deviceInfos);
+}
+
+int32_t DistributedDeviceProfileServiceNew::RegisterBusinessCallback(const std::string& saId,
+    const std::string& businessKey, sptr<IRemoteObject> businessCallback)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    if (saId.empty() || businessKey.empty() || businessCallback == nullptr) {
+        HILOGE("Invalid parameters: saId or businessKey is empty, or businessCallback is nullptr");
+        return DP_INVALID_PARAM;
+    }
+
+    sptr<IBusinessCallback> callbackProxy = iface_cast<IBusinessCallback>(businessCallback);
+    if (callbackProxy == nullptr) {
+        HILOGE("Cast to IBusinessCallback failed!");
+        return DP_NULLPTR;
+    }
+    std::lock_guard<std::mutex> lock(businessEventCallbackMapMtx_);
+    if (businessCallbackMap_.find({saId, businessKey}) != businessCallbackMap_.end()) {
+        HILOGE("saId and businessKey is exist, saId : %{public}s, businessKey: %{public}s",
+            saId.c_str(), businessKey.c_str());
+        return DP_INVALID_PARAM;
+    }
+    businessCallbackMap_[std::make_pair(saId, businessKey)] = businessCallback;
+
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileServiceNew::UnRegisterBusinessCallback(const std::string& saId, const std::string&
+    businessKey)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    if (saId.empty() || businessKey.empty()) {
+        HILOGE("Invalid parameters: saId or businessKey is empty");
+        return DP_INVALID_PARAM;
+    }
+    std::lock_guard<std::mutex> lock(businessEventCallbackMapMtx_);
+    auto it = businessCallbackMap_.find(std::make_pair(saId, businessKey));
+    if (it == businessCallbackMap_.end()) {
+        HILOGE("Callback not found for saId: %{public}s, businessKey: %{public}s", saId.c_str(), businessKey.c_str());
+        return DP_INVALID_PARAM;
+    }
+    businessCallbackMap_.erase(std::make_pair(saId, businessKey));
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileServiceNew::PutBusinessEvent(const BusinessEvent& event)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    HILOGD("CheckCallerPermission success interface PutBusinessEvent");
+    int32_t ret = BusinessEventManager::GetInstance().PutBusinessEvent(event);
+    if (ret != DP_SUCCESS) {
+        HILOGE("PutBusinessEvent failed, ret: %{public}d", ret);
+        return ret;
+    }
+    ret = NotifyBusinessEvent(event);
+    if (ret != DP_SUCCESS) {
+        HILOGE("NotifyBusinessEvent failed, BusinessKey: %{public}s, ret: %{public}d",
+            event.GetBusinessKey().c_str(), ret);
+        return DP_NOTIFY_BUSINESS_EVENT_FAIL;
+    }
+    HILOGI("NotifyBusinessEvent, BusinessEvent:%{public}s", event.dump().c_str());
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileServiceNew::GetBusinessEvent(BusinessEvent& event)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    HILOGD("CheckCallerPermission success interface GetBusinessEvent");
+    return BusinessEventManager::GetInstance().GetBusinessEvent(event);
+}
+
+int32_t DistributedDeviceProfileServiceNew::NotifyBusinessEvent(const BusinessEvent& event)
+{
+    HILOGI("NotifyBusinessEvent called for BusinessKey: %{public}s, BusinessValue: %{public}s",
+        event.GetBusinessKey().c_str(), event.GetBusinessValue().c_str());
+    sptr<IBusinessCallback> callbackProxy = nullptr;
+    std::lock_guard<std::mutex> lock(businessEventCallbackMapMtx_);
+    for (const auto& [key, callback] : businessCallbackMap_) {
+        if (key.second != event.GetBusinessKey()) {
+            HILOGI("BusinessKey not find");
+            continue;
+        }
+        callbackProxy = iface_cast<IBusinessCallback>(callback);
+        if (callbackProxy == nullptr) {
+            HILOGE("Cast to IBusinessCallback failed!");
+            continue;
+        }
+        auto task = [callbackProxy, event]() {
+            if (callbackProxy == nullptr) {
+                HILOGE("OnBusinessEvent task callbackProxy is nullptr");
+                return;
+            }
+            callbackProxy->OnBusinessEvent(event);
+        };
+        auto handler = EventHandlerFactory::GetInstance().GetEventHandler();
+        HILOGI("notify");
+        if (handler == nullptr || !handler->PostTask(task)) {
+            HILOGE("Post OnBusinessEvent task failed");
+            continue;
+        }
+    }
+    HILOGI("NotifyBusinessEvent task posted successfully");
+    return DP_SUCCESS;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

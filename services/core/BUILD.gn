@@ -20,6 +20,7 @@ config("device_info_manager_config") {
   visibility += [ "./test/*" ]
   include_dirs = [
     "include",
+    "include/businesseventmanager",
     "include/contentsensormanager",
     "include/common",
     "include/data_share",
@@ -80,6 +81,7 @@ ohos_shared_library("distributed_device_profile_svr") {
 
   install_enable = true
   sources = [
+    "src/businesseventmanager/business_event_manager.cpp",
     "src/common/dp_services_constants.cpp",
     "src/contentsensormanager/collaboration_info_collector.cpp",
     "src/contentsensormanager/collector.cpp",
@@ -105,6 +107,7 @@ ohos_shared_library("distributed_device_profile_svr") {
     "src/multiusermanager/multi_user_manager.cpp",
     "src/permissionmanager/permission_manager.cpp",
     "src/persistenceadapter/assetadapter/asset_adapter.cpp",
+    "src/persistenceadapter/kvadapter/business_event_adapter.cpp",
     "src/persistenceadapter/kvadapter/kv_adapter.cpp",
     "src/persistenceadapter/kvadapter/switch_adapter.cpp",
     "src/persistenceadapter/rdbadapter/local_service_info_rdb_adapter.cpp",

@@ -113,6 +113,11 @@ public:
     void DelayUnloadTask() override;
     bool IsInited() override;
     void SubscribeAccountCommonEvent();
+    int32_t RegisterBusinessCallback(const std::string& saId, const std::string& businessKey,
+        sptr<IRemoteObject> businessCallback) override;
+    int32_t UnRegisterBusinessCallback(const std::string& saId, const std::string& businessKey) override;
+    int32_t PutBusinessEvent(const BusinessEvent& event) override;
+    int32_t GetBusinessEvent(BusinessEvent& event) override;
 
 protected:
     void OnStart(const SystemAbilityOnDemandReason& startReason) override;
@@ -130,6 +135,7 @@ private:
     int32_t SaveDynamicProfilesFromTempCache();
     int32_t NotifyDeviceProfileInited();
     int32_t NotifyPinCodeInvalid(const LocalServiceInfo& localServiceInfo);
+    int32_t NotifyBusinessEvent(const BusinessEvent& event);
     void GetDynamicProfilesFromTempCache(std::map<std::string, std::string>& entries);
     void ClearProfileCache();
     int32_t UnInitNext();
@@ -155,6 +161,8 @@ private:
         DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID,
         SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN
     };
+    std::mutex businessEventCallbackMapMtx_;
+    std::map<std::pair<std::string, std::string>, sptr<IRemoteObject>> businessCallbackMap_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

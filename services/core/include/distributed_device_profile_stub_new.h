@@ -83,6 +83,10 @@ public:
     int32_t UnSubscribePinCodeInvalidInner(MessageParcel& data, MessageParcel& reply);
     virtual void DelayUnloadTask() = 0;
     virtual bool IsInited() = 0;
+    int32_t RegisterBusinessCallbackInner(MessageParcel& data, MessageParcel& reply);
+    int32_t UnRegisterBusinessCallbackInner(MessageParcel& data, MessageParcel& reply);
+    int32_t PutBusinessEventInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetBusinessEventInner(MessageParcel& data, MessageParcel& reply);
 
 private:
     using Func = int32_t(DistributedDeviceProfileStubNew::*)(MessageParcel& data, MessageParcel& reply);

@@ -914,6 +914,7 @@ void DistributedDeviceProfileClient::SystemAbilityListener::OnAddSystemAbility(i
     DistributedDeviceProfileClient::GetInstance().StartThreadSendSubscribeInfos();
     DistributedDeviceProfileClient::GetInstance().StartThreadReSubscribePinCodeInvalid();
     DistributedDeviceProfileClient::GetInstance().ReSubscribeDeviceProfileInited();
+    DistributedDeviceProfileClient::GetInstance().StartThreadReRegisterBusinessCallback();
 }
 
 void DistributedDeviceProfileClient::ReleaseSubscribeDeviceProfileSA()
@@ -997,6 +998,139 @@ void DistributedDeviceProfileClient::ReleaseResource()
     ReleaseSubscribePinCodeInvalid();
     ReleaseSubscribeDeviceProfileInited();
     ReleaseDeathRecipient();
+    ReleaseRegisterBusinessCallback();
+}
+
+void DistributedDeviceProfileClient::StartThreadReRegisterBusinessCallback()
+{
+    HILOGI("Send Register Business Callback cache in proxy to service!");
+    std::thread(&DistributedDeviceProfileClient::ReRegisterBusinessCallback, this).detach();
+}
+
+void DistributedDeviceProfileClient::ReRegisterBusinessCallback()
+{
+    HILOGI("call");
+    std::string saId = "";
+    std::string businessKey = "";
+    sptr<IBusinessCallback> businessCallback = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(businessLock_);
+        if (businessCallback_ == nullptr) {
+            HILOGI("not use Retry Register Business Callback");
+            return;
+        }
+        saId = strSaId_;
+        businessKey = businessKey_;
+        businessCallback = businessCallback_;
+    }
+    int32_t ret = RegisterBusinessCallback(saId, businessKey, businessCallback);
+    if (ret != DP_SUCCESS) {
+        HILOGE("Retry Register Business Callback failed");
+        return;
+    }
+    HILOGI("Retry Register Business Callback succeed");
+}
+
+void DistributedDeviceProfileClient::ReleaseRegisterBusinessCallback()
+{
+    std::string saId = "";
+    std::string businessKey = "";
+    {
+        std::lock_guard<std::mutex> lock(businessLock_);
+        if (businessCallback_ == nullptr) {
+            return;
+        }
+        saId = strSaId_;
+        businessKey = businessKey_;
+    }
+
+    int32_t ret = UnRegisterBusinessCallback(saId, businessKey);
+    if (ret != DP_SUCCESS) {
+        HILOGE("unRegisterBusinessCallback failed, ret=%{public}d", ret);
+        return;
+    }
+
+    HILOGD("ReleaseRegisterBusinessCallback success");
+}
+
+int32_t DistributedDeviceProfileClient::RegisterBusinessCallback(const std::string& saId,
+    const std::string& businessKey, sptr<IBusinessCallback> businessCallback)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    if (saId.empty() || businessKey.empty() || businessCallback == nullptr) {
+        HILOGE("Invalid parameters: saId or businessKey is empty, or businessCallback is nullptr");
+        return DP_INVALID_PARAM;
+    }
+    sptr<IRemoteObject> innerBusinessCallback = businessCallback->AsObject();
+    if (innerBusinessCallback == nullptr) {
+        HILOGE("businessCallback ipc cast fail!");
+        return DP_INVALID_PARAM;
+    }
+    {
+        std::lock_guard<std::mutex> lock(businessLock_);
+        int32_t ret = dpService->RegisterBusinessCallback(saId, businessKey, innerBusinessCallback);
+        if (ret != DP_SUCCESS) {
+            HILOGE("Subscribe DP Inited failed!");
+            return ret;
+        }
+        strSaId_ = saId;
+        businessKey_ = businessKey;
+        businessCallback_ = businessCallback;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileClient::UnRegisterBusinessCallback(const std::string& saId,
+    const std::string& businessKey)
+{
+    if (businessCallback_ == nullptr) {
+        HILOGE("not subscribe pincode invalid, no need unsubscribe pincode invalid");
+        return DP_SUCCESS;
+    }
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    if (saId.empty() || businessKey.empty()) {
+        HILOGE("Invalid parameters: saId or businessKey is empty");
+        return DP_INVALID_PARAM;
+    }
+    {
+        std::lock_guard<std::mutex> lock(businessLock_);
+        int32_t ret = dpService->UnRegisterBusinessCallback(saId, businessKey);
+        if (ret != DP_SUCCESS) {
+            HILOGE("Unsubscribe DP Inited failed!");
+            businessCallback_ = nullptr;
+            return ret;
+        }
+        businessCallback_ = nullptr;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileClient::PutBusinessEvent(const BusinessEvent& event)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->PutBusinessEvent(event);
+}
+
+int32_t DistributedDeviceProfileClient::GetBusinessEvent(BusinessEvent& event)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->GetBusinessEvent(event);
 }
 } // namespace DeviceProfile
 } // namespace OHOS

@@ -34,6 +34,7 @@
 #include "single_instance.h"
 #include "dp_subscribe_info.h"
 #include "distributed_device_profile_constants.h"
+#include "i_business_callback.h"
 #include "sync_completed_callback_stub.h"
 #include "system_ability_status_change_stub.h"
 #include "profile_change_listener_stub.h"
@@ -102,6 +103,11 @@ public:
     int32_t GetLocalServiceInfoByBundleAndPinType(const std::string& bundleName,
         int32_t pinExchangeType, LocalServiceInfo& localServiceInfo);
     int32_t DeleteLocalServiceInfo(const std::string& bundleName, int32_t pinExchangeType);
+    int32_t RegisterBusinessCallback(const std::string& saId, const std::string& businessKey,
+        sptr<IBusinessCallback> businessCallback);
+    int32_t UnRegisterBusinessCallback(const std::string& saId, const std::string& businessKey);
+    int32_t PutBusinessEvent(const BusinessEvent& event);
+    int32_t GetBusinessEvent(BusinessEvent& event);
 
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
     void LoadSystemAbilityFail();
@@ -128,6 +134,9 @@ private:
     void ReleaseSubscribeDeviceProfileInited();
     void ReleaseSubscribePinCodeInvalid();
     void ReleaseDeathRecipient();
+    void ReRegisterBusinessCallback();
+    void ReleaseRegisterBusinessCallback();
+    void StartThreadReRegisterBusinessCallback();
 
     class DeviceProfileDeathRecipient : public IRemoteObject::DeathRecipient {
     public:
@@ -152,6 +161,11 @@ private:
 
     std::mutex saListenerLock_;
     sptr<SystemAbilityListener> saListenerCallback_ = nullptr;
+
+    std::mutex businessLock_;
+    sptr<IBusinessCallback> businessCallback_ = nullptr;
+    std::string strSaId_ = "";
+    std::string businessKey_ = "";
 };
 } // namespace DeviceProfile
 } // namespace OHOS
