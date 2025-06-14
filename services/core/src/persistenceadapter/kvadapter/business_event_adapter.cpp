@@ -60,7 +60,7 @@ int32_t BusinessEventAdapter::Init()
     int64_t beginTime = GetTickCount();
     while (tryTimes > 0) {
         DistributedKv::Status status = GetKvStorePtr();
-        if (status == DistributedKv::Status::SUCCESS && kvStorePtr_) {
+        if (status == DistributedKv::Status::SUCCESS && kvStorePtr_ != nullptr) {
             HILOGI("Init KvStorePtr Success");
             RegisterKvStoreDeathListener();
             isInited_.store(true);
@@ -103,7 +103,7 @@ int32_t BusinessEventAdapter::ReInit()
 int32_t BusinessEventAdapter::Put(const std::string& key, const std::string& value)
 {
     if (key.empty() || key.size() > MAX_STRING_LEN || value.empty() || value.size() > MAX_STRING_LEN) {
-        HILOGE("Param is invalid!");
+        HILOGE("Param is invalid: key or value is empty or too long");
         return DP_INVALID_PARAMS;
     }
     DistributedKv::Status status;

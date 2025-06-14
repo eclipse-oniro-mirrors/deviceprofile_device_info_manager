@@ -70,7 +70,7 @@ int32_t BusinessEventManager::UnInit()
 int32_t BusinessEventManager::PutBusinessEvent(const BusinessEvent& event)
 {
     if (event.GetBusinessKey().empty() || event.GetBusinessValue().empty()) {
-        HILOGE("Invalid parameter");
+        HILOGE("Invalid parameter: Key or Value is empty.");
         return DP_INVALID_PARAM;
     }
     if (!IsValidKey(event.GetBusinessKey())) {
