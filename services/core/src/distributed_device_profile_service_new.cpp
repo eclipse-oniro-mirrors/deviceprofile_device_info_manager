@@ -204,6 +204,20 @@ int32_t DistributedDeviceProfileServiceNew::UnInit()
     return DP_SUCCESS;
 }
 
+bool DistributedDeviceProfileServiceNew::ExitIdleState()
+{
+    if (!CancelIdle()) {
+        HILOGE("Cancel idle failed!");
+        return false;
+    }
+    return true;
+}
+
+bool DistributedDeviceProfileServiceNew::IsStopped()
+{
+    return isStopped_.load();
+}
+
 int32_t DistributedDeviceProfileServiceNew::UnInitNext()
 {
     if (ProfileCache::GetInstance().UnInit() != DP_SUCCESS) {
@@ -917,8 +931,15 @@ void DistributedDeviceProfileServiceNew::OnStart(const SystemAbilityOnDemandReas
 
 void DistributedDeviceProfileServiceNew::OnStop()
 {
+    HILOGI("call");
+    isStopped_ = true;
     int32_t ret = UnInit();
     HILOGI("UnInit ret=%{public}d", ret);
+}
+
+void DistributedDeviceProfileServiceNew::OnActive(const SystemAbilityOnDemandReason& activeReason)
+{
+    HILOGI("active reason %{public}d", activeReason.GetId());
 }
 
 int32_t DistributedDeviceProfileServiceNew::OnIdle(const SystemAbilityOnDemandReason& idleReason)
