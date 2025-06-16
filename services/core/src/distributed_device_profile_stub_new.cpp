@@ -20,9 +20,10 @@
 #include "ipc_skeleton.h"
 #include "ipc_utils.h"
 
+#include "distributed_device_profile_enums.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
-#include "distributed_device_profile_enums.h"
+#include "distributed_device_profile_service_new.h"
 #include "profile_utils.h"
 
 namespace OHOS {
@@ -225,6 +226,15 @@ int32_t DistributedDeviceProfileStubNew::OnRemoteRequest(uint32_t code, MessageP
     MessageParcel& reply, MessageOption& option)
 {
     HILOGI("code = %{public}u, CallingPid = %{public}u", code, IPCSkeleton::GetCallingPid());
+    if (DistributedDeviceProfileServiceNew::GetInstance().IsStopped()) {
+        HILOGE("dp service has stopped");
+        return DP_SERVICE_STOPPED;
+    }
+    bool exitIdleStateResult = DistributedDeviceProfileServiceNew::GetInstance().ExitIdleState();
+    if (!exitIdleStateResult) {
+        HILOGE("CancelIdle failed, ExitIdleState = %{public}d", exitIdleStateResult);
+        return DP_SERVICE_ON_IDLE;
+    }
     DelayUnloadTask();
     if (!IsInterfaceTokenValid(data)) {
         HILOGE("check interface token failed");

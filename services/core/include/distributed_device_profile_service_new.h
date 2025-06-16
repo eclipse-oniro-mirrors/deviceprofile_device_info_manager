@@ -50,6 +50,8 @@ public:
     int32_t PostInit();
     int32_t PostInitNext();
     int32_t UnInit();
+    bool ExitIdleState();
+    bool IsStopped();
     int32_t PutAccessControlProfile(const AccessControlProfile& aclProfile) override;
     int32_t UpdateAccessControlProfile(const AccessControlProfile& aclProfile) override;
     int32_t GetTrustDeviceProfile(const std::string& deviceId, TrustDeviceProfile& trustDeviceProfile) override;
@@ -122,6 +124,7 @@ public:
 protected:
     void OnStart(const SystemAbilityOnDemandReason& startReason) override;
     void OnStop() override;
+    void OnActive(const SystemAbilityOnDemandReason& activeReason) override;
     int32_t OnIdle(const SystemAbilityOnDemandReason& idleReason) override;
     void OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
 
@@ -146,6 +149,7 @@ private:
     std::shared_ptr<AppExecFwk::EventHandler> unloadHandler_;
     std::mutex unloadMutex_;
     std::atomic<bool> isInited_{false};
+    std::atomic<bool> isStopped_{false};
     std::mutex dynamicProfileMapMtx_;
     std::map<std::string, std::string> dynamicProfileMap_;
     std::mutex dpInitedCallbackMapMtx_;

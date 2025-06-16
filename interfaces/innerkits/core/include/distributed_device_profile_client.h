@@ -137,6 +137,8 @@ private:
     void ReRegisterBusinessCallback();
     void ReleaseRegisterBusinessCallback();
     void StartThreadReRegisterBusinessCallback();
+    template <typename Method, typename... Args>
+    int32_t RetryClientRequest(int32_t firesRet, Method method, Args&& ... args);
 
     class DeviceProfileDeathRecipient : public IRemoteObject::DeathRecipient {
     public:
@@ -166,6 +168,8 @@ private:
     sptr<IBusinessCallback> businessCallback_ = nullptr;
     std::string strSaId_ = "";
     std::string businessKey_ = "";
+
+    const std::set<int32_t> retryErrCodes_ = {DP_SERVICE_STOPPED, DP_LOAD_SERVICE_ERR};
 };
 } // namespace DeviceProfile
 } // namespace OHOS

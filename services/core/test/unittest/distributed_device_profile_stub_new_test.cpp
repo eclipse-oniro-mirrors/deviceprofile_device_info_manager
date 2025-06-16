@@ -26,6 +26,7 @@
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_enums.h"
+#include "distributed_device_profile_service_new.h"
 #include "distributed_device_profile_stub_new.h"
 
 namespace OHOS {
@@ -525,6 +526,23 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, OnRemoteRequest_002, TestSize.Leve
     MessageOption option;
     int32_t ret = ProfileStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(DP_INTERFACE_CHECK_FAILED, ret);
+}
+
+/**
+ * @tc.name: OnRemoteRequest003
+ * @tc.desc: OnRemoteRequest
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, OnRemoteRequest_003, TestSize.Level1)
+{
+    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::PUT_ACL_PROFILE);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    DistributedDeviceProfileServiceNew::GetInstance().isStopped_ = true;
+    int32_t ret = ProfileStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(DP_SERVICE_STOPPED, ret);
 }
 
 /**

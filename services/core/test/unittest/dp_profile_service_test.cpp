@@ -473,6 +473,8 @@ HWTEST_F(DpProfileServiceTest, SubscribeDeviceProfileInited_001, TestSize.Level1
 HWTEST_F(DpProfileServiceTest, UnSubscribeDeviceProfileInited_001, TestSize.Level1)
 {
     int32_t saId = 1000;
+    DistributedDeviceProfileServiceNew::GetInstance().ExitIdleState();
+    DistributedDeviceProfileServiceNew::GetInstance().IsStopped();
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().UnSubscribeDeviceProfileInited(saId);
     EXPECT_EQ(DP_PERMISSION_DENIED, ret);
 }
