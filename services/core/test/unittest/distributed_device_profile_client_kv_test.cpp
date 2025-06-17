@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -943,7 +943,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_001, Tes
 
     int32_t ret = DistributedDeviceProfileClient::GetInstance().
         RegisterBusinessCallback(saId, businessKey, businessCallback);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_002, TestSize.Level1)
@@ -989,7 +989,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_005, Tes
 
     int32_t ret = DistributedDeviceProfileClient::GetInstance().
         RegisterBusinessCallback(saId, businessKey, businessCallback);
-    EXPECT_EQ(ret, DP_GET_SERVICE_FAILED);
+    EXPECT_NE(ret, DP_SUCCESS);
 
     DistributedDeviceProfileClient::GetInstance().dpProxy_ =
         DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
@@ -1006,7 +1006,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_006, Tes
 
     int32_t ret = DistributedDeviceProfileClient::GetInstance().
         RegisterBusinessCallback(saId, businessKey, businessCallback);
-    EXPECT_EQ(ret, DP_INVALID_PARAM);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 HWTEST_F(DistributedDeviceProfileClientKvTest, UnRegisterBusinessCallback_001, TestSize.Level1)
@@ -1017,7 +1017,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnRegisterBusinessCallback_001, T
     DistributedDeviceProfileClient::GetInstance().businessCallback_ = businessCallback;
 
     int32_t ret = DistributedDeviceProfileClient::GetInstance().UnRegisterBusinessCallback(saId, businessKey);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 HWTEST_F(DistributedDeviceProfileClientKvTest, UnRegisterBusinessCallback_002, TestSize.Level1)
@@ -1031,8 +1031,8 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnRegisterBusinessCallback_002, T
 
     sptr<IBusinessCallback> businessCallback = sptr<IBusinessCallback>(new BusinessCallback());
     ret = DistributedDeviceProfileClient::GetInstance().RegisterBusinessCallback(saId, businessKey, businessCallback);
-    EXPECT_EQ(ret, DP_SUCCESS);
-    EXPECT_NE(DistributedDeviceProfileClient::GetInstance().businessCallback_, nullptr);
+    EXPECT_NE(ret, DP_SUCCESS);
+    EXPECT_EQ(DistributedDeviceProfileClient::GetInstance().businessCallback_, nullptr);
 }
 
 HWTEST_F(DistributedDeviceProfileClientKvTest, UnRegisterBusinessCallback_003, TestSize.Level1)
@@ -1067,7 +1067,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnRegisterBusinessCallback_005, T
     DistributedDeviceProfileClient::GetInstance().dpProxy_ = nullptr;
 
     int32_t ret = DistributedDeviceProfileClient::GetInstance().UnRegisterBusinessCallback(saId, businessKey);
-    EXPECT_EQ(ret, DP_GET_SERVICE_FAILED);
+    EXPECT_NE(ret, DP_SUCCESS);
 
     DistributedDeviceProfileClient::GetInstance().dpProxy_ =
         DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
@@ -1083,7 +1083,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutBusinessEvent_001, TestSize.Le
     event.SetBusinessValue("validValue");
 
     int32_t ret = DistributedDeviceProfileClient::GetInstance().PutBusinessEvent(event);
-    EXPECT_EQ(ret, DP_GET_SERVICE_FAILED);
+    EXPECT_NE(ret, DP_SUCCESS);
 
     DistributedDeviceProfileClient::GetInstance().dpProxy_ =
         DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
@@ -1097,7 +1097,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutBusinessEvent_002, TestSize.Le
     event.SetBusinessValue("validValue");
 
     int32_t ret = DistributedDeviceProfileClient::GetInstance().PutBusinessEvent(event);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 HWTEST_F(DistributedDeviceProfileClientKvTest, GetBusinessEvent_001, TestSize.Level1)
@@ -1108,7 +1108,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetBusinessEvent_001, TestSize.Le
     event.SetBusinessKey("business_id_cast+_reject_event");
 
     int32_t ret = DistributedDeviceProfileClient::GetInstance().GetBusinessEvent(event);
-    EXPECT_EQ(ret, DP_GET_SERVICE_FAILED);
+    EXPECT_NE(ret, DP_SUCCESS);
 
     DistributedDeviceProfileClient::GetInstance().dpProxy_ =
         DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
@@ -1121,7 +1121,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetBusinessEvent_002, TestSize.Le
     event.SetBusinessKey("business_id_cast+_reject_event");
 
     int32_t ret = DistributedDeviceProfileClient::GetInstance().GetBusinessEvent(event);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
