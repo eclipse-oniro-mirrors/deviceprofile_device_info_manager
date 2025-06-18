@@ -28,7 +28,7 @@ device_profile_deps = [
 ]
 
 ##############################fuzztest##########################################
-ohos_fuzztest("BusinessEventMangerFuzzTest") {
+ohos_fuzztest("BusinessEventManagerFuzzTest") {
   module_out_path = module_output_path
 
   fuzz_config_file =
@@ -74,5 +74,5 @@ ohos_fuzztest("BusinessEventMangerFuzzTest") {
 group("fuzztest") {
   testonly = true
 
-  deps = [ ":BusinessEventMangerFuzzTest" ]
+  deps = [ ":BusinessEventManagerFuzzTest" ]
 }
