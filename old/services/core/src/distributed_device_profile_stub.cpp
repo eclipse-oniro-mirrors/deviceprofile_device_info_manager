@@ -759,15 +759,18 @@ int32_t DistributedDeviceProfileStub::PutSessionKeyInner(MessageParcel& data, Me
     int32_t sessionKeyId = 0;
     READ_HELPER(data, Uint32, userId);
     if (!IpcUtils::UnMarshalling(data, sessionKey)) {
+        sessionKey.clear();
         HILOGE("dp ipc write parcel fail");
         return DP_WRITE_PARCEL_FAIL;
     }
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutSessionKey(userId, sessionKey, sessionKeyId);
     if (!reply.WriteInt32(ret)) {
+        sessionKey.clear();
         HILOGE("Write reply failed");
         return DP_WRITE_PARCEL_FAIL;
     }
     WRITE_HELPER(reply, Int32, sessionKeyId);
+    sessionKey.clear();
     return DP_SUCCESS;
 }
 
@@ -781,13 +784,16 @@ int32_t DistributedDeviceProfileStub::GetSessionKeyInner(MessageParcel& data, Me
     READ_HELPER(data, Int32, sessionKeyId);
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetSessionKey(userId, sessionKeyId, sessionKey);
     if (!reply.WriteInt32(ret)) {
+        sessionKey.clear();
         HILOGE("Write reply failed");
         return DP_WRITE_PARCEL_FAIL;
     }
     if (!IpcUtils::Marshalling(reply, sessionKey)) {
+        sessionKey.clear();
         HILOGE("dp ipc write parcel fail");
         return DP_WRITE_PARCEL_FAIL;
     }
+    sessionKey.clear();
     return DP_SUCCESS;
 }
 
@@ -800,14 +806,17 @@ int32_t DistributedDeviceProfileStub::UpdateSessionKeyInner(MessageParcel& data,
     READ_HELPER(data, Uint32, userId);
     READ_HELPER(data, Int32, sessionKeyId);
     if (!IpcUtils::UnMarshalling(data, sessionKey)) {
+        sessionKey.clear();
         HILOGE("dp ipc write parcel fail");
         return DP_WRITE_PARCEL_FAIL;
     }
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().UpdateSessionKey(userId, sessionKeyId, sessionKey);
     if (!reply.WriteInt32(ret)) {
+        sessionKey.clear();
         HILOGE("Write reply failed");
         return DP_WRITE_PARCEL_FAIL;
     }
+    sessionKey.clear();
     return DP_SUCCESS;
 }
 

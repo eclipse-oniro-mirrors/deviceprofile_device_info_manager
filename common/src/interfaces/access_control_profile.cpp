@@ -260,13 +260,10 @@ std::string AccessControlProfile::dump() const
     cJSON_AddNumberToObject(json, ACCESS_CONTROL_ID.c_str(), accessControlId_);
     cJSON_AddNumberToObject(json, ACCESSER_ID.c_str(), accesserId_);
     cJSON_AddNumberToObject(json, ACCESSEE_ID.c_str(), accesseeId_);
-    cJSON_AddStringToObject(json, SESSION_KEY.c_str(), sessionKey_.c_str());
     cJSON_AddNumberToObject(json, BIND_TYPE.c_str(), bindType_);
     cJSON_AddNumberToObject(json, AUTHENTICATION_TYPE.c_str(), authenticationType_);
     cJSON_AddNumberToObject(json, BIND_LEVEL.c_str(), bindLevel_);
     cJSON_AddNumberToObject(json, STATUS.c_str(), status_);
-    cJSON_AddNumberToObject(json, VALID_PERIOD.c_str(), validPeriod_);
-    cJSON_AddNumberToObject(json, LAST_AUTH_TIME.c_str(), lastAuthTime_);
     cJSON_AddStringToObject(json, TRUST_DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(trustDeviceId_).c_str());
     cJSON_AddNumberToObject(json, DEVICE_ID_TYPE.c_str(), deviceIdType_);
     cJSON_AddStringToObject(json, DEVICE_ID_HASH.c_str(), deviceIdHash_.c_str());
