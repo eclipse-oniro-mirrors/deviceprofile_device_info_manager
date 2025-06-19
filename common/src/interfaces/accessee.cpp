@@ -266,7 +266,6 @@ std::string Accessee::dump() const
     cJSON_AddStringToObject(json, ACCESSEE_DEVICE_NAME.c_str(),
         ProfileUtils::GetAnonyString(accesseeDeviceName_).c_str());
     cJSON_AddStringToObject(json, ACCESSEE_SERVICE_NAME.c_str(), accesseeServiceName_.c_str());
-    cJSON_AddNumberToObject(json, ACCESSEE_CREDENTIAL_ID.c_str(), accesseeCredentialId_);
     cJSON_AddStringToObject(json, ACCESSEE_CREDENTIAL_ID_STR.c_str(), accesseeCredentialIdStr_.c_str());
     cJSON_AddNumberToObject(json, ACCESSEE_STATUS.c_str(), accesseeStatus_);
     cJSON_AddNumberToObject(json, ACCESSEE_SESSION_KEY_ID.c_str(), accesseeSessionKeyId_);
