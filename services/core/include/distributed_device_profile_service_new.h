@@ -114,6 +114,9 @@ public:
     int32_t Dump(int32_t fd, const std::vector<std::u16string>& args) override;
     void DelayUnloadTask() override;
     bool IsInited() override;
+    bool IsReadyIntoIdle();
+    void AddRunningIpcCount();
+    void SubtractRunningIpcCount();
     void SubscribeAccountCommonEvent();
     int32_t RegisterBusinessCallback(const std::string& saId, const std::string& businessKey,
         sptr<IRemoteObject> businessCallback) override;
@@ -150,6 +153,7 @@ private:
     std::mutex unloadMutex_;
     std::atomic<bool> isInited_{false};
     std::atomic<bool> isStopped_{false};
+    std::atomic<int32_t> runningIpcCount_{0};
     std::mutex dynamicProfileMapMtx_;
     std::map<std::string, std::string> dynamicProfileMap_;
     std::mutex dpInitedCallbackMapMtx_;
