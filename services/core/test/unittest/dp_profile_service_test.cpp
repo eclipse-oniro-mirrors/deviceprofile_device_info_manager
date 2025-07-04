@@ -528,5 +528,35 @@ HWTEST_F(DpProfileServiceTest, UnInitNext_001, TestSize.Level1)
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().UnInitNext();
     EXPECT_EQ(DP_SUCCESS, ret);
 }
+
+HWTEST_F(DpProfileServiceTest, IsReadyIntoIdle_001, TestSize.Level1)
+{
+    DistributedDeviceProfileServiceNew::GetInstance().runningIpcCount_.store(1);
+    bool ret = DistributedDeviceProfileServiceNew::GetInstance().IsReadyIntoIdle();
+    EXPECT_EQ(false, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, IsReadyIntoIdle_002, TestSize.Level1)
+{
+    DistributedDeviceProfileServiceNew::GetInstance().runningIpcCount_.store(0);
+    bool ret = DistributedDeviceProfileServiceNew::GetInstance().IsReadyIntoIdle();
+    EXPECT_EQ(true, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, AddRunningIpcCount_001, TestSize.Level1)
+{
+    DistributedDeviceProfileServiceNew::GetInstance().runningIpcCount_.store(0);
+    DistributedDeviceProfileServiceNew::GetInstance().AddRunningIpcCount();
+    bool ret = DistributedDeviceProfileServiceNew::GetInstance().IsReadyIntoIdle();
+    EXPECT_EQ(false, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, SubtractRunningIpcCount_001, TestSize.Level1)
+{
+    DistributedDeviceProfileServiceNew::GetInstance().runningIpcCount_.store(1);
+    DistributedDeviceProfileServiceNew::GetInstance().SubtractRunningIpcCount();
+    bool ret = DistributedDeviceProfileServiceNew::GetInstance().IsReadyIntoIdle();
+    EXPECT_EQ(true, ret);
+}
 }
 }

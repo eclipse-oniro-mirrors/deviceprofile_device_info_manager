@@ -54,8 +54,10 @@ namespace DistributedDeviceProfile {
 namespace {
 const std::string TAG = "DistributedDeviceProfileServiceNew";
 const std::string UNLOAD_TASK_ID = "unload_dp_svr";
+const std::string IDLE_REASON_LOW_MEMORY = "resourceschedule.memmgr.low.memory.prepare";
 constexpr int32_t DELAY_TIME = 180000;
-constexpr int32_t UNLOAD_IMMEDIATELY = 0;
+constexpr int32_t SA_READY_INTO_IDLE = 0;
+constexpr int32_t SA_REFUSE_INTO_IDLE = -1;
 constexpr int32_t WAIT_BUSINESS_PUT_TIME_S = 5;
 constexpr int32_t WRTE_CACHE_PROFILE_DELAY_TIME_US = 200 * 1000;
 constexpr int32_t WRTE_CACHE_PROFILE_RETRY_TIMES = 20;
@@ -166,6 +168,31 @@ int32_t DistributedDeviceProfileServiceNew::PostInitNext()
 bool DistributedDeviceProfileServiceNew::IsInited()
 {
     return isInited_;
+}
+
+bool DistributedDeviceProfileServiceNew::IsReadyIntoIdle()
+{
+    int32_t runningIpcCount = runningIpcCount_.load();
+    if (runningIpcCount > 0) {
+        HILOGI("ipc running, runningIpcCount=%{public}u, can't into idle!", runningIpcCount);
+        return false;
+    }
+    if (ProfileCache::GetInstance().IsDeviceOnline()) {
+        HILOGI("device online, can't into idle!");
+        return false;
+    }
+    HILOGI("ready into idle!");
+    return true;
+}
+
+void DistributedDeviceProfileServiceNew::AddRunningIpcCount()
+{
+    runningIpcCount_.fetch_add(1);
+}
+
+void DistributedDeviceProfileServiceNew::SubtractRunningIpcCount()
+{
+    runningIpcCount_.fetch_sub(1);
 }
 
 int32_t DistributedDeviceProfileServiceNew::UnInit()
@@ -944,8 +971,12 @@ void DistributedDeviceProfileServiceNew::OnActive(const SystemAbilityOnDemandRea
 
 int32_t DistributedDeviceProfileServiceNew::OnIdle(const SystemAbilityOnDemandReason& idleReason)
 {
-    HILOGI("idle reason %{public}d", idleReason.GetId());
-    return UNLOAD_IMMEDIATELY;
+    HILOGI("idleReason name=%{public}s, id=%{public}d, value=%{public}s", idleReason.GetName().c_str(),
+        idleReason.GetId(), idleReason.GetValue().c_str());
+    if (idleReason.GetName() == IDLE_REASON_LOW_MEMORY) {
+        return IsReadyIntoIdle() ? SA_READY_INTO_IDLE : SA_REFUSE_INTO_IDLE;
+    }
+    return SA_READY_INTO_IDLE;
 }
 
 void DistributedDeviceProfileServiceNew::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)

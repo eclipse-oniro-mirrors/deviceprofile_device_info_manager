@@ -235,19 +235,25 @@ int32_t DistributedDeviceProfileStubNew::OnRemoteRequest(uint32_t code, MessageP
         HILOGE("CancelIdle failed, ExitIdleState = %{public}d", exitIdleStateResult);
         return DP_SERVICE_ON_IDLE;
     }
+    DistributedDeviceProfileServiceNew::GetInstance().AddRunningIpcCount();
     DelayUnloadTask();
     if (!IsInterfaceTokenValid(data)) {
         HILOGE("check interface token failed");
+        DistributedDeviceProfileServiceNew::GetInstance().SubtractRunningIpcCount();
         return DP_INTERFACE_CHECK_FAILED;
     }
     if (aclAndSubscribeFuncs_.find(code) != aclAndSubscribeFuncs_.end()) {
-        return NotifyAclEventInner(code, data, reply, option);
+        int32_t aclRet = NotifyAclEventInner(code, data, reply, option);
+        DistributedDeviceProfileServiceNew::GetInstance().SubtractRunningIpcCount();
+        return aclRet;
     }
     if (!IsInited()) {
         HILOGE("DP not finish init");
+        DistributedDeviceProfileServiceNew::GetInstance().SubtractRunningIpcCount();
         return DP_LOAD_SERVICE_ERR;
     }
     int32_t ret = NotifyEventInner(code, data, reply, option);
+    DistributedDeviceProfileServiceNew::GetInstance().SubtractRunningIpcCount();
     return ret;
 }
 
