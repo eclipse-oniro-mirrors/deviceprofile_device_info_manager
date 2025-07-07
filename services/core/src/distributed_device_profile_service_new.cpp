@@ -91,7 +91,6 @@ int32_t DistributedDeviceProfileServiceNew::Init()
     }
     if (ProfileDataManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("ProfileDataManager init failed");
-        return DP_PROFILE_DATA_MANAGER_INIT_FAIL;
     }
     if (SubscribeProfileManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("SubscribeProfileManager init failed");
