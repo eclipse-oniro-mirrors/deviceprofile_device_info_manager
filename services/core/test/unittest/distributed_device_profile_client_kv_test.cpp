@@ -185,7 +185,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutServiceProfile001, TestSize.Le
     serviceProfile.SetDeviceId("deviceId");
     serviceProfile.SetServiceName("serviceName");
     serviceProfile.SetServiceType("serviceType");
-
+    DistributedDeviceProfileClient::GetInstance().ReleaseResource();
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutServiceProfile(serviceProfile);
     EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
