@@ -215,6 +215,7 @@ constexpr int32_t DP_GET_BUSINESS_EVENT_FAIL = 98566333;
 constexpr int32_t DP_NOTIFY_BUSINESS_EVENT_FAIL = 98566334;
 constexpr int32_t DP_SERVICE_ON_IDLE = 98566335;
 constexpr int32_t DP_SERVICE_STOPPED = 98566336;
+constexpr int32_t DP_DEVICE_UNSUPPORTED_SWITCH = 98566337;
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_ERRORS_H

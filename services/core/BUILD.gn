@@ -67,6 +67,9 @@ ohos_shared_library("distributed_device_profile_svr") {
   if (dp_os_account_part_exists) {
     cflags += [ "-DDP_OS_ACCOUNT_PART_EXISTS" ]
   }
+  if (!device_info_manager_supported_switch || device_info_manager_common) {
+    cflags += [ "-DDEVICE_PROFILE_SWITCH_DISABLE" ]
+  }
 
   cflags_cc = cflags
 

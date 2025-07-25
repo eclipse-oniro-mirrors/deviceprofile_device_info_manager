@@ -145,6 +145,7 @@ private:
     void GetDynamicProfilesFromTempCache(std::map<std::string, std::string>& entries);
     void ClearProfileCache();
     int32_t UnInitNext();
+    int32_t PutCharacteristicProfileBatchPreprocess(const std::vector<CharacteristicProfile>& charProfiles);
 
 private:
     std::mutex accountCommonEventManagerMtx_;

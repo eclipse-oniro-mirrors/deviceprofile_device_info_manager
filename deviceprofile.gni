@@ -11,12 +11,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 declare_args() {
-  device_info_manager_switch_static_disable = true
+  device_info_manager_supported_switch = true
   if (defined(global_parts_info) &&
       defined(global_parts_info.account_os_account)) {
     dp_os_account_part_exists = true
   } else {
     dp_os_account_part_exists = false
+  }
+  if (defined(global_parts_info) &&
+      defined(
+          global_parts_info.distributedhardware_distributed_hardware_adapter)) {
+    device_info_manager_common = false
+  } else {
+    device_info_manager_common = true
   }
 }
 old_device_profile_path = "//foundation/deviceprofile/device_info_manager/old"
