@@ -91,7 +91,7 @@ int32_t TrustProfileManager::PutTrustDeviceProfile(const TrustDeviceProfile& pro
         }
         ret = rdbStore_->Put(rowId, TRUST_DEVICE_TABLE, values);
         if (ret != DP_SUCCESS) {
-            HILOGE("trust_device_table insert failed");
+            HILOGE("trustdevice_table insert failed");
             return DP_PUT_TRUST_DEVICE_PROFILE_FAIL;
         }
     }
@@ -133,7 +133,7 @@ int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile&
         }
         int64_t rowId = ROWID_INIT;
         if (rdbStore_->Put(rowId, ACCESS_CONTROL_TABLE, values) != DP_SUCCESS) {
-            HILOGE("access_control_table insert failed");
+            HILOGE("accesscontrol_table insert failed");
             return DP_PUT_ACL_PROFILE_FAIL;
         }
         HILOGI("PutAclProfile : %{public}s", accessControlProfile.dump().c_str());
@@ -186,7 +186,7 @@ int32_t TrustProfileManager::UpdateTrustDeviceProfile(const TrustDeviceProfile& 
         ret = rdbStore_->Update(changeRowCnt, TRUST_DEVICE_TABLE, values, DEVICEID_EQUAL_CONDITION,
             std::vector<ValueObject>{ ValueObject(profile.GetDeviceId()) });
         if (ret != DP_SUCCESS) {
-            HILOGE("Update trust_device_table failed");
+            HILOGE("Update trustdevice_table failed");
             return DP_UPDATE_TRUST_DEVICE_PROFILE_FAIL;
         }
     }
@@ -217,7 +217,7 @@ int32_t TrustProfileManager::UpdateAccessControlProfile(const AccessControlProfi
         ret = rdbStore_->Update(changeRowCnt, ACCESS_CONTROL_TABLE, values, ACCESSCONTROLID_EQUAL_CONDITION,
             std::vector<ValueObject>{ ValueObject(profile.GetAccessControlId()) });
         if (ret != DP_SUCCESS) {
-            HILOGE("update access_control_table failed");
+            HILOGE("update accesscontrol_table failed");
             return DP_UPDATE_ACL_PROFILE_FAIL;
         }
     }
@@ -274,7 +274,7 @@ int32_t TrustProfileManager::GetAllTrustDeviceProfile(std::vector<TrustDevicePro
     int32_t rowCount = ROWCOUNT_INIT;
     resultSet->GetRowCount(rowCount);
     if (rowCount == 0) {
-        HILOGE("trust_device_table no data");
+        HILOGE("trustdevice_table no data");
         resultSet->Close();
         return DP_NOT_FIND_DATA;
     }
@@ -422,7 +422,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId,
     int32_t rowCount = ROWCOUNT_INIT;
     resultSet->GetRowCount(rowCount);
     if (rowCount == 0) {
-        HILOGE("access_control_table no data");
+        HILOGE("accesscontrol_table no data");
         resultSet->Close();
         return DP_NOT_FIND_DATA;
     }
@@ -461,7 +461,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId, std::vector
     int32_t rowCount = ROWCOUNT_INIT;
     resultSet->GetRowCount(rowCount);
     if (rowCount == 0) {
-        HILOGE("access_control_table no data");
+        HILOGE("accesscontrol_table no data");
         resultSet->Close();
         return DP_NOT_FIND_DATA;
     }
@@ -720,7 +720,7 @@ int32_t TrustProfileManager::DeleteTrustDeviceProfile(const std::string& deviceI
         int32_t ret = rdbStore_->Delete(deleteRows, TRUST_DEVICE_TABLE, DEVICEID_EQUAL_CONDITION,
             std::vector<ValueObject>{ ValueObject(deviceId) });
         if (ret != DP_SUCCESS) {
-            HILOGE("delete trust_device_table data failed");
+            HILOGE("delete trustdevice_table data failed");
             return DP_DELETE_TRUST_DEVICE_PROFILE_FAIL;
         }
     }
@@ -777,22 +777,22 @@ int32_t TrustProfileManager::CreateTable()
     }
     int32_t ret = rdbStore_->CreateTable(CREATE_TURST_DEVICE_TABLE_SQL);
     if (ret != DP_SUCCESS) {
-        HILOGE("trust_device_table create failed");
+        HILOGE("trustdevice_table create failed");
         return DP_CREATE_TABLE_FAIL;
     }
     ret = rdbStore_->CreateTable(CREATE_ACCESS_CONTROL_TABLE_SQL);
     if (ret != DP_SUCCESS) {
-        HILOGE("access_control_table create failed");
+        HILOGE("accesscontrol_table create failed");
         return DP_CREATE_TABLE_FAIL;
     }
     ret = rdbStore_->CreateTable(CREATE_ACCESSER_TABLE_SQL);
     if (ret != DP_SUCCESS) {
-        HILOGE("accesser_table create failed");
+        HILOGE("accessertable create failed");
         return DP_CREATE_TABLE_FAIL;
     }
     ret = rdbStore_->CreateTable(CREATE_ACCESSEE_TABLE_SQL);
     if (ret != DP_SUCCESS) {
-        HILOGE("accessee_table create failed");
+        HILOGE("accesseetable create failed");
         return DP_CREATE_TABLE_FAIL;
     }
     return DP_SUCCESS;
@@ -807,22 +807,22 @@ int32_t TrustProfileManager::CreateUniqueIndex()
     }
     int32_t ret = rdbStore_->CreateTable(CREATE_TURST_DEVICE_TABLE_UNIQUE_INDEX_SQL);
     if (ret != DP_SUCCESS) {
-        HILOGE("trust_device_table unique index create failed");
+        HILOGE("trustdevice_table unique index create failed");
         return DP_CREATE_UNIQUE_INDEX_FAIL;
     }
     ret = rdbStore_->CreateTable(CREATE_ACCESS_CONTROL_TABLE_UNIQUE_INDEX_SQL);
     if (ret != DP_SUCCESS) {
-        HILOGE("access_control_table unique index create failed");
+        HILOGE("accesscontrol_table unique index create failed");
         return DP_CREATE_UNIQUE_INDEX_FAIL;
     }
     ret = rdbStore_->CreateTable(CREATE_ACCESSER_TABLE_UNIQUE_INDEX_SQL);
     if (ret != DP_SUCCESS) {
-        HILOGE("accesser_table unique index create failed");
+        HILOGE("accessertable unique index create failed");
         return DP_CREATE_UNIQUE_INDEX_FAIL;
     }
     ret = rdbStore_->CreateTable(CREATE_ACCESSEE_TABLE_UNIQUE_INDEX_SQL);
     if (ret != DP_SUCCESS) {
-        HILOGE("accessee_table unique index create failed");
+        HILOGE("accesseetable unique index create failed");
         return DP_CREATE_UNIQUE_INDEX_FAIL;
     }
     return DP_SUCCESS;
@@ -976,7 +976,7 @@ int32_t TrustProfileManager::GetAllAccessControlProfiles(std::vector<AccessContr
     int32_t rowCount = ROWCOUNT_INIT;
     resultSet->GetRowCount(rowCount);
     if (rowCount == 0) {
-        HILOGE("access_control_table no data");
+        HILOGE("accesscontrol_table no data");
         resultSet->Close();
         return DP_NOT_FIND_DATA;
     }
@@ -1206,7 +1206,7 @@ int32_t TrustProfileManager::PutAccesserProfile(const AccessControlProfile& prof
         }
         int32_t ret = rdbStore_->Put(rowId, ACCESSER_TABLE, values);
         if (ret != DP_SUCCESS) {
-            HILOGE("accesser_table insert failed");
+            HILOGE("accessertable insert failed");
             return DP_PUT_ACCESSER_PROFILE_FAIL;
         }
     }
@@ -1249,7 +1249,7 @@ int32_t TrustProfileManager::PutAccesseeProfile(const AccessControlProfile& prof
         }
         int32_t ret = rdbStore_->Put(rowId, ACCESSEE_TABLE, values);
         if (ret != DP_SUCCESS) {
-            HILOGE("accessee_table insert failed");
+            HILOGE("accesseetable insert failed");
             return DP_PUT_ACCESSEE_PROFILE_FAIL;
         }
     }
@@ -1395,7 +1395,7 @@ int32_t TrustProfileManager::UpdateAccesserProfile(const AccessControlProfile& p
         int32_t ret = rdbStore_->Update(changeRowCnt, ACCESSER_TABLE, values, ACCESSERID_EQUAL_CONDITION,
             std::vector<ValueObject> {ValueObject(profile.GetAccesserId())});
         if (ret != DP_SUCCESS) {
-            HILOGE("accesser_table update failed");
+            HILOGE("accessertable update failed");
             return DP_UPDATE_ACCESSER_PROFILE_FAIL;
         }
     }
@@ -1417,7 +1417,7 @@ int32_t TrustProfileManager::UpdateAccesseeProfile(const AccessControlProfile& p
         int32_t ret = rdbStore_->Update(changeRowCnt, ACCESSEE_TABLE, values, ACCESSEEID_EQUAL_CONDITION,
             std::vector<ValueObject>{ ValueObject(profile.GetAccesseeId()) });
         if (ret != DP_SUCCESS) {
-            HILOGE("accessee_table update failed");
+            HILOGE("accesseetable update failed");
             return DP_UPDATE_ACCESSEE_PROFILE_FAIL;
         }
     }
@@ -1576,7 +1576,7 @@ int32_t TrustProfileManager::DeleteAccessControlProfileCheck(AccessControlProfil
         ret = rdbStore_->Delete(deleteRows, ACCESS_CONTROL_TABLE, ACCESSCONTROLID_EQUAL_CONDITION,
             std::vector<ValueObject>{ ValueObject(profile.GetAccessControlId()) });
         if (ret != DP_SUCCESS) {
-            HILOGE("delete access_control_table failed");
+            HILOGE("delete accesscontrol_table failed");
             return DP_DELETE_ACCESS_CONTROL_PROFILE_FAIL;
         }
     }
@@ -1858,7 +1858,7 @@ int32_t TrustProfileManager::DeleteAccesserCheck(int64_t accesserId, Accesser& a
         int32_t ret = rdbStore_->Delete(deleteRows, ACCESSER_TABLE, ACCESSERID_EQUAL_CONDITION,
             std::vector<ValueObject>{ ValueObject(accesserId) });
         if (ret != DP_SUCCESS) {
-            HILOGE("delete accesser_table accesserId failed");
+            HILOGE("delete accessertable accesserId failed");
             return DP_DELETE_ACCESSER_PROFILE_FAIL;
         }
         HILOGI("DeleteAccesser : %{public}s", accesser.dump().c_str());
@@ -2093,7 +2093,7 @@ int32_t TrustProfileManager::DeleteAccesseeCheck(int64_t accesseeId, Accessee& a
         int32_t ret = rdbStore_->Delete(deleteRows, ACCESSEE_TABLE, ACCESSEEID_EQUAL_CONDITION,
             std::vector<ValueObject> {ValueObject(accesseeId)});
         if (ret != DP_SUCCESS) {
-            HILOGE("delete accessee_table accesseeId failed");
+            HILOGE("delete accesseetable accesseeId failed");
             return DP_DELETE_ACCESSEE_PROFILE_FAIL;
         }
         HILOGI("DeleteAccessee : %{public}s", accessee.dump().c_str());
