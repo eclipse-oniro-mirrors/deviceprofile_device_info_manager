@@ -302,11 +302,13 @@ int32_t ProfileControlUtils::GetCharacteristicProfile(std::shared_ptr<IKVAdapter
             ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
         return DP_INVALID_PARAMS;
     }
-    if (ProfileCache::GetInstance().GetCharacteristicProfile(deviceId, serviceName, characteristicKey, charProfile)
-        == DP_SUCCESS) {
-        HILOGI("GetCharProfile in cache! devId: %{public}s, svrName: %{public}s, charKey: %{public}s!",
-            ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
-        return DP_SUCCESS;
+    if (characteristicKey == STATIC_CHARACTERISTIC_KEY || characteristicKey == SWITCH_STATUS) {
+        if (ProfileCache::GetInstance().GetCharacteristicProfile(deviceId, serviceName, characteristicKey, charProfile)
+            == DP_SUCCESS) {
+            HILOGI("GetCharProfile in cache! devId: %{public}s, svrName: %{public}s, charKey: %{public}s!",
+                ProfileUtils::GetAnonyString(deviceId).c_str(), serviceName.c_str(), characteristicKey.c_str());
+            return DP_SUCCESS;
+        }
     }
     std::map<std::string, std::string> values;
     if (ProfileUtils::IsNeedAddOhSuffix(serviceName, true)) {
