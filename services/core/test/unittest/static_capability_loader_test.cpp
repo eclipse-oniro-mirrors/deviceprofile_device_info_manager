@@ -70,7 +70,7 @@ HWTEST_F(StaticCapabilityLoaderTest, Init_001, TestSize.Level1)
     EXPECT_EQ(ret, DP_SUCCESS);
 }
 
-#ifdef DEVICE_PROFILE_SWITCH_STATIC_ENABLE
+#ifndef DEVICE_PROFILE_STATIC_DISABLE
 /*
  * @tc.name: LoadStaticCapability_001
  * @tc.desc: Normal testCase of StaticCapabilityLoaderTest
@@ -83,7 +83,7 @@ HWTEST_F(StaticCapabilityLoaderTest, LoadStaticCapability_001, TestSize.Level1)
         StaticCapabilityLoader::GetInstance().LoadStaticCapability(staticCapability);
     EXPECT_EQ(ret, DP_SUCCESS);
 }
-#endif // DEVICE_PROFILE_SWITCH_STATIC_ENABLE
+#endif // DEVICE_PROFILE_STATIC_DISABLE
 
 /*
  * @tc.name: LoadJsonFile_001
@@ -571,7 +571,7 @@ HWTEST_F(StaticCapabilityLoaderTest, LoadStaticInfo_002, TestSize.Level1)
     EXPECT_EQ(ret, DP_INVALID_PARAM);
 }
 
-#ifdef DEVICE_PROFILE_SWITCH_STATIC_ENABLE
+#ifndef DEVICE_PROFILE_STATIC_DISABLE
 /*
  * @tc.name: LoadStaticInfo_003
  * @tc.desc: Normal testCase of StaticCapabilityLoaderTest
@@ -601,7 +601,7 @@ HWTEST_F(StaticCapabilityLoaderTest, LoadStaticInfo_004, TestSize.Level1)
         StaticCapabilityLoader::GetInstance().LoadStaticInfo(staticCapability, staticVersion, charProfiles);
     EXPECT_EQ(ret, DP_SUCCESS);
 }
-#endif // DEVICE_PROFILE_SWITCH_STATIC_ENABLE
+#endif // DEVICE_PROFILE_STATIC_DISABLE
 
 /*
  * @tc.name: LoadStaticProfiles_001
@@ -651,7 +651,7 @@ HWTEST_F(StaticCapabilityLoaderTest, LoadStaticProfiles_003, TestSize.Level1)
     EXPECT_EQ(ret, DP_INVALID_PARAM);
 }
 
-#ifdef DEVICE_PROFILE_SWITCH_STATIC_ENABLE
+#ifndef DEVICE_PROFILE_STATIC_DISABLE
 /*
  * @tc.name: LoadStaticProfiles_004
  * @tc.desc: Normal testCase of StaticCapabilityLoaderTest
@@ -667,7 +667,7 @@ HWTEST_F(StaticCapabilityLoaderTest, LoadStaticProfiles_004, TestSize.Level1)
         GetInstance().LoadStaticProfiles(deviceId, staticCapability, staticVersion, charProfiles);
     EXPECT_EQ(ret, DP_GET_STATIC_INFO_FAIL);
 }
-#endif // DEVICE_PROFILE_SWITCH_STATIC_ENABLE
+#endif // DEVICE_PROFILE_STATIC_DISABLE
 
 /*
  * @tc.name: InitStaticCapability_001

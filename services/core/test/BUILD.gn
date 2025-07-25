@@ -23,8 +23,8 @@ config("device_profile_test_config") {
     "-Dprivate=public",
     "-Dprotected=public",
   ]
-  if (!device_info_manager_switch_static_disable) {
-    cflags += [ "-DDEVICE_PROFILE_SWITCH_STATIC_ENABLE" ]
+  if (device_info_manager_common) {
+    cflags += [ "-DDEVICE_PROFILE_STATIC_DISABLE" ]
   }
 }
 
@@ -548,7 +548,6 @@ group("unittest") {
     ":static_profile_manager_test",
     ":subscribe_profile_manager_test",
     ":switch_adapter_test",
-    ":switch_profile_manager_test",
     ":sync_completed_callback_test",
     ":sync_options_new_test",
     ":sync_subscriber_death_recipient_test",
@@ -556,4 +555,7 @@ group("unittest") {
     ":business_event_manager_test",
     ":business_event_adapter_test",
   ]
+  if (device_info_manager_supported_switch && !device_info_manager_common) {
+    deps += [ ":switch_profile_manager_test" ]
+  }
 }

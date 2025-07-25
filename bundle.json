@@ -14,7 +14,7 @@
       "subsystem": "deviceprofile",
       "features": [
         "device_info_manager_feature_coverage",
-        "device_info_manager_switch_static_disable"
+        "device_info_manager_supported_switch"
       ],
       "adapted_system_type": [ "standard" ],
       "hisysevent_config":[

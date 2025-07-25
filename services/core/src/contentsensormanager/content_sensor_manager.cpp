@@ -65,7 +65,11 @@ int32_t ContentSensorManager::Collect()
         taskList.push_back(std::make_shared<DmsInfoCollector>());
         taskList.push_back(std::make_shared<CollaborationInfoCollector>());
         taskList.push_back(std::make_shared<PasteboardInfoCollector>());
+#ifndef DEVICE_PROFILE_SWITCH_DISABLE
         taskList.push_back(std::make_shared<SwitchStatusCollector>());
+#else
+        HILOGI("this device does not support switch data, not use collect switch data");
+#endif // DEVICE_PROFILE_SWITCH_DISABLE
         DeviceProfile deviceProfile;
         std::vector<ServiceProfile> svrProfileList;
         std::vector<CharacteristicProfile> charProfileList;

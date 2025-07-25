@@ -45,7 +45,9 @@ int32_t ProfileCache::Init()
     HILOGI("call!");
     ContentSensorManagerUtils::GetInstance().ObtainDeviceDataSyncMode();
     RefreshProfileCache();
+#ifndef DEVICE_PROFILE_SWITCH_DISABLE
     SwitchProfileManager::GetInstance().RefreshLocalSwitchProfile();
+#endif
     syncListenerDeathRecipient_ = sptr<IRemoteObject::DeathRecipient>(new SyncSubscriberDeathRecipient);
     return DP_SUCCESS;
 }

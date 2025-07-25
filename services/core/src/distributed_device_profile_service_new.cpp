@@ -107,10 +107,14 @@ int32_t DistributedDeviceProfileServiceNew::PostInit()
         HILOGE("DMAdapter init failed");
         return DP_DM_ADAPTER_INIT_FAIL;
     }
+#ifndef DEVICE_PROFILE_SWITCH_DISABLE
     if (SwitchProfileManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("SwitchProfileManager init failed");
         return DP_DEVICE_PROFILE_MANAGER_INIT_FAIL;
     }
+#else
+    HILOGI("this device does not support switch data");
+#endif // DEVICE_PROFILE_SWITCH_DISABLE
     if (DeviceProfileManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("DeviceProfileManager init failed");
         return DP_DEVICE_PROFILE_MANAGER_INIT_FAIL;
@@ -156,7 +160,9 @@ int32_t DistributedDeviceProfileServiceNew::PostInitNext()
         HILOGE("BusinessEventManager init failed");
         return DP_BUSINESS_EVENT_MANAGER_INIT_FAIL;
     }
+#ifndef DEVICE_PROFILE_SWITCH_DISABLE
     SaveSwitchProfilesFromTempCache();
+#endif // DEVICE_PROFILE_SWITCH_DISABLE
     SaveDynamicProfilesFromTempCache();
     isInited_ = true;
     HILOGI("PostInit finish");
@@ -205,10 +211,14 @@ int32_t DistributedDeviceProfileServiceNew::UnInit()
         HILOGE("ProfileDataManager UnInit failed");
         return DP_PROFILE_DATA_MANAGER_UNINIT_FAIL;
     }
+#ifndef DEVICE_PROFILE_SWITCH_DISABLE
     if (SwitchProfileManager::GetInstance().UnInit() != DP_SUCCESS) {
         HILOGE("SwitchProfileManager UnInit failed");
         return DP_DEVICE_PROFILE_MANAGER_UNINIT_FAIL;
     }
+#else
+    HILOGI("this device does not support switch data");
+#endif // DEVICE_PROFILE_SWITCH_DISABLE
     if (DeviceProfileManager::GetInstance().UnInit() != DP_SUCCESS) {
         HILOGE("DeviceProfileManager UnInit failed");
         return DP_DEVICE_PROFILE_MANAGER_UNINIT_FAIL;
@@ -626,9 +636,14 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfile(const Chara
         return AddCharProfilesToCache({ charProfile });
     }
     if (charProfile.GetCharacteristicKey() == SWITCH_STATUS) {
+#ifndef DEVICE_PROFILE_SWITCH_DISABLE
         int32_t switchRet = SwitchProfileManager::GetInstance().PutCharacteristicProfile(charProfile);
         DpRadarHelper::GetInstance().ReportPutCharProfile(switchRet, charProfile);
         return switchRet;
+#else
+        HILOGI("this device does not support switch data");
+        return DP_DEVICE_UNSUPPORTED_SWITCH;
+#endif // DEVICE_PROFILE_SWITCH_DISABLE
     }
     HILOGD("CheckCallerPermission success interface DeviceProfileManager::PutCharacteristicProfile");
     int32_t ret = DeviceProfileManager::GetInstance().PutCharacteristicProfile(charProfile);
@@ -639,17 +654,9 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfile(const Chara
 int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfileBatch(
     const std::vector<CharacteristicProfile>& charProfiles)
 {
-    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
-        HILOGE("this caller is permission denied!");
-        return DP_PERMISSION_DENIED;
-    }
-    if (charProfiles.empty()) {
-        HILOGE("charProfiles is empty");
-        return DP_PUT_CHAR_BATCH_FAIL;
-    }
-    if (charProfiles.size() > MAX_CHAR_SIZE) {
-        HILOGE("charProfiles size is too large");
-        return DP_INVALID_PARAMS;
+    int32_t preprocessRes = PutCharacteristicProfileBatchPreprocess(charProfiles);
+    if (preprocessRes != DP_SUCCESS) {
+        return preprocessRes;
     }
     if (!IsInited()) {
         return AddCharProfilesToCache(charProfiles);
@@ -664,6 +671,7 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfileBatch(
         dynamicCharProfiles.push_back(profile);
     }
     int32_t switchRes = DP_SUCCESS;
+#ifndef DEVICE_PROFILE_SWITCH_DISABLE
     if (switchCharProfiles.size() > 0) {
         switchRes = SwitchProfileManager::GetInstance().PutCharacteristicProfileBatch(switchCharProfiles);
         DpRadarHelper::GetInstance().ReportPutCharProfileBatch(switchRes, switchCharProfiles);
@@ -671,6 +679,12 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfileBatch(
     if (switchRes != DP_SUCCESS) {
         HILOGE("PutCharacteristicProfileBatch fail, res:%{public}d", switchRes);
     }
+#else
+    if (dynamicCharProfiles.empty()) {
+        HILOGE("this device does not support switch data, can't put");
+        return DP_DEVICE_UNSUPPORTED_SWITCH;
+    }
+#endif // DEVICE_PROFILE_SWITCH_DISABLE
     int32_t dynamicRes = DP_SUCCESS;
     if (dynamicCharProfiles.size() > 0) {
         dynamicRes = DeviceProfileManager::GetInstance().PutCharacteristicProfileBatch(dynamicCharProfiles);
@@ -683,6 +697,24 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfileBatch(
         return DP_PUT_CHAR_BATCH_FAIL;
     }
     HILOGD("PutCharacteristicProfileBatch success ");
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfileBatchPreprocess(
+    const std::vector<CharacteristicProfile>& charProfiles)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("this caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    if (charProfiles.empty()) {
+        HILOGE("charProfiles is empty");
+        return DP_INVALID_PARAM;
+    }
+    if (charProfiles.size() > MAX_CHAR_SIZE) {
+        HILOGE("charProfiles size is too large");
+        return DP_INVALID_PARAM;
+    }
     return DP_SUCCESS;
 }
 
@@ -731,11 +763,16 @@ int32_t DistributedDeviceProfileServiceNew::GetCharacteristicProfile(const std::
         return DP_PERMISSION_DENIED;
     }
     if (characteristicKey == SWITCH_STATUS) {
+#ifndef DEVICE_PROFILE_SWITCH_DISABLE
         HILOGD("CheckCallerPermission success interface SwitchProfileManager::GetCharacteristicProfile");
         int32_t switchRet = SwitchProfileManager::GetInstance().GetCharacteristicProfile(deviceId, serviceName,
             characteristicKey, charProfile);
         DpRadarHelper::GetInstance().ReportGetCharProfile(switchRet, deviceId, charProfile);
         return switchRet;
+#else
+        HILOGI("this device does not support switch data");
+        return DP_DEVICE_UNSUPPORTED_SWITCH;
+#endif
     }
     if (characteristicKey == STATIC_CHARACTERISTIC_KEY) {
         HILOGD("CheckCallerPermission success interface StaticProfileManager::GetCharacteristicProfile");
