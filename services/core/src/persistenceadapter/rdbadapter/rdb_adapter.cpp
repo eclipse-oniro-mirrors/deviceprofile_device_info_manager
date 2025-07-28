@@ -276,19 +276,19 @@ int32_t OpenCallback::CreateTable(RdbStore& store)
 {
     std::lock_guard<std::mutex> lock(rdbStoreMtx_);
     if (store.ExecuteSql(CREATE_TURST_DEVICE_TABLE_SQL) != NativeRdb::E_OK) {
-        HILOGE("trust_device_table create failed");
+        HILOGE("trustdevice_table create failed");
         return DP_CREATE_TABLE_FAIL;
     }
     if (store.ExecuteSql(CREATE_ACCESS_CONTROL_TABLE_SQL) != NativeRdb::E_OK) {
-        HILOGE("access_control_table create failed");
+        HILOGE("accesscontrol_table create failed");
         return DP_CREATE_TABLE_FAIL;
     }
     if (store.ExecuteSql(CREATE_ACCESSER_TABLE_SQL) != NativeRdb::E_OK) {
-        HILOGE("accesser_table create failed");
+        HILOGE("accessertable create failed");
         return DP_CREATE_TABLE_FAIL;
     }
     if (store.ExecuteSql(CREATE_ACCESSEE_TABLE_SQL) != NativeRdb::E_OK) {
-        HILOGE("accessee_table create failed");
+        HILOGE("accesseetable create failed");
         return DP_CREATE_TABLE_FAIL;
     }
     return DP_SUCCESS;
@@ -298,19 +298,19 @@ int32_t OpenCallback::CreateUniqueIndex(RdbStore& store)
 {
     std::lock_guard<std::mutex> lock(rdbStoreMtx_);
     if (store.ExecuteSql(CREATE_TURST_DEVICE_TABLE_UNIQUE_INDEX_SQL) != NativeRdb::E_OK) {
-        HILOGE("trust_device_table unique index create failed");
+        HILOGE("trustdevice_table unique index create failed");
         return DP_CREATE_UNIQUE_INDEX_FAIL;
     }
     if (store.ExecuteSql(CREATE_ACCESS_CONTROL_TABLE_UNIQUE_INDEX_SQL) != NativeRdb::E_OK) {
-        HILOGE("access_control_table unique index create failed");
+        HILOGE("accesscontrol_table unique index create failed");
         return DP_CREATE_UNIQUE_INDEX_FAIL;
     }
     if (store.ExecuteSql(CREATE_ACCESSER_TABLE_UNIQUE_INDEX_SQL) != NativeRdb::E_OK) {
-        HILOGE("accesser_table unique index create failed");
+        HILOGE("accessertable unique index create failed");
         return DP_CREATE_UNIQUE_INDEX_FAIL;
     }
     if (store.ExecuteSql(CREATE_ACCESSEE_TABLE_UNIQUE_INDEX_SQL) != NativeRdb::E_OK) {
-        HILOGE("accessee_table unique index create failed");
+        HILOGE("accesseetable unique index create failed");
         return DP_CREATE_UNIQUE_INDEX_FAIL;
     }
     return DP_SUCCESS;

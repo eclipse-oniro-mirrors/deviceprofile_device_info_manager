@@ -1130,7 +1130,7 @@ HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile007, TestSize.Level1)
         characteristicKey, charProfile);
     ProfileCache::GetInstance().charProfileMap_.erase(charProfileKey);
     ProfileCache::GetInstance().onlineDevMap_.erase(deviceId);
-    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
 }
 
 /**

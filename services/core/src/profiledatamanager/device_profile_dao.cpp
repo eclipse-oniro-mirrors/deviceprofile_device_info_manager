@@ -73,7 +73,7 @@ int32_t DeviceProfileDao::PutDeviceProfile(const DeviceProfile& deviceProfile)
         std::lock_guard<std::mutex> lock(rdbMutex_);
         ret = ProfileDataRdbAdapter::GetInstance().Put(rowId, DEVICE_PROFILE_TABLE, values);
         if (ret != DP_SUCCESS) {
-            HILOGE("device_profile insert failed");
+            HILOGE("deviceprofile insert failed");
             return DP_PUT_TRUST_DEVICE_PROFILE_FAIL;
         }
     }
@@ -137,7 +137,7 @@ int32_t DeviceProfileDao::DeleteDeviceProfile(const DeviceProfile &deviceProfile
         int32_t ret = ProfileDataRdbAdapter::GetInstance().Delete(deleteRows, DEVICE_PROFILE_TABLE, ID_EQUAL_CONDITION,
             std::vector<ValueObject>{ ValueObject(deviceProfile.GetId()) });
         if (ret != DP_SUCCESS) {
-            HILOGE("delete device_profile data failed, ret=%{public}d", ret);
+            HILOGE("delete deviceprofile data failed, ret=%{public}d", ret);
             return DP_DELETE_TRUST_DEVICE_PROFILE_FAIL;
         }
     }
@@ -156,7 +156,7 @@ int32_t DeviceProfileDao::UpdateDeviceProfile(const DeviceProfile &newProfile)
             changeRowCnt, DEVICE_PROFILE_TABLE, values, ID_EQUAL_CONDITION,
             std::vector<ValueObject>{ ValueObject(newProfile.GetId()) });
         if (ret != DP_SUCCESS) {
-            HILOGE("Update device_profile table failed");
+            HILOGE("Update deviceprofile table failed");
             return DP_UPDATE_TRUST_DEVICE_PROFILE_FAIL;
         }
     }
@@ -168,7 +168,7 @@ int32_t DeviceProfileDao::CreateTable()
 {
     int32_t ret = ProfileDataRdbAdapter::GetInstance().CreateTable(CREATE_DEVICE_PROFILE_TABLE_SQL);
     if (ret != DP_SUCCESS) {
-        HILOGE("device_profile create failed");
+        HILOGE("deviceprofile create failed");
         return DP_CREATE_TABLE_FAIL;
     }
     return DP_SUCCESS;
@@ -178,12 +178,12 @@ int32_t DeviceProfileDao::CreateIndex()
 {
     int32_t ret = ProfileDataRdbAdapter::GetInstance().CreateTable(CREATE_DEVICE_PROFILE_TABLE_UNIQUE_INDEX_SQL);
     if (ret != DP_SUCCESS) {
-        HILOGE("device_profile unique index create failed");
+        HILOGE("deviceprofile unique index create failed");
         return DP_CREATE_UNIQUE_INDEX_FAIL;
     }
     ret = ProfileDataRdbAdapter::GetInstance().CreateTable(CREATE_DEVICE_PROFILE_WISE_DEVICEID_INDEX_SQL);
     if (ret != DP_SUCCESS) {
-        HILOGE("device_profile wiseDeviceId index create failed");
+        HILOGE("deviceprofile wiseDeviceId index create failed");
         return DP_CREATE_INDEX_FAIL;
     }
     return DP_SUCCESS;
