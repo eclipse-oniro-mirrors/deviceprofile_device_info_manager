@@ -28,7 +28,6 @@
 #include "device_profile_filter_options.h"
 #include "dp_subscribe_info.h"
 #include "dp_sync_options.h"
-#include "i_business_callback.h"
 #include "i_sync_completed_callback.h"
 #include "product_info.h"
 #include "service_info_profile.h"
@@ -37,6 +36,7 @@
 #include "trust_device_profile.h"
 #include "trusted_device_info.h"
 #include "local_service_info.h"
+#include "business_event.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {

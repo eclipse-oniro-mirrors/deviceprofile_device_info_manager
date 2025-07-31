@@ -21,6 +21,7 @@
 
 #include "distributed_device_profile_constants.h"
 #include "dp_parcel.h"
+#include "parcel.h"
  
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -40,6 +41,26 @@ public:
     bool UnMarshalling(MessageParcel& parcel) override;
     std::string dump() const override;
     
+private:
+    std::string businessKey_ = "";
+    std::string businessValue_ = "";
+};
+
+class BusinessEventExt : public Parcelable {
+public:
+    BusinessEventExt(const std::string& businessKey, const std::string& businessValue)
+        : businessKey_(businessKey), businessValue_(businessValue) {};
+
+    BusinessEventExt();
+    ~BusinessEventExt();
+
+    std::string GetBusinessKey() const;
+    void SetBusinessKey(const std::string& businessKey);
+    std::string GetBusinessValue() const;
+    void SetBusinessValue(const std::string& businessValue);
+    bool Marshalling(Parcel &parcel) const override;
+    static BusinessEventExt *Unmarshalling(Parcel &parcel);
+
 private:
     std::string businessKey_ = "";
     std::string businessValue_ = "";

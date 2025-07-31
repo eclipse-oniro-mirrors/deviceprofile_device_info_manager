@@ -13,23 +13,7 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_DP_IBUSINESS_CALLBACK_H
-#define OHOS_DP_IBUSINESS_CALLBACK_H
-
-#include "business_event.h"
-#include "iremote_broker.h"
-
-namespace OHOS {
-namespace DistributedDeviceProfile {
-
-class IBusinessCallback : public OHOS::IRemoteBroker {
-public:
-    DECLARE_INTERFACE_DESCRIPTOR(u"OHOS.DeviceProfile.IBusinessCallback");
-    IBusinessCallback() = default;
-    virtual ~IBusinessCallback() = default;
-
-    virtual int32_t OnBusinessEvent(const BusinessEvent& event) = 0;
-};
-} // namespace DistributedDeviceProfile
-} // namespace OHOS
-#endif // OHOS_DP_IBUSINESS_CALLBACK_H
+sequenceable BusinessEvent..OHOS.DistributedDeviceProfile.BusinessEventExt;
+interface OHOS.DistributedDeviceProfile.IBusinessCallback {
+   void OnBusinessEvent([in] BusinessEventExt event);
+}

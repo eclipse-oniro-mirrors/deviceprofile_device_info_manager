@@ -87,6 +87,52 @@ std::string BusinessEvent::dump() const
     cJSON_free(jsonChars);
     return jsonStr;
 }
+
+BusinessEventExt::BusinessEventExt()
+{
+}
+
+BusinessEventExt::~BusinessEventExt()
+{
+}
+
+std::string BusinessEventExt::GetBusinessKey() const
+{
+    return businessKey_;
+}
+
+void BusinessEventExt::SetBusinessKey(const std::string& businessKey)
+{
+    businessKey_ = businessKey;
+}
+
+std::string BusinessEventExt::GetBusinessValue() const
+{
+    return businessValue_;
+}
+
+void BusinessEventExt::SetBusinessValue(const std::string& businessValue)
+{
+    businessValue_ = businessValue;
+}
+
+bool BusinessEventExt::Marshalling(Parcel& parcel) const
+{
+    WRITE_HELPER(parcel, String, businessKey_);
+    WRITE_HELPER(parcel, String, businessValue_);
+    return true;
+}
+
+BusinessEventExt *BusinessEventExt::Unmarshalling(Parcel& parcel)
+{
+    BusinessEventExt* obj = new (std::nothrow) BusinessEventExt();
+    if (!obj) {
+        return nullptr;
+    }
+    obj->businessKey_ = parcel.ReadString();
+    obj->businessValue_ = parcel.ReadString();
+    return obj;
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
  

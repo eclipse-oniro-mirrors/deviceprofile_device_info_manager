@@ -166,7 +166,7 @@ public:
     ~BusinessCallback()
     {
     }
-    int32_t OnBusinessEvent(const BusinessEvent &event)
+    int32_t OnBusinessEvent(const BusinessEventExt &event)
     {
         (void)event;
         return DP_SUCCESS;

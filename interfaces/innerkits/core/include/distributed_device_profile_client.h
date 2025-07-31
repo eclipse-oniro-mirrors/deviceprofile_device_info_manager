@@ -34,7 +34,7 @@
 #include "single_instance.h"
 #include "dp_subscribe_info.h"
 #include "distributed_device_profile_constants.h"
-#include "i_business_callback.h"
+#include "ibusiness_callback.h"
 #include "sync_completed_callback_stub.h"
 #include "system_ability_status_change_stub.h"
 #include "profile_change_listener_stub.h"
