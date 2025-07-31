@@ -125,7 +125,10 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<std::string>
 {
     size_t size = strings.size();
     WRITE_HELPER_RET(parcel, Uint32, size, false);
-    if (strings.empty() || strings.size() > MAX_ID_SIZE) {
+    if (strings.empty()) {
+        return true;
+    }
+    if (strings.size() > MAX_ID_SIZE) {
         HILOGE("string vector, strings size is invalid! size : %{public}zu", strings.size());
         return false;
     }
@@ -139,7 +142,10 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<int32_t>& pa
 {
     size_t size = params.size();
     WRITE_HELPER_RET(parcel, Uint32, size, false);
-    if (params.empty() || params.size() > MAX_ID_SIZE) {
+    if (params.empty()) {
+        return true;
+    }
+    if (params.size() > MAX_ID_SIZE) {
         HILOGE("int32_t vector, params size is invalid! size : %{public}zu", params.size());
         return false;
     }
@@ -400,7 +406,10 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<CharacteristicPr
 bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<std::string>& strings)
 {
     size_t size = parcel.ReadUint32();
-    if (size == 0 || size > MAX_ID_SIZE) {
+    if (size == 0) {
+        return true;
+    }
+    if (size > MAX_ID_SIZE) {
         HILOGE("string vector, strings size is invalid!size : %{public}zu", size);
         return false;
     }
@@ -415,7 +424,10 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<std::string>& st
 bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<int32_t>& params)
 {
     size_t size = parcel.ReadUint32();
-    if (size == 0 || size > MAX_ID_SIZE) {
+    if (size == 0) {
+        return true;
+    }
+    if (size > MAX_ID_SIZE) {
         HILOGE("int32_t vector, params size is invalid! size : %{public}zu", size);
         return false;
     }
