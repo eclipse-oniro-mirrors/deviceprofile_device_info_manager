@@ -13,7 +13,56 @@
 
 import("//build/ohos.gni")
 import("//build/ohos_var.gni")
+import("//build/config/components/idl_tool/idl.gni")
 import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
+
+idl_gen_interface("dp_business_callback_interfaces") {
+  sources = [
+    "IBusinessCallback.idl",
+  ]
+  log_domainid = "0xD004400"
+  log_tag = "Distributed_Device_Profile"
+}
+
+config("business_callback_interfaces_ipc_config"){
+  include_dirs = [
+    ".",
+    "${target_gen_dir}/",
+  ]
+}
+
+ohos_source_set("business_callback_interfaces_ipc") {
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
+
+  output_values = get_target_outputs(":dp_business_callback_interfaces")
+  sources = []
+  sources += filter_include(output_values, [ "*.cpp" ])
+  public_configs = [
+    ":business_callback_interfaces_ipc_config"
+  ]
+  include_dirs = [
+    "${device_profile_common}/include/constants",
+    "${device_profile_common}/include/interfaces",
+    "${device_profile_common}/include/utils",
+  ]
+  deps = [ ":dp_business_callback_interfaces",]
+  external_deps = [
+    "cJSON:cjson",
+    "c_utils:utils",
+    "hilog:libhilog",
+    "hitrace:hitrace_meter",
+    "ipc:ipc_core",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+  ]
+
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
 
 config("distributed_device_profile_common_config") {
   visibility = [ ":*" ]
@@ -55,8 +104,6 @@ ohos_shared_library("distributed_device_profile_common") {
     "src/interfaces/access_control_profile.cpp",
     "src/interfaces/accessee.cpp",
     "src/interfaces/accesser.cpp",
-    "src/interfaces/business_callback_proxy.cpp",
-    "src/interfaces/business_callback_stub.cpp",
     "src/interfaces/business_event.cpp",
     "src/interfaces/characteristic_profile.cpp",
     "src/interfaces/device_icon_info.cpp",
@@ -88,9 +135,12 @@ ohos_shared_library("distributed_device_profile_common") {
     "src/utils/profile_utils.cpp",
   ]
 
-  deps = []
+  deps = [":business_callback_interfaces_ipc"]
 
-  public_configs = [ ":distributed_device_profile_common_config" ]
+  public_configs = [
+    ":business_callback_interfaces_ipc_config",
+    ":distributed_device_profile_common_config"
+  ]
 
   external_deps = [
     "access_token:libaccesstoken_sdk",

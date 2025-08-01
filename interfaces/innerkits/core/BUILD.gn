@@ -59,9 +59,13 @@ ohos_shared_library("distributed_device_profile_sdk") {
     "src/distributed_device_profile_proxy.cpp",
   ]
 
-  public_configs = [ ":distributed_device_profile_sdk_config" ]
+  public_configs = [
+    ":distributed_device_profile_sdk_config",
+    "${device_profile_common}:business_callback_interfaces_ipc_config"
+  ]
 
   deps = [
+    "${device_profile_common}:business_callback_interfaces_ipc",
     "${device_profile_common}:distributed_device_profile_common",
     "${device_profile_path}/radar:device_profile_radar",
   ]

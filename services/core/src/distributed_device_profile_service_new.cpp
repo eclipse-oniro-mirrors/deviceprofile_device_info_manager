@@ -34,6 +34,7 @@
 #include "device_profile_manager.h"
 #include "dp_radar_helper.h"
 #include "event_handler_factory.h"
+#include "ibusiness_callback.h"
 #include "i_pincode_invalid_callback.h"
 #include "local_service_info_manager.h"
 #include "multi_user_manager.h"
@@ -1476,7 +1477,8 @@ int32_t DistributedDeviceProfileServiceNew::NotifyBusinessEvent(const BusinessEv
                 HILOGE("OnBusinessEvent task callbackProxy is nullptr");
                 return;
             }
-            callbackProxy->OnBusinessEvent(event);
+            BusinessEventExt eventExt(event.GetBusinessKey(), event.GetBusinessValue());
+            callbackProxy->OnBusinessEvent(eventExt);
         };
         auto handler = EventHandlerFactory::GetInstance().GetEventHandler();
         HILOGI("notify");
