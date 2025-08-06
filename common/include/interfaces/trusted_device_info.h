@@ -32,13 +32,13 @@ public:
     std::string GetNetworkId() const;
     void SetNetworkId(const std::string& networkId);
     int32_t GetAuthForm() const;
-    void SetAuthForm(int32_t authForm);
+    void SetAuthForm(const int32_t authForm);
     uint16_t GetDeviceTypeId() const;
-    void SetDeviceTypeId(uint16_t deviceTypeId);
+    void SetDeviceTypeId(const uint16_t deviceTypeId);
     std::string GetOsVersion() const;
     void SetOsVersion(const std::string& osVersion);
     int32_t GetOsType() const;
-    void SetOsType(int32_t osType);
+    void SetOsType(const int32_t osType);
     std::string GetUdid() const;
     void SetUdid(const std::string& udid);
     std::string GetUuid() const;
@@ -52,10 +52,10 @@ public:
 
 private:
     std::string networkId_;
-    std::int32_t authForm_;
-    std::uint16_t deviceTypeId_;
+    int32_t authForm_;
+    uint16_t deviceTypeId_;
     std::string osVersion_;
-    std::int32_t osType_;
+    int32_t osType_;
     std::string udid_;
     std::string uuid_;
 };

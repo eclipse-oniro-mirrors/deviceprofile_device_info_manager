@@ -19,11 +19,12 @@
 #include <chrono>
 #include <unistd.h>
 
+#include "rdb_errno.h"
+
 #include "distributed_device_profile_constants.h"
-#include "dp_services_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
-#include "rdb_errno.h"
+#include "profile_utils.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -263,23 +264,71 @@ int32_t ProfileDataOpenCallback::OnUpgrade(RdbStore& store, int oldVersion, int 
     return NativeRdb::E_OK;
 }
 
+int32_t ProfileDataOpenCallback::CheckAndAlterTable(RdbStore& store, const RdbTableAlterInfo& info)
+{
+    int32_t ret = RET_INIT;
+    bool isExistColumn = ProfileUtils::IsExistColumn(store, info.tabName, info.colName, info.colType, ret);
+    if (ret != DP_SUCCESS) {
+        HILOGE("IsExistColumn failed,reason:%{public}d", ret);
+        return ret;
+    }
+    if (isExistColumn) {
+        HILOGW("already exist,tableName:%{public}s,columnName:%{public}s,columnType:%{public}s",
+            ProfileUtils::GetAnonyString(info.tabName).c_str(), info.colName.c_str(), info.colType.c_str());
+        return DP_SUCCESS;
+    }
+    ret = store.ExecuteSql(info.sql);
+    if (ret != NativeRdb::E_OK) {
+        HILOGE("ExecuteSql failed,reason:%{public}d", ret);
+        return ret;
+    }
+    HILOGI("succeed,tableName:%{public}s,columnName:%{public}s,columnType:%{public}s",
+        ProfileUtils::GetAnonyString(info.tabName).c_str(), info.colName.c_str(), info.colType.c_str());
+    return DP_SUCCESS;
+}
+
 int32_t ProfileDataOpenCallback::UpdateFromVer1To2(RdbStore& store)
 {
-    int32_t ret = store.ExecuteSql(ALTER_TABLE_DP_ADD_COLUMN_PRODUCT_NAME_SQL);
-    if (ret != NativeRdb::E_OK) {
-        HILOGE("add column to device_profile table failed, ret:%{public}d", ret);
+    RdbTableAlterInfo deviceProfileAddProductNameColumn {
+        .tabName = DEVICE_PROFILE_TABLE,
+        .colName = PRODUCT_NAME,
+        .colType = RDB_TYPE_TEXT,
+        .sql = ALTER_TABLE_DP_ADD_COLUMN_PRODUCT_NAME_SQL
+    };
+    int32_t ret = CheckAndAlterTable(store, deviceProfileAddProductNameColumn);
+    if (ret != DP_SUCCESS) {
+        HILOGE("CheckAndAlterTable failed,reason:%{public}d,tableName:%{public}s,columnName:%{public}s", ret,
+            ProfileUtils::GetAnonyString(deviceProfileAddProductNameColumn.tabName).c_str(),
+            deviceProfileAddProductNameColumn.colName.c_str());
         return ret;
     }
-    ret = store.ExecuteSql(ALTER_TABLE_DP_RENAME_COLUMN_INTERNAL_MODEL_SQL);
-    if (ret != NativeRdb::E_OK) {
-        HILOGE("add column to device_icon_info table failed, ret:%{public}d", ret);
+    RdbTableAlterInfo deviceProfileRenameInterModelColumn {
+        .tabName = DEVICE_PROFILE_TABLE,
+        .colName = INTERNAL_MODEL,
+        .colType = RDB_TYPE_TEXT,
+        .sql = ALTER_TABLE_DP_RENAME_COLUMN_INTERNAL_MODEL_SQL
+    };
+    ret = CheckAndAlterTable(store, deviceProfileRenameInterModelColumn);
+    if (ret != DP_SUCCESS) {
+        HILOGE("CheckAndAlterTable failed,reason:%{public}d,tableName:%{public}s,columnName:%{public}s", ret,
+            ProfileUtils::GetAnonyString(deviceProfileRenameInterModelColumn.tabName).c_str(),
+            deviceProfileRenameInterModelColumn.colName.c_str());
         return ret;
     }
-    ret = store.ExecuteSql(ALTER_TABLE_DEVICE_ICON_INFO_ADD_COLUMN_INTENAL_MODEL_SQL);
-    if (ret != NativeRdb::E_OK) {
-        HILOGE("add column to device_icon_info table failed, ret:%{public}d", ret);
+    RdbTableAlterInfo deviceIconInfoAddInterModelColumn {
+        .tabName = DEVICE_ICON_INFO_TABLE,
+        .colName = INTERNAL_MODEL,
+        .colType = RDB_TYPE_TEXT,
+        .sql = ALTER_TABLE_DEVICE_ICON_INFO_ADD_COLUMN_INTENAL_MODEL_SQL
+    };
+    ret = CheckAndAlterTable(store, deviceIconInfoAddInterModelColumn);
+    if (ret != DP_SUCCESS) {
+        HILOGE("CheckAndAlterTable failed,reason:%{public}d,tableName:%{public}s,columnName:%{public}s", ret,
+            ProfileUtils::GetAnonyString(deviceIconInfoAddInterModelColumn.tabName).c_str(),
+            deviceIconInfoAddInterModelColumn.colName.c_str());
         return ret;
     }
+    HILOGI("succeed");
     return NativeRdb::E_OK;
 }
 } // namespace DistributedDeviceProfile

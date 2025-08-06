@@ -21,6 +21,8 @@
 #include <string>
 #include <vector>
 
+#include "rdb_helper.h"
+#include "rdb_store.h"
 #include "result_set.h"
 #include "values_bucket.h"
 
@@ -126,6 +128,8 @@ public:
     static int32_t ConvertToAccessee(std::shared_ptr<ResultSet> accesseeResultSet, Accessee& accessee);
     static int32_t ConvertToAccessControlProfile(std::shared_ptr<ResultSet> accessControlResultSet,
         AccessControlProfile& accessControlProfile);
+    static bool IsExistColumn(RdbStore& store, const std::string &tabName, const std::string &colName,
+        const std::string &colType, int32_t &errCode);
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

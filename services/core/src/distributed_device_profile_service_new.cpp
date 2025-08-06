@@ -180,11 +180,11 @@ bool DistributedDeviceProfileServiceNew::IsReadyIntoIdle()
 {
     int32_t runningIpcCount = runningIpcCount_.load();
     if (runningIpcCount > 0) {
-        HILOGI("ipc running, runningIpcCount=%{public}d, can't into idle!", runningIpcCount);
+        HILOGE("ipc running, runningIpcCount=%{public}d, can't into idle!", runningIpcCount);
         return false;
     }
     if (ProfileCache::GetInstance().IsDeviceOnline()) {
-        HILOGI("device online, can't into idle!");
+        HILOGE("device online, can't into idle!");
         return false;
     }
     HILOGI("ready into idle!");

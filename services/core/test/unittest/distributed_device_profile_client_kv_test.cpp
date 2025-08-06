@@ -752,6 +752,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribePinCodeInvalid_001, Te
     DistributedDeviceProfileClient::GetInstance().pinCodeCallback_ = pincodeInvalidCb;
     int32_t ret = DistributedDeviceProfileClient::GetInstance().UnSubscribePinCodeInvalid(bundleName, pinExchangeType);
     EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    DistributedDeviceProfileClient::GetInstance().pinCodeCallback_ = nullptr;
 }
 
 /**

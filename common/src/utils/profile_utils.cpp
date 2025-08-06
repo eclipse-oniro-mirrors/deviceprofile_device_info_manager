@@ -1208,5 +1208,54 @@ int32_t ProfileUtils::ConvertToAccessControlProfile(
     accessControlProfile.SetExtraData(extraData);
     return DP_SUCCESS;
 }
+
+bool ProfileUtils::IsExistColumn(RdbStore& store, const std::string &tabName, const std::string &colName,
+    const std::string &colType, int32_t &errCode)
+{
+    std::vector<ValueObject> args {tabName, colName, colType};
+    std::shared_ptr<ResultSet> resultSet = nullptr;
+    resultSet = store.QuerySql(TABLE_EXIST_COLUMN_SQL, args);
+    if (resultSet == nullptr) {
+        HILOGE("resultSet is nullptr");
+        errCode = DP_GET_RESULTSET_FAIL;
+        return false;
+    }
+    int32_t rowCount = ROWCOUNT_INIT;
+    if (resultSet->GetRowCount(rowCount) != DP_SUCCESS) {
+        HILOGE("GetRowCount failed");
+        resultSet->Close();
+        errCode = DP_GET_RESULTSET_FAIL;
+        return false;
+    }
+    if (rowCount == 0) {
+        HILOGE("by condition not find data");
+        resultSet->Close();
+        errCode = DP_NOT_FIND_DATA;
+        return false;
+    }
+    if (resultSet->GoToNextRow() != DP_SUCCESS) {
+        HILOGE("GoToNextRow failed");
+        resultSet->Close();
+        errCode = DP_GET_RESULTSET_FAIL;
+        return false;
+    }
+    RowEntity rowEntity;
+    if (resultSet->GetRow(rowEntity) != DP_SUCCESS) {
+        HILOGE("GetRow failed");
+        resultSet->Close();
+        errCode = DP_GET_RESULTSET_FAIL;
+        return false;
+    }
+    int32_t result = rowEntity.Get(RESULT);
+    if (result != 0 && result != 1) {
+        HILOGE("select exists sql failed");
+        resultSet->Close();
+        errCode = DP_INVALID_SQL_RESULT;
+        return false;
+    }
+    resultSet->Close();
+    errCode = DP_SUCCESS;
+    return result == 1;
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

@@ -22,6 +22,12 @@
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
+struct RdbTableAlterInfo {
+    std::string tabName;
+    std::string colName;
+    std::string colType;
+    std::string sql;
+};
 /* DeviceProfileDao */
 constexpr int32_t AND_LENGTH = 5;
 constexpr int32_t WHERE_LENGTH = 7;

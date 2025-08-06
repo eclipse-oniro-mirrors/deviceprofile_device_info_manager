@@ -73,6 +73,8 @@ extern const std::string DEVICE_PROFILE_TABLE;
 extern const std::string DEVICE_ICON_INFO_TABLE;
 extern const std::string PRODUCT_INFO_TABLE;
 extern const std::string SYSTEM;
+extern const std::string RDB_TYPE_TEXT;
+extern const std::string RESULT;
 /* ServiceProfile Attribute */
 extern const std::string SERVICE_NAME;
 extern const std::string SERVICE_PROFILE_SERVICE_ID;
@@ -409,6 +411,7 @@ extern const std::string SELECT_ACCESSEE_TABLE_WHERE_ALL;
 extern const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERDEVICEID_AND_ACCESSERUSERID;
 extern const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEDEVICEID_AND_ACCESSEEUSERID;
 extern const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_ACCESSERID_AND_ACCESSEEID;
+extern const std::string TABLE_EXIST_COLUMN_SQL;
 /* SubscribeTrustInfoManager */
 extern const std::string SUBSCRIBE_TRUST_INFO_TABLE;
 extern const std::string CREATE_SUBSCRIBE_TRUST_INFO_TABLE_SQL;

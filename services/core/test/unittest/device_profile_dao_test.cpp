@@ -125,6 +125,23 @@ HWTEST_F(DeviceProfileDaoTest, PutDeviceProfile001, TestSize.Level1)
 }
 
 /*
+ * @tc.name: GetDeviceProfiles003
+ * @tc.desc: GetDeviceProfiles
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileDaoTest, PutDeviceProfile003, TestSize.Level1)
+{
+    DeviceProfileDao::GetInstance().Init();
+    DeviceProfile deviceProfile;
+    deviceProfile.SetDeviceId("deviceId");
+    deviceProfile.SetUserId(1);
+    int ret = DeviceProfileDao::GetInstance().PutDeviceProfile(deviceProfile);
+    EXPECT_EQ(ret, DP_PUT_TRUST_DEVICE_PROFILE_FAIL);
+    DeviceProfileDao::GetInstance().UnInit();
+}
+
+/*
  * @tc.name: GetDeviceProfiles001
  * @tc.desc: GetDeviceProfiles
  * @tc.type: FUNC

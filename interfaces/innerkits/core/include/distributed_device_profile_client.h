@@ -134,11 +134,11 @@ private:
     void ReleaseSubscribeDeviceProfileInited();
     void ReleaseSubscribePinCodeInvalid();
     void ReleaseDeathRecipient();
+    template <typename Method, typename... Args>
+    int32_t RetryClientRequest(int32_t firesRet, Method method, Args&& ... args);
     void ReRegisterBusinessCallback();
     void ReleaseRegisterBusinessCallback();
     void StartThreadReRegisterBusinessCallback();
-    template <typename Method, typename... Args>
-    int32_t RetryClientRequest(int32_t firesRet, Method method, Args&& ... args);
 
     class DeviceProfileDeathRecipient : public IRemoteObject::DeathRecipient {
     public:
@@ -164,12 +164,11 @@ private:
     std::mutex saListenerLock_;
     sptr<SystemAbilityListener> saListenerCallback_ = nullptr;
 
+    const std::set<int32_t> retryErrCodes_ = {DP_SERVICE_STOPPED, DP_LOAD_SERVICE_ERR};
     std::mutex businessLock_;
     sptr<IBusinessCallback> businessCallback_ = nullptr;
     std::string strSaId_ = "";
     std::string businessKey_ = "";
-
-    const std::set<int32_t> retryErrCodes_ = {DP_SERVICE_STOPPED, DP_LOAD_SERVICE_ERR};
 };
 } // namespace DeviceProfile
 } // namespace OHOS
