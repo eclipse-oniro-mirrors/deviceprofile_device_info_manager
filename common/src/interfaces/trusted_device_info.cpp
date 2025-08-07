@@ -45,7 +45,7 @@ int32_t TrustedDeviceInfo::GetAuthForm() const
     return authForm_;
 }
 
-void TrustedDeviceInfo::SetAuthForm(const int32_t authForm)
+void TrustedDeviceInfo::SetAuthForm(int32_t authForm)
 {
     authForm_ = authForm;
 }
@@ -55,7 +55,7 @@ uint16_t TrustedDeviceInfo::GetDeviceTypeId() const
     return deviceTypeId_;
 }
 
-void TrustedDeviceInfo::SetDeviceTypeId(const uint16_t deviceTypeId)
+void TrustedDeviceInfo::SetDeviceTypeId(uint16_t deviceTypeId)
 {
     deviceTypeId_ = deviceTypeId;
 }
@@ -75,7 +75,7 @@ int32_t TrustedDeviceInfo::GetOsType() const
     return osType_;
 }
 
-void TrustedDeviceInfo::SetOsType(const int32_t osType)
+void TrustedDeviceInfo::SetOsType(int32_t osType)
 {
     osType_ = osType;
 }
