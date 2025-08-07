@@ -1081,8 +1081,8 @@ HWTEST_F(DeviceProfileManagerTest, GetUserId001, TestSize.Level1)
     ServiceProfile serviceProfile9;
     int32_t userId = 1;
     serviceProfile9.SetUserId(userId);
-    bool ret = serviceProfile9.GetUserId();
-    EXPECT_EQ(true, ret);
+    int32_t outUserId = serviceProfile9.GetUserId();
+    EXPECT_EQ(outUserId, userId);
 }
 
 /**
@@ -1863,7 +1863,6 @@ HWTEST_F(DeviceProfileManagerTest, SyncWithNotOHBasedDevice001, TestSize.Level1)
     sptr<IRemoteObject> syncCompletedCallback;
     int32_t ret = DeviceProfileManager::GetInstance().SyncWithNotOHBasedDevice(
         notOHBasedDevices, callerDescriptor, syncCompletedCallback);
-    EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
     DeviceProfileManager::GetInstance().SyncWithNotOHBasedDeviceFailed(notOHBasedDevices, syncCompletedCallback);
     EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
 }

@@ -260,7 +260,8 @@ std::string Accessee::dump() const
     cJSON_AddStringToObject(json, ACCESSEE_ACCOUNT_ID.c_str(),
         ProfileUtils::GetAnonyString(accesseeAccountId_).c_str());
     cJSON_AddNumberToObject(json, ACCESSEE_TOKEN_ID.c_str(), accesseeTokenId_);
-    cJSON_AddStringToObject(json, ACCESSEE_BUNDLE_NAME.c_str(), accesseeBundleName_.c_str());
+    cJSON_AddStringToObject(json, ACCESSEE_BUNDLE_NAME.c_str(),
+        ProfileUtils::GetAnonyString(accesseeBundleName_).c_str());
     cJSON_AddStringToObject(json, ACCESSEE_HAP_SIGNATURE.c_str(), accesseeHapSignature_.c_str());
     cJSON_AddNumberToObject(json, ACCESSEE_BIND_LEVEL.c_str(), accesseeBindLevel_);
     cJSON_AddStringToObject(json, ACCESSEE_DEVICE_NAME.c_str(),
