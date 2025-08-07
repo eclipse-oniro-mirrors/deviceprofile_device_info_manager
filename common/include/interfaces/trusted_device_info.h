@@ -52,10 +52,10 @@ public:
 
 private:
     std::string networkId_;
-    std::int32_t authForm_;
-    std::uint16_t deviceTypeId_;
+    int32_t authForm_;
+    uint16_t deviceTypeId_;
     std::string osVersion_;
-    std::int32_t osType_;
+    int32_t osType_;
     std::string udid_;
     std::string uuid_;
 };

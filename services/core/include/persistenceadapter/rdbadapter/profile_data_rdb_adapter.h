@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,6 +18,7 @@
 
 
 #include <set>
+#include "dp_services_constants.h"
 #include "irdb_adapter.h"
 #include "rdb_open_callback.h"
 #include "single_instance.h"
@@ -49,6 +50,7 @@ public:
     int32_t OnCreate(RdbStore& store) override;
     int32_t OnUpgrade(RdbStore& store, int oldVersion, int newVersion) override;
 private:
+    int32_t CheckAndAlterTable(RdbStore& store, const RdbTableAlterInfo& info);
     int32_t UpdateFromVer1To2(RdbStore& store);
 };
 } // namespace DistributedDeviceProfile

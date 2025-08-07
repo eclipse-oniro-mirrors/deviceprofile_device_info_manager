@@ -436,7 +436,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileActive_001, TestSize
     EXPECT_EQ(DP_SUCCESS, ret);
 }
 
-HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactivet_001, TestSize.Level0)
+HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactive_001, TestSize.Level0)
 {
     TrustDeviceProfile profile;
     int32_t ret = listenerStub_->ProfileChangeListenerStub::OnTrustDeviceProfileInactive(profile);

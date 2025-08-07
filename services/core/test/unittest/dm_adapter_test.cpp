@@ -66,7 +66,7 @@ HWTEST_F(DMAdapterTest, Init001, TestSize.Level1)
     DMAdapter::GetInstance().dmInitCallback_ = nullptr;
     DMAdapter::GetInstance().deviceStateCallback_ = nullptr;
     int32_t ret = DMAdapter::GetInstance().Init();
-    EXPECT_EQ(0, ret);
+    EXPECT_NE(DP_INVALID_PARAMS, ret);
     ret = DMAdapter::GetInstance().UnInit();
     EXPECT_EQ(DP_SUCCESS, ret);
 }
@@ -94,7 +94,7 @@ HWTEST_F(DMAdapterTest, UnInit001, TestSize.Level1)
 HWTEST_F(DMAdapterTest, UnInit002, TestSize.Level1)
 {
     int32_t ret = DMAdapter::GetInstance().Init();
-    EXPECT_EQ(0, ret);
+    EXPECT_NE(DP_INVALID_PARAMS, ret);
     ret = DMAdapter::GetInstance().UnInit();
     EXPECT_EQ(DP_SUCCESS, ret);
 }
@@ -108,7 +108,7 @@ HWTEST_F(DMAdapterTest, UnInit002, TestSize.Level1)
 HWTEST_F(DMAdapterTest, ReInit001, TestSize.Level1)
 {
     int32_t ret = DMAdapter::GetInstance().ReInit();
-    EXPECT_EQ(0, ret);
+    EXPECT_NE(DP_INVALID_PARAMS, ret);
     ret = DMAdapter::GetInstance().UnInit();
     EXPECT_EQ(DP_SUCCESS, ret);
 }

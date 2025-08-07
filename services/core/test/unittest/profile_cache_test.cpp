@@ -1007,7 +1007,7 @@ HWTEST_F(ProfileCacheTest, SetSwitchByProfileBatch001, TestSize.Level1)
 {
     std::vector<CharacteristicProfile> charProfiles;
     std::unordered_map<std::string, SwitchFlag> switchServiceMap;
-    uint32_t outSwitch;
+    uint32_t outSwitch = 0;
     int32_t ret = ProfileCache::GetInstance().SetSwitchByProfileBatch(charProfiles, switchServiceMap, outSwitch);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
@@ -1023,7 +1023,7 @@ HWTEST_F(ProfileCacheTest, SetSwitchByProfileBatch002, TestSize.Level1)
 {
     std::vector<CharacteristicProfile> charProfiles;
     std::unordered_map<std::string, SwitchFlag> switchServiceMap;
-    uint32_t outSwitch;
+    uint32_t outSwitch = 0;
     CharacteristicProfile charProfile;
     int32_t ret = ProfileCache::GetInstance().SetSwitchByProfileBatch(charProfiles, switchServiceMap, outSwitch);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);

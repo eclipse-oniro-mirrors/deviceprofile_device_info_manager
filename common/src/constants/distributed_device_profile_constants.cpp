@@ -62,6 +62,8 @@ const std::string DEVICE_PROFILE_TABLE = "device_profile";
 const std::string DEVICE_ICON_INFO_TABLE = "device_icon_info";
 const std::string PRODUCT_INFO_TABLE = "product_info";
 const std::string SYSTEM = "system";
+const std::string RDB_TYPE_TEXT = "TEXT";
+const std::string RESULT = "result";
 /* ServiceProfile Attribute */
 const std::string SERVICE_NAME = "serviceName";
 const std::string SERVICE_PROFILE_SERVICE_ID = "serviceId";
@@ -472,6 +474,14 @@ const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEDEVICEID_AND_ACCESSEEUSERI
     "SELECT * FROM accessee_table WHERE accesseeDeviceId = ? and accesseeUserId = ? ";
 const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_ACCESSERID_AND_ACCESSEEID =
     "SELECT * FROM access_control_table WHERE accesserId = ? and accesseeId = ? ";
+const std::string TABLE_EXIST_COLUMN_SQL =
+    "SELECT EXISTS (\n"
+    "    SELECT 1 \n"
+    "    FROM PRAGMA_TABLE_INFO(?) \n"
+    "    WHERE \n"
+    "        name = ? AND\n"
+    "        type = ?\n"
+    ") AS result;";
 /* SubscribeTrustInfoManager */
 const std::string SUBSCRIBE_TRUST_INFO_TABLE = "subscribe_trust_info_table";
 const std::string CREATE_SUBSCRIBE_TRUST_INFO_TABLE_SQL =
