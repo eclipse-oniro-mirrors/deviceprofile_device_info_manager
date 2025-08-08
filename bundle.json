@@ -90,6 +90,7 @@
                 "dp_subscribe_info.h",
                 "dp_sync_options.h",
                 "i_distributed_device_profile.h",
+                "i_dp_sync_adapter.h",
                 "i_profile_change_listener.h",
                 "i_sync_completed_callback.h",
                 "profile_change_listener_proxy.h",
