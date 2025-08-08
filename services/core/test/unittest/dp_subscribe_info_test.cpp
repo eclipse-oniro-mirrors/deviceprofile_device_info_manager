@@ -317,7 +317,7 @@ HWTEST_F(DPSubscribeInfoTest, Stub_002, TestSize.Level1)
 HWTEST_F(DPSubscribeInfoTest, IProfileChangeListener_001, TestSize.Level1)
 {
     OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
-	    new(std::nothrow) DPSubscribeInfoTest::SubscribeDPChangeListener;
+	    sptr<IProfileChangeListener>(new DPSubscribeInfoTest::SubscribeDPChangeListener);
     TrustDeviceProfile profile;
     profile.SetPeerUserId(1001);
     int32_t ret = subscribeDPChangeListener->OnTrustDeviceProfileActive(profile);
