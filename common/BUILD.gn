@@ -21,7 +21,7 @@ idl_gen_interface("dp_business_callback_interfaces") {
     "IBusinessCallback.idl",
   ]
   log_domainid = "0xD004400"
-  log_tag = "Distributed_Device_Profile"
+  log_tag = "DHDP"
 }
 
 config("business_callback_interfaces_ipc_config"){
