@@ -17,7 +17,7 @@
 #define OHOS_DP_DEVICE_PROFILE_LOG_H
 
 #ifndef LOG_TAG
-#define LOG_TAG "Distributed_Device_Profile"
+#define LOG_TAG "DHDP"
 #undef LOG_DOMAIN
 #define LOG_DOMAIN 0xD004400
 #endif
