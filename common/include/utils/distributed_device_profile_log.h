@@ -22,7 +22,6 @@
 #define LOG_DOMAIN 0xD004400
 #endif
 #include "hilog/log.h"
-#include "log_utils.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -43,16 +42,11 @@ namespace DistributedDeviceProfile {
 #undef HILOGD
 #endif
 
-#define HILOGF(fmt, ...) HILOG_FATAL(LOG_CORE, "[%{public}d] %{public}s::%{public}s " fmt, LogUtils::LogCounter(), \
-    TAG.c_str(), __FUNCTION__, ##__VA_ARGS__)
-#define HILOGE(fmt, ...) HILOG_ERROR(LOG_CORE, "[%{public}d] %{public}s::%{public}s " fmt, LogUtils::LogCounter(), \
-    TAG.c_str(), __FUNCTION__, ##__VA_ARGS__)
-#define HILOGW(fmt, ...) HILOG_WARN(LOG_CORE, "[%{public}d] %{public}s::%{public}s " fmt, LogUtils::LogCounter(), \
-    TAG.c_str(), __FUNCTION__, ##__VA_ARGS__)
-#define HILOGI(fmt, ...) HILOG_INFO(LOG_CORE, "[%{public}d] %{public}s::%{public}s " fmt, LogUtils::LogCounter(), \
-    TAG.c_str(), __FUNCTION__, ##__VA_ARGS__)
-#define HILOGD(fmt, ...) HILOG_DEBUG(LOG_CORE, "[%{public}d] %{public}s::%{public}s " fmt, LogUtils::LogCounter(), \
-    TAG.c_str(), __FUNCTION__, ##__VA_ARGS__)
+#define HILOGF(fmt, ...) HILOG_FATAL(LOG_CORE, "%{public}s::%{public}s " fmt, TAG.c_str(), __FUNCTION__, ##__VA_ARGS__)
+#define HILOGE(fmt, ...) HILOG_ERROR(LOG_CORE, "%{public}s::%{public}s " fmt, TAG.c_str(), __FUNCTION__, ##__VA_ARGS__)
+#define HILOGW(fmt, ...) HILOG_WARN(LOG_CORE, "%{public}s::%{public}s " fmt, TAG.c_str(), __FUNCTION__, ##__VA_ARGS__)
+#define HILOGI(fmt, ...) HILOG_INFO(LOG_CORE, "%{public}s::%{public}s " fmt, TAG.c_str(), __FUNCTION__, ##__VA_ARGS__)
+#define HILOGD(fmt, ...) HILOG_DEBUG(LOG_CORE, "%{public}s::%{public}s " fmt, TAG.c_str(), __FUNCTION__, ##__VA_ARGS__)
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_DEVICE_PROFILE_LOG_H
