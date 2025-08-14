@@ -20,7 +20,6 @@
 #include "gtest/gtest.h"
 #include "refbase.h"
 #include "rdb_errno.h"
-#include "log_utils.h"
 #include "profile_utils.h"
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
@@ -1638,23 +1637,6 @@ HWTEST_F(ProfileUtilsTest, IsNumStr001, TestSize.Level1)
 {
     bool isNumStr = ProfileUtils::IsNumStr("");
     EXPECT_EQ(isNumStr, false);
-}
-
-/**
- * @tc.name: LogCounter001
- * @tc.desc:
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProfileUtilsTest, LogCounter001, TestSize.Level1)
-{
-    int32_t counter = LogUtils::LogCounter();
-    EXPECT_GE(counter, COUNTER_INIT);
-    for (int32_t i = 0; i < COUNTER_MAX; i++) {
-        LogUtils::LogCounter();
-    }
-    counter = LogUtils::LogCounter();
-    EXPECT_LE(counter, COUNTER_MAX);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

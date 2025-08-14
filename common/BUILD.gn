@@ -131,7 +131,6 @@ ohos_shared_library("distributed_device_profile_common") {
     "src/interfaces/trusted_device_info.cpp",
     "src/utils/content_sensor_manager_utils.cpp",
     "src/utils/ipc_utils.cpp",
-    "src/utils/log_utils.cpp",
     "src/utils/profile_utils.cpp",
   ]
 
