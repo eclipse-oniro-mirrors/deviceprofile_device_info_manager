@@ -45,7 +45,7 @@ namespace DistributedDeviceProfile {
 using namespace std::chrono_literals;
 
 namespace {
-    const std::string TAG = "DistributedDeviceProfileClient";
+    const std::string TAG = "Client";
     constexpr int32_t LOAD_SA_TIMEOUT_MS = 10000;
     constexpr int32_t MAX_RETRY_TIMES = 7;
 }
