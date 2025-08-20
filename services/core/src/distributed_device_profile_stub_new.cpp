@@ -29,7 +29,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-const std::string TAG = "DistributedDeviceProfileStubNew";
+const std::string TAG = "StubNew";
 }
 
 DistributedDeviceProfileStubNew::DistributedDeviceProfileStubNew()
@@ -259,7 +259,7 @@ int32_t DistributedDeviceProfileStubNew::OnRemoteRequest(uint32_t code, MessageP
 
 int32_t DistributedDeviceProfileStubNew::PutAccessControlProfileInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     AccessControlProfile accessControlProfile;
     if (!accessControlProfile.UnMarshalling(data)) {
         HILOGE("read parcel fail!");
@@ -275,7 +275,7 @@ int32_t DistributedDeviceProfileStubNew::PutAccessControlProfileInner(MessagePar
 
 int32_t DistributedDeviceProfileStubNew::UpdateAccessControlProfileInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     AccessControlProfile accessControlProfile;
     if (!accessControlProfile.UnMarshalling(data)) {
         HILOGE("read parcel fail!");
@@ -309,7 +309,7 @@ int32_t DistributedDeviceProfileStubNew::GetTrustDeviceProfileInner(MessageParce
 
 int32_t DistributedDeviceProfileStubNew::GetAllTrustDeviceProfileInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     std::vector<TrustDeviceProfile> trustDeviceProfiles;
     int32_t ret = GetAllTrustDeviceProfile(trustDeviceProfiles);
     if (!reply.WriteInt32(ret)) {
@@ -317,7 +317,6 @@ int32_t DistributedDeviceProfileStubNew::GetAllTrustDeviceProfileInner(MessagePa
         return ERR_FLATTEN_OBJECT;
     }
     if (!IpcUtils::Marshalling(reply, trustDeviceProfiles)) {
-        HILOGE("read parcel fail!");
         return DP_READ_PARCEL_FAIL;
     }
     return DP_SUCCESS;
@@ -325,10 +324,9 @@ int32_t DistributedDeviceProfileStubNew::GetAllTrustDeviceProfileInner(MessagePa
 
 int32_t DistributedDeviceProfileStubNew::GetAccessControlProfileInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     std::map<std::string, std::string> queryParams;
     if (!IpcUtils::UnMarshalling(data, queryParams)) {
-        HILOGE("read parcel fail!");
         return DP_READ_PARCEL_FAIL;
     }
     std::vector<AccessControlProfile> accessControlProfiles;
@@ -338,7 +336,6 @@ int32_t DistributedDeviceProfileStubNew::GetAccessControlProfileInner(MessagePar
         return ERR_FLATTEN_OBJECT;
     }
     if (!IpcUtils::Marshalling(reply, accessControlProfiles)) {
-        HILOGE("write parcel fail!");
         return DP_WRITE_PARCEL_FAIL;
     }
     return DP_SUCCESS;
@@ -346,7 +343,7 @@ int32_t DistributedDeviceProfileStubNew::GetAccessControlProfileInner(MessagePar
 
 int32_t DistributedDeviceProfileStubNew::GetAllAccessControlProfileInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     std::vector<AccessControlProfile> accessControlProfiles;
     int32_t ret = GetAllAccessControlProfile(accessControlProfiles);
     if (!reply.WriteInt32(ret)) {
@@ -354,7 +351,6 @@ int32_t DistributedDeviceProfileStubNew::GetAllAccessControlProfileInner(Message
         return ERR_FLATTEN_OBJECT;
     }
     if (!IpcUtils::Marshalling(reply, accessControlProfiles)) {
-        HILOGE("write parcel fail!");
         return DP_WRITE_PARCEL_FAIL;
     }
     return DP_SUCCESS;
@@ -362,7 +358,7 @@ int32_t DistributedDeviceProfileStubNew::GetAllAccessControlProfileInner(Message
 
 int32_t DistributedDeviceProfileStubNew::GetAllAclIncludeLnnAclInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     std::vector<AccessControlProfile> accessControlProfiles;
     int32_t ret = GetAllAclIncludeLnnAcl(accessControlProfiles);
     if (!reply.WriteInt32(ret)) {
@@ -370,7 +366,6 @@ int32_t DistributedDeviceProfileStubNew::GetAllAclIncludeLnnAclInner(MessageParc
         return ERR_FLATTEN_OBJECT;
     }
     if (!IpcUtils::Marshalling(reply, accessControlProfiles)) {
-        HILOGE("write parcel fail!");
         return DP_WRITE_PARCEL_FAIL;
     }
     return DP_SUCCESS;
@@ -378,7 +373,7 @@ int32_t DistributedDeviceProfileStubNew::GetAllAclIncludeLnnAclInner(MessageParc
 
 int32_t DistributedDeviceProfileStubNew::DeleteAccessControlProfileInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     int32_t accessControlId;
     READ_HELPER(data, Int32, accessControlId);
     int32_t ret = DeleteAccessControlProfile(accessControlId);
@@ -391,14 +386,13 @@ int32_t DistributedDeviceProfileStubNew::DeleteAccessControlProfileInner(Message
 
 int32_t DistributedDeviceProfileStubNew::PutSessionKeyInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     uint32_t userId = 0;
     std::vector<uint8_t> sessionKey;
     int32_t sessionKeyId = 0;
     READ_HELPER(data, Uint32, userId);
     if (!IpcUtils::UnMarshalling(data, sessionKey)) {
         sessionKey.clear();
-        HILOGE("dp ipc write parcel fail");
         return DP_WRITE_PARCEL_FAIL;
     }
     int32_t ret = PutSessionKey(userId, sessionKey, sessionKeyId);
@@ -414,7 +408,7 @@ int32_t DistributedDeviceProfileStubNew::PutSessionKeyInner(MessageParcel& data,
 
 int32_t DistributedDeviceProfileStubNew::GetSessionKeyInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     uint32_t userId = 0;
     int32_t sessionKeyId = 0;
     std::vector<uint8_t> sessionKey;
@@ -428,7 +422,6 @@ int32_t DistributedDeviceProfileStubNew::GetSessionKeyInner(MessageParcel& data,
     }
     if (!IpcUtils::Marshalling(reply, sessionKey)) {
         sessionKey.clear();
-        HILOGE("dp ipc write parcel fail");
         return DP_WRITE_PARCEL_FAIL;
     }
     sessionKey.clear();
@@ -437,7 +430,7 @@ int32_t DistributedDeviceProfileStubNew::GetSessionKeyInner(MessageParcel& data,
 
 int32_t DistributedDeviceProfileStubNew::UpdateSessionKeyInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     uint32_t userId = 0;
     std::vector<uint8_t> sessionKey;
     int32_t sessionKeyId = 0;
@@ -445,7 +438,6 @@ int32_t DistributedDeviceProfileStubNew::UpdateSessionKeyInner(MessageParcel& da
     READ_HELPER(data, Int32, sessionKeyId);
     if (!IpcUtils::UnMarshalling(data, sessionKey)) {
         sessionKey.clear();
-        HILOGE("dp ipc write parcel fail");
         return DP_WRITE_PARCEL_FAIL;
     }
     int32_t ret = UpdateSessionKey(userId, sessionKeyId, sessionKey);
@@ -460,7 +452,7 @@ int32_t DistributedDeviceProfileStubNew::UpdateSessionKeyInner(MessageParcel& da
 
 int32_t DistributedDeviceProfileStubNew::DeleteSessionKeyInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     uint32_t userId = 0;
     int32_t sessionKeyId = 0;
     READ_HELPER(data, Uint32, userId);
@@ -475,7 +467,7 @@ int32_t DistributedDeviceProfileStubNew::DeleteSessionKeyInner(MessageParcel& da
 
 int32_t DistributedDeviceProfileStubNew::PutServiceProfileInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     ServiceProfile serviceProfile;
     if (!serviceProfile.UnMarshalling(data)) {
         HILOGE("read parcel fail!");
@@ -493,7 +485,6 @@ int32_t DistributedDeviceProfileStubNew::PutServiceProfileBatchInner(MessageParc
 {
     std::vector<ServiceProfile> serviceProfiles;
     if (!IpcUtils::UnMarshalling(data, serviceProfiles)) {
-        HILOGE("read parcel fail!");
         return DP_READ_PARCEL_FAIL;
     }
     int32_t ret = PutServiceProfileBatch(serviceProfiles);
@@ -523,7 +514,6 @@ int32_t DistributedDeviceProfileStubNew::PutCharacteristicProfileBatchInner(Mess
 {
     std::vector<CharacteristicProfile> charProfiles;
     if (!IpcUtils::UnMarshalling(data, charProfiles)) {
-        HILOGE("read parcel fail!");
         return DP_READ_PARCEL_FAIL;
     }
     int32_t ret = PutCharacteristicProfileBatch(charProfiles);
@@ -697,7 +687,6 @@ int32_t DistributedDeviceProfileStubNew::SendSubscribeInfosInner(MessageParcel& 
 {
     std::map<std::string, SubscribeInfo> listenerMap;
     if (!IpcUtils::UnMarshalling(data, listenerMap)) {
-        HILOGE("read parcel fail!");
         return DP_READ_PARCEL_FAIL;
     }
     int32_t ret = SendSubscribeInfos(listenerMap);
@@ -741,7 +730,6 @@ int32_t DistributedDeviceProfileStubNew::PutAllTrustedDevicesInner(MessageParcel
 {
     std::vector<TrustedDeviceInfo> deviceInfos;
     if (!IpcUtils::UnMarshalling(data, deviceInfos)) {
-        HILOGE("read parcel fail!");
         return DP_READ_PARCEL_FAIL;
     }
     int32_t ret = PutAllTrustedDevices(deviceInfos);
@@ -754,7 +742,7 @@ int32_t DistributedDeviceProfileStubNew::PutAllTrustedDevicesInner(MessageParcel
 
 int32_t DistributedDeviceProfileStubNew::PutLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     LocalServiceInfo localServiceInfo;
     if (!localServiceInfo.UnMarshalling(data)) {
         HILOGE("read parcel fail!");
@@ -770,7 +758,7 @@ int32_t DistributedDeviceProfileStubNew::PutLocalServiceInfoInner(MessageParcel&
 
 int32_t DistributedDeviceProfileStubNew::UpdateLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     LocalServiceInfo localServiceInfo;
     if (!localServiceInfo.UnMarshalling(data)) {
         HILOGE("read parcel fail!");
@@ -822,7 +810,6 @@ int32_t DistributedDeviceProfileStubNew::PutDeviceProfileBatchInner(MessageParce
 {
     std::vector<DeviceProfile> deviceProfiles;
     if (!IpcUtils::UnMarshalling(data, deviceProfiles)) {
-        HILOGE("read parcel fail!");
         return DP_READ_PARCEL_FAIL;
     }
     int32_t ret = PutDeviceProfileBatch(deviceProfiles);
@@ -847,7 +834,6 @@ int32_t DistributedDeviceProfileStubNew::GetDeviceProfilesInner(MessageParcel& d
         return ERR_FLATTEN_OBJECT;
     }
     if (!IpcUtils::Marshalling(reply, deviceProfiles)) {
-        HILOGE("write parcel fail!");
         return DP_WRITE_PARCEL_FAIL;
     }
     return DP_SUCCESS;
@@ -892,7 +878,6 @@ int32_t DistributedDeviceProfileStubNew::PutProductInfoBatchInner(MessageParcel&
 {
     std::vector<ProductInfo> productInfos;
     if (!IpcUtils::UnMarshalling(data, productInfos)) {
-        HILOGE("read parcel fail!");
         return DP_READ_PARCEL_FAIL;
     }
     int32_t ret = PutProductInfoBatch(productInfos);
@@ -907,7 +892,6 @@ int32_t DistributedDeviceProfileStubNew::PutDeviceIconInfoBatchInner(MessageParc
 {
     std::vector<DeviceIconInfo> deviceIconInfos;
     if (!IpcUtils::UnMarshalling(data, deviceIconInfos)) {
-        HILOGE("read parcel fail!");
         return DP_READ_PARCEL_FAIL;
     }
     int32_t ret = PutDeviceIconInfoBatch(deviceIconInfos);
@@ -933,7 +917,6 @@ int32_t DistributedDeviceProfileStubNew::GetDeviceIconInfosInner(MessageParcel& 
         return ERR_FLATTEN_OBJECT;
     }
     if (!IpcUtils::Marshalling(reply, deviceIconInfos)) {
-        HILOGE("Write parcel fail!");
         return DP_READ_PARCEL_FAIL;
     }
     return DP_SUCCESS;
@@ -941,7 +924,7 @@ int32_t DistributedDeviceProfileStubNew::GetDeviceIconInfosInner(MessageParcel& 
 
 int32_t DistributedDeviceProfileStubNew::PutServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     ServiceInfoProfile serviceInfoProfile;
     if (!serviceInfoProfile.UnMarshalling(data)) {
         HILOGE("read parcel fail!");
@@ -957,7 +940,7 @@ int32_t DistributedDeviceProfileStubNew::PutServiceInfoProfileInner(MessageParce
 
 int32_t DistributedDeviceProfileStubNew::DeleteServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     ServiceInfoUniqueKey key;
     if (!key.UnMarshalling(data)) {
         HILOGE("read parcel fail!");
@@ -973,7 +956,7 @@ int32_t DistributedDeviceProfileStubNew::DeleteServiceInfoProfileInner(MessagePa
 
 int32_t DistributedDeviceProfileStubNew::UpdateServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     ServiceInfoProfile serviceInfoProfile;
     if (!serviceInfoProfile.UnMarshalling(data)) {
         HILOGE("read parcel fail!");
@@ -1026,7 +1009,6 @@ int32_t DistributedDeviceProfileStubNew::GetServiceInfoProfileListByTokenIdInner
     }
  
     if (!IpcUtils::Marshalling(reply, serviceInfoProfiles)) {
-        HILOGE("Write parcel fail!");
         return DP_READ_PARCEL_FAIL;
     }
     return DP_SUCCESS;
@@ -1043,7 +1025,6 @@ int32_t DistributedDeviceProfileStubNew::GetAllServiceInfoProfileListInner(Messa
     }
  
     if (!IpcUtils::Marshalling(reply, serviceInfoProfiles)) {
-        HILOGE("Write parcel fail!");
         return DP_READ_PARCEL_FAIL;
     }
     return DP_SUCCESS;
@@ -1066,7 +1047,6 @@ int32_t DistributedDeviceProfileStubNew::GetServiceInfoProfileListByBundleNameIn
     }
  
     if (!IpcUtils::Marshalling(reply, serviceInfoProfiles)) {
-        HILOGE("Write parcel fail!");
         return DP_READ_PARCEL_FAIL;
     }
     return DP_SUCCESS;
@@ -1076,7 +1056,6 @@ int32_t DistributedDeviceProfileStubNew::DeleteDeviceProfileBatchInner(MessagePa
 {
     std::vector<DeviceProfile> deviceProfiles;
     if (!IpcUtils::UnMarshalling(data, deviceProfiles)) {
-        HILOGE("Write parcel fail!");
         return DP_READ_PARCEL_FAIL;
     }
     int32_t ret = DeleteDeviceProfileBatch(deviceProfiles);
@@ -1122,7 +1101,7 @@ int32_t DistributedDeviceProfileStubNew::UnRegisterBusinessCallbackInner(Message
 
 int32_t DistributedDeviceProfileStubNew::PutBusinessEventInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     BusinessEvent event;
     if (!event.UnMarshalling(data)) {
         HILOGE("read parcel fail!");
@@ -1138,7 +1117,7 @@ int32_t DistributedDeviceProfileStubNew::PutBusinessEventInner(MessageParcel& da
 
 int32_t DistributedDeviceProfileStubNew::GetBusinessEventInner(MessageParcel& data, MessageParcel& reply)
 {
-    HILOGI("called");
+    HILOGD("called");
     BusinessEvent event;
     if (!event.UnMarshalling(data)) {
         HILOGE("read parcel fail!");

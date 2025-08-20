@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -43,7 +43,10 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<AccessContro
 {
     uint32_t size = aclProfiles.size();
     WRITE_HELPER_RET(parcel, Uint32, size, false);
-    if (aclProfiles.empty() || aclProfiles.size() > MAX_PROFILE_SIZE) {
+    if (aclProfiles.empty()) {
+        return true;
+    }
+    if (aclProfiles.size() > MAX_PROFILE_SIZE) {
         HILOGE("profile size is invalid!size : %{public}zu", aclProfiles.size());
         return false;
     }
