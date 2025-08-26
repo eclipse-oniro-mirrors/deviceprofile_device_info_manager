@@ -31,12 +31,8 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 
-void PutBusinessEventFuzzTest(const uint8_t* data, size_t size)
+void PutBusinessEventFuzzTest(FuzzedDataProvider& fdp)
 {
-    if ((data == nullptr) || (size < sizeof(int64_t))) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
     std::string businessKey = fdp.ConsumeRandomLengthString();
     std::string businessValue = fdp.ConsumeRandomLengthString();
     if (businessKey.empty() || businessValue.empty() || businessKey.size() > MAX_STRING_LEN ||
@@ -51,12 +47,8 @@ void PutBusinessEventFuzzTest(const uint8_t* data, size_t size)
     BusinessEventManager::GetInstance().PutBusinessEvent(businessEvent);
 }
 
-void GetBusinessEventFuzzTest(const uint8_t* data, size_t size)
+void GetBusinessEventFuzzTest(FuzzedDataProvider& fdp)
 {
-    if ((data == nullptr) || (size < sizeof(int64_t))) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
     std::string businessKey = fdp.ConsumeRandomLengthString();
     if (businessKey.empty() || businessKey.size() > MAX_STRING_LEN) {
         return;
@@ -66,13 +58,23 @@ void GetBusinessEventFuzzTest(const uint8_t* data, size_t size)
     businessEvent.SetBusinessKey(businessKey);
     BusinessEventManager::GetInstance().GetBusinessEvent(businessEvent);
 }
+
+void BusinessEventManagerFuzzTest(const uint8_t* data, size_t size)
+{
+    if ((data == nullptr) || (size < sizeof(int64_t))) {
+        return;
+    }
+    FuzzedDataProvider fdp(data, size);
+    
+    PutBusinessEventFuzzTest(fdp);
+    GetBusinessEventFuzzTest(fdp);
+}
 }
 }
 
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
-    OHOS::DistributedDeviceProfile::PutBusinessEventFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GetBusinessEventFuzzTest(data, size);
+    OHOS::DistributedDeviceProfile::BusinessEventManagerFuzzTest(data, size);
     return 0;
 }
