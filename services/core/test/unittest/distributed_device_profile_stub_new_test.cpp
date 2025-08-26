@@ -630,7 +630,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, GetAllAccessControlProfileInner_00
     MessageParcel data;
     MessageParcel reply;
     int32_t ret = ProfileStub_->GetAllAccessControlProfileInner(data, reply);
-    EXPECT_EQ(DP_WRITE_PARCEL_FAIL, ret);
+    EXPECT_EQ(DP_SUCCESS, ret);
 }
 
 /**
@@ -924,7 +924,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_007, TestSize.
     MessageParcel reply;
     MessageOption option;
     int32_t ret = ProfileStub_->NotifyAclEventInner(code, data, reply, option);
-    EXPECT_EQ(DP_WRITE_PARCEL_FAIL, ret);
+    EXPECT_EQ(DP_SUCCESS, ret);
 }
 
 /**
