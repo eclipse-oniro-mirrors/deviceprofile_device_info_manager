@@ -177,6 +177,8 @@ int32_t DistributedDeviceProfileStubNew::NotifyEventInner(uint32_t code, Message
             return DeleteCharacteristicProfileInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::SYNC_DEVICE_PROFILE_NEW):
             return SyncDeviceProfileInner(data, reply);
+        case static_cast<uint32_t>(DPInterfaceCode::SYNC_STATIC_PROFILE):
+            return SyncStaticProfileInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_INFO_PROFILE):
             return PutServiceInfoProfileInner(data, reply);
         case static_cast<uint32_t>(DPInterfaceCode::DELETE_SERVICE_INFO_PROFILE):
@@ -676,6 +678,22 @@ int32_t DistributedDeviceProfileStubNew::SyncDeviceProfileInner(MessageParcel& d
     }
     sptr<IRemoteObject> syncCompletedCallback = data.ReadRemoteObject();
     int32_t ret = SyncDeviceProfile(syncOptions, syncCompletedCallback);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::SyncStaticProfileInner(MessageParcel& data, MessageParcel& reply)
+{
+    DistributedDeviceProfile::DpSyncOptions syncOptions;
+    if (!syncOptions.UnMarshalling(data)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    sptr<IRemoteObject> syncCompletedCallback = data.ReadRemoteObject();
+    int32_t ret = SyncStaticProfile(syncOptions, syncCompletedCallback);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;

@@ -99,6 +99,8 @@ public:
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
         sptr<IRemoteObject> syncCompletedCallback) override;
+    int32_t SyncStaticProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
+        sptr<IRemoteObject> syncCompletedCallback) override;
     int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IRemoteObject> dpInitedCallback) override;
     int32_t UnSubscribeDeviceProfileInited(int32_t saId) override;
     int32_t SubscribePinCodeInvalid(const std::string& bundleName, int32_t pinExchangeType,

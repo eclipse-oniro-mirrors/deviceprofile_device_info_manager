@@ -77,6 +77,7 @@ public:
         sptr<IRemoteObject> pinCodeCallback) override;
     int32_t UnSubscribePinCodeInvalid(const std::string& bundleName, int32_t pinExchangeType) override;
     int32_t SyncDeviceProfile(const DpSyncOptions& syncOptions, sptr<IRemoteObject> syncCompletedCallback) override;
+    int32_t SyncStaticProfile(const DpSyncOptions& syncOptions, sptr<IRemoteObject> syncCompletedCallback) override;
     int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) override;
     int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo> deviceInfos) override;
     int32_t PutProductInfoBatch(const std::vector<ProductInfo>& productInfos) override;

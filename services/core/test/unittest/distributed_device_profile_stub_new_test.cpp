@@ -72,6 +72,8 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
     int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo> deviceInfos) override;
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
         sptr<IRemoteObject> syncCompletedCallback) override;
+    int32_t SyncStaticProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
+        sptr<IRemoteObject> syncCompletedCallback) override;
     int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) override;
     int32_t PutDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles) override;
     int32_t GetDeviceProfiles(DeviceProfileFilterOptions& options,
@@ -332,6 +334,14 @@ int32_t MockDistributedDeviceProfileStubNew::SyncDeviceProfile(
     (void)syncCompletedCallback;
     return 0;
 }
+int32_t MockDistributedDeviceProfileStubNew::SyncStaticProfile(
+    const DistributedDeviceProfile::DpSyncOptions& syncOptions, sptr<IRemoteObject> syncCompletedCallback)
+{
+    (void)syncOptions;
+    (void)syncCompletedCallback;
+    return 0;
+}
+
 int32_t MockDistributedDeviceProfileStubNew::SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap)
 {
     (void)listenerMap;
@@ -798,6 +808,20 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, SyncDeviceProfileInner_001, TestSi
     MessageParcel data;
     MessageParcel reply;
     int32_t ret = ProfileStub_->SyncDeviceProfileInner(data, reply);
+    EXPECT_EQ(DP_READ_PARCEL_FAIL, ret);
+}
+
+/**
+ * @tc.name: SyncStaticProfileInner001
+ * @tc.desc: SyncStaticProfileInner
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, SyncStaticProfileInner001, TestSize.Level1)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    int32_t ret = ProfileStub_->SyncStaticProfileInner(data, reply);
     EXPECT_EQ(DP_READ_PARCEL_FAIL, ret);
 }
 

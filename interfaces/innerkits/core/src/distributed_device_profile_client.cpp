@@ -546,6 +546,26 @@ int32_t DistributedDeviceProfileClient::SyncDeviceProfile(const DpSyncOptions& s
     return dpService->SyncDeviceProfile(syncOptions, syncCompletedCallback);
 }
 
+int32_t DistributedDeviceProfileClient::SyncStaticProfile(const DpSyncOptions& syncOptions,
+    sptr<ISyncCompletedCallback> syncCb)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    if (syncCb == nullptr) {
+        HILOGE("SyncCb is nullptr!");
+        return DP_SYNC_DEVICE_FAIL;
+    }
+    sptr<IRemoteObject> syncCompletedCallback = syncCb->AsObject();
+    if (syncCompletedCallback == nullptr) {
+        HILOGE("SyncCb ipc cast fail!");
+        return DP_SYNC_DEVICE_FAIL;
+    }
+    return dpService->SyncStaticProfile(syncOptions, syncCompletedCallback);
+}
+
 sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfileService()
 {
     {

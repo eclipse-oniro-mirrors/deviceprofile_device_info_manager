@@ -908,6 +908,19 @@ int32_t DistributedDeviceProfileServiceNew::SyncDeviceProfile(
     return ret;
 }
 
+int32_t DistributedDeviceProfileServiceNew::SyncStaticProfile(
+    const DistributedDeviceProfile::DpSyncOptions& syncOptions, sptr<IRemoteObject> syncCompletedCallback)
+{
+    if (!PermissionManager::GetInstance().CheckCallerSyncPermission()) {
+        HILOGE("this caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    HILOGD("CheckCallerSyncPermission success interface SyncStaticProfile");
+    int32_t ret = StaticProfileManager::GetInstance().SyncStaticProfile(syncOptions, syncCompletedCallback);
+    DpRadarHelper::GetInstance().ReportSyncDeviceProfile(ret);
+    return ret;
+}
+
 int32_t DistributedDeviceProfileServiceNew::SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap)
 {
     return SubscribeProfileManager::GetInstance().SubscribeDeviceProfile(listenerMap);
