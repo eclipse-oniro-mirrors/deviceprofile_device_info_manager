@@ -83,6 +83,7 @@ public:
     int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo);
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo);
     int32_t SyncDeviceProfile(const DpSyncOptions& syncOptions, sptr<ISyncCompletedCallback> syncCb);
+    int32_t SyncStaticProfile(const DpSyncOptions& syncOptions, sptr<ISyncCompletedCallback> syncCb);
     int32_t SubscribeDeviceProfileInited(int32_t saId, sptr<IDpInitedCallback> initedCb);
     int32_t UnSubscribeDeviceProfileInited(int32_t saId);
     int32_t SubscribePinCodeInvalid(const std::string& bundleName, int32_t pinExchangeType,

@@ -35,6 +35,7 @@ public:
 
 private:
     void NotifySyncCompleted(const SyncResults& syncResults);
+    void NotifyStaticSyncCompleted(const SyncResults& syncResults);
 
 private:
     std::shared_ptr<AppExecFwk::EventHandler> onSyncHandler_ = nullptr;

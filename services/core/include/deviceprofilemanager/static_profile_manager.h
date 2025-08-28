@@ -16,8 +16,11 @@
 #ifndef OHOS_DP_STATIC_PROFILE_MANAGER_H
 #define OHOS_DP_STATIC_PROFILE_MANAGER_H
 
-#include "characteristic_profile.h"
 #include "dm_device_info.h"
+#include "iremote_object.h"
+
+#include "characteristic_profile.h"
+#include "dp_sync_options.h"
 #include "kv_adapter.h"
 #include "single_instance.h"
 #include "trusted_device_info.h"
@@ -36,14 +39,21 @@ public:
         const std::string& characteristicKey, CharacteristicProfile& charProfile);
     int32_t GetAllCharacteristicProfile(std::vector<CharacteristicProfile>& staticCapabilityProfiles);
     void E2ESyncStaticProfile(const TrustedDeviceInfo& deviceInfo);
+    int32_t SyncStaticProfile(const DpSyncOptions& syncOptions, sptr<IRemoteObject> syncCompletedCallback);
+    void GetSyncListeners(std::map<std::string, sptr<IRemoteObject>>& syncListeners);
+    void RemoveSyncListeners(std::map<std::string, sptr<IRemoteObject>> syncListeners);
 
 private:
     int32_t GenerateStaticInfoProfile(const CharacteristicProfile& staticCapabilityProfile,
         std::unordered_map<std::string, CharacteristicProfile>& staticInfoProfiles);
+    int32_t AddSyncListener(const std::string& caller, sptr<IRemoteObject> syncListener);
 
 private:
     std::mutex staticStoreMutex_;
     std::shared_ptr<IKVAdapter> staticProfileStore_ = nullptr;
+    std::mutex syncListenerMapMutex_;
+    std::map<std::string, sptr<IRemoteObject>> syncListenerMap_;
+    sptr<IRemoteObject::DeathRecipient> syncListenerDeathRecipient_ = nullptr;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

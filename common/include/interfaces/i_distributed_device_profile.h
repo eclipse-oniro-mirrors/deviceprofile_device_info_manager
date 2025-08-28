@@ -84,6 +84,8 @@ public:
     virtual int32_t UnSubscribePinCodeInvalid(const std::string& bundleName, int32_t pinExchangeType) = 0;
     virtual int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
         sptr<IRemoteObject> syncCompletedCallback) = 0;
+    virtual int32_t SyncStaticProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
+        sptr<IRemoteObject> syncCompletedCallback) = 0;
     virtual int32_t SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap) = 0;
     virtual int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo> deviceInfos) = 0;
     virtual int32_t PutProductInfoBatch(const std::vector<ProductInfo>& productInfos) = 0;

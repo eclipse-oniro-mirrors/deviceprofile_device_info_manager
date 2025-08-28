@@ -92,7 +92,8 @@ enum class DPInterfaceCode : uint32_t {
     UNREGISTER_BUSINESS_CALLBACK = 73,
     PUT_BUSINESS_EVENT = 74,
     GET_BUSINESS_EVENT = 75,
-    MAX = 76
+    SYNC_STATIC_PROFILE = 76,
+    MAX = 77
 };
 
 enum class DeviceIdType : uint32_t {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,16 +21,19 @@
 #include "string_ex.h"
 
 #include "distributed_device_profile_log.h"
+#include "event_handler_factory.h"
+#include "i_sync_completed_callback.h"
 #include "profile_utils.h"
 #include "profile_cache.h"
-#include "i_sync_completed_callback.h"
-#include "event_handler_factory.h"
+#include "static_profile_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
     const std::string TAG = "KvSyncCompletedListener";
     const std::string ON_SYNC_TASK_ID = "on_sync_task";
+    const std::string DYNAMIC_STORE_ID = "dp_kv_store";
+    const std::string STATIC_STORE_ID = "dp_kv_static_store";
 }
 
 KvSyncCompletedListener::KvSyncCompletedListener(const std::string& storeId)
@@ -60,7 +63,6 @@ KvSyncCompletedListener::~KvSyncCompletedListener()
 void KvSyncCompletedListener::SyncCompleted(const std::map<std::string, DistributedKv::Status>& results)
 {
     HILOGD("called!");
-
     SyncResults syncResults;
     for (const auto& [deviceId, status] : results) {
         HILOGD("deviceId = %{public}s, status = %{public}d", ProfileUtils::GetAnonyString(deviceId).c_str(), status);
@@ -68,7 +70,13 @@ void KvSyncCompletedListener::SyncCompleted(const std::map<std::string, Distribu
         syncResults.emplace(deviceId, syncStatus);
     }
     auto notifyTask = [this, syncResults = std::move(syncResults)]() {
-        NotifySyncCompleted(syncResults);
+        if (storeId_ == DYNAMIC_STORE_ID) {
+            NotifySyncCompleted(syncResults);
+        }
+        if (storeId_ == STATIC_STORE_ID) {
+            NotifyStaticSyncCompleted(syncResults);
+        }
+        HILOGE("storeId invalid,storeId:%{public}s", storeId_.c_str());
     };
     {
         std::lock_guard<std::mutex> lock(reInitMutex_);
@@ -97,6 +105,24 @@ void KvSyncCompletedListener::NotifySyncCompleted(const SyncResults& syncResults
         syncListenerProxy->OnSyncCompleted(syncResults);
     }
     ProfileCache::GetInstance().RemoveSyncListeners(syncListeners);
+    int64_t endTime = GetTickCount();
+    HILOGI("spend %{public}" PRId64 " ms", endTime - beginTime);
+}
+
+void KvSyncCompletedListener::NotifyStaticSyncCompleted(const SyncResults& syncResults)
+{
+    int64_t beginTime = GetTickCount();
+    std::map<std::string, sptr<IRemoteObject>> syncListeners;
+    StaticProfileManager::GetInstance().GetSyncListeners(syncListeners);
+    for (const auto& [_, syncListenerStub] : syncListeners) {
+        sptr<ISyncCompletedCallback> syncListenerProxy = iface_cast<ISyncCompletedCallback>(syncListenerStub);
+        if (syncListenerProxy == nullptr) {
+            HILOGE("Cast to ISyncCompletedCallback failed");
+            continue;
+        }
+        syncListenerProxy->OnSyncCompleted(syncResults);
+    }
+    StaticProfileManager::GetInstance().RemoveSyncListeners(syncListeners);
     int64_t endTime = GetTickCount();
     HILOGI("spend %{public}" PRId64 " ms", endTime - beginTime);
 }

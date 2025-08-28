@@ -218,5 +218,92 @@ void StaticProfileManager::E2ESyncStaticProfile(const TrustedDeviceInfo& deviceI
         return;
     }
 }
+
+int32_t StaticProfileManager::SyncStaticProfile(const DpSyncOptions& syncOptions,
+    sptr <IRemoteObject> syncCompletedCallback)
+{
+    HILOGI("call!");
+    if (syncCompletedCallback == nullptr) {
+        HILOGE("callback is empty");
+        return DP_INVALID_PARAMS;
+    }
+    std::vector<std::string> ohBasedDevices;
+    std::vector<std::string> notOHBasedDevices;
+    ProfileCache::GetInstance().FilterAndGroupOnlineDevices(syncOptions.GetDeviceList(),
+        ohBasedDevices, notOHBasedDevices);
+    if (ohBasedDevices.empty()) {
+        HILOGE("ohBasedDevices is empty");
+        return DP_INVALID_PARAMS;
+    }
+    std::string callerDescriptor = PermissionManager::GetInstance().GetCallerProcName();
+    int32_t addRet = AddSyncListener(callerDescriptor, syncCompletedCallback);
+    if (addRet != DP_SUCCESS) {
+        return addRet;
+    }
+    {
+        std::lock_guard<std::mutex> lock(staticStoreMutex_);
+        if (staticProfileStore_ == nullptr) {
+            HILOGE("staticProfileStore is nullptr");
+            return DP_NULLPTR;
+        }
+        int32_t syncResult = staticProfileStore_->Sync(ohBasedDevices, syncOptions.GetSyncMode());
+        if (syncResult != DP_SUCCESS) {
+            HILOGE("SyncStaticProfile fail, res: %{public}d!", syncResult);
+            return DP_SYNC_DEVICE_FAIL;
+        }
+    }
+    HILOGI("SyncStaticProfile success, caller: %{public}s!", callerDescriptor.c_str());
+    return DP_SUCCESS;
+}
+
+int32_t StaticProfileManager::AddSyncListener(const std::string& caller, sptr<IRemoteObject> syncListener)
+{
+    if (caller.empty() || caller.size() > MAX_STRING_LEN || syncListener == nullptr) {
+        HILOGE("params is invalid!");
+        return DP_INVALID_PARAMS;
+    }
+    {
+        std::lock_guard<std::mutex> lock(syncListenerMapMutex_);
+        if (syncListenerMap_.size() > MAX_LISTENER_SIZE) {
+            HILOGE("syncListenerMap is exceed max listenerSize!");
+            return DP_EXCEED_MAX_SIZE_FAIL;
+        }
+        HILOGI("caller %{public}s!", caller.c_str());
+        syncListener->AddDeathRecipient(syncListenerDeathRecipient_);
+        syncListenerMap_[caller] = syncListener;
+    }
+    return DP_SUCCESS;
+}
+
+void StaticProfileManager::GetSyncListeners(std::map<std::string, sptr<IRemoteObject>>& syncListeners)
+{
+    HILOGD("call!");
+    {
+        std::lock_guard<std::mutex> lock(syncListenerMapMutex_);
+        for (const auto& item : syncListenerMap_) {
+            syncListeners[item.first] = item.second;
+        }
+    }
+}
+
+void StaticProfileManager::RemoveSyncListeners(std::map<std::string, sptr<IRemoteObject>> syncListeners)
+{
+    HILOGD("call!");
+    {
+        std::lock_guard<std::mutex> lock(syncListenerMapMutex_);
+        auto iter = syncListenerMap_.begin();
+        while (iter!= syncListenerMap_.end()) {
+            if (syncListeners.count(iter->first) != 0) {
+                if (iter->second != nullptr) {
+                    iter->second->RemoveDeathRecipient(syncListenerDeathRecipient_);
+                }
+                HILOGI("caller %{public}s!", iter->first.c_str());
+                iter = syncListenerMap_.erase(iter);
+            } else {
+                iter++;
+            }
+        }
+    }
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

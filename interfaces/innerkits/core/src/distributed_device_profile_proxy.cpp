@@ -638,6 +638,23 @@ int32_t DistributedDeviceProfileProxy::SyncDeviceProfile(const DpSyncOptions& sy
     return DP_SUCCESS;
 }
 
+int32_t DistributedDeviceProfileProxy::SyncStaticProfile(const DpSyncOptions& syncOptions,
+    const sptr<IRemoteObject> syncCompletedCallback)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    if (!syncOptions.Marshalling(data)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    WRITE_HELPER(data, RemoteObject, syncCompletedCallback);
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::SYNC_STATIC_PROFILE), data, reply);
+    return DP_SUCCESS;
+}
+
 int32_t DistributedDeviceProfileProxy::SendSubscribeInfos(std::map<std::string, SubscribeInfo> listenerMap)
 {
     sptr<IRemoteObject> remote = nullptr;

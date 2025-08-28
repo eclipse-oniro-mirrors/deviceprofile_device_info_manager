@@ -22,8 +22,10 @@
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
+#include "i_sync_completed_callback.h"
 #include "profile_cache.h"
 #include "static_profile_manager.h"
+#include "sync_completed_callback_stub.h"
 using namespace testing::ext;
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -54,6 +56,12 @@ void StaticProfileManagerTest::SetUp()
 void StaticProfileManagerTest::TearDown()
 {
 }
+
+class SyncCallback : public SyncCompletedCallbackStub {
+public:
+    void OnSyncCompleted(const map<string, SyncStatus>& syncResults) {
+    }
+};
 
 /*
  * @tc.name: Init_001
@@ -291,6 +299,43 @@ HWTEST_F(StaticProfileManagerTest, GenerateStaticInfoProfile_005, TestSize.Level
     int32_t result =
         StaticProfileManager::GetInstance().GenerateStaticInfoProfile(staticCapabilityProfile, staticInfoProfiles);
     EXPECT_EQ(result, DP_PARSE_STATIC_CAP_FAIL);
+}
+
+/**
+ * @tc.name: AddSyncListener001
+ * @tc.desc: AddSyncListener all.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(StaticProfileManagerTest, AddSyncListener001, TestSize.Level1)
+{
+    string caller = "caller";
+    OHOS::sptr<OHOS::IRemoteObject> syncListener = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
+    
+    int32_t ret1 = StaticProfileManager::GetInstance().AddSyncListener(caller, syncListener);
+    EXPECT_EQ(DP_SUCCESS, ret1);
+    
+    for (int32_t i = 0; i < MAX_LISTENER_SIZE + 5; i++) {
+        string caller = "caller" + std::to_string(i);
+        OHOS::sptr<OHOS::IRemoteObject> syncListener1 = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
+        StaticProfileManager::GetInstance().syncListenerMap_[caller] = syncListener1;
+    }
+    int32_t ret2 = StaticProfileManager::GetInstance().AddSyncListener(caller, syncListener);
+    EXPECT_EQ(DP_EXCEED_MAX_SIZE_FAIL, ret2);
+
+    syncListener = nullptr;
+    int32_t ret3 = StaticProfileManager::GetInstance().AddSyncListener(caller, syncListener);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret3);
+
+    for (int32_t i = 0; i < MAX_STRING_LEN + 5; i++) {
+        caller += 'a';
+    }
+    int32_t ret4 = StaticProfileManager::GetInstance().AddSyncListener(caller, syncListener);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret4);
+    
+    caller = "";
+    int32_t ret5 = StaticProfileManager::GetInstance().AddSyncListener(caller, syncListener);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret5);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
