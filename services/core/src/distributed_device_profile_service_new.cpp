@@ -63,6 +63,7 @@ constexpr int32_t WAIT_BUSINESS_PUT_TIME_S = 5;
 constexpr int32_t WRTE_CACHE_PROFILE_DELAY_TIME_US = 200 * 1000;
 constexpr int32_t WRTE_CACHE_PROFILE_RETRY_TIMES = 20;
 constexpr int32_t DP_IPC_THREAD_NUM = 32;
+constexpr uint32_t MAX_CALLBACK_LEN = 1000;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileServiceNew);
@@ -1259,6 +1260,10 @@ int32_t DistributedDeviceProfileServiceNew::SubscribeDeviceProfileInited(int32_t
         callbackProxy->OnDpInited();
     }
     std::lock_guard<std::mutex> lock(dpInitedCallbackMapMtx_);
+    if (dpInitedCallbackMap_.size() > MAX_CALLBACK_LEN) {
+        HILOGE("too many callback");
+        return DP_INVALID_PARAM;
+    }
     dpInitedCallbackMap_[saId] = dpInitedCallback;
     return DP_SUCCESS;
 }
@@ -1294,6 +1299,10 @@ int32_t DistributedDeviceProfileServiceNew::SubscribePinCodeInvalid(const std::s
         return DP_INVALID_PARAM;
     }
     std::lock_guard<std::mutex> lock(pinCodeCallbackMapMtx_);
+    if (pinCodeCallbackMap_.size() > MAX_CALLBACK_LEN) {
+        HILOGE("too many callback");
+        return DP_INVALID_PARAM;
+    }
     pinCodeCallbackMap_[std::make_pair(bundleName, pinExchangeType)] = pinCodeCallback;
     return DP_SUCCESS;
 }
@@ -1396,6 +1405,10 @@ int32_t DistributedDeviceProfileServiceNew::RegisterBusinessCallback(const std::
     if (businessCallbackMap_.find({saId, businessKey}) != businessCallbackMap_.end()) {
         HILOGE("saId and businessKey is exist, saId : %{public}s, businessKey: %{public}s",
             saId.c_str(), businessKey.c_str());
+        return DP_INVALID_PARAM;
+    }
+    if (businessCallbackMap_.size() > MAX_CALLBACK_LEN) {
+        HILOGE("too many callback");
         return DP_INVALID_PARAM;
     }
     businessCallbackMap_[std::make_pair(saId, businessKey)] = businessCallback;

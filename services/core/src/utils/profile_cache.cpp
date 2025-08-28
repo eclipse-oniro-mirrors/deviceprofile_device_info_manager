@@ -544,6 +544,10 @@ int32_t ProfileCache::SetSwitchByProfileBatch(const std::vector<CharacteristicPr
             return DP_INVALID_PARAMS;
         }
         auto service = switchServiceMap.find(item.GetServiceName());
+        if (service == switchServiceMap.end()) {
+            HILOGE("not found serviceName");
+            return DP_INVALID_PARAMS;
+        }
         uint32_t mask = NUM_1U << (static_cast<uint32_t>(service->second));
         uint32_t value = STATUS_INIT;
         auto result = std::from_chars(item.GetCharacteristicValue().data(),
@@ -574,6 +578,10 @@ int32_t ProfileCache::SetSwitchByProfile(const CharacteristicProfile& charProfil
         return DP_INVALID_PARAMS;
     }
     auto service = switchServiceMap.find(charProfile.GetServiceName());
+    if (service == switchServiceMap.end()) {
+        HILOGE("not found serviceName");
+        return DP_INVALID_PARAMS;
+    }
     uint32_t mask = NUM_1U << (static_cast<uint32_t>(service->second));
     uint32_t value = STATUS_INIT;
     auto result = std::from_chars(charProfile.GetCharacteristicValue().data(),
@@ -626,6 +634,10 @@ int32_t ProfileCache::SetSwitchProfile(CharacteristicProfile& charProfile, uint3
         return DP_INVALID_PARAMS;
     }
     auto service = SWITCH_SERVICE_MAP.find(charProfile.GetServiceName());
+    if (service == SWITCH_SERVICE_MAP.end()) {
+        HILOGE("not found serviceName");
+        return DP_INVALID_PARAMS;
+    }
     uint32_t mask = NUM_1U << static_cast<int32_t>(service->second);
     charProfile.SetCharacteristicValue(std::to_string((((switchValue & mask) >>
         (static_cast<int32_t>(service->second))))));

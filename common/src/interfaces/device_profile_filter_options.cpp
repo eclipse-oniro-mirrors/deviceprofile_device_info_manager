@@ -32,16 +32,28 @@ int32_t DeviceProfileFilterOptions::GetUserId() const
 
 void DeviceProfileFilterOptions::AddDeviceIds(std::string deviceId)
 {
+    if (deviceIds_.size() >= MAX_DEVICE_SIZE) {
+        HILOGE("too many device!");
+        return;
+    }
     deviceIds_.emplace_back(deviceId);
 }
 
 void DeviceProfileFilterOptions::AddWiseDeviceIds(std::string wiseDeviceId)
 {
+    if (wiseDeviceIds_.size() >= MAX_DEVICE_SIZE) {
+        HILOGE("too many device!");
+        return;
+    }
     wiseDeviceIds_.emplace_back(wiseDeviceId);
 }
 
 void DeviceProfileFilterOptions::AddDeviceProfileIds(int32_t deviceProfileId)
 {
+    if (deviceProfileIds_.size() >= MAX_DEVICE_SIZE) {
+        HILOGE("too many device!");
+        return;
+    }
     deviceProfileIds_.emplace_back(deviceProfileId);
 }
 
