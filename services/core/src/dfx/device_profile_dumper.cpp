@@ -22,7 +22,8 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
 constexpr size_t MIN_ARGS_SIZE = 1;
-const std::string ARGS_HELP = "-h";
+const std::string ARGS_H = "-h";
+const std::string ARGS_HELP = "-help";
 const std::string TAG = "DeviceProfileDumper";
 constexpr int32_t UID_HIDUMPER = 1212;
 }
@@ -47,8 +48,13 @@ bool DeviceProfileDumper::Dump(const std::vector<std::string>& args, std::string
     }
 
     if (args.size() == MIN_ARGS_SIZE) {
-        // -h
+        // -help
         if (args[0] == ARGS_HELP) {
+            ShowHelp(result);
+            return true;
+        }
+        // -h
+        if (args[0] == ARGS_H) {
             ShowHelp(result);
             return true;
         }
