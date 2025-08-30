@@ -140,6 +140,9 @@ std::string ProfileUtils::GetProfileKey(const std::string& dbKey)
         return "";
     }
     std::size_t pos = dbKey.find_last_of("#");
+    if (pos == std::string::npos) {
+        return "";
+    }
     return dbKey.substr(0, pos);
 }
 

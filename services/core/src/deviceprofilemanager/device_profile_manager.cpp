@@ -48,6 +48,7 @@ namespace {
     const std::string TAG = "DeviceProfileManager";
     const std::unordered_set<std::string> NON_OHBASE_NEED_CLEAR_SVR_NAMES {
         "collaborationFwk", "Nfc_Publish_Br_Mac_Address" };
+    constexpr uint32_t MAX_MAP_LEN = 1000;
 }
 
 int32_t DeviceProfileManager::Init()
@@ -549,7 +550,7 @@ bool DeviceProfileManager::LoadDpSyncAdapter()
         return false;
     }
     dlerror();
-    auto func = (CreateDPSyncAdapterFuncPtr)dlsym(so_handle, "CreateDPSyncAdaptertObject");
+    auto func = (CreateDPSyncAdapterFuncPtr)dlsym(so_handle, "CreateDPSyncAdapterObject");
     if (dlerror() != nullptr || func == nullptr) {
         dlclose(so_handle);
         HILOGE("Create object function is not exist.");
@@ -687,6 +688,10 @@ void DeviceProfileManager::AddToPutTempCache(const std::map<std::string, std::st
     HILOGI("values.size : %{public}zu", values.size());
     {
         std::lock_guard<std::mutex> lock(putTempCacheMutex_);
+        if (putTempCache_.size() > MAX_MAP_LEN) {
+            HILOGE("too many values!");
+            return;
+        }
         for (const auto& [key, value] : values) {
             putTempCache_[key] = value;
         }

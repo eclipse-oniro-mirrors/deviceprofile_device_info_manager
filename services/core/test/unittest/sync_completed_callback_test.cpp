@@ -84,18 +84,12 @@ HWTEST_F(SyncCompletedCallbackStubTest, OnRemoteRequest_001, TestSize.Level2)
     MessageOption option { MessageOption::TF_ASYNC };
     SyncResult syncResults;
     syncResults.emplace("testdeviceid", SUCCEEDED);
-    if (!data.WriteInterfaceToken(SyncCompletedCallbackStub::GetDescriptor())) {
-        return;
-    }
-    if (!data.WriteInt32(static_cast<int32_t>(syncResults.size()))) {
-        return;
-    }
+    ASSERT_NE(data.WriteInterfaceToken(SyncCompletedCallbackStub::GetDescriptor()), ERR_FLATTEN_OBJECT);
+    ASSERT_NE(data.WriteInt32(static_cast<int32_t>(syncResults.size())), ERR_FLATTEN_OBJECT);
 
     for (const auto& [deviceId, syncResult] : syncResults) {
-        if (!data.WriteString(deviceId) ||
-            !data.WriteInt32(static_cast<int32_t>(syncResult))) {
-            return;
-        }
+        ASSERT_NE(data.WriteString(deviceId), ERR_FLATTEN_OBJECT);
+        ASSERT_NE(data.WriteInt32(static_cast<int32_t>(syncResult)), ERR_FLATTEN_OBJECT);
     }
     uint32_t code = 27;
     SyncCompletedListener syncCallBackStub;
@@ -114,9 +108,7 @@ HWTEST_F(SyncCompletedCallbackStubTest, OnRemoteRequest_002, TestSize.Level3)
     MessageParcel data;
     MessageParcel reply;
     MessageOption option { MessageOption::TF_ASYNC };
-    if (!data.WriteInterfaceToken(SyncCompletedCallbackStub::GetDescriptor())) {
-        return;
-    }
+    ASSERT_NE(data.WriteInterfaceToken(SyncCompletedCallbackStub::GetDescriptor()), ERR_FLATTEN_OBJECT);
     uint32_t code = 1;
     SyncCompletedListener syncCallBackStub;
     int32_t errCode = syncCallBackStub.OnRemoteRequest(code, data, reply, option);

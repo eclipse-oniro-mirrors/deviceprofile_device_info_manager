@@ -31,6 +31,9 @@ std::vector<std::string> DpSyncOptions::GetDeviceList() const
 
 void DpSyncOptions::AddDevice(const std::string& deviceId)
 {
+    if (syncDeviceIds_.size() > MAX_DEVICE_SIZE) {
+        return;
+    }
     syncDeviceIds_.emplace_back(deviceId);
 }
 
