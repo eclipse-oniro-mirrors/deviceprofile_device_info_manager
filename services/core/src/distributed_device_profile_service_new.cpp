@@ -53,7 +53,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-const std::string TAG = "DistributedDeviceProfileServiceNew";
+const std::string TAG = "ServiceNew";
 const std::string UNLOAD_TASK_ID = "unload_dp_svr";
 const std::string IDLE_REASON_LOW_MEMORY = "resourceschedule.memmgr.low.memory.prepare";
 constexpr int32_t DELAY_TIME = 180000;
@@ -940,7 +940,7 @@ void DistributedDeviceProfileServiceNew::DelayUnloadTask()
     auto task = []() {
         HILOGD("do unload task");
         if (ProfileCache::GetInstance().IsDeviceOnline()) {
-            HILOGI("already device online in 3 min, not kill!");
+            HILOGD("already device online in 3 min, not kill!");
             return;
         }
         auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
@@ -963,10 +963,10 @@ void DistributedDeviceProfileServiceNew::DelayUnloadTask()
         }
         unloadHandler_->RemoveTask(UNLOAD_TASK_ID);
         if (ProfileCache::GetInstance().IsDeviceOnline()) {
-            HILOGI("already device online, not kill!");
+            HILOGD("already device online, not kill!");
             return;
         }
-        HILOGI("delay unload task post task");
+        HILOGD("delay unload task post task");
         unloadHandler_->PostTask(task, UNLOAD_TASK_ID, DELAY_TIME);
     }
 }

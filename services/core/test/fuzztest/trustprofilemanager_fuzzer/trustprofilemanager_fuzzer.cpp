@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,91 +31,34 @@
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
-
-void GetAccessControlProfileByTokenIdFuzzTest(const uint8_t* data, size_t size)
+void TrustProfileManagerFuzzTest(const uint8_t* data, size_t size)
 {
     if ((data == nullptr) || (size < sizeof(int64_t))) {
         return;
     }
+    
     FuzzedDataProvider fdp(data, size);
-    int64_t tokenId = fdp.ConsumeIntegral<int64_t>();
     std::string trustDeviceId = fdp.ConsumeRandomLengthString();
+    std::string accountId = fdp.ConsumeRandomLengthString();
+    std::string bundleName = fdp.ConsumeRandomLengthString();
+    std::string deviceId = fdp.ConsumeRandomLengthString();
+
     int32_t status = fdp.ConsumeIntegral<int32_t>();
-    std::vector<AccessControlProfile> profile;
-    AccessControlProfile acProfile;
-    profile.push_back(acProfile);
-    TrustProfileManager::GetInstance().GetAccessControlProfileByTokenId(tokenId, trustDeviceId, status, profile);
-}
+    int32_t userId = fdp.ConsumeIntegral<int32_t>();
+    int32_t bindType = fdp.ConsumeIntegral<int32_t>();
 
-void GetAccessControlProfileOneFuzzTest(const uint8_t* data, size_t size)
-{
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
-        return;
-    }
-    std::string accountId(reinterpret_cast<const char*>(data), size);
-    int32_t userId = *(reinterpret_cast<const int32_t*>(data));
-    std::vector<AccessControlProfile> profile;
-    AccessControlProfile acProfile;
-    profile.push_back(acProfile);
-    TrustProfileManager::GetInstance().GetAccessControlProfile(userId, accountId, profile);
-}
+    int64_t tokenId = fdp.ConsumeIntegral<int64_t>();
+    int64_t accessControlId = fdp.ConsumeIntegral<int64_t>();
+    
+    std::vector<AccessControlProfile> outProfile;
 
-void GetAccessControlProfileTwoFuzzTest(const uint8_t* data, size_t size)
-{
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
-        return;
-    }
-    int32_t userId = *(reinterpret_cast<const int32_t*>(data));
-    std::vector<AccessControlProfile> profile;
-    AccessControlProfile acProfile;
-    profile.push_back(acProfile);
-    TrustProfileManager::GetInstance().GetAccessControlProfile(userId, profile);
-}
-
-void GetAccessControlProfileThreeFuzzTest(const uint8_t* data, size_t size)
-{
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
-        return;
-    }
-    std::string bundleName(reinterpret_cast<const char*>(data), size);
-    int32_t bindType = *(reinterpret_cast<const int32_t*>(data));
-    int32_t status = *(reinterpret_cast<const int32_t*>(data));
-    std::vector<AccessControlProfile> profile;
-    AccessControlProfile acProfile;
-    profile.push_back(acProfile);
-    TrustProfileManager::GetInstance().GetAccessControlProfile(bundleName, bindType, status, profile);
-}
-
-void GetAccessControlProfileFourFuzzTest(const uint8_t* data, size_t size)
-{
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
-        return;
-    }
-    std::string bundleName(reinterpret_cast<const char*>(data), size);
-    std::string trustDeviceId(reinterpret_cast<const char*>(data), size);
-    int32_t status = *(reinterpret_cast<const int32_t*>(data));
-    std::vector<AccessControlProfile> profile;
-    AccessControlProfile acProfile;
-    profile.push_back(acProfile);
-    TrustProfileManager::GetInstance().GetAccessControlProfile(bundleName, trustDeviceId, status, profile);
-}
-
-void DeleteTrustDeviceProfileFuzzTest(const uint8_t* data, size_t size)
-{
-    if ((data == nullptr) || (size < sizeof(int32_t))) {
-        return;
-    }
-    std::string deviceId(reinterpret_cast<const char*>(data), size);
+    TrustProfileManager::GetInstance().GetAccessControlProfileByTokenId(tokenId, trustDeviceId, status, outProfile);
+    TrustProfileManager::GetInstance().GetAccessControlProfile(userId, accountId, outProfile);
+    TrustProfileManager::GetInstance().GetAccessControlProfile(userId, outProfile);
+    TrustProfileManager::GetInstance().GetAccessControlProfile(bundleName, bindType, status, outProfile);
+    TrustProfileManager::GetInstance().GetAccessControlProfile(bundleName, trustDeviceId, status, outProfile);
     TrustProfileManager::GetInstance().DeleteTrustDeviceProfile(deviceId);
-}
-
-void DeleteAccessControlProfileFuzzTest(const uint8_t* data, size_t size)
-{
-    if ((data == nullptr) || (size < sizeof(int64_t))) {
-        return;
-    }
-    int64_t  status = *(reinterpret_cast<const int64_t *>(data));
-    TrustProfileManager::GetInstance().DeleteAccessControlProfile(status);
+    TrustProfileManager::GetInstance().DeleteAccessControlProfile(accessControlId);
 }
 }
 }
@@ -123,12 +66,6 @@ void DeleteAccessControlProfileFuzzTest(const uint8_t* data, size_t size)
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
-    OHOS::DistributedDeviceProfile::GetAccessControlProfileByTokenIdFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GetAccessControlProfileOneFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GetAccessControlProfileTwoFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GetAccessControlProfileThreeFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GetAccessControlProfileFourFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::DeleteTrustDeviceProfileFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::DeleteAccessControlProfileFuzzTest(data, size);
+    OHOS::DistributedDeviceProfile::TrustProfileManagerFuzzTest(data, size);
     return 0;
 }
