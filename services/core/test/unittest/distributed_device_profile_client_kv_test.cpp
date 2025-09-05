@@ -135,6 +135,21 @@ public:
     }
 };
 
+class SyncCompletedCallbac : public SyncCompletedCallbackStub {
+public:
+    SyncCompletedCallbac()
+    {
+    }
+    ~SyncCompletedCallbac()
+    {
+    }
+    void OnSyncCompleted(const SyncResult& syncResults)
+    {
+        (void)syncResults;
+        return;
+    }
+};
+
 class MockDpInitedCallbackStub : public DpInitedCallbackStub {
 public:
     int32_t OnDpInited()
@@ -452,6 +467,44 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SyncDeviceProfile001, TestSize.Le
     
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().SyncDeviceProfile(syncOptions, syncCb);
     EXPECT_EQ(errCode, DP_SYNC_DEVICE_FAIL);
+}
+
+/**
+ * @tc.name: SyncStaticProfile001
+ * @tc.desc: SyncStaticProfile failed, SyncCb is nullptr!
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, SyncStaticProfile001, TestSize.Level1)
+{
+    DistributedDeviceProfile::DpSyncOptions syncOptions;
+    OHOS::sptr<ISyncCompletedCallback> syncCb = nullptr;
+    
+    syncOptions.AddDevice("deviceId1");
+    syncOptions.AddDevice("deviceId2");
+    syncOptions.SetSyncMode(SyncMode::MIN);
+    
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().SyncStaticProfile(syncOptions, syncCb);
+    EXPECT_EQ(errCode, DP_SYNC_DEVICE_FAIL);
+}
+
+/**
+ * @tc.name: SyncStaticProfile002
+ * @tc.desc: SyncStaticProfile failed
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileClientKvTest, SyncStaticProfile002, TestSize.Level1)
+{
+    DistributedDeviceProfile::DpSyncOptions syncOptions;
+    OHOS::sptr<ISyncCompletedCallback> syncCb = sptr<ISyncCompletedCallback>(new SyncCompletedCallbac());
+    
+    syncOptions.AddDevice("deviceId1");
+    syncOptions.AddDevice("deviceId2");
+    syncOptions.SetSyncMode(SyncMode::MIN);
+    
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().SyncStaticProfile(syncOptions, syncCb);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
