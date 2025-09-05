@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,6 +16,7 @@
 #include "profile_change_listener_proxy.h"
 #include "macro_utils.h"
 #include "distributed_device_profile_errors.h"
+#include "dp_ipc_interface_code.h"
 #include "i_distributed_device_profile.h"
 #include "message_parcel.h"
 
@@ -35,7 +36,7 @@ int32_t ProfileListenerProxy::OnTrustDeviceProfileAdd(const TrustDeviceProfile& 
         return ERR_FLATTEN_OBJECT;
     }
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_ADD), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_ADD), data, reply);
     return DP_SUCCESS;
 }
 
@@ -50,7 +51,7 @@ int32_t ProfileListenerProxy::OnTrustDeviceProfileDelete(const TrustDeviceProfil
         return ERR_FLATTEN_OBJECT;
     }
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_DELETE), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_DELETE), data, reply);
     return DP_SUCCESS;
 }
 
@@ -70,7 +71,7 @@ int32_t ProfileListenerProxy::OnTrustDeviceProfileUpdate(const TrustDeviceProfil
         return ERR_FLATTEN_OBJECT;
     }
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_UPDATE), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_UPDATE), data, reply);
     return DP_SUCCESS;
 }
 
@@ -85,7 +86,7 @@ int32_t ProfileListenerProxy::OnTrustDeviceProfileActive(const TrustDeviceProfil
         return ERR_FLATTEN_OBJECT;
     }
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_ACTIVE), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_ACTIVE), data, reply);
     return DP_SUCCESS;
 }
 
@@ -100,7 +101,7 @@ int32_t ProfileListenerProxy::OnTrustDeviceProfileInactive(const TrustDeviceProf
         return ERR_FLATTEN_OBJECT;
     }
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_INACTIVE), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_INACTIVE), data, reply);
     return DP_SUCCESS;
 }
 
@@ -115,7 +116,7 @@ int32_t ProfileListenerProxy::OnDeviceProfileAdd(const DeviceProfile& profile)
         return ERR_FLATTEN_OBJECT;
     }
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_ADD), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_ADD), data, reply);
     return DP_SUCCESS;
 }
 
@@ -130,7 +131,7 @@ int32_t ProfileListenerProxy::OnDeviceProfileDelete(const DeviceProfile& profile
         return ERR_FLATTEN_OBJECT;
     }
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_DELETE), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_DELETE), data, reply);
     return DP_SUCCESS;
 }
 
@@ -149,7 +150,7 @@ int32_t ProfileListenerProxy::OnDeviceProfileUpdate(const DeviceProfile& oldProf
         return ERR_FLATTEN_OBJECT;
     }
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_UPDATE), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_UPDATE), data, reply);
     return DP_SUCCESS;
 }
 
@@ -164,7 +165,7 @@ int32_t ProfileListenerProxy::OnServiceProfileAdd(const ServiceProfile& profile)
         return ERR_FLATTEN_OBJECT;
     }
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_SERVICE_PROFILE_ADD), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_ADD), data, reply);
     return DP_SUCCESS;
 }
 
@@ -179,7 +180,7 @@ int32_t ProfileListenerProxy::OnServiceProfileDelete(const ServiceProfile& profi
         return ERR_FLATTEN_OBJECT;
     }
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_SERVICE_PROFILE_DELETE), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_DELETE), data, reply);
     return DP_SUCCESS;
 }
 
@@ -198,7 +199,7 @@ int32_t ProfileListenerProxy::OnServiceProfileUpdate(const ServiceProfile& oldPr
         return ERR_FLATTEN_OBJECT;
     }
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_SERVICE_PROFILE_UPDATE), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_UPDATE), data, reply);
     return DP_SUCCESS;
 }
 
@@ -213,7 +214,7 @@ int32_t ProfileListenerProxy::OnCharacteristicProfileAdd(const CharacteristicPro
         return ERR_FLATTEN_OBJECT;
     }
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_CHAR_PROFILE_ADD), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_ADD), data, reply);
     return DP_SUCCESS;
 }
 
@@ -228,7 +229,7 @@ int32_t ProfileListenerProxy::OnCharacteristicProfileDelete(const Characteristic
         return ERR_FLATTEN_OBJECT;
     }
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_CHAR_PROFILE_DELETE), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_DELETE), data, reply);
     return DP_SUCCESS;
 }
 
@@ -248,7 +249,7 @@ int32_t ProfileListenerProxy::OnCharacteristicProfileUpdate(const Characteristic
         return ERR_FLATTEN_OBJECT;
     }
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DPInterfaceCode::ON_CHAR_PROFILE_UPDATE), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_UPDATE), data, reply);
     return DP_SUCCESS;
 }
 } // namespace DistributedDeviceProfile

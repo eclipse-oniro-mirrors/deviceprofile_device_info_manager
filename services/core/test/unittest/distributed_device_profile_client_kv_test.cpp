@@ -20,19 +20,20 @@
 #include "gtest/gtest.h"
 #include "refbase.h"
 #include "business_callback_stub.h"
+#include "characteristic_profile.h"
+#include "device_profile.h"
+#include "distributed_device_profile_client.h"
 #include "distributed_device_profile_constants.h"
+#include "distributed_device_profile_enums.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
-#include "distributed_device_profile_enums.h"
 #include "dp_inited_callback_stub.h"
 #include "dp_inited_callback_proxy.h"
-#include "device_profile.h"
-#include "service_profile.h"
+#include "dp_ipc_interface_code.h"
 #include "dp_subscribe_info.h"
 #include "i_sync_completed_callback.h"
-#include "characteristic_profile.h"
-#include "distributed_device_profile_client.h"
 #include "pincode_invalid_callback_stub.h"
+#include "service_profile.h"
 #include "trusted_device_info.h"
 #undef private
 #undef protected
@@ -657,7 +658,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, DpinitedCallback001, TestSize.Lev
 HWTEST_F(DistributedDeviceProfileClientKvTest, OnRemoteRequest_001, TestSize.Level0)
 {
     std::shared_ptr<DpInitedCallbackStub> DpinitedCallbackStub_ = std::make_shared<MockDpInitedCallbackStub>();
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_INITED);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_INITED);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;

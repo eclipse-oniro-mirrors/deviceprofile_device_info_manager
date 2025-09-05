@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,6 +15,7 @@
 
 #include "sync_completed_callback_proxy.h"
 #include "distributed_device_profile_log.h"
+#include "dp_ipc_interface_code.h"
 #include "macro_utils.h"
 #include "message_parcel.h"
 
@@ -55,7 +56,7 @@ void SyncCompletedCallbackProxy::OnSyncCompleted(const SyncResult &syncResults)
         HILOGE("Remote is nullptr");
         return;
     }
-    int32_t errCode = Remote()->SendRequest(static_cast<uint32_t>(DPInterfaceCode::ON_SYNC_COMPLETED), data, reply,
+    int32_t errCode = Remote()->SendRequest(static_cast<uint32_t>(DpIpcInterfaceCode::ON_SYNC_COMPLETED), data, reply,
         option);
     if (errCode != ERR_OK) {
         HILOGE("send request failed, errCode = %{public}d", errCode);

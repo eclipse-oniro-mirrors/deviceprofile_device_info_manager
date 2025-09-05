@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,6 +30,7 @@
 
 #include "distributed_device_profile_enums.h"
 #include "distributed_device_profile_service_new.h"
+#include "dp_ipc_interface_code.h"
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
@@ -96,7 +97,7 @@ void FuzzDeviceProfile(const uint8_t* rawData, size_t size)
         DistributedDeviceProfileServiceNew::GetInstance().Init();
         g_flag = true;
     }
-    code = code % static_cast<uint32_t>(DPInterfaceCode::MAX) + 1;
+    code = code % static_cast<uint32_t>(DpIpcInterfaceCode::MAX) + 1;
     if (code < MIN_INTERFACE_CODE) {
         code += MIN_INTERFACE_CODE;
     }

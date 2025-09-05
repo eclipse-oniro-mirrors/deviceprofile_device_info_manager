@@ -20,14 +20,15 @@
 #include <vector>
 #include <iostream>
 
-#include "profile_utils.h"
-#include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_client.h"
-#include "distributed_device_profile_log.h"
-#include "distributed_device_profile_errors.h"
+#include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_enums.h"
+#include "distributed_device_profile_errors.h"
+#include "distributed_device_profile_log.h"
 #include "distributed_device_profile_service_new.h"
 #include "distributed_device_profile_stub_new.h"
+#include "dp_ipc_interface_code.h"
+#include "profile_utils.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -514,7 +515,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, IsInterfaceTokenValid_001, TestSiz
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, OnRemoteRequest_001, TestSize.Level1)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_ADD);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_ADD);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -530,7 +531,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, OnRemoteRequest_001, TestSize.Leve
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, OnRemoteRequest_002, TestSize.Level1)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::PUT_ACL_PROFILE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::PUT_ACL_PROFILE);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -546,7 +547,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, OnRemoteRequest_002, TestSize.Leve
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, OnRemoteRequest_003, TestSize.Level1)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::PUT_ACL_PROFILE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::PUT_ACL_PROFILE);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -863,7 +864,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_001, TestSize.
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_002, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::PUT_ACL_PROFILE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::PUT_ACL_PROFILE);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -879,7 +880,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_002, TestSize.
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_003, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::UPDATE_ACL_PROFILE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::UPDATE_ACL_PROFILE);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -895,7 +896,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_003, TestSize.
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_004, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::GET_TRUST_DEVICE_PROFILE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::GET_TRUST_DEVICE_PROFILE);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -911,7 +912,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_004, TestSize.
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_005, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::GET_ALL_TRUST_DEVICE_PROFILE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::GET_ALL_TRUST_DEVICE_PROFILE);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -927,7 +928,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_005, TestSize.
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_006, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::GET_ACL_PROFILE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::GET_ACL_PROFILE);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -943,7 +944,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_006, TestSize.
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_007, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::GET_ALL_ACL_PROFILE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::GET_ALL_ACL_PROFILE);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -959,7 +960,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_007, TestSize.
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_008, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::DELETE_ACL_PROFILE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::DELETE_ACL_PROFILE);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -975,7 +976,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_008, TestSize.
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_009, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::SUBSCRIBE_DEVICE_PROFILE);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -991,7 +992,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_009, TestSize.
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_010, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -1007,7 +1008,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_010, TestSize.
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_011, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::SEND_SUBSCRIBE_INFOS);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::SEND_SUBSCRIBE_INFOS);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -1023,7 +1024,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_011, TestSize.
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_012, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::PUT_SERVICE_PROFILE);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -1039,7 +1040,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_012, TestSize.
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_013, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE_BATCH);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::PUT_SERVICE_PROFILE_BATCH);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -1055,7 +1056,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_013, TestSize.
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_014, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::PUT_CHAR_PROFILE);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -1071,7 +1072,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_014, TestSize.
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_015, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE_BATCH);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::PUT_CHAR_PROFILE_BATCH);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -1087,7 +1088,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyAclEventInner_015, TestSize.
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_001, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_PROFILE_NEW);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::GET_DEVICE_PROFILE_NEW);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -1103,7 +1104,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_001, TestSize.Lev
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_002, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::GET_SERVICE_PROFILE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::GET_SERVICE_PROFILE);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -1119,7 +1120,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_002, TestSize.Lev
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_003, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::GET_CHAR_PROFILE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::GET_CHAR_PROFILE);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -1135,7 +1136,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_003, TestSize.Lev
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_004, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::DEL_SERVICE_PROFILE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::DEL_SERVICE_PROFILE);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -1151,7 +1152,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_004, TestSize.Lev
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_005, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::DEL_CHAR_PROFILE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::DEL_CHAR_PROFILE);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -1167,7 +1168,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_005, TestSize.Lev
  */
 HWTEST_F(DistributedDeviceProfileStubNewTest, NotifyEventInner_006, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::SYNC_DEVICE_PROFILE_NEW);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::SYNC_DEVICE_PROFILE_NEW);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
