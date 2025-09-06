@@ -24,6 +24,7 @@
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_service_new.h"
+#include "dp_ipc_interface_code.h"
 #include "profile_utils.h"
 
 namespace OHOS {
@@ -39,36 +40,36 @@ DistributedDeviceProfileStubNew::DistributedDeviceProfileStubNew()
 
 void DistributedDeviceProfileStubNew::InitAclAndSubscribe()
 {
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_ACL_PROFILE));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::UPDATE_ACL_PROFILE));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_TRUST_DEVICE_PROFILE));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_ALL_TRUST_DEVICE_PROFILE));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_ACL_PROFILE));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_ALL_ACL_PROFILE));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_ALL_ACL_INCLUDE_LNN_ACL));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::DELETE_ACL_PROFILE));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::SEND_SUBSCRIBE_INFOS));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE_BATCH));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE_BATCH));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE_INITED));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE_INITED));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_ALL_TRUSTED_DEVICES));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_DEVICE_PROFILE_BATCH));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_PROFILES));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::DELETE_DEVICE_PROFILE_BATCH));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_ICON_INFOS));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_DEVICE_ICON_INFO_BATCH));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_PRODUCT_INFO_BATCH));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::PUT_SESSION_KEY));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::GET_SESSION_KEY));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::UPDATE_SESSION_KEY));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::DELETE_SESSION_KEY));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_PINCODE_INVALID));
-    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_PINCODE_INVALID));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::PUT_ACL_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::UPDATE_ACL_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::GET_TRUST_DEVICE_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::GET_ALL_TRUST_DEVICE_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::GET_ACL_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::GET_ALL_ACL_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::GET_ALL_ACL_INCLUDE_LNN_ACL));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::DELETE_ACL_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::SUBSCRIBE_DEVICE_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::SEND_SUBSCRIBE_INFOS));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::PUT_SERVICE_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::PUT_SERVICE_PROFILE_BATCH));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::PUT_CHAR_PROFILE));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::PUT_CHAR_PROFILE_BATCH));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::SUBSCRIBE_DEVICE_PROFILE_INITED));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE_INITED));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::PUT_ALL_TRUSTED_DEVICES));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::PUT_DEVICE_PROFILE_BATCH));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::GET_DEVICE_PROFILES));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::DELETE_DEVICE_PROFILE_BATCH));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::GET_DEVICE_ICON_INFOS));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::PUT_DEVICE_ICON_INFO_BATCH));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::PUT_PRODUCT_INFO_BATCH));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::PUT_SESSION_KEY));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::GET_SESSION_KEY));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::UPDATE_SESSION_KEY));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::DELETE_SESSION_KEY));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::SUBSCRIBE_PINCODE_INVALID));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::UNSUBSCRIBE_PINCODE_INVALID));
 }
 
 DistributedDeviceProfileStubNew::~DistributedDeviceProfileStubNew()
@@ -86,29 +87,29 @@ int32_t DistributedDeviceProfileStubNew::NotifyAclEventInner(uint32_t code, Mess
     MessageParcel& reply, MessageOption& option)
 {
     switch (code) {
-        case static_cast<uint32_t>(DPInterfaceCode::PUT_ACL_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::PUT_ACL_PROFILE):
             return PutAccessControlProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::UPDATE_ACL_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::UPDATE_ACL_PROFILE):
             return UpdateAccessControlProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::GET_TRUST_DEVICE_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_TRUST_DEVICE_PROFILE):
             return GetTrustDeviceProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::GET_ALL_TRUST_DEVICE_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_ALL_TRUST_DEVICE_PROFILE):
             return GetAllTrustDeviceProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::GET_ACL_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_ACL_PROFILE):
             return GetAccessControlProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::GET_ALL_ACL_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_ALL_ACL_PROFILE):
             return GetAllAccessControlProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::GET_ALL_ACL_INCLUDE_LNN_ACL):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_ALL_ACL_INCLUDE_LNN_ACL):
             return GetAllAclIncludeLnnAclInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::DELETE_ACL_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::DELETE_ACL_PROFILE):
             return DeleteAccessControlProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::PUT_SESSION_KEY):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::PUT_SESSION_KEY):
             return PutSessionKeyInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::GET_SESSION_KEY):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_SESSION_KEY):
             return GetSessionKeyInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::UPDATE_SESSION_KEY):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::UPDATE_SESSION_KEY):
             return UpdateSessionKeyInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::DELETE_SESSION_KEY):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::DELETE_SESSION_KEY):
             return DeleteSessionKeyInner(data, reply);
         default:
             return NotifyProfileDataEventInner(code, data, reply, option);
@@ -119,41 +120,41 @@ int32_t DistributedDeviceProfileStubNew::NotifyProfileDataEventInner(
     uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
 {
     switch (code) {
-        case static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::SUBSCRIBE_DEVICE_PROFILE):
             return SubscribeDeviceProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE):
             return UnSubscribeDeviceProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::SEND_SUBSCRIBE_INFOS):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::SEND_SUBSCRIBE_INFOS):
             return SendSubscribeInfosInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::PUT_SERVICE_PROFILE):
             return PutServiceProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_PROFILE_BATCH):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::PUT_SERVICE_PROFILE_BATCH):
             return PutServiceProfileBatchInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::PUT_CHAR_PROFILE):
             return PutCharacteristicProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::PUT_CHAR_PROFILE_BATCH):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::PUT_CHAR_PROFILE_BATCH):
             return PutCharacteristicProfileBatchInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_DEVICE_PROFILE_INITED):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::SUBSCRIBE_DEVICE_PROFILE_INITED):
             return SubscribeDeviceProfileInitedInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE_INITED):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::UNSUBSCRIBE_DEVICE_PROFILE_INITED):
             return UnSubscribeDeviceProfileInitedInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::PUT_ALL_TRUSTED_DEVICES):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::PUT_ALL_TRUSTED_DEVICES):
             return PutAllTrustedDevicesInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::PUT_DEVICE_PROFILE_BATCH):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::PUT_DEVICE_PROFILE_BATCH):
             return PutDeviceProfileBatchInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_PROFILES):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_DEVICE_PROFILES):
             return GetDeviceProfilesInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_ICON_INFOS):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_DEVICE_ICON_INFOS):
             return GetDeviceIconInfosInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::PUT_DEVICE_ICON_INFO_BATCH):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::PUT_DEVICE_ICON_INFO_BATCH):
             return PutDeviceIconInfoBatchInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::PUT_PRODUCT_INFO_BATCH):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::PUT_PRODUCT_INFO_BATCH):
             return PutProductInfoBatchInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::DELETE_DEVICE_PROFILE_BATCH):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::DELETE_DEVICE_PROFILE_BATCH):
             return DeleteDeviceProfileBatchInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::SUBSCRIBE_PINCODE_INVALID):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::SUBSCRIBE_PINCODE_INVALID):
             return SubscribePinCodeInvalidInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::UNSUBSCRIBE_PINCODE_INVALID):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::UNSUBSCRIBE_PINCODE_INVALID):
             return UnSubscribePinCodeInvalidInner(data, reply);
         default:
             HILOGE("unknown request code, please check, code = %{public}u", code);
@@ -165,33 +166,33 @@ int32_t DistributedDeviceProfileStubNew::NotifyEventInner(uint32_t code, Message
     MessageParcel& reply, MessageOption& option)
 {
     switch (code) {
-        case static_cast<uint32_t>(DPInterfaceCode::GET_DEVICE_PROFILE_NEW):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_DEVICE_PROFILE_NEW):
             return GetDeviceProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::GET_SERVICE_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_SERVICE_PROFILE):
             return GetServiceProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::GET_CHAR_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_CHAR_PROFILE):
             return GetCharacteristicProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::DEL_SERVICE_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::DEL_SERVICE_PROFILE):
             return DeleteServiceProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::DEL_CHAR_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::DEL_CHAR_PROFILE):
             return DeleteCharacteristicProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::SYNC_DEVICE_PROFILE_NEW):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::SYNC_DEVICE_PROFILE_NEW):
             return SyncDeviceProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::SYNC_STATIC_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::SYNC_STATIC_PROFILE):
             return SyncStaticProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::PUT_SERVICE_INFO_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::PUT_SERVICE_INFO_PROFILE):
             return PutServiceInfoProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::DELETE_SERVICE_INFO_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::DELETE_SERVICE_INFO_PROFILE):
             return DeleteServiceInfoProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::UPDATE_SERVICE_INFO_PROFILE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::UPDATE_SERVICE_INFO_PROFILE):
             return UpdateServiceInfoProfileInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::GET_SERVICE_INFO_PROFILE_BY_UNIQUE_KEY):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_SERVICE_INFO_PROFILE_BY_UNIQUE_KEY):
             return GetServiceInfoProfileByUniqueKeyInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::GET_SERVICE_INFO_PROFILE_LIST_BY_TOKEN_ID):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_SERVICE_INFO_PROFILE_LIST_BY_TOKEN_ID):
             return GetServiceInfoProfileListByTokenIdInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::GET_ALL_SERVICE_INFO_PROFILE_LIST):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_ALL_SERVICE_INFO_PROFILE_LIST):
             return GetAllServiceInfoProfileListInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::GET_SERVICE_INFO_PROFILE_LIST_BY_BUNDLE_NAME):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_SERVICE_INFO_PROFILE_LIST_BY_BUNDLE_NAME):
             return GetServiceInfoProfileListByBundleNameInner(data, reply);
         default:
             return NotifyLocalServiceEventInner(code, data, reply, option);
@@ -202,21 +203,21 @@ int32_t DistributedDeviceProfileStubNew::NotifyLocalServiceEventInner(uint32_t c
     MessageParcel& reply, MessageOption& option)
 {
     switch (code) {
-        case static_cast<uint32_t>(DPInterfaceCode::PUT_LOCAL_SERVICE_INFO):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::PUT_LOCAL_SERVICE_INFO):
             return PutLocalServiceInfoInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::UPDATE_LOCAL_SERVICE_INFO):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::UPDATE_LOCAL_SERVICE_INFO):
             return UpdateLocalServiceInfoInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::GET_LOCAL_SERVICE_INFO_BY_BINDLE_AND_PINTYPE):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_LOCAL_SERVICE_INFO_BY_BINDLE_AND_PINTYPE):
             return GetLocalServiceInfoByBundleAndPinTypeInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::DELETE_LOCAL_SERVICE_INFO):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::DELETE_LOCAL_SERVICE_INFO):
             return DeleteLocalServiceInfoInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::REGISTER_BUSINESS_CALLBACK):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::REGISTER_BUSINESS_CALLBACK):
             return RegisterBusinessCallbackInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::UNREGISTER_BUSINESS_CALLBACK):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::UNREGISTER_BUSINESS_CALLBACK):
             return UnRegisterBusinessCallbackInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::PUT_BUSINESS_EVENT):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::PUT_BUSINESS_EVENT):
             return PutBusinessEventInner(data, reply);
-        case static_cast<uint32_t>(DPInterfaceCode::GET_BUSINESS_EVENT):
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_BUSINESS_EVENT):
             return GetBusinessEventInner(data, reply);
         default:
             HILOGW("unknown request code, please check, code = %{public}u", code);

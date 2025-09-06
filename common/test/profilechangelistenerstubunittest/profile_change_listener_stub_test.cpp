@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,8 +17,9 @@
 
 #include "ipc_types.h"
 
-#include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_enums.h"
+#include "distributed_device_profile_errors.h"
+#include "dp_ipc_interface_code.h"
 
 using namespace testing::ext;
 namespace OHOS {
@@ -133,7 +134,7 @@ int32_t MockProfileChangeListenerStub::OnCharacteristicProfileUpdate(const Chara
 
 HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_001, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_ADD);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_ADD);
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -269,7 +270,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnCharacteristicProfileUpdateInner_001, 
 
 HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_002, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_ADD);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_ADD);
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
@@ -280,7 +281,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_002, TestSize.Level0)
 
 HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_003, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_DELETE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_DELETE);
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
@@ -291,7 +292,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_003, TestSize.Level0)
 
 HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_004, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_TRUST_DEVICE_PROFILE_UPDATE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_UPDATE);
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
@@ -302,7 +303,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_004, TestSize.Level0)
 
 HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_005, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_ADD);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_ADD);
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
@@ -313,7 +314,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_005, TestSize.Level0)
 
 HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_006, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_DELETE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_DELETE);
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
@@ -324,7 +325,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_006, TestSize.Level0)
 
 HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_007, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_UPDATE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_UPDATE);
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
@@ -335,7 +336,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_007, TestSize.Level0)
 
 HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_008, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_SERVICE_PROFILE_ADD);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_ADD);
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
@@ -346,7 +347,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_008, TestSize.Level0)
 
 HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_009, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_SERVICE_PROFILE_DELETE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_DELETE);
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
@@ -357,7 +358,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_009, TestSize.Level0)
 
 HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_010, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_SERVICE_PROFILE_UPDATE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_UPDATE);
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
@@ -368,7 +369,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_010, TestSize.Level0)
 
 HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_011, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_CHAR_PROFILE_ADD);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_ADD);
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
@@ -379,7 +380,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_011, TestSize.Level0)
 
 HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_012, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_CHAR_PROFILE_DELETE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_DELETE);
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
@@ -390,7 +391,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_012, TestSize.Level0)
 
 HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_013, TestSize.Level0)
 {
-    uint32_t code = static_cast<uint32_t>(DPInterfaceCode::ON_CHAR_PROFILE_UPDATE);
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_UPDATE);
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;

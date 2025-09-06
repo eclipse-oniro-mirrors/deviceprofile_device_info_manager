@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,6 +17,7 @@
 #include "ipc_utils.h"
 #include "message_parcel.h"
 #include "dp_inited_callback_stub.h"
+#include "dp_ipc_interface_code.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -44,7 +45,7 @@ int32_t DpInitedCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel& data
         HILOGE("Check descriptor failed");
         return DP_INTERFACE_CHECK_FAILED;
     }
-    if (code != static_cast<uint32_t>(DPInterfaceCode::ON_DEVICE_PROFILE_INITED)) {
+    if (code != static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_INITED)) {
         HILOGW("Unknown request code, code = %{public}u", code);
         return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
     }

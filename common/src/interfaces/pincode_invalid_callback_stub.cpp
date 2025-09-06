@@ -14,6 +14,7 @@
  */
 
 #include "distributed_device_profile_log.h"
+#include "dp_ipc_interface_code.h"
 #include "ipc_utils.h"
 #include "message_parcel.h"
 #include "pincode_invalid_callback_stub.h"
@@ -44,7 +45,7 @@ int32_t PinCodeInvalidCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel
         HILOGE("Check descriptor failed");
         return DP_INTERFACE_CHECK_FAILED;
     }
-    if (code != static_cast<uint32_t>(DPInterfaceCode::ON_PINCODE_INVALID)) {
+    if (code != static_cast<uint32_t>(DpIpcInterfaceCode::ON_PINCODE_INVALID)) {
         HILOGW("Unknown request code, code = %{public}u", code);
         return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
     }

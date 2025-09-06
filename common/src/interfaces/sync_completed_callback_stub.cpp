@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,9 +19,10 @@
 #include <string>
 #include <utility>
 
+#include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
-#include "distributed_device_profile_constants.h"
+#include "dp_ipc_interface_code.h"
 #include "ipc_object_stub.h"
 #include "message_parcel.h"
 #include "macro_utils.h"
@@ -53,7 +54,7 @@ int32_t SyncCompletedCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel&
         return DP_INTERFACE_CHECK_FAILED;
     }
 
-    if (code != static_cast<uint32_t>(DPInterfaceCode::ON_SYNC_COMPLETED)) {
+    if (code != static_cast<uint32_t>(DpIpcInterfaceCode::ON_SYNC_COMPLETED)) {
         HILOGW("Unknown request code, code = %{public}u", code);
         return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
     }
