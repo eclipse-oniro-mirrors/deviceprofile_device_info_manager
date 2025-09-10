@@ -43,7 +43,7 @@ public:
  
     void RemoveSubstrings(std::string& str, const std::string& substr);
     void RemoveAfterSecondHash(std::string& str);
-    void SetServiceInfoProfile(const std::string& RegServiceId,
+    int32_t SetServiceInfoProfile(const std::string& regServiceId,
     const std::map<std::string, std::string>& finalSerProfile, ServiceInfoProfileNew& serviceInfoProfile);
  
 private:

@@ -463,7 +463,7 @@ int32_t ProfileControlUtils::DeleteServiceInfoProfile(std::shared_ptr<IKVAdapter
     }
     std::string strRegServiceId = std::to_string(regServiceId);
     std::vector<std::string> keys;
-    ProfileUtils::GenerateServiceInfoProfilekeys(strRegServiceId, keys);
+    ProfileUtils::GenerateServiceInfoProfilekeys(strRegServiceId, keys, userId);
  
     if (kvStore->DeleteBatch(keys) != DP_SUCCESS) {
         HILOGE("DeleteServiceProfile fail!");

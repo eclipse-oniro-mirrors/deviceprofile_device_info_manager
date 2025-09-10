@@ -1168,10 +1168,6 @@ int32_t DistributedDeviceProfileStubNew::GetServiceInfoProfileByServiceIdInner(M
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
     }
-    if (ret != DP_SUCCESS) {
-        HILOGE("Failed to get service info profile, serviceId: %{public}ld, ret: %{public}d", serviceId, ret);
-        return ret;
-    }
     if (!serviceInfoProfile.Marshalling(reply)) {
         HILOGE("write parcel fail!");
         return DP_READ_PARCEL_FAIL;
@@ -1188,10 +1184,6 @@ int32_t DistributedDeviceProfileStubNew::GetServiceInfoProfileByTokenIdInner(Mes
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
-    }
-    if (ret != DP_SUCCESS) {
-        HILOGE("Failed to get service info profile, serviceId: %{public}ld, ret: %{public}d", tokenId, ret);
-        return ret;
     }
     if (!serviceInfoProfile.Marshalling(reply)) {
         HILOGE("write parcel fail!");

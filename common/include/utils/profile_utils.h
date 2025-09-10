@@ -91,7 +91,7 @@ public:
     static int32_t EntriesToCharProfile(std::map<std::string, std::string> values, CharacteristicProfile& profile);
     static std::string GenerateDBKey(const std::string& profileKey, const std::string& profileProperty,
         int32_t userId = DEFAULT_USER_ID);
-    static std::string GenerateServiceDBKey(const std::string& regSerDBId, const std::string& fieldInfo,
+    static std::string GenerateServiceDBKey(const std::string& regSerDBId, const std::string& profileProperty,
         int32_t userId = DEFAULT_USER_ID);
     static std::string GetProfileKey(const std::string& dbKey);
     static std::string GetDeviceIdByDBKey(const std::string& dbKey);
@@ -121,7 +121,7 @@ public:
     static int32_t GetUserIdFromDbKey(const std::string& dbKey);
     static std::string RemoveUserIdFromDbKey(const std::string& dbKey);
     static int32_t GenerateServiceInfoProfilekeys(const std::string& regServiceId, std::vector<std::string>& dbKeys,
-         int32_t userId = DEFAULT_USER_ID);
+         int32_t userId);
     static int32_t GenerateServiceDBkeys(const std::string& deviceId, const std::string& serviceName,
         std::vector<std::string>& dbKeys, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID);
     static int32_t GenerateCharacteristicDBkeys(const std::string& deviceId, const std::string& serviceName,

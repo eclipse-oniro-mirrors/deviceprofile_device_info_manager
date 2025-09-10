@@ -783,12 +783,12 @@ std::string ProfileUtils::GenerateDBKey(const std::string& profileKey, const std
     return DBKey;
 }
 
-std::string ProfileUtils::GenerateServiceDBKey(const std::string& regServiceId, const std::string& trailInfo,
+std::string ProfileUtils::GenerateServiceDBKey(const std::string& regServiceId, const std::string& profileProperty,
     int32_t userId)
 {
     std::string strUserId = std::to_string(userId);
     std::string DBKey = "";
-    DBKey = "serviceInfo" + SEPARATOR + regServiceId + SEPARATOR + strUserId + SEPARATOR + trailInfo;
+    DBKey = SERVICE_INFO + SEPARATOR + regServiceId + SEPARATOR + strUserId + SEPARATOR + profileProperty;
     return DBKey;
 }
 
@@ -1021,19 +1021,18 @@ int32_t ProfileUtils::GenerateServiceDBkeys(const std::string& deviceId, const s
     return DP_SUCCESS;
 }
 
-int32_t ProfileUtils::GenerateServiceInfoProfilekeys(const std::string& regServiceId, std::vector<std::string>& dbKeys,
+int32_t ProfileUtils::GenerateServiceInfoProfilekeys(const std::string& regServiceId, std::vector<std::string>& dbKeys, 
     int32_t userId)
 {
-    std::string serviceProfileKey = GenerateServiceInfoProfileKey(regServiceId);
-    dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, DEVICE_ID, userId));
-    dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, RDB_USER_ID, userId));
-    dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, TOKENID, userId));
-    dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, PUBLISH_STATE, userId));
-    dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_PROFILE_SERVICE_ID, userId));
-    dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_TYPE, userId));
-    dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_NAME, userId));
-    dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_DISPLAY_NAME, userId));
- 
+    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, DEVICE_ID, userId));
+    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, RDB_USER_ID, userId));
+    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, TOKENID, userId));
+    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, PUBLISH_STATE, userId));
+    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, SERVICE_PROFILE_SERVICE_ID, userId));
+    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, SERVICE_TYPE, userId));
+    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, SERVICE_NAME, userId));
+    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, SERVICE_DISPLAY_NAME, userId));
+
     return DP_SUCCESS;
 }
 

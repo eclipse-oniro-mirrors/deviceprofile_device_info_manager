@@ -157,7 +157,11 @@ int32_t ServiceInfoProfileManage::GetServiceInfoProfileByServiceId(int64_t servi
         HILOGE("GetByPrefix fail, ret: %{public}d", ret);
         return ret;
     }
-    SetServiceInfoProfile(regServiceId, profileEntries, serviceInfoProfile);
+    ret = SetServiceInfoProfile(regServiceId, profileEntries, serviceInfoProfile);
+    if (ret != DP_SUCCESS) {
+        HILOGE("SetServiceInfoProfile failed");
+        return DP_NOT_FIND_DATA;
+    }
     HILOGI("serviceInfoProfile: %{public}s", serviceInfoProfile.dump().c_str());
     return DP_SUCCESS;
 }
@@ -165,6 +169,10 @@ int32_t ServiceInfoProfileManage::GetServiceInfoProfileByServiceId(int64_t servi
 void ServiceInfoProfileManage::SetServiceInfoProfile(const std::string& regServiceId,
     const std::map<std::string, std::string>& finalSerProfile, ServiceInfoProfileNew& serviceInfoProfile)
 {
+    if (regServiceId.empty() || finalSerProfile.empty()) {
+        HILOGI("params invalid");
+        return DP_NOT_FIND_DATA;
+    }
     std::string key = finalSerProfile.begin()->first;
     size_t lastPos = key.find_last_of(SEPARATOR);
     std::string prefix = key.substr(0, lastPos + 1);
@@ -195,12 +203,13 @@ void ServiceInfoProfileManage::SetServiceInfoProfile(const std::string& regServi
     serviceInfoProfile.SetServiceType(regServiceTypeTemp);
     serviceInfoProfile.SetTokenId(regTokenIdTemp);
     serviceInfoProfile.SetUserId(regUserIdTemp);
+    return DP_SUCCESS;
 }
 
 int32_t ServiceInfoProfileManage::GetServiceInfoProfileByTokenId(int64_t tokenId,
     ServiceInfoProfileNew& serviceInfoProfile)
 {
-    HILOGE("tokenId:%{public}s", ProfileUtils::GetAnonyInt32(tokenId).c_str());
+    HILOGI("tokenId:%{public}s", ProfileUtils::GetAnonyInt32(tokenId).c_str());
     std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
     if (serviceInfoKvAdapter_ == nullptr) {
         HILOGE("serviceInfoKvAdapter_ is nullptr");
@@ -235,7 +244,11 @@ int32_t ServiceInfoProfileManage::GetServiceInfoProfileByTokenId(int64_t tokenId
         HILOGE("GetByPrefix fail, ret: %{public}d", ret);
         return ret;
     }
-    SetServiceInfoProfile(regServiceId, profileEntries, serviceInfoProfile);
+    ret = SetServiceInfoProfile(regServiceId, profileEntries, serviceInfoProfile);
+    if (ret != DP_SUCCESS) {
+        HILOGE("SetServiceInfoProfile failed");
+        return DP_NOT_FIND_DATA;
+    }
     HILOGI("serviceInfoProfile: %{public}s", serviceInfoProfile.dump().c_str());
     return DP_SUCCESS;
 }
