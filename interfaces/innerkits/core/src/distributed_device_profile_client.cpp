@@ -278,26 +278,6 @@ int32_t DistributedDeviceProfileClient::PutServiceProfile(const ServiceProfile& 
     return dpService->PutServiceProfile(serviceProfile);
 }
 
-int32_t DistributedDeviceProfileClient::PutServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile)
-{
-    auto dpService = GetDeviceProfileService();
-    if (dpService == nullptr) {
-        HILOGE("Get dp service failed");
-        return DP_GET_SERVICE_FAILED;
-    }
-    return dpService->PutServiceInfoProfile(serviceInfoProfile);
-}
-
-int32_t DistributedDeviceProfileClient::DeleteServiceInfoProfile(const ServiceInfoUniqueKey& key)
-{
-    auto dpService = GetDeviceProfileService();
-    if (dpService == nullptr) {
-        HILOGE("Get dp service failed");
-        return DP_GET_SERVICE_FAILED;
-    }
-    return dpService->DeleteServiceInfoProfile(key);
-}
-
 int32_t DistributedDeviceProfileClient::UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile)
 {
     auto dpService = GetDeviceProfileService();
@@ -1236,6 +1216,48 @@ int32_t DistributedDeviceProfileClient::GetBusinessEvent(BusinessEvent& event)
         return DP_GET_SERVICE_FAILED;
     }
     return dpService->GetBusinessEvent(event);
+}
+
+int32_t DistributedDeviceProfileClient::PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfoProfile)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->PutServiceInfoProfile(serviceInfoProfile);
+}
+ 
+int32_t DistributedDeviceProfileClient::DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->DeleteServiceInfoProfile(regServiceId, userId);
+}
+
+int32_t DistributedDeviceProfileClient::GetServiceInfoProfileByServiceId(int64_t serviceId,
+    ServiceInfoProfileNew& serviceInfoProfile)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->GetServiceInfoProfileByServiceId(serviceId, serviceInfoProfile);
+}
+ 
+int32_t DistributedDeviceProfileClient::GetServiceInfoProfileByTokenId(int64_t tokenId,
+    ServiceInfoProfileNew& serviceInfoProfile)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->GetServiceInfoProfileByTokenId(tokenId, serviceInfoProfile);
 }
 } // namespace DeviceProfile
 } // namespace OHOS

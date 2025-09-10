@@ -90,8 +90,6 @@ public:
         sptr<IPincodeInvalidCallback> pinCodeCallback);
     int32_t UnSubscribePinCodeInvalid(const std::string& bundleName, int32_t pinExchangeType);
     int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo>& deviceInfos);
-    int32_t PutServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile);
-    int32_t DeleteServiceInfoProfile(const ServiceInfoUniqueKey& key);
     int32_t UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile);
     int32_t GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key, ServiceInfoProfile& serviceInfoProfile);
     int32_t GetServiceInfoProfileListByTokenId(const ServiceInfoUniqueKey& key,
@@ -109,6 +107,10 @@ public:
     int32_t UnRegisterBusinessCallback(const std::string& saId, const std::string& businessKey);
     int32_t PutBusinessEvent(const BusinessEvent& event);
     int32_t GetBusinessEvent(BusinessEvent& event);
+    int32_t PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfoProfile);
+    int32_t DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId);
+    int32_t GetServiceInfoProfileByServiceId(int64_t serviceId, ServiceInfoProfileNew& serviceInfoProfile);
+    int32_t GetServiceInfoProfileByTokenId(int64_t tokenId, ServiceInfoProfileNew& serviceInfoProfile);
 
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
     void LoadSystemAbilityFail();

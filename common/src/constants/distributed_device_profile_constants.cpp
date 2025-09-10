@@ -65,6 +65,7 @@ const std::string SYSTEM = "system";
 const std::string RDB_TYPE_TEXT = "TEXT";
 const std::string RESULT = "result";
 /* ServiceProfile Attribute */
+const std::string SERVICEID = "serviceId";
 const std::string SERVICE_NAME = "serviceName";
 const std::string SERVICE_PROFILE_SERVICE_ID = "serviceId";
 const std::string SERVICE_TYPE = "serviceType";
@@ -169,6 +170,9 @@ const std::string GET_SERVICE_INFO_PROFILE_LIST_BY_TOKEN_ID = "GetServiceInfoPro
 const std::string GET_ALL_SERVICE_INFO_PROFILE_LIST = "GetAllServiceInfoProfileList";
 const std::string GET_SERVICE_INFO_PROFILE_LIST_BY_BUNDLE_NAME = "GetServiceInfoProfileListByBundleName";
 /* LocalServiceInfo Attribute */
+const std::string REG_SERVICE_ID = "regServiceId";
+const std::string PUBLISH_STATE = "publishState";
+const std::string SERVICE_INFO = "serviceInfo";
 const std::string PUT_LOCAL_SERVICE_INFO = "PutLocalServiceInfo";
 const std::string UPDATE_LOCAL_SERVICE_INFO = "UpdateLocalServiceInfo";
 const std::string GET_LOCAL_SERVICE_INFO_BY_BINDLE_AND_PINTYPE = "GetLocalServiceInfoByBundleAndPinType";
@@ -245,6 +249,26 @@ const std::string IS_LNN_ACL = "IsLnnAcl";
 const std::string LNN_ACL_TRUE = "true";
 const std::string BUSINESS_KEY = "businessKey";
 const std::string BUSINESS_VALUE = "businessValue";
+
+//service info profile keys value
+const std::string SERVICE_ID_KEY = "serviceIdKey";
+const std::string SERVICE_ID_VALUE = "serviceIdValue";
+const std::string SERVICE_TYPE_KEY = "serviceTypeKey";
+const std::string SERVICE_TYPE_VALUE = "serviceTypeValue";
+const std::string SERVICE_NAME_KEY = "serviceNameKey";
+const std::string SERVICE_NAME_VALUE = "serviceNameValue_";
+const std::string SERVICE_DISPLAY_NAME_KEY = "serviceDisplayNameKey";
+const std::string SERVICE_DISPLAY_NAME_VALUE = "serviceDisplayNameValue";
+const std::string REG_SERVICE_ID_KEY = "regServiceIdKey";
+const std::string REG_SERVICE_ID_VALUE = "regServiceIdValue";
+const std::string SER_PUB_STATE_KEY = "serPubStateKey";
+const std::string SER_PUB_STATE_VALUE = "serPubStateValue";
+const std::string DEVICE_ID_KEY = "deviceIdKey";
+const std::string DEVICE_ID_VALUE = "deviceIdValue";
+const std::string SER_USER_ID_KEY = "userIdKey";
+const std::string SER_USER_ID_VALUE = "userIdValue";
+const std::string SER_TOKEN_ID_KEY = "tokenIdKey";
+const std::string SER_TOKEN_ID_VALUE = "tokenIdValue";
 
 const std::string CREATE_TURST_DEVICE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS trust_device_table\
 (\

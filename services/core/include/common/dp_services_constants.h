@@ -43,6 +43,9 @@ extern const std::string CREATE_DEVICE_PROFILE_TABLE_UNIQUE_INDEX_SQL;
 extern const std::string CREATE_DEVICE_PROFILE_WISE_DEVICEID_INDEX_SQL;
 extern const std::string ALTER_TABLE_DP_ADD_COLUMN_PRODUCT_NAME_SQL;
 extern const std::string ALTER_TABLE_DP_RENAME_COLUMN_INTERNAL_MODEL_SQL;
+/* DeviceDao */
+extern const std::string SERVICE_INFO_RDB_PATH;
+extern const std::string SERVICE_INFO_DATABASE_NAME;
 // DeviceIconInfoDao
 extern const std::string CREATE_DEVICE_ICON_INFO_TABLE_SQL ;
 extern const std::string CREATE_DEVICE_ICON_INFO_TABLE_UNIQUE_INDEX_SQL;
@@ -72,6 +75,15 @@ extern const std::string SERVICE_INFO_PROFILE_UNIQUE_INDEX_EQUAL_CONDITION;
 extern const std::string SELECT_SERVICE_INFO_PROFILE_TABLE_WHERE_DEVID_USERID_TOKENID_SERVICEID;
 extern const std::string SELECT_SERVICE_INFO_PROFILE_TABLE_WHERE_DEVID_USERID_TOKENID;
 extern const std::string SELECT_SERVICE_INFO_PROFILE_TABLE_WHERE_DEVID_USERID_BUNDLENAME;
+// ServiceInfo
+extern const std::string SERVICE_INFO_TABLE;
+extern const std::string CREATE_SERVICE_INFO_TABLE_SQL;
+extern const std::string CREATE_SERVICE_INFO_TABLE_UNIQUE_INDEX_SQL;
+extern const std::string SELECT_SERVICE_INFO_ALL;
+extern const std::string SERVICE_INFO_UNIQUE_INDEX_EQUAL_CONDITION;
+extern const std::string SELECT_SERVICE_INFO_TABLE_WHERE_DEVID_USERID_TOKENID_SERVICEID;
+extern const std::string SELECT_SERVICE_INFO_TABLE_WHERE_DEVID_USERID_TOKENID;
+extern const std::string SELECT_SERVICE_INFO_TABLE_WHERE_DEVID_USERID_BUNDLENAME;
 // LocalServiceInfo
 extern const std::string LOCAL_SERVICE_INFO_RDB_PATH;
 extern const std::string LOCAL_SERVICE_INFO_DATABASE_NAME;

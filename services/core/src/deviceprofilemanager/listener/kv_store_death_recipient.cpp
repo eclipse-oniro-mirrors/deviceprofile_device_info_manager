@@ -20,6 +20,7 @@
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_constants.h"
 #include "static_profile_manager.h"
+#include "service_info_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -29,6 +30,7 @@ namespace {
     const std::string DYNAMIC_STORE_ID = "dp_kv_store";
     const std::string STATIC_STORE_ID = "dp_kv_static_store";
     const std::string BUSINESS_STORE_ID = "dp_kv_store_business";
+    const std::string SERVICE_INFO_STORE_ID = "dp_kv_store_service_info_profile";
 }
 
 KvDeathRecipient::KvDeathRecipient(const std::string& storeId)
@@ -68,6 +70,9 @@ void KvDeathRecipient::OnRemoteDied()
         }
         if (storeId == BUSINESS_STORE_ID) {
             DeviceProfileManager::GetInstance().ReInit();
+        }
+        if (storeId == SERVICE_INFO_STORE_ID) {
+            ServiceInfoProfileManage::GetInstance().ReInit();
         }
     };
     {
