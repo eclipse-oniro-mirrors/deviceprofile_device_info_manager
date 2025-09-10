@@ -163,43 +163,43 @@ int32_t ServiceInfoProfileManage::GetServiceInfoProfileByServiceId(int64_t servi
     return DP_SUCCESS;
 }
 
-void ServiceInfoProfileManage::SetServiceInfoProfile(const std::string& RegServiceId,
+void ServiceInfoProfileManage::SetServiceInfoProfile(const std::string& regServiceId,
     const std::map<std::string, std::string>& finalSerProfile, ServiceInfoProfileNew& serviceInfoProfile)
 {
-    if(RegServiceId.empty()){
-        HILOGE("RegServiceId is empty.");
+    if(regServiceId.empty()){
+        HILOGE("regServiceId is empty.");
         return;
     }
     std::string key = finalSerProfile.begin()->first;
     size_t lastPos = key.find_last_of(SEPARATOR);
     std::string prefix = key.substr(0, lastPos + 1);
-    int32_t RegServiceIdTempOne = std::stoi(RegServiceId);
-    std::string RegDeviceIdTemp = finalSerProfile.count(prefix + "deviceId")
+    int32_t regServiceIdTempOne = std::stoi(regServiceId);
+    std::string regDeviceIdTemp = finalSerProfile.count(prefix + "deviceId")
         ? finalSerProfile.at(prefix + "deviceId") : "";
-    int8_t RegSerPubStateTemp = finalSerProfile.count(prefix + "publishState")
+    int8_t regSerPubStateTemp = finalSerProfile.count(prefix + "publishState")
         ? std::stoi(finalSerProfile.at(prefix + "publishState")) : 0;
-    std::string RegServiceDisplayNameTemp = finalSerProfile.count(prefix + "serviceDisplayName")
+    std::string regServiceDisplayNameTemp = finalSerProfile.count(prefix + "serviceDisplayName")
         ? finalSerProfile.at(prefix + "serviceDisplayName") : "";
-    int64_t RegServiceIdTemp = finalSerProfile.count(prefix + "serviceId")
+    int64_t regServiceIdTemp = finalSerProfile.count(prefix + "serviceId")
         ? std::stoll(finalSerProfile.at(prefix + "serviceId")) : 0;
-    std::string RegSetServiceNameTemp = finalSerProfile.count(prefix + "serviceName")
+    std::string regSetServiceNameTemp = finalSerProfile.count(prefix + "serviceName")
         ? finalSerProfile.at(prefix + "serviceName") : "";
-    std::string RegServiceTypeTemp = finalSerProfile.count(prefix + "serviceType")
+    std::string regServiceTypeTemp = finalSerProfile.count(prefix + "serviceType")
         ? finalSerProfile.at(prefix + "serviceType") : "";
-    int64_t RegTokenIdTemp = finalSerProfile.count(prefix + "tokenId")
+    int64_t regTokenIdTemp = finalSerProfile.count(prefix + "tokenId")
         ? std::stoll(finalSerProfile.at(prefix + "tokenId")) : 0;
-    int32_t RegUserIdTemp = finalSerProfile.count(prefix + "userId")
+    int32_t regUserIdTemp = finalSerProfile.count(prefix + "userId")
         ? std::stoi(finalSerProfile.at(prefix + "userId")) : 0;
  
-    serviceInfoProfile.SetRegServiceId(RegServiceIdTempOne);
-    serviceInfoProfile.SetDeviceId(RegDeviceIdTemp);
-    serviceInfoProfile.SetSerPubState(RegSerPubStateTemp);
-    serviceInfoProfile.SetServiceDisplayName(RegServiceDisplayNameTemp);
-    serviceInfoProfile.SetServiceId(RegServiceIdTemp);
-    serviceInfoProfile.SetServiceName(RegSetServiceNameTemp);
-    serviceInfoProfile.SetServiceType(RegServiceTypeTemp);
-    serviceInfoProfile.SetTokenId(RegTokenIdTemp);
-    serviceInfoProfile.SetUserId(RegUserIdTemp);
+    serviceInfoProfile.SetRegServiceId(regServiceIdTempOne);
+    serviceInfoProfile.SetDeviceId(regDeviceIdTemp);
+    serviceInfoProfile.SetSerPubState(regSerPubStateTemp);
+    serviceInfoProfile.SetServiceDisplayName(regServiceDisplayNameTemp);
+    serviceInfoProfile.SetServiceId(regServiceIdTemp);
+    serviceInfoProfile.SetServiceName(regSetServiceNameTemp);
+    serviceInfoProfile.SetServiceType(regServiceTypeTemp);
+    serviceInfoProfile.SetTokenId(regTokenIdTemp);
+    serviceInfoProfile.SetUserId(regUserIdTemp);
 }
 
 int32_t ServiceInfoProfileManage::GetServiceInfoProfileByTokenId(int64_t tokenId,
