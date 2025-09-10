@@ -148,7 +148,7 @@ int32_t ServiceInfoProfileManage::GetServiceInfoProfileByServiceId(int64_t servi
     }
     if (regServiceId.empty()) {
         HILOGE("No match regServiceId.");
-        return DP_NOT_FOUND_DATA;
+        return DP_NOT_FIND_DATA;
     }
     std::string finalPrefix = SERVICE_INFO + SEPARATOR +regServiceId;
     std::map<std::string, std::string> profileEntries;
@@ -235,7 +235,7 @@ int32_t ServiceInfoProfileManage::GetServiceInfoProfileByTokenId(int64_t tokenId
     }
     if (regServiceId.empty()) {
         HILOGE("No match regServiceId.");
-        return DP_NOT_FOUND_DATA;
+        return DP_NOT_FIND_DATA;
     }
     std::string finalPrefix = SERVICE_INFO + SEPARATOR +regServiceId;
     std::map<std::string, std::string> profileEntries;
