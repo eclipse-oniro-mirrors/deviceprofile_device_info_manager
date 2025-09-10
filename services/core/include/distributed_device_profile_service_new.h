@@ -35,6 +35,7 @@
 #include "single_instance.h"
 #include "system_ability.h"
 #include "system_ability_definition.h"
+#include "service_info_profile_new.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -85,8 +86,6 @@ public:
     int32_t PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos) override;
     int32_t GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
         std::vector<DeviceIconInfo>& deviceIconInfos) override;
-    int32_t PutServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile) override;
-    int32_t DeleteServiceInfoProfile(const ServiceInfoUniqueKey& key) override;
     int32_t UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile) override;
     int32_t GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key,
         ServiceInfoProfile& serviceInfoProfile) override;
@@ -125,6 +124,10 @@ public:
     int32_t UnRegisterBusinessCallback(const std::string& saId, const std::string& businessKey) override;
     int32_t PutBusinessEvent(const BusinessEvent& event) override;
     int32_t GetBusinessEvent(BusinessEvent& event) override;
+    int32_t PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfoProfile) override;
+    int32_t DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId) override;
+    int32_t GetServiceInfoProfileByServiceId(int64_t serviceId, ServiceInfoProfileNew& serviceInfoProfile) override;
+    int32_t GetServiceInfoProfileByTokenId(int64_t tokenId, ServiceInfoProfileNew& serviceInfoProfile) override;
 
 protected:
     void OnStart(const SystemAbilityOnDemandReason& startReason) override;

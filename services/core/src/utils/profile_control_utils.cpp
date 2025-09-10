@@ -453,6 +453,25 @@ int32_t ProfileControlUtils::DeleteServiceProfile(std::shared_ptr<IKVAdapter> kv
     return DP_SUCCESS;
 }
 
+int32_t ProfileControlUtils::DeleteServiceInfoProfile(std::shared_ptr<IKVAdapter> kvStore, int32_t regServiceId,
+    int32_t userId)
+{
+    HILOGD("call!");
+    if (kvStore == nullptr) {
+        HILOGE("kvStore is nullptr!");
+        return DP_INVALID_PARAMS;
+    }
+    std::string strRegServiceId = std::to_string(regServiceId);
+    std::vector<std::string> keys;
+    ProfileUtils::GenerateServiceInfoProfilekeys(strRegServiceId, keys);
+ 
+    if (kvStore->DeleteBatch(keys) != DP_SUCCESS) {
+        HILOGE("DeleteServiceProfile fail!");
+        return DP_DEL_KV_DB_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
 int32_t ProfileControlUtils::DeleteCharacteristicProfile(std::shared_ptr<IKVAdapter> kvStore,
     const std::string& deviceId, const std::string& serviceName, const std::string& characteristicKey, bool isMultiUser,
     int32_t userId)

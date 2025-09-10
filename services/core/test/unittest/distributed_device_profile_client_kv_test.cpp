@@ -817,7 +817,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribePinCodeInvalid_001, Te
  */
 HWTEST_F(DistributedDeviceProfileClientKvTest, PutServiceInfoProfile_001, TestSize.Level0)
 {
-    ServiceInfoProfile serviceInfoProfile;
+    ServiceInfoProfileNew serviceInfoProfile;
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutServiceInfoProfile(serviceInfoProfile);
     EXPECT_NE(errCode, DP_SUCCESS);
 }
@@ -830,8 +830,10 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutServiceInfoProfile_001, TestSi
  */
 HWTEST_F(DistributedDeviceProfileClientKvTest, DeleteServiceInfoProfile_001, TestSize.Level0)
 {
-    ServiceInfoUniqueKey key;
-    int32_t errCode = DistributedDeviceProfileClient::GetInstance().DeleteServiceInfoProfile(key);
+    int32_t regServiceId = 0;
+    int32_t userId = 0;
+    int32_t errCode = DistributedDeviceProfileClient::GetInstance().DeleteServiceInfoProfile(regServiceId,
+         userId);
     EXPECT_NE(errCode, DP_SUCCESS);
 }
 

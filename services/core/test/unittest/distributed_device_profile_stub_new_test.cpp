@@ -83,8 +83,6 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
     int32_t PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos) override;
     int32_t GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
         std::vector<DeviceIconInfo>& deviceIconInfos) override;
-    int32_t PutServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile) override;
-    int32_t DeleteServiceInfoProfile(const ServiceInfoUniqueKey& key) override;
     int32_t UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile) override;
     int32_t GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key,
         ServiceInfoProfile& serviceInfoProfile) override;
@@ -103,6 +101,10 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
     int32_t UnRegisterBusinessCallback(const std::string& saId, const std::string& businessKey) override;
     int32_t PutBusinessEvent(const BusinessEvent &event) override;
     int32_t GetBusinessEvent(BusinessEvent &event) override;
+    int32_t PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfo) override;
+    int32_t DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId) override;
+    int32_t GetServiceInfoProfileByServiceId(int64_t serviceId, ServiceInfoProfileNew& serviceInfoProfile) override;
+    int32_t GetServiceInfoProfileByTokenId(int64_t tokenId, ServiceInfoProfileNew& serviceInfoProfile) override;
     void DelayUnloadTask() override;
     bool IsInited() override;
 };
@@ -391,18 +393,6 @@ int32_t MockDistributedDeviceProfileStubNew::GetDeviceIconInfos(const DeviceIcon
     return 0;
 }
 
-int32_t MockDistributedDeviceProfileStubNew::PutServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile)
-{
-    (void)serviceInfoProfile;
-    return 0;
-}
-
-int32_t MockDistributedDeviceProfileStubNew::DeleteServiceInfoProfile(const ServiceInfoUniqueKey& key)
-{
-    (void)key;
-    return 0;
-}
-
 int32_t MockDistributedDeviceProfileStubNew::UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile)
 {
     (void)serviceInfoProfile;
@@ -489,6 +479,35 @@ int32_t MockDistributedDeviceProfileStubNew::PutBusinessEvent(const BusinessEven
 int32_t MockDistributedDeviceProfileStubNew::GetBusinessEvent(BusinessEvent& event)
 {
     (void)event;
+    return 0;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfo)
+{
+    (void)serviceInfo;
+    return 0;
+}
+ 
+int32_t MockDistributedDeviceProfileStubNew::DeleteServiceInfoProfile(const int32_t regServiceId, int32_t userId)
+{
+    (void)regServiceId;
+    (void)userId;
+    return 0;
+}
+ 
+int32_t MockDistributedDeviceProfileStubNew::GetServiceInfoProfileByServiceId(int64_t serviceId,
+    ServiceInfoProfileNew& serviceInfoProfile)
+{
+    (void)serviceId;
+    (void)serviceInfoProfile;
+    return 0;
+}
+ 
+int32_t MockDistributedDeviceProfileStubNew::GetServiceInfoProfileByTokenId(int64_t tokenId,
+    ServiceInfoProfileNew& serviceInfoProfile)
+{
+    (void)tokenId;
+    (void)serviceInfoProfile;
     return 0;
 }
 /**

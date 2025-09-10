@@ -278,15 +278,17 @@ HWTEST_F(DpProfileServiceTest, PutCharacteristicProfile_001, TestSize.Level1)
 
 HWTEST_F(DpProfileServiceTest, PutServiceInfoProfile_001, TestSize.Level1)
 {
-    ServiceInfoProfile serviceInfoProfile;
+    ServiceInfoProfileNew serviceInfoProfile;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutServiceInfoProfile(serviceInfoProfile);
     EXPECT_EQ(DP_PERMISSION_DENIED, ret);
 }
 
 HWTEST_F(DpProfileServiceTest, DeleteServiceInfoProfile_001, TestSize.Level1)
 {
-    ServiceInfoUniqueKey key;
-    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().DeleteServiceInfoProfile(key);
+    int32_t regServiceId = 0;
+    int32_t userId = 0;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().DeleteServiceInfoProfile(regServiceId, 
+        userId);
     EXPECT_EQ(DP_PERMISSION_DENIED, ret);
 }
 

@@ -31,6 +31,7 @@
 #include "i_sync_completed_callback.h"
 #include "product_info.h"
 #include "service_info_profile.h"
+#include "service_info_profile_new.h"
 #include "service_info_unique_key.h"
 #include "service_profile.h"
 #include "trust_device_profile.h"
@@ -92,8 +93,6 @@ public:
     virtual int32_t PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos) = 0;
     virtual int32_t GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
         std::vector<DeviceIconInfo>& deviceIconInfos) = 0;
-    virtual int32_t PutServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile) = 0;
-    virtual int32_t DeleteServiceInfoProfile(const ServiceInfoUniqueKey& key) = 0;
     virtual int32_t UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile) = 0;
     virtual int32_t GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key,
         ServiceInfoProfile& serviceInfoProfile) = 0;
@@ -112,6 +111,10 @@ public:
     virtual int32_t UnRegisterBusinessCallback(const std::string& saId, const std::string& businessKey) = 0;
     virtual int32_t PutBusinessEvent(const BusinessEvent& event) = 0;
     virtual int32_t GetBusinessEvent(BusinessEvent& event) = 0;
+    virtual int32_t PutServiceInfoProfile(const ServiceInfoProfileNew & serviceInfo) = 0;
+    virtual int32_t DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId) = 0;
+    virtual int32_t GetServiceInfoProfileByServiceId(int64_t serviceId, ServiceInfoProfileNew& serviceInfoProfile)= 0;
+    virtual int32_t GetServiceInfoProfileByTokenId(int64_t tokenId, ServiceInfoProfileNew& serviceInfoProfile)= 0;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

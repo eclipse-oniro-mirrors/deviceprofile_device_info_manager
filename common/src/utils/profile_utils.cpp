@@ -297,6 +297,11 @@ bool ProfileUtils::IsSvrProfileValid(const ServiceProfile& svrProfile)
         IsKeyValid(svrProfile.GetServiceName());
 }
 
+bool ProfileUtils::IsSvrInfoProfileValid(const ServiceInfoProfileNew& serInfoProfile)
+{
+    return IsKeyValid(serInfoProfile.GetDeviceId()) && IsKeyValid(serInfoProfile.GetServiceName());
+}
+
 bool ProfileUtils::IsCharProfileValid(const CharacteristicProfile& charProfile)
 {
     return IsKeyValid(charProfile.GetDeviceId()) && IsLocalUdid(charProfile.GetDeviceId()) &&
@@ -335,6 +340,11 @@ std::string ProfileUtils::GenerateDeviceProfileKey(const std::string& deviceId)
 std::string ProfileUtils::GenerateServiceProfileKey(const std::string& deviceId, const std::string& serviceName)
 {
     return SVR_PREFIX + SEPARATOR + deviceId + SEPARATOR + serviceName;
+}
+
+std::string ProfileUtils::GenerateServiceInfoProfileKey(const std::string& regServiceId)
+{
+    return SERVICE_INFO + SEPARATOR + regServiceId;
 }
 
 std::string ProfileUtils::GenerateCharProfileKey(const std::string& deviceId, const std::string& serviceName,
@@ -450,6 +460,26 @@ int32_t ProfileUtils::ServiceProfileToEntries(const ServiceProfile& profile, std
         values[GenerateDBKey(serviceProfileKey, SERVICE_NAME)] = profile.GetServiceName();
         values[GenerateDBKey(serviceProfileKey, SERVICE_TYPE)] = profile.GetServiceType();
     }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileUtils::ServiceInfoProfileToEntries(const ServiceInfoProfileNew& profile, std::map<std::string,
+    std::string>& values)
+{
+    int32_t userIdValue = profile.GetUserId();
+    std::string regServiceId = std::to_string(profile.GetRegServiceId());
+    values[GenerateServiceDBKey(regServiceId, DEVICE_ID, userIdValue)] = profile.GetDeviceId();
+    values[GenerateServiceDBKey(regServiceId, USERID, userIdValue)] = std::to_string(profile.GetUserId());
+    values[GenerateServiceDBKey(regServiceId, TOKENID, userIdValue)] = std::to_string(profile.GetTokenId());
+    values[GenerateServiceDBKey(regServiceId, PUBLISH_STATE, userIdValue)] =
+        std::to_string(profile.GetSerPubState());
+    values[GenerateServiceDBKey(regServiceId, SERVICEID, userIdValue)] =
+        std::to_string(profile.GetServiceId());
+    values[GenerateServiceDBKey(regServiceId, SERVICE_TYPE, userIdValue)] = profile.GetServiceType();
+    values[GenerateServiceDBKey(regServiceId, SERVICE_NAME, userIdValue)] = profile.GetServiceName();
+    values[GenerateServiceDBKey(regServiceId, SERVICE_DISPLAY_NAME, userIdValue)] =
+         profile.GetServiceDisplayName();
+ 
     return DP_SUCCESS;
 }
 
@@ -753,6 +783,15 @@ std::string ProfileUtils::GenerateDBKey(const std::string& profileKey, const std
     return DBKey;
 }
 
+std::string ProfileUtils::GenerateServiceDBKey(const std::string& regServiceId, const std::string& trailInfo,
+    int32_t userId)
+{
+    std::string strUserId = std::to_string(userId);
+    std::string DBKey = "";
+    DBKey = "serviceInfo" + SEPARATOR + regServiceId + SEPARATOR + strUserId + SEPARATOR + trailInfo;
+    return DBKey;
+}
+
 std::string ProfileUtils::GetProfileProperty(const std::string& dbKey, int32_t userId)
 {
     if (dbKey.length() == 0 || dbKey.length() > MAX_STRING_LEN) {
@@ -979,6 +1018,22 @@ int32_t ProfileUtils::GenerateServiceDBkeys(const std::string& deviceId, const s
         dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_NAME));
         dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_TYPE));
     }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileUtils::GenerateServiceInfoProfilekeys(const std::string& regServiceId, std::vector<std::string>& dbKeys, 
+    int32_t userId)
+{
+    std::string serviceProfileKey = GenerateServiceInfoProfileKey(regServiceId);
+    dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, DEVICE_ID, userId));
+    dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, RDB_USER_ID, userId));
+    dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, TOKENID, userId));
+    dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, PUBLISH_STATE, userId));
+    dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_PROFILE_SERVICE_ID, userId));
+    dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_TYPE, userId));
+    dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_NAME, userId));
+    dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_DISPLAY_NAME, userId));
+ 
     return DP_SUCCESS;
 }
 

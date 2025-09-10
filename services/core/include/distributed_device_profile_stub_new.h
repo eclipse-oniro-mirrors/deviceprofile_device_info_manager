@@ -73,8 +73,6 @@ public:
     int32_t PutProductInfoBatchInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutDeviceIconInfoBatchInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetDeviceIconInfosInner(MessageParcel& data, MessageParcel& reply);
-    int32_t PutServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply);
-    int32_t DeleteServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t UpdateServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetServiceInfoProfileByUniqueKeyInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetServiceInfoProfileListByTokenIdInner(MessageParcel& data, MessageParcel& reply);
@@ -88,6 +86,10 @@ public:
     int32_t UnRegisterBusinessCallbackInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutBusinessEventInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetBusinessEventInner(MessageParcel& data, MessageParcel& reply);
+    int32_t PutServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t DeleteServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetServiceInfoProfileByServiceIdInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetServiceInfoProfileByTokenIdInner(MessageParcel& data, MessageParcel& reply);
 
 private:
     using Func = int32_t(DistributedDeviceProfileStubNew::*)(MessageParcel& data, MessageParcel& reply);
