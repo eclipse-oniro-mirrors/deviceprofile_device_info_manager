@@ -31,7 +31,7 @@
 #include "device_profile.h"
 #include "distributed_device_profile_constants.h"
 #include "service_profile.h"
-#include "service_profile_new.h"
+#include "service_info_profile_new.h"
 #include "trust_device_profile.h"
 
 namespace OHOS {
