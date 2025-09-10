@@ -168,7 +168,8 @@ std::string ServiceInfoProfileNew::dump() const
  
     cJSON_AddStringToObject(json, SERVICE_NAME.c_str(), serviceName_.c_str());
     
-    cJSON_AddStringToObject(json, SERVICE_DISPLAY_NAME.c_str(), ProfileUtils::GetAnonyString(serviceDisplayName_).c_str());
+    cJSON_AddStringToObject(json, SERVICE_DISPLAY_NAME.c_str(),
+        ProfileUtils::GetAnonyString(serviceDisplayName_).c_str());
         char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);

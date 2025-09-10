@@ -1021,7 +1021,7 @@ int32_t ProfileUtils::GenerateServiceDBkeys(const std::string& deviceId, const s
     return DP_SUCCESS;
 }
 
-int32_t ProfileUtils::GenerateServiceInfoProfilekeys(const std::string& regServiceId, std::vector<std::string>& dbKeys, 
+int32_t ProfileUtils::GenerateServiceInfoProfilekeys(const std::string& regServiceId, std::vector<std::string>& dbKeys,
     int32_t userId)
 {
     std::string serviceProfileKey = GenerateServiceInfoProfileKey(regServiceId);

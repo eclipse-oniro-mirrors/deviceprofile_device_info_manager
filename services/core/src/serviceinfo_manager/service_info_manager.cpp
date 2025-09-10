@@ -104,10 +104,7 @@ int32_t ServiceInfoProfileManage::DeleteServiceInfoProfile(int32_t regServiceId,
 {
     HILOGI("regServiceId: %{public}s, userId %{public}d", ProfileUtils::GetAnonyInt32(regServiceId).c_str(), userId);
     int32_t res = 0;
-    {
-        std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-        res = ProfileControlUtils::DeleteServiceInfoProfile(serviceInfoKvAdapter_, regServiceId, userId);
-    }
+    res = ProfileControlUtils::DeleteServiceInfoProfile(serviceInfoKvAdapter_, regServiceId, userId);
     if (res != DP_SUCCESS) {
         HILOGE("DeleteServiceInfoProfile fail, reason: %{public}d!", res);
         return res;
@@ -140,8 +137,7 @@ int32_t ServiceInfoProfileManage::GetServiceInfoProfileByServiceId(int64_t servi
     std::string regServiceId = "";
     std::map<std::string, std::string> allServiceIdEntries;
     for (const auto& pair : allEntries) {
-        if (pair.first.find("serviceId") != std::string::npos)
-        {
+        if (pair.first.find("serviceId") != std::string::npos) {
             allServiceIdEntries.insert(pair);
         }
     }
@@ -150,7 +146,10 @@ int32_t ServiceInfoProfileManage::GetServiceInfoProfileByServiceId(int64_t servi
             regServiceId = FindRegServiceId(pair.first);
         }
     }
-    
+    if(regServiceId.empty){
+        HILOGE("No match regServiceId.")
+        return DP_NOT_FOUND_DATA;
+    }
     std::string finalPrefix = SERVICE_INFO + SEPARATOR +regServiceId;
     std::map<std::string, std::string> profileEntries;
     ret = serviceInfoKvAdapter_->GetByPrefix(finalPrefix, profileEntries);
@@ -166,10 +165,6 @@ int32_t ServiceInfoProfileManage::GetServiceInfoProfileByServiceId(int64_t servi
 void ServiceInfoProfileManage::SetServiceInfoProfile(const std::string& regServiceId,
     const std::map<std::string, std::string>& finalSerProfile, ServiceInfoProfileNew& serviceInfoProfile)
 {
-    if(regServiceId.empty()){
-        HILOGE("regServiceId is empty.");
-        return;
-    }
     std::string key = finalSerProfile.begin()->first;
     size_t lastPos = key.find_last_of(SEPARATOR);
     std::string prefix = key.substr(0, lastPos + 1);
@@ -220,8 +215,7 @@ int32_t ServiceInfoProfileManage::GetServiceInfoProfileByTokenId(int64_t tokenId
     std::string regServiceId = "";
     std::map<std::string, std::string> allServiceIdEntries;
     for (const auto& pair : allEntries) {
-        if (pair.first.find("tokenId") != std::string::npos)
-        {
+        if (pair.first.find("tokenId") != std::string::npos) {
             allServiceIdEntries.insert(pair);
         }
     }

@@ -1236,7 +1236,6 @@ int32_t DistributedDeviceProfileClient::DeleteServiceInfoProfile(int32_t regServ
         return DP_GET_SERVICE_FAILED;
     }
     return dpService->DeleteServiceInfoProfile(regServiceId, userId);
-
 }
 
 int32_t DistributedDeviceProfileClient::GetServiceInfoProfileByServiceId(int64_t serviceId,

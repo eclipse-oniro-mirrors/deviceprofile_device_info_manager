@@ -120,7 +120,7 @@ public:
     static bool IsNumStr(const std::string& inString);
     static int32_t GetUserIdFromDbKey(const std::string& dbKey);
     static std::string RemoveUserIdFromDbKey(const std::string& dbKey);
-    static int32_t GenerateServiceInfoProfilekeys(const std::string& regServiceId, std::vector<std::string>& dbKeys, 
+    static int32_t GenerateServiceInfoProfilekeys(const std::string& regServiceId, std::vector<std::string>& dbKeys,
          int32_t userId = DEFAULT_USER_ID);
     static int32_t GenerateServiceDBkeys(const std::string& deviceId, const std::string& serviceName,
         std::vector<std::string>& dbKeys, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID);

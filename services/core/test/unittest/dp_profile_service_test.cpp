@@ -287,7 +287,7 @@ HWTEST_F(DpProfileServiceTest, DeleteServiceInfoProfile_001, TestSize.Level1)
 {
     int32_t regServiceId = 0;
     int32_t userId = 0;
-    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().DeleteServiceInfoProfile(regServiceId, 
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().DeleteServiceInfoProfile(regServiceId,
         userId);
     EXPECT_EQ(DP_PERMISSION_DENIED, ret);
 }

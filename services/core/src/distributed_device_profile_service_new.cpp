@@ -163,7 +163,7 @@ int32_t DistributedDeviceProfileServiceNew::PostInitNext()
         HILOGE("BusinessEventManager init failed");
         return DP_BUSINESS_EVENT_MANAGER_INIT_FAIL;
     }
-     if (ServiceInfoProfileManage::GetInstance().Init() != DP_SUCCESS) {
+    if (ServiceInfoProfileManage::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("ServiceInfoManager init failed");
     }
 #ifndef DEVICE_PROFILE_SWITCH_DISABLE
@@ -1501,7 +1501,7 @@ int32_t DistributedDeviceProfileServiceNew::NotifyBusinessEvent(const BusinessEv
 
 int32_t DistributedDeviceProfileServiceNew::PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfoProfile)
 {
-    if (!PermissionManager::GetInstance().CheckCallerPermission()) { 
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
@@ -1537,7 +1537,8 @@ int32_t DistributedDeviceProfileServiceNew::GetServiceInfoProfileByServiceId(int
         return DP_PERMISSION_DENIED;
     }
     HILOGD("CheckCallerPermission success interface GetServiceInfoProfileByServiceId");
-    int32_t ret = ServiceInfoProfileManage::GetInstance().GetServiceInfoProfileByServiceId(serviceId, serviceInfoProfile);
+    int32_t ret = ServiceInfoProfileManage::GetInstance().GetServiceInfoProfileByServiceId(serviceId,
+        serviceInfoProfile);
     if (ret != DP_SUCCESS) {
         HILOGE("GetServiceInfoProfileByServiceId failed, ret: %{public}d", ret);
         return ret;

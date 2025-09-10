@@ -876,7 +876,8 @@ int32_t DistributedDeviceProfileProxy::GetServiceInfoProfileByServiceId(int64_t 
     WRITE_INTERFACE_TOKEN(data);
     WRITE_HELPER(data, Int64, serviceId);
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::GET_SERVICE_INFO_PROFILE_BY_SERVICE_ID), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::GET_SERVICE_INFO_PROFILE_BY_SERVICE_ID),
+        data, reply);
     if (!serviceInfoProfile.UnMarshalling(reply)) {
         HILOGE("dp ipc read parcel fail");
         return DP_READ_PARCEL_FAIL;
