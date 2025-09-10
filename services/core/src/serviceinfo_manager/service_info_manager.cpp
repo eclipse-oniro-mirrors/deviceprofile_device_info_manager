@@ -166,7 +166,7 @@ int32_t ServiceInfoProfileManage::GetServiceInfoProfileByServiceId(int64_t servi
     return DP_SUCCESS;
 }
 
-void ServiceInfoProfileManage::SetServiceInfoProfile(const std::string& regServiceId,
+int32_t ServiceInfoProfileManage::SetServiceInfoProfile(const std::string& regServiceId,
     const std::map<std::string, std::string>& finalSerProfile, ServiceInfoProfileNew& serviceInfoProfile)
 {
     if (regServiceId.empty() || finalSerProfile.empty()) {
