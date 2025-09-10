@@ -166,6 +166,10 @@ int32_t ServiceInfoProfileManage::GetServiceInfoProfileByServiceId(int64_t servi
 void ServiceInfoProfileManage::SetServiceInfoProfile(const std::string& RegServiceId,
     const std::map<std::string, std::string>& finalSerProfile, ServiceInfoProfileNew& serviceInfoProfile)
 {
+    if(RegServiceId.empty()){
+        HILOGE("RegServiceId is empty.");
+        return;
+    }
     std::string key = finalSerProfile.begin()->first;
     size_t lastPos = key.find_last_of(SEPARATOR);
     std::string prefix = key.substr(0, lastPos + 1);
