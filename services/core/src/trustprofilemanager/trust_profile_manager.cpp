@@ -483,8 +483,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(int32_t userId, std::vector
     resultSet->Close();
     RemoveLnnAcl(profile);
     if (profile.empty()) {
-        HILOGE("by userId not find data, userId: %{public}s",
-            ProfileUtils::GetAnonyString(std::to_string(userId)).c_str());
+        HILOGE("by userId not find data,userId:%{public}d", userId);
         return DP_NOT_FIND_DATA;
     }
     HILOGD("end!");

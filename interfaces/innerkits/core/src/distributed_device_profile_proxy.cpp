@@ -19,7 +19,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "DistributedDeviceProfileProxy";
+    const std::string TAG = "Proxy";
 }
 
 int32_t DistributedDeviceProfileProxy::PutAccessControlProfile(const AccessControlProfile& aclProfile)

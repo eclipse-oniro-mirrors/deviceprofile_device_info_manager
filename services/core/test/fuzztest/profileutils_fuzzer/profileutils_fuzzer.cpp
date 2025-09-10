@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,6 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include <fuzzer/FuzzedDataProvider.h>
 
 #include "profileutils_fuzzer.h"
 
@@ -30,85 +32,29 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 
-void GetProfileTypeFuzzTest(const uint8_t* data, size_t size)
+void ProfileUtilsFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size == 0)) {
+    if ((data == nullptr) || (size < sizeof(int64_t))) {
         return;
     }
-    std::string dbKey(reinterpret_cast<const char*>(data), size);
-    ProfileUtils::GetProfileType(dbKey);
-}
-
-void StartsWithFuzzTest(const uint8_t* data, size_t size)
-{
-    if ((data == nullptr) || (size == 0)) {
-        return;
-    }
-    std::string str(reinterpret_cast<const char*>(data), size);
-    std::string prefix(reinterpret_cast<const char*>(data), size);
-    ProfileUtils::StartsWith(str, prefix);
-}
-
-void SplitStringFuzzTest(const uint8_t* data, size_t size)
-{
-    if ((data == nullptr) || (size == 0)) {
-        return;
-    }
-    std::string str(reinterpret_cast<const char*>(data), size);
-    std::string splits(reinterpret_cast<const char*>(data), size);
+    FuzzedDataProvider fdp(data, size);
+    std::string dbKey = fdp.ConsumeRandomLengthString();
+    std::string str = fdp.ConsumeRandomLengthString();
+    std::string prefix = fdp.ConsumeRandomLengthString();
+    std::string splits = fdp.ConsumeRandomLengthString();
     std::vector<std::string> res;
-    std::string strs(reinterpret_cast<const char*>(data), size);
-    res.push_back(strs);
-    ProfileUtils::SplitString(str, splits, res);
-}
+    std::string deviceId = fdp.ConsumeRandomLengthString();
+    std::string serviceName = fdp.ConsumeRandomLengthString();
+    std::string charKey = fdp.ConsumeRandomLengthString();
+    std::string profileProperty = fdp.ConsumeRandomLengthString();
+    std::string profileKey = fdp.ConsumeRandomLengthString();
 
-void IsKeyValidFuzzTest(const uint8_t* data, size_t size)
-{
-    if ((data == nullptr) || (size == 0)) {
-        return;
-    }
-    std::string dbKey(reinterpret_cast<const char*>(data), size);
+    ProfileUtils::GetProfileType(dbKey);
+    ProfileUtils::StartsWith(str, prefix);
     ProfileUtils::IsKeyValid(dbKey);
-}
-
-void GenerateDeviceProfileKeyFuzzTest(const uint8_t* data, size_t size)
-{
-    if ((data == nullptr) || (size == 0)) {
-        return;
-    }
-    std::string deviceId(reinterpret_cast<const char*>(data), size);
     ProfileUtils::GenerateDeviceProfileKey(deviceId);
-}
-
-void GenerateServiceProfileKeyFuzzTest(const uint8_t* data, size_t size)
-{
-    if ((data == nullptr) || (size == 0)) {
-        return;
-    }
-    std::string deviceId(reinterpret_cast<const char*>(data), size);
-    std::string serviceName(reinterpret_cast<const char*>(data), size);
     ProfileUtils::GenerateServiceProfileKey(deviceId, serviceName);
-}
-
-void GenerateCharProfileKeyFuzzTest(const uint8_t* data, size_t size)
-{
-    if ((data == nullptr) || (size == 0)) {
-        return;
-    }
-    std::string deviceId(reinterpret_cast<const char*>(data), size);
-    std::string serviceName(reinterpret_cast<const char*>(data), size);
-    std::string charKey(reinterpret_cast<const char*>(data), size);
     ProfileUtils::GenerateCharProfileKey(deviceId, serviceName, charKey);
-}
-
-void GenerateDBKeyFuzzTest(const uint8_t* data, size_t size)
-{
-    if ((data == nullptr) || (size == 0)) {
-        return;
-    }
-    std::string profileProperty(reinterpret_cast<const char*>(data), size);
-    std::string profileKey(reinterpret_cast<const char*>(data), size);
-
     ProfileUtils::GenerateDBKey(profileKey, profileProperty);
 }
 }
@@ -117,14 +63,6 @@ void GenerateDBKeyFuzzTest(const uint8_t* data, size_t size)
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
-    OHOS::DistributedDeviceProfile::GetProfileTypeFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::StartsWithFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::SplitStringFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::IsKeyValidFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GenerateDeviceProfileKeyFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GenerateServiceProfileKeyFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GenerateCharProfileKeyFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GenerateDBKeyFuzzTest(data, size);
-
+    OHOS::DistributedDeviceProfile::ProfileUtilsFuzzTest(data, size);
     return 0;
 }
