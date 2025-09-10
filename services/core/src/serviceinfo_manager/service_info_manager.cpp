@@ -122,7 +122,7 @@ int32_t ServiceInfoProfileManage::GetAllServiceInfoProfileList(
 int32_t ServiceInfoProfileManage::GetServiceInfoProfileByServiceId(int64_t serviceId,
     ServiceInfoProfileNew& serviceInfoProfile)
 {
-    HILOGE("serviceId:%{public}s", ProfileUtils::GetAnonyInt32(serviceId).c_str());
+    HILOGI("serviceId:%{public}s", ProfileUtils::GetAnonyInt32(serviceId).c_str());
     std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
     if (serviceInfoKvAdapter_ == nullptr) {
         HILOGE("serviceInfoKvAdapter_ is nullptr");
@@ -170,7 +170,7 @@ void ServiceInfoProfileManage::SetServiceInfoProfile(const std::string& regServi
     const std::map<std::string, std::string>& finalSerProfile, ServiceInfoProfileNew& serviceInfoProfile)
 {
     if (regServiceId.empty() || finalSerProfile.empty()) {
-        HILOGI("params invalid");
+        HILOGE("params invalid");
         return DP_NOT_FIND_DATA;
     }
     std::string key = finalSerProfile.begin()->first;
