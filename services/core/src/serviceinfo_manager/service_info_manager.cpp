@@ -146,7 +146,7 @@ int32_t ServiceInfoProfileManage::GetServiceInfoProfileByServiceId(int64_t servi
             regServiceId = FindRegServiceId(pair.first);
         }
     }
-    if (regServiceId.empty) {
+    if (regServiceId.empty()) {
         HILOGE("No match regServiceId.")
         return DP_NOT_FOUND_DATA;
     }
@@ -233,7 +233,7 @@ int32_t ServiceInfoProfileManage::GetServiceInfoProfileByTokenId(int64_t tokenId
             regServiceId = FindRegServiceId(pair.first);
         }
     }
-    if (regServiceId.empty) {
+    if (regServiceId.empty()) {
         HILOGE("No match regServiceId.")
         return DP_NOT_FOUND_DATA;
     }
