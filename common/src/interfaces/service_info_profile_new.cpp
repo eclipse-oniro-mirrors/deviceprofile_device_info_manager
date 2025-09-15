@@ -157,13 +157,13 @@ std::string ServiceInfoProfileNew::dump() const
     }
     cJSON_AddStringToObject(json, DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(deviceId_).c_str());
  
-    cJSON_AddNumberToObject(json, USERID.c_str(), std::to_string(userId_).c_str());
+    cJSON_AddNumberToObject(json, USERID.c_str(), userId_);
  
-    cJSON_AddNumberToObject(json, TOKENID.c_str(), std::to_string(tokenId_).c_str());
+    cJSON_AddNumberToObject(json, TOKENID.c_str(), tokenId_);
  
-    cJSON_AddNumberToObject(json, PUBLISH_STATE.c_str(), std::to_string(servicePubState_).c_str());
+    cJSON_AddNumberToObject(json, PUBLISH_STATE.c_str(), servicePubState_);
  
-    cJSON_AddNumberToObject(json, SISERVICE_ID.c_str(), std::to_string(serviceId_).c_str());
+    cJSON_AddNumberToObject(json, SISERVICE_ID.c_str(), serviceId_);
  
     cJSON_AddStringToObject(json, SERVICE_TYPE.c_str(), serviceType_.c_str());
  
