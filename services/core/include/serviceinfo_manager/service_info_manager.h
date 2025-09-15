@@ -35,14 +35,8 @@ public:
     int32_t ReInit();
     int32_t PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfoProfile);
     int32_t DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId = DEFAULT_USER_ID);
-    int32_t UpdateServiceInfoProfile(const int32_t regServiceId, const ServiceInfoProfileNew &serviceInfoProfile);
-    int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfileNew>& serviceInfoProfileList);
     int32_t GetServiceInfoProfileByServiceId(int64_t serviceId, ServiceInfoProfileNew& serviceInfoProfile);
-    int32_t GetServiceInfoProfileByRegServiceId(const int32_t &regServiceId, ServiceInfoProfileNew& serviceInfoProfile);
     int32_t GetServiceInfoProfileByTokenId(int64_t tokenId, ServiceInfoProfileNew& serviceInfoProfile);
- 
-    void RemoveSubstrings(std::string& str, const std::string& substr);
-    void RemoveAfterSecondHash(std::string& str);
     int32_t SetServiceInfoProfile(const std::string& regServiceId,
     const std::map<std::string, std::string>& finalSerProfile, ServiceInfoProfileNew& serviceInfoProfile);
  

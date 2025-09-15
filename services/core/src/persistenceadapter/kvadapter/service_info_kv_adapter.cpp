@@ -73,6 +73,11 @@ int32_t ServiceInfoKvAdapter::Init()
         HILOGE("kvStorePtr is nullptr!");
         return DP_KV_DB_PTR_NULL;
     }
+    DistributedKv::Status status = GetKvStorePtr();
+    if (status != DistributedKv::Status::SUCCESS) {
+        HILOGI("get kvStorePtr failed,status:%{public}d", status);
+        return DP_KV_DB_PTR_NULL;
+    }
     isInited_.store(true);
     return DP_SUCCESS;
 }
