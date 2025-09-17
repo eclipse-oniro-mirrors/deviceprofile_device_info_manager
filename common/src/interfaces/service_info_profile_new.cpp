@@ -18,6 +18,7 @@
 #include "distributed_device_profile_constants.h"
 #include "macro_utils.h"
 #include "profile_utils.h"
+#include <cstdint>
  
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -34,7 +35,7 @@ int64_t ServiceInfoProfileNew::GetServiceId() const
     return serviceId_;
 }
  
-void ServiceInfoProfileNew::SetServiceId(const int64_t serviceId)
+void ServiceInfoProfileNew::SetServiceId(int64_t serviceId)
 {
     serviceId_ = serviceId;
 }
@@ -74,7 +75,7 @@ int32_t ServiceInfoProfileNew::GetRegServiceId() const
     return regServiceId_;
 }
  
-void ServiceInfoProfileNew::SetRegServiceId(const int32_t &regServiceId)
+void ServiceInfoProfileNew::SetRegServiceId(int32_t regServiceId)
 {
     regServiceId_ = regServiceId;
 }
@@ -84,7 +85,7 @@ int8_t ServiceInfoProfileNew::GetSerPubState() const
     return servicePubState_;
 }
  
-void ServiceInfoProfileNew::SetSerPubState(const int8_t &serPubState)
+void ServiceInfoProfileNew::SetSerPubState(int8_t serPubState)
 {
     servicePubState_ = serPubState;
 }
@@ -103,7 +104,7 @@ int32_t ServiceInfoProfileNew::GetUserId() const
 {
     return userId_;
 }
-void ServiceInfoProfileNew::SetUserId(const int32_t &userId)
+void ServiceInfoProfileNew::SetUserId(int32_t userId)
 {
     userId_ = userId;
 }
@@ -112,7 +113,7 @@ int64_t ServiceInfoProfileNew::GetTokenId() const
 {
     return tokenId_;
 }
-void ServiceInfoProfileNew::SetTokenId(const int64_t &tokenId)
+void ServiceInfoProfileNew::SetTokenId(int64_t tokenId)
 {
     tokenId_ = tokenId;
 }
@@ -156,13 +157,13 @@ std::string ServiceInfoProfileNew::dump() const
     }
     cJSON_AddStringToObject(json, DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(deviceId_).c_str());
  
-    cJSON_AddStringToObject(json, USERID.c_str(), std::to_string(userId_).c_str());
+    cJSON_AddNumberToObject(json, USERID.c_str(), userId_);
  
-    cJSON_AddStringToObject(json, TOKENID.c_str(), std::to_string(tokenId_).c_str());
+    cJSON_AddNumberToObject(json, TOKENID.c_str(), tokenId_);
  
-    cJSON_AddStringToObject(json, PUBLISH_STATE.c_str(), std::to_string(servicePubState_).c_str());
+    cJSON_AddNumberToObject(json, PUBLISH_STATE.c_str(), servicePubState_);
  
-    cJSON_AddStringToObject(json, SISERVICE_ID.c_str(), std::to_string(serviceId_).c_str());
+    cJSON_AddNumberToObject(json, SISERVICE_ID.c_str(), serviceId_);
  
     cJSON_AddStringToObject(json, SERVICE_TYPE.c_str(), serviceType_.c_str());
  

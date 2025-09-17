@@ -1543,7 +1543,7 @@ int32_t DistributedDeviceProfileServiceNew::GetServiceInfoProfileByServiceId(int
         HILOGE("GetServiceInfoProfileByServiceId failed, ret: %{public}d", ret);
         return ret;
     }
-    return ret;
+    return DP_SUCCESS;
 }
  
 int32_t DistributedDeviceProfileServiceNew::GetServiceInfoProfileByTokenId(int64_t tokenId,
@@ -1559,7 +1559,7 @@ int32_t DistributedDeviceProfileServiceNew::GetServiceInfoProfileByTokenId(int64
         HILOGE("GetServiceInfoProfileByTokenId failed, ret: %{public}d", ret);
         return ret;
     }
-    return ret;
+    return DP_SUCCESS;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

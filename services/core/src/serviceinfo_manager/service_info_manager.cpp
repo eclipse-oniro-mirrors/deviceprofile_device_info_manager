@@ -113,12 +113,6 @@ int32_t ServiceInfoProfileManage::DeleteServiceInfoProfile(int32_t regServiceId,
     return DP_SUCCESS;
 }
  
-int32_t ServiceInfoProfileManage::GetAllServiceInfoProfileList(
-    std::vector<ServiceInfoProfileNew>& serviceInfoProfileList)
-{
-    return DP_SUCCESS;
-}
-
 int32_t ServiceInfoProfileManage::GetServiceInfoProfileByServiceId(int64_t serviceId,
     ServiceInfoProfileNew& serviceInfoProfile)
 {

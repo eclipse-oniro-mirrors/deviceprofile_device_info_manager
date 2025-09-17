@@ -57,8 +57,8 @@ int32_t ServiceInfoKvAdapter::Init()
     }
     int32_t tryTimes = MAX_INIT_RETRY_TIMES;
     int64_t beginTime = GetTickCount();
+    DistributedKv::Status status = GetKvStorePtr();
     while (tryTimes > 0) {
-        DistributedKv::Status status = GetKvStorePtr();
         if (status == DistributedKv::Status::SUCCESS && kvStorePtr_ != nullptr) {
             HILOGI("Init KvStorePtr Success");
             RegisterKvStoreDeathListener();
@@ -71,6 +71,10 @@ int32_t ServiceInfoKvAdapter::Init()
     }
     if ((kvStorePtr_ == nullptr)) {
         HILOGE("kvStorePtr is nullptr!");
+        return DP_KV_DB_PTR_NULL;
+    }
+    if (status != DistributedKv::Status::SUCCESS) {
+        HILOGI("get kvStorePtr failed,status:%{public}d", status);
         return DP_KV_DB_PTR_NULL;
     }
     isInited_.store(true);

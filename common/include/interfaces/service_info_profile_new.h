@@ -41,22 +41,22 @@ public:
     ~ServiceInfoProfileNew();
  
     int32_t GetRegServiceId() const;
-    void SetRegServiceId(const int32_t &regServiceIdValue);
+    void SetRegServiceId(int32_t regServiceIdValue);
  
     std::string GetDeviceId() const;
     void SetDeviceId(const std::string &deviceIdValue);
  
     int32_t GetUserId() const;
-    void SetUserId(const int32_t &userIdValue);
+    void SetUserId(int32_t userIdValue);
     
     int64_t GetTokenId() const;
-    void SetTokenId(const int64_t &tokenIdValue);
+    void SetTokenId(int64_t tokenIdValue);
  
     int8_t GetSerPubState() const;
-    void SetSerPubState(const int8_t &SerPubStateValue);
+    void SetSerPubState(int8_t SerPubStateValue);
  
     int64_t GetServiceId() const;
-    void SetServiceId(const int64_t serviceIdValue);
+    void SetServiceId(int64_t serviceIdValue);
  
     std::string GetServiceType() const;
     void SetServiceType(const std::string &serviceTypeValue);
