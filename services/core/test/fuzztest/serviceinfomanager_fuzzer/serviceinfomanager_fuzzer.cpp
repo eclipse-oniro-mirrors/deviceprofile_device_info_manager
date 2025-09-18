@@ -36,7 +36,8 @@ namespace DistributedDeviceProfile {
 
 void PutServiceInfoProfileFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t) * 2 + sizeof(int64_t) * 6 + sizeof(int8_t) + 1)) {
+    const size_t minDataSize = sizeof(int32_t) * 2 + sizeof(int64_t) * 6 + sizeof(int8_t) + 1;
+    if ((data == nullptr) || (size < minDataSize)) {
         return;
     }
     ServiceInfoProfileNew profile;
@@ -49,8 +50,8 @@ void PutServiceInfoProfileFuzzTest(const uint8_t* data, size_t size)
     profile.SetUserId(userIdValue);
     int64_t tokenIdValue = fdp.ConsumeIntegral<int64_t>();
     profile.SetTokenId(tokenIdValue);
-    int8_t SerPubStateValue = fdp.ConsumeIntegral<int8_t>();
-    profile.SetSerPubState(SerPubStateValue);
+    int8_t serPubStateValue = fdp.ConsumeIntegral<int8_t>();
+    profile.SetSerPubState(serPubStateValue);
     int64_t serviceIdValue = fdp.ConsumeIntegral<int64_t>();
     profile.SetServiceId(serviceIdValue);
     std::string serviceTypeValue = fdp.ConsumeRandomLengthString();
@@ -65,7 +66,8 @@ void PutServiceInfoProfileFuzzTest(const uint8_t* data, size_t size)
 
 void DeleteServiceInfoProfileFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t) * 2 + 1)) {
+    const size_t minDataSize = sizeof(int32_t) * 2 + 1;
+    if ((data == nullptr) || (size < minDataSize)) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -77,7 +79,8 @@ void DeleteServiceInfoProfileFuzzTest(const uint8_t* data, size_t size)
 
 void GetServiceInfoProfileByServiceIdFuzzTest(const uint8_t* data, size_t size)
 {
-    if (data == nullptr || size < sizeof(int64_t) * 3 + 1) {
+    const size_t minDataSize = sizeof(int64_t) * 3 + 1;
+    if (data == nullptr || size < minDataSize) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -91,7 +94,8 @@ void GetServiceInfoProfileByServiceIdFuzzTest(const uint8_t* data, size_t size)
 
 void GetServiceInfoProfileByTokenIdFuzzTest(const uint8_t* data, size_t size)
 {
-    if (data == nullptr || size < sizeof(int64_t) * 3 + 1) {
+    const size_t minDataSize = sizeof(int64_t) * 3 + 1;
+    if (data == nullptr || size < minDataSize) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -105,7 +109,8 @@ void GetServiceInfoProfileByTokenIdFuzzTest(const uint8_t* data, size_t size)
 
 void SetServiceInfoProfileFuzzTest(const uint8_t* data, size_t size)
 {
-    if (!data || size < sizeof(int64_t) * 7 + sizeof(int32_t) + sizeof(int8_t) + 2) {
+    const size_t minDataSize = sizeof(int64_t) * 7 + sizeof(int32_t) + sizeof(int8_t) + 2;
+    if (!data || size < minDataSize) {
         return;
     }
     FuzzedDataProvider fdp(data, size);

@@ -26,7 +26,8 @@ namespace DistributedDeviceProfile {
 
 void MarshallingFuzzTest(const uint8_t* data, size_t size)
 {
-    if (data == nullptr || (size < sizeof(int64_t) * 2 + 1)) {
+    const size_t minDataSize = sizeof(int64_t) * 2 + 1;
+    if (data == nullptr || (size < minDataSize)) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -50,7 +51,8 @@ void UnMarshallingFuzzTest(const uint8_t* data, size_t size)
 
 void DumpFuzzTest(const uint8_t* data, size_t size)
 {
-    if (data == nullptr || (size < sizeof(int64_t) * 2 + 1)) {
+    const size_t minDataSize = sizeof(int64_t) * 2 + 1;
+    if (data == nullptr || (size < minDataSize)) {
         return;
     }
     FuzzedDataProvider fdp(data, size);

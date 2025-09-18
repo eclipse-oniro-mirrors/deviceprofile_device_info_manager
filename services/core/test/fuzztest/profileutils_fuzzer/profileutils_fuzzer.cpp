@@ -131,7 +131,7 @@ void ServiceInfoProfileToEntriesFuzzTest(const uint8_t* data, size_t size)
     FuzzedDataProvider fdp(data, size);
     std::string key = fdp.ConsumeRandomLengthString();
     std::string value = fdp.ConsumeRandomLengthString();
-    std::map<std::string, std::string> values = {{key, value}}; 
+    std::map<std::string, std::string> values = {{key, value}};
 
     ProfileUtils::ServiceInfoProfileToEntries(profile, values);
 }

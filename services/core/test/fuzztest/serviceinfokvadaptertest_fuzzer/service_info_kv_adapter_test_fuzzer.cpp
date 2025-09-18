@@ -73,7 +73,8 @@ void DeleteFuzzTest(const uint8_t* data, size_t size)
 void PutBatchFuzzTest(const uint8_t* data, size_t size)
 {
     const int32_t maxCount = 10;
-    if (data == nullptr || size < sizeof(int32_t) + maxCount * MIN_SIZE * 2 + 1) {
+    constexpr size_t minRequiredSize = sizeof(int32_t) + maxCount * MIN_SIZE * 2 + 1;
+    if (data == nullptr || size < minRequiredSize) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -91,7 +92,8 @@ void PutBatchFuzzTest(const uint8_t* data, size_t size)
 void DeleteBatchFuzzTest(const uint8_t* data, size_t size)
 {
     const int32_t maxCount = 10;
-    if (data == nullptr || size < sizeof(int32_t) + maxCount * MIN_SIZE * 2 + 1) {
+    constexpr size_t minRequiredSize = sizeof(int32_t) + maxCount * MIN_SIZE * 2 + 1;
+    if (data == nullptr || size < minRequiredSize) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -108,7 +110,7 @@ void DeleteBatchFuzzTest(const uint8_t* data, size_t size)
 
 void GetByPrefixFuzzTest(const uint8_t* data, size_t size)
 {
-    constexpr size_t minRequiredSize = 64; 
+    constexpr size_t minRequiredSize = 64;
     if (data == nullptr || size < minRequiredSize) {
         return;
     }
@@ -124,7 +126,7 @@ void GetByPrefixFuzzTest(const uint8_t* data, size_t size)
     adapter->GetByPrefix(keyPrefix, values);
 }
 } 
-} 
+}
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
