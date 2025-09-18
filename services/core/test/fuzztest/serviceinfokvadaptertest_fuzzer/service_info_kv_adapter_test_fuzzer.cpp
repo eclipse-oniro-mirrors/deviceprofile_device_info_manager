@@ -25,7 +25,7 @@
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
-{
+namespace {
     const int32_t MIN_SIZE = 8;
 }
 
