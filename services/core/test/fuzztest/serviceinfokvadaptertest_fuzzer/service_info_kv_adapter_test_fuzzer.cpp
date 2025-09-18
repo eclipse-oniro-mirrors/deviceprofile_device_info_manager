@@ -125,7 +125,7 @@ void GetByPrefixFuzzTest(const uint8_t* data, size_t size)
 
     adapter->GetByPrefix(keyPrefix, values);
 }
-} 
+}
 }
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
