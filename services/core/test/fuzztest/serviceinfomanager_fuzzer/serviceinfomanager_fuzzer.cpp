@@ -109,18 +109,17 @@ void GetServiceInfoProfileByTokenIdFuzzTest(const uint8_t* data, size_t size)
 
 void SetServiceInfoProfileFuzzTest(const uint8_t* data, size_t size)
 {
-    const size_t minDataSize = sizeof(int64_t) * 7 + sizeof(int32_t) + sizeof(int8_t) + 2;
+    const size_t minDataSize = sizeof(int64_t) * 6 + sizeof(int32_t) * 2 + sizeof(int8_t) + 2;
     if (!data || size < minDataSize) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
-    
-    std::string regServiceId = fdp.ConsumeRandomLengthString();
+
+    std::string regServiceId = std::to_string(fdp.ConsumeIntegral<int32_t>());
     std::map<std::string, std::string> finalSerProfile;
-    
+
     std::string prefix = "serviceInfo#" + regServiceId + "#";
     finalSerProfile[prefix + "deviceId"] = fdp.ConsumeRandomLengthString();
-    finalSerProfile[prefix + "isMultiUser"] = fdp.ConsumeBool() ? "true" : "false";
     finalSerProfile[prefix + "publishState"] = std::to_string(fdp.ConsumeIntegral<int8_t>());
     finalSerProfile[prefix + "serviceDisplayName"] = fdp.ConsumeRandomLengthString();
     finalSerProfile[prefix + "serviceId"] = std::to_string(fdp.ConsumeIntegral<int64_t>());
