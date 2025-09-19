@@ -34,7 +34,7 @@ namespace DistributedDeviceProfile {
 
 void GetProfileTypeFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int64_t) + 1 )) {
+    if ((data == nullptr) || (size < sizeof(int64_t) + 1)) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -71,7 +71,7 @@ void SplitStringFuzzTest(const uint8_t* data, size_t size)
 
 void IsKeyValidFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int64_t) + 1 )) {
+    if ((data == nullptr) || (size < sizeof(int64_t) + 1)) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -81,7 +81,7 @@ void IsKeyValidFuzzTest(const uint8_t* data, size_t size)
 
 void GenerateDeviceProfileKeyFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int64_t) + 1 )) {
+    if ((data == nullptr) || (size < sizeof(int64_t) + 1)) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
