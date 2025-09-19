@@ -34,7 +34,7 @@ namespace DistributedDeviceProfile {
 
 void GetProfileTypeFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size == 0)) {
+    if ((data == nullptr) || (size < sizeof(int64_t) + 1 )) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -44,7 +44,8 @@ void GetProfileTypeFuzzTest(const uint8_t* data, size_t size)
 
 void StartsWithFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size == 0)) {
+    const int32_t minSize = sizeof(int64_t) * 2 + 1;
+    if ((data == nullptr) || (size < minSize)) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -55,7 +56,8 @@ void StartsWithFuzzTest(const uint8_t* data, size_t size)
 
 void SplitStringFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size == 0)) {
+    const int32_t minSize = sizeof(int64_t) * 3 + 1;
+    if ((data == nullptr) || (size < minSize)) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -69,7 +71,7 @@ void SplitStringFuzzTest(const uint8_t* data, size_t size)
 
 void IsKeyValidFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size == 0)) {
+    if ((data == nullptr) || (size < sizeof(int64_t) + 1 )) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -79,7 +81,7 @@ void IsKeyValidFuzzTest(const uint8_t* data, size_t size)
 
 void GenerateDeviceProfileKeyFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size == 0)) {
+    if ((data == nullptr) || (size < sizeof(int64_t) + 1 )) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -89,7 +91,8 @@ void GenerateDeviceProfileKeyFuzzTest(const uint8_t* data, size_t size)
 
 void GenerateServiceProfileKeyFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size == 0)) {
+    const int32_t minSize = sizeof(int64_t) * 2 + 1;
+    if ((data == nullptr) || (size < minSize)) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -100,7 +103,8 @@ void GenerateServiceProfileKeyFuzzTest(const uint8_t* data, size_t size)
 
 void GenerateCharProfileKeyFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size == 0)) {
+    const int32_t minSize = sizeof(int64_t) * 3 + 1;
+    if ((data == nullptr) || (size < minSize)) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -112,7 +116,8 @@ void GenerateCharProfileKeyFuzzTest(const uint8_t* data, size_t size)
 
 void GenerateDBKeyFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size == 0)) {
+    const int32_t minSize = sizeof(int64_t) * 2 + 1;
+    if ((data == nullptr) || (size < minSize)) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -124,7 +129,8 @@ void GenerateDBKeyFuzzTest(const uint8_t* data, size_t size)
 
 void ServiceInfoProfileToEntriesFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size == 0)) {
+    const int32_t minSize = sizeof(int64_t) * 2 + 1;
+    if ((data == nullptr) || (size < minSize)) {
         return;
     }
     ServiceInfoProfileNew profile;
@@ -138,7 +144,8 @@ void ServiceInfoProfileToEntriesFuzzTest(const uint8_t* data, size_t size)
 
 void GenerateServiceDBKeyFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t) + 1)) {
+    const int32_t minSize = sizeof(int64_t) * 2 + sizeof(int32_t) + 1;
+    if ((data == nullptr) || (size < minSize)) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -151,7 +158,8 @@ void GenerateServiceDBKeyFuzzTest(const uint8_t* data, size_t size)
 
 void GenerateServiceInfoProfilekeysFuzzTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t) + 1)) {
+    const int32_t minSize = sizeof(int64_t) * 2 + sizeof(int32_t) + 1;
+    if ((data == nullptr) || (size < minSize)) {
         return;
     }
     FuzzedDataProvider fdp(data, size);

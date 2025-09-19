@@ -28,7 +28,7 @@ device_profile_deps = [
 ]
 
 ##############################fuzztest##########################################
-ohos_fuzztest("ServiceInfoManagerFuzztest") {
+ohos_fuzztest("ServiceInfoManagerFuzzTest") {
   module_out_path = module_output_path
 
   fuzz_config_file =
@@ -74,5 +74,5 @@ ohos_fuzztest("ServiceInfoManagerFuzztest") {
 group("fuzztest") {
   testonly = true
 
-  deps = [ ":ServiceInfoManagerFuzztest" ]
+  deps = [ ":ServiceInfoManagerFuzzTest" ]
 }
