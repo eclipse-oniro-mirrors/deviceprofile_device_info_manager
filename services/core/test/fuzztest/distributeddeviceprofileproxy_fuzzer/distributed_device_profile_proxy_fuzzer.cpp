@@ -25,7 +25,8 @@ namespace DistributedDeviceProfile {
 
 void PutServiceInfoProfileNewFuzzTest(const uint8_t* data, size_t size)
 {
-    if (data == nullptr || size < sizeof(int64_t)) {
+    int32_t maxDataSize = sizeof(int32_t) * 2;
+    if (!data || size < maxDataSize) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -38,7 +39,8 @@ void PutServiceInfoProfileNewFuzzTest(const uint8_t* data, size_t size)
 
 void DeleteServiceInfoProfileNewFuzzTest(const uint8_t* data, size_t size)
 {
-    if (data == nullptr || size < sizeof(int32_t) * 2 + sizeof(bool)) {
+    int32_t maxDataSize = sizeof(int32_t) * 2 + 1;
+    if (!data || size < maxDataSize) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -50,7 +52,8 @@ void DeleteServiceInfoProfileNewFuzzTest(const uint8_t* data, size_t size)
 
 void GetServiceInfoProfileByServiceIdFuzzTest(const uint8_t* data, size_t size)
 {
-    if (data == nullptr || size < sizeof(int64_t) * 2) {
+    int32_t maxDataSize = sizeof(int64_t) * 2 + 1;
+    if (!data || size < maxDataSize) {
         return;
     }
     FuzzedDataProvider fdp(data, size);
@@ -65,7 +68,8 @@ void GetServiceInfoProfileByServiceIdFuzzTest(const uint8_t* data, size_t size)
 
 void GetServiceInfoProfileByTokenIdFuzzTest(const uint8_t* data, size_t size)
 {
-    if (data == nullptr || size < sizeof(int64_t) * 2) {
+    int32_t maxDataSize = sizeof(int64_t) * 2 + 1;
+    if (!data || size < maxDataSize) {
         return;
     }
     FuzzedDataProvider fdp(data, size);

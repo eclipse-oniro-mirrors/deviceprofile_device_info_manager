@@ -40,7 +40,8 @@ namespace DistributedDeviceProfile {
 
 void DeleteServiceInfoProfileFuzzerTest(const uint8_t* data, size_t size)
 {
-    if ((data == nullptr) || (size < sizeof(int32_t) * 2)) {
+    int32_t maxDataSize = sizeof(int32_t) * 2;
+    if ((data == nullptr) || (size < maxDataSize)) {
         return;
     }
     FuzzedDataProvider fdp(data, size);

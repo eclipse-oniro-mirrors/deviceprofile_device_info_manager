@@ -103,9 +103,9 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
     int32_t RegisterBusinessCallback(const std::string& saId, const std::string& businessKey,
         sptr<IRemoteObject> businessCallback) override;
     int32_t UnRegisterBusinessCallback(const std::string& saId, const std::string& businessKey) override;
-    int32_t PutBusinessEvent(const BusinessEvent &event) override;
-    int32_t GetBusinessEvent(BusinessEvent &event) override;
-    int32_t GetServiceInfo(ServiceInfoProfileNew & serviceInfo);
+    int32_t PutBusinessEvent(const BusinessEvent& event) override;
+    int32_t GetBusinessEvent(BusinessEvent& event) override;
+    int32_t GetServiceInfo(ServiceInfoProfileNew& serviceInfo);
     int32_t GetServiceInfoProfileByServiceId(int64_t serviceId,
         ServiceInfoProfileNew& serviceInfoProfile) override;
     int32_t GetServiceInfoProfileByTokenId(int64_t tokenId, ServiceInfoProfileNew &serviceInfoProfile) override;
@@ -478,7 +478,7 @@ int32_t MockDistributedDeviceProfileStubNew::GetServiceInfo(ServiceInfoProfileNe
 }
 
 int32_t MockDistributedDeviceProfileStubNew::GetServiceInfoProfileByServiceId(int64_t serviceId,
-    ServiceInfoProfileNew& serviceInfoProfile) 
+    ServiceInfoProfileNew& serviceInfoProfile)
 {
     (void)serviceId;
     (void)serviceInfoProfile;
@@ -559,7 +559,6 @@ void GetServiceInfoProfileByTokenIdInnerFuzzTest(const uint8_t* data, size_t siz
     ProfileStub_ = std::make_shared<MockDistributedDeviceProfileStubNew>();
     ProfileStub_->GetServiceInfoProfileByTokenIdInner(mData, reply);
     ProfileStub_ = nullptr;
-
 }
 }
 
