@@ -24,7 +24,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 
-void MarshallingFuzzTest(const uint8_t* data, size_t size)
+void MarshallingFuzzTest(FuzzedDataProvider &fdp)
 {
     const size_t minDataSize = sizeof(int64_t) * 2 + 1;
     if (data == nullptr || (size < minDataSize)) {
@@ -38,7 +38,7 @@ void MarshallingFuzzTest(const uint8_t* data, size_t size)
     profile.Marshalling(parcel);
 }
 
-void UnMarshallingFuzzTest(const uint8_t* data, size_t size)
+void UnMarshallingFuzzTest(FuzzedDataProvider &fdp)
 {
     if (data == nullptr || size == 0) {
         return;
@@ -49,7 +49,7 @@ void UnMarshallingFuzzTest(const uint8_t* data, size_t size)
     profile.UnMarshalling(parcel);
 }
 
-void DumpFuzzTest(const uint8_t* data, size_t size)
+void DumpFuzzTest(FuzzedDataProvider &fdp)
 {
     const size_t minDataSize = sizeof(int64_t) * 2 + 1;
     if (data == nullptr || (size < minDataSize)) {
@@ -67,8 +67,13 @@ void DumpFuzzTest(const uint8_t* data, size_t size)
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
-    OHOS::DistributedDeviceProfile::MarshallingFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::UnMarshallingFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::DumpFuzzTest(data, size);
+    const size_t minDataSize = sizeof(int64_t) * 2;
+    if (data == nullptr || (size < minDataSize)) {
+        return;
+    }
+    FuzzedDataProvider fdp(data, size);
+    OHOS::DistributedDeviceProfile::MarshallingFuzzTest(fdp);
+    OHOS::DistributedDeviceProfile::UnMarshallingFuzzTest(fdp);
+    OHOS::DistributedDeviceProfile::DumpFuzzTest(fdp);
     return 0;
 }

@@ -34,13 +34,8 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 
-void PutServiceInfoProfileFuzzTest(const uint8_t* data, size_t size)
+void PutServiceInfoProfileFuzzTest(FuzzedDataProvider &fdp)
 {
-    const size_t minDataSize = sizeof(int32_t) * 2 + sizeof(int64_t) * 6 + sizeof(int8_t) + 1;
-    if ((data == nullptr) || (size < minDataSize)) {
-        return;
-    }
-    ServiceInfoProfileNew profile;
     FuzzedDataProvider fdp(data, size);
     int32_t regServiceIdValue = fdp.ConsumeIntegral<int32_t>();
     profile.SetRegServiceId(regServiceIdValue);
@@ -64,26 +59,16 @@ void PutServiceInfoProfileFuzzTest(const uint8_t* data, size_t size)
     ServiceInfoProfileManage::GetInstance().PutServiceInfoProfile(profile);
 }
 
-void DeleteServiceInfoProfileFuzzTest(const uint8_t* data, size_t size)
+void DeleteServiceInfoProfileFuzzTest(FuzzedDataProvider &fdp)
 {
-    const size_t minDataSize = sizeof(int32_t) * 2 + 1;
-    if ((data == nullptr) || (size < minDataSize)) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
     int32_t regServiceId = fdp.ConsumeIntegral<int32_t>();
     int32_t userId = fdp.ConsumeIntegral<int32_t>();
 
     ServiceInfoProfileManage::GetInstance().DeleteServiceInfoProfile(regServiceId, userId);
 }
 
-void GetServiceInfoProfileByServiceIdFuzzTest(const uint8_t* data, size_t size)
+void GetServiceInfoProfileByServiceIdFuzzTest(FuzzedDataProvider &fdp)
 {
-    const size_t minDataSize = sizeof(int64_t) * 3 + 1;
-    if (data == nullptr || size < minDataSize) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
     int32_t serviceId = fdp.ConsumeIntegral<int64_t>();
     ServiceInfoProfileNew profile;
 
@@ -92,13 +77,8 @@ void GetServiceInfoProfileByServiceIdFuzzTest(const uint8_t* data, size_t size)
     ServiceInfoProfileManage::GetInstance().GetServiceInfoProfileByServiceId(serviceId, profile);
 }
 
-void GetServiceInfoProfileByTokenIdFuzzTest(const uint8_t* data, size_t size)
+void GetServiceInfoProfileByTokenIdFuzzTest(FuzzedDataProvider &fdp)
 {
-    const size_t minDataSize = sizeof(int64_t) * 3 + 1;
-    if (data == nullptr || size < minDataSize) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
     int32_t tokenId = fdp.ConsumeIntegral<int64_t>();
     ServiceInfoProfileNew profile;
 
@@ -107,14 +87,8 @@ void GetServiceInfoProfileByTokenIdFuzzTest(const uint8_t* data, size_t size)
     ServiceInfoProfileManage::GetInstance().GetServiceInfoProfileByTokenId(tokenId, profile);
 }
 
-void SetServiceInfoProfileFuzzTest(const uint8_t* data, size_t size)
+void SetServiceInfoProfileFuzzTest(FuzzedDataProvider &fdp)
 {
-    const size_t minDataSize = sizeof(int64_t) * 6 + sizeof(int32_t) * 2 + sizeof(int8_t) + 2;
-    if (!data || size < minDataSize) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
-
     std::string regServiceId = std::to_string(fdp.ConsumeIntegral<int32_t>());
     std::map<std::string, std::string> finalSerProfile;
 
@@ -138,11 +112,16 @@ void SetServiceInfoProfileFuzzTest(const uint8_t* data, size_t size)
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
-    OHOS::DistributedDeviceProfile::PutServiceInfoProfileFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::DeleteServiceInfoProfileFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GetServiceInfoProfileByServiceIdFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GetServiceInfoProfileByTokenIdFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::SetServiceInfoProfileFuzzTest(data, size);
+    int32_t minDataSize = sizeof(int64_t) * 2
+    if (!data || size < minDataSize) {
+        return;
+    }
+    FuzzedDataProvider fdp(data, size);
+    OHOS::DistributedDeviceProfile::PutServiceInfoProfileFuzzTest(fdp);
+    OHOS::DistributedDeviceProfile::DeleteServiceInfoProfileFuzzTest(fdp);
+    OHOS::DistributedDeviceProfile::GetServiceInfoProfileByServiceIdFuzzTest(fdp);
+    OHOS::DistributedDeviceProfile::GetServiceInfoProfileByTokenIdFuzzTest(fdp);
+    OHOS::DistributedDeviceProfile::SetServiceInfoProfileFuzzTest(fdp);
 
     return 0;
 }

@@ -29,12 +29,8 @@ namespace {
     const int32_t MIN_SIZE = 8;
 }
 
-void PutFuzzTest(const uint8_t* data, size_t size)
+void PutFuzzTest(FuzzedDataProvider &fdp)
 {
-    if (data == nullptr || size < MIN_SIZE + 1) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
     std::string key = fdp.ConsumeRandomLengthString();
     std::string value = fdp.ConsumeRandomLengthString();
     std::shared_ptr<DistributedKv::KvStoreDeathRecipient> deathRecipient = nullptr;
@@ -43,12 +39,8 @@ void PutFuzzTest(const uint8_t* data, size_t size)
     adapter->Put(key, value);
 }
 
-void GetFuzzTest(const uint8_t* data, size_t size)
+void GetFuzzTest(FuzzedDataProvider &fdp)
 {
-    if (data == nullptr || size < MIN_SIZE + 1) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
     std::string key = fdp.ConsumeRandomLengthString();
     std::string value;
     std::shared_ptr<DistributedKv::KvStoreDeathRecipient> deathRecipient = nullptr;
@@ -57,12 +49,8 @@ void GetFuzzTest(const uint8_t* data, size_t size)
     adapter->Get(key, value);
 }
 
-void DeleteFuzzTest(const uint8_t* data, size_t size)
+void DeleteFuzzTest(FuzzedDataProvider &fdp)
 {
-    if (data == nullptr || size < MIN_SIZE + 1) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
     std::string key = fdp.ConsumeRandomLengthString();
     std::shared_ptr<DistributedKv::KvStoreDeathRecipient> deathRecipient = nullptr;
     auto adapter = std::make_shared<ServiceInfoKvAdapter>(deathRecipient, DistributedKv::TYPE_DYNAMICAL);
@@ -70,14 +58,9 @@ void DeleteFuzzTest(const uint8_t* data, size_t size)
     adapter->Delete(key);
 }
 
-void PutBatchFuzzTest(const uint8_t* data, size_t size)
+void PutBatchFuzzTest(FuzzedDataProvider &fdp)
 {
     const int32_t maxCount = 10;
-    constexpr size_t minRequiredSize = sizeof(int32_t) + maxCount * MIN_SIZE * 2 + 1;
-    if (data == nullptr || size < minRequiredSize) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
     std::map<std::string, std::string> values;
     int32_t count = fdp.ConsumeIntegralInRange<int32_t>(1, maxCount);
     for (int32_t i = 0; i < count; ++i) {
@@ -89,14 +72,9 @@ void PutBatchFuzzTest(const uint8_t* data, size_t size)
     adapter->PutBatch(values);
 }
 
-void DeleteBatchFuzzTest(const uint8_t* data, size_t size)
+void DeleteBatchFuzzTest(FuzzedDataProvider &fdp)
 {
     const int32_t maxCount = 10;
-    constexpr size_t minRequiredSize = sizeof(int32_t) + maxCount * MIN_SIZE * 2 + 1;
-    if (data == nullptr || size < minRequiredSize) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
     std::vector<std::string> keys;
     int32_t count = fdp.ConsumeIntegralInRange<int32_t>(1, maxCount);
     for (int32_t i = 0; i < count; ++i) {
@@ -108,13 +86,9 @@ void DeleteBatchFuzzTest(const uint8_t* data, size_t size)
     adapter->DeleteBatch(keys);
 }
 
-void GetByPrefixFuzzTest(const uint8_t* data, size_t size)
+void GetByPrefixFuzzTest(FuzzedDataProvider &fdp)
 {
     constexpr size_t minRequiredSize = 64;
-    if (data == nullptr || size < minRequiredSize) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
 
     std::string keyPrefix = fdp.ConsumeRandomLengthString(minRequiredSize);
     std::map<std::string, std::string> values;
@@ -130,11 +104,16 @@ void GetByPrefixFuzzTest(const uint8_t* data, size_t size)
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
-    OHOS::DistributedDeviceProfile::PutFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GetFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::DeleteFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::PutBatchFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::DeleteBatchFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GetByPrefixFuzzTest(data, size);
+    constexpr size_t minRequiredSize = 64;
+    if (data == nullptr || size < minRequiredSize) {
+        return;
+    }
+    FuzzedDataProvider fdp(data, size);
+    OHOS::DistributedDeviceProfile::PutFuzzTest(fdp);
+    OHOS::DistributedDeviceProfile::GetFuzzTest(fdp);
+    OHOS::DistributedDeviceProfile::DeleteFuzzTest(fdp);
+    OHOS::DistributedDeviceProfile::PutBatchFuzzTest(fdp);
+    OHOS::DistributedDeviceProfile::DeleteBatchFuzzTest(fdp);
+    OHOS::DistributedDeviceProfile::GetByPrefixFuzzTest(fdp);
     return 0;
 }
