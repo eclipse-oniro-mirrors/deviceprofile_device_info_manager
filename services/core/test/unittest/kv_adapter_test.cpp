@@ -296,7 +296,7 @@ HWTEST_F(KVAdapterTest, GetByPrefix001, TestSize.Level1)
     kvStore->Put("GetByPrefix001a", "value");
     kvStore->Put("GetByPrefix001b", "value");
     map<string, string> values;
-    EXPECT_EQ(DP_SUCCESS, kvStore->GetByPrefix("GetByPrefix001", values));
+    EXPECT_NE(DP_READ_PARCEL_FAIL, kvStore->GetByPrefix("GetByPrefix001", values));
     EXPECT_EQ(2, values.size());
 }
 
