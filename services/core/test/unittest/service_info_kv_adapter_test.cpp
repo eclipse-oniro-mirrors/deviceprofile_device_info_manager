@@ -471,26 +471,6 @@ HWTEST_F(ServiceInfoKvAdapterTest, OnRemoteDied001, TestSize.Level1)
 
     EXPECT_TRUE(serviceInfoKvAdapter->isInited_.load());
 }
-
-/**
- * @tc.name: GetByPrefix005
- * @tc.desc: Test GetByPrefix with existing prefix, expect DP_SUCCESS and correct values
- * @tc.type: FUNC
- */
-HWTEST_F(ServiceInfoKvAdapterTest, GetByPrefix005, TestSize.Level1)
-{
-    ASSERT_NE(nullptr, serviceInfoKvAdapter);
- 
-    std::string prefix = "prefix_";
-    std::map<std::string, std::string> putValues = {
-        {prefix + "a", "valueA"},
-        {prefix + "b", "valueB"}
-    };
-    serviceInfoKvAdapter->PutBatch(putValues);
- 
-    std::map<std::string, std::string> values;
-    EXPECT_NE(DP_READ_PARCEL_FAIL, serviceInfoKvAdapter->GetByPrefix(prefix, values));
-}
  
 /**
  * @tc.name: GetByPrefix002

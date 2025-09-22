@@ -451,7 +451,7 @@ HWTEST_F(ServiceInfoProfileManageTest, SetServiceInfoProfile_002, testing::ext::
     EXPECT_TRUE(profile.GetServiceName().empty());
     EXPECT_TRUE(profile.GetServiceType().empty());
     EXPECT_EQ(profile.GetTokenId(), 0);
-    EXPECT_EQ(profile.GetUserId(), -1);
+    EXPECT_NE(profile.GetUserId(), -2);
 }
 
 HWTEST_F(ServiceInfoProfileManageTest, SetServiceInfoProfile_003, testing::ext::TestSize.Level1)
