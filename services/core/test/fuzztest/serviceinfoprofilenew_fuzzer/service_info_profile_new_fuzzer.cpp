@@ -36,21 +36,11 @@ void MarshallingFuzzTest(FuzzedDataProvider &fdp)
 void UnMarshallingFuzzTest(FuzzedDataProvider &fdp)
 {
     OHOS::MessageParcel parcel;
-    int32_t size = fdp.ConsumeIntegralInRange<int32_t>(1, 1024);
     std::string data = fdp.ConsumeRandomLengthString();
-    parcel.WriteBuffer(&data, size);
+    parcel.WriteBuffer(&data, data.length());
     ServiceInfoProfileNew profile;
     profile.UnMarshalling(parcel);
 }
-
-void DumpFuzzTest(FuzzedDataProvider &fdp)
-{
-    ServiceInfoProfileNew profile;
-    profile.SetServiceId(fdp.ConsumeIntegral<int64_t>());
-    profile.SetServiceType(fdp.ConsumeRandomLengthString());
-    profile.dump();
-}
-
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 
@@ -63,6 +53,5 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     FuzzedDataProvider fdp(data, size);
     OHOS::DistributedDeviceProfile::MarshallingFuzzTest(fdp);
     OHOS::DistributedDeviceProfile::UnMarshallingFuzzTest(fdp);
-    OHOS::DistributedDeviceProfile::DumpFuzzTest(fdp);
     return 0;
 }
