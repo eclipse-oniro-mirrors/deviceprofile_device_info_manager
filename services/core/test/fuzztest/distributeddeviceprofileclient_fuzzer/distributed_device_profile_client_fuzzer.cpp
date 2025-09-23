@@ -63,9 +63,9 @@ void GetServiceInfoProfileByTokenIdFuzzTest(FuzzedDataProvider &fdp)
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
-    int32_t maxDataSize = sizeof(int64_t) * 2;
+    size_t maxDataSize = sizeof(int64_t) * 2;
     if (!data || size < maxDataSize) {
-        return;
+        return 0;
     }
     FuzzedDataProvider fdp(data, size);
     OHOS::DistributedDeviceProfile::PutServiceInfoProfileNewFuzzTest(fdp);

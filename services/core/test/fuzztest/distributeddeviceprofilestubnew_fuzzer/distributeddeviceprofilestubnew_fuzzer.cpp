@@ -499,7 +499,7 @@ void PutServiceInfoProfileNewInnerFuzzTest(FuzzedDataProvider &fdp)
     int32_t size = fdp.ConsumeIntegralInRange<int32_t>(0, 1024);
     std::string rawdata = fdp.ConsumeRandomLengthString(size);
     data.WriteInterfaceToken(DP_INTERFACE_TOKEN);
-    data.WriteBuffer(rawdata, size);
+    data.WriteBuffer(&rawdata, size);
     data.RewindRead(0);
     MessageParcel reply;
 
@@ -515,7 +515,7 @@ void DeleteServiceInfoProfileNewInnerFuzzTest(FuzzedDataProvider &fdp)
     std::string rawdata = fdp.ConsumeRandomLengthString(size);
     MessageParcel mData;
     mData.WriteInterfaceToken(DP_INTERFACE_TOKEN);
-    mData.WriteBuffer(data, size);
+    mData.WriteBuffer(&rawdata, size);
     mData.RewindRead(0);
     MessageParcel reply;
 
@@ -531,7 +531,7 @@ void GetServiceInfoProfileByServiceIdInnerFuzzTest(FuzzedDataProvider &fdp)
     std::string rawdata = fdp.ConsumeRandomLengthString(size);
     MessageParcel mData;
     mData.WriteInterfaceToken(DP_INTERFACE_TOKEN);
-    mData.WriteBuffer(data, size);
+    mData.WriteBuffer(&rawdata, size);
     mData.RewindRead(0);
     MessageParcel reply;
 
@@ -547,7 +547,7 @@ void GetServiceInfoProfileByTokenIdInnerFuzzTest(FuzzedDataProvider &fdp)
     std::string rawdata = fdp.ConsumeRandomLengthString(size);
     MessageParcel mData;
     mData.WriteInterfaceToken(DP_INTERFACE_TOKEN);
-    mData.WriteBuffer(data, size);
+    mData.WriteBuffer(&rawdata, size);
     mData.RewindRead(0);
     MessageParcel reply;
 
@@ -561,9 +561,9 @@ void GetServiceInfoProfileByTokenIdInnerFuzzTest(FuzzedDataProvider &fdp)
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
-    int32_t maxDataSize = sizeof(int64_t) * 2;
+    size_t maxDataSize = sizeof(int64_t) * 2;
     if (!data || size < maxDataSize) {
-        return;
+        return 0;
     }
     FuzzedDataProvider fdp(data, size);
     OHOS::DistributedDeviceProfile::PutServiceInfoProfileNewInnerFuzzTest(fdp);
