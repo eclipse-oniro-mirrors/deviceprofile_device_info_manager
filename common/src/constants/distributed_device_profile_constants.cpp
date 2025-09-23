@@ -63,6 +63,7 @@ const std::string DEVICE_ICON_INFO_TABLE = "device_icon_info";
 const std::string PRODUCT_INFO_TABLE = "product_info";
 const std::string SYSTEM = "system";
 const std::string RDB_TYPE_TEXT = "TEXT";
+const std::string RDB_TYPE_BIGINT = "BIGINT";
 const std::string RESULT = "result";
 /* ServiceProfile Attribute */
 const std::string SERVICEID = "serviceId";

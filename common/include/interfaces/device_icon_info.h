@@ -31,7 +31,8 @@ public:
         internalModel_(""),
         subProductId_(""),
         imageType_(""),
-        specName_("")
+        specName_(""),
+        modifyTime_(0)
     {}
     ~DeviceIconInfo() = default;
     int32_t GetId() const;
@@ -58,6 +59,9 @@ public:
     bool UnMarshalling(MessageParcel& parcel) override;
     bool operator!=(const DeviceIconInfo& other) const;
     std::string dump() const override;
+    std::string GetUniqueKey() const;
+    int64_t GetModifyTime() const;
+    void SetModifyTime(int64_t modifyTime);
 
 private:
     int32_t id_;
@@ -70,6 +74,7 @@ private:
     std::string wiseVersion_;
     std::string url_;
     std::vector<uint8_t> icon_;
+    int64_t modifyTime_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

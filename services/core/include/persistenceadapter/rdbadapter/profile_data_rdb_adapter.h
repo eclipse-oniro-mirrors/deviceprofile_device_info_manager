@@ -52,6 +52,7 @@ public:
 private:
     int32_t CheckAndAlterTable(RdbStore& store, const RdbTableAlterInfo& info);
     int32_t UpdateFromVer1To2(RdbStore& store);
+    int32_t UpdateToVer3(RdbStore& store);
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

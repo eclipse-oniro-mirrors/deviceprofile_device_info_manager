@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -39,6 +39,7 @@ namespace {
         "product_info"
     };
     const std::string TAG = "ProfileDatardbAdapter";
+    constexpr int32_t PROFILE_DATA_VER_3 = 3;
 }
 
 int32_t ProfileDataRdbAdapter::Init()
@@ -190,7 +191,7 @@ std::shared_ptr<ResultSet> ProfileDataRdbAdapter::Get(const std::string& sql, co
 
 int32_t ProfileDataRdbAdapter::GetRDBPtr()
 {
-    int32_t version = RDB_VERSION_5_1;
+    int32_t version = PROFILE_DATA_VER_3;
     ProfileDataOpenCallback helper;
     RdbStoreConfig config(PROFILE_DATA_RDB_PATH + PROFILE_DATA_DATABASE_NAME);
     config.SetSecurityLevel(SecurityLevel::S2);
@@ -258,8 +259,11 @@ int32_t ProfileDataOpenCallback::OnCreate(RdbStore& store)
 int32_t ProfileDataOpenCallback::OnUpgrade(RdbStore& store, int oldVersion, int newVersion)
 {
     HILOGI("rdbStore upgrade : %{public}d -> %{public}d", oldVersion, newVersion);
-    if (oldVersion == RDB_VERSION && newVersion == RDB_VERSION_5_1) {
+    if (oldVersion == RDB_VERSION && (newVersion >= RDB_VERSION_5_1)) {
         return UpdateFromVer1To2(store);
+    }
+    if (oldVersion < PROFILE_DATA_VER_3 && newVersion == PROFILE_DATA_VER_3) {
+        return UpdateToVer3(store);
     }
     return NativeRdb::E_OK;
 }
@@ -326,6 +330,25 @@ int32_t ProfileDataOpenCallback::UpdateFromVer1To2(RdbStore& store)
         HILOGE("CheckAndAlterTable failed,reason:%{public}d,tableName:%{public}s,columnName:%{public}s", ret,
             ProfileUtils::GetAnonyString(deviceIconInfoAddInterModelColumn.tabName).c_str(),
             deviceIconInfoAddInterModelColumn.colName.c_str());
+        return ret;
+    }
+    HILOGI("succeed");
+    return NativeRdb::E_OK;
+}
+
+int32_t ProfileDataOpenCallback::UpdateToVer3(RdbStore& store)
+{
+    RdbTableAlterInfo deviceIconInfoAddColumnModifyTime {
+        .tabName = DEVICE_ICON_INFO_TABLE,
+        .colName = MODIFY_TIME,
+        .colType = RDB_TYPE_BIGINT,
+        .sql = ALTER_TABLE_DEVICE_ICON_INFO_ADD_COLUMN_MODIFY_TIME_SQL
+    };
+    int32_t ret = CheckAndAlterTable(store, deviceIconInfoAddColumnModifyTime);
+    if (ret != DP_SUCCESS) {
+        HILOGE("CheckAndAlterTable failed,reason:%{public}d,tableName:%{public}s,columnName:%{public}s", ret,
+            ProfileUtils::GetAnonyString(deviceIconInfoAddColumnModifyTime.tabName).c_str(),
+            deviceIconInfoAddColumnModifyTime.colName.c_str());
         return ret;
     }
     HILOGI("succeed");
