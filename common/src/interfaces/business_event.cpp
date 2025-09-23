@@ -67,6 +67,7 @@ bool BusinessEvent::UnMarshalling(MessageParcel& parcel)
     return true;
 }
 
+//LCOV_EXCL_START
 std::string BusinessEvent::dump() const
 {
     cJSON* json = cJSON_CreateObject();
@@ -87,6 +88,7 @@ std::string BusinessEvent::dump() const
     cJSON_free(jsonChars);
     return jsonStr;
 }
+//LCOV_EXCL_STOP
 
 BusinessEventExt::BusinessEventExt()
 {
