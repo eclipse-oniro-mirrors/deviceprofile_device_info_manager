@@ -38,13 +38,8 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 
-void DeleteServiceInfoProfileFuzzerTest(const uint8_t* data, size_t size)
+void DeleteServiceInfoProfileFuzzerTest(FuzzedDataProvider &fdp)
 {
-    int32_t maxDataSize = sizeof(int32_t) * 2;
-    if ((data == nullptr) || (size < maxDataSize)) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
     int32_t regServiceId = fdp.ConsumeIntegral<int32_t>();
     int32_t userId = fdp.ConsumeIntegral<int32_t>();
     std::shared_ptr<IKVAdapter> kvStore = nullptr;
@@ -64,7 +59,12 @@ void DeleteServiceInfoProfileFuzzerTest(const uint8_t* data, size_t size)
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
-    OHOS::DistributedDeviceProfile::DeleteServiceInfoProfileFuzzerTest(data, size);
+    int32_t maxDataSize = sizeof(int32_t) * 2;
+    if ((data == nullptr) || (size < maxDataSize)) {
+        return;
+    }
+    FuzzedDataProvider fdp(data, size);
+    OHOS::DistributedDeviceProfile::DeleteServiceInfoProfileFuzzerTest(fdp);
 
     return 0;
 }
