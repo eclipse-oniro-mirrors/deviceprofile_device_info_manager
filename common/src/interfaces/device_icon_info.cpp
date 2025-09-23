@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,6 +27,7 @@ namespace {
     const std::string TAG = "DeviceIconInfo";
     const std::string DEVICE_ICON_WISE_VERSION = "wiseVersion";
     const std::string DEVICE_ICON_SIZE = "iconSize";
+    constexpr const char* UK_SEPARATOR = "#";
 }
 
 int32_t DeviceIconInfo::GetId() const
@@ -139,6 +140,7 @@ bool DeviceIconInfo::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, String, version_, false);
     WRITE_HELPER_RET(parcel, String, wiseVersion_, false);
     WRITE_HELPER_RET(parcel, String, url_, false);
+    WRITE_HELPER_RET(parcel, Int64, modifyTime_, false);
     IpcUtils::Marshalling(parcel, icon_);
     return true;
 }
@@ -153,6 +155,7 @@ bool DeviceIconInfo::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, String, version_, false);
     READ_HELPER_RET(parcel, String, wiseVersion_, false);
     READ_HELPER_RET(parcel, String, url_, false);
+    READ_HELPER_RET(parcel, Int64, modifyTime_, false);
     IpcUtils::UnMarshalling(parcel, icon_);
     return true;
 }
@@ -183,11 +186,11 @@ std::string DeviceIconInfo::dump() const
     cJSON_AddStringToObject(json, SUB_PRODUCT_ID.c_str(), subProductId_.c_str());
     cJSON_AddStringToObject(json, IMAGE_TYPE.c_str(), imageType_.c_str());
     cJSON_AddStringToObject(json, SPEC_NAME.c_str(), specName_.c_str());
-    cJSON_AddStringToObject(json, SPEC_NAME.c_str(), specName_.c_str());
     cJSON_AddStringToObject(json, DEVICE_ICON_VERSION.c_str(), version_.c_str());
     cJSON_AddStringToObject(json, DEVICE_ICON_WISE_VERSION.c_str(), wiseVersion_.c_str());
     cJSON_AddStringToObject(json, DEVICE_ICON_URL.c_str(), ProfileUtils::GetAnonyString(url_).c_str());
     cJSON_AddNumberToObject(json, DEVICE_ICON_SIZE.c_str(), icon_.size());
+    cJSON_AddStringToObject(json, MODIFY_TIME.c_str(), std::to_string(modifyTime_).c_str());
     char* jsonChars = cJSON_PrintUnformatted(json);
     cJSON_Delete(json);
     if (jsonChars == NULL) {
@@ -197,6 +200,22 @@ std::string DeviceIconInfo::dump() const
     std::string jsonStr = jsonChars;
     cJSON_free(jsonChars);
     return jsonStr;
+}
+
+std::string DeviceIconInfo::GetUniqueKey() const
+{
+    return productId_ + UK_SEPARATOR + subProductId_ + UK_SEPARATOR + internalModel_ +
+        UK_SEPARATOR + imageType_ + UK_SEPARATOR  + specName_;
+}
+
+int64_t DeviceIconInfo::GetModifyTime() const
+{
+    return modifyTime_;
+}
+
+void DeviceIconInfo::SetModifyTime(int64_t modifyTime)
+{
+    modifyTime_ = modifyTime;
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

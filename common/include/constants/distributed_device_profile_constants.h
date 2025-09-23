@@ -74,6 +74,7 @@ extern const std::string DEVICE_ICON_INFO_TABLE;
 extern const std::string PRODUCT_INFO_TABLE;
 extern const std::string SYSTEM;
 extern const std::string RDB_TYPE_TEXT;
+extern const std::string RDB_TYPE_BIGINT;
 extern const std::string RESULT;
 /* ServiceProfile Attribute */
 extern const std::string SERVICE_NAME;

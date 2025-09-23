@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -51,6 +51,7 @@ extern const std::string CREATE_DEVICE_ICON_INFO_TABLE_SQL ;
 extern const std::string CREATE_DEVICE_ICON_INFO_TABLE_UNIQUE_INDEX_SQL;
 extern const std::string SELECT_DEVICE_ICON_INFO_TABLE;
 extern const std::string ALTER_TABLE_DEVICE_ICON_INFO_ADD_COLUMN_INTENAL_MODEL_SQL;
+extern const std::string ALTER_TABLE_DEVICE_ICON_INFO_ADD_COLUMN_MODIFY_TIME_SQL;
 // ProductInfoDao
 extern const std::string CREATE_PRODUCT_INFO_TABLE_SQL;
 extern const std::string SELECT_PRODUCT_INFO_TABLE;

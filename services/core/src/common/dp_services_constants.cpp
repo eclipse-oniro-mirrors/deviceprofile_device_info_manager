@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -78,11 +78,14 @@ const std::string CREATE_DEVICE_ICON_INFO_TABLE_SQL = "CREATE TABLE IF NOT EXIST
     version       TEXT,\
     url           TEXT,\
     icon          blob,\
-    internalModel    TEXT);";
+    internalModel    TEXT,\
+    modifyTime    BIGINT DEFAULT 0);";
 const std::string CREATE_DEVICE_ICON_INFO_TABLE_UNIQUE_INDEX_SQL = "CREATE UNIQUE INDEX if not exists \
     unique_device_icon_info ON device_icon_info (productId, subProductId, imageType, specName);";
 const std::string ALTER_TABLE_DEVICE_ICON_INFO_ADD_COLUMN_INTENAL_MODEL_SQL =
     "ALTER TABLE device_icon_info ADD COLUMN internalModel TEXT";
+const std::string ALTER_TABLE_DEVICE_ICON_INFO_ADD_COLUMN_MODIFY_TIME_SQL =
+    "ALTER TABLE device_icon_info ADD COLUMN modifyTime BIGINT  DEFAULT 0";
 const std::string SELECT_DEVICE_ICON_INFO_TABLE = "SELECT a.*,b.imageVersion FROM device_icon_info a \
     LEFT JOIN product_info b ON a.productId = b.productId \
     WHERE ";

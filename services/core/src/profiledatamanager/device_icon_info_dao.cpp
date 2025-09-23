@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -223,6 +223,7 @@ int32_t DeviceIconInfoDao::DeviceIconInfoToEntries(const DeviceIconInfo& deviceI
     if (!deviceIconInfo.GetIcon().empty()) {
         values.PutBlob(DEVICE_ICON, deviceIconInfo.GetIcon());
     }
+    values.PutLong(MODIFY_TIME, deviceIconInfo.GetModifyTime());
     return DP_SUCCESS;
 }
 
@@ -247,6 +248,7 @@ int32_t DeviceIconInfoDao::ConvertToDeviceIconInfo(std::shared_ptr<ResultSet> re
     deviceIconInfo.SetWiseVersion(rowEntity.Get(IMAGE_VERSION));
     deviceIconInfo.SetUrl(rowEntity.Get(DEVICE_ICON_URL));
     deviceIconInfo.SetIcon(rowEntity.Get(DEVICE_ICON));
+    deviceIconInfo.SetModifyTime(rowEntity.Get(MODIFY_TIME));
     return DP_SUCCESS;
 }
 } // namespace DistributedDeviceProfile
