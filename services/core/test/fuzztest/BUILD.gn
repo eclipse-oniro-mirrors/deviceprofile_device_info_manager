@@ -22,6 +22,9 @@ group("fuzztest") {
     "distributeddeviceprofileclient_fuzzer:fuzztest",
     "distributeddeviceprofilestubnew_fuzzer:fuzztest",
     "distributeddeviceprofileservicenew_fuzzer:fuzztest",
-    "profilecontrolutils_fuzzer:fuzztest"
+    "profilecontrolutils_fuzzer:fuzztest",
+    "serviceinfokvadaptertest_fuzzer:fuzztest",
+    "serviceinfoprofilenew_fuzzer:fuzztest",
+    "serviceinfomanager_fuzzer:fuzztest",
   ]
 }
