@@ -25,13 +25,8 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 
-void PutServiceInfoProfileNewFuzzTest(const uint8_t* data, size_t size)
+void PutServiceInfoProfileNewFuzzTest(FuzzedDataProvider &fdp)
 {
-    int32_t maxDataSize = sizeof(int32_t) * 2  + sizeof(int64_t) * 2 + sizeof(int8_t) + 1;
-    if (!data || size < maxDataSize) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
     ServiceInfoProfileNew profile;
     profile.SetRegServiceId(fdp.ConsumeIntegral<int32_t>());
     profile.SetDeviceId(fdp.ConsumeRandomLengthString());
@@ -46,26 +41,16 @@ void PutServiceInfoProfileNewFuzzTest(const uint8_t* data, size_t size)
     DistributedDeviceProfileServiceNew::GetInstance().PutServiceInfoProfile(profile);
 }
 
-void DeleteServiceInfoProfileNewFuzzTest(const uint8_t* data, size_t size)
+void DeleteServiceInfoProfileNewFuzzTest(FuzzedDataProvider &fdp)
 {
-    int32_t maxDataSize = sizeof(int32_t) * 2 + 1;
-    if (!data || size < maxDataSize) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
     int32_t regServiceId = fdp.ConsumeIntegral<int32_t>();
     int32_t userId = fdp.ConsumeIntegral<int32_t>();
 
     DistributedDeviceProfileServiceNew::GetInstance().DeleteServiceInfoProfile(regServiceId, userId);
 }
 
-void GetServiceInfoProfileByServiceIdFuzzTest(const uint8_t* data, size_t size)
+void GetServiceInfoProfileByServiceIdFuzzTest(FuzzedDataProvider &fdp)
 {
-    int32_t maxDataSize = sizeof(int64_t) * 2 + 1;
-    if (!data || size < maxDataSize) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
     int32_t serviceId = fdp.ConsumeIntegral<int64_t>();
     ServiceInfoProfileNew profile;
 
@@ -74,13 +59,8 @@ void GetServiceInfoProfileByServiceIdFuzzTest(const uint8_t* data, size_t size)
     DistributedDeviceProfileServiceNew::GetInstance().GetServiceInfoProfileByServiceId(serviceId, profile);
 }
 
-void GetServiceInfoProfileByTokenIdFuzzTest(const uint8_t* data, size_t size)
+void GetServiceInfoProfileByTokenIdFuzzTest(FuzzedDataProvider &fdp)
 {
-    int32_t maxDataSize = sizeof(int64_t) * 2 + 1;
-    if (!data || size < maxDataSize) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
     int32_t tokenId = fdp.ConsumeIntegral<int64_t>();
     ServiceInfoProfileNew profile;
 
@@ -93,9 +73,14 @@ void GetServiceInfoProfileByTokenIdFuzzTest(const uint8_t* data, size_t size)
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
-    OHOS::DistributedDeviceProfile::PutServiceInfoProfileNewFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::DeleteServiceInfoProfileNewFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GetServiceInfoProfileByServiceIdFuzzTest(data, size);
-    OHOS::DistributedDeviceProfile::GetServiceInfoProfileByTokenIdFuzzTest(data, size);
+    int32_t maxDataSize = sizeof(int64_t) * 2;
+    if (!data || size < maxDataSize) {
+        return;
+    }
+    FuzzedDataProvider fdp(data, size);
+    OHOS::DistributedDeviceProfile::PutServiceInfoProfileNewFuzzTest(fdp);
+    OHOS::DistributedDeviceProfile::DeleteServiceInfoProfileNewFuzzTest(fdp);
+    OHOS::DistributedDeviceProfile::GetServiceInfoProfileByServiceIdFuzzTest(fdp);
+    OHOS::DistributedDeviceProfile::GetServiceInfoProfileByTokenIdFuzzTest(fdp);
     return 0;
 }
