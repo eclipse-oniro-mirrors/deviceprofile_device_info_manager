@@ -19,5 +19,8 @@ group("fuzztest") {
     "profileutils_fuzzer:fuzztest",
     "trustprofilemanager_fuzzer:fuzztest",
     "businesseventmanager_fuzzer:fuzztest",
+    "serviceinfokvadaptertest_fuzzer:fuzztest",
+    "serviceinfoprofilenew_fuzzer:fuzztest",
+    "serviceinfomanager_fuzzer:fuzztest",
   ]
 }

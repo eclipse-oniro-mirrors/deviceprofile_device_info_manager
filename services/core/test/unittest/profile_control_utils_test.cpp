@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -55,6 +55,16 @@ public:
     static void TearDownTestCase();
     void SetUp();
     void TearDown();
+};
+
+class KVAdapterTest : public KVAdapter {
+public:
+    KVAdapterTest() : KVAdapter("", "", nullptr, nullptr, nullptr, DistributedKv::TYPE_DYNAMICAL) {}
+    int32_t result = DP_SUCCESS;
+    int32_t DeleteBatch(const std::vector<std::string> &keys) override
+    {
+        return result;
+    }
 };
 
 void ProfileControlUtilsTest::SetUpTestCase() {
@@ -1334,6 +1344,51 @@ HWTEST_F(ProfileControlUtilsTest, GetSwitchCharacteristicProfile007, TestSize.Le
         serviceName, characteristicKey, charProfile);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
     ProfileCache::GetInstance().onlineDevMap_.erase(deviceId);
+}
+
+/**
+ * @tc.name: DeleteServiceInfoProfile001
+ * @tc.desc: kvStore 为 nullptr，返回 DP_INVALID_PARAMS
+ * @tc.type: FUNC
+ */
+HWTEST_F(ProfileControlUtilsTest, DeleteServiceInfoProfile001, TestSize.Level1)
+{
+    std::shared_ptr<IKVAdapter> kvStore = nullptr;
+    int32_t regServiceId = 123;
+    int32_t userId = 0;
+    int32_t ret = ProfileControlUtils::DeleteServiceInfoProfile(kvStore, regServiceId, userId);
+    EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
+}
+
+/**
+ * @tc.name: DeleteServiceInfoProfile002
+ * @tc.desc: DeleteBatch 失败，返回 DP_DEL_KV_DB_FAIL
+ * @tc.type: FUNC
+ */
+
+HWTEST_F(ProfileControlUtilsTest, DeleteServiceInfoProfile002, TestSize.Level1)
+{
+    auto kvStore = std::make_shared<KVAdapterTest>();
+    kvStore->result = DP_DEL_KV_DB_FAIL;
+    int32_t regServiceId = 123;
+    int32_t userId = 0;
+    int32_t ret = ProfileControlUtils::DeleteServiceInfoProfile(kvStore, regServiceId, userId);
+    EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
+}
+
+/**
+ * @tc.name: DeleteServiceInfoProfile003
+ * @tc.desc: 正常删除，返回 DP_SUCCESS
+ * @tc.type: FUNC
+ */
+HWTEST_F(ProfileControlUtilsTest, DeleteServiceInfoProfile003, TestSize.Level1)
+{
+    auto kvStore = std::make_shared<KVAdapterTest>();
+    kvStore->result = DP_SUCCESS;
+    int32_t regServiceId = 123;
+    int32_t userId = 0;
+    int32_t ret = ProfileControlUtils::DeleteServiceInfoProfile(kvStore, regServiceId, userId);
+    EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
