@@ -36,6 +36,7 @@ void MarshallingFuzzTest(FuzzedDataProvider &fdp)
 void UnMarshallingFuzzTest(FuzzedDataProvider &fdp)
 {
     OHOS::MessageParcel parcel;
+    int32_t size = fdp.ConsumeIntegralInRange<int32_t>(1, 1024);
     std::string data = fdp.ConsumeRandomLengthString();
     parcel.WriteBuffer(&data, size);
     ServiceInfoProfileNew profile;
