@@ -36,6 +36,7 @@ namespace DistributedDeviceProfile {
 
 void PutServiceInfoProfileFuzzTest(FuzzedDataProvider &fdp)
 {
+    ServiceInfoProfileNew profile;
     int32_t regServiceIdValue = fdp.ConsumeIntegral<int32_t>();
     profile.SetRegServiceId(regServiceIdValue);
     std::string deviceIdValue = fdp.ConsumeRandomLengthString();
@@ -111,7 +112,7 @@ void SetServiceInfoProfileFuzzTest(FuzzedDataProvider &fdp)
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
-    int32_t minDataSize = sizeof(int64_t) * 2
+    int32_t minDataSize = sizeof(int64_t) * 2;
     if (!data || size < minDataSize) {
         return 0;
     }
