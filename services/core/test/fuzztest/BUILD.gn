@@ -20,7 +20,6 @@ group("fuzztest") {
     "trustprofilemanager_fuzzer:fuzztest",
     "businesseventmanager_fuzzer:fuzztest",
     "distributeddeviceprofileclient_fuzzer:fuzztest",
-    "distributeddeviceprofileproxy_fuzzer:fuzztest",
     "distributeddeviceprofilestubnew_fuzzer:fuzztest",
     "distributeddeviceprofileservicenew_fuzzer:fuzztest",
     "profilecontrolutils_fuzzer:fuzztest"

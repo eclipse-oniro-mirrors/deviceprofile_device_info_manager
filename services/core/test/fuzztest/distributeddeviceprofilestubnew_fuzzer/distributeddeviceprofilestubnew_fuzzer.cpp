@@ -496,10 +496,9 @@ int32_t MockDistributedDeviceProfileStubNew::GetServiceInfoProfileByTokenId(int6
 void PutServiceInfoProfileNewInnerFuzzTest(FuzzedDataProvider &fdp)
 {
     MessageParcel data;
-    int32_t size = fdp.ConsumeIntegralInRange<int32_t>(0, 1024);
-    std::string rawdata = fdp.ConsumeRandomLengthString(size);
+    std::string rawdata = fdp.ConsumeRandomLengthString();
     data.WriteInterfaceToken(DP_INTERFACE_TOKEN);
-    data.WriteBuffer(&rawdata, size);
+    data.WriteBuffer(&rawdata, rawdata.length());
     data.RewindRead(0);
     MessageParcel reply;
 
@@ -511,11 +510,10 @@ void PutServiceInfoProfileNewInnerFuzzTest(FuzzedDataProvider &fdp)
 
 void DeleteServiceInfoProfileNewInnerFuzzTest(FuzzedDataProvider &fdp)
 {
-    int32_t size = fdp.ConsumeIntegralInRange<int32_t>(0, 1024);
-    std::string rawdata = fdp.ConsumeRandomLengthString(size);
+    std::string rawdata = fdp.ConsumeRandomLengthString();
     MessageParcel mData;
     mData.WriteInterfaceToken(DP_INTERFACE_TOKEN);
-    mData.WriteBuffer(&rawdata, size);
+    mData.WriteBuffer(&rawdata, rawdata.length());
     mData.RewindRead(0);
     MessageParcel reply;
 
@@ -527,11 +525,10 @@ void DeleteServiceInfoProfileNewInnerFuzzTest(FuzzedDataProvider &fdp)
 
 void GetServiceInfoProfileByServiceIdInnerFuzzTest(FuzzedDataProvider &fdp)
 {
-    int32_t size = fdp.ConsumeIntegralInRange<int32_t>(0, 1024);
-    std::string rawdata = fdp.ConsumeRandomLengthString(size);
+    std::string rawdata = fdp.ConsumeRandomLengthString();
     MessageParcel mData;
     mData.WriteInterfaceToken(DP_INTERFACE_TOKEN);
-    mData.WriteBuffer(&rawdata, size);
+    mData.WriteBuffer(&rawdata, rawdata.length());
     mData.RewindRead(0);
     MessageParcel reply;
 
@@ -543,11 +540,10 @@ void GetServiceInfoProfileByServiceIdInnerFuzzTest(FuzzedDataProvider &fdp)
 
 void GetServiceInfoProfileByTokenIdInnerFuzzTest(FuzzedDataProvider &fdp)
 {
-    int32_t size = fdp.ConsumeIntegralInRange<int32_t>(0, 1024);
-    std::string rawdata = fdp.ConsumeRandomLengthString(size);
+    std::string rawdata = fdp.ConsumeRandomLengthString();
     MessageParcel mData;
     mData.WriteInterfaceToken(DP_INTERFACE_TOKEN);
-    mData.WriteBuffer(&rawdata, size);
+    mData.WriteBuffer(&rawdata, rawdata.length());
     mData.RewindRead(0);
     MessageParcel reply;
 
