@@ -26,11 +26,6 @@ namespace DistributedDeviceProfile {
 
 void MarshallingFuzzTest(FuzzedDataProvider &fdp)
 {
-    const size_t minDataSize = sizeof(int64_t) * 2 + 1;
-    if (data == nullptr || (size < minDataSize)) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
     ServiceInfoProfileNew profile;
     profile.SetServiceId(fdp.ConsumeIntegral<int64_t>());
     profile.SetServiceType(fdp.ConsumeRandomLengthString());
@@ -40,9 +35,6 @@ void MarshallingFuzzTest(FuzzedDataProvider &fdp)
 
 void UnMarshallingFuzzTest(FuzzedDataProvider &fdp)
 {
-    if (data == nullptr || size == 0) {
-        return;
-    }
     OHOS::MessageParcel parcel;
     parcel.WriteBuffer(data, size);
     ServiceInfoProfileNew profile;
@@ -51,11 +43,6 @@ void UnMarshallingFuzzTest(FuzzedDataProvider &fdp)
 
 void DumpFuzzTest(FuzzedDataProvider &fdp)
 {
-    const size_t minDataSize = sizeof(int64_t) * 2 + 1;
-    if (data == nullptr || (size < minDataSize)) {
-        return;
-    }
-    FuzzedDataProvider fdp(data, size);
     ServiceInfoProfileNew profile;
     profile.SetServiceId(fdp.ConsumeIntegral<int64_t>());
     profile.SetServiceType(fdp.ConsumeRandomLengthString());
@@ -69,7 +56,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     const size_t minDataSize = sizeof(int64_t) * 2;
     if (data == nullptr || (size < minDataSize)) {
-        return;
+        return 0;
     }
     FuzzedDataProvider fdp(data, size);
     OHOS::DistributedDeviceProfile::MarshallingFuzzTest(fdp);

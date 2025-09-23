@@ -106,7 +106,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     constexpr size_t minRequiredSize = 64;
     if (data == nullptr || size < minRequiredSize) {
-        return;
+        return 0;
     }
     FuzzedDataProvider fdp(data, size);
     OHOS::DistributedDeviceProfile::PutFuzzTest(fdp);
