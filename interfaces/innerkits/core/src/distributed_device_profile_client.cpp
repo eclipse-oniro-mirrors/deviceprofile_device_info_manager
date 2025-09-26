@@ -805,9 +805,12 @@ int32_t DistributedDeviceProfileClient::UnSubscribePinCodeInvalid(const std::str
     int32_t pinExchangeType)
 {
     HILOGI("enter");
-    if (pinCodeCallback_ == nullptr) {
-        HILOGE("not subscribe pincode invalid, no need unsubscribe pincode invalid");
-        return DP_SUCCESS;
+    {
+        std::lock_guard<std::mutex> lock(pinCodeLock_);
+        if (pinCodeCallback_ == nullptr) {
+            HILOGE("not subscribe pincode invalid, no need unsubscribe pincode invalid");
+            return DP_SUCCESS;
+        }
     }
     SubscribeDeviceProfileSA();
     auto dpService = GetDeviceProfileService();
@@ -1172,9 +1175,12 @@ int32_t DistributedDeviceProfileClient::RegisterBusinessCallback(const std::stri
 int32_t DistributedDeviceProfileClient::UnRegisterBusinessCallback(const std::string& saId,
     const std::string& businessKey)
 {
-    if (businessCallback_ == nullptr) {
-        HILOGE("not subscribe pincode invalid, no need unsubscribe pincode invalid");
-        return DP_SUCCESS;
+    {
+        std::lock_guard<std::mutex> lock(businessLock_);
+        if (businessCallback_ == nullptr) {
+            HILOGE("not subscribe pincode invalid, no need unsubscribe pincode invalid");
+            return DP_SUCCESS;
+        }
     }
     auto dpService = GetDeviceProfileService();
     if (dpService == nullptr) {
