@@ -44,6 +44,8 @@ BusinessEventAdapter::BusinessEventAdapter(
 {
     this->deathRecipient_ = deathListener;
     this->dataType_ = dataType;
+    this->appId_.appId = APP_ID;
+    this->storeId_.storeId = STORE_ID;
     HILOGD("BusinessEventAdapter Constructor Success");
 }
 
@@ -54,8 +56,6 @@ int32_t BusinessEventAdapter::Init()
         HILOGI("Local DB already inited.");
         return DP_SUCCESS;
     }
-    this->appId_.appId = APP_ID;
-    this->storeId_.storeId = STORE_ID;
     int32_t tryTimes = MAX_INIT_RETRY_TIMES;
     int64_t beginTime = GetTickCount();
     while (tryTimes > 0) {

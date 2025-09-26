@@ -1023,6 +1023,7 @@ void DeviceProfileManager::FixRemoteDataWhenPeerIsOHBase(const std::string& remo
     }
     HILOGD("delKeys.size:%{public}zu", delKeys.size());
     if (delKeys.empty()) { return; }
+    std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
     if (deviceProfileStore_->DeleteBatch(delKeys) != DP_SUCCESS) {
         HILOGE("DeleteBatch failed, remoteUdid=%{public}s", ProfileUtils::GetAnonyString(remoteUdid).c_str());
         return;
