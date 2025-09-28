@@ -23,7 +23,7 @@
 #include "kv_data_change_listener.h"
 #include "kv_store_death_recipient.h"
 #include "kv_sync_completed_listener.h"
-//LCOV_EXCL_START
+
 namespace OHOS {
 namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(BusinessEventManager)
@@ -35,7 +35,7 @@ namespace {
     const std::string TAG = "BusinessEventManager";
     const std::set<std::string> validKeys_ = { DP_REJECT_KEY, DP_DISTURBANCE_KEY };
 }
-
+//LCOV_EXCL_START
 int32_t BusinessEventManager::Init()
 {
     HILOGI("call!");
