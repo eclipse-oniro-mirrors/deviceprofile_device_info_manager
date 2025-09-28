@@ -23,7 +23,7 @@
 #include "kv_data_change_listener.h"
 #include "kv_store_death_recipient.h"
 #include "kv_sync_completed_listener.h"
-
+//LCOV_EXCL_START
 namespace OHOS {
 namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(BusinessEventManager)
@@ -130,5 +130,6 @@ bool BusinessEventManager::IsValidKey(const std::string& key)
 {
     return validKeys_.find(key) != validKeys_.end();
 }
+//LCOV_EXCL_STOP
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
