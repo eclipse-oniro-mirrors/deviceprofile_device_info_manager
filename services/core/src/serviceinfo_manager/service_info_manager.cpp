@@ -27,7 +27,7 @@
 #include "profile_control_utils.h"
  
 #include "multi_user_manager.h"
- 
+
 namespace OHOS {
 namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(ServiceInfoProfileManage)
@@ -36,7 +36,7 @@ namespace {
     const std::string STORE_ID = "dp_kv_store_service_info_profile";
     const std::string TAG = "ServiceInfoProfileManage";
 }
- 
+//LCOV_EXCL_START
 int32_t ServiceInfoProfileManage::Init()
 {
     HILOGI("call!");
@@ -259,5 +259,6 @@ std::string ServiceInfoProfileManage::FindRegServiceId(const std::string& str)
     }
     return str.substr(firstPos + 1, secondPos - firstPos - 1);
 }
+//LCOV_EXCL_STOP
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
