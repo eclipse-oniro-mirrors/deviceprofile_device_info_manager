@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -99,6 +99,10 @@ std::string SystemInfoCollector::GetDeviceName()
         MultiUserManager::GetInstance().GetCurrentForegroundUserID(), deviceName);
     if (deviceName.empty()) {
         deviceName = GetProductName();
+        for (const auto &item : PRODUCT_NAME_PREFIXS) {
+            deviceName = TrimStr(ReplaceStr(deviceName,
+                DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().DecodeHexStr(item), ""));
+        }
     }
     HILOGI("deviceName : %{public}s", ProfileUtils::GetAnonyString(deviceName).c_str());
     return deviceName;
@@ -112,10 +116,6 @@ std::string SystemInfoCollector::GetProductId()
 std::string SystemInfoCollector::GetProductName()
 {
     std::string productName = ContentSensorManagerUtils::GetInstance().ObtainMarketName();
-    for (const auto &item : PRODUCT_NAME_PREFIXS) {
-        productName = TrimStr(ReplaceStr(productName,
-            DistributedDeviceProfile::ContentSensorManagerUtils::GetInstance().DecodeHexStr(item), ""));
-    }
     HILOGI("productName : %{public}s", ProfileUtils::GetAnonyString(productName).c_str());
     return productName;
 }
