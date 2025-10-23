@@ -60,7 +60,7 @@ int32_t BusinessEventAdapter::Init()
     int64_t beginTime = GetTickCount();
     while (tryTimes > 0) {
         DistributedKv::Status status = GetKvStorePtr();
-        if (status == DistributedKv::Status::SUCCESS && kvStorePtr_ != nullptr) {
+        if (status == DistributedKv::Status::SUCCESS) {
             HILOGI("Init KvStorePtr Success");
             RegisterKvStoreDeathListener();
             isInited_.store(true);
@@ -70,9 +70,12 @@ int32_t BusinessEventAdapter::Init()
         usleep(INIT_RETRY_SLEEP_INTERVAL);
         tryTimes--;
     }
-    if (kvStorePtr_ == nullptr) {
-        HILOGE("kvStorePtr is nullptr!");
-        return DP_KV_DB_PTR_NULL;
+    {
+        std::lock_guard<std::mutex> lock(BusinessAdapterMutex_);
+        if (kvStorePtr_ == nullptr) {
+            HILOGE("kvStorePtr is nullptr!");
+            return DP_KV_DB_PTR_NULL;
+        }
     }
     isInited_.store(true);
     return DP_SUCCESS;
