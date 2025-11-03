@@ -94,7 +94,6 @@ int32_t DeviceProfileDao::PutDeviceProfile(const DeviceProfile& deviceProfile)
         profile.SetId(id);
     }
     resultSet->Close();
-    HILOGI("end!");
     return DP_SUCCESS;
 }
 
@@ -112,7 +111,6 @@ int32_t DeviceProfileDao::GetDeviceProfiles(const DeviceProfileFilterOptions &fi
     int32_t rowCount = ROWCOUNT_INIT;
     resultSet->GetRowCount(rowCount);
     if (rowCount == 0) {
-        HILOGE("by condition not find data");
         resultSet->Close();
         return DP_NOT_FIND_DATA;
     }
@@ -125,7 +123,6 @@ int32_t DeviceProfileDao::GetDeviceProfiles(const DeviceProfileFilterOptions &fi
     if (deviceProfiles.empty()) {
         return DP_NOT_FIND_DATA;
     }
-    HILOGI("end!");
     return DP_SUCCESS;
 }
 
@@ -141,7 +138,6 @@ int32_t DeviceProfileDao::DeleteDeviceProfile(const DeviceProfile &deviceProfile
             return DP_DELETE_TRUST_DEVICE_PROFILE_FAIL;
         }
     }
-    HILOGI("end!");
     return DP_SUCCESS;
 }
 
@@ -160,7 +156,6 @@ int32_t DeviceProfileDao::UpdateDeviceProfile(const DeviceProfile &newProfile)
             return DP_UPDATE_TRUST_DEVICE_PROFILE_FAIL;
         }
     }
-    HILOGI("end!");
     return DP_SUCCESS;
 }
 

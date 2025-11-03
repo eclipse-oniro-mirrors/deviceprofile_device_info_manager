@@ -75,7 +75,6 @@ int32_t ProductInfoDao::PutProductInfo(const ProductInfo& productInfo)
             return DP_PUT_PRODUCT_INFO_FAIL;
         }
     }
-    HILOGI("end!");
     return DP_SUCCESS;
 }
 
@@ -96,7 +95,6 @@ int32_t ProductInfoDao::GetProductInfos(const std::vector<std::string>& productI
     int32_t rowCount = ROWCOUNT_INIT;
     resultSet->GetRowCount(rowCount);
     if (rowCount == 0) {
-        HILOGE("by condition not find data");
         resultSet->Close();
         return DP_NOT_FIND_DATA;
     }
@@ -109,7 +107,6 @@ int32_t ProductInfoDao::GetProductInfos(const std::vector<std::string>& productI
     if (productInfos.empty()) {
         return DP_NOT_FIND_DATA;
     }
-    HILOGI("end!");
     return DP_SUCCESS;
 }
 
@@ -125,7 +122,6 @@ int32_t ProductInfoDao::DeleteProductInfo(const ProductInfo& productInfo)
             return DP_DEL_PRODUCT_INFO_FAIL;
         }
     }
-    HILOGI("end!");
     return DP_SUCCESS;
 }
 
@@ -143,7 +139,6 @@ int32_t ProductInfoDao::UpdateProductInfo(const ProductInfo& productInfo)
             return DP_UPDATE_PRODUCT_INFO_FAIL;
         }
     }
-    HILOGI("end!");
     return DP_SUCCESS;
 }
 
