@@ -507,6 +507,8 @@ const std::string TABLE_EXIST_COLUMN_SQL =
     "        name = ? AND\n"
     "        type = ?\n"
     ") AS result;";
+const std::string TABLE_EXIST_TABLE_SQL = "SELECT name FROM sqlite_master WHERE type='table' AND name=?;";
+const std::string SQLITE_MASTER_NAME_COLUMN = "name";
 /* SubscribeTrustInfoManager */
 const std::string SUBSCRIBE_TRUST_INFO_TABLE = "subscribe_trust_info_table";
 const std::string CREATE_SUBSCRIBE_TRUST_INFO_TABLE_SQL =

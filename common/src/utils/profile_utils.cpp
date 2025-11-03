@@ -1314,5 +1314,47 @@ bool ProfileUtils::IsExistColumn(RdbStore& store, const std::string &tabName, co
     errCode = DP_SUCCESS;
     return result == 1;
 }
+
+bool ProfileUtils::IsExistTable(RdbStore& store, const std::string &tabName, int32_t &errCode)
+{
+    std::vector<ValueObject> args {tabName};
+    std::shared_ptr<ResultSet> resultSet = nullptr;
+    resultSet = store.QuerySql(TABLE_EXIST_TABLE_SQL, args);
+    if (resultSet == nullptr) {
+        HILOGE("resultSet is nullptr");
+        errCode = DP_GET_RESULTSET_FAIL;
+        return false;
+    }
+    int32_t rowCount = ROWCOUNT_INIT;
+    if (resultSet->GetRowCount(rowCount) != DP_SUCCESS) {
+        HILOGE("GetRowCount failed");
+        resultSet->Close();
+        errCode = DP_GET_RESULTSET_FAIL;
+        return false;
+    }
+    if (rowCount == 0) {
+        HILOGE("by condition not find data");
+        resultSet->Close();
+        errCode = DP_SUCCESS;
+        return false;
+    }
+    if (resultSet->GoToNextRow() != DP_SUCCESS) {
+        HILOGE("GoToNextRow failed");
+        resultSet->Close();
+        errCode = DP_GET_RESULTSET_FAIL;
+        return false;
+    }
+    RowEntity rowEntity;
+    if (resultSet->GetRow(rowEntity) != DP_SUCCESS) {
+        HILOGE("GetRow failed");
+        resultSet->Close();
+        errCode = DP_GET_RESULTSET_FAIL;
+        return false;
+    }
+    std::string result = rowEntity.Get(SQLITE_MASTER_NAME_COLUMN);
+    resultSet->Close();
+    errCode = DP_SUCCESS;
+    return result == tabName;
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

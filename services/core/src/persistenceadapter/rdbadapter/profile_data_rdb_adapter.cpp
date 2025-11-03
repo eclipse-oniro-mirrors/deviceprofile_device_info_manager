@@ -258,12 +258,21 @@ int32_t ProfileDataOpenCallback::OnCreate(RdbStore& store)
 
 int32_t ProfileDataOpenCallback::OnUpgrade(RdbStore& store, int oldVersion, int newVersion)
 {
+    int32_t ret = NativeRdb::E_OK;
     HILOGI("rdbStore upgrade : %{public}d -> %{public}d", oldVersion, newVersion);
     if (oldVersion == RDB_VERSION && (newVersion >= RDB_VERSION_5_1)) {
-        return UpdateFromVer1To2(store);
+        ret = UpdateFromVer1To2(store);
+    }
+    if (ret != NativeRdb::E_OK) {
+        HILOGE("UpdateFromVer1To2 failed,reason:%{public}d", ret);
+        return ret;
     }
     if (oldVersion < PROFILE_DATA_VER_3 && newVersion == PROFILE_DATA_VER_3) {
-        return UpdateToVer3(store);
+        ret = UpdateToVer3(store);
+    }
+    if (ret != NativeRdb::E_OK) {
+        HILOGE("UpdateToVer3 failed,reason:%{public}d", ret);
+        return ret;
     }
     return NativeRdb::E_OK;
 }
@@ -271,6 +280,15 @@ int32_t ProfileDataOpenCallback::OnUpgrade(RdbStore& store, int oldVersion, int 
 int32_t ProfileDataOpenCallback::CheckAndAlterTable(RdbStore& store, const RdbTableAlterInfo& info)
 {
     int32_t ret = RET_INIT;
+    bool isExistTable = ProfileUtils::IsExistTable(store, info.tabName, ret);
+    if (ret != DP_SUCCESS) {
+        HILOGE("IsExistTable failed,reason:%{public}d", ret);
+        return ret;
+    }
+    if (!isExistTable) {
+        HILOGW("tableName:%{public}s not exist", ProfileUtils::GetAnonyString(info.tabName).c_str());
+        return DP_SUCCESS;
+    }
     bool isExistColumn = ProfileUtils::IsExistColumn(store, info.tabName, info.colName, info.colType, ret);
     if (ret != DP_SUCCESS) {
         HILOGE("IsExistColumn failed,reason:%{public}d", ret);
