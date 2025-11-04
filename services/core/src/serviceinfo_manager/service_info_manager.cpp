@@ -123,7 +123,7 @@ int32_t ServiceInfoProfileManage::GetServiceInfoProfileByServiceId(int64_t servi
         return DP_KV_DB_PTR_NULL;
     }
     std::map<std::string, std::string> allEntries;
-    int32_t ret = serviceInfoKvAdapter_->GetByPrefix("serviceInfo", allEntries);
+    int32_t ret = serviceInfoKvAdapter_->GetByPrefix(SERVICE_INFO, allEntries);
     if (ret != DP_SUCCESS) {
         HILOGE("GetServiceInfoProfileByServiceId fail, ret: %{public}d", ret);
         return ret;
@@ -131,7 +131,7 @@ int32_t ServiceInfoProfileManage::GetServiceInfoProfileByServiceId(int64_t servi
     std::string regServiceId = "";
     std::map<std::string, std::string> allServiceIdEntries;
     for (const auto& pair : allEntries) {
-        if (pair.first.find("serviceId") != std::string::npos) {
+        if (pair.first.find(SERVICEID) != std::string::npos) {
             allServiceIdEntries.insert(pair);
         }
     }
@@ -170,33 +170,38 @@ int32_t ServiceInfoProfileManage::SetServiceInfoProfile(const std::string& regSe
     std::string key = finalSerProfile.begin()->first;
     size_t lastPos = key.find_last_of(SEPARATOR);
     std::string prefix = key.substr(0, lastPos + 1);
-    int32_t regServiceIdTempOne = std::stoi(regServiceId);
-    std::string regDeviceIdTemp = finalSerProfile.count(prefix + "deviceId")
-        ? finalSerProfile.at(prefix + "deviceId") : "";
-    int8_t regSerPubStateTemp = finalSerProfile.count(prefix + "publishState")
-        ? std::stoi(finalSerProfile.at(prefix + "publishState")) : 0;
-    std::string regServiceDisplayNameTemp = finalSerProfile.count(prefix + "serviceDisplayName")
-        ? finalSerProfile.at(prefix + "serviceDisplayName") : "";
-    int64_t regServiceIdTemp = finalSerProfile.count(prefix + "serviceId")
-        ? std::stoll(finalSerProfile.at(prefix + "serviceId")) : 0;
-    std::string regSetServiceNameTemp = finalSerProfile.count(prefix + "serviceName")
-        ? finalSerProfile.at(prefix + "serviceName") : "";
-    std::string regServiceTypeTemp = finalSerProfile.count(prefix + "serviceType")
-        ? finalSerProfile.at(prefix + "serviceType") : "";
-    int64_t regTokenIdTemp = finalSerProfile.count(prefix + "tokenId")
-        ? std::stoll(finalSerProfile.at(prefix + "tokenId")) : 0;
-    int32_t regUserIdTemp = finalSerProfile.count(prefix + "userId")
-        ? std::stoi(finalSerProfile.at(prefix + "userId")) : 0;
- 
-    serviceInfoProfile.SetRegServiceId(regServiceIdTempOne);
-    serviceInfoProfile.SetDeviceId(regDeviceIdTemp);
-    serviceInfoProfile.SetSerPubState(regSerPubStateTemp);
-    serviceInfoProfile.SetServiceDisplayName(regServiceDisplayNameTemp);
-    serviceInfoProfile.SetServiceId(regServiceIdTemp);
-    serviceInfoProfile.SetServiceName(regSetServiceNameTemp);
-    serviceInfoProfile.SetServiceType(regServiceTypeTemp);
-    serviceInfoProfile.SetTokenId(regTokenIdTemp);
-    serviceInfoProfile.SetUserId(regUserIdTemp);
+    const std::vector<std::string> requiredKeys = {prefix + PUBLISH_STATE, prefix + SERVICEID,
+        prefix + TOKENID, prefix + RDB_USER_ID};
+    for (const auto& requiredKey : requiredKeys) {
+        if (finalSerProfile.find(requiredKey) == finalSerProfile.end()) {
+            HILOGE("Key not found: %s", requiredKey.c_str());
+            return DP_NOT_FIND_DATA;
+        }
+    }
+    const auto& checkNum = [](const std::string& s) { return ProfileUtils::IsNumStr(s); };
+    if (!checkNum(regServiceId) || !checkNum(finalSerProfile.at(prefix + PUBLISH_STATE)) ||
+        !checkNum(finalSerProfile.at(prefix + SERVICEID)) || !checkNum(finalSerProfile.at(prefix + TOKENID)) ||
+        !checkNum(finalSerProfile.at(prefix + RDB_USER_ID))) {
+        HILOGE("Invalid number params");
+        return DP_NOT_FIND_DATA;
+    }
+    serviceInfoProfile.SetRegServiceId(std::stoi(regServiceId));
+    serviceInfoProfile.SetDeviceId(finalSerProfile.count(prefix + DEVICE_ID)
+        ? finalSerProfile.at(prefix + DEVICE_ID) : "");
+    serviceInfoProfile.SetSerPubState(finalSerProfile.count(prefix + PUBLISH_STATE)
+        ? std::stoi(finalSerProfile.at(prefix + PUBLISH_STATE)) : 0);
+    serviceInfoProfile.SetServiceDisplayName(finalSerProfile.count(prefix + SERVICE_DISPLAY_NAME)
+        ? finalSerProfile.at(prefix + SERVICE_DISPLAY_NAME) : "");
+    serviceInfoProfile.SetServiceId(finalSerProfile.count(prefix + SERVICEID)
+        ? std::stoll(finalSerProfile.at(prefix + SERVICEID)) : 0);
+    serviceInfoProfile.SetServiceName(finalSerProfile.count(prefix + SERVICE_NAME)
+        ? finalSerProfile.at(prefix + SERVICE_NAME) : "");
+    serviceInfoProfile.SetServiceType(finalSerProfile.count(prefix + SERVICE_TYPE)
+        ? finalSerProfile.at(prefix + SERVICE_TYPE) : "");
+    serviceInfoProfile.SetTokenId(finalSerProfile.count(prefix + TOKENID)
+        ? std::stoll(finalSerProfile.at(prefix + TOKENID)) : 0);
+    serviceInfoProfile.SetUserId(finalSerProfile.count(prefix + RDB_USER_ID)
+        ? std::stoi(finalSerProfile.at(prefix + RDB_USER_ID)) : -1);
     return DP_SUCCESS;
 }
 
@@ -210,7 +215,7 @@ int32_t ServiceInfoProfileManage::GetServiceInfoProfileByTokenId(int64_t tokenId
         return DP_KV_DB_PTR_NULL;
     }
     std::map<std::string, std::string> allEntries;
-    int32_t ret = serviceInfoKvAdapter_->GetByPrefix("serviceInfo", allEntries);
+    int32_t ret = serviceInfoKvAdapter_->GetByPrefix(SERVICE_INFO, allEntries);
     if (ret != DP_SUCCESS) {
         HILOGE("GetServiceInfoProfileByTokenId fail, ret: %{public}d", ret);
         return ret;
@@ -218,7 +223,7 @@ int32_t ServiceInfoProfileManage::GetServiceInfoProfileByTokenId(int64_t tokenId
     std::string regServiceId = "";
     std::map<std::string, std::string> allServiceIdEntries;
     for (const auto& pair : allEntries) {
-        if (pair.first.find("tokenId") != std::string::npos) {
+        if (pair.first.find(TOKENID) != std::string::npos) {
             allServiceIdEntries.insert(pair);
         }
     }
