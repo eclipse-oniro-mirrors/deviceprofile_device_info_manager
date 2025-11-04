@@ -89,7 +89,6 @@ int32_t ProfileDataManager::PutDeviceProfile(DeviceProfile deviceProfile)
         return ret;
     }
     if (oldDeviceProfiles.empty()) {
-        HILOGI("oldDeviceProfiles is mepty");
         deviceProfile.SetId(DEFAULT_ID);
     } else {
         DeviceProfile oldDeviceProfile = oldDeviceProfiles[0];
@@ -282,7 +281,6 @@ int32_t ProfileDataManager::PutProductInfo(const ProductInfo& productInfo)
     std::vector<ProductInfo> productInfos;
     int32_t ret = ProductInfoDao::GetInstance().GetProductInfos(productIds, productInfos);
     if ((ret != DP_SUCCESS) && (ret != DP_NOT_FIND_DATA)) {
-        HILOGE("GetProductInfos failed,ret=%{public}d", ret);
         return ret;
     }
     if (productInfos.empty()) {

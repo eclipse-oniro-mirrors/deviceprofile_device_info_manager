@@ -76,7 +76,6 @@ int32_t DeviceIconInfoDao::PutDeviceIconInfo(const DeviceIconInfo& deviceIconInf
             return DP_PUT_DEVICE_ICON_INFO_FAIL;
         }
     }
-    HILOGI("end!");
     return DP_SUCCESS;
 }
 
@@ -110,7 +109,6 @@ int32_t DeviceIconInfoDao::GetDeviceIconInfos(const DeviceIconInfoFilterOptions&
     if (deviceIconInfos.empty()) {
         return DP_NOT_FIND_DATA;
     }
-    HILOGI("end!");
     return DP_SUCCESS;
 }
 
@@ -126,7 +124,6 @@ int32_t DeviceIconInfoDao::DeleteDeviceIconInfo(const DeviceIconInfo& deviceIcon
             return DP_DEL_DEVICE_ICON_INFO_FAIL;
         }
     }
-    HILOGI("end!");
     return DP_SUCCESS;
 }
 
@@ -145,7 +142,6 @@ int32_t DeviceIconInfoDao::UpdateDeviceIconInfo(const DeviceIconInfo& deviceIcon
             return DP_UPDATE_DEVICE_ICON_INFO_FAIL;
         }
     }
-    HILOGI("end!");
     return DP_SUCCESS;
 }
 
