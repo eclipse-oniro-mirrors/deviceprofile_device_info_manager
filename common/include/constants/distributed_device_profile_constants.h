@@ -437,6 +437,8 @@ extern const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERDEVICEID_AND_ACCESS
 extern const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEDEVICEID_AND_ACCESSEEUSERID;
 extern const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_ACCESSERID_AND_ACCESSEEID;
 extern const std::string TABLE_EXIST_COLUMN_SQL;
+extern const std::string TABLE_EXIST_TABLE_SQL;
+extern const std::string SQLITE_MASTER_NAME_COLUMN;
 /* SubscribeTrustInfoManager */
 extern const std::string SUBSCRIBE_TRUST_INFO_TABLE;
 extern const std::string CREATE_SUBSCRIBE_TRUST_INFO_TABLE_SQL;
