@@ -399,17 +399,17 @@ int32_t DistributedDeviceProfileStubNew::PutSessionKeyInner(MessageParcel& data,
     int32_t sessionKeyId = 0;
     READ_HELPER(data, Uint32, userId);
     if (!IpcUtils::UnMarshalling(data, sessionKey)) {
-        sessionKey.clear();
+        ProfileUtils::SecureClearSessionKey(sessionKey);
         return DP_WRITE_PARCEL_FAIL;
     }
     int32_t ret = PutSessionKey(userId, sessionKey, sessionKeyId);
     if (!reply.WriteInt32(ret)) {
-        sessionKey.clear();
+        ProfileUtils::SecureClearSessionKey(sessionKey);
         HILOGE("Write reply failed");
         return DP_WRITE_PARCEL_FAIL;
     }
     WRITE_HELPER(reply, Int32, sessionKeyId);
-    sessionKey.clear();
+    ProfileUtils::SecureClearSessionKey(sessionKey);
     return DP_SUCCESS;
 }
 
@@ -423,15 +423,15 @@ int32_t DistributedDeviceProfileStubNew::GetSessionKeyInner(MessageParcel& data,
     READ_HELPER(data, Int32, sessionKeyId);
     int32_t ret = GetSessionKey(userId, sessionKeyId, sessionKey);
     if (!reply.WriteInt32(ret)) {
-        sessionKey.clear();
+        ProfileUtils::SecureClearSessionKey(sessionKey);
         HILOGE("Write reply failed");
         return DP_WRITE_PARCEL_FAIL;
     }
     if (!IpcUtils::Marshalling(reply, sessionKey)) {
-        sessionKey.clear();
+        ProfileUtils::SecureClearSessionKey(sessionKey);
         return DP_WRITE_PARCEL_FAIL;
     }
-    sessionKey.clear();
+    ProfileUtils::SecureClearSessionKey(sessionKey);
     return DP_SUCCESS;
 }
 
@@ -444,16 +444,16 @@ int32_t DistributedDeviceProfileStubNew::UpdateSessionKeyInner(MessageParcel& da
     READ_HELPER(data, Uint32, userId);
     READ_HELPER(data, Int32, sessionKeyId);
     if (!IpcUtils::UnMarshalling(data, sessionKey)) {
-        sessionKey.clear();
+        ProfileUtils::SecureClearSessionKey(sessionKey);
         return DP_WRITE_PARCEL_FAIL;
     }
     int32_t ret = UpdateSessionKey(userId, sessionKeyId, sessionKey);
     if (!reply.WriteInt32(ret)) {
-        sessionKey.clear();
+        ProfileUtils::SecureClearSessionKey(sessionKey);
         HILOGE("Write reply failed");
         return DP_WRITE_PARCEL_FAIL;
     }
-    sessionKey.clear();
+    ProfileUtils::SecureClearSessionKey(sessionKey);
     return DP_SUCCESS;
 }
 

@@ -166,11 +166,14 @@ int32_t DistributedDeviceProfileServiceNew::PostInitNext()
     if (ServiceInfoProfileManage::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("ServiceInfoManager init failed");
     }
+    {
+        std::lock_guard<std::mutex> lock(cacheMtx_);
 #ifndef DEVICE_PROFILE_SWITCH_DISABLE
-    SaveSwitchProfilesFromTempCache();
+        SaveSwitchProfilesFromTempCache();
 #endif // DEVICE_PROFILE_SWITCH_DISABLE
-    SaveDynamicProfilesFromTempCache();
-    isInited_ = true;
+        SaveDynamicProfilesFromTempCache();
+        isInited_ = true;
+    }
     HILOGI("PostInit finish");
     NotifyDeviceProfileInited();
     return DP_SUCCESS;
@@ -526,8 +529,11 @@ int32_t DistributedDeviceProfileServiceNew::PutServiceProfile(const ServiceProfi
         return DP_PERMISSION_DENIED;
     }
     HILOGD("CheckCallerPermission success interface PutServiceProfile");
-    if (!IsInited()) {
-        return AddSvrProfilesToCache({ serviceProfile });
+    {
+        std::lock_guard<std::mutex> lock(cacheMtx_);
+        if (!IsInited()) {
+            return AddSvrProfilesToCache({ serviceProfile });
+        }
     }
     int32_t ret = DeviceProfileManager::GetInstance().PutServiceProfile(serviceProfile);
     DpRadarHelper::GetInstance().ReportPutServiceProfile(ret, serviceProfile);
@@ -541,8 +547,11 @@ int32_t DistributedDeviceProfileServiceNew::PutServiceProfileBatch(const std::ve
         return DP_PERMISSION_DENIED;
     }
     HILOGD("CheckCallerPermission success interface PutServiceProfileBatch");
-    if (!IsInited()) {
-        return AddSvrProfilesToCache(serviceProfiles);
+    {
+        std::lock_guard<std::mutex> lock(cacheMtx_);
+        if (!IsInited()) {
+            return AddSvrProfilesToCache(serviceProfiles);
+        }
     }
     int32_t ret = DeviceProfileManager::GetInstance().PutServiceProfileBatch(serviceProfiles);
     DpRadarHelper::GetInstance().ReportPutServiceProfileBatch(ret, serviceProfiles);
@@ -616,8 +625,11 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfile(const Chara
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    if (!IsInited()) {
-        return AddCharProfilesToCache({ charProfile });
+    {
+        std::lock_guard<std::mutex> lock(cacheMtx_);
+        if (!IsInited()) {
+            return AddCharProfilesToCache({ charProfile });
+        }
     }
     if (charProfile.GetCharacteristicKey() == SWITCH_STATUS) {
 #ifndef DEVICE_PROFILE_SWITCH_DISABLE
@@ -642,8 +654,11 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfileBatch(
     if (preprocessRes != DP_SUCCESS) {
         return preprocessRes;
     }
-    if (!IsInited()) {
-        return AddCharProfilesToCache(charProfiles);
+    {
+        std::lock_guard<std::mutex> lock(cacheMtx_);
+        if (!IsInited()) {
+            return AddCharProfilesToCache(charProfiles);
+        }
     }
     std::vector<CharacteristicProfile> switchCharProfiles;
     std::vector<CharacteristicProfile> dynamicCharProfiles;

@@ -176,6 +176,7 @@ private:
         SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN
     };
     std::mutex businessEventCallbackMapMtx_;
+    std::mutex cacheMtx_;
     std::map<std::pair<std::string, std::string>, sptr<IRemoteObject>> businessCallbackMap_;
 };
 } // namespace DeviceProfile
