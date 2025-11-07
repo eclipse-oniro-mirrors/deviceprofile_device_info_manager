@@ -1356,5 +1356,13 @@ bool ProfileUtils::IsExistTable(RdbStore& store, const std::string &tabName, int
     errCode = DP_SUCCESS;
     return result == tabName;
 }
+
+void ProfileUtils::SecureClearSessionKey(std::vector<uint8_t>& sessionKey)
+{
+    if (!sessionKey.empty()) {
+        std::fill(sessionKey.begin(), sessionKey.end(), 0);
+        sessionKey.clear();
+    }
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

@@ -141,6 +141,7 @@ public:
     static bool IsExistColumn(RdbStore& store, const std::string &tabName, const std::string &colName,
         const std::string &colType, int32_t &errCode);
     static bool IsExistTable(RdbStore& store, const std::string &tabName, int32_t &errCode);
+    static void SecureClearSessionKey(std::vector<uint8_t>& sessionKey);
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
