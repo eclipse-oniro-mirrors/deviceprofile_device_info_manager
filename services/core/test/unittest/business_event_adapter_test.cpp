@@ -140,7 +140,7 @@ HWTEST_F(BusinessAdapterTest, Put004, TestSize.Level1)
         value += 'a';
     }
     EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Put(key, value));
-    
+
     value = "";
     EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Put(key, value));
 
@@ -148,7 +148,7 @@ HWTEST_F(BusinessAdapterTest, Put004, TestSize.Level1)
         key += 'a';
     }
     EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Put(key, value));
-    
+
     key = "";
     EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Put(key, value));
 }

@@ -541,5 +541,40 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<TrustedDeviceInf
     }
     return true;
 }
+
+bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<ServiceInfoProfileNew>& serviceInfoProfiles)
+{
+    uint32_t size = static_cast<uint32_t>(serviceInfoProfiles.size());
+    if (size > MAX_PROFILE_SIZE) {
+        HILOGE("serviceInfoProfiles size is invalid!size : %{public}u", size);
+        return false;
+    }
+    WRITE_HELPER_RET(parcel, Uint32, size, false);
+    for (const auto& serviceInfoProfile : serviceInfoProfiles) {
+        if (!serviceInfoProfile.Marshalling(parcel)) {
+            HILOGE("serviceInfoProfile Marshalling fail!");
+            return false;
+        }
+    }
+    return true;
+}
+
+bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<ServiceInfoProfileNew>& serviceInfoProfiles)
+{
+    uint32_t size = parcel.ReadUint32();
+    if (size > MAX_PROFILE_SIZE) {
+        HILOGE("Profile size is invalid!size : %{public}u", size);
+        return false;
+    }
+    for (uint32_t i = 0; i < size; i++) {
+        ServiceInfoProfileNew serviceInfoProfile;
+        if (!serviceInfoProfile.UnMarshalling(parcel)) {
+            HILOGE("serviceInfoProfile UnMarshalling fail!");
+            return false;
+        }
+        serviceInfoProfiles.emplace_back(serviceInfoProfile);
+    }
+    return true;
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

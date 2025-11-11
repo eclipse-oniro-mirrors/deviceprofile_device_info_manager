@@ -12,12 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <gtest/gtest.h>
 #include <memory>
 #include <map>
 #include <string>
- 
+
 #include "distributed_device_profile_errors.h"
 #include "kv_adapter.h"
 #include "kv_store_death_recipient.h"
@@ -27,7 +27,7 @@
 #include "service_info_manager.h"
 #include "service_info_profile_new.h"
 #include "service_info_kv_adapter.h"
- 
+
 namespace OHOS {
 namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(ServiceInfoProfileManage)
@@ -86,14 +86,14 @@ HWTEST_F(ServiceInfoProfileManageTest, Init_002, testing::ext::TestSize.Level1)
     ServiceInfoProfileManage manager;
     std::vector<std::thread> threads;
     std::atomic<int> successCount(0);
- 
+
     for (int i = 0; i < 10; ++i) {
         threads.emplace_back([&]() {
             int32_t ret = manager.Init();
             if (ret == DP_SUCCESS) successCount++;
         });
     }
- 
+
     for (auto& t : threads) {
         t.join();
     }
@@ -131,17 +131,17 @@ HWTEST_F(ServiceInfoProfileManageTest, UnInit_003, testing::ext::TestSize.Level1
     ServiceInfoProfileManage manager;
     manager.serviceInfoKvAdapter_ = std::make_shared<ServiceInfoKvAdapter>(
         std::make_shared<KvDeathRecipient>(STORE_ID), DistributedKv::TYPE_DYNAMICAL);
-    
+
     std::vector<std::thread> threads;
     std::atomic<int> successCount(0);
- 
+
     for (int i = 0; i < 10; ++i) {
         threads.emplace_back([&]() {
             int32_t ret = manager.UnInit();
             if (ret == DP_SUCCESS) successCount++;
         });
     }
- 
+
     for (auto& t : threads) {
         t.join();
     }
@@ -180,10 +180,10 @@ HWTEST_F(ServiceInfoProfileManageTest, ReInit_004, testing::ext::TestSize.Level1
     ServiceInfoProfileManage manager;
     manager.serviceInfoKvAdapter_ = std::make_shared<ServiceInfoKvAdapter>(
         std::make_shared<KvDeathRecipient>(STORE_ID), DistributedKv::TYPE_DYNAMICAL);
-    
+
     std::vector<std::thread> threads;
     std::atomic<int> successCount(0);
- 
+
     for (int i = 0; i < 10; ++i) {
         threads.emplace_back([&]() {
             int32_t ret = manager.ReInit();
@@ -203,10 +203,10 @@ HWTEST_F(ServiceInfoProfileManageTest, PutServiceInfoProfile_001, testing::ext::
     ServiceInfoProfileManage manager;
     manager.serviceInfoKvAdapter_ = std::make_shared<ServiceInfoKvAdapter>(
         std::make_shared<KvDeathRecipient>(STORE_ID), DistributedKv::TYPE_DYNAMICAL);
-    
+
     ServiceInfoProfileNew profile;
     profile.SetUserId(100);
- 
+
     int32_t ret = manager.PutServiceInfoProfile(profile);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
 }
@@ -223,10 +223,10 @@ HWTEST_F(ServiceInfoProfileManageTest, PutServiceInfoProfile_003, testing::ext::
 {
     ServiceInfoProfileManage manager;
     manager.serviceInfoKvAdapter_ = nullptr;
-    
+
     ServiceInfoProfileNew profile;
     profile.SetUserId(100);
- 
+
     int32_t ret = manager.PutServiceInfoProfile(profile);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
 }
@@ -236,19 +236,19 @@ HWTEST_F(ServiceInfoProfileManageTest, PutServiceInfoProfile_004, testing::ext::
     ServiceInfoProfileManage manager;
     manager.serviceInfoKvAdapter_ = std::make_shared<ServiceInfoKvAdapter>(
         std::make_shared<KvDeathRecipient>(STORE_ID), DistributedKv::TYPE_DYNAMICAL);
-    
+
     std::vector<std::thread> threads;
     std::atomic<int> successCount(0);
     ServiceInfoProfileNew profile;
     profile.SetUserId(100);
- 
+
     for (int i = 0; i < 10; ++i) {
         threads.emplace_back([&]() {
             int32_t ret = manager.PutServiceInfoProfile(profile);
             if (ret == DP_SUCCESS) successCount++;
         });
     }
- 
+
     for (auto& t : threads) {
         t.join();
     }
@@ -260,10 +260,10 @@ HWTEST_F(ServiceInfoProfileManageTest, DeleteServiceInfoProfile_001, testing::ex
     ServiceInfoProfileManage manager;
     manager.serviceInfoKvAdapter_ = std::make_shared<ServiceInfoKvAdapter>(
         std::make_shared<KvDeathRecipient>(STORE_ID), DistributedKv::TYPE_DYNAMICAL);
-    
+
     int32_t regServiceId = 123;
     int32_t userId = 100;
- 
+
     int32_t ret = manager.DeleteServiceInfoProfile(regServiceId, userId);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
 }
@@ -272,10 +272,10 @@ HWTEST_F(ServiceInfoProfileManageTest, DeleteServiceInfoProfile_002, testing::ex
 {
     ServiceInfoProfileManage manager;
     manager.serviceInfoKvAdapter_ = nullptr;
-    
+
     int32_t regServiceId = 123;
     int32_t userId = 100;
- 
+
     int32_t ret = manager.DeleteServiceInfoProfile(regServiceId, userId);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
 }
@@ -285,10 +285,10 @@ HWTEST_F(ServiceInfoProfileManageTest, DeleteServiceInfoProfile_003, testing::ex
     ServiceInfoProfileManage manager;
     manager.serviceInfoKvAdapter_ = std::make_shared<ServiceInfoKvAdapter>(
         std::make_shared<KvDeathRecipient>(STORE_ID), DistributedKv::TYPE_DYNAMICAL);
-    
+
     int32_t regServiceId = 123;
     int32_t userId = 100;
- 
+
     int32_t ret = manager.DeleteServiceInfoProfile(regServiceId, userId);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
 }
@@ -298,19 +298,19 @@ HWTEST_F(ServiceInfoProfileManageTest, DeleteServiceInfoProfile_004, testing::ex
     ServiceInfoProfileManage manager;
     manager.serviceInfoKvAdapter_ = std::make_shared<ServiceInfoKvAdapter>(
         std::make_shared<KvDeathRecipient>(STORE_ID), DistributedKv::TYPE_DYNAMICAL);
-    
+
     std::vector<std::thread> threads;
     std::atomic<int> successCount(0);
     int32_t regServiceId = 123;
     int32_t userId = 100;
- 
+
     for (int i = 0; i < 10; ++i) {
         threads.emplace_back([&]() {
             int32_t ret = manager.DeleteServiceInfoProfile(regServiceId, userId);
             if (ret == DP_SUCCESS) successCount++;
         });
     }
- 
+
     for (auto& t : threads) {
         t.join();
     }
@@ -322,13 +322,13 @@ HWTEST_F(ServiceInfoProfileManageTest, GetServiceInfoProfileByServiceId_001, tes
     ServiceInfoProfileManage manager;
     manager.serviceInfoKvAdapter_ = std::make_shared<ServiceInfoKvAdapter>(
         std::make_shared<KvDeathRecipient>(STORE_ID), DistributedKv::TYPE_DYNAMICAL);
-    
+
     std::map<std::string, std::string> testData = {
         {"serviceInfo#123#serviceId", "456"},
         {"serviceInfo#123#name", "TestService"}
     };
     manager.serviceInfoKvAdapter_->PutBatch(testData);
- 
+
     int64_t serviceId = 456;
     ServiceInfoProfileNew profile;
     int32_t ret = manager.GetServiceInfoProfileByServiceId(serviceId, profile);
@@ -339,7 +339,7 @@ HWTEST_F(ServiceInfoProfileManageTest, GetServiceInfoProfileByServiceId_002, tes
 {
     ServiceInfoProfileManage manager;
     manager.serviceInfoKvAdapter_ = nullptr;
-    
+
     int64_t serviceId = 456;
     ServiceInfoProfileNew profile;
     int32_t ret = manager.GetServiceInfoProfileByServiceId(serviceId, profile);
@@ -351,13 +351,13 @@ HWTEST_F(ServiceInfoProfileManageTest, GetServiceInfoProfileByServiceId_003, tes
     ServiceInfoProfileManage manager;
     manager.serviceInfoKvAdapter_ = std::make_shared<ServiceInfoKvAdapter>(
         std::make_shared<KvDeathRecipient>(STORE_ID), DistributedKv::TYPE_DYNAMICAL);
-    
+
     std::map<std::string, std::string> testData = {
         {"serviceInfo#123#serviceId", "789"},
         {"serviceInfo#123#name", "TestService"}
     };
     manager.serviceInfoKvAdapter_->PutBatch(testData);
- 
+
     int64_t serviceId = 456;
     ServiceInfoProfileNew profile;
     int32_t ret = manager.GetServiceInfoProfileByServiceId(serviceId, profile);
@@ -368,7 +368,7 @@ HWTEST_F(ServiceInfoProfileManageTest, GetServiceInfoProfileByServiceId_004, tes
 {
     ServiceInfoProfileManage manager;
     manager.serviceInfoKvAdapter_ = std::make_shared<MockFailKvAdapter>();
-    
+
     int64_t serviceId = 456;
     ServiceInfoProfileNew profile;
     int32_t ret = manager.GetServiceInfoProfileByServiceId(serviceId, profile);
@@ -380,17 +380,17 @@ HWTEST_F(ServiceInfoProfileManageTest, GetServiceInfoProfileByServiceId_005, tes
     ServiceInfoProfileManage manager;
     manager.serviceInfoKvAdapter_ = std::make_shared<ServiceInfoKvAdapter>(
         std::make_shared<KvDeathRecipient>(STORE_ID), DistributedKv::TYPE_DYNAMICAL);
-    
+
     std::map<std::string, std::string> testData = {
         {"serviceInfo#123#serviceId", "456"},
         {"serviceInfo#123#name", "TestService"}
     };
     manager.serviceInfoKvAdapter_->PutBatch(testData);
- 
+
     std::vector<std::thread> threads;
     std::atomic<int> successCount(0);
     int64_t serviceId = 456;
- 
+
     for (int i = 0; i < 10; ++i) {
         threads.emplace_back([&]() {
             ServiceInfoProfileNew profile;
@@ -398,7 +398,7 @@ HWTEST_F(ServiceInfoProfileManageTest, GetServiceInfoProfileByServiceId_005, tes
             if (ret == DP_SUCCESS) successCount++;
         });
     }
- 
+
     for (auto& t : threads) {
         t.join();
     }
@@ -477,7 +477,7 @@ HWTEST_F(ServiceInfoProfileManageTest, GetServiceInfoProfileByTokenId_001, testi
     ServiceInfoProfileManage manager;
     manager.serviceInfoKvAdapter_ = std::make_shared<ServiceInfoKvAdapter>(
         std::make_shared<KvDeathRecipient>(STORE_ID), DistributedKv::TYPE_DYNAMICAL);
-    
+
     std::map<std::string, std::string> testData = {
         {"serviceInfo#123#tokenId", "456"},
         {"serviceInfo#123#name", "TestService"}
@@ -485,8 +485,8 @@ HWTEST_F(ServiceInfoProfileManageTest, GetServiceInfoProfileByTokenId_001, testi
     manager.serviceInfoKvAdapter_->PutBatch(testData);
 
     int64_t tokenId = 456;
-    ServiceInfoProfileNew profile;
-    int32_t ret = manager.GetServiceInfoProfileByTokenId(tokenId, profile);
+    std::vector<ServiceInfoProfileNew> profiles;
+    int32_t ret = manager.GetServiceInfoProfileByTokenId(tokenId, profiles);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
 }
 
@@ -496,8 +496,8 @@ HWTEST_F(ServiceInfoProfileManageTest, GetServiceInfoProfileByTokenId_002, testi
     manager.serviceInfoKvAdapter_ = nullptr;
 
     int64_t tokenId = 456;
-    ServiceInfoProfileNew profile;
-    int32_t ret = manager.GetServiceInfoProfileByTokenId(tokenId, profile);
+    std::vector<ServiceInfoProfileNew> profiles;
+    int32_t ret = manager.GetServiceInfoProfileByTokenId(tokenId, profiles);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
 }
 
@@ -514,19 +514,63 @@ HWTEST_F(ServiceInfoProfileManageTest, GetServiceInfoProfileByTokenId_003, testi
     manager.serviceInfoKvAdapter_->PutBatch(testData);
 
     int64_t tokenId = 456;
-    ServiceInfoProfileNew profile;
-    int32_t ret = manager.GetServiceInfoProfileByTokenId(tokenId, profile);
+    std::vector<ServiceInfoProfileNew> profiles;
+    int32_t ret = manager.GetServiceInfoProfileByTokenId(tokenId, profiles);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
 }
- 
+
 HWTEST_F(ServiceInfoProfileManageTest, GetServiceInfoProfileByTokenId_004, testing::ext::TestSize.Level1)
 {
     ServiceInfoProfileManage manager;
     manager.serviceInfoKvAdapter_ = std::make_shared<MockFailKvAdapter>();
 
     int64_t tokenId = 456;
+    std::vector<ServiceInfoProfileNew> profiles;
+    int32_t ret = manager.GetServiceInfoProfileByTokenId(tokenId, profiles);
+    EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
+}
+
+HWTEST_F(ServiceInfoProfileManageTest, GetServiceInfoProfileByRegServiceId_001, testing::ext::TestSize.Level1)
+{
+    ServiceInfoProfileManage manager;
+    manager.serviceInfoKvAdapter_ = std::make_shared<MockFailKvAdapter>();
+
+    int32_t regServiceId = 0;
     ServiceInfoProfileNew profile;
-    int32_t ret = manager.GetServiceInfoProfileByTokenId(tokenId, profile);
+    int32_t ret = manager.GetServiceInfoProfileByRegServiceId(regServiceId, profile);
+    EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
+}
+
+HWTEST_F(ServiceInfoProfileManageTest, GetServiceInfoProfileByRegServiceId_002, testing::ext::TestSize.Level1)
+{
+    ServiceInfoProfileManage manager;
+    manager.serviceInfoKvAdapter_ = std::make_shared<MockFailKvAdapter>();
+
+    int32_t regServiceId = 1;
+    ServiceInfoProfileNew profile;
+    int32_t ret = manager.GetServiceInfoProfileByRegServiceId(regServiceId, profile);
+    EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
+}
+
+HWTEST_F(ServiceInfoProfileManageTest, GetServiceInfoProfileByRegServiceId_101, testing::ext::TestSize.Level1)
+{
+    ServiceInfoProfileManage manager;
+    manager.serviceInfoKvAdapter_ = nullptr;
+
+    std::string regServiceIdStr = "1";
+    ServiceInfoProfileNew profile;
+    int32_t ret = manager.GetServiceInfoProfileByRegServiceId(regServiceIdStr, profile);
+    EXPECT_EQ(ret, DP_KV_DB_PTR_NULL);
+}
+
+HWTEST_F(ServiceInfoProfileManageTest, GetServiceInfoProfileByRegServiceId_102, testing::ext::TestSize.Level1)
+{
+    ServiceInfoProfileManage manager;
+    manager.serviceInfoKvAdapter_ = std::make_shared<MockFailKvAdapter>();
+
+    std::string regServiceIdStr = "1";
+    ServiceInfoProfileNew profile;
+    int32_t ret = manager.GetServiceInfoProfileByRegServiceId(regServiceIdStr, profile);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
 }
 } // namespace DistributedDeviceProfile

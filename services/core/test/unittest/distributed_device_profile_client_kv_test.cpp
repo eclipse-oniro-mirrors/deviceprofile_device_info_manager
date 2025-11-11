@@ -215,7 +215,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutServiceProfile001, TestSize.Le
 HWTEST_F(DistributedDeviceProfileClientKvTest, PutServiceProfileBatch001, TestSize.Level1)
 {
     vector<ServiceProfile> serviceProfiles;
-    
+
     ServiceProfile serviceProfile1;
     serviceProfile1.SetDeviceId("deviceId1");
     serviceProfile1.SetServiceName("serviceName1");
@@ -226,7 +226,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutServiceProfileBatch001, TestSi
     serviceProfile2.SetServiceType("serviceType2");
     serviceProfiles.push_back(serviceProfile1);
     serviceProfiles.push_back(serviceProfile2);
-    
+
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutServiceProfileBatch(serviceProfiles);
     EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
@@ -240,7 +240,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutServiceProfileBatch001, TestSi
 HWTEST_F(DistributedDeviceProfileClientKvTest, PutServiceProfileBatch002, TestSize.Level1)
 {
     vector<ServiceProfile> serviceProfiles;
-    
+
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutServiceProfileBatch(serviceProfiles);
     EXPECT_EQ(errCode, DP_INVALID_PARAMS);
 }
@@ -258,7 +258,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutCharacteristicProfile001, Test
     charProfile.SetServiceName("serviceName");
     charProfile.SetCharacteristicKey("characteristicKey");
     charProfile.SetCharacteristicValue("characteristicValue");
-    
+
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutCharacteristicProfile(charProfile);
     EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
@@ -272,7 +272,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutCharacteristicProfile001, Test
 HWTEST_F(DistributedDeviceProfileClientKvTest, PutCharacteristicProfileBatch001, TestSize.Level1)
 {
     vector<CharacteristicProfile> charProfiles;
-    
+
     CharacteristicProfile charProfile1;
     charProfile1.SetDeviceId("deviceId1");
     charProfile1.SetServiceName("serviceName1");
@@ -299,7 +299,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutCharacteristicProfileBatch001,
 HWTEST_F(DistributedDeviceProfileClientKvTest, PutCharacteristicProfileBatch002, TestSize.Level1)
 {
     vector<CharacteristicProfile> charProfiles;
-    
+
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutCharacteristicProfileBatch(charProfiles);
     EXPECT_EQ(errCode, DP_INVALID_PARAMS);
 }
@@ -314,7 +314,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetDeviceProfile001, TestSize.Lev
 {
     string deviceId = "deviceId";
     DeviceProfile deviceProfile;
-    
+
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetDeviceProfile(deviceId, deviceProfile);
     EXPECT_NE(errCode, DP_SUCCESS);
 
@@ -351,7 +351,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetServiceProfile001, TestSize.Le
     string deviceId = "deviceId";
     string serviceName = "serviceName";
     ServiceProfile serviceProfile;
-    
+
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetServiceProfile(
         deviceId, serviceName, serviceProfile);
     EXPECT_NE(errCode, DP_SUCCESS);
@@ -369,7 +369,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetCharacteristicProfile001, Test
     string serviceName = "serviceName";
     string characteristicKey = "characteristicKey";
     CharacteristicProfile characteristicProfile;
-    
+
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetCharacteristicProfile(
             deviceId, serviceName, characteristicKey, characteristicProfile);
     EXPECT_NE(errCode, DP_SUCCESS);
@@ -423,7 +423,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfile001, TestSi
     OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
         OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
-    
+
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfile(subscribeInfo);
     EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
@@ -446,7 +446,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfile001, Test
     OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
         OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
-    
+
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
     EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
@@ -461,11 +461,11 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SyncDeviceProfile001, TestSize.Le
 {
     DistributedDeviceProfile::DpSyncOptions syncOptions;
     OHOS::sptr<ISyncCompletedCallback> syncCb = nullptr;
-    
+
     syncOptions.AddDevice("deviceId1");
     syncOptions.AddDevice("deviceId2");
     syncOptions.SetSyncMode(SyncMode::MIN);
-    
+
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().SyncDeviceProfile(syncOptions, syncCb);
     EXPECT_EQ(errCode, DP_SYNC_DEVICE_FAIL);
 }
@@ -480,11 +480,11 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SyncStaticProfile001, TestSize.Le
 {
     DistributedDeviceProfile::DpSyncOptions syncOptions;
     OHOS::sptr<ISyncCompletedCallback> syncCb = nullptr;
-    
+
     syncOptions.AddDevice("deviceId1");
     syncOptions.AddDevice("deviceId2");
     syncOptions.SetSyncMode(SyncMode::MIN);
-    
+
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().SyncStaticProfile(syncOptions, syncCb);
     EXPECT_EQ(errCode, DP_SYNC_DEVICE_FAIL);
 }
@@ -499,11 +499,11 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SyncStaticProfile002, TestSize.Le
 {
     DistributedDeviceProfile::DpSyncOptions syncOptions;
     OHOS::sptr<ISyncCompletedCallback> syncCb = sptr<ISyncCompletedCallback>(new SyncCompletedCallbac());
-    
+
     syncOptions.AddDevice("deviceId1");
     syncOptions.AddDevice("deviceId2");
     syncOptions.SetSyncMode(SyncMode::MIN);
-    
+
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().SyncStaticProfile(syncOptions, syncCb);
     EXPECT_NE(errCode, DP_SUCCESS);
 }

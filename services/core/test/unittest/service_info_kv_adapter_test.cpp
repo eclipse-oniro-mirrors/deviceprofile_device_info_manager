@@ -28,7 +28,7 @@ namespace DistributedDeviceProfile {
 using namespace testing::ext;
 using namespace std;
 using namespace OHOS::DistributedKv;
- 
+
 namespace {
     const std::string TEST_KEY = "test_key";
     const std::string TEST_VALUE = "test_value";
@@ -407,7 +407,7 @@ HWTEST_F(ServiceInfoKvAdapterTest, GetByPrefix001, TestSize.Level1)
     std::map<std::string, std::string> values;
     EXPECT_NE(DP_READ_PARCEL_FAIL, serviceInfoKvAdapter->GetByPrefix(TEST_KEY_PREFIX, values));
 }
- 
+
 /**
  * @tc.name: DeleteByPrefix001
  * @tc.desc: Test DeleteByPrefix with existing prefix
@@ -471,7 +471,7 @@ HWTEST_F(ServiceInfoKvAdapterTest, OnRemoteDied001, TestSize.Level1)
 
     EXPECT_TRUE(serviceInfoKvAdapter->isInited_.load());
 }
- 
+
 /**
  * @tc.name: GetByPrefix002
  * @tc.desc: Test GetByPrefix when kvStorePtr_ is null, expect DP_KV_DB_PTR_NULL
@@ -485,7 +485,7 @@ HWTEST_F(ServiceInfoKvAdapterTest, GetByPrefix002, TestSize.Level1)
     EXPECT_NE(DP_READ_PARCEL_FAIL, serviceInfoKvAdapter->GetByPrefix("any_prefix", values));
     serviceInfoKvAdapter->Init();
 }
- 
+
 /**
  * @tc.name: GetByPrefix003
  * @tc.desc: Test GetByPrefix with non-existing prefix, expect DP_INVALID_PARAMS
@@ -497,7 +497,7 @@ HWTEST_F(ServiceInfoKvAdapterTest, GetByPrefix003, TestSize.Level1)
     std::map<std::string, std::string> values;
     EXPECT_NE(DP_READ_PARCEL_FAIL, serviceInfoKvAdapter->GetByPrefix("non_exist_prefix", values));
 }
- 
+
 /**
  * @tc.name: GetByPrefix004
  * @tc.desc: Test GetByPrefix with too many entries, expect DP_INVALID_PARAMS
@@ -508,7 +508,7 @@ HWTEST_F(ServiceInfoKvAdapterTest, GetByPrefix004, TestSize.Level1)
     ASSERT_NE(nullptr, serviceInfoKvAdapter);
     std::string prefix = "max_prefix_";
     std::map<std::string, std::string> values;
- 
+
     for (size_t i = 0; i < MAX_DB_SIZE + 1; ++i) {
         serviceInfoKvAdapter->Put(prefix + std::to_string(i), "v");
     }

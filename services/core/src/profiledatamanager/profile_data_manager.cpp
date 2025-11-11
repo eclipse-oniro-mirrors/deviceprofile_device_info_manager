@@ -67,7 +67,7 @@ int32_t ProfileDataManager::UnInit()
     }
     return 0;
 }
-    
+
 int32_t ProfileDataManager::PutDeviceProfile(DeviceProfile deviceProfile)
 {
     if (deviceProfile.GetDeviceId().empty() || ProfileDataManager::FilterInvaildSymbol(deviceProfile.GetDeviceId())) {

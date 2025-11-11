@@ -311,10 +311,10 @@ HWTEST_F(StaticProfileManagerTest, AddSyncListener001, TestSize.Level1)
 {
     string caller = "caller";
     OHOS::sptr<OHOS::IRemoteObject> syncListener = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
-    
+
     int32_t ret1 = StaticProfileManager::GetInstance().AddSyncListener(caller, syncListener);
     EXPECT_EQ(DP_SUCCESS, ret1);
-    
+
     for (int32_t i = 0; i < MAX_LISTENER_SIZE + 5; i++) {
         string caller = "caller" + std::to_string(i);
         OHOS::sptr<OHOS::IRemoteObject> syncListener1 = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
@@ -332,7 +332,7 @@ HWTEST_F(StaticProfileManagerTest, AddSyncListener001, TestSize.Level1)
     }
     int32_t ret4 = StaticProfileManager::GetInstance().AddSyncListener(caller, syncListener);
     EXPECT_EQ(DP_INVALID_PARAMS, ret4);
-    
+
     caller = "";
     int32_t ret5 = StaticProfileManager::GetInstance().AddSyncListener(caller, syncListener);
     EXPECT_EQ(DP_INVALID_PARAMS, ret5);

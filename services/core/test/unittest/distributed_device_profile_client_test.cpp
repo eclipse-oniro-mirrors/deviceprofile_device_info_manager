@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <gtest/gtest.h>
 #include "distributed_device_profile_client.h"
 #include "service_info_profile_new.h"
@@ -36,7 +36,7 @@ HWTEST_F(DistributedDeviceProfileClientTest, PutServiceInfoProfile_001, TestSize
 {
     DistributedDeviceProfileClient client;
     ServiceInfoProfileNew profile;
-    
+
     int32_t ret = client.PutServiceInfoProfile(profile);
     EXPECT_FALSE(ret == DP_READ_PARCEL_FAIL);
 }
@@ -62,9 +62,18 @@ HWTEST_F(DistributedDeviceProfileClientTest, GetServiceInfoProfileByServiceId_00
 HWTEST_F(DistributedDeviceProfileClientTest, GetServiceInfoProfileByTokenId_001, TestSize.Level1)
 {
     DistributedDeviceProfileClient client;
-    ServiceInfoProfileNew profile;
+    std::vector<ServiceInfoProfileNew> profiles;
     int64_t tokenId = 0;
-    int32_t ret = client.GetServiceInfoProfileByTokenId(tokenId, profile);
+    int32_t ret = client.GetServiceInfoProfileByTokenId(tokenId, profiles);
+    EXPECT_FALSE(ret == DP_READ_PARCEL_FAIL);
+}
+
+HWTEST_F(DistributedDeviceProfileClientTest, GetServiceInfoProfileByRegServiceId_001, TestSize.Level1)
+{
+    DistributedDeviceProfileClient client;
+    ServiceInfoProfileNew profile;
+    int32_t regServiceId = 0;
+    int32_t ret = client.GetServiceInfoProfileByRegServiceId(regServiceId, profile);
     EXPECT_FALSE(ret == DP_READ_PARCEL_FAIL);
 }
 }  //namespace DistributedDeviceProfile

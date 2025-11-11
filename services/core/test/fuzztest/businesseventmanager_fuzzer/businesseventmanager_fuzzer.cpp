@@ -65,7 +65,7 @@ void BusinessEventManagerFuzzTest(const uint8_t* data, size_t size)
         return;
     }
     FuzzedDataProvider fdp(data, size);
-    
+
     PutBusinessEventFuzzTest(fdp);
     GetBusinessEventFuzzTest(fdp);
 }

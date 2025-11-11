@@ -105,7 +105,10 @@ public:
     int32_t PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfoProfile) override;
     int32_t DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId) override;
     int32_t GetServiceInfoProfileByServiceId(int64_t serviceId, ServiceInfoProfileNew& serviceInfoProfile) override;
-    int32_t GetServiceInfoProfileByTokenId(int64_t tokenId, ServiceInfoProfileNew& serviceInfoProfile) override;
+    int32_t GetServiceInfoProfileByTokenId(int64_t tokenId,
+        std::vector<ServiceInfoProfileNew>& serviceInfoProfiles) override;
+    int32_t GetServiceInfoProfileByRegServiceId(int32_t regServiceId,
+        ServiceInfoProfileNew& serviceInfoProfile) override;
 
 private:
     static inline BrokerDelegator<DistributedDeviceProfileProxy> delegator_;

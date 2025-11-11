@@ -14,7 +14,7 @@
  */
 #ifndef OHOS_DP_SETTINGS_DATA_CONNECTOR_H
 #define OHOS_DP_SETTINGS_DATA_CONNECTOR_H
- 
+
 #include <string>
 #include <cstdint>
 #include <memory>
@@ -31,7 +31,7 @@ class SettingsDataManager {
 public:
     int32_t Init();
     int32_t UnInit();
- 
+
     int32_t GetUserDefinedDeviceName(int32_t userId, std::string &deviceName);
     int32_t SetUserDefinedDeviceName(const std::string &deviceName, int32_t userId);
     int32_t GetDisplayDeviceName(int32_t userId, std::string &deviceName);
@@ -40,14 +40,14 @@ public:
 private:
     int32_t GetValue(const std::string &tableName, int32_t userId, const std::string &key, std::string &value);
     int32_t SetValue(const std::string &tableName, int32_t userId, const std::string &key, const std::string &value);
- 
+
     std::string GetProxyUriStr(const std::string &tableName, int32_t userId);
     std::shared_ptr<DataShare::DataShareHelper> CreateDataShareHelper(const std::string &proxyUri);
     Uri MakeUri(const std::string &proxyUri, const std::string &key);
     bool ReleaseDataShareHelper(std::shared_ptr<DataShare::DataShareHelper> helper);
- 
+
     sptr<IRemoteObject> GetRemoteObj();
- 
+
 private:
     std::mutex remoteObjMtx_;
     sptr<IRemoteObject> remoteObj_;

@@ -12,10 +12,10 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
- 
+
 #ifndef OHOS_DM_SERVICE_KV_ADAPTER_H
 #define OHOS_DM_SERVICE_KV_ADAPTER_H
- 
+
 #include <atomic>
 #include <condition_variable>
 #include <map>
@@ -23,18 +23,18 @@
 #include <string>
 #include <unordered_set>
 #include <vector>
- 
+
 #include "distributed_kv_data_manager.h"
 #include "ikv_adapter.h"
 #include "single_instance.h"
- 
+
 namespace OHOS {
 namespace DistributedDeviceProfile {
 class ServiceInfoKvAdapter : public DistributedDeviceProfile::IKVAdapter {
 public:
     ServiceInfoKvAdapter(
         const std::shared_ptr<DistributedKv::KvStoreDeathRecipient> &deathListener, DistributedKv::DataType dataType);
-    
+
     int32_t Init() override;
     int32_t UnInit() override;
     int32_t ReInit();
@@ -49,12 +49,12 @@ public:
     int32_t GetDeviceEntries(const std::string& udid, std::map<std::string, std::string>& values) override;
     int32_t RemoveDeviceData(const std::string& uuid) override;
     void OnRemoteDied();
- 
+
 private:
     DistributedKv::Status GetKvStorePtr();
     int32_t RegisterKvStoreDeathListener();
     int32_t UnregisterKvStoreDeathListener();
- 
+
 private:
     DistributedKv::AppId appId_;
     DistributedKv::StoreId storeId_;
@@ -62,7 +62,7 @@ private:
     DistributedKv::DataType dataType_ = DistributedKv::DataType::TYPE_STATICS;
     std::shared_ptr<DistributedKv::SingleKvStore> kvStorePtr_ = nullptr;
     std::shared_ptr<DistributedKv::KvStoreDeathRecipient> deathRecipient_ = nullptr;
- 
+
     std::mutex serviceInfoAdapterMutex_;
     std::atomic<bool> isInited_ = false;
     std::mutex kvAdapterMutex_;

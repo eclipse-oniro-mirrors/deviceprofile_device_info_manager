@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <gtest/gtest.h>
 #include "service_info_profile_new.h"
 #include "distributed_device_profile_proxy.h"
@@ -34,7 +34,7 @@ HWTEST_F(DistributedDeviceProfileProxyTest, PutServiceInfoProfile_001, TestSize.
 {
     DistributedDeviceProfileProxy proxy(nullptr);
     ServiceInfoProfileNew profile;
-    
+
     int32_t ret = proxy.PutServiceInfoProfile(profile);
     EXPECT_FALSE(ret == DP_READ_PARCEL_FAIL);
 }
@@ -60,9 +60,18 @@ HWTEST_F(DistributedDeviceProfileProxyTest, GetServiceInfoProfileByServiceId_001
 HWTEST_F(DistributedDeviceProfileProxyTest, GetServiceInfoProfileByTokenId_001, TestSize.Level0)
 {
     DistributedDeviceProfileProxy proxy(nullptr);
-    ServiceInfoProfileNew profile;
+    std::vector<ServiceInfoProfileNew> profiles;
     int64_t tokenId = 0;
-    int32_t ret = proxy.GetServiceInfoProfileByTokenId(tokenId = 0, profile);
+    int32_t ret = proxy.GetServiceInfoProfileByTokenId(tokenId, profiles);
+    EXPECT_EQ(ret, DP_IPC_REMOTE_OBJECT_NULLPTR);
+}
+
+HWTEST_F(DistributedDeviceProfileProxyTest, GetServiceInfoProfileByRegServiceId_001, TestSize.Level1)
+{
+    DistributedDeviceProfileProxy proxy(nullptr);
+    ServiceInfoProfileNew profile;
+    int32_t regServiceId = 0;
+    int32_t ret = proxy.GetServiceInfoProfileByRegServiceId(regServiceId, profile);
     EXPECT_FALSE(ret == DP_READ_PARCEL_FAIL);
 }
 }  //namespace DistributedDeviceProfile

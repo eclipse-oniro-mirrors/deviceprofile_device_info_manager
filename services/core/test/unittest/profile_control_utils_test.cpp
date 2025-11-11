@@ -574,7 +574,7 @@ HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfileBatch002, TestSi
 {
     std::string appId = "appId";
     std::vector<CharacteristicProfile> charProfiles;
-    
+
     CharacteristicProfile charProfile;
     charProfile.SetCharacteristicKey(SWITCH_STATUS);
     charProfile.SetCharacteristicValue("1");
@@ -594,7 +594,7 @@ HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfileBatch003, TestSi
 {
     std::string appId = "appId";
     std::vector<CharacteristicProfile> charProfiles;
-    
+
     CharacteristicProfile charProfile;
     charProfile.SetDeviceId("DeviceId");
     charProfile.SetCharacteristicValue("1");
@@ -614,7 +614,7 @@ HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfileBatch004, TestSi
 {
     std::string appId = "appId";
     std::vector<CharacteristicProfile> charProfiles;
-    
+
     CharacteristicProfile charProfile;
     charProfile.SetDeviceId("DeviceId");
     charProfile.SetServiceName("deviceStatus");
@@ -635,7 +635,7 @@ HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfileBatch005, TestSi
 {
     std::string appId = "appId";
     std::vector<CharacteristicProfile> charProfiles;
-    
+
     CharacteristicProfile charProfile;
     ContentSensorManagerUtils::GetInstance().localUdid_ = "DeviceId";
     charProfile.SetDeviceId("DeviceId");
@@ -659,7 +659,7 @@ HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfileBatch006, TestSi
 {
     std::string appId = "appId";
     std::vector<CharacteristicProfile> charProfiles;
-    
+
     CharacteristicProfile charProfile;
     ContentSensorManagerUtils::GetInstance().localUdid_ = "DeviceId";
     charProfile.SetDeviceId("DeviceId");
@@ -685,7 +685,7 @@ HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfileBatch007, TestSi
 {
     std::string appId = "appId";
     std::vector<CharacteristicProfile> charProfiles;
-    
+
     CharacteristicProfile charProfile;
     ContentSensorManagerUtils::GetInstance().localUdid_ = "DeviceId";
     charProfile.SetDeviceId("DeviceId");
@@ -710,7 +710,7 @@ HWTEST_F(ProfileControlUtilsTest, PutSwitchCharacteristicProfileBatch008, TestSi
 {
     std::string appId = "";
     std::vector<CharacteristicProfile> charProfiles;
-    
+
     CharacteristicProfile charProfile;
     charProfile.SetDeviceId("DeviceId");
     charProfile.SetServiceName("deviceStatus");
@@ -814,7 +814,7 @@ HWTEST_F(ProfileControlUtilsTest, GetDeviceProfile004, TestSize.Level1)
         DistributedKv::TYPE_DYNAMICAL);
     DeviceProfile deviceProfile;
     std::string deviceId = "deviceId";
-    
+
     ContentSensorManagerUtils::GetInstance().localUdid_ = deviceId;
 
     auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
@@ -917,7 +917,7 @@ HWTEST_F(ProfileControlUtilsTest, GetServiceProfile005, TestSize.Level1)
         std::make_shared<KvDataChangeListener>(STORE_ID),
         std::make_shared<KvSyncCompletedListener>(STORE_ID), std::make_shared<KvDeathRecipient>(STORE_ID),
         DistributedKv::TYPE_DYNAMICAL);
-    
+
     std::string peerNetworkId = "peerNetworkId";
     TrustedDeviceInfo deviceInfo;
     deviceInfo.SetNetworkId(peerNetworkId);

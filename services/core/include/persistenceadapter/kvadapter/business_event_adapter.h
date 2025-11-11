@@ -34,7 +34,7 @@ class BusinessEventAdapter : public DistributedDeviceProfile::IKVAdapter {
 public:
     BusinessEventAdapter(
         const std::shared_ptr<DistributedKv::KvStoreDeathRecipient> &deathListener, DistributedKv::DataType dataType);
-    
+
     int32_t Init() override;
     int32_t UnInit() override;
     int32_t ReInit();

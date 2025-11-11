@@ -12,10 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "service_info_manager.h"
 #include "profile_utils.h"
- 
+
+#include <unordered_set>
+
 #include "service_info_profile_new.h"
 #include "distributed_device_profile_constants.h"
 #include "distributed_device_profile_errors.h"
@@ -25,22 +27,21 @@
 #include "kv_store_death_recipient.h"
 #include "kv_sync_completed_listener.h"
 #include "profile_control_utils.h"
- 
+
 #include "multi_user_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(ServiceInfoProfileManage)
- 
+
 namespace {
     const std::string STORE_ID = "dp_kv_store_service_info_profile";
     const std::string TAG = "ServiceInfoProfileManage";
 }
-//LCOV_EXCL_START
 int32_t ServiceInfoProfileManage::Init()
 {
     HILOGI("call!");
-    std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
+    std::lock_guard<std::mutex> lock(storeMutex_);
     serviceInfoKvAdapter_ = std::make_shared<ServiceInfoKvAdapter>(
         std::make_shared<KvDeathRecipient>(STORE_ID), DistributedKv::TYPE_DYNAMICAL);
     int32_t ret = serviceInfoKvAdapter_->Init();
@@ -51,12 +52,12 @@ int32_t ServiceInfoProfileManage::Init()
     HILOGI("Init finish, ret: %{public}d", ret);
     return DP_SUCCESS;
 }
- 
+
 int32_t ServiceInfoProfileManage::UnInit()
 {
     HILOGI("call!");
     {
-        std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
+        std::lock_guard<std::mutex> lock(storeMutex_);
         if (serviceInfoKvAdapter_ == nullptr) {
             HILOGE("serviceInfoKvAdapter_ is nullptr");
             return DP_KV_DB_PTR_NULL;
@@ -67,7 +68,7 @@ int32_t ServiceInfoProfileManage::UnInit()
     HILOGI("UnInit success");
     return DP_SUCCESS;
 }
- 
+
 int32_t ServiceInfoProfileManage::ReInit()
 {
     HILOGI("call!");
@@ -86,7 +87,7 @@ int32_t ServiceInfoProfileManage::PutServiceInfoProfile(const ServiceInfoProfile
     std::map<std::string, std::string> entries;
     ProfileUtils::ServiceInfoProfileToEntries(serviceInfoProfile, entries);
     {
-        std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
+        std::lock_guard<std::mutex> lock(storeMutex_);
         if (serviceInfoKvAdapter_ == nullptr) {
             HILOGE("deviceProfileStore is nullptr!");
             return DP_KV_DB_PTR_NULL;
@@ -96,15 +97,18 @@ int32_t ServiceInfoProfileManage::PutServiceInfoProfile(const ServiceInfoProfile
         }
     }
     HILOGD("PutServiceInfoProfile success");
- 
+
     return DP_SUCCESS;
 }
- 
+
 int32_t ServiceInfoProfileManage::DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId)
 {
-    HILOGI("regServiceId: %{public}s, userId %{public}d", ProfileUtils::GetAnonyInt32(regServiceId).c_str(), userId);
+    HILOGI("regServiceId: %{public}d, userId %{public}d", regServiceId, userId);
     int32_t res = 0;
-    res = ProfileControlUtils::DeleteServiceInfoProfile(serviceInfoKvAdapter_, regServiceId, userId);
+    {
+        std::lock_guard<std::mutex> lock(storeMutex_);
+        res = ProfileControlUtils::DeleteServiceInfoProfile(serviceInfoKvAdapter_, regServiceId, userId);
+    }
     if (res != DP_SUCCESS) {
         HILOGE("DeleteServiceInfoProfile fail, reason: %{public}d!", res);
         return res;
@@ -112,52 +116,119 @@ int32_t ServiceInfoProfileManage::DeleteServiceInfoProfile(int32_t regServiceId,
     HILOGD("DeleteServiceInfoProfile success");
     return DP_SUCCESS;
 }
- 
+
 int32_t ServiceInfoProfileManage::GetServiceInfoProfileByServiceId(int64_t serviceId,
     ServiceInfoProfileNew& serviceInfoProfile)
 {
-    HILOGI("serviceId:%{public}s", ProfileUtils::GetAnonyInt32(serviceId).c_str());
-    std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-    if (serviceInfoKvAdapter_ == nullptr) {
-        HILOGE("serviceInfoKvAdapter_ is nullptr");
-        return DP_KV_DB_PTR_NULL;
+    if (serviceId == 0) {
+        HILOGE("serviceId:%{public}" PRId64 " invalid", serviceId);
+        return DP_INVALID_PARAMS;
     }
+    HILOGI("serviceId:%{public}" PRId64, serviceId);
     std::map<std::string, std::string> allEntries;
-    int32_t ret = serviceInfoKvAdapter_->GetByPrefix(SERVICE_INFO, allEntries);
-    if (ret != DP_SUCCESS) {
-        HILOGE("GetServiceInfoProfileByServiceId fail, ret: %{public}d", ret);
-        return ret;
-    }
-    std::string regServiceId = "";
-    std::map<std::string, std::string> allServiceIdEntries;
-    for (const auto& pair : allEntries) {
-        if (pair.first.find(SERVICEID) != std::string::npos) {
-            allServiceIdEntries.insert(pair);
+    {
+        std::lock_guard<std::mutex> lock(storeMutex_);
+        if (serviceInfoKvAdapter_ == nullptr) {
+            HILOGE("serviceInfoKvAdapter_ is nullptr");
+            return DP_KV_DB_PTR_NULL;
+        }
+        int32_t ret = serviceInfoKvAdapter_->GetByPrefix(SERVICE_INFO, allEntries);
+        if (ret != DP_SUCCESS) {
+            HILOGE("GetServiceInfoProfileByServiceId fail, ret: %{public}d", ret);
+            return ret;
         }
     }
-    for (const auto& pair : allServiceIdEntries) {
-        if (pair.second == std::to_string(serviceId)) {
-            regServiceId = FindRegServiceId(pair.first);
+    std::string regServiceId = "";
+    std::string serviceIdStr = std::to_string(serviceId);
+    for (const auto& [key, value] : allEntries) {
+        if (key.find(SERVICEID) == std::string::npos || value != serviceIdStr) {
+            continue;
+        }
+        regServiceId = FindRegServiceId(key);
+        if (!regServiceId.empty()) {
+            break;
         }
     }
     if (regServiceId.empty()) {
         HILOGE("No match regServiceId.");
         return DP_NOT_FIND_DATA;
     }
-    std::string finalPrefix = SERVICE_INFO + SEPARATOR +regServiceId;
-    std::map<std::string, std::string> profileEntries;
-    ret = serviceInfoKvAdapter_->GetByPrefix(finalPrefix, profileEntries);
-    if (ret != DP_SUCCESS) {
-        HILOGE("GetByPrefix fail, ret: %{public}d", ret);
-        return ret;
+    return GetServiceInfoProfileByRegServiceId(regServiceId, serviceInfoProfile);
+}
+
+int32_t ServiceInfoProfileManage::GetServiceInfoProfileByRegServiceId(int32_t regServiceId,
+    ServiceInfoProfileNew& serviceInfoProfile)
+{
+    if (regServiceId == 0) {
+        HILOGE("regServiceId:%{public}d invalid", regServiceId);
+        return DP_INVALID_PARAMS;
     }
-    ret = SetServiceInfoProfile(regServiceId, profileEntries, serviceInfoProfile);
-    if (ret != DP_SUCCESS) {
-        HILOGE("SetServiceInfoProfile failed");
+    HILOGI("regServiceId:%{public}d", regServiceId);
+    return GetServiceInfoProfileByRegServiceId(std::to_string(regServiceId), serviceInfoProfile);
+}
+
+int32_t ServiceInfoProfileManage::GetServiceInfoProfileByTokenId(int64_t tokenId,
+    std::vector<ServiceInfoProfileNew>& serviceInfoProfiles)
+{
+    if (tokenId <= 0) {
+        HILOGE("tokenId:%{public}" PRId64 " invalid", tokenId);
+        return DP_INVALID_PARAMS;
+    }
+    HILOGI("tokenId:%{public}" PRId64, tokenId);
+    std::map<std::string, std::string> allEntries;
+    {
+        std::lock_guard<std::mutex> lock(storeMutex_);
+        if (serviceInfoKvAdapter_ == nullptr) {
+            HILOGE("serviceInfoKvAdapter_ is nullptr");
+            return DP_KV_DB_PTR_NULL;
+        }
+        int32_t ret = serviceInfoKvAdapter_->GetByPrefix(SERVICE_INFO, allEntries);
+        if (ret != DP_SUCCESS) {
+            HILOGE("GetServiceInfoProfileByTokenId fail, ret: %{public}d", ret);
+            return ret;
+        }
+    }
+    std::string tokenIdStr = std::to_string(tokenId);
+    std::unordered_set<std::string> regServiceIds;
+    for (const auto& [key, value] : allEntries) {
+        if (key.find(TOKENID) == std::string::npos || value != tokenIdStr) {
+            continue;
+        }
+        std::string regServiceId = FindRegServiceId(key);
+        if (regServiceId.empty()) {
+            continue;
+        }
+        regServiceIds.insert(regServiceId);
+    }
+    if (regServiceIds.empty()) {
+        HILOGE("No match regServiceId.");
         return DP_NOT_FIND_DATA;
     }
-    HILOGI("serviceInfoProfile: %{public}s", serviceInfoProfile.dump().c_str());
+    for (const auto& regServiceId : regServiceIds) {
+        ServiceInfoProfileNew serviceInfoProfile;
+        if (GetServiceInfoProfileByRegServiceId(regServiceId, serviceInfoProfile) == DP_SUCCESS) {
+            serviceInfoProfiles.emplace_back(serviceInfoProfile);
+        }
+    }
+    if (serviceInfoProfiles.empty()) {
+        HILOGE("serviceInfoProfiles is empty");
+        return DP_NOT_FIND_DATA;
+    }
+    HILOGI("serviceInfoProfiles.size: %{public}zu", serviceInfoProfiles.size());
     return DP_SUCCESS;
+}
+
+std::string ServiceInfoProfileManage::FindRegServiceId(const std::string& str)
+{
+    size_t firstPos = str.find(SEPARATOR);
+    if (firstPos == std::string::npos) {
+        return "";
+    }
+    size_t secondPos = str.find(SEPARATOR, firstPos + 1);
+    if (secondPos == std::string::npos) {
+        return "";
+    }
+    return str.substr(firstPos + 1, secondPos - firstPos - 1);
 }
 
 int32_t ServiceInfoProfileManage::SetServiceInfoProfile(const std::string& regServiceId,
@@ -205,64 +276,30 @@ int32_t ServiceInfoProfileManage::SetServiceInfoProfile(const std::string& regSe
     return DP_SUCCESS;
 }
 
-int32_t ServiceInfoProfileManage::GetServiceInfoProfileByTokenId(int64_t tokenId,
+int32_t ServiceInfoProfileManage::GetServiceInfoProfileByRegServiceId(const std::string& regServiceIdStr,
     ServiceInfoProfileNew& serviceInfoProfile)
 {
-    HILOGI("tokenId:%{public}s", ProfileUtils::GetAnonyInt32(tokenId).c_str());
-    std::lock_guard<std::mutex> lock(dynamicStoreMutex_);
-    if (serviceInfoKvAdapter_ == nullptr) {
-        HILOGE("serviceInfoKvAdapter_ is nullptr");
-        return DP_KV_DB_PTR_NULL;
-    }
+    int32_t ret = DP_SUCCESS;
     std::map<std::string, std::string> allEntries;
-    int32_t ret = serviceInfoKvAdapter_->GetByPrefix(SERVICE_INFO, allEntries);
-    if (ret != DP_SUCCESS) {
-        HILOGE("GetServiceInfoProfileByTokenId fail, ret: %{public}d", ret);
-        return ret;
-    }
-    std::string regServiceId = "";
-    std::map<std::string, std::string> allServiceIdEntries;
-    for (const auto& pair : allEntries) {
-        if (pair.first.find(TOKENID) != std::string::npos) {
-            allServiceIdEntries.insert(pair);
+    {
+        std::lock_guard<std::mutex> lock(storeMutex_);
+        if (serviceInfoKvAdapter_ == nullptr) {
+            HILOGE("serviceInfoKvAdapter_ is nullptr");
+            return DP_KV_DB_PTR_NULL;
+        }
+        ret = serviceInfoKvAdapter_->GetByPrefix(SERVICE_INFO + SEPARATOR + regServiceIdStr, allEntries);
+        if (ret != DP_SUCCESS) {
+            HILOGE("Get by regServiceId:%{public}s fail, ret: %{public}d", regServiceIdStr.c_str(), ret);
+            return ret;
         }
     }
-    for (const auto& pair : allServiceIdEntries) {
-        if (pair.second == std::to_string(tokenId)) {
-            regServiceId = FindRegServiceId(pair.first);
-        }
-    }
-    if (regServiceId.empty()) {
-        HILOGE("No match regServiceId.");
-        return DP_NOT_FIND_DATA;
-    }
-    std::string finalPrefix = SERVICE_INFO + SEPARATOR +regServiceId;
-    std::map<std::string, std::string> profileEntries;
-    ret = serviceInfoKvAdapter_->GetByPrefix(finalPrefix, profileEntries);
-    if (ret != DP_SUCCESS) {
-        HILOGE("GetByPrefix fail, ret: %{public}d", ret);
-        return ret;
-    }
-    ret = SetServiceInfoProfile(regServiceId, profileEntries, serviceInfoProfile);
+    ret = SetServiceInfoProfile(regServiceIdStr, allEntries, serviceInfoProfile);
     if (ret != DP_SUCCESS) {
         HILOGE("SetServiceInfoProfile failed");
-        return DP_NOT_FIND_DATA;
+        return ret;
     }
     HILOGI("serviceInfoProfile: %{public}s", serviceInfoProfile.dump().c_str());
     return DP_SUCCESS;
-}
-
-std::string ServiceInfoProfileManage::FindRegServiceId(const std::string& str)
-{
-    size_t firstPos = str.find('#');
-    if (firstPos == std::string::npos) {
-        return "";
-    }
-    size_t secondPos = str.find('#', firstPos + 1);
-    if (secondPos == std::string::npos) {
-        return "";
-    }
-    return str.substr(firstPos + 1, secondPos - firstPos - 1);
 }
 //LCOV_EXCL_STOP
 } // namespace DistributedDeviceProfile

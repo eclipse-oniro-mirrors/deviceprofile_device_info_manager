@@ -111,7 +111,10 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
     int32_t PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfo) override;
     int32_t DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId) override;
     int32_t GetServiceInfoProfileByServiceId(int64_t serviceId, ServiceInfoProfileNew& serviceInfoProfile) override;
-    int32_t GetServiceInfoProfileByTokenId(int64_t tokenId, ServiceInfoProfileNew& serviceInfoProfile) override;
+    int32_t GetServiceInfoProfileByTokenId(int64_t tokenId,
+        std::vector<ServiceInfoProfileNew>& serviceInfoProfiles) override;
+    int32_t GetServiceInfoProfileByRegServiceId(int32_t regServiceId,
+        ServiceInfoProfileNew& serviceInfoProfile) override;
     int32_t mockGetServiceInfoResult_ = DP_SUCCESS;
 public:
     void SetMockGetServiceInfoResult(int32_t result);
@@ -334,7 +337,7 @@ int32_t MockDistributedDeviceProfileStubNew::UnSubscribePinCodeInvalid(const std
     (void)pinExchangeType;
     return 0;
 }
-    
+
 int32_t MockDistributedDeviceProfileStubNew::PutAllTrustedDevices(const std::vector<TrustedDeviceInfo> deviceInfos)
 {
     (void)deviceInfos;
@@ -497,14 +500,14 @@ int32_t MockDistributedDeviceProfileStubNew::PutServiceInfoProfile(const Service
     (void)serviceInfo;
     return 0;
 }
- 
+
 int32_t MockDistributedDeviceProfileStubNew::DeleteServiceInfoProfile(const int32_t regServiceId, int32_t userId)
 {
     (void)regServiceId;
     (void)userId;
     return mockGetServiceInfoResult_;
 }
- 
+
 int32_t MockDistributedDeviceProfileStubNew::GetServiceInfoProfileByServiceId(int64_t serviceId,
     ServiceInfoProfileNew& serviceInfoProfile)
 {
@@ -512,11 +515,19 @@ int32_t MockDistributedDeviceProfileStubNew::GetServiceInfoProfileByServiceId(in
     (void)serviceInfoProfile;
     return 0;
 }
- 
+
 int32_t MockDistributedDeviceProfileStubNew::GetServiceInfoProfileByTokenId(int64_t tokenId,
-    ServiceInfoProfileNew& serviceInfoProfile)
+    std::vector<ServiceInfoProfileNew>& serviceInfoProfiles)
 {
     (void)tokenId;
+    (void)serviceInfoProfiles;
+    return 0;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::GetServiceInfoProfileByRegServiceId(int32_t regServiceId,
+    ServiceInfoProfileNew& serviceInfoProfile)
+{
+    (void)regServiceId;
     (void)serviceInfoProfile;
     return mockGetServiceInfoResult_;
 }
@@ -1328,7 +1339,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, PutServiceInfoProfileInner002, Tes
     serviceInfoProfile.Marshalling(data);
     badReply.mark = true;
     int32_t ret = ProfileStub_->PutServiceInfoProfileInner(data, badReply);
-    EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
+    EXPECT_EQ(ret, 0);
 }
 
 /**
@@ -1356,7 +1367,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, DeleteServiceInfoProfileInner_002,
     data.WriteInt32(123);
     data.WriteInt32(456);
     int32_t ret = ProfileStub_->DeleteServiceInfoProfileInner(data, reply);
-    EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
+    EXPECT_EQ(ret, 0);
 }
 
 /**
@@ -1386,7 +1397,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, GetServiceInfoProfileByServiceIdIn
     std::shared_ptr<MockDistributedDeviceProfileStubNew> devProStubNew =
        std::make_shared<MockDistributedDeviceProfileStubNew>();
     devProStubNew->SetMockGetServiceInfoResult(DP_WRITE_PARCEL_FAIL);
-    
+
     MessageParcel reply;
     int32_t ret = devProStubNew->GetServiceInfoProfileByServiceIdInner(data, reply);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
@@ -1402,7 +1413,7 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, GetServiceInfoProfileByServiceIdIn
 {
     MessageParcel data;
     data.WriteInt64(123);
-    
+
     MessageParcel reply;
     int32_t ret = ProfileStub_->GetServiceInfoProfileByServiceIdInner(data, reply);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
@@ -1432,11 +1443,11 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, GetServiceInfoProfileByTokenIdInne
 {
     MessageParcel data;
     data.WriteInt64(456);
-    
+
     std::shared_ptr<MockDistributedDeviceProfileStubNew> devProStubNew =
        std::make_shared<MockDistributedDeviceProfileStubNew>();
     devProStubNew->SetMockGetServiceInfoResult(DP_WRITE_PARCEL_FAIL);
-    
+
     MessageParcel reply;
     int32_t ret = devProStubNew->GetServiceInfoProfileByTokenIdInner(data, reply);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
@@ -1452,9 +1463,58 @@ HWTEST_F(DistributedDeviceProfileStubNewTest, GetServiceInfoProfileByTokenIdInne
 {
     MessageParcel data;
     data.WriteInt64(456);
-    
+
     MessageParcel reply;
     int32_t ret = ProfileStub_->GetServiceInfoProfileByTokenIdInner(data, reply);
+    EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
+}
+
+/**
+ * @tc.name: GetServiceInfoProfileByRegServiceIdInner_001
+ * @tc.desc: Test GetServiceInfoProfileByRegServiceIdInner with read parcel failed.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, GetServiceInfoProfileByRegServiceIdInner_001, TestSize.Level1)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    int32_t ret = ProfileStub_->GetServiceInfoProfileByRegServiceIdInner(data, reply);
+    EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
+}
+
+/**
+ * @tc.name: GetServiceInfoProfileByRegServiceIdInner_002
+ * @tc.desc: Test GetServiceInfoProfileByRegServiceIdInner with service query failed.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, GetServiceInfoProfileByRegServiceIdInner_002, TestSize.Level1)
+{
+    MessageParcel data;
+    data.WriteInt64(123);
+    std::shared_ptr<MockDistributedDeviceProfileStubNew> devProStubNew =
+       std::make_shared<MockDistributedDeviceProfileStubNew>();
+    devProStubNew->SetMockGetServiceInfoResult(DP_WRITE_PARCEL_FAIL);
+
+    MessageParcel reply;
+    int32_t ret = devProStubNew->GetServiceInfoProfileByRegServiceIdInner(data, reply);
+    EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
+}
+
+/**
+ * @tc.name: GetServiceInfoProfileByRegServiceIdInner_003
+ * @tc.desc: Test GetServiceInfoProfileByRegServiceIdInner with normal process.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DistributedDeviceProfileStubNewTest, GetServiceInfoProfileByRegServiceIdInner_003, TestSize.Level1)
+{
+    MessageParcel data;
+    data.WriteInt64(123);
+
+    MessageParcel reply;
+    int32_t ret = ProfileStub_->GetServiceInfoProfileByRegServiceIdInner(data, reply);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
 }
 } // namespace DistributedDeviceProfile

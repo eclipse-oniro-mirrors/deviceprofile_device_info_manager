@@ -33,7 +33,7 @@ class ProfileDataManager {
 public:
     int32_t Init();
     int32_t UnInit();
-    
+
     int32_t PutDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles);
     int32_t DeleteDeviceProfileBatch(std::vector<DeviceProfile>& deviceProfiles);
     int32_t GetDeviceProfiles(DeviceProfileFilterOptions& options,
@@ -42,7 +42,7 @@ public:
     int32_t PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos);
     int32_t GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
         std::vector<DeviceIconInfo>& deviceIconInfos);
-    
+
     int32_t PutDeviceProfile(DeviceProfile deviceProfile);
 private:
     bool FilterInvaildSymbol(std::string str);

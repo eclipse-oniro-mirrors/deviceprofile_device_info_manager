@@ -108,7 +108,10 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
     int32_t GetServiceInfo(ServiceInfoProfileNew& serviceInfo);
     int32_t GetServiceInfoProfileByServiceId(int64_t serviceId,
         ServiceInfoProfileNew& serviceInfoProfile) override;
-    int32_t GetServiceInfoProfileByTokenId(int64_t tokenId, ServiceInfoProfileNew &serviceInfoProfile) override;
+    int32_t GetServiceInfoProfileByTokenId(int64_t tokenId,
+        std::vector<ServiceInfoProfileNew>& serviceInfoProfiles) override;
+    int32_t GetServiceInfoProfileByRegServiceId(int32_t regServiceId,
+        ServiceInfoProfileNew& serviceInfoProfile) override;
 
     void DelayUnloadTask() override;
     bool IsInited() override;
@@ -301,7 +304,7 @@ int32_t MockDistributedDeviceProfileStubNew::UnSubscribePinCodeInvalid(const std
     (void)pinExchangeType;
     return 0;
 }
-    
+
 int32_t MockDistributedDeviceProfileStubNew::PutAllTrustedDevices(const std::vector<TrustedDeviceInfo> deviceInfos)
 {
     (void)deviceInfos;
@@ -486,13 +489,20 @@ int32_t MockDistributedDeviceProfileStubNew::GetServiceInfoProfileByServiceId(in
 }
 
 int32_t MockDistributedDeviceProfileStubNew::GetServiceInfoProfileByTokenId(int64_t tokenId,
-    ServiceInfoProfileNew &serviceInfoProfile)
+    std::vector<ServiceInfoProfileNew>& serviceInfoProfiles)
 {
     (void)tokenId;
-    (void)serviceInfoProfile;
+    (void)serviceInfoProfiles;
     return 0;
 }
 
+int32_t MockDistributedDeviceProfileStubNew::GetServiceInfoProfileByRegServiceId(int32_t regServiceId,
+    ServiceInfoProfileNew& serviceInfoProfile)
+{
+    (void)regServiceId;
+    (void)serviceInfoProfile;
+    return 0;
+}
 void PutServiceInfoProfileNewInnerFuzzTest(FuzzedDataProvider &fdp)
 {
     MessageParcel data;

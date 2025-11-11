@@ -13,19 +13,19 @@
  * limitations under the License.
  */
 #include "service_info_kv_adapter.h"
- 
+
 #include <cinttypes>
 #include <mutex>
- 
+
 #include "datetime_ex.h"
 #include "string_ex.h"
 #include "ffrt.h"
- 
+
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_constants.h"
 #include "profile_cache.h"
- 
+
 namespace OHOS {
 namespace DistributedDeviceProfile {
 using namespace OHOS::DistributedKv;
@@ -38,7 +38,7 @@ namespace {
     const std::string APP_ID = "distributed_device_profile_service";
     const std::string STORE_ID = "dp_kv_store_service_info_profile";
 }
- 
+
 ServiceInfoKvAdapter::ServiceInfoKvAdapter(
     const std::shared_ptr<DistributedKv::KvStoreDeathRecipient> &deathListener, DistributedKv::DataType dataType)
 {
@@ -47,7 +47,7 @@ ServiceInfoKvAdapter::ServiceInfoKvAdapter(
     this->appId_.appId = APP_ID;
     this->storeId_.storeId = STORE_ID;
 }
- 
+
 int32_t ServiceInfoKvAdapter::Init()
 {
     HILOGI("Init local DB, dataType: %{public}d", static_cast<int32_t>(dataType_));
@@ -95,14 +95,14 @@ int32_t ServiceInfoKvAdapter::UnInit()
     }
     return DP_SUCCESS;
 }
- 
+
 int32_t ServiceInfoKvAdapter::ReInit()
 {
     HILOGI("ServiceInfoKvAdapter ReInit");
     UnInit();
     return Init();
 }
- 
+
 int32_t ServiceInfoKvAdapter::Put(const std::string& key, const std::string& value)
 {
     HILOGI("ServiceInfoKvAdapter::Put");
@@ -117,7 +117,7 @@ int32_t ServiceInfoKvAdapter::Put(const std::string& key, const std::string& val
             HILOGE("kvDBPtr is null!");
             return DP_KV_DB_PTR_NULL;
         }
- 
+
         DistributedKv::Key kvKey(key);
         DistributedKv::Value kvValue(value);
         status = kvStorePtr_->Put(kvKey, kvValue);
@@ -128,7 +128,7 @@ int32_t ServiceInfoKvAdapter::Put(const std::string& key, const std::string& val
     }
     return DP_SUCCESS;
 }
- 
+
 int32_t ServiceInfoKvAdapter::Get(const std::string& key, std::string& value)
 {
     DistributedKv::Key kvKey(key);
@@ -149,7 +149,7 @@ int32_t ServiceInfoKvAdapter::Get(const std::string& key, std::string& value)
     value = kvValue.ToString();
     return DP_SUCCESS;
 }
- 
+
 void ServiceInfoKvAdapter::OnRemoteDied()
 {
     HILOGI("OnRemoteDied, recover db begin");
@@ -159,7 +159,7 @@ void ServiceInfoKvAdapter::OnRemoteDied()
     };
     ffrt::submit(reInitTask);
 }
- 
+
 DistributedKv::Status ServiceInfoKvAdapter::GetKvStorePtr()
 {
     HILOGI("ServiceInfoKvAdapter::GetKvStorePtr");
@@ -182,7 +182,7 @@ DistributedKv::Status ServiceInfoKvAdapter::GetKvStorePtr()
     }
     return status;
 }
- 
+
 int32_t ServiceInfoKvAdapter::RegisterKvStoreDeathListener()
 {
     HILOGI("Register death listener");
@@ -192,7 +192,7 @@ int32_t ServiceInfoKvAdapter::RegisterKvStoreDeathListener()
     }
     return DP_SUCCESS;
 }
- 
+
 int32_t ServiceInfoKvAdapter::UnregisterKvStoreDeathListener()
 {
     HILOGI("UnRegister death listener");
@@ -202,7 +202,7 @@ int32_t ServiceInfoKvAdapter::UnregisterKvStoreDeathListener()
     }
     return DP_SUCCESS;
 }
- 
+
 int32_t ServiceInfoKvAdapter::Delete(const std::string& key)
 {
     DistributedKv::Status status;
@@ -222,14 +222,14 @@ int32_t ServiceInfoKvAdapter::Delete(const std::string& key)
     HILOGD("Delete kv by key success!");
     return DP_SUCCESS;
 }
- 
+
 int32_t ServiceInfoKvAdapter::DeleteBatch(const std::vector<std::string>& keys)
 {
     if (keys.empty() || keys.size() > MAX_PROFILE_SIZE) {
         HILOGE("keys size(%{public}zu) is invalid!", keys.size());
         return DP_INVALID_PARAMS;
     }
- 
+
     uint32_t keysSize = static_cast<uint32_t>(keys.size());
     std::vector<std::vector<DistributedKv::Key>> delKeyBatches;
     for (uint32_t i = 0; i < keysSize; i += MAX_BATCH_SIZE) {
@@ -289,7 +289,7 @@ int32_t ServiceInfoKvAdapter::PutBatch(const std::map<std::string, std::string>&
     }
     return DP_SUCCESS;
 }
- 
+
 int32_t ServiceInfoKvAdapter::GetByPrefix(const std::string& keyPrefix, std::map<std::string, std::string>& values)
 {
     HILOGI("key prefix: %{public}s", ProfileUtils::GetDbKeyAnonyString(keyPrefix).c_str());
@@ -307,7 +307,11 @@ int32_t ServiceInfoKvAdapter::GetByPrefix(const std::string& keyPrefix, std::map
             ProfileUtils::GetDbKeyAnonyString(keyPrefix).c_str());
         return DP_GET_KV_DB_FAIL;
     }
-    if (allEntries.size() == 0 || allEntries.size() > MAX_DB_SIZE) {
+    if (allEntries.empty()) {
+        HILOGE("Not find in kv_store prefix: %{public}s", ProfileUtils::GetDbKeyAnonyString(keyPrefix).c_str());
+        return DP_NOT_FIND_DATA;
+    }
+    if (allEntries.size() > MAX_DB_SIZE) {
         HILOGE("AllEntries size is invalid!size: %{public}zu! prefix: %{public}s",
             allEntries.size(), ProfileUtils::GetDbKeyAnonyString(keyPrefix).c_str());
         return DP_INVALID_PARAMS;
@@ -323,21 +327,21 @@ int32_t ServiceInfoKvAdapter::DeleteByPrefix(const std::string& keyPrefix)
     (void)keyPrefix;
     return DP_SUCCESS;
 }
- 
+
 int32_t ServiceInfoKvAdapter::Sync(const std::vector<std::string>& deviceList, SyncMode syncMode)
 {
     (void)deviceList;
     (void)syncMode;
     return DP_SUCCESS;
 }
- 
+
 int32_t ServiceInfoKvAdapter::GetDeviceEntries(const std::string& udid, std::map<std::string, std::string>& values)
 {
     (void)udid;
     (void)values;
     return DP_SUCCESS;
 }
- 
+
 int32_t ServiceInfoKvAdapter::RemoveDeviceData(const std::string& uuid)
 {
     (void)uuid;

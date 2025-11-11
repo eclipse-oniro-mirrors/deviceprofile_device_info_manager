@@ -35,6 +35,7 @@
 #include "dp_subscribe_info.h"
 #include "product_info.h"
 #include "service_info_profile.h"
+#include "service_info_profile_new.h"
 #include "service_profile.h"
 #include "trust_device_profile.h"
 #include "trusted_device_info.h"
@@ -75,6 +76,8 @@ public:
         OHOS::DistributedDeviceProfile::SubscribeInfo>& listenerMap);
     static bool UnMarshalling(MessageParcel& parcel, std::unordered_set<ProfileChangeType>& changeTypes);
     static bool UnMarshalling(MessageParcel& parcel, std::vector<TrustedDeviceInfo>& deviceInfos);
+    static bool Marshalling(MessageParcel& parcel, const std::vector<ServiceInfoProfileNew>& serviceInfoProfiles);
+    static bool UnMarshalling(MessageParcel& parcel, std::vector<ServiceInfoProfileNew>& serviceInfoProfiles);
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

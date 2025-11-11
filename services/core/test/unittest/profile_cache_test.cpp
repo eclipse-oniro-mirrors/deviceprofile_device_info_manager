@@ -62,12 +62,12 @@ HWTEST_F(ProfileCacheTest, AddDeviceProfile_001, TestSize.Level2)
     DeviceProfile deviceProfile;
     int32_t ret = ProfileCache::GetInstance().AddDeviceProfile(deviceProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     std::string devId = "dp_devId";
     deviceProfile.SetDeviceId(devId);
     ret = ProfileCache::GetInstance().AddDeviceProfile(deviceProfile);
     EXPECT_EQ(DP_SUCCESS, ret);
-    
+
     for (int i = 1; i < MAX_DEVICE_SIZE + 1; ++i) {
         ProfileCache::GetInstance().deviceProfileMap_[std::to_string(i)] = deviceProfile;
     }
@@ -80,17 +80,17 @@ HWTEST_F(ProfileCacheTest, AddServiceProfile_001, TestSize.Level2)
     ServiceProfile serviceProfile;
     int32_t ret = ProfileCache::GetInstance().AddServiceProfile(serviceProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     std::string devId = "dp_devId";
     serviceProfile.SetDeviceId(devId);
     ret = ProfileCache::GetInstance().AddServiceProfile(serviceProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     std::string serName = "dp_serName";
     serviceProfile.SetServiceName(serName);
     ret = ProfileCache::GetInstance().AddServiceProfile(serviceProfile);
     EXPECT_EQ(DP_SUCCESS, ret);
-    
+
     devId = "";
     serviceProfile.SetDeviceId(devId);
     ret = ProfileCache::GetInstance().AddServiceProfile(serviceProfile);
@@ -110,32 +110,32 @@ HWTEST_F(ProfileCacheTest, AddCharProfile_001, TestSize.Level2)
     CharacteristicProfile charProfile;
     int32_t ret = ProfileCache::GetInstance().AddCharProfile(charProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     std::string devId = "dp_devId";
     charProfile.SetDeviceId(devId);
     ret = ProfileCache::GetInstance().AddCharProfile(charProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     std::string serName = "dp_serName";
     charProfile.SetServiceName(serName);
     ret = ProfileCache::GetInstance().AddCharProfile(charProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     std::string charKey = "dp_charKey";
     charProfile.SetCharacteristicKey(charKey);
     ret = ProfileCache::GetInstance().AddCharProfile(charProfile);
     EXPECT_EQ(DP_SUCCESS, ret);
-    
+
     devId = "";
     charProfile.SetDeviceId(devId);
     ret = ProfileCache::GetInstance().AddCharProfile(charProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     serName = "";
     charProfile.SetServiceName(serName);
     ret = ProfileCache::GetInstance().AddCharProfile(charProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     devId = "dp_devId";
     charProfile.SetDeviceId(devId);
     ret = ProfileCache::GetInstance().AddCharProfile(charProfile);
@@ -158,11 +158,11 @@ HWTEST_F(ProfileCacheTest, GetDeviceProfile_001, TestSize.Level2)
     DeviceProfile deviceProfile;
     int32_t ret = ProfileCache::GetInstance().GetDeviceProfile(devId, deviceProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     devId = "dp_devId";
     ret = ProfileCache::GetInstance().GetDeviceProfile(devId, deviceProfile);
     EXPECT_EQ(DP_SUCCESS, ret);
-    
+
     ProfileCache::GetInstance().deviceProfileMap_.clear();
     ret = ProfileCache::GetInstance().GetDeviceProfile(devId, deviceProfile);
     EXPECT_EQ(DP_NOT_FOUND_FAIL, ret);
@@ -175,15 +175,15 @@ HWTEST_F(ProfileCacheTest, GetServiceProfile_001, TestSize.Level2)
     ServiceProfile serviceProfile;
     int32_t ret = ProfileCache::GetInstance().GetServiceProfile(devId, serName, serviceProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     devId = "dp_devId";
     ret = ProfileCache::GetInstance().GetServiceProfile(devId, serName, serviceProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     serName = "dp_serName";
     ret = ProfileCache::GetInstance().GetServiceProfile(devId, serName, serviceProfile);
     EXPECT_EQ(DP_SUCCESS, ret);
-    
+
     devId = "";
     ret = ProfileCache::GetInstance().GetServiceProfile(devId, serName, serviceProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
@@ -202,27 +202,27 @@ HWTEST_F(ProfileCacheTest, GetCharacteristicProfile_001, TestSize.Level2)
     CharacteristicProfile charProfile;
     int32_t ret = ProfileCache::GetInstance().GetCharacteristicProfile(devId, serName, charKey, charProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     devId = "dp_devId";
     ret = ProfileCache::GetInstance().GetCharacteristicProfile(devId, serName, charKey, charProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     serName = "dp_serName";
     ret = ProfileCache::GetInstance().GetCharacteristicProfile(devId, serName, charKey, charProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     charKey = "dp_charKey";
     ret = ProfileCache::GetInstance().GetCharacteristicProfile(devId, serName, charKey, charProfile);
     EXPECT_EQ(DP_SUCCESS, ret);
-    
+
     devId = "";
     ret = ProfileCache::GetInstance().GetCharacteristicProfile(devId, serName, charKey, charProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     serName = "";
     ret = ProfileCache::GetInstance().GetCharacteristicProfile(devId, serName, charKey, charProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     devId = "dp_devId";
     ret = ProfileCache::GetInstance().GetCharacteristicProfile(devId, serName, charKey, charProfile);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
@@ -238,7 +238,7 @@ HWTEST_F(ProfileCacheTest, DeleteDeviceProfile_001, TestSize.Level2)
     std::string devId = "";
     int32_t ret = ProfileCache::GetInstance().DeleteDeviceProfile(devId);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     devId = "dp_devId";
     ret = ProfileCache::GetInstance().DeleteDeviceProfile(devId);
     EXPECT_EQ(DP_SUCCESS, ret);
@@ -250,15 +250,15 @@ HWTEST_F(ProfileCacheTest, DeleteServiceProfile_001, TestSize.Level2)
     std::string serName = "";
     int32_t ret = ProfileCache::GetInstance().DeleteServiceProfile(devId, serName);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     devId = "dp_devId";
     ret = ProfileCache::GetInstance().DeleteServiceProfile(devId, serName);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     serName = "dp_serName";
     ret = ProfileCache::GetInstance().DeleteServiceProfile(devId, serName);
     EXPECT_EQ(DP_SUCCESS, ret);
-    
+
     devId = "";
     ret = ProfileCache::GetInstance().DeleteServiceProfile(devId, serName);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
@@ -271,23 +271,23 @@ HWTEST_F(ProfileCacheTest, DeleteCharProfile_001, TestSize.Level2)
     std::string charKey = "";
     int32_t ret = ProfileCache::GetInstance().DeleteCharProfile(devId, serName, charKey);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     devId = "dp_devId";
     ret = ProfileCache::GetInstance().DeleteCharProfile(devId, serName, charKey);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     serName = "dp_serName";
     ret = ProfileCache::GetInstance().DeleteCharProfile(devId, serName, charKey);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     charKey = "dp_charKey";
     ret = ProfileCache::GetInstance().DeleteCharProfile(devId, serName, charKey);
     EXPECT_EQ(DP_SUCCESS, ret);
-    
+
     devId = "";
     ret = ProfileCache::GetInstance().DeleteCharProfile(devId, serName, charKey);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     serName = "";
     ret = ProfileCache::GetInstance().DeleteCharProfile(devId, serName, charKey);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
@@ -302,7 +302,7 @@ HWTEST_F(ProfileCacheTest, IsDeviceProfileExist_001, TestSize.Level2)
     DeviceProfile deviceProfile;
     bool ret = ProfileCache::GetInstance().IsDeviceProfileExist(deviceProfile);
     EXPECT_EQ(false, ret);
-    
+
     std::string devId = "dp_devId";
     deviceProfile.SetDeviceId(devId);
     ret = ProfileCache::GetInstance().IsDeviceProfileExist(deviceProfile);
@@ -328,19 +328,19 @@ HWTEST_F(ProfileCacheTest, IsServiceProfileExist_001, TestSize.Level2)
     ServiceProfile serviceProfile;
     bool ret = ProfileCache::GetInstance().IsServiceProfileExist(serviceProfile);
     EXPECT_EQ(false, ret);
-    
+
     std::string devId = "dp_devId";
     serviceProfile.SetDeviceId(devId);
     ret = ProfileCache::GetInstance().IsServiceProfileExist(serviceProfile);
     EXPECT_EQ(false, ret);
-    
+
     devId = "";
     std::string serName = "dp_serName";
     serviceProfile.SetDeviceId(devId);
     serviceProfile.SetServiceName(serName);
     ret = ProfileCache::GetInstance().IsServiceProfileExist(serviceProfile);
     EXPECT_EQ(false, ret);
-    
+
     devId = "dp_devId";
     serviceProfile.SetDeviceId(devId);
     ret = ProfileCache::GetInstance().IsServiceProfileExist(serviceProfile);
@@ -360,24 +360,24 @@ HWTEST_F(ProfileCacheTest, IsCharProfileExist_001, TestSize.Level2)
     CharacteristicProfile charProfile;
     bool ret = ProfileCache::GetInstance().IsCharProfileExist(charProfile);
     EXPECT_EQ(false, ret);
-    
+
     std::string devId = "dp_devId";
     charProfile.SetDeviceId(devId);
     ret = ProfileCache::GetInstance().IsCharProfileExist(charProfile);
     EXPECT_EQ(false, ret);
-    
+
     std::string serName = "dp_serName";
     charProfile.SetServiceName(serName);
     ret = ProfileCache::GetInstance().IsCharProfileExist(charProfile);
     EXPECT_EQ(false, ret);
-    
+
     devId = "";
     charProfile.SetDeviceId(devId);
     std::string charKey = "dp_charKey";
     charProfile.SetCharacteristicKey(charKey);
     ret = ProfileCache::GetInstance().IsCharProfileExist(charProfile);
     EXPECT_EQ(false, ret);
-    
+
     serName = "";
     charProfile.SetServiceName(serName);
     ret = ProfileCache::GetInstance().IsCharProfileExist(charProfile);
@@ -403,7 +403,7 @@ HWTEST_F(ProfileCacheTest, RefreshCharProfileCache_001, TestSize.Level2)
     std::vector<CharacteristicProfile> characteristicProfiles;
     int32_t ret = ProfileCache::GetInstance().RefreshCharProfileCache(characteristicProfiles);
     EXPECT_EQ(DP_INVALID_PARAMS, ret);
-    
+
     CharacteristicProfile characteristicProfile;
     std::string devId = "dp_devId";
     std::string serName = "dp_serName";
@@ -428,10 +428,10 @@ HWTEST_F(ProfileCacheTest, AddSyncListener001, TestSize.Level1)
     ProfileCache::GetInstance().Init();
     string caller = "caller";
     OHOS::sptr<OHOS::IRemoteObject> syncListener = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
-    
+
     int32_t ret1 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
     EXPECT_EQ(DP_SUCCESS, ret1);
-    
+
     for (int32_t i = 0; i < MAX_LISTENER_SIZE + 5; i++) {
         string caller = "caller" + std::to_string(i);
         OHOS::sptr<OHOS::IRemoteObject> syncListener1 = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
@@ -449,11 +449,11 @@ HWTEST_F(ProfileCacheTest, AddSyncListener001, TestSize.Level1)
     }
     int32_t ret4 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
     EXPECT_EQ(DP_INVALID_PARAMS, ret4);
-    
+
     caller = "";
     int32_t ret5 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
     EXPECT_EQ(DP_INVALID_PARAMS, ret5);
-    
+
     ProfileCache::GetInstance().UnInit();
     ProfileCache::GetInstance().Init();
 }
@@ -472,7 +472,7 @@ HWTEST_F(ProfileCacheTest, RemoveSyncListeners001, TestSize.Level1)
 
     string caller = "caller";
     OHOS::sptr<OHOS::IRemoteObject> syncListener = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
-    
+
     int32_t ret1 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
     EXPECT_EQ(DP_SUCCESS, ret1);
 
@@ -506,7 +506,7 @@ HWTEST_F(ProfileCacheTest, RemoveSyncListener001, TestSize.Level1)
 
     string caller = "caller";
     OHOS::sptr<OHOS::IRemoteObject> syncListener = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
-    
+
     int32_t ret1 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
     EXPECT_EQ(DP_SUCCESS, ret1);
 
@@ -515,13 +515,13 @@ HWTEST_F(ProfileCacheTest, RemoveSyncListener001, TestSize.Level1)
 
     int32_t ret3 = ProfileCache::GetInstance().RemoveSyncListener(caller);
     EXPECT_EQ(DP_NOT_FOUND_FAIL, ret3);
-    
+
     for (int32_t i = 0; i < MAX_STRING_LEN + 5; i++) {
         caller += 'a';
     }
     int32_t ret4 = ProfileCache::GetInstance().RemoveSyncListener(caller);
     EXPECT_EQ(DP_INVALID_PARAMS, ret4);
-    
+
     caller = "";
     int32_t ret5 = ProfileCache::GetInstance().RemoveSyncListener(caller);
     EXPECT_EQ(DP_INVALID_PARAMS, ret5);
@@ -544,7 +544,7 @@ HWTEST_F(ProfileCacheTest, RemoveSyncListener002, TestSize.Level1)
 
     string caller = "caller";
     OHOS::sptr<OHOS::IRemoteObject> syncListener = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
-    
+
     int32_t ret1 = ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
     EXPECT_EQ(DP_SUCCESS, ret1);
 
@@ -653,7 +653,7 @@ HWTEST_F(ProfileCacheTest, FilterAndGroupOnlineDevices003, TestSize.Level1)
     deviceInfo2.SetOsType(OHOS_TYPE_UNKNOWN);
     ProfileCache::GetInstance().onlineDevMap_[deviceInfo2.GetUdid()] = deviceInfo2;
 
-    
+
     std::vector<std::string> deviceList {deviceInfo1.GetNetworkId(), deviceInfo2.GetNetworkId()};
     std::vector<std::string> ohBasedDevices;
     std::vector<std::string> notOHBasedDevices;

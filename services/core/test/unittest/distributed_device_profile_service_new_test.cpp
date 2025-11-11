@@ -12,12 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <gtest/gtest.h>
 #include <memory>
 #include <map>
 #include <string>
- 
+
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_service_new.h"
 #include "kv_adapter.h"
@@ -200,30 +200,59 @@ HWTEST_F(DistributedDeviceProfileServiceNewTest, GetServiceInfoProfileByServiceI
 
 HWTEST_F(DistributedDeviceProfileServiceNewTest, GetServiceInfoProfileByTokenId_001, TestSize.Level1)
 {
-    ServiceInfoProfileNew serviceInfoProfile;
+    std::vector<ServiceInfoProfileNew> profiles;
     PermissionManagerTest::GetInstance().SetMockCheckPermissionResult(false);
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetServiceInfoProfileByTokenId(
-        456, serviceInfoProfile);
+        456, profiles);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
 }
 
 HWTEST_F(DistributedDeviceProfileServiceNewTest, GetServiceInfoProfileByTokenId_002, TestSize.Level1)
 {
-    ServiceInfoProfileNew serviceInfoProfile;
+    std::vector<ServiceInfoProfileNew> profiles;
     PermissionManagerTest::GetInstance().SetMockCheckPermissionResult(true);
     ServiceInfoProfileManageTest::GetInstance()->SetMockGetServiceInfoResult(DP_SUCCESS);
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetServiceInfoProfileByTokenId(
-        456, serviceInfoProfile);
+        456, profiles);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
 }
 
 HWTEST_F(DistributedDeviceProfileServiceNewTest, GetServiceInfoProfileByTokenId_003, TestSize.Level1)
 {
-    ServiceInfoProfileNew serviceInfoProfile;
+    std::vector<ServiceInfoProfileNew> profiles;
     PermissionManagerTest::GetInstance().SetMockCheckPermissionResult(true);
     ServiceInfoProfileManageTest::GetInstance()->SetMockGetServiceInfoResult(DP_PERMISSION_DENIED);
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetServiceInfoProfileByTokenId(
-        456, serviceInfoProfile);
+        456, profiles);
+    EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
+}
+
+HWTEST_F(DistributedDeviceProfileServiceNewTest, GetServiceInfoProfileByRegServiceId_001, TestSize.Level1)
+{
+    ServiceInfoProfileNew serviceInfoProfile;
+    PermissionManagerTest::GetInstance().SetMockCheckPermissionResult(false);
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetServiceInfoProfileByRegServiceId(
+        321, serviceInfoProfile);
+    EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
+}
+
+HWTEST_F(DistributedDeviceProfileServiceNewTest, GetServiceInfoProfileByRegServiceId_002, TestSize.Level1)
+{
+    ServiceInfoProfileNew serviceInfoProfile;
+    PermissionManagerTest::GetInstance().SetMockCheckPermissionResult(true);
+    ServiceInfoProfileManageTest::GetInstance()->SetMockGetServiceInfoResult(DP_SUCCESS);
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetServiceInfoProfileByRegServiceId(
+        321, serviceInfoProfile);
+    EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
+}
+
+HWTEST_F(DistributedDeviceProfileServiceNewTest, GetServiceInfoProfileByRegServiceId_003, TestSize.Level1)
+{
+    ServiceInfoProfileNew serviceInfoProfile;
+    PermissionManagerTest::GetInstance().SetMockCheckPermissionResult(true);
+    ServiceInfoProfileManageTest::GetInstance()->SetMockGetServiceInfoResult(DP_PERMISSION_DENIED);
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetServiceInfoProfileByRegServiceId(
+        321, serviceInfoProfile);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
 }
 } // namespace DistributedDeviceProfile

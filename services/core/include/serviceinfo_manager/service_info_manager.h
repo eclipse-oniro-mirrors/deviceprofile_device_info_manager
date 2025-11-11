@@ -12,19 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef OHOS_DP_SERVICE_INFO_MANAGER_H
 #define OHOS_DP_SERVICE_INFO_MANAGER_H
- 
+
 #include <cstdint>
 #include <memory>
 #include <mutex>
- 
+
 #include "service_info_profile_new.h"
 #include "service_info_kv_adapter.h"
 #include "distributed_device_profile_constants.h"
 #include "single_instance.h"
- 
+
 namespace OHOS {
 namespace DistributedDeviceProfile {
 class ServiceInfoProfileManage {
@@ -35,18 +35,19 @@ public:
     int32_t ReInit();
     int32_t PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfoProfile);
     int32_t DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId = DEFAULT_USER_ID);
+    int32_t UpdateServiceInfoProfile(int32_t regServiceId, const ServiceInfoProfileNew& serviceInfoProfile);
+    int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfileNew>& serviceInfoProfileList);
     int32_t GetServiceInfoProfileByServiceId(int64_t serviceId, ServiceInfoProfileNew& serviceInfoProfile);
-    int32_t GetServiceInfoProfileByTokenId(int64_t tokenId, ServiceInfoProfileNew& serviceInfoProfile);
-    int32_t SetServiceInfoProfile(const std::string& regServiceId,
-    const std::map<std::string, std::string>& finalSerProfile, ServiceInfoProfileNew& serviceInfoProfile);
- 
+    int32_t GetServiceInfoProfileByRegServiceId(int32_t regServiceId, ServiceInfoProfileNew& serviceInfoProfile);
+    int32_t GetServiceInfoProfileByTokenId(int64_t tokenId, std::vector<ServiceInfoProfileNew>& serviceInfoProfiles);
 private:
     std::string FindRegServiceId(const std::string& str);
+    int32_t SetServiceInfoProfile(const std::string& regServiceId,
+        const std::map<std::string, std::string>& finalSerProfile, ServiceInfoProfileNew& serviceInfoProfile);
+    int32_t GetServiceInfoProfileByRegServiceId(const std::string& regServiceIdStr,
+        ServiceInfoProfileNew& serviceInfoProfile);
+    std::mutex storeMutex_;
     std::shared_ptr<ServiceInfoKvAdapter> serviceInfoKvAdapter_ = nullptr;
-    std::mutex dynamicStoreMutex_;
-    std::atomic<bool> isFirst_{true};
-    std::map<std::string, std::string> putTempCache_;
-    std::mutex putTempCacheMutex_;
 };
 } // DistributedDeviceProfile
 } // OHOS

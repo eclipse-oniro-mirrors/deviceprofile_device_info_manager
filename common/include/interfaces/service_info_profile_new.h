@@ -12,16 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef OHOS_DP_SERVICE_INFO_H
 #define OHOS_DP_SERVICE_INFO_H
- 
+
 #include <cstdint>
 #include <string>
- 
+
 #include "distributed_device_profile_constants.h"
 #include "dp_parcel.h"
- 
+
 namespace OHOS {
 namespace DistributedDeviceProfile {
 class ServiceInfoProfileNew : public DpParcel {
@@ -37,40 +37,39 @@ public:
         serviceName_(""),
         serviceDisplayName_("")
         {};
-        
+
     ~ServiceInfoProfileNew();
- 
+
     int32_t GetRegServiceId() const;
     void SetRegServiceId(int32_t regServiceIdValue);
- 
     std::string GetDeviceId() const;
     void SetDeviceId(const std::string &deviceIdValue);
- 
+
     int32_t GetUserId() const;
     void SetUserId(int32_t userIdValue);
-    
+
     int64_t GetTokenId() const;
     void SetTokenId(int64_t tokenIdValue);
- 
+
     int8_t GetSerPubState() const;
     void SetSerPubState(int8_t SerPubStateValue);
- 
+
     int64_t GetServiceId() const;
     void SetServiceId(int64_t serviceIdValue);
- 
+
     std::string GetServiceType() const;
     void SetServiceType(const std::string &serviceTypeValue);
- 
+
     std::string GetServiceName() const;
     void SetServiceName(const std::string &serviceNameValue);
- 
+
     std::string GetServiceDisplayName() const;
     void SetServiceDisplayName(const std::string &serviceDisplayNameValue);
- 
+
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     std::string dump() const override;
- 
+
 private:
     int32_t regServiceId_;
     std::string deviceId_;

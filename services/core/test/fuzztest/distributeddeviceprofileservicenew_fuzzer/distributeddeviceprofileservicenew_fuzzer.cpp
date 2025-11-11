@@ -66,7 +66,8 @@ void GetServiceInfoProfileByTokenIdFuzzTest(FuzzedDataProvider &fdp)
 
     profile.SetServiceId(fdp.ConsumeIntegral<int64_t>());
     profile.SetServiceType(fdp.ConsumeRandomLengthString());
-    DistributedDeviceProfileServiceNew::GetInstance().GetServiceInfoProfileByTokenId(tokenId, profile);
+    std::vector<ServiceInfoProfileNew> profiles {profile};
+    DistributedDeviceProfileServiceNew::GetInstance().GetServiceInfoProfileByTokenId(tokenId, profiles);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
