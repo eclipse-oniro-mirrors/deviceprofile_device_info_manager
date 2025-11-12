@@ -61,7 +61,7 @@ void ServiceInfoUniqueKey::SetTokenId(const std::string& tokenId)
 {
     tokenId_ = tokenId;
 }
-    
+
 int64_t ServiceInfoUniqueKey::GetServiceId() const
 {
     return serviceId_;

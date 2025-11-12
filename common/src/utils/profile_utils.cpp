@@ -479,7 +479,7 @@ int32_t ProfileUtils::ServiceInfoProfileToEntries(const ServiceInfoProfileNew& p
     values[GenerateServiceDBKey(regServiceId, SERVICE_NAME, userIdValue)] = profile.GetServiceName();
     values[GenerateServiceDBKey(regServiceId, SERVICE_DISPLAY_NAME, userIdValue)] =
          profile.GetServiceDisplayName();
- 
+
     return DP_SUCCESS;
 }
 

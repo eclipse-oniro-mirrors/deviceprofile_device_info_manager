@@ -150,19 +150,19 @@ HWTEST_F(ProfileUtilsTest, GetProfileType001, TestSize.Level1)
     }
     res = ProfileUtils::GetProfileType(maxKey);
     EXPECT_EQ(ProfileType::PROFILE_TYPE_MIN, res);
-    
+
     string devKey = "dev111";
     res = ProfileUtils::GetProfileType(devKey);
     EXPECT_EQ(ProfileType::DEVICE_PROFILE, res);
-    
+
     string serKet = "svr111";
     res = ProfileUtils::GetProfileType(serKet);
     EXPECT_EQ(ProfileType::SERVICE_PROFILE, res);
-    
+
     string charKey = "char111";
     res = ProfileUtils::GetProfileType(charKey);
     EXPECT_EQ(ProfileType::CHAR_PROFILE, res);
-    
+
     string lastKey = "other";
     res = ProfileUtils::GetProfileType(lastKey);
     EXPECT_EQ(ProfileType::PROFILE_TYPE_MIN, res);
@@ -193,7 +193,7 @@ HWTEST_F(ProfileUtilsTest, IsKeyValid001, TestSize.Level1)
     string key = "abc";
     bool res = ProfileUtils::IsKeyValid(key);
     EXPECT_EQ(true, res);
-    
+
     key = "";
     res = ProfileUtils::IsKeyValid(key);
     EXPECT_EQ(false, res);
@@ -265,7 +265,7 @@ HWTEST_F(ProfileUtilsTest, TrustDeviceProfileTranslateEntries001, TestSize.Level
     profile.SetDeviceIdHash("deviceIdHash");
     profile.SetDeviceIdType(1);
     profile.SetStatus(1);
-    
+
     ValuesBucket values;
     ValueObject valueObject;
     string strValue = "";
@@ -297,7 +297,7 @@ HWTEST_F(ProfileUtilsTest, AccessControlProfileTranslateEntries001, TestSize.Lev
     accesser.SetAccesserBundleName("b1");
     accesser.SetAccesserHapSignature("h1");
     accesser.SetAccesserBindLevel(1);
-    
+
     Accessee accessee;
     accessee.SetAccesseeDeviceId("acee1");
     accessee.SetAccesseeUserId(22);
@@ -318,7 +318,7 @@ HWTEST_F(ProfileUtilsTest, AccessControlProfileTranslateEntries001, TestSize.Lev
     profile.SetValidPeriod(1);
     profile.SetLastAuthTime(5);
     profile.SetBindLevel(0);
-    
+
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
 
@@ -330,7 +330,7 @@ HWTEST_F(ProfileUtilsTest, AccessControlProfileTranslateEntries001, TestSize.Lev
     values.GetObject(TRUST_DEVICE_ID, valueObject);
     valueObject.GetString(strValue);
     EXPECT_EQ("123456", strValue);
-    
+
     AccessControlProfile outProfile;
     int32_t res2 = ProfileUtils::EntriesToAccessControlProfile(values, outProfile);
     EXPECT_EQ(DP_SUCCESS, res2);
@@ -347,7 +347,7 @@ HWTEST_F(ProfileUtilsTest, AccessControlProfileTranslateEntries002, TestSize.Lev
     accesser.SetAccesserBundleName("b2");
     accesser.SetAccesserHapSignature("h2");
     accesser.SetAccesserBindLevel(1);
-    
+
     Accessee accessee;
     accessee.SetAccesseeDeviceId("acee2");
     accessee.SetAccesseeUserId(22);
@@ -356,7 +356,7 @@ HWTEST_F(ProfileUtilsTest, AccessControlProfileTranslateEntries002, TestSize.Lev
     accessee.SetAccesseeBundleName("bb2");
     accessee.SetAccesseeHapSignature("h2");
     accessee.SetAccesseeBindLevel(1);
-    
+
     AccessControlProfile profile;
     profile.SetTrustDeviceId("1234567");
     profile.SetSessionKey("key1");
@@ -368,10 +368,10 @@ HWTEST_F(ProfileUtilsTest, AccessControlProfileTranslateEntries002, TestSize.Lev
     profile.SetValidPeriod(1);
     profile.SetLastAuthTime(5);
     profile.SetBindLevel(0);
-    
+
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
-    
+
     ValuesBucket values;
     ValueObject valueObject;
     string strValue = "";
@@ -380,7 +380,7 @@ HWTEST_F(ProfileUtilsTest, AccessControlProfileTranslateEntries002, TestSize.Lev
     values.GetObject(TRUST_DEVICE_ID, valueObject);
     valueObject.GetString(strValue);
     EXPECT_EQ("1234567", strValue);
-    
+
     AccessControlProfile outProfile;
     int32_t res2 = ProfileUtils::EntriesToAccessControlProfile(values, outProfile);
     EXPECT_EQ(DP_SUCCESS, res2);
@@ -403,7 +403,7 @@ HWTEST_F(ProfileUtilsTest, AccesserTranslateEntries001, TestSize.Level1)
     accesser.SetAccesserBundleName("b1");
     accesser.SetAccesserHapSignature("h1");
     accesser.SetAccesserBindLevel(1);
-    
+
     Accessee accessee;
     accessee.SetAccesseeDeviceId("acee1");
     accessee.SetAccesseeUserId(22);
@@ -424,10 +424,10 @@ HWTEST_F(ProfileUtilsTest, AccesserTranslateEntries001, TestSize.Level1)
     profile.SetValidPeriod(1);
     profile.SetLastAuthTime(5);
     profile.SetBindLevel(0);
-    
+
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
-    
+
     ValuesBucket values;
     ValueObject valueObject;
     string strValue = "";
@@ -459,7 +459,7 @@ HWTEST_F(ProfileUtilsTest, AccesseeTranslateEntries001, TestSize.Level1)
     accesser.SetAccesserBundleName("b1");
     accesser.SetAccesserHapSignature("h1");
     accesser.SetAccesserBindLevel(1);
-    
+
     Accessee accessee;
     accessee.SetAccesseeDeviceId("acee1");
     accessee.SetAccesseeUserId(22);
@@ -483,7 +483,7 @@ HWTEST_F(ProfileUtilsTest, AccesseeTranslateEntries001, TestSize.Level1)
 
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
-    
+
     ValuesBucket values;
     ValueObject valueObject;
     string strValue = "";
@@ -492,7 +492,7 @@ HWTEST_F(ProfileUtilsTest, AccesseeTranslateEntries001, TestSize.Level1)
     values.GetObject(ACCESSEE_DEVICE_ID, valueObject);
     valueObject.GetString(strValue);
     EXPECT_EQ("acee1", strValue);
-    
+
     Accessee outAccessee;
     int32_t res2 = ProfileUtils::EntriesToAccessee(values, outAccessee);
     EXPECT_EQ(DP_SUCCESS, res2);
@@ -512,11 +512,11 @@ HWTEST_F(ProfileUtilsTest, DeviceProfileTranslateEntries001, TestSize.Level1)
     deviceProfile.SetOsApiLevel(1);
     deviceProfile.SetOsVersion("anything");
     deviceProfile.SetOsType(1);
-    
+
     map<string, string> entries;
     int32_t res1 = ProfileUtils::DeviceProfileToEntries(deviceProfile, entries);
     EXPECT_EQ(DP_SUCCESS, res1);
-    
+
     DeviceProfile outDeviceProfile;
     int32_t res2 = ProfileUtils::EntriesToDeviceProfile(entries, outDeviceProfile);
     EXPECT_EQ(DP_SUCCESS, res2);
@@ -534,11 +534,11 @@ HWTEST_F(ProfileUtilsTest, ServiceProfileTranslateEntries001, TestSize.Level1)
     serviceProfile.SetDeviceId("deviceId");
     serviceProfile.SetServiceName("serviceName");
     serviceProfile.SetServiceType("serviceType");
-    
+
     map<string, string> entries;
     int32_t res1 = ProfileUtils::ServiceProfileToEntries(serviceProfile, entries);
     EXPECT_EQ(DP_SUCCESS, res1);
-    
+
     ServiceProfile outServiceProfile;
     int32_t res2 = ProfileUtils::EntriesToServiceProfile(entries, outServiceProfile);
     EXPECT_EQ(DP_SUCCESS, res2);
@@ -555,7 +555,7 @@ HWTEST_F(ProfileUtilsTest, AccesserTranslateEntries002, TestSize.Level1)
     accesser.SetAccesserBundleName("b1");
     accesser.SetAccesserHapSignature("h1");
     accesser.SetAccesserBindLevel(1);
-    
+
     Accessee accessee;
     accessee.SetAccesseeDeviceId("acee2");
     accessee.SetAccesseeUserId(22);
@@ -576,10 +576,10 @@ HWTEST_F(ProfileUtilsTest, AccesserTranslateEntries002, TestSize.Level1)
     profile.SetValidPeriod(1);
     profile.SetLastAuthTime(5);
     profile.SetBindLevel(0);
-    
+
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
-    
+
     ValuesBucket values;
     ValueObject valueObject;
     string strValue = "";
@@ -588,7 +588,7 @@ HWTEST_F(ProfileUtilsTest, AccesserTranslateEntries002, TestSize.Level1)
     values.GetObject(ACCESSER_DEVICE_ID, valueObject);
     valueObject.GetString(strValue);
     EXPECT_EQ("acer2", strValue);
-    
+
     Accesser outAccesser;
     int32_t res2 = ProfileUtils::EntriesToAccesser(values, outAccesser);
     EXPECT_EQ(DP_SUCCESS, res2);
@@ -605,7 +605,7 @@ HWTEST_F(ProfileUtilsTest, AccesseeTranslateEntries002, TestSize.Level1)
     accesser.SetAccesserBundleName("b1");
     accesser.SetAccesserHapSignature("h1");
     accesser.SetAccesserBindLevel(1);
-    
+
     Accessee accessee;
     accessee.SetAccesseeDeviceId("acee2");
     accessee.SetAccesseeUserId(22);
@@ -614,7 +614,7 @@ HWTEST_F(ProfileUtilsTest, AccesseeTranslateEntries002, TestSize.Level1)
     accessee.SetAccesseeBundleName("bb1");
     accessee.SetAccesseeHapSignature("h1");
     accessee.SetAccesseeBindLevel(1);
-    
+
     AccessControlProfile profile;
     profile.SetTrustDeviceId("123456");
     profile.SetSessionKey("key1");
@@ -626,10 +626,10 @@ HWTEST_F(ProfileUtilsTest, AccesseeTranslateEntries002, TestSize.Level1)
     profile.SetValidPeriod(1);
     profile.SetLastAuthTime(5);
     profile.SetBindLevel(0);
-    
+
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
-    
+
     ValuesBucket values;
     ValueObject valueObject;
     string strValue = "";
@@ -638,7 +638,7 @@ HWTEST_F(ProfileUtilsTest, AccesseeTranslateEntries002, TestSize.Level1)
     values.GetObject(ACCESSEE_DEVICE_ID, valueObject);
     valueObject.GetString(strValue);
     EXPECT_EQ("acee2", strValue);
-    
+
     Accessee outAccessee;
     int32_t res2 = ProfileUtils::EntriesToAccessee(values, outAccessee);
     EXPECT_EQ(DP_SUCCESS, res2);
@@ -658,11 +658,11 @@ HWTEST_F(ProfileUtilsTest, CharacteristicProfileTranslateEntries001, TestSize.Le
     charProfile.SetServiceName("serviceName");
     charProfile.SetCharacteristicKey("characteristicKey");
     charProfile.SetCharacteristicValue("characteristicValue");
-    
+
     map<string, string> entries;
     int32_t res1 = ProfileUtils::CharacteristicProfileToEntries(charProfile, entries);
     EXPECT_EQ(DP_SUCCESS, res1);
-    
+
     CharacteristicProfile outCharProfile;
     int32_t res2 = ProfileUtils::EntriesToCharProfile(entries, outCharProfile);
     EXPECT_EQ(DP_SUCCESS, res2);
@@ -1060,16 +1060,16 @@ HWTEST_F(ProfileUtilsTest, IsPropertyValid001, TestSize.Level1)
     int32_t maxValue = 1;
     bool res1 = ProfileUtils::IsPropertyValid(propertyMap, property, maxValue);
     EXPECT_EQ(false, res1);
-    
+
     int32_t minValue = 0;
     bool res2 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
     EXPECT_EQ(false, res2);
-    
+
     uint32_t u32MinValue = 0;
     uint32_t u32MaxValue = 1;
     bool res3 = ProfileUtils::IsPropertyValid(propertyMap, property, u32MinValue, u32MaxValue);
     EXPECT_EQ(false, res3);
-    
+
     int64_t i64MinValue = 0;
     int64_t i64MaxValue = 1;
     bool res4 = ProfileUtils::IsPropertyValid(propertyMap, property, i64MinValue, i64MaxValue);
@@ -1091,16 +1091,16 @@ HWTEST_F(ProfileUtilsTest, IsPropertyValid002, TestSize.Level1)
     int32_t maxValue = 10;
     bool res1 = ProfileUtils::IsPropertyValid(propertyMap, property, maxValue);
     EXPECT_EQ(true, res1);
-    
+
     maxValue = 0;
     bool res2 = ProfileUtils::IsPropertyValid(propertyMap, property, maxValue);
     EXPECT_EQ(false, res2);
-    
+
     value = "";
     propertyMap[property] = value;
     bool res3 = ProfileUtils::IsPropertyValid(propertyMap, property, maxValue);
     EXPECT_EQ(false, res3);
-    
+
     propertyMap.erase(property);
     bool res4 = ProfileUtils::IsPropertyValid(propertyMap, property, maxValue);
     EXPECT_EQ(false, res4);
@@ -1122,16 +1122,16 @@ HWTEST_F(ProfileUtilsTest, IsPropertyValid003, TestSize.Level1)
     int32_t minValue = 0;
     bool res1 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
     EXPECT_EQ(true, res1);
-    
+
     maxValue = 0;
     bool res2 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
     EXPECT_EQ(false, res2);
-    
+
     value = "0";
     propertyMap[property] = value;
     bool res3 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
     EXPECT_EQ(false, res3);
-    
+
     propertyMap.erase(property);
     bool res4 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
     EXPECT_EQ(false, res4);
@@ -1153,16 +1153,16 @@ HWTEST_F(ProfileUtilsTest, IsPropertyValid004, TestSize.Level1)
     uint32_t minValue = 0;
     bool res1 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
     EXPECT_EQ(true, res1);
-    
+
     maxValue = 0;
     bool res2 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
     EXPECT_EQ(false, res2);
-    
+
     value = "0";
     propertyMap[property] = value;
     bool res3 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
     EXPECT_EQ(false, res3);
-    
+
     propertyMap.erase(property);
     bool res4 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
     EXPECT_EQ(false, res4);
@@ -1184,16 +1184,16 @@ HWTEST_F(ProfileUtilsTest, IsPropertyValid005, TestSize.Level1)
     int64_t minValue = 0;
     bool res1 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
     EXPECT_EQ(true, res1);
-    
+
     maxValue = 0;
     bool res2 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
     EXPECT_EQ(false, res2);
-    
+
     value = "0";
     propertyMap[property] = value;
     bool res3 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
     EXPECT_EQ(false, res3);
-    
+
     propertyMap.erase(property);
     bool res4 = ProfileUtils::IsPropertyValid(propertyMap, property, minValue, maxValue);
     EXPECT_EQ(false, res4);
@@ -1235,13 +1235,13 @@ HWTEST_F(ProfileUtilsTest, GetIntValue002, TestSize.Level1)
     int32_t outValue = 0;
     bool res1 = ProfileUtils::GetIntValue(values, property, outValue);
     EXPECT_EQ(true, res1);
-    
+
     string strValue = "strValue";
     values.Clear();
     values.PutString(property, strValue);
     bool res2 = ProfileUtils::GetIntValue(values, property, outValue);
     EXPECT_EQ(false, res2);
-    
+
     values.Clear();
     bool res3 = ProfileUtils::GetIntValue(values, property, outValue);
     EXPECT_EQ(false, res3);
@@ -1277,12 +1277,12 @@ HWTEST_F(ProfileUtilsTest, GetStringValue002, TestSize.Level1)
     string outValue = "";
     bool res1 = ProfileUtils::GetStringValue(values, property, outValue);
     EXPECT_EQ(true, res1);
-    
+
     values.Clear();
     values.PutNull(property);
     bool res2 = ProfileUtils::GetStringValue(values, property, outValue);
     EXPECT_EQ(false, res2);
-    
+
     values.Clear();
     bool res3 = ProfileUtils::GetStringValue(values, property, outValue);
     EXPECT_EQ(false, res3);
@@ -1319,12 +1319,12 @@ HWTEST_F(ProfileUtilsTest, GetLongValue002, TestSize.Level1)
     int64_t outValue = 0;
     bool res1 = ProfileUtils::GetLongValue(values, property, outValue);
     EXPECT_EQ(true, res1);
-    
+
     values.Clear();
     values.PutString(property, strValue);
     bool res2 = ProfileUtils::GetLongValue(values, property, outValue);
     EXPECT_EQ(false, res2);
-    
+
     values.Clear();
     bool res3 = ProfileUtils::GetLongValue(values, property, outValue);
     EXPECT_EQ(false, res3);
@@ -1342,7 +1342,7 @@ HWTEST_F(ProfileUtilsTest, EntriesToTrustDeviceProfile001, TestSize.Level1)
     TrustDeviceProfile profile;
     int32_t intValue = 1;
     string strValue = "strValue";
-    
+
     values.PutString(DEVICE_ID, strValue);
     values.PutString(DEVICE_ID_HASH, strValue);
     values.PutInt(DEVICE_TYPE_ID, intValue);
@@ -1405,7 +1405,7 @@ HWTEST_F(ProfileUtilsTest, EntriesToAccesser001, TestSize.Level1)
     int32_t intValue = 1;
     int64_t longValue = 1;
     string strValue = "strValue";
-    
+
     values.PutLong(ACCESSER_ID, longValue);
     values.PutString(ACCESSER_DEVICE_ID, strValue);
     values.PutInt(ACCESSER_USER_ID, intValue);
@@ -1416,7 +1416,7 @@ HWTEST_F(ProfileUtilsTest, EntriesToAccesser001, TestSize.Level1)
 
     ProfileUtils::EntriesToAccesser(values, profile);
     EXPECT_EQ("strValue", profile.GetAccesserBundleName());
-    
+
     values.Clear();
     values.PutNull(ACCESSER_ID);
     values.PutNull(ACCESSER_DEVICE_ID);
@@ -1448,7 +1448,7 @@ HWTEST_F(ProfileUtilsTest, EntriesToAccessee001, TestSize.Level1)
     int32_t intValue = 1;
     int64_t longValue = 1;
     string strValue = "strValue";
-    
+
     values.PutLong(ACCESSEE_ID, longValue);
     values.PutString(ACCESSEE_DEVICE_ID, strValue);
     values.PutInt(ACCESSEE_USER_ID, intValue);
@@ -1456,7 +1456,7 @@ HWTEST_F(ProfileUtilsTest, EntriesToAccessee001, TestSize.Level1)
     values.PutLong(ACCESSEE_TOKEN_ID, longValue);
     values.PutString(ACCESSEE_BUNDLE_NAME, strValue);
     values.PutInt(ACCESSEE_BIND_LEVEL, intValue);
-    
+
     ProfileUtils::EntriesToAccessee(values, profile);
     EXPECT_EQ("strValue", profile.GetAccesseeBundleName());
 
@@ -1471,7 +1471,7 @@ HWTEST_F(ProfileUtilsTest, EntriesToAccessee001, TestSize.Level1)
     EXPECT_EQ(true, values.GetObject(ACCESSEE_ACCOUNT_ID, valueObject));
     EXPECT_EQ(false, valueObject.GetString(strValue) == E_OK);
     ProfileUtils::EntriesToAccessee(values, profile);
-    
+
     values.Clear();
     EXPECT_EQ(false, values.GetObject(ACCESSEE_ACCOUNT_ID, valueObject));
     ProfileUtils::EntriesToAccessee(values, profile);
@@ -1535,7 +1535,7 @@ HWTEST_F(ProfileUtilsTest, EntriesToServiceProfile002, TestSize.Level1)
     EXPECT_EQ(false, propertiesMap.count(SERVICE_TYPE) != 0);
     EXPECT_EQ(false, 0 < propertiesMap[SERVICE_TYPE].length());
     ProfileUtils::EntriesToServiceProfile(values, profile);
-    
+
     values.erase(SERVICE_NAME);
     values.erase(SERVICE_TYPE);
     propertiesMap = ProfileUtils::GetProfilePropertiesMap(values);
@@ -1562,7 +1562,7 @@ HWTEST_F(ProfileUtilsTest, EntriesToCharProfile002, TestSize.Level1)
     string strValye = "";
     values[CHARACTERISTIC_KEY] = "characteristicKey";
     values[CHARACTERISTIC_VALUE] = "characteristicValue";
-    
+
     int32_t ret1 = ProfileUtils::EntriesToCharProfile(values, profile);
     EXPECT_EQ(DP_SUCCESS, ret1);
     EXPECT_EQ("", profile.GetCharacteristicKey());
@@ -1617,11 +1617,11 @@ HWTEST_F(ProfileUtilsTest, GetDbKeyByProfile001, TestSize.Level1)
     charProfile.SetCharacteristicKey("");
     dbKey = ProfileUtils::GetDbKeyByProfile(charProfile);
     EXPECT_EQ(dbKey, failDbkey);
-    
+
     charProfile.SetServiceName("");
     dbKey = ProfileUtils::GetDbKeyByProfile(charProfile);
     EXPECT_EQ(dbKey, failDbkey);
-    
+
     charProfile.SetDeviceId("");
     dbKey = ProfileUtils::GetDbKeyByProfile(charProfile);
     EXPECT_EQ(dbKey, failDbkey);

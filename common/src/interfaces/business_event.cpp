@@ -18,7 +18,7 @@
 #include "distributed_device_profile_constants.h"
 #include "macro_utils.h"
 #include "profile_utils.h"
- 
+
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
@@ -137,4 +137,3 @@ BusinessEventExt *BusinessEventExt::Unmarshalling(Parcel& parcel)
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
- 

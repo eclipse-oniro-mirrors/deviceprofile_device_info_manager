@@ -198,6 +198,8 @@ int32_t DistributedDeviceProfileStubNew::NotifyEventInner(uint32_t code, Message
             return GetServiceInfoProfileByServiceIdInner(data, reply);
         case static_cast<uint32_t>(DpIpcInterfaceCode::GET_SERVICE_INFO_PROFILE_BY_TOKEN_ID):
             return GetServiceInfoProfileByTokenIdInner(data, reply);
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_SERVICE_INFO_PROFILE_BY_REG_SER_ID):
+            return GetServiceInfoProfileByRegServiceIdInner(data, reply);
         default:
             return NotifyLocalServiceEventInner(code, data, reply, option);
     }
@@ -998,7 +1000,7 @@ int32_t DistributedDeviceProfileStubNew::GetServiceInfoProfileListByTokenIdInner
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
     }
- 
+
     if (!IpcUtils::Marshalling(reply, serviceInfoProfiles)) {
         return DP_READ_PARCEL_FAIL;
     }
@@ -1014,7 +1016,7 @@ int32_t DistributedDeviceProfileStubNew::GetAllServiceInfoProfileListInner(Messa
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
     }
- 
+
     if (!IpcUtils::Marshalling(reply, serviceInfoProfiles)) {
         return DP_READ_PARCEL_FAIL;
     }
@@ -1036,7 +1038,7 @@ int32_t DistributedDeviceProfileStubNew::GetServiceInfoProfileListByBundleNameIn
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;
     }
- 
+
     if (!IpcUtils::Marshalling(reply, serviceInfoProfiles)) {
         return DP_READ_PARCEL_FAIL;
     }
@@ -1140,7 +1142,7 @@ int32_t DistributedDeviceProfileStubNew::PutServiceInfoProfileInner(MessageParce
     }
     return DP_SUCCESS;
 }
- 
+
 int32_t DistributedDeviceProfileStubNew::DeleteServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply)
 {
     int32_t regServiceId = 0;
@@ -1148,7 +1150,7 @@ int32_t DistributedDeviceProfileStubNew::DeleteServiceInfoProfileInner(MessagePa
     int32_t userId = 0;
     READ_HELPER(data, Int32, regServiceId);
     READ_HELPER(data, Int32, userId);
- 
+
     int32_t ret = DeleteServiceInfoProfile(regServiceId, userId);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
@@ -1174,13 +1176,31 @@ int32_t DistributedDeviceProfileStubNew::GetServiceInfoProfileByServiceIdInner(M
     }
     return DP_SUCCESS;
 }
- 
+
 int32_t DistributedDeviceProfileStubNew::GetServiceInfoProfileByTokenIdInner(MessageParcel& data, MessageParcel& reply)
 {
     int64_t tokenId = 0;
     READ_HELPER(data, Int64, tokenId);
+    std::vector<ServiceInfoProfileNew> serviceInfoProfiles;
+    int32_t ret = GetServiceInfoProfileByTokenId(tokenId, serviceInfoProfiles);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    if (!IpcUtils::Marshalling(reply, serviceInfoProfiles)) {
+        HILOGE("write parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::GetServiceInfoProfileByRegServiceIdInner(MessageParcel& data,
+    MessageParcel& reply)
+{
+    int32_t regServiceId = 0;
+    READ_HELPER(data, Int32, regServiceId);
     ServiceInfoProfileNew serviceInfoProfile;
-    int32_t ret = GetServiceInfoProfileByTokenId(tokenId, serviceInfoProfile);
+    int32_t ret = GetServiceInfoProfileByRegServiceId(regServiceId, serviceInfoProfile);
     if (!reply.WriteInt32(ret)) {
         HILOGE("Write reply failed");
         return ERR_FLATTEN_OBJECT;

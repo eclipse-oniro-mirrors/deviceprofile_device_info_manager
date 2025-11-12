@@ -296,7 +296,7 @@ HWTEST_F(RdbAdapterTest, Delete001, TestSize.Level1)
     std::string whereClause = "deviceId = ?";
     ValueObject valueObject(std::string("111aaa"));
     const std::vector<ValueObject>& bindArgs = {valueObject};
-    
+
     int32_t deleteErrCode = store->Delete(deleteRows, table, whereClause, bindArgs);
     EXPECT_EQ(deleteErrCode, DP_SUCCESS);
     EXPECT_EQ(deleteRows, 1);
@@ -327,7 +327,7 @@ HWTEST_F(RdbAdapterTest, Delete002, TestSize.Level1)
     std::string whereClause = "deviceId = ?";
     ValueObject valueObject(std::string("111aaa"));
     const std::vector<ValueObject>& bindArgs = {valueObject};
-    
+
     int32_t deleteErrCode = store->Delete(deleteRows, deleteTable, whereClause, bindArgs);
     EXPECT_EQ(deleteErrCode, DP_RDBADAPTER_TABLE_NOT_EXIST);
 }
@@ -357,7 +357,7 @@ HWTEST_F(RdbAdapterTest, Delete003, TestSize.Level1)
     std::string whereClause = "xxxdeviceId = ?";
     ValueObject valueObject(std::string("111aaa"));
     const std::vector<ValueObject>& bindArgs = {valueObject};
-    
+
     int32_t deleteErrCode = store->Delete(deleteRows, deleteTable, whereClause, bindArgs);
     EXPECT_EQ(deleteErrCode, DP_RDBADAPTER_DELETE_FAIL);
 }
@@ -381,12 +381,12 @@ HWTEST_F(RdbAdapterTest, Delete004, TestSize.Level1)
     values.PutString("deviceIdHash", std::string("222bbb"));
     values.PutInt("status", 1);
     store->Put(outRowId, table, values);
-    
+
     int32_t deleteRows = 0;
     std::string whereClause = "deviceId = ?";
     ValueObject valueObject(std::string("111aaa"));
     const std::vector<ValueObject>& bindArgs = {valueObject};
-    
+
     store->UnInit();
     int32_t deleteErrCode = store->Delete(deleteRows, table, whereClause, bindArgs);
     EXPECT_EQ(deleteErrCode, DP_RDB_DB_PTR_NULL);
@@ -419,7 +419,7 @@ HWTEST_F(RdbAdapterTest, Update001, TestSize.Level1)
     value2.PutString("deviceIdHash", std::string("abcdef"));
     value2.PutInt("status", 1);
     store->Put(outRowId, table, value2);
-    
+
     ValuesBucket newValues;
     newValues.Clear();
     newValues.PutString("deviceId", std::string("111aaa"));
@@ -431,7 +431,7 @@ HWTEST_F(RdbAdapterTest, Update001, TestSize.Level1)
     std::string whereClause = "deviceId = ?";
     ValueObject valueObject(std::string("111aaa"));
     const std::vector<ValueObject>& bindArgs = {valueObject};
-    
+
     int32_t updateErrCode = store->Update(changedRows, table, newValues, whereClause, bindArgs);
     EXPECT_EQ(updateErrCode, DP_SUCCESS);
     std::shared_ptr<ResultSet> resultSet = store->Get("SELECT * FROM trust_device_table where deviceId = '111aaa'");
@@ -461,20 +461,20 @@ HWTEST_F(RdbAdapterTest, Update002, TestSize.Level1)
     value1.PutString("deviceIdHash", std::string("abcdef"));
     value1.PutInt("status", 1);
     store->Put(outRowId, table, value1);
-    
+
     ValuesBucket newValues;
     newValues.Clear();
     newValues.PutString("deviceId", std::string("111aaa"));
     newValues.PutInt("deviceIdType", 3);
     newValues.PutString("deviceIdHash", std::string("222bbb"));
     newValues.PutInt("status", 2);
-    
+
     std::string failTable = "trust_xxxdevice_table";
     int32_t changedRows = 0;
     std::string whereClause = "deviceId = ?";
     ValueObject valueObject(std::string("111aaa"));
     const std::vector<ValueObject>& bindArgs = {valueObject};
-    
+
     int32_t updateErrCode = store->Update(changedRows, failTable, newValues, whereClause, bindArgs);
     EXPECT_EQ(updateErrCode, DP_RDBADAPTER_TABLE_NOT_EXIST);
 }
@@ -498,7 +498,7 @@ HWTEST_F(RdbAdapterTest, Update003, TestSize.Level1)
     value1.PutString("deviceIdHash", std::string("abcdef"));
     value1.PutInt("status", 1);
     store->Put(outRowId, table, value1);
-    
+
     ValuesBucket newValues;
     newValues.Clear();
     newValues.PutString("deviceId", std::string("111aaa"));
@@ -510,9 +510,9 @@ HWTEST_F(RdbAdapterTest, Update003, TestSize.Level1)
     std::string whereClause = "xxxdeviceId = ?";
     ValueObject valueObject(std::string("111aaa"));
     const std::vector<ValueObject>& bindArgs = {valueObject};
-    
+
     int32_t updateErrCode = store->Update(changedRows, table, newValues, whereClause, bindArgs);
-    
+
     EXPECT_EQ(updateErrCode, DP_RDBADAPTER_UPDATE_FAIL);
 }
 
@@ -542,19 +542,19 @@ HWTEST_F(RdbAdapterTest, Update004, TestSize.Level1)
     value2.PutString("deviceIdHash", std::string("abcdef"));
     value2.PutInt("status", 1);
     store->Put(outRowId, table, value2);
-    
+
     ValuesBucket newValues;
     newValues.Clear();
     newValues.PutString("deviceId", std::string("111aaa"));
     newValues.PutInt("deviceIdType", 3);
     newValues.PutString("deviceIdHash", std::string("222bbb"));
     newValues.PutInt("status", 2);
-    
+
     int32_t changedRows = 0;
     std::string whereClause = "deviceId = ?";
     ValueObject valueObject(std::string("111aaa"));
     const std::vector<ValueObject>& bindArgs = {valueObject};
-    
+
     store->UnInit();
     int32_t updateErrCode = store->Update(changedRows, table, newValues, whereClause, bindArgs);
     EXPECT_EQ(updateErrCode, DP_RDB_DB_PTR_NULL);
@@ -604,7 +604,7 @@ HWTEST_F(RdbAdapterTest, Get002, TestSize.Level1)
     value1.PutString("deviceIdHash", std::string("abcdef"));
     value1.PutInt("status", 1);
     store->Put(outRowId, table, value1);
-    
+
     store->UnInit();
     std::shared_ptr<ResultSet> resultSet = store->Get("SELECT * FROM trust_device_table where deviceId = '111aaa'");
     EXPECT_EQ(resultSet, nullptr);

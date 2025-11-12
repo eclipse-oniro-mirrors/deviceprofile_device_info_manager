@@ -1528,7 +1528,7 @@ int32_t DistributedDeviceProfileServiceNew::PutServiceInfoProfile(const ServiceI
     }
     return DP_SUCCESS;
 }
- 
+
 int32_t DistributedDeviceProfileServiceNew::DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId)
 {
     if (!PermissionManager::GetInstance().CheckCallerPermission()) {
@@ -1551,27 +1551,44 @@ int32_t DistributedDeviceProfileServiceNew::GetServiceInfoProfileByServiceId(int
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    HILOGD("CheckCallerPermission success interface GetServiceInfoProfileByServiceId");
+    HILOGD("CheckCallerPermission success interface");
     int32_t ret = ServiceInfoProfileManage::GetInstance().GetServiceInfoProfileByServiceId(serviceId,
         serviceInfoProfile);
     if (ret != DP_SUCCESS) {
-        HILOGE("GetServiceInfoProfileByServiceId failed, ret: %{public}d", ret);
+        HILOGE("failed, ret: %{public}d", ret);
         return ret;
     }
     return DP_SUCCESS;
 }
- 
+
 int32_t DistributedDeviceProfileServiceNew::GetServiceInfoProfileByTokenId(int64_t tokenId,
+    std::vector<ServiceInfoProfileNew>& serviceInfoProfiles)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    HILOGD("CheckCallerPermission success interface");
+    int32_t ret = ServiceInfoProfileManage::GetInstance().GetServiceInfoProfileByTokenId(tokenId, serviceInfoProfiles);
+    if (ret != DP_SUCCESS) {
+        HILOGE("failed, ret: %{public}d", ret);
+        return ret;
+    }
+    return ret;
+}
+
+int32_t DistributedDeviceProfileServiceNew::GetServiceInfoProfileByRegServiceId(int32_t regServiceId,
     ServiceInfoProfileNew& serviceInfoProfile)
 {
     if (!PermissionManager::GetInstance().CheckCallerPermission()) {
         HILOGE("the caller is permission denied!");
         return DP_PERMISSION_DENIED;
     }
-    HILOGD("CheckCallerPermission success interface GetServiceInfoProfileByTokenId");
-    int32_t ret = ServiceInfoProfileManage::GetInstance().GetServiceInfoProfileByTokenId(tokenId, serviceInfoProfile);
+    HILOGD("CheckCallerPermission success interface");
+    int32_t ret = ServiceInfoProfileManage::GetInstance().GetServiceInfoProfileByRegServiceId(regServiceId,
+        serviceInfoProfile);
     if (ret != DP_SUCCESS) {
-        HILOGE("GetServiceInfoProfileByTokenId failed, ret: %{public}d", ret);
+        HILOGE("failed, ret: %{public}d", ret);
         return ret;
     }
     return DP_SUCCESS;

@@ -538,7 +538,7 @@ ohos_unittest("service_info_kv_adapter_test") {
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
 }
- 
+
 ohos_unittest("distributed_device_profile_proxy_test") {
   module_out_path = module_output_path
   sources = [ "unittest/distributed_device_profile_proxy_test.cpp" ]
@@ -558,7 +558,7 @@ ohos_unittest("service_info_profile_new_test") {
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
 }
- 
+
 ohos_unittest("service_info_manager_test") {
   module_out_path = module_output_path
   sources = [ "unittest/service_info_manager_test.cpp" ]

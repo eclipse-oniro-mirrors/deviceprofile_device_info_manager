@@ -116,14 +116,14 @@ HWTEST_F(DpProfileServiceTest, CreateUnloadHandler_001, TestSize.Level1)
     DistributedDeviceProfileServiceNew::GetInstance().unloadHandler_ = nullptr;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().CreateUnloadHandler();
     EXPECT_EQ(DP_SUCCESS, ret);
-    
+
     ret = DistributedDeviceProfileServiceNew::GetInstance().DestroyUnloadHandler();
     EXPECT_EQ(DP_SUCCESS, ret);
-    
+
     EventHandlerFactory::GetInstance().Init();
     ret = DistributedDeviceProfileServiceNew::GetInstance().CreateUnloadHandler();
     EXPECT_EQ(DP_SUCCESS, ret);
-    
+
     ret = DistributedDeviceProfileServiceNew::GetInstance().DestroyUnloadHandler();
     EXPECT_EQ(DP_SUCCESS, ret);
 }

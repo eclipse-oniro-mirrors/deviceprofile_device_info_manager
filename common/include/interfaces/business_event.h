@@ -15,14 +15,14 @@
 
 #ifndef OHOS_DP_BUSINESS_EVENT_H
 #define OHOS_DP_BUSINESS_EVENT_H
- 
+
 #include <cstdint>
 #include <string>
 
 #include "distributed_device_profile_constants.h"
 #include "dp_parcel.h"
 #include "parcel.h"
- 
+
 namespace OHOS {
 namespace DistributedDeviceProfile {
 class BusinessEvent : public DpParcel {
@@ -32,7 +32,7 @@ public:
         
     BusinessEvent();
     ~BusinessEvent();
- 
+
     std::string GetBusinessKey() const;
     void SetBusinessKey(const std::string& businessKey);
     std::string GetBusinessValue() const;
@@ -40,7 +40,7 @@ public:
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     std::string dump() const override;
-    
+
 private:
     std::string businessKey_ = "";
     std::string businessValue_ = "";
@@ -68,4 +68,4 @@ private:
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif //OHOS_DP_BUSINESS_EVENT_H
- 
+

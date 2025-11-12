@@ -96,10 +96,10 @@ HWTEST_F(SyncOptionsTest, Marshalling001, TestSize.Level1)
     syncPtr->AddDevice("device5");
     syncPtr->SetSyncMode(SyncMode::PUSH);
     OHOS::MessageParcel data;
-    
+
     bool res1 = syncPtr->Marshalling(data);
     EXPECT_EQ(true, res1);
-    
+
     bool res2 = syncPtr->UnMarshalling(data);
     EXPECT_EQ(true, res2);
 }

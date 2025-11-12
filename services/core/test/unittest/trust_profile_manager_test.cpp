@@ -1554,7 +1554,7 @@ HWTEST_F(TrustProfileManagerTest, RdbStoreIsNullptr_001, TestSize.Level1)
 {
     OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().rdbStore_ = nullptr;
-    
+
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().UnInit();
     EXPECT_NE(ret, DP_SUCCESS);

@@ -95,7 +95,8 @@ enum class DpIpcInterfaceCode : uint32_t {
     SYNC_STATIC_PROFILE = 76,
     GET_SERVICE_INFO_PROFILE_BY_SERVICE_ID = 77,
     GET_SERVICE_INFO_PROFILE_BY_TOKEN_ID = 78,
-    MAX = 79
+    GET_SERVICE_INFO_PROFILE_BY_REG_SER_ID = 79,
+    MAX = 80
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

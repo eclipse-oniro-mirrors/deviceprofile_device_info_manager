@@ -90,6 +90,7 @@ public:
     int32_t DeleteServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetServiceInfoProfileByServiceIdInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetServiceInfoProfileByTokenIdInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetServiceInfoProfileByRegServiceIdInner(MessageParcel& data, MessageParcel& reply);
 
 private:
     using Func = int32_t(DistributedDeviceProfileStubNew::*)(MessageParcel& data, MessageParcel& reply);

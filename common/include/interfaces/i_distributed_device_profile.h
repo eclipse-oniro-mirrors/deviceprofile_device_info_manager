@@ -113,8 +113,11 @@ public:
     virtual int32_t GetBusinessEvent(BusinessEvent& event) = 0;
     virtual int32_t PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfo) = 0;
     virtual int32_t DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId) = 0;
-    virtual int32_t GetServiceInfoProfileByServiceId(int64_t serviceId, ServiceInfoProfileNew& serviceInfoProfile)= 0;
-    virtual int32_t GetServiceInfoProfileByTokenId(int64_t tokenId, ServiceInfoProfileNew& serviceInfoProfile)= 0;
+    virtual int32_t GetServiceInfoProfileByServiceId(int64_t serviceId, ServiceInfoProfileNew& serviceInfoProfile) = 0;
+    virtual int32_t GetServiceInfoProfileByTokenId(int64_t tokenId,
+        std::vector<ServiceInfoProfileNew>& serviceInfoProfiles) = 0;
+    virtual int32_t GetServiceInfoProfileByRegServiceId(int32_t regServiceId,
+        ServiceInfoProfileNew& serviceInfoProfile) = 0;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

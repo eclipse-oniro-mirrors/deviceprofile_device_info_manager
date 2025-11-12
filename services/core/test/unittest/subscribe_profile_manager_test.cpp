@@ -152,7 +152,7 @@ HWTEST_F(SubscribeProfileManagerTest, SubscribeDeviceProfile_001, TestSize.Level
     OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
         OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
-    
+
     int32_t errCode = SubscribeProfileManager::GetInstance().SubscribeDeviceProfile(subscribeInfo);
     EXPECT_EQ(errCode, DP_SUCCESS);
 }
@@ -381,7 +381,7 @@ HWTEST_F(SubscribeProfileManagerTest, UnSubscribeDeviceProfile001, TestSize.Leve
     OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
         OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
-    
+
     int32_t errCode = SubscribeProfileManager::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
     EXPECT_EQ(errCode, DP_SUCCESS);
 }
@@ -398,7 +398,7 @@ HWTEST_F(SubscribeProfileManagerTest, SubscribeDeviceProfile_002, TestSize.Level
     int32_t saId = 4801;
     unordered_set<ProfileChangeType> subscribeTypes = {};
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, nullptr);
-    
+
     int32_t errCode = SubscribeProfileManager::GetInstance().SubscribeDeviceProfile(subscribeInfo);
     EXPECT_EQ(errCode, DP_SUCCESS);
 }
@@ -582,7 +582,7 @@ HWTEST_F(SubscribeProfileManagerTest, UnSubscribeDeviceProfile002, TestSize.Leve
     int32_t saId = 4801;
     unordered_set<ProfileChangeType> subscribeTypes = {};
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, nullptr);
-    
+
     int32_t errCode = SubscribeProfileManager::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
     EXPECT_EQ(errCode, DP_SUCCESS);
 }
@@ -602,7 +602,7 @@ HWTEST_F(SubscribeProfileManagerTest, SubscribeDeviceProfile_003, TestSize.Level
     OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
         OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
-    
+
     int32_t errCode = SubscribeProfileManager::GetInstance().SubscribeDeviceProfile(subscribeInfo);
     EXPECT_EQ(errCode, DP_SUCCESS);
 }

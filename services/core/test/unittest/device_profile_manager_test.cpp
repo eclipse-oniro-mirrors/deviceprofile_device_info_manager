@@ -1560,32 +1560,32 @@ HWTEST_F(DeviceProfileManagerTest, GetInKvDB002, TestSize.Level1)
     deviceProfile2.SetOsVersion("GetInKvDB001_OsVersion2");
     deviceProfile2.SetOsType(1);
     DeviceProfileManager::GetInstance().PutDeviceProfile(deviceProfile2);
-    
+
     ServiceProfile serviceProfile5;
     serviceProfile5.SetDeviceId(deviceId);
     serviceProfile5.SetServiceName("GetInKvDB001_ServiceName2");
     serviceProfile5.SetServiceType("GetInKvDB001_ServiceType2");
     DeviceProfileManager::GetInstance().PutServiceProfile(serviceProfile5);
-    
+
     CharacteristicProfile charProfile5;
     charProfile5.SetDeviceId(deviceId);
     charProfile5.SetServiceName("GetInKvDB001_ServiceName2");
     charProfile5.SetCharacteristicKey("GetInKvDB001_CharacteristicKey2");
     charProfile5.SetCharacteristicValue("GetInKvDB001_CharacteristicValue2");
     DeviceProfileManager::GetInstance().PutCharacteristicProfile(charProfile5);
-    
+
     ProfileCache::GetInstance().DeleteDeviceProfile(deviceId);
     ProfileCache::GetInstance().DeleteServiceProfile("GetInKvDB001_DeviceId2", "GetInKvDB001_ServiceName");
     ProfileCache::GetInstance().DeleteCharProfile("GetInKvDB001_DeviceId2", "GetInKvDB001_ServiceName",
     "GetInKvDB001_CharacteristicKey2");
-    
+
     DeviceProfile outDeviceProfile;
     DeviceProfileManager::GetInstance().GetDeviceProfile(deviceId, outDeviceProfile);
-    
+
     string serviceName2 = "GetInKvDB001_ServiceName2";
     ServiceProfile outServiceProfile;
     DeviceProfileManager::GetInstance().GetServiceProfile(deviceId, serviceName2, outServiceProfile);
-    
+
     string serviceName3 = "GetInKvDB001_ServiceName2";
     string characteristicKey3 = "GetInKvDB001_CharacteristicKey2";
     CharacteristicProfile outCharProfile;
@@ -1653,7 +1653,7 @@ HWTEST_F(DeviceProfileManagerTest, IsMultiUserValid001, TestSize.Level1)
     ServiceProfile profile("", "serviceName", "serviceType");
     profile.SetIsMultiUser(false);
     profile.SetUserId(DEFAULT_USER_ID);
-    
+
     int32_t result = DeviceProfileManager::GetInstance().IsMultiUserValid(profile);
     EXPECT_NE(result, DP_SUCCESS);
 }
@@ -1669,7 +1669,7 @@ HWTEST_F(DeviceProfileManagerTest, IsMultiUserValid002, TestSize.Level1)
     ServiceProfile profile("deviceId", "serviceName", "serviceType");
     profile.SetIsMultiUser(true);
     profile.SetUserId(0);
-    
+
     int32_t result = DeviceProfileManager::GetInstance().IsMultiUserValid(profile);
     EXPECT_NE(result, DP_SUCCESS);
 }
@@ -1685,7 +1685,7 @@ HWTEST_F(DeviceProfileManagerTest, IsMultiUserValid003, TestSize.Level1)
     ServiceProfile profile("deviceId", "serviceName", "serviceType");
     profile.SetIsMultiUser(false);
     profile.SetUserId(DEFAULT_USER_ID + 1);
-    
+
     int32_t result = DeviceProfileManager::GetInstance().IsMultiUserValid(profile);
     EXPECT_NE(result, DP_SUCCESS);
 }
@@ -1701,7 +1701,7 @@ HWTEST_F(DeviceProfileManagerTest, IsMultiUserValid004, TestSize.Level1)
     ServiceProfile profile(ProfileCache::GetInstance().GetLocalUdid(), "serviceName", "serviceType");
     profile.SetIsMultiUser(true);
     profile.SetUserId(333);
-    
+
     int32_t result = DeviceProfileManager::GetInstance().IsMultiUserValid(profile);
     EXPECT_NE(result, DP_SUCCESS);
 }
@@ -1717,7 +1717,7 @@ HWTEST_F(DeviceProfileManagerTest, IsMultiUserValid005, TestSize.Level1)
     ServiceProfile profile("deviceId", "serviceName", "serviceType");
     profile.SetIsMultiUser(false);
     profile.SetUserId(DEFAULT_USER_ID);
-    
+
     int32_t result = DeviceProfileManager::GetInstance().IsMultiUserValid(profile);
     EXPECT_EQ(result, DP_SUCCESS);
 }

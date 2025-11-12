@@ -74,7 +74,7 @@ void ServiceInfoProfile::SetTokenId(const std::string& tokenId)
 {
     tokenId_ = tokenId;
 }
-    
+
 int64_t ServiceInfoProfile::GetServiceId() const
 {
     return serviceId_;
@@ -99,12 +99,12 @@ std::string ServiceInfoProfile::GetServiceName() const
 {
     return serviceName_;
 }
-    
+
 void ServiceInfoProfile::SetServiceName(const std::string& serviceName)
 {
     serviceName_ = serviceName;
 }
-    
+
 std::string ServiceInfoProfile::GetServiceDisplayName() const
 {
     return serviceDisplayName_;
@@ -124,7 +124,7 @@ void ServiceInfoProfile::SetCustomData(const std::string& customData)
 {
     customData_ = customData;
 }
-    
+
 int32_t ServiceInfoProfile::GetCustomDataLen() const
 {
     return customDataLen_;
@@ -174,7 +174,7 @@ void ServiceInfoProfile::SetAuthBoxType(const int32_t authBoxType)
 {
     authBoxType_ = authBoxType;
 }
-    
+
 int32_t ServiceInfoProfile::GetAuthType() const
 {
     return authType_;
@@ -184,7 +184,7 @@ void ServiceInfoProfile::SetAuthType(const int32_t authType)
 {
     authType_ = authType;
 }
-    
+
 int32_t ServiceInfoProfile::GetPinExchangeType() const
 {
     return pinExchangeType_;
@@ -214,12 +214,12 @@ void ServiceInfoProfile::SetDescription(const std::string& description)
 {
     description_ = description;
 }
-    
+
 std::string ServiceInfoProfile::GetServiceDicoveryScope() const
 {
     return serviceDicoveryScope_;
 }
-    
+
 void ServiceInfoProfile::SetServiceDicoveryScope(const std::string& serviceDicoveryScope)
 {
     serviceDicoveryScope_ = serviceDicoveryScope;

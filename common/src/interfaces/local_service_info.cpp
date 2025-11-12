@@ -52,7 +52,7 @@ void LocalServiceInfo::SetAuthBoxType(const int32_t authBoxType)
 {
     authBoxType_ = authBoxType;
 }
-    
+
 int32_t LocalServiceInfo::GetAuthType() const
 {
     return authType_;
@@ -62,7 +62,7 @@ void LocalServiceInfo::SetAuthType(const int32_t authType)
 {
     authType_ = authType;
 }
-    
+
 int32_t LocalServiceInfo::GetPinExchangeType() const
 {
     return pinExchangeType_;

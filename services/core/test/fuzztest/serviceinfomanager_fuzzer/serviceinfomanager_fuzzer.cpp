@@ -84,7 +84,8 @@ void GetServiceInfoProfileByTokenIdFuzzTest(FuzzedDataProvider &fdp)
 
     profile.SetServiceId(fdp.ConsumeIntegral<int64_t>());
     profile.SetServiceType(fdp.ConsumeRandomLengthString());
-    ServiceInfoProfileManage::GetInstance().GetServiceInfoProfileByTokenId(tokenId, profile);
+    std::vector<ServiceInfoProfileNew> profiles {profile};
+    ServiceInfoProfileManage::GetInstance().GetServiceInfoProfileByTokenId(tokenId, profiles);
 }
 
 void SetServiceInfoProfileFuzzTest(FuzzedDataProvider &fdp)

@@ -146,7 +146,7 @@ HWTEST_F(KVAdapterTest, Put004, TestSize.Level1)
         value += 'a';
     }
     EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Put(key, value));
-    
+
     value = "";
     EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Put(key, value));
 
@@ -154,7 +154,7 @@ HWTEST_F(KVAdapterTest, Put004, TestSize.Level1)
         key += 'a';
     }
     EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Put(key, value));
-    
+
     key = "";
     EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Put(key, value));
 }
@@ -183,7 +183,7 @@ HWTEST_F(KVAdapterTest, PutBatch002, TestSize.Level1)
 {
     map<string, string> values;
     EXPECT_EQ(DP_INVALID_PARAMS, kvStore->PutBatch(values));
-    
+
     for (int32_t i = 0; i< MAX_PROFILE_SIZE + 5; i++) {
         values[to_string(i)] = "value";
     }
@@ -350,7 +350,7 @@ HWTEST_F(KVAdapterTest, Sync002, TestSize.Level1)
 {
     vector<string> deviceList;
     EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Sync(deviceList, SyncMode::PUSH));
-    
+
     for (int32_t i = 0; i < MAX_DEVICE_SIZE + 5; i++) {
         deviceList.emplace_back("deviceId");
     }
@@ -369,10 +369,10 @@ HWTEST_F(KVAdapterTest, Sync003, TestSize.Level1)
     deviceList.emplace_back("deviceId");
     SyncMode mode = SyncMode::PUSH;
     kvStore->Sync(deviceList, mode);
-    
+
     mode = SyncMode::MAX;
     EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Sync(deviceList, mode));
-    
+
     mode = SyncMode::MIN;
     EXPECT_EQ(DP_INVALID_PARAMS, kvStore->Sync(deviceList, mode));
 }

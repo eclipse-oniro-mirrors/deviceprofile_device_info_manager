@@ -36,7 +36,7 @@ void TrustProfileManagerFuzzTest(const uint8_t* data, size_t size)
     if ((data == nullptr) || (size < sizeof(int64_t))) {
         return;
     }
-    
+
     FuzzedDataProvider fdp(data, size);
     std::string trustDeviceId = fdp.ConsumeRandomLengthString();
     std::string accountId = fdp.ConsumeRandomLengthString();
@@ -49,7 +49,7 @@ void TrustProfileManagerFuzzTest(const uint8_t* data, size_t size)
 
     int64_t tokenId = fdp.ConsumeIntegral<int64_t>();
     int64_t accessControlId = fdp.ConsumeIntegral<int64_t>();
-    
+
     std::vector<AccessControlProfile> outProfile;
 
     TrustProfileManager::GetInstance().GetAccessControlProfileByTokenId(tokenId, trustDeviceId, status, outProfile);

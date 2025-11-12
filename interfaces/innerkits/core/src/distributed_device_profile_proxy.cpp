@@ -852,7 +852,7 @@ int32_t DistributedDeviceProfileProxy::PutServiceInfoProfile(const ServiceInfoPr
     SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::PUT_SERVICE_INFO_PROFILE), data, reply);
     return DP_SUCCESS;
 }
- 
+
 int32_t DistributedDeviceProfileProxy::DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId)
 {
     sptr<IRemoteObject> remote = nullptr;
@@ -861,7 +861,7 @@ int32_t DistributedDeviceProfileProxy::DeleteServiceInfoProfile(int32_t regServi
     WRITE_INTERFACE_TOKEN(data);
     WRITE_HELPER(data, Int32, regServiceId);
     WRITE_HELPER(data, Int32, userId);
- 
+
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::DELETE_SERVICE_INFO_PROFILE), data, reply);
     return DP_SUCCESS;
@@ -884,18 +884,37 @@ int32_t DistributedDeviceProfileProxy::GetServiceInfoProfileByServiceId(int64_t 
     }
     return DP_SUCCESS;
 }
- 
+
 int32_t DistributedDeviceProfileProxy::GetServiceInfoProfileByTokenId(int64_t tokenId,
+    std::vector<ServiceInfoProfileNew>& serviceInfoProfiles)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+
+    WRITE_HELPER(data, Int64, tokenId);
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::GET_SERVICE_INFO_PROFILE_BY_TOKEN_ID), data, reply);
+    if (!IpcUtils::UnMarshalling(reply, serviceInfoProfiles)) {
+        HILOGE("dp ipc read parcel fail");
+        return DP_READ_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::GetServiceInfoProfileByRegServiceId(int32_t regServiceId,
     ServiceInfoProfileNew& serviceInfoProfile)
 {
     sptr<IRemoteObject> remote = nullptr;
     GET_REMOTE_OBJECT(remote);
     MessageParcel data;
     WRITE_INTERFACE_TOKEN(data);
- 
-    WRITE_HELPER(data, Int64, tokenId);
+
+    WRITE_HELPER(data, Int32, regServiceId);
     MessageParcel reply;
-    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::GET_SERVICE_INFO_PROFILE_BY_TOKEN_ID), data, reply);
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::GET_SERVICE_INFO_PROFILE_BY_REG_SER_ID),
+        data, reply);
     if (!serviceInfoProfile.UnMarshalling(reply)) {
         HILOGE("dp ipc read parcel fail");
         return DP_READ_PARCEL_FAIL;
