@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -611,8 +611,8 @@ HWTEST_F(ProfileCacheTest, FilterAndGroupOnlineDevices001, TestSize.Level1)
 {
     vector<std::string> deviceList;
     std::vector<std::string> ohBasedDevices;
-    std::vector<std::string> notOHBasedDevices;
-    bool res = ProfileCache::GetInstance().FilterAndGroupOnlineDevices(deviceList, ohBasedDevices, notOHBasedDevices);
+    std::vector<std::tuple<std::string, std::string, bool>> notOHBasedDevicess;
+    bool res = ProfileCache::GetInstance().FilterAndGroupOnlineDevices(deviceList, ohBasedDevices, notOHBasedDevicess);
     EXPECT_FALSE(res);
 }
 
@@ -629,8 +629,8 @@ HWTEST_F(ProfileCacheTest, FilterAndGroupOnlineDevices002, TestSize.Level1)
         deviceList.emplace_back("networkId");
     }
     std::vector<std::string> ohBasedDevices;
-    std::vector<std::string> notOHBasedDevices;
-    bool res = ProfileCache::GetInstance().FilterAndGroupOnlineDevices(deviceList, ohBasedDevices, notOHBasedDevices);
+    std::vector<std::tuple<std::string, std::string, bool>> notOHBasedDevicess;
+    bool res = ProfileCache::GetInstance().FilterAndGroupOnlineDevices(deviceList, ohBasedDevices, notOHBasedDevicess);
     EXPECT_FALSE(res);
 }
 
@@ -656,11 +656,11 @@ HWTEST_F(ProfileCacheTest, FilterAndGroupOnlineDevices003, TestSize.Level1)
 
     std::vector<std::string> deviceList {deviceInfo1.GetNetworkId(), deviceInfo2.GetNetworkId()};
     std::vector<std::string> ohBasedDevices;
-    std::vector<std::string> notOHBasedDevices;
-    bool res = ProfileCache::GetInstance().FilterAndGroupOnlineDevices(deviceList, ohBasedDevices, notOHBasedDevices);
+    std::vector<std::tuple<std::string, std::string, bool>> notOHBasedDevicess;
+    bool res = ProfileCache::GetInstance().FilterAndGroupOnlineDevices(deviceList, ohBasedDevices, notOHBasedDevicess);
     EXPECT_TRUE(res);
     EXPECT_FALSE(ohBasedDevices.empty());
-    EXPECT_FALSE(notOHBasedDevices.empty());
+    EXPECT_FALSE(notOHBasedDevicess.empty());
     ProfileCache::GetInstance().onlineDevMap_.erase(deviceInfo1.GetUdid());
     ProfileCache::GetInstance().onlineDevMap_.erase(deviceInfo2.GetUdid());
 }

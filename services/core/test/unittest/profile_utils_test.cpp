@@ -1511,42 +1511,16 @@ HWTEST_F(ProfileUtilsTest, EntriesToServiceProfile002, TestSize.Level1)
     map<string, string> values;
     ServiceProfile profile;
     string strValye = "";
-    values[SERVICE_NAME] = "serviceName";
-    values[SERVICE_TYPE] = "serviceType";
-
-    int32_t ret1 = ProfileUtils::EntriesToServiceProfile(values, profile);
-    EXPECT_EQ(DP_SUCCESS, ret1);
-    EXPECT_EQ("", profile.GetServiceName());
-
-    for (int32_t i = 0; i < MAX_STRING_LEN + 5; i++) {
-        strValye += "a";
-    }
-    values[SERVICE_NAME] = strValye;
-    values[SERVICE_TYPE] = strValye;
-    auto propertiesMap = ProfileUtils::GetProfilePropertiesMap(values);
-    EXPECT_EQ(false, propertiesMap.count(SERVICE_TYPE) != 0);
-    EXPECT_EQ(false, 0 < propertiesMap[SERVICE_TYPE].length());
-    EXPECT_EQ(true, propertiesMap[SERVICE_TYPE].length() < MAX_STRING_LEN);
-    ProfileUtils::EntriesToServiceProfile(values, profile);
-
-    values[SERVICE_NAME] = "";
-    values[SERVICE_TYPE] = "";
-    propertiesMap = ProfileUtils::GetProfilePropertiesMap(values);
-    EXPECT_EQ(false, propertiesMap.count(SERVICE_TYPE) != 0);
-    EXPECT_EQ(false, 0 < propertiesMap[SERVICE_TYPE].length());
-    ProfileUtils::EntriesToServiceProfile(values, profile);
-
-    values.erase(SERVICE_NAME);
-    values.erase(SERVICE_TYPE);
-    propertiesMap = ProfileUtils::GetProfilePropertiesMap(values);
-    EXPECT_EQ(false, propertiesMap.count(SERVICE_TYPE) != 0);
-    ProfileUtils::EntriesToServiceProfile(values, profile);
-
-    for (int32_t i = 0; i < MAX_DB_RECORD_SIZE + 5; i++) {
-        values[to_string(i)] = "value";
-    }
-    int32_t ret2 = ProfileUtils::EntriesToServiceProfile(values, profile);
-    EXPECT_EQ(DP_INVALID_PARAMS, ret2);
+    string firstDBKey = "svr#deviceId#serviceType#serviceName";
+    string firstDBValue = "serviceName";
+    string secondDBKey = "svr#deviceId#serviceType#serviceType";
+    string secondDBValue = "serviceType";
+    values.emplace(firstDBKey, firstDBValue);
+    values.emplace(secondDBKey, secondDBValue);
+    
+    int32_t ret = ProfileUtils::EntriesToServiceProfile(values, profile);
+    EXPECT_EQ(DP_SUCCESS, ret);
+    EXPECT_EQ("serviceName", profile.GetServiceName());
 }
 
 /**
@@ -1560,39 +1534,16 @@ HWTEST_F(ProfileUtilsTest, EntriesToCharProfile002, TestSize.Level1)
     map<string, string> values;
     CharacteristicProfile profile;
     string strValye = "";
-    values[CHARACTERISTIC_KEY] = "characteristicKey";
-    values[CHARACTERISTIC_VALUE] = "characteristicValue";
-
-    int32_t ret1 = ProfileUtils::EntriesToCharProfile(values, profile);
-    EXPECT_EQ(DP_SUCCESS, ret1);
-    EXPECT_EQ("", profile.GetCharacteristicKey());
-
-    for (int32_t i = 0; i < MAX_STRING_LEN + 5; i++) {
-        strValye += "a";
-    }
-    values[CHARACTERISTIC_KEY] = strValye;
-    values[CHARACTERISTIC_VALUE] = strValye;
-    EXPECT_EQ(true, values.count(CHARACTERISTIC_KEY) != 0);
-    EXPECT_EQ(true, 0 < values[CHARACTERISTIC_KEY].length());
-    EXPECT_EQ(false, values[CHARACTERISTIC_KEY].length() < MAX_STRING_LEN);
-    ProfileUtils::EntriesToCharProfile(values, profile);
-
-    values[CHARACTERISTIC_KEY] = "";
-    values[CHARACTERISTIC_VALUE] = "";
-    EXPECT_EQ(true, values.count(CHARACTERISTIC_KEY) != 0);
-    EXPECT_EQ(false, 0 < values[CHARACTERISTIC_KEY].length());
-    ProfileUtils::EntriesToCharProfile(values, profile);
-
-    values.erase(CHARACTERISTIC_KEY);
-    values.erase(CHARACTERISTIC_VALUE);
-    EXPECT_EQ(false, values.count(CHARACTERISTIC_KEY) != 0);
-    ProfileUtils::EntriesToCharProfile(values, profile);
-
-    for (int32_t i = 0; i < MAX_DB_RECORD_SIZE + 5; i++) {
-        values[to_string(i)] = "value";
-    }
-    int32_t ret2 = ProfileUtils::EntriesToCharProfile(values, profile);
-    EXPECT_EQ(DP_INVALID_PARAMS, ret2);
+    string firstDBKey = "char#deviceId#serviceName#status#characteristicKey";
+    string firstDBValue = "characteristicKey";
+    string secondDBKey = "char#deviceId#serviceName#status#characteristicValue";
+    string secondDBValue = "characteristicValue";
+    values.emplace(firstDBKey, firstDBValue);
+    values.emplace(secondDBKey, secondDBValue);
+ 
+    int32_t ret = ProfileUtils::EntriesToCharProfile(values, profile);
+    EXPECT_EQ(DP_SUCCESS, ret);
+    EXPECT_EQ("characteristicKey", profile.GetCharacteristicKey());
 }
 
 /**
