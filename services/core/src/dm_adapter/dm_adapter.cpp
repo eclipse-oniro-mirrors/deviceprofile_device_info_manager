@@ -103,7 +103,7 @@ void DMAdapter::DmDeviceStateCallback::OnDeviceOnline(const DistributedHardware:
         HILOGI("OnDeviceOnline networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
         TrustedDeviceInfo trustedDeviceInfo;
         if (!ConvertToTrustedDeviceInfo(deviceInfo, trustedDeviceInfo)) {
-            HILOGE("OnDeviceOnline ConvertToTrustedDeviceInfo fial, networkId:%{public}s",
+            HILOGE("OnDeviceOnline ConvertToTrustedDeviceInfo fail, networkId:%{public}s",
                 ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
             return;
         }

@@ -236,7 +236,7 @@ void SwitchUpdater::OnDeviceOnline(const TrustedDeviceInfo& deviceInfo)
         HILOGI("onlineDevice not in cache");
         return;
     }
-    std::uint32_t switchValue = item->second;
+    uint32_t switchValue = item->second;
     HandleSwitchUpdateChange(onlineUdid, switchValue);
     switchCacheMap_.erase(item);
     HILOGI("end");

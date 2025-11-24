@@ -63,7 +63,7 @@ private:
         ChangeType changeType);
 
     std::mutex switchCacheMapMutex_;
-    std::map<std::string, std::uint32_t> switchCacheMap_;
+    std::map<std::string, uint32_t> switchCacheMap_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS
