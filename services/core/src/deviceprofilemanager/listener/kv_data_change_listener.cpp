@@ -17,6 +17,7 @@
 
 #include <algorithm>
 #include <cinttypes>
+#include <thread>
 
 #include "datetime_ex.h"
 #include "string_ex.h"
@@ -37,6 +38,7 @@ namespace DistributedDeviceProfile {
 namespace {
     const std::string TAG = "KvDataChangeListener";
     const std::string STATIC_STORE_ID = "dp_kv_static_store";
+    constexpr uint32_t MAX_SWITCH_CACHE_SIZE = 1000;
 }
 
 KvDataChangeListener::KvDataChangeListener(const std::string& storeId)
@@ -101,21 +103,32 @@ void KvDataChangeListener::OnChange(const DistributedKv::DataOrigin& origin, Key
 
 void KvDataChangeListener::OnSwitchChange(const DistributedKv::SwitchNotification& notification)
 {
-    HILOGI("Switch data change, networkid: %{public}s", ProfileUtils::GetAnonyString(notification.deviceId).c_str());
-    if (notification.deviceId.empty()) {
-        HILOGE("params are valid");
-        return;
-    }
-    // is local or is online
-    std::string netWorkId = notification.deviceId;
-    std::string udid;
-    int32_t res = ProfileCache::GetInstance().GetUdidByNetWorkId(netWorkId, udid);
-    if (res != DP_SUCCESS || udid.empty()) {
-        HILOGD("get udid fail, netWorkId is invalid: %{public}s",
-            ProfileUtils::GetAnonyString(netWorkId).c_str());
-        return;
-    }
-    HandleSwitchUpdateChange(udid, notification.data.value);
+    auto task = [notification]() {
+        HILOGI("OnSwitchChange Switch data change, networkid: %{public}s",
+            ProfileUtils::GetAnonyString(notification.deviceId).c_str());
+        if (notification.deviceId.empty()) {
+            HILOGE("OnSwitchChange params are valid");
+            return;
+        }
+        // is local or is online
+        std::string netWorkId = notification.deviceId;
+        std::string udid;
+        int32_t res = ProfileCache::GetInstance().GetUdidByNetWorkId(netWorkId, udid);
+        if (res == DP_GET_UDID_BY_NETWORKID_FAIL) {
+            SwitchUpdater::GetInstance().AddSwitchCacheMap(netWorkId, notification.data.value);
+            HILOGI("OnSwitchChange device is not online,already add cache,netWorkId:%{public}s,switch:%{public}u",
+                ProfileUtils::GetAnonyString(netWorkId).c_str(), notification.data.value);
+            return;
+        }
+        if (res != DP_SUCCESS || udid.empty()) {
+            HILOGD("OnSwitchChange get udid fail, netWorkId is invalid: %{public}s",
+                ProfileUtils::GetAnonyString(netWorkId).c_str());
+            return;
+        }
+        SwitchUpdater::GetInstance().EraseSwitchCacheMap(netWorkId);
+        SwitchUpdater::GetInstance().HandleSwitchUpdateChange(udid, notification.data.value);
+    };
+    std::thread(task).detach();
 }
 
 void KvDataChangeListener::FilterEntries(const std::vector<DistributedKv::Entry>& records,
@@ -202,7 +215,34 @@ void KvDataChangeListener::HandleDeleteChange(const std::vector<DistributedKv::E
     }
 }
 
-void KvDataChangeListener::HandleSwitchUpdateChange(const std::string udid, uint32_t switchValue)
+IMPLEMENT_SINGLE_INSTANCE(SwitchUpdater);
+
+void SwitchUpdater::OnDeviceOnline(const TrustedDeviceInfo& deviceInfo)
+{
+    std::string onlineNetworkId = deviceInfo.GetNetworkId();
+    if (onlineNetworkId.empty()) {
+        HILOGE("onlineNetworkId is empty");
+        return;
+    }
+    std::string onlineUdid = deviceInfo.GetUdid();
+    if (onlineUdid.empty()) {
+        HILOGE("onlineUdid is empty");
+        return;
+    }
+    HILOGI("netWorkId:%{public}s", ProfileUtils::GetAnonyString(onlineNetworkId).c_str());
+    std::lock_guard<std::mutex> lock(switchCacheMapMutex_);
+    auto item = switchCacheMap_.find(onlineNetworkId);
+    if (item == switchCacheMap_.end()) {
+        HILOGI("onlineDevice not in cache");
+        return;
+    }
+    uint32_t switchValue = item->second;
+    HandleSwitchUpdateChange(onlineUdid, switchValue);
+    switchCacheMap_.erase(item);
+    HILOGI("end");
+}
+
+void SwitchUpdater::HandleSwitchUpdateChange(const std::string& udid, uint32_t switchValue)
 {
     HILOGI("udid: %{public}s, switch: %{public}u", ProfileUtils::GetAnonyString(udid).c_str(), switchValue);
     std::string serviceName;
@@ -228,7 +268,7 @@ void KvDataChangeListener::HandleSwitchUpdateChange(const std::string udid, uint
     }
 }
 
-int32_t KvDataChangeListener::GenerateSwitchNotify(const std::string& udid, const std::string& serviceName,
+int32_t SwitchUpdater::GenerateSwitchNotify(const std::string& udid, const std::string& serviceName,
     const std::string& characteristicProfileKey, const std::string& characteristicProfileValue, ChangeType changeType)
 {
     if (!ProfileUtils::IsKeyValid(udid) ||
@@ -257,6 +297,22 @@ int32_t KvDataChangeListener::GenerateSwitchNotify(const std::string& udid, cons
         return DP_GENERATE_SWITCH_NOTIFY_FAIL;
     }
     return DP_SUCCESS;
+}
+
+void SwitchUpdater::AddSwitchCacheMap(const std::string& netWorkId, uint32_t switchValue)
+{
+    std::lock_guard<std::mutex> lock(switchCacheMapMutex_);
+    if (switchCacheMap_.size() > MAX_SWITCH_CACHE_SIZE) {
+        HILOGE("too many values!");
+        return;
+    }
+    switchCacheMap_[netWorkId] = switchValue;
+}
+
+void SwitchUpdater::EraseSwitchCacheMap(const std::string& netWorkId)
+{
+    std::lock_guard<std::mutex> lock(switchCacheMapMutex_);
+    switchCacheMap_.erase(netWorkId);
 }
 } // namespace DeviceProfile
 } // namespace OHOS

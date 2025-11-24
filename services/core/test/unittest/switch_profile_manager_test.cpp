@@ -23,6 +23,7 @@
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 #include "event_handler_factory.h"
+#include "kv_data_change_listener.h"
 #include "switch_profile_manager.h"
 using namespace testing::ext;
 namespace OHOS {
@@ -146,6 +147,27 @@ HWTEST_F(SwitchProfileManagerTest, RefreshLocalSwitchProfile_001, TestSize.Level
 {
     int32_t errCode = SwitchProfileManager::GetInstance().RefreshLocalSwitchProfile();
     EXPECT_EQ(errCode, DP_INVALID_PARAMS);
+}
+
+/*
+ * @tc.name: HandleSwitchUpdateChange_001
+ * @tc.desc: HandleSwitchUpdateChange
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SwitchProfileManagerTest, HandleSwitchUpdateChange_001, TestSize.Level1)
+{
+    std::string netWorkId = "netWorkId";
+    uint32_t switchValue = 16;
+    SwitchUpdater::GetInstance().AddSwitchCacheMap(netWorkId, switchValue);
+    uint32_t outSwitchValue = 0;
+    outSwitchValue = SwitchUpdater::GetInstance().switchCacheMap_[netWorkId];
+    EXPECT_EQ(outSwitchValue, switchValue);
+    TrustedDeviceInfo deviceInfo;
+    SwitchUpdater::GetInstance().OnDeviceOnline(deviceInfo);
+    SwitchUpdater::GetInstance().HandleSwitchUpdateChange(netWorkId, switchValue);
+    SwitchUpdater::GetInstance().EraseSwitchCacheMap(netWorkId);
+    EXPECT_EQ(0, SwitchUpdater::GetInstance().switchCacheMap_.count(netWorkId));
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

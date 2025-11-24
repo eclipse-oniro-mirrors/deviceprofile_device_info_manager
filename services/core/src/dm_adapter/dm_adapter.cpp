@@ -15,6 +15,8 @@
 
 #include "dm_adapter.h"
 
+#include <thread>
+
 #include "cJSON.h"
 #include "device_manager.h"
 #include "dm_constants.h"
@@ -97,16 +99,20 @@ bool DMAdapter::GetUuidByNetworkId(const std::string& networkId, std::string& uu
 
 void DMAdapter::DmDeviceStateCallback::OnDeviceOnline(const DistributedHardware::DmDeviceInfo& deviceInfo)
 {
-    HILOGI("networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
-    TrustedDeviceInfo trustedDeviceInfo;
-    if (!ConvertToTrustedDeviceInfo(deviceInfo, trustedDeviceInfo)) {
-        HILOGE("ConvertToTrustedDeviceInfo fial, networkId:%{public}s",
-            ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
-        return;
-    }
-    HILOGI("trustedDeviceInfo:%{public}s", trustedDeviceInfo.dump().c_str());
-    ProfileCache::GetInstance().OnNodeOnline(trustedDeviceInfo);
-    DeviceProfileManager::GetInstance().OnDeviceOnline(trustedDeviceInfo);
+    auto task = [this, deviceInfo]() {
+        HILOGI("OnDeviceOnline networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
+        TrustedDeviceInfo trustedDeviceInfo;
+        if (!ConvertToTrustedDeviceInfo(deviceInfo, trustedDeviceInfo)) {
+            HILOGE("OnDeviceOnline ConvertToTrustedDeviceInfo fail, networkId:%{public}s",
+                ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
+            return;
+        }
+        HILOGI("OnDeviceOnline trustedDeviceInfo:%{public}s", trustedDeviceInfo.dump().c_str());
+        ProfileCache::GetInstance().OnNodeOnline(trustedDeviceInfo);
+        DeviceProfileManager::GetInstance().OnDeviceOnline(trustedDeviceInfo);
+        SwitchUpdater::GetInstance().OnDeviceOnline(trustedDeviceInfo);
+    };
+    std::thread(task).detach();
 }
 
 void DMAdapter::DmDeviceStateCallback::OnDeviceOffline(const DistributedHardware::DmDeviceInfo& deviceInfo)
