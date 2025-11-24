@@ -16,12 +16,16 @@
 #ifndef OHOS_DP_DATA_CHANGE_LISTENER_H
 #define OHOS_DP_DATA_CHANGE_LISTENER_H
 
+#include <cstdint>
 #include <map>
+#include <mutex>
 #include <vector>
 
 #include "kvstore_observer.h"
 
 #include "distributed_device_profile_enums.h"
+#include "single_instance.h"
+#include "trusted_device_info.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -39,14 +43,27 @@ private:
     void HandleUpdateChange(const std::vector<DistributedKv::Entry> &updateRecords);
     void HandleDeleteChange(const std::vector<DistributedKv::Entry> &deleteRecords);
     std::vector<DistributedKv::Entry> ConvertCloudChangeDataToEntries(const std::vector<std::string> &keys);
-    void HandleSwitchUpdateChange(const std::string netWorkId, uint32_t switchValue);
-    int32_t GenerateSwitchNotify(const std::string& udid, const std::string& servcieName,
-        const std::string& characteristicProfileKey, const std::string& characteristicProfileValue,
-        ChangeType changeType);
     void FilterEntries(const std::vector<DistributedKv::Entry>& records,
         std::map<std::string, std::string>& entriesMap, bool isDelete);
 private:
     std::string storeId_;
+};
+
+class SwitchUpdater {
+    DECLARE_SINGLE_INSTANCE(SwitchUpdater);
+public:
+    void OnDeviceOnline(const TrustedDeviceInfo& deviceInfo);
+    void HandleSwitchUpdateChange(const std::string& netWorkId, uint32_t switchValue);
+    void AddSwitchCacheMap(const std::string& netWorkId, uint32_t switchValue);
+    void EraseSwitchCacheMap(const std::string& netWorkId);
+
+private:
+    int32_t GenerateSwitchNotify(const std::string& udid, const std::string& serviceName,
+        const std::string& characteristicProfileKey, const std::string& characteristicProfileValue,
+        ChangeType changeType);
+
+    std::mutex switchCacheMapMutex_;
+    std::map<std::string, std::uint32_t> switchCacheMap_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS
