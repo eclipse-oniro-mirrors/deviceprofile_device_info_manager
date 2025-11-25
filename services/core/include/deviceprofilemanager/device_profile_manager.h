@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,6 +20,7 @@
 #include <map>
 #include <memory>
 #include <mutex>
+#include <tuple>
 #include <vector>
 
 #include "dm_device_info.h"
@@ -77,10 +78,12 @@ public:
 private:
     bool LoadDpSyncAdapter();
     void UnloadDpSyncAdapter();
-    int32_t RunloadedFunction(const std::string& deviceId, sptr<IRemoteObject> syncCompletedCallback);
-    int32_t SyncWithNotOHBasedDevice(const std::vector<std::string>& notOHBasedDevices,
+    int32_t RunloadedFunction(const std::string& peerUdid, const std::string& peerNetId,
+        sptr<IRemoteObject> syncCompletedCallback, bool isP2p);
+    int32_t SyncWithNotOHBasedDevice(const std::vector<std::tuple<std::string, std::string, bool>>& notOHBasedDevices,
         const std::string& callerDescriptor, sptr<IRemoteObject> syncCompletedCallback);
-    void SyncWithNotOHBasedDeviceFailed(const std::vector<std::string>& notOHBasedDevices,
+    void SyncWithNotOHBasedDeviceFailed(
+        const std::vector<std::tuple<std::string, std::string, bool>>& notOHBasedDevices,
         sptr<IRemoteObject> syncCompletedCallback);
     void AddToPutTempCache(const std::map<std::string, std::string>& values);
     void FixDataOnDeviceOnline(const TrustedDeviceInfo& deviceInfo);

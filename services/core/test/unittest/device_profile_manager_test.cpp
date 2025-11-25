@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -1527,9 +1527,12 @@ HWTEST_F(DeviceProfileManagerTest, GetInKvDB001, TestSize.Level1)
  */
 HWTEST_F(DeviceProfileManagerTest, RunloadedFunction001, TestSize.Level1)
 {
+    DeviceProfileManager::GetInstance().dpSyncAdapter_ = nullptr;
     OHOS::sptr<OHOS::IRemoteObject> syncCb = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
-    string peerNetworkId = "peerNetworkId";
-    int32_t ret = DeviceProfileManager::GetInstance().RunloadedFunction(peerNetworkId, syncCb);
+    const std::string& peerUdid = "peerUdid";
+    const std::string& peerNetId = "peerNetId";
+    bool isP2p = false;
+    int32_t ret = DeviceProfileManager::GetInstance().RunloadedFunction(peerUdid, peerNetId, syncCb, isP2p);
     EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
 }
 /**
@@ -1541,8 +1544,10 @@ HWTEST_F(DeviceProfileManagerTest, RunloadedFunction001, TestSize.Level1)
 HWTEST_F(DeviceProfileManagerTest, RunloadedFunction002, TestSize.Level1)
 {
     OHOS::sptr<OHOS::IRemoteObject> syncCb = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
-    string peerNetworkId = "peerNetworkId";
-    int32_t ret = DeviceProfileManager::GetInstance().RunloadedFunction(peerNetworkId, syncCb);
+    const std::string& peerUdid = "peerUdid";
+    const std::string& peerNetId = "peerNetId";
+    bool isP2p = false;
+    int32_t ret = DeviceProfileManager::GetInstance().RunloadedFunction(peerUdid, peerNetId, syncCb, isP2p);
     EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
 }
 
@@ -1858,9 +1863,9 @@ HWTEST_F(DeviceProfileManagerTest, DeleteRemovedUserData005, TestSize.Level1)
  */
 HWTEST_F(DeviceProfileManagerTest, SyncWithNotOHBasedDevice001, TestSize.Level1)
 {
-    std::vector<std::string> notOHBasedDevices;
     const std::string callerDescriptor;
     sptr<IRemoteObject> syncCompletedCallback;
+    const std::vector<std::tuple<std::string, std::string, bool>> notOHBasedDevices;
     int32_t ret = DeviceProfileManager::GetInstance().SyncWithNotOHBasedDevice(
         notOHBasedDevices, callerDescriptor, syncCompletedCallback);
     DeviceProfileManager::GetInstance().SyncWithNotOHBasedDeviceFailed(notOHBasedDevices, syncCompletedCallback);

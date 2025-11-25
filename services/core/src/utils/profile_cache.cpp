@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -861,7 +861,8 @@ int32_t ProfileCache::AddAllTrustedDevices(const std::vector<TrustedDeviceInfo>&
 }
 
 bool ProfileCache::FilterAndGroupOnlineDevices(const std::vector<std::string>& deviceList,
-    std::vector<std::string>& ohBasedDevices, std::vector<std::string>& notOHBasedDevices)
+    std::vector<std::string>& ohBasedDevices,
+    std::vector<std::tuple<std::string, std::string, bool>>& notOHBasedDevices)
 {
     HILOGI("deviceList.size: %{public}zu!", deviceList.size());
     if (deviceList.size() == 0 || deviceList.size() > MAX_DEVICE_SIZE) {
@@ -876,7 +877,8 @@ bool ProfileCache::FilterAndGroupOnlineDevices(const std::vector<std::string>& d
         if (item.GetOsType() == OHOS_TYPE) {
             ohBasedDevices.push_back(item.GetNetworkId());
         } else {
-            notOHBasedDevices.push_back(item.GetNetworkId());
+            notOHBasedDevices.push_back({item.GetUdid(), item.GetNetworkId(),
+                ProfileUtils::IsP2p(item.GetAuthForm())});
         }
     }
     return true;

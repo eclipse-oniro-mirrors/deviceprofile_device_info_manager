@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -495,7 +495,7 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const DistributedDeviceProfile::
         return DP_INVALID_PARAMS;
     }
     std::vector<std::string> ohBasedDevices;
-    std::vector<std::string> notOHBasedDevices;
+    std::vector<std::tuple<std::string, std::string, bool>> notOHBasedDevices;
     ProfileCache::GetInstance().FilterAndGroupOnlineDevices(syncOptions.GetDeviceList(),
         ohBasedDevices, notOHBasedDevices);
     if (ohBasedDevices.empty() && notOHBasedDevices.empty()) {
@@ -597,7 +597,8 @@ void DeviceProfileManager::UnloadDpSyncAdapter()
     }
 }
 
-int32_t DeviceProfileManager::SyncWithNotOHBasedDevice(const std::vector<std::string>& notOHBasedDevices,
+int32_t DeviceProfileManager::SyncWithNotOHBasedDevice(
+    const std::vector<std::tuple<std::string, std::string, bool>>& notOHBasedDevices,
     const std::string& callerDescriptor, sptr<IRemoteObject> syncCompletedCallback)
 {
     if (!LoadDpSyncAdapter()) {
@@ -605,22 +606,26 @@ int32_t DeviceProfileManager::SyncWithNotOHBasedDevice(const std::vector<std::st
         SyncWithNotOHBasedDeviceFailed(notOHBasedDevices, syncCompletedCallback);
         return DP_LOAD_SYNC_ADAPTER_FAILED;
     }
-    for (const auto& deviceId : notOHBasedDevices) {
-        if (RunloadedFunction(deviceId, syncCompletedCallback) != DP_SUCCESS) {
+    for (const auto& item : notOHBasedDevices) {
+        std::string peerUdid = std::get<NUM_0>(item);
+        std::string peerNetworkId = std::get<NUM_1>(item);
+        bool isP2p = std::get<NUM_2>(item);
+        if (RunloadedFunction(peerUdid, peerNetworkId, syncCompletedCallback, isP2p) != DP_SUCCESS) {
             HILOGE("Sync With NotOHBasedDevice Failed. deviceId:%{public}s",
-                ProfileUtils::GetAnonyString(deviceId).c_str());
-            SyncWithNotOHBasedDeviceFailed({deviceId}, syncCompletedCallback);
+                ProfileUtils::GetAnonyString(peerNetworkId).c_str());
+            SyncWithNotOHBasedDeviceFailed({item}, syncCompletedCallback);
         }
     }
     return DP_SUCCESS;
 }
 
-void DeviceProfileManager::SyncWithNotOHBasedDeviceFailed(const std::vector<std::string>& notOHBasedDevices,
+void DeviceProfileManager::SyncWithNotOHBasedDeviceFailed(
+    const std::vector<std::tuple<std::string, std::string, bool>>& notOHBasedDevices,
     sptr<IRemoteObject> syncCompletedCallback)
 {
     std::map<std::string, SyncStatus> syncResults;
-    for (const auto& deviceId : notOHBasedDevices) {
-        syncResults[deviceId] = SyncStatus::FAILED;
+    for (const auto& item : notOHBasedDevices) {
+        syncResults[std::get<NUM_1>(item)] = SyncStatus::FAILED;
     }
     sptr<ISyncCompletedCallback> syncListenerProxy = iface_cast<ISyncCompletedCallback>(syncCompletedCallback);
     if (syncListenerProxy == nullptr) {
@@ -630,19 +635,15 @@ void DeviceProfileManager::SyncWithNotOHBasedDeviceFailed(const std::vector<std:
     syncListenerProxy->OnSyncCompleted(syncResults);
 }
 
-int32_t DeviceProfileManager::RunloadedFunction(const std::string& deviceId, sptr<IRemoteObject> syncCompletedCallback)
+int32_t DeviceProfileManager::RunloadedFunction(const std::string& peerUdid, const std::string& peerNetId,
+    sptr<IRemoteObject> syncCompletedCallback, bool isP2p)
 {
     std::lock_guard<std::mutex> lock(isAdapterLoadLock_);
     if (dpSyncAdapter_ == nullptr) {
         HILOGE("dpSyncAdapter is nullptr.");
         return DP_LOAD_SYNC_ADAPTER_FAILED;
     }
-    if (dpSyncAdapter_->DetectRemoteDPVersion(deviceId) != DP_SUCCESS) {
-        HILOGE("dp service adapter detect remote version failed.");
-        return DP_LOAD_SYNC_ADAPTER_FAILED;
-    }
-    const std::list<std::string> deviceIdList = { deviceId };
-    if (dpSyncAdapter_->SyncProfile(deviceIdList, syncCompletedCallback) != DP_SUCCESS) {
+    if (dpSyncAdapter_->SyncProfile(peerUdid, peerNetId, syncCompletedCallback, isP2p) != DP_SUCCESS) {
         HILOGE("dp service adapter sync profile failed.");
         return DP_LOAD_SYNC_ADAPTER_FAILED;
     }
@@ -1195,6 +1196,5 @@ bool DeviceProfileManager::HasTrustP2PRelation(const std::string deviceId, const
     }
     return false;
 }
-
 } // namespace DeviceProfile
 } // namespace OHOS
