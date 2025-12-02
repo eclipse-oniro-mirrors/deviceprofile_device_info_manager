@@ -180,16 +180,6 @@ bool DeviceIconInfoDao::CreateQuerySqlAndCondition(const DeviceIconInfoFilterOpt
         sql += ") AND ";
         flag = true;
     }
-    if (!filterOptions.GetSubProductId().empty()) {
-        sql += "a." + SUB_PRODUCT_ID + " = ? AND ";
-        condition.emplace_back(ValueObject(filterOptions.GetSubProductId()));
-        flag = true;
-    }
-    if (!filterOptions.GetInternalModel().empty()) {
-        sql += "a." + INTERNAL_MODEL + " = ? AND ";
-        condition.emplace_back(ValueObject(filterOptions.GetInternalModel()));
-        flag = true;
-    }
     if (!filterOptions.GetImageType().empty()) {
         sql += "a." + IMAGE_TYPE + " = ? AND ";
         condition.emplace_back(ValueObject(filterOptions.GetImageType()));
@@ -201,8 +191,10 @@ bool DeviceIconInfoDao::CreateQuerySqlAndCondition(const DeviceIconInfoFilterOpt
         flag = true;
     }
     if (flag) {
-        sql.erase(sql.end() - NUM_4, sql.end());
-        return flag;
+        sql += "a." + SUB_PRODUCT_ID + " = ? AND ";
+        condition.emplace_back(ValueObject(filterOptions.GetSubProductId()));
+        sql += "a." + INTERNAL_MODEL + " = ? ORDER By a.id LIMIT 1 ";
+        condition.emplace_back(ValueObject(filterOptions.GetInternalModel()));
     }
     return flag;
 }

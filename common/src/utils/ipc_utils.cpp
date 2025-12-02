@@ -160,17 +160,22 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<int32_t>& pa
 
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<uint8_t>& params)
 {
-    int32_t length = static_cast<int32_t>(params.size());
-    WRITE_HELPER_RET(parcel, Int32, length, false);
-    if (params.empty() || params.size() > MAX_ICON_SIZE) {
-        HILOGE("uint8_t vector, params size is invalid! size : %{public}zu", params.size());
+    size_t size = params.size();
+    if (size > MAX_ICON_SIZE) {
+        HILOGE("uint8_t vector, params size is invalid! size : %{public}zu", size);
         return false;
     }
-    if (length > 0) {
-        const unsigned char *buffer = reinterpret_cast<const unsigned char *>(params.data());
-        parcel.WriteRawData(buffer, length);
+    WRITE_HELPER_RET(parcel, Uint32, size, false);
+    if (params.empty()) {
+        return true;
     }
-    return true;
+    const unsigned char *buffer = reinterpret_cast<const unsigned char *>(params.data());
+    // The same IPC can only call WriteRawData once.
+    bool ret = parcel.WriteRawData(buffer, size);
+    if (!ret) {
+        HILOGE("uint8_t vector, WriteRawData failed! size : %{public}zu", size);
+    }
+    return ret;
 }
 
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::map<std::string, std::string>& params)
@@ -243,6 +248,7 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<DeviceIconIn
         return false;
     }
     for (const auto& item : deviceIconInfos) {
+        // The same IPC can only call WriteRawData once.
         item.Marshalling(parcel);
     }
     return true;
@@ -444,14 +450,17 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<int32_t>& params
 
 bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<uint8_t>& params)
 {
-    int32_t length = parcel.ReadInt32();
-    if (length <= 0 || length > MAX_ICON_SIZE) {
-        HILOGE("uint8_t vector, params size is invalid! size : %{public}d", length);
+    uint32_t size = parcel.ReadUint32();
+    if (size == 0) {
+        return true;
+    }
+    if (size > MAX_ICON_SIZE) {
+        HILOGE("uint8_t vector, params size is invalid! size : %{public}u", size);
         return false;
     }
-    const void *temp = parcel.ReadRawData((size_t)length);
+    const void *temp = parcel.ReadRawData(size);
     if (temp == nullptr) {
-        HILOGE("read raw data failed, length = %{public}d", length);
+        HILOGE("read raw data failed, size = %{public}d", size);
         return false;
     }
     const unsigned char *buffer = reinterpret_cast<const unsigned char *>(temp);
@@ -459,7 +468,7 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<uint8_t>& params
         HILOGE("Unexpected null after reinterpret_cast");
         return false;
     }
-    std::vector<uint8_t> icon(buffer, buffer + length);
+    std::vector<uint8_t> icon(buffer, buffer + size);
     params = icon;
     return true;
 }
