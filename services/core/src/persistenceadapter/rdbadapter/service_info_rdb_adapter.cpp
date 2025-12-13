@@ -219,6 +219,7 @@ int32_t ServiceInfoRdbAdapter::GetRDBPtr()
 
 bool ServiceInfoRdbAdapter::IsInit()
 {
+    std::lock_guard<std::mutex> lock(ServiceInfoRdbAdapterMtx_);
     if (store_ == nullptr) {
         return false;
     }

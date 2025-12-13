@@ -59,7 +59,7 @@ int32_t ServiceInfoKvAdapter::Init()
     int64_t beginTime = GetTickCount();
     DistributedKv::Status status = GetKvStorePtr();
     while (tryTimes > 0) {
-        if (status == DistributedKv::Status::SUCCESS && kvStorePtr_ != nullptr) {
+        if (status == DistributedKv::Status::SUCCESS) {
             HILOGI("Init KvStorePtr Success");
             RegisterKvStoreDeathListener();
             isInited_.store(true);
@@ -69,9 +69,12 @@ int32_t ServiceInfoKvAdapter::Init()
         usleep(INIT_RETRY_SLEEP_INTERVAL);
         tryTimes--;
     }
-    if ((kvStorePtr_ == nullptr)) {
-        HILOGE("kvStorePtr is nullptr!");
-        return DP_KV_DB_PTR_NULL;
+    {
+        std::lock_guard<std::mutex> lock(kvAdapterMutex_);
+        if ((kvStorePtr_ == nullptr)) {
+            HILOGE("kvStorePtr is nullptr!");
+            return DP_KV_DB_PTR_NULL;
+        }
     }
     if (status != DistributedKv::Status::SUCCESS) {
         HILOGI("get kvStorePtr failed,status:%{public}d", status);
