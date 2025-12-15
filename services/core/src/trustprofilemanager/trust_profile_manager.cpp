@@ -990,8 +990,7 @@ int32_t TrustProfileManager::GetAllAccessControlProfiles(std::vector<AccessContr
         int32_t ret = this->GetAccessControlProfile(resultSet, accesserId, accesseeId, profiles);
         if (ret != DP_SUCCESS) {
             HILOGE("GetAccessControlProfile faild");
-            resultSet->Close();
-            return ret;
+            continue;
         }
     }
     resultSet->Close();
