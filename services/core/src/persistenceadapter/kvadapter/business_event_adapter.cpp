@@ -85,12 +85,15 @@ int32_t BusinessEventAdapter::UnInit()
 {
     HILOGI("BusinessEventAdapter UnInit");
     if (isInited_.load()) {
-        if (kvStorePtr_ == nullptr) {
-            HILOGE("kvStorePtr is nullptr!");
-            return DP_KV_DB_PTR_NULL;
+        {
+            std::lock_guard<std::mutex> lock(BusinessAdapterMutex_);
+            if (kvStorePtr_ == nullptr) {
+                HILOGE("kvStorePtr is nullptr!");
+                return DP_KV_DB_PTR_NULL;
+            }
+            UnregisterKvStoreDeathListener();
+            kvStorePtr_.reset();
         }
-        UnregisterKvStoreDeathListener();
-        kvStorePtr_.reset();
         isInited_.store(false);
     }
     return DP_SUCCESS;
@@ -186,20 +189,14 @@ DistributedKv::Status BusinessEventAdapter::GetKvStorePtr()
 int32_t BusinessEventAdapter::RegisterKvStoreDeathListener()
 {
     HILOGI("Register death listener");
-    {
-        std::lock_guard<std::mutex> lock(BusinessAdapterMutex_);
-        kvDataMgr_.RegisterKvStoreServiceDeathRecipient(deathRecipient_);
-    }
+    kvDataMgr_.RegisterKvStoreServiceDeathRecipient(deathRecipient_);
     return DP_SUCCESS;
 }
 
 int32_t BusinessEventAdapter::UnregisterKvStoreDeathListener()
 {
     HILOGI("UnRegister death listener");
-    {
-        std::lock_guard<std::mutex> lock(BusinessAdapterMutex_);
-        kvDataMgr_.UnRegisterKvStoreServiceDeathRecipient(deathRecipient_);
-    }
+    kvDataMgr_.UnRegisterKvStoreServiceDeathRecipient(deathRecipient_);
     return DP_SUCCESS;
 }
 
