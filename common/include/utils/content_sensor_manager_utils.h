@@ -42,6 +42,7 @@ public:
     int32_t GetProtType();
     std::string GetSubProductId();
     std::string DecodeHexStr(const std::string &str);
+    int32_t LoadJsonFile(const std::string &filePath, std::string &fileContent);
 
 private:
     bool IsWifiOnly();

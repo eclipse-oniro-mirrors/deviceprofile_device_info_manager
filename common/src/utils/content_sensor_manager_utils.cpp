@@ -16,16 +16,19 @@
 #include "content_sensor_manager_utils.h"
 
 #include <cstring>
+#include <fstream>
 #include <iomanip>
 #include <sstream>
 
 #include "cJSON.h"
+#include "config_policy_utils.h"
 #include "parameter.h"
 #include "parameters.h"
 #include "softbus_bus_center.h"
 #include "softbus_error_code.h"
 
 #include "distributed_device_profile_constants.h"
+#include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
 
 namespace OHOS {
@@ -45,7 +48,9 @@ namespace {
     constexpr const char* WIFI_ONLY_FLAG_VALUE = "1";
     constexpr int32_t WIFI_ONLY_FLAG_VALUE_MAX_LEN = 8;
     const char* OHOS_BOOT_BACKCOLOR = "ohos.boot.backcolor";
-    const char* SUB_PROD_ID_MAP = "const.distributed_collaboration.subProdIdMap";
+    constexpr const char* SUB_PROD_ID_CONFIG = "etc/CollaborationFwk/sub_prodId_config.json";
+    constexpr int32_t MAX_SUB_PROD_ID_SIZE = 500;
+    constexpr size_t MAX_CONFIG_FILE_SIZE = 4 * 1024 * 1024;
     const std::string MANU_NAME = "485541574549";
     const std::string MANU_CODE = "001";
 }
@@ -292,9 +297,12 @@ std::string ContentSensorManagerUtils::GetSubProductId()
     std::string backcolor = GetBackcolor();
     std::map<std::string, std::string> subProdIdMap = GetSubProdIdMap();
     if (backcolor.empty() || subProdIdMap.empty() || subProdIdMap.find(backcolor) == subProdIdMap.end()) {
+        HILOGE("subProdIdMap not found backcolor: %{public}s", backcolor.c_str());
         return EMPTY_STRING;
     }
-    return subProdIdMap[backcolor];
+    std::string subProdId = subProdIdMap[backcolor];
+    HILOGI("backcolor: %{public}s, subProdId: %{public}s", backcolor.c_str(), subProdId.c_str());
+    return subProdId;
 }
 
 std::string ContentSensorManagerUtils::GetBackcolor()
@@ -312,31 +320,76 @@ std::string ContentSensorManagerUtils::GetBackcolor()
     return backcolor_;
 }
 
+int32_t ContentSensorManagerUtils::LoadJsonFile(const std::string &filePath, std::string &fileContent)
+{
+    if (filePath.empty() || filePath.size() > MAX_STRING_LEN) {
+        HILOGE("filePath is invalid!");
+        return DP_INVALID_PARAM;
+    }
+    char buf[MAX_PATH_LEN] = {0};
+    char *srcPath = GetOneCfgFile(filePath.c_str(), buf, MAX_PATH_LEN);
+    if (srcPath == nullptr) {
+        HILOGE("srcPath is invalid!");
+        return DP_LOAD_JSON_FILE_FAIL;
+    }
+    char targetPath[PATH_MAX + 1] = {0x00};
+    if (strlen(srcPath) == 0 || strlen(srcPath) > PATH_MAX || realpath(srcPath, targetPath) == nullptr) {
+        HILOGE("File canonicalization failed!");
+        return DP_LOAD_JSON_FILE_FAIL;
+    }
+    std::ifstream ifs(targetPath);
+    if (!ifs.is_open()) {
+        HILOGE("load json file failed");
+        return DP_LOAD_JSON_FILE_FAIL;
+    }
+    ifs.seekg(0, std::ios::end);
+    size_t fileSize = ifs.tellg();
+    ifs.seekg(0, std::ios::beg);
+    if (fileSize > MAX_CONFIG_FILE_SIZE) {
+        HILOGE("config file too large: %zu", fileSize);
+        ifs.close();
+        return DP_LOAD_JSON_FILE_FAIL;
+    }
+    fileContent.reserve(fileSize);
+    fileContent.assign(std::istreambuf_iterator<char>{ifs}, std::istreambuf_iterator<char>{});
+    ifs.close();
+    return DP_SUCCESS;
+}
+
 std::map<std::string, std::string> ContentSensorManagerUtils::GetSubProdIdMap()
 {
     std::lock_guard<std::mutex> lock(csMutex_);
     if (!subProdIdMap_.empty()) {
         return subProdIdMap_;
     }
-    std::string temp = system::GetParameter(SUB_PROD_ID_MAP, "");
-    if (temp.empty()) {
-        HILOGE("get subProdIdMap failed!");
+    std::string fileContent;
+    if (LoadJsonFile(SUB_PROD_ID_CONFIG, fileContent) != DP_SUCCESS || fileContent.empty()) {
+        HILOGE("load subProdId config failed");
         return {};
     }
-    cJSON* json = cJSON_Parse(temp.c_str());
-    if (!cJSON_IsObject(json)) {
-        HILOGW("cJSON_Parse productName fail!");
-        cJSON_Delete(json);
+    cJSON* jsonArr = cJSON_Parse(fileContent.c_str());
+    if (!cJSON_IsArray(jsonArr)) {
+        HILOGW("cJSON_Parse subProdId config fail!");
+        cJSON_Delete(jsonArr);
         return {};
     }
-    cJSON* item = json->child;
-    while (item != NULL) {
-        if (cJSON_IsString(item)) {
-            subProdIdMap_[item->string] = item->valuestring;
+    cJSON *item = NULL;
+    cJSON_ArrayForEach(item, jsonArr) {
+        if (!cJSON_IsObject(item)) {
+            HILOGE("Item is not object!");
+            continue;
         }
-        item = item->next;
+        if (!cJSON_IsString(item->child)) {
+            HILOGE("first child is not string!");
+            continue;
+        }
+        if (subProdIdMap_.size() > MAX_SUB_PROD_ID_SIZE) {
+            HILOGE("subProdIdMap_ size more than limit");
+            break;
+        }
+        subProdIdMap_[item->child->string] = item->child->valuestring;
     }
-    cJSON_Delete(json);
+    cJSON_Delete(jsonArr);
     return subProdIdMap_;
 }
 
