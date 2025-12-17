@@ -146,6 +146,7 @@ ohos_shared_library("distributed_device_profile_common") {
     "access_token:libaccesstoken_sdk",
     "cJSON:cjson",
     "c_utils:utils",
+    "config_policy:configpolicy_util",
     "device_manager:devicemanagersdk",
     "dmsfwk:common_sdk",
     "dsoftbus:softbus_client",
