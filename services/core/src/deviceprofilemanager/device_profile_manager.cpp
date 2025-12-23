@@ -756,7 +756,7 @@ void DeviceProfileManager::OnDeviceOnline(const TrustedDeviceInfo& deviceInfo)
 {
     FixDataOnDeviceOnline(deviceInfo);
     NotifyNotOHBaseOnline(deviceInfo);
-    if (ContentSensorManagerUtils::GetInstance().IsDeviceE2ESync()) {
+    if (IsDeviceE2ESync()) {
         HILOGI("need E2ESync, deviceInfo:%{public}s", deviceInfo.dump().c_str());
         E2ESyncDynamicProfile(deviceInfo);
         StaticProfileManager::GetInstance().E2ESyncStaticProfile(deviceInfo);
@@ -1195,6 +1195,18 @@ bool DeviceProfileManager::HasTrustP2PRelation(const std::string deviceId, const
         }
     }
     return false;
+}
+
+bool DeviceProfileManager::IsDeviceE2ESync()
+{
+    if (!ContentSensorManagerUtils::GetInstance().IsDeviceE2ESync()) {
+        return false;
+    }
+    if (ContentSensorManagerUtils::GetInstance().IsEnterpriseSpaceEnable() &&
+        !MultiUserManager::GetInstance().CurrentIsEnterpriseSpace()) {
+        return false;
+    }
+    return true;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

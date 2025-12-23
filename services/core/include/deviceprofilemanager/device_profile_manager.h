@@ -105,6 +105,7 @@ private:
     int32_t IsMultiUserValid(const T& profile);
     bool IsSameAccount(const std::string deviceId, const int32_t userId);
     bool HasTrustP2PRelation(const std::string deviceId, const int32_t userId);
+    bool IsDeviceE2ESync();
     bool isAdapterSoLoaded_ = false;
     std::mutex isAdapterLoadLock_;
     std::mutex dynamicStoreMutex_;

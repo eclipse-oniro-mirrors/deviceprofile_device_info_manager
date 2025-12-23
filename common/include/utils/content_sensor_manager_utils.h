@@ -43,6 +43,7 @@ public:
     std::string GetSubProductId();
     std::string DecodeHexStr(const std::string &str);
     int32_t LoadJsonFile(const std::string &filePath, std::string &fileContent);
+    bool IsEnterpriseSpaceEnable();
 
 private:
     bool IsWifiOnly();

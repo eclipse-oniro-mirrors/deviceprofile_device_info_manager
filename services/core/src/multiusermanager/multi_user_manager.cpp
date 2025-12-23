@@ -117,5 +117,16 @@ std::string MultiUserManager::GetOhosAccountIdByUserId(int32_t userId)
 #endif
 }
 
+bool MultiUserManager::CurrentIsEnterpriseSpace()
+{
+    AccountSA::DomainAccountInfo domainInfo;
+    auto ret = AccountSA::OsAccountManager::GetOsAccountDomainInfo(GetCurrentForegroundUserID(), domainInfo);
+    if (ret != DP_SUCCESS) {
+        HILOGE("GetOsAccountDomainInfo failed");
+        return false;
+    }
+    return !domainInfo.accountName_.empty();
+}
+
 } // namespace DistributedHardware
 } // namespace OHOS
