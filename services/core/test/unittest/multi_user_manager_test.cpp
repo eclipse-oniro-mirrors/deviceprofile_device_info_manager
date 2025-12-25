@@ -114,5 +114,17 @@ HWTEST_F(MultiUserManagerTest, GetForegroundUserIDFromOs_001, TestSize.Level1)
     int32_t ret = MultiUserManager::GetInstance().GetForegroundUserIDFromOs(foregroundId);
     EXPECT_EQ(ret, DP_SUCCESS);
 }
+
+/*
+ * @tc.name: CurrentIsEnterpriseSpace001
+ * @tc.desc: CurrentIsEnterpriseSpace
+ * @tc.type: FUNC
+ */
+HWTEST_F(MultiUserManagerTest, CurrentIsEnterpriseSpace001, TestSize.Level1)
+{
+    MultiUserManager::GetInstance().foregroundUserId_ = 20;
+    bool ret = MultiUserManager::GetInstance().CurrentIsEnterpriseSpace();
+    EXPECT_EQ(ret, false);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
