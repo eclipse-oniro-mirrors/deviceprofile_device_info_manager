@@ -549,6 +549,16 @@ ohos_unittest("distributed_device_profile_proxy_test") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("device_profile_manager_new_two_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/device_profile_manager_two_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 ohos_unittest("service_info_profile_new_test") {
   module_out_path = module_output_path
   sources = [ "unittest/service_info_profile_new_test.cpp" ]
@@ -584,6 +594,7 @@ group("unittest") {
     ":device_profile_dao_test",
     ":device_profile_locd_callback_test",
     ":device_profile_manager_new_test",
+    ":device_profile_manager_new_two_test",
     ":distributed_device_profile_client_kv_new_test",
     ":distributed_device_profile_stub_new_test",
     ":distributed_device_profile_client_test",
