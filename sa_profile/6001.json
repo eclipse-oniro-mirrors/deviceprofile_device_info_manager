@@ -8,6 +8,7 @@
           "distributed": false,
           "dump-level": 1,
           "recycle-strategy": "low-memory",
+          "min_hdi_proxy_version": [],
           "start-on-demand": {
               "deviceonline": [
                   {
