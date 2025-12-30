@@ -99,16 +99,16 @@ bool DMAdapter::GetUuidByNetworkId(const std::string& networkId, std::string& uu
 
 void DMAdapter::DmDeviceStateCallback::OnDeviceOnline(const DistributedHardware::DmDeviceInfo& deviceInfo)
 {
-    auto task = [this, deviceInfo]() {
-        HILOGI("OnDeviceOnline networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
-        TrustedDeviceInfo trustedDeviceInfo;
-        if (!ConvertToTrustedDeviceInfo(deviceInfo, trustedDeviceInfo)) {
-            HILOGE("OnDeviceOnline ConvertToTrustedDeviceInfo fail, networkId:%{public}s",
-                ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
-            return;
-        }
-        HILOGI("OnDeviceOnline trustedDeviceInfo:%{public}s", trustedDeviceInfo.dump().c_str());
-        ProfileCache::GetInstance().OnNodeOnline(trustedDeviceInfo);
+    HILOGI("networkId:%{public}s", ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
+    TrustedDeviceInfo trustedDeviceInfo;
+    if (!ConvertToTrustedDeviceInfo(deviceInfo, trustedDeviceInfo)) {
+        HILOGE("ConvertToTrustedDeviceInfo fail, networkId:%{public}s",
+            ProfileUtils::GetAnonyString(deviceInfo.networkId).c_str());
+        return;
+    }
+    HILOGI("trustedDeviceInfo:%{public}s", trustedDeviceInfo.dump().c_str());
+    ProfileCache::GetInstance().OnNodeOnline(trustedDeviceInfo);
+    auto task = [trustedDeviceInfo]() {
         DeviceProfileManager::GetInstance().OnDeviceOnline(trustedDeviceInfo);
         SwitchUpdater::GetInstance().OnDeviceOnline(trustedDeviceInfo);
     };
