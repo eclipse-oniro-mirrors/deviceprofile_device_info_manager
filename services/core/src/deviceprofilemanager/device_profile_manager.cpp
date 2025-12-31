@@ -494,12 +494,15 @@ int32_t DeviceProfileManager::SyncDeviceProfile(const DistributedDeviceProfile::
         HILOGE("Params is invalid!");
         return DP_INVALID_PARAMS;
     }
+    for (std::string deviceId : syncOptions.GetDeviceList()) {
+        HILOGI("networkId:%{public}s", ProfileUtils::GetAnonyString(deviceId).c_str());
+    }
     std::vector<std::string> ohBasedDevices;
     std::vector<std::tuple<std::string, std::string, bool>> notOHBasedDevices;
     ProfileCache::GetInstance().FilterAndGroupOnlineDevices(syncOptions.GetDeviceList(),
         ohBasedDevices, notOHBasedDevices);
     if (ohBasedDevices.empty() && notOHBasedDevices.empty()) {
-        HILOGE("Params is invalid!");
+        HILOGE("device is offline");
         return DP_INVALID_PARAMS;
     }
     std::string callerDescriptor = PermissionManager::GetInstance().GetCallerProcName();
