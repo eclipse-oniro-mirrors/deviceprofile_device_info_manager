@@ -188,7 +188,6 @@ bool DMAdapter::DmDeviceStateCallback::ConvertToTrustedDeviceInfo(const Distribu
 void DMAdapter::DpDmInitCallback::OnRemoteDied()
 {
     HILOGI("call!");
-    DMAdapter::GetInstance().ReInit();
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
