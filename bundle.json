@@ -48,7 +48,8 @@
           "relational_store",
           "os_account",
           "asset",
-          "selinux_adapter"
+          "selinux_adapter",
+          "memmgr"
         ]
       },
       "build": {

@@ -21,8 +21,6 @@ group("fuzztest") {
     "trustprofilemanager_fuzzer:fuzztest",
     "businesseventmanager_fuzzer:fuzztest",
     "distributeddeviceprofileclient_fuzzer:fuzztest",
-    "distributeddeviceprofilestubnew_fuzzer:fuzztest",
-    "distributeddeviceprofileservicenew_fuzzer:fuzztest",
     "highriskinterface_fuzzer:fuzztest",
     "profilecontrolutils_fuzzer:fuzztest",
     "serviceinfokvadaptertest_fuzzer:fuzztest",

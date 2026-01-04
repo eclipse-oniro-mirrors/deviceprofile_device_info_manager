@@ -255,5 +255,27 @@ HWTEST_F(DistributedDeviceProfileServiceNewTest, GetServiceInfoProfileByRegServi
         321, serviceInfoProfile);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
 }
+
+/**
+* @tc.name: IsReadyIntoIdle_001
+* @tc.desc: IsReadyIntoIdle
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DistributedDeviceProfileServiceNewTest, IsReadyIntoIdle_001, TestSize.Level1)
+{
+    int32_t memoryManagerSaId = 1909;
+    int32_t systemAbilityId = memoryManagerSaId;
+    std::string deviceId = "";
+    DistributedDeviceProfileServiceNew::GetInstance().OnAddSystemAbility(systemAbilityId, deviceId);
+
+    systemAbilityId = 0;
+    DistributedDeviceProfileServiceNew::GetInstance().OnAddSystemAbility(systemAbilityId, deviceId);
+
+    DistributedDeviceProfileServiceNew::GetInstance().runningIpcCount_ = 0;
+    DistributedDeviceProfileServiceNew::GetInstance().AddRunningIpcCount();
+    int ret = DistributedDeviceProfileServiceNew::GetInstance().IsReadyIntoIdle();
+    EXPECT_EQ(ret, false);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
