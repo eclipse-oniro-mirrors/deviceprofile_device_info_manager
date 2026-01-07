@@ -49,11 +49,11 @@ public:
     void TearDown();
 };
 
-void DeviceProfileManagerTwoTest::SetUpTestCase(void) {
-}
+void DeviceProfileManagerTwoTest::SetUpTestCase(void)
+{}
 
-void DeviceProfileManagerTwoTest::TearDownTestCase(void) {
-}
+void DeviceProfileManagerTwoTest::TearDownTestCase(void)
+{}
 
 void DeviceProfileManagerTwoTest::SetUp()
 {
@@ -79,8 +79,8 @@ void DeviceProfileManagerTwoTest::SetUp()
     DeviceProfileManager::GetInstance().isFirst_.store(false);
 }
 
-void DeviceProfileManagerTwoTest::TearDown() {
-}
+void DeviceProfileManagerTwoTest::TearDown()
+{}
 
 class SyncCallback : public SyncCompletedCallbackStub {
 public:
@@ -492,6 +492,447 @@ HWTEST_F(DeviceProfileManagerTwoTest, IsDeviceE2ESync001, TestSize.Level1)
     ContentSensorManagerUtils::GetInstance().isDeviceE2ESync_.store(false);
     bool ret = DeviceProfileManager::GetInstance().IsDeviceE2ESync();
     EXPECT_EQ(ret, false);
+}
+
+/**
+* @tc.name: DeleteBatchByKeys001
+* @tc.desc: DeleteBatchByKeys
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, DeleteBatchByKeys001, TestSize.Level1)
+{
+    std::vector<std::string> delKeys;
+    int ret = DeviceProfileManager::GetInstance().DeleteBatchByKeys(delKeys);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+* @tc.name: DeleteBatchByKeys002
+* @tc.desc: DeleteBatchByKeys
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, DeleteBatchByKeys002, TestSize.Level1)
+{
+    std::map<std::string, std::string> entries;
+    entries.insert(std::make_pair("key1", "value1"));
+    entries.insert(std::make_pair("key2", "value2"));
+    DeviceProfileManager::GetInstance().SaveBatchByKeys(entries);
+
+    std::vector<std::string> delKeys = {"key1", "key2"};
+    int ret = DeviceProfileManager::GetInstance().DeleteBatchByKeys(delKeys);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+* @tc.name: DeleteBatchByKeys003
+* @tc.desc: DeleteBatchByKeys
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, DeleteBatchByKeys003, TestSize.Level1)
+{
+    std::map<std::string, std::string> entries;
+    entries.insert(std::make_pair("key3", "value3"));
+    entries.insert(std::make_pair("key4", "value4"));
+    DeviceProfileManager::GetInstance().SaveBatchByKeys(entries);
+
+    std::vector<std::string> delKeys = {"test_key1", "test_key2"};
+    int ret = DeviceProfileManager::GetInstance().DeleteBatchByKeys(delKeys);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+* @tc.name: DeleteBatchByKeys004
+* @tc.desc: DeleteBatchByKeys
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, DeleteBatchByKeys004, TestSize.Level1)
+{
+    std::map<std::string, std::string> entries;
+    entries.insert(std::make_pair("key5", "value5"));
+    entries.insert(std::make_pair("key6", "value6"));
+    DeviceProfileManager::GetInstance().SaveBatchByKeys(entries);
+
+    DeviceProfileManager::GetInstance().deviceProfileStore_ = nullptr;
+    std::vector<std::string> delKeys = {"key5", "key6"};
+    int ret = DeviceProfileManager::GetInstance().DeleteBatchByKeys(delKeys);
+    EXPECT_EQ(ret, DP_KV_DB_PTR_NULL);
+}
+
+/**
+* @tc.name: DeleteBatchByKeys005
+* @tc.desc: DeleteBatchByKeys
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, DeleteBatchByKeys005, TestSize.Level1)
+{
+    std::map<std::string, std::string> entries;
+    entries.insert(std::make_pair("key7", "value7"));
+    entries.insert(std::make_pair("key8", "value8"));
+    DeviceProfileManager::GetInstance().SaveBatchByKeys(entries);
+
+    std::vector<std::string> delKeys = {"key7", "key8"};
+    DeviceProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
+    int ret = DeviceProfileManager::GetInstance().DeleteBatchByKeys(delKeys);
+    EXPECT_EQ(ret, DP_DEL_KV_DB_FAIL);
+    DeviceProfileManager::GetInstance().Init();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
+}
+
+/**
+* @tc.name: DeleteBatchByKeys006
+* @tc.desc: DeleteBatchByKeys
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, DeleteBatchByKeys006, TestSize.Level1)
+{
+    std::map<std::string, std::string> entries;
+    entries.insert(std::make_pair("key9", "value9"));
+    entries.insert(std::make_pair("key10", "value10"));
+    DeviceProfileManager::GetInstance().SaveBatchByKeys(entries);
+
+    std::vector<std::string> delKeys = {"key9", "key10"};
+    DeviceProfileManager::GetInstance().isFirst_.store(true);
+    int ret = DeviceProfileManager::GetInstance().DeleteBatchByKeys(delKeys);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
+}
+
+/**
+* @tc.name: SavePutTempCache001
+* @tc.desc: SavePutTempCache
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, SavePutTempCache001, TestSize.Level1)
+{
+    std::map<std::string, std::string> entries;
+    int ret = DeviceProfileManager::GetInstance().SavePutTempCache(entries);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+* @tc.name: SavePutTempCache002
+* @tc.desc: SavePutTempCache
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, SavePutTempCache002, TestSize.Level1)
+{
+    std::map<std::string, std::string> entries;
+    DeviceProfileManager::GetInstance().putTempCache_.insert(std::make_pair("key1", "value1"));
+    DeviceProfileManager::GetInstance().putTempCache_.insert(std::make_pair("key2", "value2"));
+
+    int ret = DeviceProfileManager::GetInstance().SavePutTempCache(entries);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+* @tc.name: SavePutTempCache003
+* @tc.desc: SavePutTempCache
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, SavePutTempCache003, TestSize.Level1)
+{
+    std::map<std::string, std::string> entries;
+    DeviceProfileManager::GetInstance().putTempCache_.insert(std::make_pair("key3", "value3"));
+    DeviceProfileManager::GetInstance().putTempCache_.insert(std::make_pair("key4", "value4"));
+    DeviceProfileManager::GetInstance().deviceProfileStore_ = nullptr;
+
+    int ret = DeviceProfileManager::GetInstance().SavePutTempCache(entries);
+    EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
+}
+
+/**
+* @tc.name: SavePutTempCache004
+* @tc.desc: SavePutTempCache
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, SavePutTempCache004, TestSize.Level1)
+{
+    std::map<std::string, std::string> entries;
+    DeviceProfileManager::GetInstance().putTempCache_.insert(std::make_pair("key5", "value5"));
+    DeviceProfileManager::GetInstance().putTempCache_.insert(std::make_pair("key6", "value6"));
+
+    DeviceProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
+    int ret = DeviceProfileManager::GetInstance().SavePutTempCache(entries);
+    EXPECT_EQ(ret, DP_KV_DB_PTR_NULL);
+    DeviceProfileManager::GetInstance().Init();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
+}
+
+/**
+* @tc.name: SavePutTempCache005
+* @tc.desc: SavePutTempCache
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, SavePutTempCache005, TestSize.Level1)
+{
+    std::map<std::string, std::string> entries;
+    DeviceProfileManager::GetInstance().putTempCache_.insert(std::make_pair("key7", "value7"));
+    DeviceProfileManager::GetInstance().putTempCache_.insert(std::make_pair("key8", "value8"));
+
+    DeviceProfileManager::GetInstance().isFirst_.store(true);
+    int ret = DeviceProfileManager::GetInstance().SavePutTempCache(entries);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
+}
+
+/**
+* @tc.name: PutCharacteristicProfileBatch001
+* @tc.desc: PutCharacteristicProfileBatch
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, PutCharacteristicProfileBatch001, TestSize.Level1)
+{
+    CharacteristicProfile charProfile1;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "deviceId1";
+    charProfile1.SetDeviceId("deviceId1");
+    charProfile1.SetServiceName("serviceName1");
+    charProfile1.SetCharacteristicKey("characteristicKey1");
+    charProfile1.SetCharacteristicValue("characteristicValue1");
+    charProfile1.isMultiUser_ = false;
+
+    CharacteristicProfile charProfile2;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "deviceId2";
+    charProfile2.SetDeviceId("deviceId2");
+    charProfile2.SetServiceName("serviceName2");
+    charProfile2.SetCharacteristicKey("characteristicKey2");
+    charProfile2.SetCharacteristicValue("characteristicValue2");
+    charProfile2.isMultiUser_ = false;
+
+    CharacteristicProfile charProfile3;
+    ContentSensorManagerUtils::GetInstance().localUdid_ = "deviceId3";
+    charProfile3.SetDeviceId("deviceId3");
+    charProfile3.SetServiceName("serviceName3");
+    charProfile3.SetCharacteristicKey("characteristicKey3");
+    charProfile3.SetCharacteristicValue("characteristicValue3");
+    charProfile3.isMultiUser_ = false;
+
+    std::vector<CharacteristicProfile> charProfiles1;
+    charProfiles1.emplace_back(charProfile1);
+    charProfiles1.emplace_back(charProfile2);
+    charProfiles1.emplace_back(charProfile3);
+
+    int ret = DeviceProfileManager::GetInstance().PutCharacteristicProfileBatch(charProfiles1);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+* @tc.name: PutCharacteristicProfileBatch002
+* @tc.desc: PutCharacteristicProfileBatch
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, PutCharacteristicProfileBatch002, TestSize.Level1)
+{
+    CharacteristicProfile charProfile4;
+    charProfile4.SetDeviceId("");
+    charProfile4.SetServiceName("serviceName4");
+    charProfile4.SetCharacteristicKey("characteristicKey4");
+    charProfile4.SetCharacteristicValue("characteristicValue4");
+
+    CharacteristicProfile charProfile5;
+    charProfile5.SetDeviceId("");
+    charProfile5.SetServiceName("serviceName5");
+    charProfile5.SetCharacteristicKey("characteristicKey5");
+    charProfile5.SetCharacteristicValue("characteristicValue5");
+
+    CharacteristicProfile charProfile6;
+    charProfile6.SetDeviceId("");
+    charProfile6.SetServiceName("serviceName6");
+    charProfile6.SetCharacteristicKey("characteristicKey6");
+
+    std::vector<CharacteristicProfile> charProfiles2;
+    charProfiles2.emplace_back(charProfile4);
+    charProfiles2.emplace_back(charProfile5);
+    charProfiles2.emplace_back(charProfile6);
+
+    int ret = DeviceProfileManager::GetInstance().PutCharacteristicProfileBatch(charProfiles2);
+    EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
+}
+
+/**
+* @tc.name: PutCharacteristicProfileBatch003
+* @tc.desc: PutCharacteristicProfileBatch
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, PutCharacteristicProfileBatch003, TestSize.Level1)
+{
+    string deviceId = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
+    CharacteristicProfile charProfile7;
+    charProfile7.SetDeviceId(deviceId);
+    charProfile7.SetServiceName("serviceName7");
+    charProfile7.SetCharacteristicKey("characteristicKey7");
+    charProfile7.SetCharacteristicValue("characteristicValue7");
+    charProfile7.isMultiUser_ = false;
+
+    CharacteristicProfile charProfile8;
+    charProfile8.SetDeviceId(deviceId);
+    charProfile8.SetServiceName("serviceName8");
+    charProfile8.SetCharacteristicKey("characteristicKey8");
+    charProfile8.SetCharacteristicValue("characteristicValue8");
+    charProfile8.isMultiUser_ = false;
+
+    CharacteristicProfile charProfile9;
+    charProfile9.SetDeviceId(deviceId);
+    charProfile9.SetServiceName("serviceName9");
+    charProfile9.SetCharacteristicKey("characteristicKey9");
+    charProfile9.SetCharacteristicValue("characteristicValue9");
+    charProfile9.isMultiUser_ = false;
+
+    std::vector<CharacteristicProfile> charProfiles3;
+    charProfiles3.emplace_back(charProfile7);
+    charProfiles3.emplace_back(charProfile8);
+    charProfiles3.emplace_back(charProfile9);
+
+    int ret = DeviceProfileManager::GetInstance().PutCharacteristicProfileBatch(charProfiles3);
+    EXPECT_EQ(ret, DP_SUCCESS);
+
+    DeviceProfileManager::GetInstance().deviceProfileStore_ = nullptr;
+    ret = DeviceProfileManager::GetInstance().PutCharacteristicProfileBatch(charProfiles3);
+    EXPECT_EQ(ret, DP_KV_DB_PTR_NULL);
+}
+
+/**
+* @tc.name: PutCharacteristicProfileBatch004
+* @tc.desc: PutCharacteristicProfileBatch
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, PutCharacteristicProfileBatch004, TestSize.Level1)
+{
+    string deviceId = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
+    CharacteristicProfile charProfile10;
+    charProfile10.SetDeviceId(deviceId);
+    charProfile10.SetServiceName("serviceName10");
+    charProfile10.SetCharacteristicKey("characteristicKey10");
+    charProfile10.SetCharacteristicValue("characteristicValue10");
+    charProfile10.isMultiUser_ = false;
+
+    CharacteristicProfile charProfile11;
+    charProfile11.SetDeviceId(deviceId);
+    charProfile11.SetServiceName("serviceName11");
+    charProfile11.SetCharacteristicKey("characteristicKey11");
+    charProfile11.SetCharacteristicValue("characteristicValue11");
+    charProfile11.isMultiUser_ = false;
+
+    CharacteristicProfile charProfile12;
+    charProfile12.SetDeviceId(deviceId);
+    charProfile12.SetServiceName("serviceName12");
+    charProfile12.SetCharacteristicKey("characteristicKey12");
+    charProfile12.SetCharacteristicValue("characteristicValue12");
+    charProfile12.isMultiUser_ = false;
+
+    std::vector<CharacteristicProfile> charProfiles4;
+    charProfiles4.emplace_back(charProfile10);
+    charProfiles4.emplace_back(charProfile11);
+    charProfiles4.emplace_back(charProfile12);
+
+    DeviceProfileManager::GetInstance().deviceProfileStore_->UnInit();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
+    int32_t ret = DeviceProfileManager::GetInstance().PutCharacteristicProfileBatch(charProfiles4);
+    EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
+    DeviceProfileManager::GetInstance().Init();
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
+}
+
+/**
+* @tc.name: PutCharacteristicProfileBatch005
+* @tc.desc: PutCharacteristicProfileBatch
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, PutCharacteristicProfileBatch005, TestSize.Level1)
+{
+    string deviceId = ContentSensorManagerUtils::GetInstance().ObtainLocalUdid();
+    CharacteristicProfile charProfile13;
+    charProfile13.SetDeviceId(deviceId);
+    charProfile13.SetServiceName("serviceName13");
+    charProfile13.SetCharacteristicKey("characteristicKey13");
+    charProfile13.SetCharacteristicValue("characteristicValue13");
+    charProfile13.isMultiUser_ = false;
+
+    CharacteristicProfile charProfile14;
+    charProfile14.SetDeviceId(deviceId);
+    charProfile14.SetServiceName("serviceName14");
+    charProfile14.SetCharacteristicKey("characteristicKey14");
+    charProfile14.SetCharacteristicValue("characteristicValue14");
+    charProfile14.isMultiUser_ = false;
+
+    CharacteristicProfile charProfile15;
+    charProfile15.SetDeviceId(deviceId);
+    charProfile15.SetServiceName("serviceName15");
+    charProfile15.SetCharacteristicKey("characteristicKey15");
+    charProfile15.SetCharacteristicValue("characteristicValue15");
+    charProfile15.isMultiUser_ = false;
+
+    std::vector<CharacteristicProfile> charProfiles5;
+    charProfiles5.emplace_back(charProfile13);
+    charProfiles5.emplace_back(charProfile14);
+    charProfiles5.emplace_back(charProfile15);
+
+    DeviceProfileManager::GetInstance().isFirst_.store(true);
+    int32_t ret = DeviceProfileManager::GetInstance().PutCharacteristicProfileBatch(charProfiles5);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
+}
+
+/**
+* @tc.name: GetAllDeviceProfile004
+* @tc.desc: GetAllDeviceProfile
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, GetAllDeviceProfile004, TestSize.Level1)
+{
+    DeviceProfileManager::GetInstance().isFirst_.store(true);
+    std::vector<DeviceProfile> deviceProfiles;
+    int32_t ret = DeviceProfileManager::GetInstance().GetAllDeviceProfile(deviceProfiles);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
+}
+
+/**
+* @tc.name: GetAllServiceProfile004
+* @tc.desc: GetAllServiceProfile
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, GetAllServiceProfile004, TestSize.Level1)
+{
+    DeviceProfileManager::GetInstance().isFirst_.store(true);
+    vector<ServiceProfile> serviceProfiles;
+    int32_t ret = DeviceProfileManager::GetInstance().GetAllServiceProfile(serviceProfiles);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
+}
+
+/**
+* @tc.name: GetAllCharacteristicProfile004
+* @tc.desc: GetAllCharacteristicProfile
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(DeviceProfileManagerTwoTest, GetAllCharacteristicProfile004, TestSize.Level1)
+{
+    DeviceProfileManager::GetInstance().isFirst_.store(true);
+    vector<CharacteristicProfile> charProfiles;
+    int32_t ret = DeviceProfileManager::GetInstance().GetAllCharacteristicProfile(charProfiles);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    DeviceProfileManager::GetInstance().isFirst_.store(false);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

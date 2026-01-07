@@ -38,18 +38,20 @@
 #include "i_pincode_invalid_callback.h"
 #include "local_service_info_manager.h"
 #include "multi_user_manager.h"
+#include "mem_mgr_client.h"
+#include "mem_mgr_proxy.h"
 #include "permission_manager.h"
 #include "profile_cache.h"
 #include "profile_data_manager.h"
 #include "service_info_profile_manager.h"
 #include "service_info_manager.h"
+#include "session_key_manager.h"
 #include "settings_data_manager.h"
 #include "static_profile_manager.h"
 #include "static_capability_collector.h"
 #include "subscribe_profile_manager.h"
 #include "switch_profile_manager.h"
 #include "trust_profile_manager.h"
-#include "session_key_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -950,10 +952,6 @@ void DistributedDeviceProfileServiceNew::DelayUnloadTask()
     HILOGD("delay unload task begin");
     auto task = []() {
         HILOGD("do unload task");
-        if (ProfileCache::GetInstance().IsDeviceOnline()) {
-            HILOGD("already device online in 3 min, not kill!");
-            return;
-        }
         auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
         if (samgrProxy == nullptr) {
             HILOGE("get samgr failed");
@@ -973,10 +971,6 @@ void DistributedDeviceProfileServiceNew::DelayUnloadTask()
             return;
         }
         unloadHandler_->RemoveTask(UNLOAD_TASK_ID);
-        if (ProfileCache::GetInstance().IsDeviceOnline()) {
-            HILOGD("already device online, not kill!");
-            return;
-        }
         HILOGD("delay unload task post task");
         unloadHandler_->PostTask(task, UNLOAD_TASK_ID, DELAY_TIME);
     }
@@ -993,6 +987,7 @@ void DistributedDeviceProfileServiceNew::OnStart(const SystemAbilityOnDemandReas
     AddSystemAbilityListener(DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID);
     AddSystemAbilityListener(DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID);
     AddSystemAbilityListener(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN);
+    AddSystemAbilityListener(MEMORY_MANAGER_SA_ID);
     IPCSkeleton::SetMaxWorkThreadNum(DP_IPC_THREAD_NUM);
     if (!Publish(this)) {
         HILOGE("publish SA failed");
@@ -1010,11 +1005,16 @@ void DistributedDeviceProfileServiceNew::OnStop()
     isStopped_ = true;
     int32_t ret = UnInit();
     HILOGI("UnInit ret=%{public}d", ret);
+    // process set critical false
+    Memory::MemMgrClient::GetInstance().SetCritical(getpid(), false, DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID);
+    Memory::MemMgrClient::GetInstance().NotifyProcessStatus(getpid(), 1, 0, DISTRIBUTED_DEVICE_PROFILE_SA_ID);
 }
 
 void DistributedDeviceProfileServiceNew::OnActive(const SystemAbilityOnDemandReason& activeReason)
 {
     HILOGI("active reason %{public}d", activeReason.GetId());
+    // process set critical true
+    Memory::MemMgrClient::GetInstance().SetCritical(getpid(), true, DISTRIBUTED_DEVICE_PROFILE_SA_ID);
 }
 
 int32_t DistributedDeviceProfileServiceNew::OnIdle(const SystemAbilityOnDemandReason& idleReason)
@@ -1024,6 +1024,8 @@ int32_t DistributedDeviceProfileServiceNew::OnIdle(const SystemAbilityOnDemandRe
     if (idleReason.GetName() == IDLE_REASON_LOW_MEMORY) {
         return IsReadyIntoIdle() ? SA_READY_INTO_IDLE : SA_REFUSE_INTO_IDLE;
     }
+    // process set critical false
+    Memory::MemMgrClient::GetInstance().SetCritical(getpid(), false, DISTRIBUTED_DEVICE_PROFILE_SA_ID);
     return SA_READY_INTO_IDLE;
 }
 
@@ -1032,6 +1034,11 @@ void DistributedDeviceProfileServiceNew::OnAddSystemAbility(int32_t systemAbilit
     HILOGI("called systemAbilityId:%{public}d", systemAbilityId);
     if (systemAbilityId == SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN) {
         SubscribeAccountCommonEvent();
+    }
+    if (systemAbilityId == MEMORY_MANAGER_SA_ID) {
+        Memory::MemMgrClient::GetInstance().NotifyProcessStatus(getpid(), 1, 1, DISTRIBUTED_DEVICE_PROFILE_SA_ID);
+        // process set critical true
+        Memory::MemMgrClient::GetInstance().SetCritical(getpid(), true, DISTRIBUTED_DEVICE_PROFILE_SA_ID);
     }
     if (IsInited()) {
         return;

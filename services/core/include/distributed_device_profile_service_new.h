@@ -176,7 +176,8 @@ private:
         SOFTBUS_SERVER_SA_ID,
         DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID,
         DISTRIBUTED_HARDWARE_DEVICEMANAGER_SA_ID,
-        SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN
+        SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN,
+        MEMORY_MANAGER_SA_ID
     };
     std::mutex businessEventCallbackMapMtx_;
     std::mutex cacheMtx_;
