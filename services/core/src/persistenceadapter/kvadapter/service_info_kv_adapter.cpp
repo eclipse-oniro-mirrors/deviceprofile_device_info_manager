@@ -57,8 +57,9 @@ int32_t ServiceInfoKvAdapter::Init()
     }
     int32_t tryTimes = MAX_INIT_RETRY_TIMES;
     int64_t beginTime = GetTickCount();
-    DistributedKv::Status status = GetKvStorePtr();
+    DistributedKv::Status status = DistributedKv::Status::SUCCESS;
     while (tryTimes > 0) {
+        DistributedKv::Status status = GetKvStorePtr();
         if (status == DistributedKv::Status::SUCCESS) {
             HILOGI("Init KvStorePtr Success");
             RegisterKvStoreDeathListener();

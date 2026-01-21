@@ -36,7 +36,6 @@ namespace DistributedDeviceProfile {
 namespace {
     constexpr size_t THRESHOLD = 10;
     constexpr int32_t OFFSET = 4;
-    bool g_flag = false;
     const std::u16string DP_INTERFACE_TOKEN = u"OHOS.DeviceProfile.IDistributedDeviceProfile";
 }
 
@@ -75,10 +74,6 @@ void HighRiskInterfaceFuzzerTest(const uint8_t* rawData, size_t size)
     MessageOption option;
     std::string baseDir = "/data/service/el1/public/database/distributed_device_profile_service";
     mkdir(baseDir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    if (!g_flag) {
-        DistributedDeviceProfileServiceNew::GetInstance().Init();
-        g_flag = true;
-    }
     std::vector<uint32_t> highRiskInterfaces;
     highRiskInterfaces.emplace_back(static_cast<uint32_t>(DpIpcInterfaceCode::PUT_CHAR_PROFILE));
     highRiskInterfaces.emplace_back(static_cast<uint32_t>(DpIpcInterfaceCode::PUT_DEVICE_PROFILE_BATCH));

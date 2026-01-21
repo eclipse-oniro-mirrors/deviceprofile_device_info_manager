@@ -240,6 +240,10 @@ int32_t ServiceInfoProfileManage::SetServiceInfoProfile(const std::string& regSe
     }
     std::string key = finalSerProfile.begin()->first;
     size_t lastPos = key.find_last_of(SEPARATOR);
+    if (lastPos == std::string::npos) {
+        HILOGE("key not found SEPARATOR");
+        return DP_NOT_FIND_DATA;
+    }
     std::string prefix = key.substr(0, lastPos + 1);
     const std::vector<std::string> requiredKeys = {prefix + PUBLISH_STATE, prefix + SERVICEID,
         prefix + TOKENID, prefix + RDB_USER_ID};
@@ -256,23 +260,23 @@ int32_t ServiceInfoProfileManage::SetServiceInfoProfile(const std::string& regSe
         HILOGE("Invalid number params");
         return DP_NOT_FIND_DATA;
     }
-    serviceInfoProfile.SetRegServiceId(std::stoi(regServiceId));
+    serviceInfoProfile.SetRegServiceId(std::atoi(regServiceId.c_str()));
     serviceInfoProfile.SetDeviceId(finalSerProfile.count(prefix + DEVICE_ID)
         ? finalSerProfile.at(prefix + DEVICE_ID) : "");
     serviceInfoProfile.SetSerPubState(finalSerProfile.count(prefix + PUBLISH_STATE)
-        ? std::stoi(finalSerProfile.at(prefix + PUBLISH_STATE)) : 0);
+        ? std::atoi(finalSerProfile.at(prefix + PUBLISH_STATE).c_str()) : 0);
     serviceInfoProfile.SetServiceDisplayName(finalSerProfile.count(prefix + SERVICE_DISPLAY_NAME)
         ? finalSerProfile.at(prefix + SERVICE_DISPLAY_NAME) : "");
     serviceInfoProfile.SetServiceId(finalSerProfile.count(prefix + SERVICEID)
-        ? std::stoll(finalSerProfile.at(prefix + SERVICEID)) : 0);
+        ? std::atoll(finalSerProfile.at(prefix + SERVICEID).c_str()) : 0);
     serviceInfoProfile.SetServiceName(finalSerProfile.count(prefix + SERVICE_NAME)
         ? finalSerProfile.at(prefix + SERVICE_NAME) : "");
     serviceInfoProfile.SetServiceType(finalSerProfile.count(prefix + SERVICE_TYPE)
         ? finalSerProfile.at(prefix + SERVICE_TYPE) : "");
     serviceInfoProfile.SetTokenId(finalSerProfile.count(prefix + TOKENID)
-        ? std::stoll(finalSerProfile.at(prefix + TOKENID)) : 0);
+        ? std::atoll(finalSerProfile.at(prefix + TOKENID).c_str()) : 0);
     serviceInfoProfile.SetUserId(finalSerProfile.count(prefix + RDB_USER_ID)
-        ? std::stoi(finalSerProfile.at(prefix + RDB_USER_ID)) : -1);
+        ? std::atoi(finalSerProfile.at(prefix + RDB_USER_ID).c_str()) : -1);
     return DP_SUCCESS;
 }
 

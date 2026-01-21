@@ -489,16 +489,6 @@ ohos_unittest("product_info_dao_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("business_event_adapter_test") {
-  module_out_path = module_output_path
-  sources = [ "unittest/business_event_adapter_test.cpp" ]
-  configs = device_profile_configs
-  deps = device_profile_deps
-  external_deps = device_profile_external_deps
-  part_name = "device_info_manager"
-  subsystem_name = "deviceprofile"
-}
-
 ohos_unittest("business_event_manager_test") {
   module_out_path = module_output_path
   sources = [ "unittest/business_event_manager_test.cpp" ]
@@ -509,49 +499,9 @@ ohos_unittest("business_event_manager_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("distributed_device_profile_service_new_test") {
-  module_out_path = module_output_path
-  sources = [ "unittest/distributed_device_profile_service_new_test.cpp" ]
-  configs = device_profile_configs
-  deps = device_profile_deps
-  external_deps = device_profile_external_deps
-  part_name = "device_info_manager"
-  subsystem_name = "deviceprofile"
-}
-
-ohos_unittest("distributed_device_profile_client_test") {
-  module_out_path = module_output_path
-  sources = [ "unittest/distributed_device_profile_client_test.cpp" ]
-  configs = device_profile_configs
-  deps = device_profile_deps
-  external_deps = device_profile_external_deps
-  part_name = "device_info_manager"
-  subsystem_name = "deviceprofile"
-}
-
 ohos_unittest("service_info_kv_adapter_test") {
   module_out_path = module_output_path
   sources = [ "unittest/service_info_kv_adapter_test.cpp" ]
-  configs = device_profile_configs
-  deps = device_profile_deps
-  external_deps = device_profile_external_deps
-  part_name = "device_info_manager"
-  subsystem_name = "deviceprofile"
-}
-
-ohos_unittest("distributed_device_profile_proxy_test") {
-  module_out_path = module_output_path
-  sources = [ "unittest/distributed_device_profile_proxy_test.cpp" ]
-  configs = device_profile_configs
-  deps = device_profile_deps
-  external_deps = device_profile_external_deps
-  part_name = "device_info_manager"
-  subsystem_name = "deviceprofile"
-}
-
-ohos_unittest("device_profile_manager_new_two_test") {
-  module_out_path = module_output_path
-  sources = [ "unittest/device_profile_manager_two_test.cpp" ]
   configs = device_profile_configs
   deps = device_profile_deps
   external_deps = device_profile_external_deps
@@ -572,6 +522,55 @@ ohos_unittest("service_info_profile_new_test") {
 ohos_unittest("service_info_manager_test") {
   module_out_path = module_output_path
   sources = [ "unittest/service_info_manager_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("business_event_adapter_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/business_event_adapter_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("distributed_device_profile_service_new_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/distributed_device_profile_service_new_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+ohos_unittest("distributed_device_profile_client_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/distributed_device_profile_client_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+ 
+ohos_unittest("distributed_device_profile_proxy_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/distributed_device_profile_proxy_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("device_profile_manager_new_two_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/device_profile_manager_two_test.cpp" ]
   configs = device_profile_configs
   deps = device_profile_deps
   external_deps = device_profile_external_deps
