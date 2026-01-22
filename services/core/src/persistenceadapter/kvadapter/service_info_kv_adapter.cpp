@@ -190,7 +190,6 @@ int32_t ServiceInfoKvAdapter::RegisterKvStoreDeathListener()
 {
     HILOGI("Register death listener");
     {
-        std::lock_guard<std::mutex> lock(kvDeathRecipientMutex_);
         kvDataMgr_.RegisterKvStoreServiceDeathRecipient(deathRecipient_);
     }
     return DP_SUCCESS;
@@ -200,7 +199,6 @@ int32_t ServiceInfoKvAdapter::UnregisterKvStoreDeathListener()
 {
     HILOGI("UnRegister death listener");
     {
-        std::lock_guard<std::mutex> lock(kvAdapterMutex_);
         kvDataMgr_.UnRegisterKvStoreServiceDeathRecipient(deathRecipient_);
     }
     return DP_SUCCESS;
