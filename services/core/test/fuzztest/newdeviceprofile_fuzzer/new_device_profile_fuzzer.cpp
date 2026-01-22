@@ -44,7 +44,6 @@ namespace {
     constexpr int32_t ZERO_MOVE_LEN = 24;
     constexpr int32_t FIRST_MOVE_LEN = 16;
     constexpr int32_t SECOND_MOVE_LEN = 8;
-    bool g_flag = false;
     const std::u16string DP_INTERFACE_TOKEN = u"OHOS.DeviceProfile.IDistributedDeviceProfile";
 }
 
@@ -93,10 +92,6 @@ void FuzzDeviceProfile(const uint8_t* rawData, size_t size)
     MessageOption option;
     std::string baseDir = "/data/service/el1/public/database/distributed_device_profile_service";
     mkdir(baseDir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    if (!g_flag) {
-        DistributedDeviceProfileServiceNew::GetInstance().Init();
-        g_flag = true;
-    }
     code = code % static_cast<uint32_t>(DpIpcInterfaceCode::MAX) + 1;
     if (code < MIN_INTERFACE_CODE) {
         code += MIN_INTERFACE_CODE;

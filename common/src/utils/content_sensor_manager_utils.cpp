@@ -344,7 +344,13 @@ int32_t ContentSensorManagerUtils::LoadJsonFile(const std::string &filePath, std
         return DP_LOAD_JSON_FILE_FAIL;
     }
     ifs.seekg(0, std::ios::end);
-    size_t fileSize = ifs.tellg();
+    std::streampos pos = ifs.tellg();
+    if (pos < 0 || static_cast<size_t>(pos) > std::numeric_limits<size_t>::max()) {
+        HILOGE("Failed to determine file size.");
+        ifs.close();
+        return DP_LOAD_JSON_FILE_FAIL;
+    }
+    size_t fileSize = static_cast<size_t>(pos);
     ifs.seekg(0, std::ios::beg);
     if (fileSize > MAX_CONFIG_FILE_SIZE) {
         HILOGE("config file too large: %zu", fileSize);

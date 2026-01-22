@@ -1590,6 +1590,7 @@ HWTEST_F(ProfileUtilsTest, IsNumStr001, TestSize.Level1)
     EXPECT_EQ(isNumStr, false);
 }
 
+
 HWTEST_F(ProfileUtilsTest, ServiceInfoProfileToEntries_001, TestSize.Level1)
 {
     OHOS::DistributedDeviceProfile::ServiceInfoProfileNew serviceInfoProfile;
@@ -1601,7 +1602,7 @@ HWTEST_F(ProfileUtilsTest, ServiceInfoProfileToEntries_001, TestSize.Level1)
     EXPECT_NE(DP_READ_PARCEL_FAIL, res1);
     EXPECT_FALSE(entries.empty());
 }
-
+ 
 HWTEST_F(ProfileUtilsTest, ServiceInfoProfileToEntries_002, TestSize.Level1)
 {
     OHOS::DistributedDeviceProfile::ServiceInfoProfileNew serviceInfoProfile;
@@ -1613,7 +1614,7 @@ HWTEST_F(ProfileUtilsTest, ServiceInfoProfileToEntries_002, TestSize.Level1)
     EXPECT_NE(DP_READ_PARCEL_FAIL, res1);
     EXPECT_FALSE(entries.empty());
 }
-
+ 
 HWTEST_F(ProfileUtilsTest, GenerateServiceDBKey_001, TestSize.Level1)
 {
     std::string regServiceId = "test_regServiceId";
@@ -1623,7 +1624,7 @@ HWTEST_F(ProfileUtilsTest, GenerateServiceDBKey_001, TestSize.Level1)
     EXPECT_EQ("serviceInfo" + SEPARATOR + regServiceId + SEPARATOR + std::to_string(userId)
         + SEPARATOR + trailInfo, res1);
 }
-
+ 
 HWTEST_F(ProfileUtilsTest, GenerateServiceDBKey_002, TestSize.Level1)
 {
     std::string regServiceId = "test_regServiceId";
@@ -1633,7 +1634,7 @@ HWTEST_F(ProfileUtilsTest, GenerateServiceDBKey_002, TestSize.Level1)
     EXPECT_EQ("serviceInfo" + SEPARATOR + regServiceId + SEPARATOR + std::to_string(userId)
         + SEPARATOR + trailInfo, res1);
 }
-
+ 
 HWTEST_F(ProfileUtilsTest, GenerateServiceInfoProfilekeys_001, TestSize.Level1)
 {
     std::string regServiceId = "test_regServiceId";

@@ -1346,6 +1346,7 @@ HWTEST_F(ProfileControlUtilsTest, GetSwitchCharacteristicProfile007, TestSize.Le
     ProfileCache::GetInstance().onlineDevMap_.erase(deviceId);
 }
 
+ 
 /**
  * @tc.name: DeleteServiceInfoProfile001
  * @tc.desc: kvStore 为 nullptr，返回 DP_INVALID_PARAMS
@@ -1359,13 +1360,13 @@ HWTEST_F(ProfileControlUtilsTest, DeleteServiceInfoProfile001, TestSize.Level1)
     int32_t ret = ProfileControlUtils::DeleteServiceInfoProfile(kvStore, regServiceId, userId);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
 }
-
+ 
 /**
  * @tc.name: DeleteServiceInfoProfile002
  * @tc.desc: DeleteBatch 失败，返回 DP_DEL_KV_DB_FAIL
  * @tc.type: FUNC
  */
-
+ 
 HWTEST_F(ProfileControlUtilsTest, DeleteServiceInfoProfile002, TestSize.Level1)
 {
     auto kvStore = std::make_shared<KVAdapterTest>();
@@ -1375,7 +1376,7 @@ HWTEST_F(ProfileControlUtilsTest, DeleteServiceInfoProfile002, TestSize.Level1)
     int32_t ret = ProfileControlUtils::DeleteServiceInfoProfile(kvStore, regServiceId, userId);
     EXPECT_NE(ret, DP_READ_PARCEL_FAIL);
 }
-
+ 
 /**
  * @tc.name: DeleteServiceInfoProfile003
  * @tc.desc: 正常删除，返回 DP_SUCCESS

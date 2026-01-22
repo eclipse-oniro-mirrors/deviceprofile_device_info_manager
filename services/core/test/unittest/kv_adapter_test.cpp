@@ -184,7 +184,7 @@ HWTEST_F(KVAdapterTest, PutBatch002, TestSize.Level1)
     map<string, string> values;
     EXPECT_EQ(DP_INVALID_PARAMS, kvStore->PutBatch(values));
 
-    for (int32_t i = 0; i< MAX_PROFILE_SIZE + 5; i++) {
+    for (uint32_t i = 0; i< MAX_PROFILE_SIZE + 5; i++) {
         values[to_string(i)] = "value";
     }
     EXPECT_EQ(DP_INVALID_PARAMS, kvStore->PutBatch(values));
@@ -296,7 +296,7 @@ HWTEST_F(KVAdapterTest, GetByPrefix001, TestSize.Level1)
     kvStore->Put("GetByPrefix001a", "value");
     kvStore->Put("GetByPrefix001b", "value");
     map<string, string> values;
-    EXPECT_NE(DP_READ_PARCEL_FAIL, kvStore->GetByPrefix("GetByPrefix001", values));
+    EXPECT_EQ(DP_SUCCESS, kvStore->GetByPrefix("GetByPrefix001", values));
     EXPECT_EQ(2, values.size());
 }
 

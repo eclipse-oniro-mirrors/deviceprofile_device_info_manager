@@ -42,6 +42,7 @@ public:
     void WriteBool(bool newMark) { mark = newMark; }
     bool mark = false;
 };
+
 class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubNew {
     int32_t PutAccessControlProfile(const AccessControlProfile& aclProfile) override;
     int32_t UpdateAccessControlProfile(const AccessControlProfile& aclProfile) override;
@@ -116,6 +117,7 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
     int32_t GetServiceInfoProfileByRegServiceId(int32_t regServiceId,
         ServiceInfoProfileNew& serviceInfoProfile) override;
     int32_t mockGetServiceInfoResult_ = DP_SUCCESS;
+ 
 public:
     void SetMockGetServiceInfoResult(int32_t result);
     void DelayUnloadTask() override;
@@ -494,7 +496,7 @@ int32_t MockDistributedDeviceProfileStubNew::GetBusinessEvent(BusinessEvent& eve
     (void)event;
     return 0;
 }
-
+ 
 int32_t MockDistributedDeviceProfileStubNew::PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfo)
 {
     (void)serviceInfo;
@@ -536,12 +538,13 @@ void MockDistributedDeviceProfileStubNew::SetMockGetServiceInfoResult(int32_t re
 {
     mockGetServiceInfoResult_ = result;
 }
-
+ 
 class MockServiceInfoProfileNew : public ServiceInfoProfileNew {
 public:
     bool UnMarshalling(MessageParcel &data) override { return testBool; }
     bool testBool = false;
 };
+
 /**
  * @tc.name: IsInterfaceTokenValid001
  * @tc.desc: IsInterfaceTokenValid

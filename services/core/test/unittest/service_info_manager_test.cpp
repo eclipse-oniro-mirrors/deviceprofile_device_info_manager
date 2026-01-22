@@ -451,7 +451,7 @@ HWTEST_F(ServiceInfoProfileManageTest, SetServiceInfoProfile_002, testing::ext::
     EXPECT_TRUE(profile.GetServiceName().empty());
     EXPECT_TRUE(profile.GetServiceType().empty());
     EXPECT_EQ(profile.GetTokenId(), 0);
-    EXPECT_NE(profile.GetUserId(), -2);
+    EXPECT_EQ(profile.GetUserId(), -1);
 }
 
 HWTEST_F(ServiceInfoProfileManageTest, SetServiceInfoProfile_003, testing::ext::TestSize.Level1)
@@ -470,6 +470,23 @@ HWTEST_F(ServiceInfoProfileManageTest, SetServiceInfoProfile_003, testing::ext::
     EXPECT_TRUE(profile.GetServiceName().empty());
     EXPECT_TRUE(profile.GetServiceType().empty());
     EXPECT_EQ(profile.GetTokenId(), 0);
+}
+
+HWTEST_F(ServiceInfoProfileManageTest, SetServiceInfoProfile_004, testing::ext::TestSize.Level1)
+{
+    ServiceInfoProfileManage manager;
+    std::string regServiceId = "123";
+    std::map<std::string, std::string> finalSerProfile = {
+        {"serviceInfo#123#publishState", "111"},
+        {"serviceInfo#123#serviceId", "456"},
+        {"serviceInfo#123#tokenId", "789"}
+    };
+    ServiceInfoProfileNew profile;
+
+    manager.SetServiceInfoProfile(regServiceId, finalSerProfile, profile);
+
+    EXPECT_EQ(profile.GetSerPubState(), 0);
+    EXPECT_EQ(profile.GetServiceId(), 0);
 }
 
 HWTEST_F(ServiceInfoProfileManageTest, GetServiceInfoProfileByTokenId_001, testing::ext::TestSize.Level1)

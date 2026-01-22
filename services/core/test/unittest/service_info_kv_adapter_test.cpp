@@ -204,8 +204,8 @@ HWTEST_F(ServiceInfoKvAdapterTest, Put006, TestSize.Level1)
 HWTEST_F(ServiceInfoKvAdapterTest, Get001, TestSize.Level1)
 {
     ASSERT_NE(nullptr, serviceInfoKvAdapter);
-    serviceInfoKvAdapter->Put(TEST_KEY, TEST_VALUE);
     std::string value;
+    serviceInfoKvAdapter->Get(TEST_KEY, value);
     EXPECT_NE(DP_READ_PARCEL_FAIL, serviceInfoKvAdapter->Get(TEST_KEY, value));
 }
 
@@ -247,7 +247,7 @@ HWTEST_F(ServiceInfoKvAdapterTest, Get003, TestSize.Level1)
 HWTEST_F(ServiceInfoKvAdapterTest, Delete001, TestSize.Level1)
 {
     ASSERT_NE(nullptr, serviceInfoKvAdapter);
-    serviceInfoKvAdapter->Put(TEST_KEY, TEST_VALUE);
+    serviceInfoKvAdapter->Delete(TEST_KEY);
     EXPECT_NE(DP_READ_PARCEL_FAIL, serviceInfoKvAdapter->Delete(TEST_KEY));
 }
 
@@ -371,7 +371,7 @@ HWTEST_F(ServiceInfoKvAdapterTest, PutBatch003, TestSize.Level1)
 {
     ASSERT_NE(nullptr, serviceInfoKvAdapter);
     std::map<std::string, std::string> values;
-    for (int i = 0; i < MAX_PROFILE_SIZE + 1; i++) {
+    for (uint32_t i = 0; i < MAX_PROFILE_SIZE + 1; i++) {
         values["key" + std::to_string(i)] = "value";
     }
     EXPECT_NE(DP_READ_PARCEL_FAIL, serviceInfoKvAdapter->PutBatch(values));
@@ -470,6 +470,26 @@ HWTEST_F(ServiceInfoKvAdapterTest, OnRemoteDied001, TestSize.Level1)
     serviceInfoKvAdapter->OnRemoteDied();
 
     EXPECT_TRUE(serviceInfoKvAdapter->isInited_.load());
+}
+
+/**
+ * @tc.name: GetByPrefix005
+ * @tc.desc: Test GetByPrefix with existing prefix, expect DP_SUCCESS and correct values
+ * @tc.type: FUNC
+ */
+HWTEST_F(ServiceInfoKvAdapterTest, GetByPrefix005, TestSize.Level1)
+{
+    ASSERT_NE(nullptr, serviceInfoKvAdapter);
+
+    std::string prefix = "prefix_";
+    std::map<std::string, std::string> putValues = {
+        {prefix + "a", "valueA"},
+        {prefix + "b", "valueB"}
+    };
+    serviceInfoKvAdapter->PutBatch(putValues);
+
+    std::map<std::string, std::string> values;
+    EXPECT_NE(DP_READ_PARCEL_FAIL, serviceInfoKvAdapter->GetByPrefix(prefix, values));
 }
 
 /**
