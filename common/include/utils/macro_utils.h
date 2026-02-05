@@ -117,6 +117,14 @@ namespace DistributedDeviceProfile {
             return ERR_FLATTEN_OBJECT; \
         } \
     } while (0)
+
+#define WRITE_SERINFO_CHANGE_LISTENER_TOKEN(data) \
+    do { \
+        if (!(data).WriteInterfaceToken(IServiceInfoChangeCallback::GetDescriptor())) { \
+            HILOGE("Write interface token failed!"); \
+            return ERR_FLATTEN_OBJECT; \
+        } \
+    } while (0)
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_DEVICE_PROFILE_PARCEL_HELPER_H
