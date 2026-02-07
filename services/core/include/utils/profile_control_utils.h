@@ -52,9 +52,11 @@ public:
     const std::string& serviceName, const std::string& characteristicKey, CharacteristicProfile& charProfile);
     static int32_t DeleteServiceProfile(std::shared_ptr<IKVAdapter> kvStore, const std::string& deviceId,
         const std::string& serviceName, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID);
+    //delete start
     static int32_t DeleteServiceInfoProfile(std::shared_ptr<IKVAdapter> kvStore, const int32_t regServiceId,
         int32_t userId = DEFAULT_USER_ID);
-    static int32_t DeleteCharacteristicProfile(std::shared_ptr<IKVAdapter> kvStore, const std::string& deviceId,
+    //delete end
+        static int32_t DeleteCharacteristicProfile(std::shared_ptr<IKVAdapter> kvStore, const std::string& deviceId,
         const std::string& serviceName, const std::string& characteristicKey, bool isMultiUser = false,
         int32_t userId = DEFAULT_USER_ID);
     static int32_t GetAllDeviceProfile(std::shared_ptr<IKVAdapter> kvStore, std::vector<DeviceProfile>& deviceProfiles);

@@ -73,11 +73,13 @@ public:
     int32_t PutProductInfoBatchInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutDeviceIconInfoBatchInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetDeviceIconInfosInner(MessageParcel& data, MessageParcel& reply);
+    //delete start
     int32_t UpdateServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetServiceInfoProfileByUniqueKeyInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetServiceInfoProfileListByTokenIdInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetAllServiceInfoProfileListInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetServiceInfoProfileListByBundleNameInner(MessageParcel& data, MessageParcel& reply);
+    //delete end
     int32_t SubscribePinCodeInvalidInner(MessageParcel& data, MessageParcel& reply);
     int32_t UnSubscribePinCodeInvalidInner(MessageParcel& data, MessageParcel& reply);
     virtual void DelayUnloadTask() = 0;
@@ -86,11 +88,18 @@ public:
     int32_t UnRegisterBusinessCallbackInner(MessageParcel& data, MessageParcel& reply);
     int32_t PutBusinessEventInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetBusinessEventInner(MessageParcel& data, MessageParcel& reply);
+    //delete start
     int32_t PutServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t DeleteServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetServiceInfoProfileByServiceIdInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetServiceInfoProfileByTokenIdInner(MessageParcel& data, MessageParcel& reply);
     int32_t GetServiceInfoProfileByRegServiceIdInner(MessageParcel& data, MessageParcel& reply);
+    //delete end
+    int32_t PutServiceInfoInner(MessageParcel& data, MessageParcel& reply);
+    int32_t DeleteServiceInfoInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetAllServiceInfoListInner(MessageParcel& data, MessageParcel& reply);
+    int32_t GetServiceInfosByUserInfoInner(MessageParcel& data, MessageParcel& reply);
+    int32_t SubscribeAllServiceInfoInner(MessageParcel& data, MessageParcel& reply);
 
 private:
     using Func = int32_t(DistributedDeviceProfileStubNew::*)(MessageParcel& data, MessageParcel& reply);
@@ -99,6 +108,8 @@ private:
     int32_t NotifyEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
     int32_t NotifyAclEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
     int32_t NotifyProfileDataEventInner(uint32_t code, MessageParcel& data,
+        MessageParcel& reply, MessageOption& option);
+    int32_t NotifyServiceInfoEventInner(uint32_t code, MessageParcel& data,
         MessageParcel& reply, MessageOption& option);
     int32_t NotifyLocalServiceEventInner(uint32_t code, MessageParcel& data, MessageParcel& reply,
         MessageOption& option);

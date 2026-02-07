@@ -40,6 +40,11 @@
 #include "profile_change_listener_stub.h"
 #include "trusted_device_info.h"
 #include "local_service_info.h"
+#include "iremote_broker.h"
+#include "user_info.h"
+#include "service_info_profile_new.h"
+#include "service_info_profile.h"
+
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -90,13 +95,6 @@ public:
         sptr<IPincodeInvalidCallback> pinCodeCallback);
     int32_t UnSubscribePinCodeInvalid(const std::string& bundleName, int32_t pinExchangeType);
     int32_t PutAllTrustedDevices(const std::vector<TrustedDeviceInfo>& deviceInfos);
-    int32_t UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile);
-    int32_t GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key, ServiceInfoProfile& serviceInfoProfile);
-    int32_t GetServiceInfoProfileListByTokenId(const ServiceInfoUniqueKey& key,
-        std::vector<ServiceInfoProfile>& serviceInfoProfiles);
-    int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfile>& serviceInfoProfiles);
-    int32_t GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
-        std::vector<ServiceInfoProfile>& serviceInfoProfiles);
     int32_t PutLocalServiceInfo(const LocalServiceInfo& localServiceInfo);
     int32_t UpdateLocalServiceInfo(const LocalServiceInfo& localServiceInfo);
     int32_t GetLocalServiceInfoByBundleAndPinType(const std::string& bundleName,
@@ -107,15 +105,30 @@ public:
     int32_t UnRegisterBusinessCallback(const std::string& saId, const std::string& businessKey);
     int32_t PutBusinessEvent(const BusinessEvent& event);
     int32_t GetBusinessEvent(BusinessEvent& event);
+    int32_t PutServiceInfo(const ServiceInfo& serviceInfo);
+    int32_t DeleteServiceInfo(const UserInfo& userInfo);
+    int32_t GetAllServiceInfoList(std::vector<ServiceInfo>& serviceInfos);
+    int32_t GetServiceInfosByUserInfo(const UserInfo& userInfo, std::vector<ServiceInfo>& serviceInfos);
+    int32_t SubscribeAllServiceInfo(int32_t saId, sptr<IRemoteObject> listener);
+
+    void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
+    void LoadSystemAbilityFail();
+    void ReleaseResource();
+    void ReSubscribeAllServiceInfo();
+    //delete start
+    int32_t UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile);
+    int32_t GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key, ServiceInfoProfile& serviceInfoProfile);
+    int32_t GetServiceInfoProfileListByTokenId(const ServiceInfoUniqueKey& key,
+        std::vector<ServiceInfoProfile>& serviceInfoProfiles);
+    int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfile>& serviceInfoProfiles);
+    int32_t GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
+        std::vector<ServiceInfoProfile>& serviceInfoProfiles);
     int32_t PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfoProfile);
     int32_t DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId);
     int32_t GetServiceInfoProfileByServiceId(int64_t serviceId, ServiceInfoProfileNew& serviceInfoProfile);
     int32_t GetServiceInfoProfileByTokenId(int64_t tokenId, std::vector<ServiceInfoProfileNew>& serviceInfoProfiles);
     int32_t GetServiceInfoProfileByRegServiceId(int32_t regServiceId, ServiceInfoProfileNew& serviceInfoProfile);
-
-    void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
-    void LoadSystemAbilityFail();
-    void ReleaseResource();
+    //delete end
 
 public:
     class SystemAbilityListener : public SystemAbilityStatusChangeStub {
@@ -173,6 +186,10 @@ private:
     sptr<IBusinessCallback> businessCallback_ = nullptr;
     std::string strSaId_ = "";
     std::string businessKey_ = "";
+
+    int32_t serviceInfoSaId_ = 0;
+    std::mutex serInfolistenerLosck_;
+    sptr<IRemoteObject> serviceInfolistener_ = nullptr;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

@@ -28,6 +28,7 @@
 #include "distributed_device_profile_enums.h"
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
+#include "cJSON.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -77,6 +78,23 @@ std::string ProfileUtils::GetAnonyString(const std::string& value)
     }
     return res;
 }
+
+//delete start
+int32_t ProfileUtils::GenerateServiceInfoProfilekeys(const std::string& regServiceId, std::vector<std::string>& dbKeys,
+    int32_t userId)
+{
+    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, DEVICE_ID, userId));
+    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, RDB_USER_ID, userId));
+    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, TOKENID, userId));
+    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, PUBLISH_STATE, userId));
+    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, SERVICE_PROFILE_SERVICE_ID, userId));
+    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, SERVICE_TYPE, userId));
+    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, SERVICE_NAME, userId));
+    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, SERVICE_DISPLAY_NAME, userId));
+
+    return DP_SUCCESS;
+}
+//delete end
 
 std::string ProfileUtils::GetAnonyInt32(const int32_t value)
 {
@@ -297,9 +315,33 @@ bool ProfileUtils::IsSvrProfileValid(const ServiceProfile& svrProfile)
         IsKeyValid(svrProfile.GetServiceName());
 }
 
+//delete start
 bool ProfileUtils::IsSvrInfoProfileValid(const ServiceInfoProfileNew& serInfoProfile)
 {
     return IsKeyValid(serInfoProfile.GetDeviceId()) && IsKeyValid(serInfoProfile.GetServiceName());
+}
+//delete end
+
+bool ProfileUtils::IsSvrInfoValid(const ServiceInfo& serviceInfo)
+{
+    if (serviceInfo.GetServiceOwnerPkgName().empty() ||serviceInfo.GetServiceType().empty() ||
+        serviceInfo.GetServiceName().empty() || serviceInfo.GetServiceDisplayName().empty() ||
+        serviceInfo.GetCustomData().empty() || serviceInfo.GetServiceCode().empty() ||
+        serviceInfo.GetVersion().empty() ||
+        serviceInfo.GetDescription().empty()) {
+            HILOGE("Invalid parameters exist in serviceInfo.");
+        return false;
+    }
+
+    if (serviceInfo.GetUserId() == DEFAULT_USER_ID || serviceInfo.GetDisplayId() == DEFAULT_DISPLAY_ID ||
+        serviceInfo.GetServiceOwnerTokenId() == DEFAULT_SERVICE_OWNER_TOKENID ||
+        serviceInfo.GetServiceRegisterTokenId() == DEFAULT_SERVICE_REGISTER_TOKENID ||
+        serviceInfo.GetServiceId() == DEFAULT_SERVICE_ID || serviceInfo.GetTimeStamp() == DEFAULT_TIMESTAMP ||
+        serviceInfo.GetPublishState() == DEFAULT_PUBLISH_STATE || serviceInfo.GetDataLen() == 0) {
+        HILOGE("Invalid parameters exist in serviceInfo.");
+        return false;
+    }
+    return IsKeyValid(serviceInfo.GetUdid());
 }
 
 bool ProfileUtils::IsCharProfileValid(const CharacteristicProfile& charProfile)
@@ -342,10 +384,12 @@ std::string ProfileUtils::GenerateServiceProfileKey(const std::string& deviceId,
     return SVR_PREFIX + SEPARATOR + deviceId + SEPARATOR + serviceName;
 }
 
+//delete start
 std::string ProfileUtils::GenerateServiceInfoProfileKey(const std::string& regServiceId)
 {
     return SERVICE_INFO + SEPARATOR + regServiceId;
 }
+//delete end
 
 std::string ProfileUtils::GenerateCharProfileKey(const std::string& deviceId, const std::string& serviceName,
     const std::string& charKey)
@@ -463,6 +507,8 @@ int32_t ProfileUtils::ServiceProfileToEntries(const ServiceProfile& profile, std
     return DP_SUCCESS;
 }
 
+
+//delete start
 int32_t ProfileUtils::ServiceInfoProfileToEntries(const ServiceInfoProfileNew& profile, std::map<std::string,
     std::string>& values)
 {
@@ -480,6 +526,47 @@ int32_t ProfileUtils::ServiceInfoProfileToEntries(const ServiceInfoProfileNew& p
     values[GenerateServiceDBKey(regServiceId, SERVICE_DISPLAY_NAME, userIdValue)] =
          profile.GetServiceDisplayName();
 
+    return DP_SUCCESS;
+}
+//delete end
+int32_t ProfileUtils::ServiceInfoToEntries(const ServiceInfo& profile, std::map<std::string,
+    std::string>& values)
+{
+    std::string DBKey = "serInfo" + SEPARATOR + profile.GetUdid() + SEPARATOR + std::to_string(profile.GetUserId()) +
+                        SEPARATOR + std::to_string(profile.GetServiceId());
+    cJSON* jsonObj = cJSON_CreateObject();
+    if (jsonObj == nullptr) {
+        HILOGE("Create cJSON object failed!");
+        return DP_INVALID_PARAMS;
+    }
+    cJSON_AddStringToObject(jsonObj, UD_ID.c_str(), profile.GetUdid().c_str());
+    cJSON_AddNumberToObject(jsonObj, USER_ID.c_str(), profile.GetUserId());
+    cJSON_AddStringToObject(jsonObj, DISPLAYID.c_str(), std::to_string(profile.GetDisplayId()).c_str());
+    cJSON_AddNumberToObject(jsonObj, SERVICE_OWNER_TOKEN_ID.c_str(), profile.GetServiceOwnerTokenId());
+    cJSON_AddStringToObject(jsonObj, SERVICE_OWNER_PKG_NAME.c_str(), profile.GetServiceOwnerPkgName().c_str());
+    cJSON_AddNumberToObject(jsonObj, SERVICE_REGISTER_TOKEN_ID.c_str(), profile.GetServiceRegisterTokenId());
+    cJSON_AddStringToObject(jsonObj, SERVICEID.c_str(), std::to_string(profile.GetServiceId()).c_str());
+    cJSON_AddStringToObject(jsonObj, TIME_STAMP.c_str(), std::to_string(profile.GetTimeStamp()).c_str());
+    cJSON_AddNumberToObject(jsonObj, PUBLISH_STATE.c_str(), profile.GetPublishState());
+    cJSON_AddStringToObject(jsonObj, SERVICE_TYPE.c_str(), profile.GetServiceType().c_str());
+    cJSON_AddStringToObject(jsonObj, SERVICE_NAME.c_str(), profile.GetServiceName().c_str());
+    cJSON_AddStringToObject(jsonObj, SERVICE_DISPLAY_NAME.c_str(), profile.GetServiceDisplayName().c_str());
+    cJSON_AddStringToObject(jsonObj, CUSTOM_DATA.c_str(), profile.GetCustomData().c_str());
+    cJSON_AddStringToObject(jsonObj, SERVICE_CODE.c_str(), profile.GetServiceCode().c_str());
+    cJSON_AddNumberToObject(jsonObj, DATA_LEN.c_str(), profile.GetDataLen());
+    cJSON_AddStringToObject(jsonObj, EXTRA_DATA.c_str(), profile.GetExtraData().c_str());
+    cJSON_AddStringToObject(jsonObj, VERSION.c_str(), profile.GetVersion().c_str());
+    cJSON_AddStringToObject(jsonObj, DESCRIPTION.c_str(), profile.GetDescription().c_str());
+
+    char* jsonStr = cJSON_PrintUnformatted(jsonObj);
+    if (jsonStr == nullptr) {
+        cJSON_Delete(jsonObj);
+        HILOGE("Convert cJSON to string failed!");
+        return DP_INVALID_PARAMS;
+    }
+    values[DBKey] = jsonStr;
+    cJSON_free(jsonStr);
+    cJSON_Delete(jsonObj);
     return DP_SUCCESS;
 }
 
@@ -1018,21 +1105,6 @@ int32_t ProfileUtils::GenerateServiceDBkeys(const std::string& deviceId, const s
         dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_NAME));
         dbKeys.emplace_back(GenerateDBKey(serviceProfileKey, SERVICE_TYPE));
     }
-    return DP_SUCCESS;
-}
-
-int32_t ProfileUtils::GenerateServiceInfoProfilekeys(const std::string& regServiceId, std::vector<std::string>& dbKeys,
-    int32_t userId)
-{
-    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, DEVICE_ID, userId));
-    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, RDB_USER_ID, userId));
-    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, TOKENID, userId));
-    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, PUBLISH_STATE, userId));
-    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, SERVICE_PROFILE_SERVICE_ID, userId));
-    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, SERVICE_TYPE, userId));
-    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, SERVICE_NAME, userId));
-    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, SERVICE_DISPLAY_NAME, userId));
-
     return DP_SUCCESS;
 }
 

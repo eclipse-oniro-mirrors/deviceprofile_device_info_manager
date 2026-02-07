@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -49,7 +49,9 @@ extern const std::string DEV_TYPE;
 extern const std::string MANU;
 extern const std::string SN;
 extern const std::string PRODUCT_ID;
+//delete start
 extern const std::string PRODUCT_NAME;
+//delete end
 extern const std::string SUB_PRODUCT_ID;
 extern const std::string HIV;
 extern const std::string MAC;
@@ -100,7 +102,7 @@ extern const std::string SPEC_NAME;
 extern const std::string DEVICE_ICON;
 extern const std::string DEVICE_ICON_VERSION;
 extern const std::string DEVICE_ICON_URL;
- /* ServiceInfoProfile Attribute */
+ /* ServiceInfo Attribute */
 extern const std::string SRNETWORK_ID;
 extern const std::string SISERVICE_ID;
 extern const std::string SERVICE_DISPLAY_NAME;
@@ -116,6 +118,7 @@ extern const std::string PINCODE;
 extern const std::string DESCRIPTION;
 extern const std::string SERVICE_DISCOVERY_SCOPE;
 extern const std::string EXTRAINFO;
+//delete start
 extern const std::string PUT_SERVICE_INFO_PROFILE;
 extern const std::string DELETE_SERVICE_INFO_PROFILE;
 extern const std::string UPDATE_SERVICE_INFO_PROFILE;
@@ -123,10 +126,25 @@ extern const std::string GET_SERVICE_INFO_PROFILE_BY_UNIQUE_KEY;
 extern const std::string GET_SERVICE_INFO_PROFILE_LIST_BY_TOKEN_ID;
 extern const std::string GET_ALL_SERVICE_INFO_PROFILE_LIST;
 extern const std::string GET_SERVICE_INFO_PROFILE_LIST_BY_BUNDLE_NAME;
+//delete end
+extern const std::string PUT_SERVICE_INFO;
+extern const std::string DELETE_SERVICE_INFO;
+extern const std::string GET_ALL_SERVICE_INFO_LIST;
+extern const std::string GET_SERVICE_INFO_BY_USER_INFO;
 extern const std::string REG_SERVICE_ID;
 extern const std::string PUBLISH_STATE;
 extern const std::string SERVICE_INFO;
 extern const std::string SERVICE_IS_MULTI_USER;
+extern const std::string UD_ID;
+extern const std::string USER_ID;
+extern const std::string DISPLAYID;
+extern const std::string SERVICE_OWNER_TOKEN_ID;
+extern const std::string SERVICE_OWNER_PKG_NAME;
+extern const std::string SERVICE_REGISTER_TOKEN_ID;
+extern const std::string TIME_STAMP;
+extern const std::string DATA_LEN;
+extern const std::string SERVICE_CODE;
+extern const std::string VERSION;
 /* LocalServiceInfo Attribute */
 extern const std::string PUT_LOCAL_SERVICE_INFO;
 extern const std::string UPDATE_LOCAL_SERVICE_INFO;
@@ -265,7 +283,10 @@ extern const std::string SLASHES;
 extern const std::string DEV_PREFIX;
 extern const std::string SVR_PREFIX;
 extern const std::string CHAR_PREFIX;
+//delete start
 extern const std::string USER_ID;
+//delete end
+extern const std::string SERINFO_PREFIX;
 extern const std::string TOKEN_ID;
 extern const std::string DEVICE_PROFILE_ID;
 extern const std::string ALL_PROC;
@@ -291,7 +312,12 @@ constexpr int32_t DEFAULT_USER_ID = -1;
 constexpr int32_t DEFAULT_USER_ID_EXTRA = 0;
 constexpr int32_t U_100 = 100;
 constexpr int64_t DEFAULT_SERVICE_ID = -1;
+constexpr int64_t DEFAULT_DISPLAY_ID = -1;
+constexpr int64_t DEFAULT_TIMESTAMP = -1;
+constexpr int8_t DEFAULT_PUBLISH_STATE = -1;
 constexpr int32_t DEFAULT_ID = -1;
+constexpr int32_t DEFAULT_SERVICE_OWNER_TOKENID = -1;
+constexpr int32_t DEFAULT_SERVICE_REGISTER_TOKENID = -1;
 constexpr int32_t DEFAULT_SERVICE_PROFILE_ID = -1;
 constexpr int32_t DEFAULT_DEVICE_PROFILE_ID = -1;
 constexpr int32_t DEFAULT_AUTH_BOX_TYPE = -1;
@@ -481,6 +507,14 @@ extern const std::string STATIC_CAP_HANDLER_LOC;
 extern const std::string DMS_HANDLER_LOC;
 extern const std::string STATIC_VERSION_RULES;
 constexpr uint32_t SWITCH_LENGTH_MAX = 24;
+constexpr int SERINFO_INDEX = 0;
+constexpr int UDID_INDEX = 1;
+constexpr int USERID_INDEX = 2;
+constexpr int SERVICEID_INDEX = 3;
+constexpr int MIN_KEY_PARTS_REQUIRED = 4;
+constexpr int KEY_USERID_INDEX = 0;
+constexpr int KEY_SERVICEID_INDEX = 1;
+constexpr int KEY_PARTS_INDEX = 2;
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_CONSTANTS_H

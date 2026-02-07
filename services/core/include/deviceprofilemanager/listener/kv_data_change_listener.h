@@ -26,6 +26,8 @@
 #include "distributed_device_profile_enums.h"
 #include "single_instance.h"
 #include "trusted_device_info.h"
+#include "service_info.h"
+#include "user_info.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -37,6 +39,7 @@ public:
     void OnChange(const DistributedKv::ChangeNotification& changeNotification) override;
     void OnChange(const DistributedKv::DataOrigin& origin, Keys&& keys) override;
     void OnSwitchChange(const DistributedKv::SwitchNotification &notification) override;
+    static int32_t EntriesToUserInfo(const std::string& key, UserInfo& userInfo, ServiceInfo& serviceInfo);
 
 private:
     void HandleAddChange(const std::vector<DistributedKv::Entry> &insertRecords);
@@ -45,6 +48,13 @@ private:
     std::vector<DistributedKv::Entry> ConvertCloudChangeDataToEntries(const std::vector<std::string> &keys);
     void FilterEntries(const std::vector<DistributedKv::Entry>& records,
         std::map<std::string, std::string>& entriesMap, bool isDelete);
+    void ConvertRecordsToMap(const std::vector<DistributedKv::Entry>& records,
+        std::map<std::string, std::string>& entriesMap);
+    void ProcessChangeOp(const std::vector<std::string>& keyList, ChangeOp op);
+    void ProcessInsertOrUpdate(const std::vector<std::string>& keyList, const std::string& localUdid,
+        std::vector<ServiceInfo>& serviceInfos);
+    void ProcessDelete(const std::vector<std::string>& keyList, const std::string& localUdid,
+        std::vector<ServiceInfo>& serviceInfos);
 private:
     std::string storeId_;
 };

@@ -27,11 +27,20 @@
 #include "device_profile_manager.h"
 #include "profile_utils.h"
 #include "profile_cache.h"
+//delete start
 #include "subscribe_profile_manager.h"
+//delete end
 #include "subscribe_profile_manager.h"
 #include "distributed_device_profile_log.h"
-
+#include "service_info.h"
+#include "i_service_info_change_callback.h"
+#include "service_info_change_proxy.h"
 #include "types.h"
+#include "service_info_manager.h"
+#include "subscribe_service_info_manager.h"
+#include "parameter.h"
+#include "ffrt.h"
+#include "cJSON.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -39,6 +48,7 @@ namespace {
     const std::string TAG = "KvDataChangeListener";
     const std::string STATIC_STORE_ID = "dp_kv_static_store";
     constexpr uint32_t MAX_SWITCH_CACHE_SIZE = 1000;
+    constexpr int32_t DEVICE_UUID_LENGTH = 65;
 }
 
 KvDataChangeListener::KvDataChangeListener(const std::string& storeId)
@@ -74,10 +84,19 @@ void KvDataChangeListener::OnChange(const DistributedKv::ChangeNotification& cha
 
 void KvDataChangeListener::OnChange(const DistributedKv::DataOrigin& origin, Keys&& keys)
 {
-    HILOGI("Cloud data Change. store=%{public}s", origin.store.c_str());
     if (origin.store == STATIC_STORE_ID) {
+        HILOGI("Sync data Change. store=%{public}s", origin.store.c_str());
+        auto task = [this, origin, keys]() {
+            ProcessChangeOp(keys[ChangeOp::OP_INSERT], ChangeOp::OP_INSERT);
+            ProcessChangeOp(keys[ChangeOp::OP_UPDATE], ChangeOp::OP_UPDATE);
+            ProcessChangeOp(keys[ChangeOp::OP_DELETE], ChangeOp::OP_DELETE);
+        };
+
+        std::thread(task).detach();
         return;
     }
+
+    HILOGI("Cloud data Change. store=%{public}s", origin.store.c_str());
     std::vector<DistributedKv::Entry> insertRecords = DeviceProfileManager::GetInstance()
         .GetEntriesByKeys(keys[ChangeOp::OP_INSERT]);
     if (!insertRecords.empty() && insertRecords.size() <= MAX_DB_RECORD_SIZE) {
@@ -99,6 +118,161 @@ void KvDataChangeListener::OnChange(const DistributedKv::DataOrigin& origin, Key
         }
         HandleDeleteChange(deleteRecords);
     }
+}
+
+void KvDataChangeListener::ProcessChangeOp(const std::vector<std::string>& keyList, ChangeOp op)
+{
+    std::vector<ServiceInfo> serviceInfos;
+    std::string localUdid;
+    char localUdidTemp[DEVICE_UUID_LENGTH] = {0};
+    GetDevUdid(localUdidTemp, DEVICE_UUID_LENGTH);
+    localUdid = localUdidTemp;
+
+    switch (op) {
+        case OP_INSERT:
+            ProcessInsertOrUpdate(keyList, localUdid, serviceInfos);
+            if (!serviceInfos.empty()) {
+                SubscribeServiceInfoManager::GetInstance().NotifyServiceInfoAdd(serviceInfos);
+            }
+            break;
+        case OP_UPDATE:
+            ProcessInsertOrUpdate(keyList, localUdid, serviceInfos);
+            if (!serviceInfos.empty()) {
+                SubscribeServiceInfoManager::GetInstance().NotifyServiceInfoUpdate(serviceInfos);
+            }
+            break;
+            
+        case OP_DELETE:
+            ProcessDelete(keyList, localUdid, serviceInfos);
+            if (!serviceInfos.empty()) {
+                SubscribeServiceInfoManager::GetInstance().NotifyServiceInfoDelete(serviceInfos);
+            }
+            break;
+            
+        case OP_BUTT:
+            HILOGE("Invalid operation type: OP_BUTT");
+            return;
+            
+        default:
+            HILOGW("Unsupported operation type: %{public}d", static_cast<int>(op));
+            return;
+    }
+}
+
+void KvDataChangeListener::ConvertRecordsToMap(const std::vector<DistributedKv::Entry>& records,
+    std::map<std::string, std::string>& entriesMap)
+{
+    for (const auto& item : records) {
+        std::string dbKey = item.key.ToString();
+
+        std::vector<std::string> res;
+        if (ProfileUtils::SplitString(dbKey, SEPARATOR, res) == DP_SUCCESS &&
+            res.size() == MIN_KEY_PARTS_REQUIRED) {
+            if (res[SERINFO_INDEX] != SERINFO_PREFIX) {
+                HILOGE("%{public}s is invalid", dbKey.c_str());
+                continue;
+            }
+        }
+        entriesMap[dbKey] = item.value.ToString();
+    }
+}
+
+void KvDataChangeListener::ProcessInsertOrUpdate(const std::vector<std::string>& keyList,
+    const std::string& localUdid, std::vector<ServiceInfo>& serviceInfos)
+{
+    std::vector<DistributedKv::Entry> allentries =
+        ServiceInfoManager::GetInstance().GetEntriesByKeys(keyList);
+
+    if (allentries.empty() || allentries.size() > MAX_DB_RECORD_SIZE) {
+        HILOGE("Invalid entries size: %{public}zu", allentries.size());
+        return;
+    }
+
+    std::map<std::string, std::string> entries;
+    ConvertRecordsToMap(allentries, entries);
+
+    for (const auto& [dbKey, dbValue] : entries) {
+        cJSON* jsonObj = cJSON_Parse(dbValue.c_str());
+        if (jsonObj == nullptr) {
+            HILOGE("Parse JSON failed for key: %{public}s", dbKey.c_str());
+            continue;
+        }
+
+        ParsedJSONFields fields;
+        if (!ServiceInfoManager::GetInstance().ParseAndValidateJSON(jsonObj, fields)) {
+            cJSON_Delete(jsonObj);
+            HILOGE("ParseAndValidateJSON failed for key: %{public}s", dbKey.c_str());
+            continue;
+        }
+
+        ServiceInfo serviceInfo;
+        ServiceInfoManager::GetInstance().FillServiceInfo(fields, serviceInfo);
+
+        if (ServiceInfoManager::GetInstance().PutServiceInfo(serviceInfo) == DP_SUCCESS &&
+            serviceInfo.GetUdid() != localUdid) {
+            serviceInfos.push_back(serviceInfo);
+        }
+        cJSON_Delete(jsonObj);
+    }
+}
+
+void KvDataChangeListener::ProcessDelete(const std::vector<std::string>& keyList,
+    const std::string& localUdid, std::vector<ServiceInfo>& serviceInfos)
+{
+    if (keyList.empty() || keyList.size() > MAX_DB_RECORD_SIZE) {
+        HILOGE("Invalid key list size: %{public}zu", keyList.size());
+        return;
+    }
+
+    std::vector<DistributedKv::Entry> deleteRecords;
+    for (const auto &key : keyList) {
+        DistributedKv::Entry entry;
+        DistributedKv::Key kvKey(key);
+        entry.key = kvKey;
+        deleteRecords.emplace_back(entry);
+    }
+
+    std::map<std::string, std::string> entries;
+    ConvertRecordsToMap(deleteRecords, entries);
+
+    for (const auto& [dbKey, dbValue] : entries) {
+        UserInfo userInfo;
+        ServiceInfo serviceInfo;
+        if (EntriesToUserInfo(dbKey, userInfo, serviceInfo) != DP_SUCCESS) {
+            HILOGE("Failed to parse user info from key");
+            continue;
+        }
+        if (ServiceInfoManager::GetInstance().DeleteServiceInfo(userInfo) == DP_SUCCESS &&
+            userInfo.udid != localUdid) {
+            serviceInfos.push_back(serviceInfo);
+        }
+    }
+}
+
+int32_t KvDataChangeListener::EntriesToUserInfo(const std::string& key, UserInfo& userInfo, ServiceInfo& serviceInfo)
+{
+    std::vector<std::string> res;
+    std::vector<ServiceInfo> serviceInfos;
+    if (ProfileUtils::SplitString(key, SEPARATOR, res) != DP_SUCCESS ||
+        res.size() != MIN_KEY_PARTS_REQUIRED) {
+        HILOGE("key is invalid: %{public}s", key.c_str());
+        return DP_INVALID_PARAMS;
+    }
+
+    userInfo.udid = res[UDID_INDEX];
+    userInfo.userId = std::atoi(res[USERID_INDEX].c_str());
+    userInfo.serviceId = std::atoll(res[SERVICEID_INDEX].c_str());
+
+    int ret = ServiceInfoManager::GetInstance().GetServiceInfosByUserInfo(userInfo, serviceInfos);
+    if (ret != DP_SUCCESS) {
+        HILOGE("GetServiceInfosByUserInfo Fail");
+        return ret;
+    }
+    if (!serviceInfos.empty()) {
+        serviceInfo = serviceInfos[NUM_0];
+    }
+
+    return DP_SUCCESS;
 }
 
 void KvDataChangeListener::OnSwitchChange(const DistributedKv::SwitchNotification& notification)

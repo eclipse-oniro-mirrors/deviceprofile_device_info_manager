@@ -119,6 +119,7 @@ void ServiceInfoProfileNew::SetTokenId(int64_t tokenId)
     tokenId_ = tokenId;
 }
 
+//delete start
 bool ServiceInfoProfileNew::Marshalling(MessageParcel& parcel) const
 {
     WRITE_HELPER(parcel, Int32, regServiceId_);
@@ -154,8 +155,8 @@ std::string ServiceInfoProfileNew::dump() const
     cJSON* json = cJSON_CreateObject();
     if (!cJSON_IsObject(json)) {
         cJSON_Delete(json);
-        return EMPTY_STRING;
-    }
+    return EMPTY_STRING;
+}
     cJSON_AddNumberToObject(json, REG_SERVICE_ID.c_str(), regServiceId_);
     cJSON_AddStringToObject(json, DEVICE_ID.c_str(), ProfileUtils::GetAnonyString(deviceId_).c_str());
     cJSON_AddNumberToObject(json, USERID.c_str(), userId_);
@@ -176,5 +177,6 @@ std::string ServiceInfoProfileNew::dump() const
     cJSON_free(jsonChars);
     return jsonStr;
 }
+//delete end
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
