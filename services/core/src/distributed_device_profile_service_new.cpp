@@ -101,6 +101,10 @@ int32_t DistributedDeviceProfileServiceNew::Init()
         HILOGE("SubscribeProfileManager init failed");
         return DP_SUBSCRIBE_PROFILE_MANAGER_INIT_FAIL;
     }
+    if (ServiceInfoManae::GetInstance().Init() != DP_SUCCESS) {
+        HILOGE("ServiceInfoManae init failed");
+        return DP_SUBSCRIBE_PROFILE_MANAGER_INIT_FAIL;
+    }
     HILOGI("init finish");
     return DP_SUCCESS;
 }
@@ -164,9 +168,6 @@ int32_t DistributedDeviceProfileServiceNew::PostInitNext()
     if (BusinessEventManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("BusinessEventManager init failed");
         return DP_BUSINESS_EVENT_MANAGER_INIT_FAIL;
-    }
-    if (ServiceInfoProfileManage::GetInstance().Init() != DP_SUCCESS) {
-        HILOGE("ServiceInfoManager init failed");
     }
     {
         std::lock_guard<std::mutex> lock(cacheMtx_);
