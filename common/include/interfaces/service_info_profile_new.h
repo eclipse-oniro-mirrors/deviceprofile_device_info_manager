@@ -83,4 +83,4 @@ private:
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
-#endif OHOS_DP_SERVICE_INFO_NEW_H
+#endif //OHOS_DP_SERVICE_INFO_NEW_H
