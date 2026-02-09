@@ -96,6 +96,7 @@
                 "profile_change_listener_proxy.h",
                 "profile_change_listener_stub.h",
                 "service_profile.h",
+                "service_info.h",
                 "sync_completed_callback_proxy.h",
                 "sync_completed_callback_stub.h",
                 "trust_device_profile.h"
