@@ -115,7 +115,46 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
 
     void DelayUnloadTask() override;
     bool IsInited() override;
+    int32_t PutServiceInfo(const ServiceInfo& serviceInfo) override;
+    int32_t DeleteServiceInfo(const UserInfo& userInfo) override;
+    int32_t GetAllServiceInfoList(std::vector<ServiceInfo>& serviceInfos) override;
+    int32_t GetServiceInfosByUserInfo(const UserInfo& userInfo,
+        std::vector<ServiceInfo>& serviceInfos) override;
+    int32_t SubscribeAllServiceInfo(int32_t saId, sptr<IRemoteObject> listener) override;
 };
+
+int32_t MockDistributedDeviceProfileStubNew::PutServiceInfo(const ServiceInfo& serviceInfo)
+{
+    (void)serviceInfo;
+    return 0;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::DeleteServiceInfo(const UserInfo& userInfo)
+{
+    (void)userInfo;
+    return 0;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::GetAllServiceInfoList(std::vector<ServiceInfo>& serviceInfos)
+{
+    (void)serviceInfos;
+    return 0;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::GetServiceInfosByUserInfo(const UserInfo& userInfo,
+                                                                       std::vector<ServiceInfo>& serviceInfos)
+{
+    (void)userInfo;
+    (void)serviceInfos;
+    return 0;
+}
+
+int32_t MockDistributedDeviceProfileStubNew::SubscribeAllServiceInfo(int32_t saId, sptr<IRemoteObject> listener)
+{
+    (void)saId;
+    (void)listener;
+    return 0;
+}
 
 int32_t MockDistributedDeviceProfileStubNew::PutAccessControlProfile(const AccessControlProfile& aclProfile)
 {

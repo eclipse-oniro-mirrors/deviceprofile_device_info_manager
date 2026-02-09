@@ -31,8 +31,12 @@
 #include "device_profile.h"
 #include "distributed_device_profile_constants.h"
 #include "service_profile.h"
+//delete start
 #include "service_info_profile_new.h"
+//delete end
+#include "service_info.h"
 #include "trust_device_profile.h"
+#include "user_info.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -54,7 +58,10 @@ public:
     // This mothed can be invoked only when put or delete profile.
     static bool IsSvrProfileValid(const ServiceProfile& svrProfile);
     // This mothed can be invoked only when put or delete profile.
+    //delete start
     static bool IsSvrInfoProfileValid(const ServiceInfoProfileNew& serInfoProfile);
+    //delete end
+    static bool IsSvrInfoValid(const ServiceInfo& serviceInfo);
     // This mothed can be invoked only when put or delete profile.
     static bool IsCharProfileValid(const CharacteristicProfile& charProfile);
     // This mothed can be invoked only when get profile.
@@ -65,7 +72,9 @@ public:
     static bool IsCharacteristicProfileValid(const CharacteristicProfile& charProfile);
     static std::string GenerateDeviceProfileKey(const std::string& deviceId);
     static std::string GenerateServiceProfileKey(const std::string& deviceId, const std::string& serviceName);
+    //delete start
     static std::string GenerateServiceInfoProfileKey(const std::string& regServiceId);
+    //delete end
     static std::string GenerateCharProfileKey(const std::string& deviceId, const std::string& serviceName,
         const std::string& charKey);
     static int32_t TrustDeviceProfileToEntries(const TrustDeviceProfile& profile, ValuesBucket& values);
@@ -76,8 +85,11 @@ public:
         bool isMultiUser = false);
     static int32_t ServiceProfileToEntries(const ServiceProfile& profile, std::map<std::string, std::string>& values,
         bool isMultiUser = false);
+    static int32_t ServiceInfoToEntries(const ServiceInfo& profile, std::map<std::string, std::string>& values);
+    //delete start
     static int32_t ServiceInfoProfileToEntries(const ServiceInfoProfileNew& profile,
         std::map<std::string, std::string>& values);
+    //delete end
     static int32_t CharacteristicProfileToEntries(const CharacteristicProfile& profile,
         std::map<std::string, std::string>& values, bool isMultiUser = false);
     static int32_t EntriesToTrustDeviceProfile(const ValuesBucket& values, TrustDeviceProfile& profile);
@@ -120,8 +132,10 @@ public:
     static bool IsNumStr(const std::string& inString);
     static int32_t GetUserIdFromDbKey(const std::string& dbKey);
     static std::string RemoveUserIdFromDbKey(const std::string& dbKey);
+    //delete start
     static int32_t GenerateServiceInfoProfilekeys(const std::string& regServiceId, std::vector<std::string>& dbKeys,
          int32_t userId);
+    //delete end
     static int32_t GenerateServiceDBkeys(const std::string& deviceId, const std::string& serviceName,
         std::vector<std::string>& dbKeys, bool isMultiUser = false, int32_t userId = DEFAULT_USER_ID);
     static int32_t GenerateCharacteristicDBkeys(const std::string& deviceId, const std::string& serviceName,

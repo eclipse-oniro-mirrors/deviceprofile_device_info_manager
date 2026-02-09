@@ -278,6 +278,7 @@ int32_t DistributedDeviceProfileClient::PutServiceProfile(const ServiceProfile& 
     return dpService->PutServiceProfile(serviceProfile);
 }
 
+//delete start
 int32_t DistributedDeviceProfileClient::UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile)
 {
     auto dpService = GetDeviceProfileService();
@@ -331,6 +332,7 @@ int32_t DistributedDeviceProfileClient::GetServiceInfoProfileListByBundleName(co
     }
     return dpService->GetServiceInfoProfileListByBundleName(key, serviceInfoProfiles);
 }
+//delete end
 
 int32_t DistributedDeviceProfileClient::PutServiceProfileBatch(const std::vector<ServiceProfile>& serviceProfiles)
 {
@@ -1224,6 +1226,7 @@ int32_t DistributedDeviceProfileClient::GetBusinessEvent(BusinessEvent& event)
     return dpService->GetBusinessEvent(event);
 }
 
+//delete start
 int32_t DistributedDeviceProfileClient::PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfoProfile)
 {
     auto dpService = GetDeviceProfileService();
@@ -1275,6 +1278,104 @@ int32_t DistributedDeviceProfileClient::GetServiceInfoProfileByRegServiceId(int3
         return DP_GET_SERVICE_FAILED;
     }
     return dpService->GetServiceInfoProfileByRegServiceId(regServiceId, serviceInfoProfile);
+}
+//delete end
+
+int32_t DistributedDeviceProfileClient::PutServiceInfo(const ServiceInfo& serviceInfo)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->PutServiceInfo(serviceInfo);
+}
+
+int32_t DistributedDeviceProfileClient::DeleteServiceInfo(const UserInfo& userInfo)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->DeleteServiceInfo(userInfo);
+}
+
+int32_t DistributedDeviceProfileClient::GetAllServiceInfoList(std::vector<ServiceInfo> &serviceInfos)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->GetAllServiceInfoList(serviceInfos);
+}
+
+int32_t DistributedDeviceProfileClient::GetServiceInfosByUserInfo(const UserInfo& userInfo,
+    std::vector<ServiceInfo>& serviceInfos)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->GetServiceInfosByUserInfo(userInfo, serviceInfos);
+}
+
+void DistributedDeviceProfileClient::ReSubscribeAllServiceInfo()
+{
+    int32_t saId = 0;
+    sptr<IRemoteObject> listener = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(serInfolistenerLosck_);
+        if (serviceInfolistener_ == nullptr) {
+            HILOGI("not use Retry subscribe dp callback");
+            return;
+        }
+        saId = serviceInfoSaId_;
+        listener = serviceInfolistener_;
+    }
+    auto autoTask = [this, saId, listener] () {
+        int32_t ret = SubscribeAllServiceInfo(saId, listener);
+        if (ret != DP_SUCCESS) {
+            HILOGE("Retry subscribe dp serviceInfo callback failed");
+        } else {
+            HILOGD("Retry subscribe dp serviceInfo callback succeed");
+        }
+    };
+    std::thread(autoTask).detach();
+}
+
+int32_t DistributedDeviceProfileClient::SubscribeAllServiceInfo(int32_t saId, sptr<IRemoteObject> listener)
+{
+    HILOGI("enter, saId:%{public}d", saId);
+    SubscribeDeviceProfileSA();
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("Get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    if (saId <= 0 || saId > MAX_SAID) {
+        HILOGE("saId is invalid, saId:%{public}d", saId);
+        return DP_INVALID_PARAM;
+    }
+    if (listener == nullptr) {
+        HILOGE("listener is nullptr!");
+        return DP_INVALID_PARAM;
+    }
+    
+    {
+        std::lock_guard<std::mutex> lock(serInfolistenerLosck_);
+        int32_t ret = dpService->SubscribeAllServiceInfo(saId, listener);
+        if (ret != DP_SUCCESS) {
+            HILOGE("Subscribe DP serviceInfo callback failed!");
+            return ret;
+        }
+        serviceInfoSaId_ = saId;
+        serviceInfolistener_ = listener;
+    }
+    HILOGD("Subscribe DP serviceInfo callback succeed!");
+    return DP_SUCCESS;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

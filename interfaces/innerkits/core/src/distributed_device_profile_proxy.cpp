@@ -414,6 +414,7 @@ int32_t DistributedDeviceProfileProxy::GetServiceProfile(const std::string& devi
     return DP_SUCCESS;
 }
 
+//delete start
 int32_t DistributedDeviceProfileProxy::UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile)
 {
     sptr<IRemoteObject> remote = nullptr;
@@ -508,6 +509,7 @@ int32_t DistributedDeviceProfileProxy::GetServiceInfoProfileListByBundleName(con
     }
     return DP_SUCCESS;
 }
+//delete end
 
 int32_t DistributedDeviceProfileProxy::GetCharacteristicProfile(const std::string& deviceId,
     const std::string& serviceName, const std::string& characteristicId, CharacteristicProfile& charProfile)
@@ -838,6 +840,7 @@ int32_t DistributedDeviceProfileProxy::GetBusinessEvent(BusinessEvent& event)
     return DP_SUCCESS;
 }
 
+//delete start
 int32_t DistributedDeviceProfileProxy::PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfoProfile)
 {
     sptr<IRemoteObject> remote = nullptr;
@@ -919,6 +922,90 @@ int32_t DistributedDeviceProfileProxy::GetServiceInfoProfileByRegServiceId(int32
         HILOGE("dp ipc read parcel fail");
         return DP_READ_PARCEL_FAIL;
     }
+    return DP_SUCCESS;
+}
+//delete end
+
+int32_t DistributedDeviceProfileProxy::PutServiceInfo(const ServiceInfo& serviceInfo)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    if (!serviceInfo.Marshalling(data)) {
+        HILOGE("dp ipc serviceInfo write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::PUT_SERVICE_INFO), data, reply);
+    return DP_SUCCESS;
+}
+ 
+int32_t DistributedDeviceProfileProxy::DeleteServiceInfo(const UserInfo& userInfo)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    if (!userInfo.Marshalling(data)) {
+        HILOGE("dp ipc write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::DELETE_SERVICE_INFO), data, reply);
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::GetAllServiceInfoList(
+    std::vector<ServiceInfo>& serviceInfos)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::GET_ALL_SERVICE_INFO_LIST),
+        data, reply);
+
+    if (!IpcUtils::UnMarshalling(reply, serviceInfos)) {
+        HILOGE("dp ipc read parcel fail");
+        return DP_READ_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::GetServiceInfosByUserInfo(const UserInfo& userInfo,
+    std::vector<ServiceInfo>& serviceInfos)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    if (!userInfo.Marshalling(data)) {
+        HILOGE("dp ipc userInfo write parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::GET_SERVICE_INFO_BY_USER_INFO),
+        data, reply);
+    if (!IpcUtils::UnMarshalling(reply, serviceInfos)) {
+        HILOGE("dp ipc serviceInfos read parcel fail");
+        return DP_READ_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::SubscribeAllServiceInfo(int32_t saId, sptr<IRemoteObject> listener)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    WRITE_HELPER(data, Int32, saId);
+    WRITE_HELPER(data, RemoteObject, listener);
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::SUBSCRIBE_SERVICE_INFO_CALLBACK), data, reply);
     return DP_SUCCESS;
 }
 } // namespace DeviceProfile

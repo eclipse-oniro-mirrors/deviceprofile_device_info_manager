@@ -253,7 +253,7 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<DeviceIconIn
     }
     return true;
 }
-
+//delete start
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<ServiceInfoProfile>& serviceInfoProfiles)
 {
     uint32_t size = serviceInfoProfiles.size();
@@ -285,6 +285,7 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<ServiceInfoProfi
     }
     return true;
 }
+//delete end
 
 bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<DeviceIconInfo>& deviceIconInfos)
 {
@@ -551,6 +552,7 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<TrustedDeviceInf
     return true;
 }
 
+//delete start
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<ServiceInfoProfileNew>& serviceInfoProfiles)
 {
     uint32_t size = static_cast<uint32_t>(serviceInfoProfiles.size());
@@ -582,6 +584,42 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<ServiceInfoProfi
             return false;
         }
         serviceInfoProfiles.emplace_back(serviceInfoProfile);
+    }
+    return true;
+}
+//delete end
+
+bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<ServiceInfo>& serviceInfos)
+{
+    uint32_t size = static_cast<uint32_t>(serviceInfos.size());
+    if (size > MAX_PROFILE_SIZE) {
+        HILOGE("serviceInfos size is invalid!size : %{public}u", size);
+        return false;
+    }
+    WRITE_HELPER_RET(parcel, Uint32, size, false);
+    for (const auto& serviceInfo : serviceInfos) {
+        if (!serviceInfo.Marshalling(parcel)) {
+            HILOGE("serviceInfo Marshalling fail!");
+            return false;
+        }
+    }
+    return true;
+}
+
+bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<ServiceInfo>& serviceInfos)
+{
+    uint32_t size = parcel.ReadUint32();
+    if (size > MAX_PROFILE_SIZE) {
+        HILOGE("Profile size is invalid!size : %{public}u", size);
+        return false;
+    }
+    for (uint32_t i = 0; i < size; i++) {
+        ServiceInfo serviceInfo;
+        if (!serviceInfo.UnMarshalling(parcel)) {
+            HILOGE("serviceInfo UnMarshalling fail!");
+            return false;
+        }
+        serviceInfos.emplace_back(serviceInfo);
     }
     return true;
 }

@@ -234,7 +234,7 @@ void ServiceInfoProfile::SetExtraInfo(const std::string& extraInfo)
 {
     extraInfo_ = extraInfo;
 }
-
+//delete start
 bool ServiceInfoProfile::Marshalling(MessageParcel& parcel) const
 {
     WRITE_HELPER_RET(parcel, String, deviceId_, false);
@@ -284,6 +284,7 @@ bool ServiceInfoProfile::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, String, extraInfo_, false);
     return true;
 }
+//delete end
 
 std::string ServiceInfoProfile::dump() const
 {
