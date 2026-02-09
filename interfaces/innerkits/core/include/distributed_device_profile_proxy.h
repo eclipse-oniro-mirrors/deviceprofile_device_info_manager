@@ -84,6 +84,7 @@ public:
     int32_t PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos) override;
     int32_t GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
         std::vector<DeviceIconInfo>& deviceIconInfos) override;
+    //delete start
     int32_t UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile) override;
     int32_t GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key,
         ServiceInfoProfile& serviceInfoProfile) override;
@@ -92,6 +93,7 @@ public:
     int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
     int32_t GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
         std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
+    //delete end
     int32_t PutLocalServiceInfo(const LocalServiceInfo& localServiceInfo) override;
     int32_t UpdateLocalServiceInfo(const LocalServiceInfo& localServiceInfo) override;
     int32_t GetLocalServiceInfoByBundleAndPinType(const std::string& bundleName,
@@ -102,6 +104,7 @@ public:
     int32_t UnRegisterBusinessCallback(const std::string& saId, const std::string& businessKey) override;
     int32_t PutBusinessEvent(const BusinessEvent& event) override;
     int32_t GetBusinessEvent(BusinessEvent& event) override;
+    //delete start
     int32_t PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfoProfile) override;
     int32_t DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId) override;
     int32_t GetServiceInfoProfileByServiceId(int64_t serviceId, ServiceInfoProfileNew& serviceInfoProfile) override;
@@ -109,6 +112,13 @@ public:
         std::vector<ServiceInfoProfileNew>& serviceInfoProfiles) override;
     int32_t GetServiceInfoProfileByRegServiceId(int32_t regServiceId,
         ServiceInfoProfileNew& serviceInfoProfile) override;
+    //delete end
+    int32_t PutServiceInfo(const ServiceInfo& serviceInfo) override;
+    int32_t DeleteServiceInfo(const UserInfo& userInfo) override;
+    int32_t GetAllServiceInfoList(std::vector<ServiceInfo>& serviceInfos) override;
+    int32_t GetServiceInfosByUserInfo(const UserInfo& userInfo,
+        std::vector<ServiceInfo>& serviceInfos) override;
+    int32_t SubscribeAllServiceInfo(int32_t saId, sptr<IRemoteObject> listener) override;
 
 private:
     static inline BrokerDelegator<DistributedDeviceProfileProxy> delegator_;

@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_DP_SERVICE_INFO_NEW_H
-#define OHOS_DP_SERVICE_INFO_NEW_H
+#ifndef OHOS_DP_SERVICE_INFO_PROFILE_NEW_H
+#define OHOS_DP_SERVICE_INFO_PROFILE_NEW_H
 
 #include <cstdint>
 #include <string>
@@ -83,4 +83,4 @@ private:
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
-#endif //OHOS_DP_SERVICE_INFO_NEW_H
+#endif //OHOS_DP_SERVICE_INFO_PROFILE_NEW_H

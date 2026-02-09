@@ -453,6 +453,7 @@ int32_t ProfileControlUtils::DeleteServiceProfile(std::shared_ptr<IKVAdapter> kv
     return DP_SUCCESS;
 }
 
+//delete start
 int32_t ProfileControlUtils::DeleteServiceInfoProfile(std::shared_ptr<IKVAdapter> kvStore, int32_t regServiceId,
     int32_t userId)
 {
@@ -473,6 +474,7 @@ int32_t ProfileControlUtils::DeleteServiceInfoProfile(std::shared_ptr<IKVAdapter
     }
     return DP_SUCCESS;
 }
+//delete end
 
 int32_t ProfileControlUtils::DeleteCharacteristicProfile(std::shared_ptr<IKVAdapter> kvStore,
     const std::string& deviceId, const std::string& serviceName, const std::string& characteristicKey, bool isMultiUser,

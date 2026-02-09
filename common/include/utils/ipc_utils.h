@@ -34,8 +34,11 @@
 #include "distributed_device_profile_log.h"
 #include "dp_subscribe_info.h"
 #include "product_info.h"
+//delete start
 #include "service_info_profile.h"
 #include "service_info_profile_new.h"
+//delete end
+#include "service_info.h"
 #include "service_profile.h"
 #include "trust_device_profile.h"
 #include "trusted_device_info.h"
@@ -59,8 +62,10 @@ public:
     static bool Marshalling(MessageParcel& parcel, const std::vector<TrustedDeviceInfo>& deviceInfos);
     static bool Marshalling(MessageParcel& parcel, const std::vector<DeviceIconInfo>& deviceIconInfos);
     static bool Marshalling(MessageParcel& parcel, const std::vector<ProductInfo>& productInfos);
+    //delete start
     static bool Marshalling(MessageParcel& parcel, const std::vector<ServiceInfoProfile>& serviceInfoProfiles);
     static bool UnMarshalling(MessageParcel& parcel, std::vector<ServiceInfoProfile>& serviceInfoProfiles);
+    //delete end
     static bool UnMarshalling(MessageParcel& parcel, std::vector<ProductInfo>& productInfos);
     static bool UnMarshalling(MessageParcel& parcel, std::vector<DeviceIconInfo>& deviceIconInfos);
     static bool UnMarshalling(MessageParcel& parcel, std::vector<TrustDeviceProfile>& trustDeviceProfiles);
@@ -76,8 +81,12 @@ public:
         OHOS::DistributedDeviceProfile::SubscribeInfo>& listenerMap);
     static bool UnMarshalling(MessageParcel& parcel, std::unordered_set<ProfileChangeType>& changeTypes);
     static bool UnMarshalling(MessageParcel& parcel, std::vector<TrustedDeviceInfo>& deviceInfos);
+    //delete start
     static bool Marshalling(MessageParcel& parcel, const std::vector<ServiceInfoProfileNew>& serviceInfoProfiles);
     static bool UnMarshalling(MessageParcel& parcel, std::vector<ServiceInfoProfileNew>& serviceInfoProfiles);
+    //delete end
+    static bool Marshalling(MessageParcel& parcel, const std::vector<ServiceInfo>& serviceInfos);
+    static bool UnMarshalling(MessageParcel& parcel, std::vector<ServiceInfo>& serviceInfos);
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

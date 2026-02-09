@@ -20,6 +20,7 @@
 #include "datetime_ex.h"
 #include "string_ex.h"
 #include "ffrt.h"
+#include "cJSON.h"
 
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
@@ -59,7 +60,7 @@ int32_t ServiceInfoKvAdapter::Init()
     int64_t beginTime = GetTickCount();
     DistributedKv::Status status = DistributedKv::Status::SUCCESS;
     while (tryTimes > 0) {
-        DistributedKv::Status status = GetKvStorePtr();
+        status = GetKvStorePtr();
         if (status == DistributedKv::Status::SUCCESS) {
             HILOGI("Init KvStorePtr Success");
             RegisterKvStoreDeathListener();
@@ -191,6 +192,7 @@ int32_t ServiceInfoKvAdapter::RegisterKvStoreDeathListener()
 {
     HILOGI("Register death listener");
     {
+        std::lock_guard<std::mutex> lock(kvDeathRecipientMutex_);
         kvDataMgr_.RegisterKvStoreServiceDeathRecipient(deathRecipient_);
     }
     return DP_SUCCESS;
@@ -200,6 +202,7 @@ int32_t ServiceInfoKvAdapter::UnregisterKvStoreDeathListener()
 {
     HILOGI("UnRegister death listener");
     {
+        std::lock_guard<std::mutex> lock(kvAdapterMutex_);
         kvDataMgr_.UnRegisterKvStoreServiceDeathRecipient(deathRecipient_);
     }
     return DP_SUCCESS;
@@ -261,27 +264,27 @@ int32_t ServiceInfoKvAdapter::DeleteBatch(const std::vector<std::string>& keys)
     return DP_SUCCESS;
 }
 
-int32_t ServiceInfoKvAdapter::PutBatch(const std::map<std::string, std::string>& values)
+int32_t ServiceInfoKvAdapter::PutBatch(const std::map<std::string, std::string> &values)
 {
     if (values.empty() || values.size() > MAX_PROFILE_SIZE) {
         HILOGE("Param is invalid!");
         return DP_INVALID_PARAMS;
     }
-    DistributedKv::Status status;
+    DistributedKv::Status status = DistributedKv::Status::ERROR;
+    std::vector<DistributedKv::Entry> entries;
+    DistributedKv::Key kvKey;
+    for (auto item : values) {
+        kvKey = item.first;
+        Entry entry;
+        entry.key = kvKey;
+        entry.value = item.second;
+        entries.emplace_back(entry);
+    }
     {
         std::lock_guard<std::mutex> lock(kvAdapterMutex_);
         if (kvStorePtr_ == nullptr) {
             HILOGE("kvDBPtr is null!");
             return DP_KV_DB_PTR_NULL;
-        }
-        std::vector<DistributedKv::Entry> entries;
-        DistributedKv::Key kvKey;
-        for (auto item : values) {
-            kvKey = item.first;
-            Entry entry;
-            entry.key = kvKey;
-            entry.value = item.second;
-            entries.emplace_back(entry);
         }
         status = kvStorePtr_->PutBatch(entries);
     }
@@ -292,18 +295,21 @@ int32_t ServiceInfoKvAdapter::PutBatch(const std::map<std::string, std::string>&
     return DP_SUCCESS;
 }
 
-int32_t ServiceInfoKvAdapter::GetByPrefix(const std::string& keyPrefix, std::map<std::string, std::string>& values)
+int32_t ServiceInfoKvAdapter::GetByPrefix(const std::string &keyPrefix, std::map<std::string, std::string> &values)
 {
     HILOGI("key prefix: %{public}s", ProfileUtils::GetDbKeyAnonyString(keyPrefix).c_str());
-    std::lock_guard<std::mutex> lock(kvAdapterMutex_);
-    if (kvStorePtr_ == nullptr) {
-        HILOGE("kvStoragePtr_ is null");
-        return DP_KV_DB_PTR_NULL;
-    }
     // if prefix is empty, get all entries.
     DistributedKv::Key allEntryKeyPrefix(keyPrefix);
     std::vector<DistributedKv::Entry> allEntries;
-    DistributedKv::Status status = kvStorePtr_->GetEntries(allEntryKeyPrefix, allEntries);
+    DistributedKv::Status status = DistributedKv::Status::ERROR;
+    {
+        std::lock_guard<std::mutex> lock(kvAdapterMutex_);
+        if (kvStorePtr_ == nullptr) {
+            HILOGE("kvStoragePtr_ is null");
+            return DP_KV_DB_PTR_NULL;
+        }
+        status = kvStorePtr_->GetEntries(allEntryKeyPrefix, allEntries);
+    }
     if (status != DistributedKv::Status::SUCCESS) {
         HILOGE("Query data by keyPrefix failed, prefix: %{public}s",
             ProfileUtils::GetDbKeyAnonyString(keyPrefix).c_str());

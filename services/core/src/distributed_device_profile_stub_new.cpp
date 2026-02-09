@@ -70,6 +70,11 @@ void DistributedDeviceProfileStubNew::InitAclAndSubscribe()
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::DELETE_SESSION_KEY));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::SUBSCRIBE_PINCODE_INVALID));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::UNSUBSCRIBE_PINCODE_INVALID));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::SUBSCRIBE_SERVICE_INFO_CALLBACK));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::PUT_SERVICE_INFO));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::DELETE_SERVICE_INFO));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::GET_ALL_SERVICE_INFO_LIST));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::GET_SERVICE_INFO_BY_USER_INFO));
 }
 
 DistributedDeviceProfileStubNew::~DistributedDeviceProfileStubNew()
@@ -157,10 +162,30 @@ int32_t DistributedDeviceProfileStubNew::NotifyProfileDataEventInner(
         case static_cast<uint32_t>(DpIpcInterfaceCode::UNSUBSCRIBE_PINCODE_INVALID):
             return UnSubscribePinCodeInvalidInner(data, reply);
         default:
+            return NotifyServiceInfoEventInner(code, data, reply, option);
+    }
+}
+
+int32_t DistributedDeviceProfileStubNew::NotifyServiceInfoEventInner(
+    uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option)
+{
+    switch (code) {
+        case static_cast<uint32_t>(DpIpcInterfaceCode::SUBSCRIBE_SERVICE_INFO_CALLBACK):
+            return SubscribeAllServiceInfoInner(data, reply);
+        case static_cast<uint32_t>(DpIpcInterfaceCode::PUT_SERVICE_INFO):
+            return PutServiceInfoInner(data, reply);
+        case static_cast<uint32_t>(DpIpcInterfaceCode::DELETE_SERVICE_INFO):
+            return DeleteServiceInfoInner(data, reply);
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_ALL_SERVICE_INFO_LIST):
+            return GetAllServiceInfoListInner(data, reply);
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_SERVICE_INFO_BY_USER_INFO):
+            return GetServiceInfosByUserInfoInner(data, reply);
+        default:
             HILOGE("unknown request code, please check, code = %{public}u", code);
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
     }
 }
+
 
 int32_t DistributedDeviceProfileStubNew::NotifyEventInner(uint32_t code, MessageParcel& data,
     MessageParcel& reply, MessageOption& option)
@@ -180,6 +205,7 @@ int32_t DistributedDeviceProfileStubNew::NotifyEventInner(uint32_t code, Message
             return SyncDeviceProfileInner(data, reply);
         case static_cast<uint32_t>(DpIpcInterfaceCode::SYNC_STATIC_PROFILE):
             return SyncStaticProfileInner(data, reply);
+        //delete start
         case static_cast<uint32_t>(DpIpcInterfaceCode::UPDATE_SERVICE_INFO_PROFILE):
             return UpdateServiceInfoProfileInner(data, reply);
         case static_cast<uint32_t>(DpIpcInterfaceCode::GET_SERVICE_INFO_PROFILE_BY_UNIQUE_KEY):
@@ -200,6 +226,7 @@ int32_t DistributedDeviceProfileStubNew::NotifyEventInner(uint32_t code, Message
             return GetServiceInfoProfileByTokenIdInner(data, reply);
         case static_cast<uint32_t>(DpIpcInterfaceCode::GET_SERVICE_INFO_PROFILE_BY_REG_SER_ID):
             return GetServiceInfoProfileByRegServiceIdInner(data, reply);
+        //delete end
         default:
             return NotifyLocalServiceEventInner(code, data, reply, option);
     }
@@ -947,7 +974,7 @@ int32_t DistributedDeviceProfileStubNew::GetDeviceIconInfosInner(MessageParcel& 
     }
     return DP_SUCCESS;
 }
-
+//delete start
 int32_t DistributedDeviceProfileStubNew::UpdateServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply)
 {
     HILOGD("called");
@@ -1045,6 +1072,7 @@ int32_t DistributedDeviceProfileStubNew::GetServiceInfoProfileListByBundleNameIn
     }
     return DP_SUCCESS;
 }
+//delete end
 
 int32_t DistributedDeviceProfileStubNew::DeleteDeviceProfileBatchInner(MessageParcel& data, MessageParcel& reply)
 {
@@ -1129,6 +1157,7 @@ int32_t DistributedDeviceProfileStubNew::GetBusinessEventInner(MessageParcel& da
     return DP_SUCCESS;
 }
 
+//delete start
 int32_t DistributedDeviceProfileStubNew::PutServiceInfoProfileInner(MessageParcel& data, MessageParcel& reply)
 {
     ServiceInfoProfileNew serviceInfoProfile;
@@ -1209,6 +1238,91 @@ int32_t DistributedDeviceProfileStubNew::GetServiceInfoProfileByRegServiceIdInne
     if (!serviceInfoProfile.Marshalling(reply)) {
         HILOGE("write parcel fail!");
         return DP_READ_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+//delete end
+int32_t DistributedDeviceProfileStubNew::PutServiceInfoInner(MessageParcel& data, MessageParcel& reply)
+{
+    ServiceInfo serviceInfo;
+    if (!serviceInfo.UnMarshalling(data)) {
+        HILOGE("serviceInfo read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+
+    int32_t ret = PutServiceInfo(serviceInfo);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::DeleteServiceInfoInner(MessageParcel& data, MessageParcel& reply)
+{
+    UserInfo userInfo;
+    if (!userInfo.UnMarshalling(data)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+
+    int32_t ret = DeleteServiceInfo(userInfo);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::GetAllServiceInfoListInner(MessageParcel& data, MessageParcel& reply)
+{
+    std::vector<ServiceInfo> serviceInfos;
+    int32_t ret = GetAllServiceInfoList(serviceInfos);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+
+    if (!IpcUtils::Marshalling(reply, serviceInfos)) {
+        return DP_READ_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::GetServiceInfosByUserInfoInner(MessageParcel& data, MessageParcel& reply)
+{
+    UserInfo userInfo;
+    std::vector<ServiceInfo> serviceInfos;
+    if (!userInfo.UnMarshalling(data)) {
+        HILOGE("read parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    int32_t ret = GetServiceInfosByUserInfo(userInfo, serviceInfos);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("userInfo Write reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    if (!IpcUtils::Marshalling(reply, serviceInfos)) {
+        HILOGE("serviceInfos write parcel fail!");
+        return DP_READ_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::SubscribeAllServiceInfoInner(MessageParcel& data, MessageParcel& reply)
+{
+    int32_t saId = -1;
+    READ_HELPER(data, Int32, saId);
+    sptr<IRemoteObject> listen = data.ReadRemoteObject();
+    if (listen == nullptr) {
+        HILOGE("read remoteObject failed!");
+        return ERR_FLATTEN_OBJECT;
+    }
+
+    int32_t ret = SubscribeAllServiceInfo(saId, listen);
+    if (!reply.WriteInt32(ret)) {
+        HILOGE("Write reply failed");
+        return ERR_FLATTEN_OBJECT;
     }
     return DP_SUCCESS;
 }

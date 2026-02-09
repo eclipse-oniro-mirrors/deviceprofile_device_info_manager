@@ -147,7 +147,7 @@ const std::string SUBSCRIBE_CHANGE_TYPES = "subscribeChangeTypes";
 /* syncOptions */
 const std::string SYNC_MODE = "syncMode";
 const std::string SYNC_DEVICE_IDS = "syncDevices";
-/* ServiceInfoProfile Attribute */
+/* ServiceInfo Attribute */
 const std::string SRNETWORK_ID = "networkId";
 const std::string SISERVICE_ID = "serviceId";
 const std::string SERVICE_DISPLAY_NAME = "serviceDisplayName";
@@ -163,6 +163,7 @@ const std::string PINCODE = "pinCode";
 const std::string DESCRIPTION = "description";
 const std::string SERVICE_DISCOVERY_SCOPE = "serviceDicoveryScope";
 const std::string EXTRAINFO = "extraInfo";
+//delete start
 const std::string PUT_SERVICE_INFO_PROFILE = "PutServiceInfoProfile";
 const std::string DELETE_SERVICE_INFO_PROFILE = "DeleteServiceInfoProfile";
 const std::string UPDATE_SERVICE_INFO_PROFILE = "UpdateServiceInfoProfile";
@@ -170,6 +171,20 @@ const std::string GET_SERVICE_INFO_PROFILE_BY_UNIQUE_KEY = "GetServiceInfoProfil
 const std::string GET_SERVICE_INFO_PROFILE_LIST_BY_TOKEN_ID = "GetServiceInfoProfileListByTokenId";
 const std::string GET_ALL_SERVICE_INFO_PROFILE_LIST = "GetAllServiceInfoProfileList";
 const std::string GET_SERVICE_INFO_PROFILE_LIST_BY_BUNDLE_NAME = "GetServiceInfoProfileListByBundleName";
+//delete end
+const std::string PUT_SERVICE_INFO = "PutServiceInfo";
+const std::string DELETE_SERVICE_INFO = "DeleteServiceInfo";
+const std::string GET_ALL_SERVICE_INFO_LIST = "GetAllServiceInfoList";
+const std::string GET_SERVICE_INFO_BY_USER_INFO = "GetServiceInfosByUserInfo";
+const std::string UD_ID = "udid";
+const std::string DISPLAYID = "displayId";
+const std::string SERVICE_OWNER_TOKEN_ID = "serviceOwnerTokenId";
+const std::string SERVICE_OWNER_PKG_NAME = "serviceOwnerPkgName";
+const std::string SERVICE_REGISTER_TOKEN_ID = "serviceRegisterTokenId";
+const std::string TIME_STAMP = "timeStamp";
+const std::string DATA_LEN = "dataLen";
+const std::string SERVICE_CODE = "serviceCode";
+const std::string VERSION = "version";
 /* LocalServiceInfo Attribute */
 const std::string REG_SERVICE_ID = "regServiceId";
 const std::string PUBLISH_STATE = "publishState";
@@ -217,8 +232,12 @@ const std::string SLASHES = "/";
 const std::string DEV_PREFIX = "dev";
 const std::string SVR_PREFIX = "svr";
 const std::string CHAR_PREFIX = "char";
+//delete start
 const std::string USER_ID = "user_id";
+//delete end
+
 const std::string DEVICE_PROFILE_ID = "deviceProfile_id";
+const std::string SERINFO_PREFIX = "serInfo";
 const std::string TOKEN_ID = "token_id";
 const std::string ALL_PROC = "all";
 const std::string TYPE_UNKNOWN = "default";

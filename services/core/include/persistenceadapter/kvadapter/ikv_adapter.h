@@ -20,6 +20,7 @@
 #include <map>
 #include <vector>
 #include "distributed_device_profile_enums.h"
+#include "service_info.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {

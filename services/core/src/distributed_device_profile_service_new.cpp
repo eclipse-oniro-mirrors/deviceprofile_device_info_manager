@@ -43,7 +43,9 @@
 #include "permission_manager.h"
 #include "profile_cache.h"
 #include "profile_data_manager.h"
+//delete start
 #include "service_info_profile_manager.h"
+//delete end
 #include "service_info_manager.h"
 #include "session_key_manager.h"
 #include "settings_data_manager.h"
@@ -52,6 +54,7 @@
 #include "subscribe_profile_manager.h"
 #include "switch_profile_manager.h"
 #include "trust_profile_manager.h"
+#include "subscribe_service_info_manager.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -140,10 +143,12 @@ int32_t DistributedDeviceProfileServiceNew::PostInit()
         HILOGE("StaticCapabilityCollector init failed");
         return DP_CONTENT_SENSOR_MANAGER_INIT_FAIL;
     }
+    //delete start
     if (ServiceInfoProfileManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("ServiceInfoProfileManager init failed");
         return DP_SERVICE_INFO_PROFILE_MANAGER_INIT_FAIL;
     }
+    //delete end
     if (LocalServiceInfoManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("LocalServiceInfoManager init failed");
         return DP_LOCAL_SERVICE_INFO_MANAGER_INIT_FAIL;
@@ -151,6 +156,9 @@ int32_t DistributedDeviceProfileServiceNew::PostInit()
     if (MultiUserManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("MultiUserManager init failed");
         return DP_MULTI_USER_MANAGER_INIT_FAIL;
+    }
+    if (ServiceInfoManager::GetInstance().Init() != DP_SUCCESS) {
+        HILOGE("ServiceInfoManager init failed");
     }
     return PostInitNext();
 }
@@ -300,9 +308,14 @@ int32_t DistributedDeviceProfileServiceNew::UnInitNext()
         HILOGE("EventHandlerFactory UnInit failed");
         return DP_CACHE_UNINIT_FAIL;
     }
+    if (ServiceInfoManager::GetInstance().UnInit() != DP_SUCCESS) {
+        HILOGE("ServiceInfoManager uninit failed");
+    }
+    //delete start
     if (ServiceInfoProfileManage::GetInstance().UnInit() != DP_SUCCESS) {
         HILOGE("ServiceInfoManager uninit failed");
     }
+    //delete end
     return DP_SUCCESS;
 }
 
@@ -561,6 +574,7 @@ int32_t DistributedDeviceProfileServiceNew::PutServiceProfileBatch(const std::ve
     return ret;
 }
 
+//delete start
 int32_t DistributedDeviceProfileServiceNew::UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile)
 {
     if (!PermissionManager::GetInstance().CheckCallerPermission()) {
@@ -621,6 +635,7 @@ int32_t DistributedDeviceProfileServiceNew::GetServiceInfoProfileListByBundleNam
         serviceInfoProfiles);
     return ret;
 }
+//delete end
 
 int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfile(const CharacteristicProfile& charProfile)
 {
@@ -1522,6 +1537,7 @@ int32_t DistributedDeviceProfileServiceNew::NotifyBusinessEvent(const BusinessEv
     return DP_SUCCESS;
 }
 
+//delete start
 int32_t DistributedDeviceProfileServiceNew::PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfoProfile)
 {
     if (!PermissionManager::GetInstance().CheckCallerPermission()) {
@@ -1600,6 +1616,88 @@ int32_t DistributedDeviceProfileServiceNew::GetServiceInfoProfileByRegServiceId(
         return ret;
     }
     return DP_SUCCESS;
+}
+//delete end
+
+int32_t DistributedDeviceProfileServiceNew::PutServiceInfo(const ServiceInfo& serviceInfo)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    HILOGD("CheckCallerPermission success interface PutServiceInfo");
+    int32_t ret = ServiceInfoManager::GetInstance().PutServiceInfo(serviceInfo);
+    if (ret != DP_SUCCESS) {
+        HILOGE("PutServiceInfo failed, ret: %{public}d", ret);
+        return ret;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileServiceNew::DeleteServiceInfo(const UserInfo& userInfo)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    HILOGD("CheckCallerPermission success interface DeleteServiceInfo");
+    int32_t ret = ServiceInfoManager::GetInstance().DeleteServiceInfo(userInfo);
+    if (ret != DP_SUCCESS) {
+        HILOGE("DeleteServiceInfo failed, ret: %{public}d", ret);
+        return ret;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileServiceNew::GetAllServiceInfoList(
+    std::vector<ServiceInfo>& serviceInfos)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    HILOGD("CheckCallerPermission success interface GetAllServiceInfoList");
+    int32_t ret = ServiceInfoManager::GetInstance().GetAllServiceInfoList(serviceInfos);
+    if (ret != DP_SUCCESS) {
+        HILOGE("GetAllServiceInfoList failed, ret: %{public}d", ret);
+        return ret;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileServiceNew::GetServiceInfosByUserInfo(const UserInfo& userInfo,
+    std::vector<ServiceInfo>& serviceInfos)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    HILOGD("CheckCallerPermission success interface GetServiceInfosByUserInfo");
+    int32_t ret = ServiceInfoManager::GetInstance().GetServiceInfosByUserInfo(userInfo, serviceInfos);
+    if (ret != DP_SUCCESS) {
+        HILOGE("GetServiceInfosByUserInfo failed, ret: %{public}d", ret);
+        return ret;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileServiceNew::SubscribeAllServiceInfo(int32_t saId, sptr<IRemoteObject> listener)
+{
+    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
+        HILOGE("this caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    if (listener == nullptr) {
+        HILOGE("listener is nullptr");
+        return DP_INVALID_PARAM;
+    }
+    if (saId <= 0 || saId > MAX_SAID) {
+        HILOGE("saId is invalid, saId:%{public}d", saId);
+        return DP_INVALID_PARAM;
+    }
+
+    int32_t ret = SubscribeServiceInfoManager::GetInstance().SubscribeServiceInfo(saId, listener);
+    return ret;
 }
 } // namespace DeviceProfile
 } // namespace OHOS

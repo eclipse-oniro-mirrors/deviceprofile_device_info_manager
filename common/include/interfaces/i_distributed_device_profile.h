@@ -30,14 +30,18 @@
 #include "dp_sync_options.h"
 #include "i_sync_completed_callback.h"
 #include "product_info.h"
+#include "service_info.h"
+//delete start
 #include "service_info_profile.h"
 #include "service_info_profile_new.h"
+//delete end
 #include "service_info_unique_key.h"
 #include "service_profile.h"
 #include "trust_device_profile.h"
 #include "trusted_device_info.h"
 #include "local_service_info.h"
 #include "business_event.h"
+#include "user_info.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -51,7 +55,7 @@ public:
     virtual int32_t GetTrustDeviceProfile(const std::string& deviceId, TrustDeviceProfile& trustDeviceProfile) = 0;
     virtual int32_t GetAllTrustDeviceProfile(std::vector<TrustDeviceProfile>& trustDeviceProfiles) = 0;
     virtual int32_t GetAccessControlProfile(std::map<std::string, std::string> queryParams,
-         std::vector<AccessControlProfile>& accessControlProfiles) = 0;
+        std::vector<AccessControlProfile>& accessControlProfiles) = 0;
     virtual int32_t GetAllAccessControlProfile(std::vector<AccessControlProfile>& accessControlProfiles) = 0;
     virtual int32_t GetAllAclIncludeLnnAcl(std::vector<AccessControlProfile>& accessControlProfiles) = 0;
     virtual int32_t DeleteAccessControlProfile(int32_t accessControlId) = 0;
@@ -93,6 +97,7 @@ public:
     virtual int32_t PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos) = 0;
     virtual int32_t GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
         std::vector<DeviceIconInfo>& deviceIconInfos) = 0;
+        //delete start
     virtual int32_t UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile) = 0;
     virtual int32_t GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key,
         ServiceInfoProfile& serviceInfoProfile) = 0;
@@ -101,6 +106,7 @@ public:
     virtual int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfile>& serviceInfoProfiles) = 0;
     virtual int32_t GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
         std::vector<ServiceInfoProfile>& serviceInfoProfiles) = 0;
+        //delete end
     virtual int32_t PutLocalServiceInfo(const LocalServiceInfo& localServiceInfo) = 0;
     virtual int32_t UpdateLocalServiceInfo(const LocalServiceInfo& localServiceInfo) = 0;
     virtual int32_t GetLocalServiceInfoByBundleAndPinType(const std::string& bundleName,
@@ -111,6 +117,7 @@ public:
     virtual int32_t UnRegisterBusinessCallback(const std::string& saId, const std::string& businessKey) = 0;
     virtual int32_t PutBusinessEvent(const BusinessEvent& event) = 0;
     virtual int32_t GetBusinessEvent(BusinessEvent& event) = 0;
+    //delete start
     virtual int32_t PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfo) = 0;
     virtual int32_t DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId) = 0;
     virtual int32_t GetServiceInfoProfileByServiceId(int64_t serviceId, ServiceInfoProfileNew& serviceInfoProfile) = 0;
@@ -118,6 +125,13 @@ public:
         std::vector<ServiceInfoProfileNew>& serviceInfoProfiles) = 0;
     virtual int32_t GetServiceInfoProfileByRegServiceId(int32_t regServiceId,
         ServiceInfoProfileNew& serviceInfoProfile) = 0;
+    //delete end
+    virtual int32_t PutServiceInfo(const ServiceInfo& serviceInfo) = 0;
+    virtual int32_t DeleteServiceInfo(const UserInfo& userInfo) = 0;
+    virtual int32_t GetAllServiceInfoList(std::vector<ServiceInfo>& serviceInfos) = 0;
+    virtual int32_t GetServiceInfosByUserInfo(const UserInfo& userInfo,
+        std::vector<ServiceInfo>& serviceInfos) = 0;
+    virtual int32_t SubscribeAllServiceInfo(int32_t saId, sptr<IRemoteObject> listener) = 0;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
