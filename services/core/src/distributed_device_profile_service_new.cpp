@@ -104,8 +104,8 @@ int32_t DistributedDeviceProfileServiceNew::Init()
         HILOGE("SubscribeProfileManager init failed");
         return DP_SUBSCRIBE_PROFILE_MANAGER_INIT_FAIL;
     }
-    if (ServiceInfoManae::GetInstance().Init() != DP_SUCCESS) {
-        HILOGE("ServiceInfoManae init failed");
+    if (ServiceInfoManager::GetInstance().Init() != DP_SUCCESS) {
+        HILOGE("ServiceInfoManager init failed");
         return DP_SUBSCRIBE_PROFILE_MANAGER_INIT_FAIL;
     }
     HILOGI("init finish");
