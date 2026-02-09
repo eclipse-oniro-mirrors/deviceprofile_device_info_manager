@@ -188,7 +188,7 @@ private:
     std::string businessKey_ = "";
 
     int32_t serviceInfoSaId_ = 0;
-    std::mutex serInfolistenerLosck_;
+    std::mutex serInfolistenerLock_;
     sptr<IRemoteObject> serviceInfolistener_ = nullptr;
 };
 } // namespace DeviceProfile

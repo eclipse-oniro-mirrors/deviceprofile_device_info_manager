@@ -1327,7 +1327,7 @@ void DistributedDeviceProfileClient::ReSubscribeAllServiceInfo()
     int32_t saId = 0;
     sptr<IRemoteObject> listener = nullptr;
     {
-        std::lock_guard<std::mutex> lock(serInfolistenerLosck_);
+        std::lock_guard<std::mutex> lock(serInfolistenerLock_);
         if (serviceInfolistener_ == nullptr) {
             HILOGI("not use Retry subscribe dp callback");
             return;
@@ -1365,7 +1365,7 @@ int32_t DistributedDeviceProfileClient::SubscribeAllServiceInfo(int32_t saId, sp
     }
     
     {
-        std::lock_guard<std::mutex> lock(serInfolistenerLosck_);
+        std::lock_guard<std::mutex> lock(serInfolistenerLock_);
         int32_t ret = dpService->SubscribeAllServiceInfo(saId, listener);
         if (ret != DP_SUCCESS) {
             HILOGE("Subscribe DP serviceInfo callback failed!");

@@ -466,7 +466,7 @@ int32_t ServiceInfoManager::ProcessServiceInfoEntry(const std::string& key, cons
     cJSON *jsonObj = cJSON_Parse(value.c_str());
     if (jsonObj == nullptr) {
         HILOGE("Parse JSON failed for key: %{public}s", key.c_str());
-        return DP_SUCCESS;
+        return DP_LOAD_JSON_FILE_FAIL;
     }
 
     ParsedJSONFields fields;
