@@ -95,7 +95,6 @@ int32_t DistributedDeviceProfileServiceNew::Init()
     }
     if (TrustProfileManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("TrustProfileManager init failed");
-        return DP_TRUST_PROFILE_MANAGER_INIT_FAIL;
     }
     if (ProfileDataManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("ProfileDataManager init failed");

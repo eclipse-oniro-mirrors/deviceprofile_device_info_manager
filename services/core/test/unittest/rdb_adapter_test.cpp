@@ -89,15 +89,16 @@ void RdbAdapterTest::TearDown()
 
 /**
  * @tc.name:
- * @tc.desc: GetRDBPtr success
+ * @tc.desc: GetOldRDBPtr success
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(RdbAdapterTest, GetRDBPtr001, TestSize.Level1)
+HWTEST_F(RdbAdapterTest, GetOldRDBPtr001, TestSize.Level1)
 {
     std::lock_guard<std::mutex> lock(g_rdbAdapterTestMtx);
     store->UnInit();
-    int32_t errCode = store->GetRDBPtr();
+    std::shared_ptr<RdbStore> rdbStore = nullptr;
+    int32_t errCode = store->GetRDBPtr(rdbStore, RDB_VERSION_5_1_2, RDB_PATH + DATABASE_NAME);
     EXPECT_EQ(errCode, DP_SUCCESS);
 }
 

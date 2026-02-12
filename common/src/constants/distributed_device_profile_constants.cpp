@@ -254,6 +254,8 @@ const std::string DP_PKG_NAME = "ohos.deviceprofile";
 const std::string IS_NUMSTRING_RULES = "^[-+]?[0-9]+$";
 /* rdb constants */
 const std::string RDB_PATH = "/data/service/el1/public/database/distributed_device_profile_service/";
+const std::string ACL_RDB_PATH =
+    "/data/service/el1/public/database/distributed_device_profile_service/acl_db/";
 const std::string DATABASE_NAME = "dp_rdb.db";
 /* TrustProfile Manager */
 const std::string USERID = "userId";

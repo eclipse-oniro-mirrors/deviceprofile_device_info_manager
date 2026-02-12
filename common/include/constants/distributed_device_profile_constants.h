@@ -332,11 +332,12 @@ constexpr int32_t OHOS_TYPE = 10;
 constexpr int32_t OHOS_TYPE_UNKNOWN = -1;
 /* rdb constants */
 extern const std::string RDB_PATH;
+extern const std::string ACL_RDB_PATH;
 extern const std::string DATABASE_NAME;
 constexpr int32_t RDB_VERSION = 1;
 constexpr int32_t RDB_VERSION_5_1 = 2;
 constexpr int32_t RDB_VERSION_5_1_2 = 3;
-constexpr int32_t RDB_INIT_MAX_TIMES = 30;
+constexpr int32_t RDB_INIT_MAX_TIMES = 5;
 constexpr int32_t RDB_INIT_INTERVAL_TIME = 100000;
 /* TrustProfile Manager */
 extern const std::string USERID;
