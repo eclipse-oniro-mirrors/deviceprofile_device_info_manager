@@ -48,17 +48,23 @@ RdbAdapter::~RdbAdapter()
 
 int32_t RdbAdapter::Init()
 {
-    int32_t retryTimes = RDB_INIT_MAX_TIMES;
-    while (retryTimes > 0) {
-        if (GetRDBPtr() == DP_SUCCESS) {
-            HILOGI("rdbAdapter init success");
-            return DP_SUCCESS;
-        }
-        usleep(RDB_INIT_INTERVAL_TIME);
-        retryTimes--;
+    HILOGI("begin");
+    std::lock_guard<std::mutex> initLock(InitMtx_);
+    int32_t ret = CheckMigrateDB();
+    if (ret != DP_NOT_NEED_MIGRATION) {
+        return ret;
     }
-    HILOGE("rdbAdapter init failed");
-    return DP_RDBADAPTER_INIT_FAIL;
+    HILOGI("not need MigrateDatabase");
+    {
+        std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
+        ret = ConnectDB(store_, RDB_VERSION_5_1_2, ACL_RDB_PATH + DATABASE_NAME);
+    }
+    if (ret != DP_SUCCESS) {
+        HILOGE("Connect new DB failed,ret:%{public}d", ret);
+        return ret;
+    }
+    HILOGI("Connect new DB succeed");
+    return DP_SUCCESS;
 }
 
 int32_t RdbAdapter::UnInit()
@@ -193,34 +199,31 @@ std::shared_ptr<ResultSet> RdbAdapter::Get(const std::string& sql, const std::ve
     return resultSet;
 }
 
-int32_t RdbAdapter::GetRDBPtr()
+int32_t RdbAdapter::GetRDBPtr(std::shared_ptr<RdbStore>& store, int32_t DBVersion, const std::string& path)
 {
-    int32_t version = RDB_VERSION_5_1_2;
+    int32_t version = DBVersion;
     OpenCallback helper;
-    RdbStoreConfig config(RDB_PATH + DATABASE_NAME);
+    RdbStoreConfig config(path);
     config.SetHaMode(HAMode::MAIN_REPLICA);
     config.SetAllowRebuild(true);
     int32_t errCode = E_OK;
-    {
-        std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
-        store_ = RdbHelper::GetRdbStore(config, version, helper, errCode);
-        if (store_ == nullptr) {
-            HILOGE("RDBStore_ is null");
-            return DP_RDB_DB_PTR_NULL;
-        }
-        NativeRdb::RebuiltType rebuiltType = NativeRdb::RebuiltType::NONE;
-        errCode = store_->GetRebuilt(rebuiltType);
-        if (errCode != E_OK) {
-            HILOGE("getRDBPtr failed errCode:%{public}d", errCode);
-            return DP_GET_RDBSTORE_FAIL;
-        }
-        if (rebuiltType == NativeRdb::RebuiltType::REBUILT) {
-            HILOGE("database corrupt");
-            int32_t restoreRet = store_->Restore("");
-            if (restoreRet != E_OK) {
-                HILOGE("Restore failed restoreRet:%{public}d", restoreRet);
-                return DP_RDB_DATABASE_RESTORE_FAIL;
-            }
+    store = RdbHelper::GetRdbStore(config, version, helper, errCode);
+    if (store == nullptr) {
+        HILOGE("RDBStore_ is null");
+        return DP_RDB_DB_PTR_NULL;
+    }
+    NativeRdb::RebuiltType rebuiltType = NativeRdb::RebuiltType::NONE;
+    errCode = store->GetRebuilt(rebuiltType);
+    if (errCode != E_OK) {
+        HILOGE("GetRDBPtr failed errCode:%{public}d", errCode);
+        return DP_GET_RDBSTORE_FAIL;
+    }
+    if (rebuiltType == NativeRdb::RebuiltType::REBUILT) {
+        HILOGE("database corrupt");
+        int32_t restoreRet = store->Restore("");
+        if (restoreRet != E_OK) {
+            HILOGE("Restore failed restoreRet:%{public}d", restoreRet);
+            return DP_RDB_DATABASE_RESTORE_FAIL;
         }
     }
     return DP_SUCCESS;
@@ -240,6 +243,100 @@ int32_t RdbAdapter::CreateTable(const std::string& sql)
         }
     }
     return DP_SUCCESS;
+}
+
+int32_t RdbAdapter::MigrateDatabase()
+{
+    int32_t ret = ConnectDB(preMigStore_, RDB_VERSION_5_1_2, RDB_PATH + DATABASE_NAME);
+    if (ret != DP_SUCCESS) {
+        HILOGE("Connect preMigStore DB failed,ret:%{public}d", ret);
+        return ret;
+    }
+
+    if (preMigStore_ == nullptr) {
+        HILOGE("preMigStore is nullptr");
+        return DP_RDB_DB_PTR_NULL;
+    }
+    ret = preMigStore_->Backup(ACL_RDB_PATH + DATABASE_NAME);
+    if (ret != DP_SUCCESS) {
+        HILOGE("Backup failed,ret:%{public}d", ret);
+        return DP_PRE_MIGRATION_DB_AVAILABLE;
+    }
+
+    ret = ConnectDB(postMigStore_, RDB_VERSION_5_1_2, ACL_RDB_PATH + DATABASE_NAME);
+    if (ret != DP_SUCCESS) {
+        HILOGE("ConnectNewDB failed,use old DB,ret:%{public}d", ret);
+        return DP_PRE_MIGRATION_DB_AVAILABLE;
+    }
+
+    ret = RdbHelper::DeleteRdbStore(RDB_PATH + DATABASE_NAME);
+    if (ret != DP_SUCCESS) {
+        HILOGE("DeleteRdbStore failed,ret:%{public}d", ret);
+        if (access((RDB_PATH + DATABASE_NAME).c_str(), F_OK) != DP_SUCCESS) {
+            HILOGE("old DB not exit");
+            return DP_PRE_MIGRATION_DB_UNAVAILABLE;
+        }
+        preMigStore_ = nullptr;
+        ret = ConnectDB(preMigStore_, RDB_VERSION_5_1_2, RDB_PATH + DATABASE_NAME);
+        if (ret != DP_SUCCESS) {
+            HILOGE("Connect preMigStore DB failed,ret:%{public}d", ret);
+            return ret;
+        }
+        return DP_PRE_MIGRATION_DB_AVAILABLE;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t RdbAdapter::CheckMigrateDB()
+{
+    if (access((RDB_PATH + DATABASE_NAME).c_str(), F_OK) != DP_SUCCESS) {
+        return DP_NOT_NEED_MIGRATION;
+    }
+    HILOGI("MigrateDatabase begin");
+    int32_t migrateRet = MigrateDatabase();
+    if (migrateRet == DP_PRE_MIGRATION_DB_AVAILABLE) {
+        HILOGE("MigrateDatabase failed,use oldDB");
+        if (preMigStore_ == nullptr) {
+            HILOGE("preMigStore is nullptr");
+            return DP_RDB_DB_PTR_NULL;
+        }
+        {
+            std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
+            store_ = preMigStore_;
+        }
+        postMigStore_ = nullptr;
+        return DP_SUCCESS;
+    }
+    if (migrateRet != DP_SUCCESS) {
+        HILOGE("MigrateDatabase failed,ret:%{public}d", migrateRet);
+        return migrateRet;
+    }
+    if (postMigStore_ == nullptr) {
+        HILOGE("postMigStore is nullptr");
+        return DP_RDB_DB_PTR_NULL;
+    }
+    {
+        std::lock_guard<std::mutex> lock(rdbAdapterMtx_);
+        store_ = postMigStore_;
+    }
+    preMigStore_ = nullptr;
+    HILOGI("MigrateDatabase succeed!");
+    return DP_SUCCESS;
+}
+    
+int32_t RdbAdapter::ConnectDB(std::shared_ptr<RdbStore>& store, int32_t DBVersion, const std::string& path)
+{
+    int32_t retryTimes = RDB_INIT_MAX_TIMES;
+    while (retryTimes > 0) {
+        if (GetRDBPtr(store, DBVersion, path) == DP_SUCCESS) {
+            HILOGI("succeed");
+            return DP_SUCCESS;
+        }
+        usleep(RDB_INIT_INTERVAL_TIME);
+        retryTimes--;
+    }
+    HILOGE("failed");
+    return DP_RDBADAPTER_INIT_FAIL;
 }
 
 int32_t OpenCallback::OnCreate(RdbStore& store)

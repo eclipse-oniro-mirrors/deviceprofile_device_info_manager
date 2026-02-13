@@ -36,11 +36,17 @@ public:
         const std::string& whereClause, const std::vector<ValueObject>& bindArgs = {}) override;
     int32_t CreateTable(const std::string& sql) override;
     std::shared_ptr <ResultSet> Get(const std::string& sql, const std::vector<ValueObject>& args = {}) override;
-    int32_t GetRDBPtr();
 
 private:
+    int32_t GetRDBPtr(std::shared_ptr<RdbStore>& store, int32_t DBVersion, const std::string& path);
+    int32_t ConnectDB(std::shared_ptr<RdbStore>& store, int32_t DBVersion, const std::string& path);
+    int32_t MigrateDatabase();
+    int32_t CheckMigrateDB();
     std::shared_ptr<RdbStore> store_ = nullptr;
     std::mutex rdbAdapterMtx_;
+    std::mutex InitMtx_;
+    std::shared_ptr<RdbStore> preMigStore_ = nullptr;
+    std::shared_ptr<RdbStore> postMigStore_ = nullptr;
 };
 
 class OpenCallback : public NativeRdb::RdbOpenCallback {
