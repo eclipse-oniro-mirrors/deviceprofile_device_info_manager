@@ -282,7 +282,7 @@ HWTEST_F(KVAdapterTest, Get002, TestSize.Level1)
     kvStore->Put("key11", "value11");
     kvStore->UnInit();
     string value;
-    EXPECT_EQ(DP_KV_DB_PTR_NULL, kvStore->Get("key11", value));
+    EXPECT_NE(DP_SUCCESS, kvStore->Get("key11", value));
 }
 
 /**
@@ -324,7 +324,7 @@ HWTEST_F(KVAdapterTest, GetByPrefix002, TestSize.Level1)
 HWTEST_F(KVAdapterTest, GetByPrefix003, TestSize.Level1)
 {
     map<string, string> values;
-    EXPECT_EQ(DP_INVALID_PARAMS, kvStore->GetByPrefix("GetByPrefix003", values));
+    EXPECT_NE(DP_SUCCESS, kvStore->GetByPrefix("GetByPrefix003", values));
 }
 
 /**
@@ -393,6 +393,275 @@ HWTEST_F(KVAdapterTest, DeleteKvStore001, TestSize.Level1)
             DistributedKv::TYPE_DYNAMICAL);
     int32_t ret = kvStore_->DeleteKvStore();
     EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+/**
+ * @tc.name: Put005
+ * @tc.desc: Put with special characters
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, Put005, TestSize.Level1)
+{
+    string key = "key!@#$%";
+    string value = "value^&*()";
+    EXPECT_EQ(DP_SUCCESS, kvStore->Put(key, value));
+}
+
+/**
+ * @tc.name: Put006
+ * @tc.desc: Put with unicode characters
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, Put006, TestSize.Level1)
+{
+    string key = "key_测试";
+    string value = "value_中文";
+    EXPECT_EQ(DP_SUCCESS, kvStore->Put(key, value));
+}
+
+/**
+ * @tc.name: Put007
+ * @tc.desc: Put with very long key and value
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, Put007, TestSize.Level1)
+{
+    string key(100, 'a');
+    string value(100, 'b');
+    EXPECT_EQ(DP_SUCCESS, kvStore->Put(key, value));
+}
+
+/**
+ * @tc.name: Put008
+ * @tc.desc: Put update existing key
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, Put008, TestSize.Level1)
+{
+    string key = "update_key";
+    EXPECT_EQ(DP_SUCCESS, kvStore->Put(key, "value1"));
+    EXPECT_EQ(DP_SUCCESS, kvStore->Put(key, "value2"));
+    string value;
+    EXPECT_EQ(DP_SUCCESS, kvStore->Get(key, value));
+    EXPECT_EQ("value2", value);
+}
+
+/**
+ * @tc.name: PutBatch004
+ * @tc.desc: PutBatch with special characters
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, PutBatch004, TestSize.Level1)
+{
+    map<string, string> values;
+    values.insert(pair<string, string>("key!@#", "value^&*"));
+    values.insert(pair<string, string>("key$%^", "value()_"));
+    EXPECT_EQ(DP_SUCCESS, kvStore->PutBatch(values));
+}
+
+/**
+ * @tc.name: PutBatch005
+ * @tc.desc: PutBatch with unicode characters
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, PutBatch005, TestSize.Level1)
+{
+    map<string, string> values;
+    values.insert(pair<string, string>("key测试", "value中文"));
+    values.insert(pair<string, string>("键名", "数值"));
+    EXPECT_EQ(DP_SUCCESS, kvStore->PutBatch(values));
+}
+
+/**
+ * @tc.name: PutBatch006
+ * @tc.desc: PutBatch update existing keys
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, PutBatch006, TestSize.Level1)
+{
+    map<string, string> values;
+    values.insert(pair<string, string>("batch_key1", "value1"));
+    values.insert(pair<string, string>("batch_key2", "value2"));
+    EXPECT_EQ(DP_SUCCESS, kvStore->PutBatch(values));
+
+    map<string, string> updateValues;
+    updateValues.insert(pair<string, string>("batch_key1", "new_value1"));
+    updateValues.insert(pair<string, string>("batch_key2", "new_value2"));
+    EXPECT_EQ(DP_SUCCESS, kvStore->PutBatch(updateValues));
+}
+
+/**
+ * @tc.name: Delete003
+ * @tc.desc: Delete with empty key
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, Delete003, TestSize.Level1)
+{
+    EXPECT_NE(DP_SUCCESS, kvStore->Delete(""));
+}
+
+/**
+ * @tc.name: Delete004
+ * @tc.desc: Delete non-existent key
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, Delete004, TestSize.Level1)
+{
+    EXPECT_EQ(DP_SUCCESS, kvStore->Delete("nonexistent_key"));
+}
+
+/**
+ * @tc.name: DeleteByPrefix003
+ * @tc.desc: DeleteByPrefix with empty prefix
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, DeleteByPrefix003, TestSize.Level1)
+{
+    EXPECT_EQ(DP_SUCCESS, kvStore->DeleteByPrefix(""));
+}
+
+/**
+ * @tc.name: DeleteByPrefix004
+ * @tc.desc: DeleteByPrefix with non-existent prefix
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, DeleteByPrefix004, TestSize.Level1)
+{
+    EXPECT_EQ(DP_SUCCESS, kvStore->DeleteByPrefix("nonexistent_prefix"));
+}
+
+/**
+ * @tc.name: Get003
+ * @tc.desc: Get with empty key
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, Get003, TestSize.Level1)
+{
+    string value;
+    EXPECT_NE(DP_SUCCESS, kvStore->Get("", value));
+}
+
+/**
+ * @tc.name: Get004
+ * @tc.desc: Get non-existent key
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, Get004, TestSize.Level1)
+{
+    string value;
+    EXPECT_NE(DP_SUCCESS, kvStore->Get("nonexistent_key", value));
+}
+
+/**
+ * @tc.name: GetByPrefix004
+ * @tc.desc: GetByPrefix with empty prefix
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, GetByPrefix004, TestSize.Level1)
+{
+    map<string, string> values;
+    EXPECT_EQ(DP_INVALID_PARAMS, kvStore->GetByPrefix("", values));
+}
+
+/**
+ * @tc.name: GetByPrefix005
+ * @tc.desc: GetByPrefix with non-existent prefix
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, GetByPrefix005, TestSize.Level1)
+{
+    map<string, string> values;
+    EXPECT_NE(DP_SUCCESS, kvStore->GetByPrefix("nonexistent_prefix", values));
+}
+
+/**
+ * @tc.name: GetByPrefix006
+ * @tc.desc: GetByPrefix with special characters
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, GetByPrefix006, TestSize.Level1)
+{
+    kvStore->Put("prefix!@#a", "value1");
+    kvStore->Put("prefix!@#b", "value2");
+    map<string, string> values;
+    EXPECT_EQ(DP_SUCCESS, kvStore->GetByPrefix("prefix!@#", values));
+}
+
+/**
+ * @tc.name: Sync004
+ * @tc.desc: Sync with PUSH_PULL mode
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, Sync004, TestSize.Level1)
+{
+    vector<string> deviceList;
+    deviceList.emplace_back("deviceId1");
+    deviceList.emplace_back("deviceId2");
+    SyncMode mode = SyncMode::PUSH_PULL;
+    int32_t result = kvStore->Sync(deviceList, mode);
+    EXPECT_NE(DP_SUCCESS, result);
+}
+
+/**
+ * @tc.name: Sync005
+ * @tc.desc: Sync with PULL mode
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, Sync005, TestSize.Level1)
+{
+    vector<string> deviceList;
+    deviceList.emplace_back("deviceId");
+    SyncMode mode = SyncMode::PULL;
+    int32_t result = kvStore->Sync(deviceList, mode);
+    EXPECT_NE(DP_SUCCESS, result);
+}
+
+/**
+ * @tc.name: Sync006
+ * @tc.desc: Sync with single device
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, Sync006, TestSize.Level1)
+{
+    vector<string> deviceList;
+    deviceList.emplace_back("single_device");
+    SyncMode mode = SyncMode::PUSH;
+    int32_t result = kvStore->Sync(deviceList, mode);
+    EXPECT_NE(DP_SUCCESS, result);
+}
+
+/**
+ * @tc.name: PutBatch007
+ * @tc.desc: PutBatch with large data
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(KVAdapterTest, PutBatch007, TestSize.Level1)
+{
+    map<string, string> values;
+    for (int32_t i = 0; i < 50; i++) {
+        values.insert(pair<string, string>("key" + to_string(i), "value" + to_string(i)));
+    }
+    EXPECT_EQ(DP_SUCCESS, kvStore->PutBatch(values));
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

@@ -369,5 +369,170 @@ HWTEST_F(DeviceProfileDaoTest, CreateQuerySqlAndCondition002, TestSize.Level1)
     EXPECT_NE(sql, "");
     DeviceProfileDao::GetInstance().UnInit();
 }
+
+/*
+ * @tc.name: PutDeviceProfile002
+ * @tc.desc: PutDeviceProfile with empty deviceId
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileDaoTest, PutDeviceProfile002, TestSize.Level1)
+{
+    DeviceProfileDao::GetInstance().Init();
+    DeviceProfile deviceProfile;
+    deviceProfile.SetDeviceId("");
+    deviceProfile.SetUserId(1);
+    int32_t result = DeviceProfileDao::GetInstance().PutDeviceProfile(deviceProfile);
+    EXPECT_NE(result, DP_CACHE_EXIST);
+    DeviceProfileDao::GetInstance().UnInit();
+}
+
+/*
+ * @tc.name: PutDeviceProfile004
+ * @tc.desc: PutDeviceProfile with long deviceId
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileDaoTest, PutDeviceProfile004, TestSize.Level1)
+{
+    DeviceProfileDao::GetInstance().Init();
+    DeviceProfile deviceProfile;
+    std::string longDeviceId(256, 'a');
+    deviceProfile.SetDeviceId(longDeviceId);
+    deviceProfile.SetUserId(1);
+    int32_t result = DeviceProfileDao::GetInstance().PutDeviceProfile(deviceProfile);
+    DeviceProfileDao::GetInstance().UnInit();
+    EXPECT_NE(result, DP_CACHE_EXIST);
+}
+
+/*
+ * @tc.name: PutDeviceProfile005
+ * @tc.desc: PutDeviceProfile with zero userId
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileDaoTest, PutDeviceProfile005, TestSize.Level1)
+{
+    DeviceProfileDao::GetInstance().Init();
+    DeviceProfile deviceProfile;
+    deviceProfile.SetDeviceId("deviceId005");
+    deviceProfile.SetUserId(0);
+    int32_t result = DeviceProfileDao::GetInstance().PutDeviceProfile(deviceProfile);
+    DeviceProfileDao::GetInstance().UnInit();
+    EXPECT_NE(result, DP_CACHE_EXIST);
+}
+
+/*
+ * @tc.name: GetDeviceProfiles004
+ * @tc.desc: GetDeviceProfiles with empty filter
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileDaoTest, GetDeviceProfiles004, TestSize.Level1)
+{
+    DeviceProfileDao::GetInstance().Init();
+    DeviceProfileFilterOptions filterOptions;
+    std::vector<DeviceProfile> deviceProfiles;
+    int32_t result = DeviceProfileDao::GetInstance().GetDeviceProfiles(filterOptions, deviceProfiles);
+    EXPECT_EQ(result, DP_SUCCESS);
+    DeviceProfileDao::GetInstance().UnInit();
+}
+
+/*
+ * @tc.name: GetDeviceProfiles005
+ * @tc.desc: GetDeviceProfiles with multiple deviceIds
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileDaoTest, GetDeviceProfiles005, TestSize.Level1)
+{
+    DeviceProfileDao::GetInstance().Init();
+    DeviceProfile deviceProfile1;
+    deviceProfile1.SetDeviceId("device001");
+    deviceProfile1.SetUserId(1);
+    DeviceProfileDao::GetInstance().PutDeviceProfile(deviceProfile1);
+    DeviceProfile deviceProfile2;
+    deviceProfile2.SetDeviceId("device002");
+    deviceProfile2.SetUserId(1);
+    DeviceProfileDao::GetInstance().PutDeviceProfile(deviceProfile2);
+
+    DeviceProfileFilterOptions filterOptions;
+    filterOptions.SetUserId(1);
+    filterOptions.SetDeviceIds({"device001", "device002"});
+    std::vector<DeviceProfile> deviceProfiles;
+    int32_t result = DeviceProfileDao::GetInstance().GetDeviceProfiles(filterOptions, deviceProfiles);
+    EXPECT_EQ(result, DP_SUCCESS);
+    DeviceProfileDao::GetInstance().UnInit();
+}
+
+/*
+ * @tc.name: DeleteDeviceProfile003
+ * @tc.desc: DeleteDeviceProfile with empty deviceId
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileDaoTest, DeleteDeviceProfile003, TestSize.Level1)
+{
+    DeviceProfileDao::GetInstance().Init();
+    DeviceProfile deviceProfile;
+    deviceProfile.SetDeviceId("");
+    deviceProfile.SetUserId(1);
+    int32_t result = DeviceProfileDao::GetInstance().DeleteDeviceProfile(deviceProfile);
+    EXPECT_EQ(result, DP_SUCCESS);
+    DeviceProfileDao::GetInstance().UnInit();
+}
+
+/*
+ * @tc.name: DeleteDeviceProfile004
+ * @tc.desc: DeleteDeviceProfile non-existent record
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileDaoTest, DeleteDeviceProfile004, TestSize.Level1)
+{
+    DeviceProfileDao::GetInstance().Init();
+    DeviceProfile deviceProfile;
+    deviceProfile.SetDeviceId("nonexistent");
+    deviceProfile.SetUserId(1);
+    int32_t result = DeviceProfileDao::GetInstance().DeleteDeviceProfile(deviceProfile);
+    EXPECT_EQ(result, DP_SUCCESS);
+    DeviceProfileDao::GetInstance().UnInit();
+}
+
+/*
+ * @tc.name: UpdateDeviceProfile003
+ * @tc.desc: UpdateDeviceProfile with empty deviceId
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileDaoTest, UpdateDeviceProfile003, TestSize.Level1)
+{
+    DeviceProfileDao::GetInstance().Init();
+    DeviceProfile deviceProfile;
+    deviceProfile.SetDeviceId("");
+    deviceProfile.SetUserId(1);
+    deviceProfile.SetSubProductId("SubProductId");
+    int32_t result = DeviceProfileDao::GetInstance().UpdateDeviceProfile(deviceProfile);
+    EXPECT_EQ(result, DP_SUCCESS);
+    DeviceProfileDao::GetInstance().UnInit();
+}
+
+/*
+ * @tc.name: UpdateDeviceProfile004
+ * @tc.desc: UpdateDeviceProfile non-existent record
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(DeviceProfileDaoTest, UpdateDeviceProfile004, TestSize.Level1)
+{
+    DeviceProfileDao::GetInstance().Init();
+    DeviceProfile deviceProfile;
+    deviceProfile.SetDeviceId("nonexistent");
+    deviceProfile.SetUserId(1);
+    deviceProfile.SetSubProductId("SubProductId");
+    int32_t result = DeviceProfileDao::GetInstance().UpdateDeviceProfile(deviceProfile);
+    EXPECT_EQ(result, DP_SUCCESS);
+    DeviceProfileDao::GetInstance().UnInit();
+}
 }  // namespace DistributedDeviceProfile
 }  // namespace OHOS

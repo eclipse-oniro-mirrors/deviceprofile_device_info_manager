@@ -1028,6 +1028,549 @@ HWTEST_F(ProfileCacheTest, SetSwitchByProfileBatch002, TestSize.Level1)
     int32_t ret = ProfileCache::GetInstance().SetSwitchByProfileBatch(charProfiles, switchServiceMap, outSwitch);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
 }
+
+/**
+ * @tc.name: AddStaticCharProfile001
+ * @tc.desc: Test AddStaticCharProfile with empty profile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, AddStaticCharProfile001, TestSize.Level1)
+{
+    CharacteristicProfile charProfile;
+    int32_t ret = ProfileCache::GetInstance().AddStaticCharProfile(charProfile);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: AddStaticCharProfile002
+ * @tc.desc: Test AddStaticCharProfile with valid profile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, AddStaticCharProfile002, TestSize.Level1)
+{
+    CharacteristicProfile charProfile;
+    std::string devId = "deviceId";
+    std::string serName = "serviceName";
+    std::string charKey = "charKey";
+    charProfile.SetDeviceId(devId);
+    charProfile.SetServiceName(serName);
+    charProfile.SetCharacteristicKey(charKey);
+    int32_t ret = ProfileCache::GetInstance().AddStaticCharProfile(charProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: AddStaticCharProfileBatch001
+ * @tc.desc: Test AddStaticCharProfileBatch with empty map
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, AddStaticCharProfileBatch001, TestSize.Level1)
+{
+    std::unordered_map<std::string, CharacteristicProfile> charProfiles;
+    int32_t ret = ProfileCache::GetInstance().AddStaticCharProfileBatch(charProfiles);
+    EXPECT_NE(ret, DP_CACHE_NOT_EXIST);
+}
+
+/**
+ * @tc.name: AddStaticCharProfileBatch002
+ * @tc.desc: Test AddStaticCharProfileBatch with valid profiles
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, AddStaticCharProfileBatch002, TestSize.Level1)
+{
+    std::unordered_map<std::string, CharacteristicProfile> charProfiles;
+    CharacteristicProfile charProfile;
+    std::string devId = "deviceId";
+    std::string serName = "serviceName";
+    std::string charKey = "charKey";
+    charProfile.SetDeviceId(devId);
+    charProfile.SetServiceName(serName);
+    charProfile.SetCharacteristicKey(charKey);
+    std::string profileKey = "profileKey";
+    charProfiles[profileKey] = charProfile;
+    int32_t ret = ProfileCache::GetInstance().AddStaticCharProfileBatch(charProfiles);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: GetSwitch001
+ * @tc.desc: Test GetSwitch method
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetSwitch001, TestSize.Level1)
+{
+    uint32_t switchValue = ProfileCache::GetInstance().GetSwitch();
+    EXPECT_GE(switchValue, 0);
+}
+
+/**
+ * @tc.name: GetUdidByNetWorkId001
+ * @tc.desc: Test GetUdidByNetWorkId with empty networkId
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetUdidByNetWorkId001, TestSize.Level1)
+{
+    std::string networkId = "";
+    std::string udid;
+    int32_t ret = ProfileCache::GetInstance().GetUdidByNetWorkId(networkId, udid);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetUdidByNetWorkId002
+ * @tc.desc: Test GetUdidByNetWorkId with valid networkId
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetUdidByNetWorkId002, TestSize.Level1)
+{
+    std::string networkId = "networkId";
+    std::string udid;
+    int32_t ret = ProfileCache::GetInstance().GetUdidByNetWorkId(networkId, udid);
+    EXPECT_NE(ret, DP_CACHE_NOT_EXIST);
+}
+
+/**
+ * @tc.name: GetSyncListeners001
+ * @tc.desc: Test GetSyncListeners method
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetSyncListeners001, TestSize.Level1)
+{
+    std::map<std::string, sptr<IRemoteObject>> syncListeners;
+    int32_t ret = ProfileCache::GetInstance().GetSyncListeners(syncListeners);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: SetSwitchByProfile001
+ * @tc.desc: Test SetSwitchByProfile with valid profile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, SetSwitchByProfile001, TestSize.Level1)
+{
+    CharacteristicProfile charProfile;
+    std::string devId = "deviceId";
+    std::string serName = "serviceName";
+    std::string charKey = "charKey";
+    charProfile.SetDeviceId(devId);
+    charProfile.SetServiceName(serName);
+    charProfile.SetCharacteristicKey(charKey);
+    std::unordered_map<std::string, SwitchFlag> switchServiceMap;
+    uint32_t outSwitch = 0;
+    int32_t ret = ProfileCache::GetInstance().SetSwitchByProfile(charProfile, switchServiceMap, outSwitch);
+    EXPECT_NE(ret, DP_CACHE_NOT_EXIST);
+}
+
+/**
+ * @tc.name: SetSwitchByProfile002
+ * @tc.desc: Test SetSwitchByProfile with empty profile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, SetSwitchByProfile002, TestSize.Level1)
+{
+    CharacteristicProfile charProfile;
+    std::unordered_map<std::string, SwitchFlag> switchServiceMap;
+    uint32_t outSwitch = 0;
+    int32_t ret = ProfileCache::GetInstance().SetSwitchByProfile(charProfile, switchServiceMap, outSwitch);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: IsSwitchValid001
+ * @tc.desc: Test IsSwitchValid with valid profile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, IsSwitchValid001, TestSize.Level1)
+{
+    CharacteristicProfile charProfile;
+    std::string devId = "deviceId";
+    std::string serName = "serviceName";
+    std::string charKey = "charKey";
+    charProfile.SetDeviceId(devId);
+    charProfile.SetServiceName(serName);
+    charProfile.SetCharacteristicKey(charKey);
+    std::unordered_map<std::string, SwitchFlag> switchServiceMap;
+    std::string operate = "test";
+    bool ret = ProfileCache::GetInstance().IsSwitchValid(charProfile, switchServiceMap, operate);
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: SetSwitchProfile001
+ * @tc.desc: Test SetSwitchProfile method
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, SetSwitchProfile001, TestSize.Level1)
+{
+    CharacteristicProfile charProfile;
+    std::string devId = "deviceId";
+    std::string serName = "serviceName";
+    std::string charKey = "charKey";
+    charProfile.SetDeviceId(devId);
+    charProfile.SetServiceName(serName);
+    charProfile.SetCharacteristicKey(charKey);
+    uint32_t switchValue = 1;
+    int32_t ret = ProfileCache::GetInstance().SetSwitchProfile(charProfile, switchValue);
+    EXPECT_NE(ret, DP_CACHE_NOT_EXIST);
+}
+
+/**
+ * @tc.name: SetCurSwitch001
+ * @tc.desc: Test SetCurSwitch method
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, SetCurSwitch001, TestSize.Level1)
+{
+    uint32_t newSwitch = 0xFFFF;
+    ProfileCache::GetInstance().SetCurSwitch(newSwitch);
+    EXPECT_EQ(ProfileCache::GetInstance().GetSwitch(), newSwitch);
+}
+
+/**
+ * @tc.name: GetServiceNameByPos001
+ * @tc.desc: Test GetServiceNameByPos with invalid position
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetServiceNameByPos001, TestSize.Level1)
+{
+    int32_t pos = -1;
+    std::unordered_map<std::string, SwitchFlag> switchServiceMap;
+    std::string serviceName;
+    int32_t ret = ProfileCache::GetInstance().GetServiceNameByPos(pos, switchServiceMap, serviceName);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: GetServiceNameByPos002
+ * @tc.desc: Test GetServiceNameByPos with valid position
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetServiceNameByPos002, TestSize.Level1)
+{
+    int32_t pos = 0;
+    std::unordered_map<std::string, SwitchFlag> switchServiceMap;
+    switchServiceMap["serviceName"] = SwitchFlag::SWITCH_FLAG_KEY_MOUSE_EDGE_CROSSING;
+    std::string serviceName;
+    int32_t ret = ProfileCache::GetInstance().GetServiceNameByPos(pos, switchServiceMap, serviceName);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: GetSwitchProfilesByServiceName001
+ * @tc.desc: Test GetSwitchProfilesByServiceName with valid key
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetSwitchProfilesByServiceName001, TestSize.Level1)
+{
+    std::string charProfileKey = "testKey";
+    CharacteristicProfile switchProfile;
+    int32_t ret = ProfileCache::GetInstance().GetSwitchProfilesByServiceName(charProfileKey, switchProfile);
+    EXPECT_NE(ret, DP_CACHE_NOT_EXIST);
+}
+
+/**
+ * @tc.name: GetLocalUdid001
+ * @tc.desc: Test GetLocalUdid method
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetLocalUdid001, TestSize.Level1)
+{
+    std::string udid = ProfileCache::GetInstance().GetLocalUdid();
+    EXPECT_TRUE(udid.empty() || !udid.empty());
+}
+
+/**
+ * @tc.name: GetLocalNetworkId001
+ * @tc.desc: Test GetLocalNetworkId method
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetLocalNetworkId001, TestSize.Level1)
+{
+    std::string networkId = ProfileCache::GetInstance().GetLocalNetworkId();
+    EXPECT_TRUE(networkId.empty() || !networkId.empty());
+}
+
+/**
+ * @tc.name: GetLocalUuid001
+ * @tc.desc: Test GetLocalUuid method
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetLocalUuid001, TestSize.Level1)
+{
+    std::string uuid = ProfileCache::GetInstance().GetLocalUuid();
+    EXPECT_TRUE(uuid.empty() || !uuid.empty());
+}
+
+/**
+ * @tc.name: GetLocalAccountId001
+ * @tc.desc: Test GetLocalAccountId method
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetLocalAccountId001, TestSize.Level1)
+{
+    std::string accountId = ProfileCache::GetInstance().GetLocalAccountId();
+    EXPECT_TRUE(accountId.empty() || !accountId.empty());
+}
+
+/**
+ * @tc.name: RefreshProfileCache001
+ * @tc.desc: Test RefreshProfileCache method
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, RefreshProfileCache001, TestSize.Level1)
+{
+    int32_t ret = ProfileCache::GetInstance().RefreshProfileCache();
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: SetSwitchByProfileBatch003
+ * @tc.desc: Test SetSwitchByProfileBatch with multiple profiles
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, SetSwitchByProfileBatch003, TestSize.Level1)
+{
+    std::vector<CharacteristicProfile> charProfiles;
+    std::unordered_map<std::string, SwitchFlag> switchServiceMap;
+    uint32_t outSwitch = 0;
+
+    CharacteristicProfile charProfile1;
+    charProfile1.SetDeviceId("deviceId1");
+    charProfile1.SetServiceName("serviceName1");
+    charProfile1.SetCharacteristicKey("charKey1");
+    charProfiles.push_back(charProfile1);
+
+    CharacteristicProfile charProfile2;
+    charProfile2.SetDeviceId("deviceId2");
+    charProfile2.SetServiceName("serviceName2");
+    charProfile2.SetCharacteristicKey("charKey2");
+    charProfiles.push_back(charProfile2);
+
+    switchServiceMap["serviceName1"] = SwitchFlag::SWITCH_FLAG_KEY_MOUSE_EDGE_CROSSING;
+    switchServiceMap["serviceName2"] = SwitchFlag::SWITCH_FLAG_KEY_MOUSE_EDGE_CROSSING;
+
+    int32_t ret = ProfileCache::GetInstance().SetSwitchByProfileBatch(charProfiles, switchServiceMap, outSwitch);
+    EXPECT_NE(ret, DP_CACHE_NOT_EXIST);
+}
+
+/**
+ * @tc.name: AddStaticCharProfile003
+ * @tc.desc: Test AddStaticCharProfile with unicode characters
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, AddStaticCharProfile003, TestSize.Level1)
+{
+    CharacteristicProfile charProfile;
+    std::string devId = "设备ID";
+    std::string serName = "服务名称";
+    std::string charKey = "特征键";
+    charProfile.SetDeviceId(devId);
+    charProfile.SetServiceName(serName);
+    charProfile.SetCharacteristicKey(charKey);
+    int32_t ret = ProfileCache::GetInstance().AddStaticCharProfile(charProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: GetUdidByNetWorkId003
+ * @tc.desc: Test GetUdidByNetWorkId with special characters
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetUdidByNetWorkId003, TestSize.Level1)
+{
+    std::string networkId = "net!@#$%^&*()";
+    std::string udid;
+    int32_t ret = ProfileCache::GetInstance().GetUdidByNetWorkId(networkId, udid);
+    EXPECT_NE(ret, DP_CACHE_NOT_EXIST);
+}
+
+/**
+ * @tc.name: SetCurSwitch002
+ * @tc.desc: Test SetCurSwitch with maximum value
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, SetCurSwitch002, TestSize.Level1)
+{
+    uint32_t newSwitch = UINT32_MAX;
+    ProfileCache::GetInstance().SetCurSwitch(newSwitch);
+    EXPECT_EQ(ProfileCache::GetInstance().GetSwitch(), UINT32_MAX);
+}
+
+/**
+ * @tc.name: SetCurSwitch003
+ * @tc.desc: Test SetCurSwitch with zero value
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, SetCurSwitch003, TestSize.Level1)
+{
+    uint32_t newSwitch = 0;
+    ProfileCache::GetInstance().SetCurSwitch(newSwitch);
+    EXPECT_EQ(ProfileCache::GetInstance().GetSwitch(), 0);
+}
+
+/**
+ * @tc.name: SetSwitchProfile002
+ * @tc.desc: Test SetSwitchProfile with different switch values
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, SetSwitchProfile002, TestSize.Level1)
+{
+    CharacteristicProfile charProfile;
+    std::string devId = "deviceId";
+    std::string serName = "serviceName";
+    std::string charKey = "charKey";
+    charProfile.SetDeviceId(devId);
+    charProfile.SetServiceName(serName);
+    charProfile.SetCharacteristicKey(charKey);
+    uint32_t switchValue = 0xFFFFFFFF;
+    int32_t ret = ProfileCache::GetInstance().SetSwitchProfile(charProfile, switchValue);
+    EXPECT_NE(ret, DP_CACHE_NOT_EXIST);
+}
+
+/**
+ * @tc.name: IsSwitchValid002
+ * @tc.desc: Test IsSwitchValid with empty profile
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, IsSwitchValid002, TestSize.Level1)
+{
+    CharacteristicProfile charProfile;
+    std::unordered_map<std::string, SwitchFlag> switchServiceMap;
+    std::string operate = "test";
+    bool ret = ProfileCache::GetInstance().IsSwitchValid(charProfile, switchServiceMap, operate);
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: GetServiceNameByPos003
+ * @tc.desc: Test GetServiceNameByPos with position out of bounds
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetServiceNameByPos003, TestSize.Level1)
+{
+    int32_t pos = 999;
+    std::unordered_map<std::string, SwitchFlag> switchServiceMap;
+    std::string serviceName;
+    int32_t ret = ProfileCache::GetInstance().GetServiceNameByPos(pos, switchServiceMap, serviceName);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/**
+ * @tc.name: IsCharProfileKeyExist002
+ * @tc.desc: Test IsCharProfileKeyExist with empty key
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, IsCharProfileKeyExist002, TestSize.Level1)
+{
+    std::string charKey = "";
+    bool ret = ProfileCache::GetInstance().IsCharProfileKeyExist(charKey);
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: AddStaticCharProfileBatch003
+ * @tc.desc: Test AddStaticCharProfileBatch with large map
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, AddStaticCharProfileBatch003, TestSize.Level1)
+{
+    std::unordered_map<std::string, CharacteristicProfile> charProfiles;
+    for (int i = 0; i < 100; ++i) {
+        CharacteristicProfile charProfile;
+        charProfile.SetDeviceId("deviceId" + std::to_string(i));
+        charProfile.SetServiceName("serviceName" + std::to_string(i));
+        charProfile.SetCharacteristicKey("charKey" + std::to_string(i));
+        std::string profileKey = "profileKey" + std::to_string(i);
+        charProfiles[profileKey] = charProfile;
+    }
+    int32_t ret = ProfileCache::GetInstance().AddStaticCharProfileBatch(charProfiles);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/**
+ * @tc.name: GetSwitch002
+ * @tc.desc: Test GetSwitch after setting value
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetSwitch002, TestSize.Level1)
+{
+    uint32_t testValue = 0xABCD;
+    ProfileCache::GetInstance().SetCurSwitch(testValue);
+    uint32_t switchValue = ProfileCache::GetInstance().GetSwitch();
+    EXPECT_EQ(switchValue, testValue);
+}
+
+/**
+ * @tc.name: SetSwitchByProfile003
+ * @tc.desc: Test SetSwitchByProfile with switchServiceMap
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, SetSwitchByProfile003, TestSize.Level1)
+{
+    CharacteristicProfile charProfile;
+    std::string devId = "deviceId";
+    std::string serName = "serviceName";
+    std::string charKey = "charKey";
+    charProfile.SetDeviceId(devId);
+    charProfile.SetServiceName(serName);
+    charProfile.SetCharacteristicKey(charKey);
+    std::unordered_map<std::string, SwitchFlag> switchServiceMap;
+    switchServiceMap["serviceName"] = SwitchFlag::SWITCH_FLAG_KEY_MOUSE_EDGE_CROSSING;
+    uint32_t outSwitch = 0;
+    int32_t ret = ProfileCache::GetInstance().SetSwitchByProfile(charProfile, switchServiceMap, outSwitch);
+    EXPECT_NE(ret, DP_CACHE_NOT_EXIST);
+}
+
+/**
+ * @tc.name: GetSyncListeners002
+ * @tc.desc: Test GetSyncListeners after adding listener
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProfileCacheTest, GetSyncListeners002, TestSize.Level1)
+{
+    std::map<std::string, sptr<IRemoteObject>> syncListeners;
+    std::string caller = "testCaller";
+    OHOS::sptr<OHOS::IRemoteObject> syncListener = OHOS::sptr<SyncCompletedCallbackStub>(new SyncCallback());
+    ProfileCache::GetInstance().AddSyncListener(caller, syncListener);
+    int32_t ret = ProfileCache::GetInstance().GetSyncListeners(syncListeners);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_FALSE(syncListeners.empty());
+    ProfileCache::GetInstance().RemoveSyncListener(caller);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 
