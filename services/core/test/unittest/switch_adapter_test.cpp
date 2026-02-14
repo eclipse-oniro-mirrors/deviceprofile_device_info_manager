@@ -188,5 +188,139 @@ HWTEST_F(SwitchAdapterTest, UnsubscribeSwitchData_002, TestSize.Level1)
         SwitchAdapter::GetInstance().SubscribeSwitchData(appId);
     EXPECT_EQ(ret, DP_SUBSCRIBE_FAILED);
 }
+
+/*
+ * @tc.name: PutSwitch_003
+ * @tc.desc: Normal testCase of SwitchAdapterTest for PutSwitch
+ * @tc.type: FUNC
+ */
+HWTEST_F(SwitchAdapterTest, PutSwitch_003, TestSize.Level1)
+{
+    const std::string appId = "test_app_003";
+    uint32_t value = 2;
+    uint16_t length = 1;
+    int32_t ret = OHOS::DistributedDeviceProfile::
+        SwitchAdapter::GetInstance().PutSwitch(appId, value, length);
+    EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
+}
+
+/*
+ * @tc.name: GetSwitch_004
+ * @tc.desc: Normal testCase of SwitchAdapterTest for GetSwitch
+ * @tc.type: FUNC
+ */
+HWTEST_F(SwitchAdapterTest, GetSwitch_004, TestSize.Level1)
+{
+    const std::string appId = "test_app_004";
+    std::string networkId = "test_network";
+    uint32_t value = 0;
+    uint32_t switchLength = 0;
+    int32_t ret = OHOS::DistributedDeviceProfile::
+        SwitchAdapter::GetInstance().GetSwitch(appId, networkId, value, switchLength);
+    EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
+}
+
+/*
+ * @tc.name: PutSwitch_004
+ * @tc.desc: Normal testCase of SwitchAdapterTest for PutSwitch with different values
+ * @tc.type: FUNC
+ */
+HWTEST_F(SwitchAdapterTest, PutSwitch_004, TestSize.Level1)
+{
+    const std::string appId = "test_app_005";
+    uint32_t value = INT32_MAX;
+    uint16_t length = 4;
+    int32_t ret = OHOS::DistributedDeviceProfile::
+        SwitchAdapter::GetInstance().PutSwitch(appId, value, length);
+    EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
+}
+
+/*
+ * @tc.name: PutSwitch_005
+ * @tc.desc: Normal testCase of SwitchAdapterTest for PutSwitch with zero value
+ * @tc.type: FUNC
+ */
+HWTEST_F(SwitchAdapterTest, PutSwitch_005, TestSize.Level1)
+{
+    const std::string appId = "test_app_006";
+    uint32_t value = 0;
+    uint16_t length = 0;
+    int32_t ret = OHOS::DistributedDeviceProfile::
+        SwitchAdapter::GetInstance().PutSwitch(appId, value, length);
+    EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
+}
+
+/*
+ * @tc.name: GetSwitch_005
+ * @tc.desc: Normal testCase of SwitchAdapterTest for GetSwitch with special appId
+ * @tc.type: FUNC
+ */
+HWTEST_F(SwitchAdapterTest, GetSwitch_005, TestSize.Level1)
+{
+    const std::string appId = "test!@#$%app";
+    std::string networkId = "network_id";
+    uint32_t value = 1;
+    uint32_t switchLength = 0;
+    int32_t ret = OHOS::DistributedDeviceProfile::
+        SwitchAdapter::GetInstance().GetSwitch(appId, networkId, value, switchLength);
+    EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
+}
+
+/*
+ * @tc.name: GetSwitch_006
+ * @tc.desc: Normal testCase of SwitchAdapterTest for GetSwitch with unicode appId
+ * @tc.type: FUNC
+ */
+HWTEST_F(SwitchAdapterTest, GetSwitch_006, TestSize.Level1)
+{
+    const std::string appId = "测试应用";
+    std::string networkId = "网络ID";
+    uint32_t value = 1;
+    uint32_t switchLength = 0;
+    int32_t ret = OHOS::DistributedDeviceProfile::
+        SwitchAdapter::GetInstance().GetSwitch(appId, networkId, value, switchLength);
+    EXPECT_EQ(ret, DP_GET_KV_DB_FAIL);
+}
+
+/*
+ * @tc.name: SubscribeSwitchData_003
+ * @tc.desc: Normal testCase of SwitchAdapterTest for SubscribeSwitchData
+ * @tc.type: FUNC
+ */
+HWTEST_F(SwitchAdapterTest, SubscribeSwitchData_003, TestSize.Level1)
+{
+    const std::string appId = "test_app_sub_003";
+    int32_t ret = OHOS::DistributedDeviceProfile::
+        SwitchAdapter::GetInstance().SubscribeSwitchData(appId);
+    EXPECT_EQ(ret, DP_SUBSCRIBE_FAILED);
+}
+
+/*
+ * @tc.name: UnsubscribeSwitchData_003
+ * @tc.desc: Normal testCase of SwitchAdapterTest for UnsubscribeSwitchData
+ * @tc.type: FUNC
+ */
+HWTEST_F(SwitchAdapterTest, UnsubscribeSwitchData_003, TestSize.Level1)
+{
+    const std::string appId = "test_app_unsub_003";
+    int32_t ret = OHOS::DistributedDeviceProfile::
+        SwitchAdapter::GetInstance().UnsubscribeSwitchData(appId);
+    EXPECT_NE(ret, DP_CACHE_NOT_EXIST);
+}
+
+/*
+ * @tc.name: PutSwitch_006
+ * @tc.desc: Normal testCase of SwitchAdapterTest for PutSwitch with negative value
+ * @tc.type: FUNC
+ */
+HWTEST_F(SwitchAdapterTest, PutSwitch_006, TestSize.Level1)
+{
+    const std::string appId = "test_app_006";
+    uint32_t value = -1;
+    uint16_t length = 4;
+    int32_t ret = OHOS::DistributedDeviceProfile::
+        SwitchAdapter::GetInstance().PutSwitch(appId, value, length);
+    EXPECT_EQ(ret, DP_PUT_KV_DB_FAIL);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
