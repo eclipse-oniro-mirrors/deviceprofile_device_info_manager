@@ -169,6 +169,7 @@ const std::string GET_ALL_SERVICE_INFO_LIST = "GetAllServiceInfoList";
 const std::string GET_SERVICE_INFO_BY_USER_INFO = "GetServiceInfosByUserInfo";
 const std::string UD_ID = "udid";
 const std::string DISPLAYID = "displayId";
+const std::string USER_ID = "userId";
 const std::string SERVICE_OWNER_TOKEN_ID = "serviceOwnerTokenId";
 const std::string SERVICE_OWNER_PKG_NAME = "serviceOwnerPkgName";
 const std::string SERVICE_REGISTER_TOKEN_ID = "serviceRegisterTokenId";

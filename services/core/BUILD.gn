@@ -128,7 +128,6 @@ ohos_shared_library("distributed_device_profile_svr") {
     "src/profiledatamanager/profile_data_manager.cpp",
     "src/publishcommonevent/dp_account_common_event.cpp",
     "src/serviceinfo_manager/service_info_manager.cpp",
-    "src/serviceinfoprofile_manager/service_info_profile_manager.cpp",
     "src/sessionkeymanager/session_key_manager.cpp",
     "src/staticcapabilitycollector/static_capability_collector.cpp",
     "src/staticcapabilityloader/static_capability_loader.cpp",

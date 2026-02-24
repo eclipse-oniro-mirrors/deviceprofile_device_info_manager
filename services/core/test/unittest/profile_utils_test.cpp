@@ -1589,31 +1589,6 @@ HWTEST_F(ProfileUtilsTest, IsNumStr001, TestSize.Level1)
     bool isNumStr = ProfileUtils::IsNumStr("");
     EXPECT_EQ(isNumStr, false);
 }
-
-
-HWTEST_F(ProfileUtilsTest, ServiceInfoProfileToEntries_001, TestSize.Level1)
-{
-    OHOS::DistributedDeviceProfile::ServiceInfoProfileNew serviceInfoProfile;
-    serviceInfoProfile.SetServiceId(1);
-    serviceInfoProfile.SetDeviceId("test_deviceIdValue");
-    serviceInfoProfile.SetTokenId(0);
-    std::map<std::string, std::string> entries;
-    int32_t res1 = ProfileUtils::ServiceInfoProfileToEntries(serviceInfoProfile, entries);
-    EXPECT_NE(DP_READ_PARCEL_FAIL, res1);
-    EXPECT_FALSE(entries.empty());
-}
- 
-HWTEST_F(ProfileUtilsTest, ServiceInfoProfileToEntries_002, TestSize.Level1)
-{
-    OHOS::DistributedDeviceProfile::ServiceInfoProfileNew serviceInfoProfile;
-    serviceInfoProfile.SetServiceId(1);
-    serviceInfoProfile.SetDeviceId("test_deviceIdValue");
-    serviceInfoProfile.SetTokenId(0);
-    std::map<std::string, std::string> entries;
-    int32_t res1 = ProfileUtils::ServiceInfoProfileToEntries(serviceInfoProfile, entries);
-    EXPECT_NE(DP_READ_PARCEL_FAIL, res1);
-    EXPECT_FALSE(entries.empty());
-}
  
 HWTEST_F(ProfileUtilsTest, GenerateServiceDBKey_001, TestSize.Level1)
 {

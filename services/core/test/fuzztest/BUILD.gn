@@ -24,7 +24,6 @@ group("fuzztest") {
     "highriskinterface_fuzzer:fuzztest",
     "profilecontrolutils_fuzzer:fuzztest",
     "serviceinfokvadaptertest_fuzzer:fuzztest",
-    "serviceinfoprofilenew_fuzzer:fuzztest",
     "serviceinfomanager_fuzzer:fuzztest",
   ]
 }

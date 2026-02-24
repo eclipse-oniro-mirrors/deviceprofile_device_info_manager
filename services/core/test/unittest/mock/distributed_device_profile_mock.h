@@ -106,14 +106,6 @@ public:
     MOCK_METHOD(int32_t, UnRegisterBusinessCallback, (const std::string&, const std::string&), (override));
     MOCK_METHOD(int32_t, PutBusinessEvent, (const BusinessEvent&), (override));
     MOCK_METHOD(int32_t, GetBusinessEvent, (BusinessEvent&), (override));
-    MOCK_METHOD(int32_t, PutServiceInfoProfile, (const ServiceInfoProfileNew&), (override));
-    MOCK_METHOD(int32_t, DeleteServiceInfoProfile, (int32_t, int32_t), (override));
-    MOCK_METHOD(int32_t, GetServiceInfoProfileByServiceId,
-        (int64_t, ServiceInfoProfileNew&), (override));
-    MOCK_METHOD(int32_t, GetServiceInfoProfileByTokenId,
-        (int64_t, std::vector<ServiceInfoProfileNew>&), (override));
-    MOCK_METHOD(int32_t, GetServiceInfoProfileByRegServiceId,
-        (int32_t, ServiceInfoProfileNew&), (override));
 
     MOCK_METHOD(int32_t, PutServiceInfo, (const ServiceInfo&), (override));
     MOCK_METHOD(int32_t, DeleteServiceInfo, (const UserInfo&), (override));
