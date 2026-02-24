@@ -52,6 +52,7 @@ device_profile_external_deps = [
   "device_manager:devicemanagersdk",
   "dmsfwk:common_sdk",
   "eventhandler:libeventhandler",
+  "googletest:gmock",
   "hilog:libhilog",
   "hisysevent:libhisysevent",
   "hitrace:hitrace_meter",
@@ -557,7 +558,7 @@ ohos_unittest("distributed_device_profile_client_test") {
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
 }
- 
+
 ohos_unittest("distributed_device_profile_proxy_test") {
   module_out_path = module_output_path
   sources = [ "unittest/distributed_device_profile_proxy_test.cpp" ]

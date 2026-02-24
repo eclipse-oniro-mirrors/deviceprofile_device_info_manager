@@ -135,10 +135,6 @@ ohos_shared_library("distributed_device_profile_common") {
     "src/utils/content_sensor_manager_utils.cpp",
     "src/utils/ipc_utils.cpp",
     "src/utils/profile_utils.cpp",
-    #delete start
-    "src/interfaces/service_info_profile_new.cpp",
-    "src/interfaces/service_info_profile.cpp",
-    #delete end
   ]
 
   deps = [":business_callback_interfaces_ipc"]

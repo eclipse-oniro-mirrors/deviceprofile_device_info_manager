@@ -27,9 +27,6 @@
 #include "device_profile_manager.h"
 #include "profile_utils.h"
 #include "profile_cache.h"
-//delete start
-#include "subscribe_profile_manager.h"
-//delete end
 #include "subscribe_profile_manager.h"
 #include "distributed_device_profile_log.h"
 #include "service_info.h"

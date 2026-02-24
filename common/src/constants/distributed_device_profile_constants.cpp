@@ -163,15 +163,6 @@ const std::string PINCODE = "pinCode";
 const std::string DESCRIPTION = "description";
 const std::string SERVICE_DISCOVERY_SCOPE = "serviceDicoveryScope";
 const std::string EXTRAINFO = "extraInfo";
-//delete start
-const std::string PUT_SERVICE_INFO_PROFILE = "PutServiceInfoProfile";
-const std::string DELETE_SERVICE_INFO_PROFILE = "DeleteServiceInfoProfile";
-const std::string UPDATE_SERVICE_INFO_PROFILE = "UpdateServiceInfoProfile";
-const std::string GET_SERVICE_INFO_PROFILE_BY_UNIQUE_KEY = "GetServiceInfoProfileByUniqueKey";
-const std::string GET_SERVICE_INFO_PROFILE_LIST_BY_TOKEN_ID = "GetServiceInfoProfileListByTokenId";
-const std::string GET_ALL_SERVICE_INFO_PROFILE_LIST = "GetAllServiceInfoProfileList";
-const std::string GET_SERVICE_INFO_PROFILE_LIST_BY_BUNDLE_NAME = "GetServiceInfoProfileListByBundleName";
-//delete end
 const std::string PUT_SERVICE_INFO = "PutServiceInfo";
 const std::string DELETE_SERVICE_INFO = "DeleteServiceInfo";
 const std::string GET_ALL_SERVICE_INFO_LIST = "GetAllServiceInfoList";
@@ -232,9 +223,6 @@ const std::string SLASHES = "/";
 const std::string DEV_PREFIX = "dev";
 const std::string SVR_PREFIX = "svr";
 const std::string CHAR_PREFIX = "char";
-//delete start
-const std::string USER_ID = "user_id";
-//delete end
 
 const std::string DEVICE_PROFILE_ID = "deviceProfile_id";
 const std::string SERINFO_PREFIX = "serInfo";

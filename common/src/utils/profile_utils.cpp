@@ -79,23 +79,6 @@ std::string ProfileUtils::GetAnonyString(const std::string& value)
     return res;
 }
 
-//delete start
-int32_t ProfileUtils::GenerateServiceInfoProfilekeys(const std::string& regServiceId, std::vector<std::string>& dbKeys,
-    int32_t userId)
-{
-    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, DEVICE_ID, userId));
-    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, RDB_USER_ID, userId));
-    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, TOKENID, userId));
-    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, PUBLISH_STATE, userId));
-    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, SERVICE_PROFILE_SERVICE_ID, userId));
-    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, SERVICE_TYPE, userId));
-    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, SERVICE_NAME, userId));
-    dbKeys.emplace_back(GenerateServiceDBKey(regServiceId, SERVICE_DISPLAY_NAME, userId));
-
-    return DP_SUCCESS;
-}
-//delete end
-
 std::string ProfileUtils::GetAnonyInt32(const int32_t value)
 {
     std::string tempString = std::to_string(value);
@@ -315,13 +298,6 @@ bool ProfileUtils::IsSvrProfileValid(const ServiceProfile& svrProfile)
         IsKeyValid(svrProfile.GetServiceName());
 }
 
-//delete start
-bool ProfileUtils::IsSvrInfoProfileValid(const ServiceInfoProfileNew& serInfoProfile)
-{
-    return IsKeyValid(serInfoProfile.GetDeviceId()) && IsKeyValid(serInfoProfile.GetServiceName());
-}
-//delete end
-
 bool ProfileUtils::IsSvrInfoValid(const ServiceInfo& serviceInfo)
 {
     if (serviceInfo.GetServiceOwnerPkgName().empty() ||serviceInfo.GetServiceType().empty() ||
@@ -383,13 +359,6 @@ std::string ProfileUtils::GenerateServiceProfileKey(const std::string& deviceId,
 {
     return SVR_PREFIX + SEPARATOR + deviceId + SEPARATOR + serviceName;
 }
-
-//delete start
-std::string ProfileUtils::GenerateServiceInfoProfileKey(const std::string& regServiceId)
-{
-    return SERVICE_INFO + SEPARATOR + regServiceId;
-}
-//delete end
 
 std::string ProfileUtils::GenerateCharProfileKey(const std::string& deviceId, const std::string& serviceName,
     const std::string& charKey)
@@ -507,28 +476,6 @@ int32_t ProfileUtils::ServiceProfileToEntries(const ServiceProfile& profile, std
     return DP_SUCCESS;
 }
 
-
-//delete start
-int32_t ProfileUtils::ServiceInfoProfileToEntries(const ServiceInfoProfileNew& profile, std::map<std::string,
-    std::string>& values)
-{
-    int32_t userIdValue = profile.GetUserId();
-    std::string regServiceId = std::to_string(profile.GetRegServiceId());
-    values[GenerateServiceDBKey(regServiceId, DEVICE_ID, userIdValue)] = profile.GetDeviceId();
-    values[GenerateServiceDBKey(regServiceId, USERID, userIdValue)] = std::to_string(profile.GetUserId());
-    values[GenerateServiceDBKey(regServiceId, TOKENID, userIdValue)] = std::to_string(profile.GetTokenId());
-    values[GenerateServiceDBKey(regServiceId, PUBLISH_STATE, userIdValue)] =
-        std::to_string(profile.GetSerPubState());
-    values[GenerateServiceDBKey(regServiceId, SERVICEID, userIdValue)] =
-        std::to_string(profile.GetServiceId());
-    values[GenerateServiceDBKey(regServiceId, SERVICE_TYPE, userIdValue)] = profile.GetServiceType();
-    values[GenerateServiceDBKey(regServiceId, SERVICE_NAME, userIdValue)] = profile.GetServiceName();
-    values[GenerateServiceDBKey(regServiceId, SERVICE_DISPLAY_NAME, userIdValue)] =
-         profile.GetServiceDisplayName();
-
-    return DP_SUCCESS;
-}
-//delete end
 int32_t ProfileUtils::ServiceInfoToEntries(const ServiceInfo& profile, std::map<std::string,
     std::string>& values)
 {

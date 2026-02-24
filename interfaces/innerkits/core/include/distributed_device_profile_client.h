@@ -115,20 +115,6 @@ public:
     void LoadSystemAbilityFail();
     void ReleaseResource();
     void ReSubscribeAllServiceInfo();
-    //delete start
-    int32_t UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile);
-    int32_t GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key, ServiceInfoProfile& serviceInfoProfile);
-    int32_t GetServiceInfoProfileListByTokenId(const ServiceInfoUniqueKey& key,
-        std::vector<ServiceInfoProfile>& serviceInfoProfiles);
-    int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfile>& serviceInfoProfiles);
-    int32_t GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
-        std::vector<ServiceInfoProfile>& serviceInfoProfiles);
-    int32_t PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfoProfile);
-    int32_t DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId);
-    int32_t GetServiceInfoProfileByServiceId(int64_t serviceId, ServiceInfoProfileNew& serviceInfoProfile);
-    int32_t GetServiceInfoProfileByTokenId(int64_t tokenId, std::vector<ServiceInfoProfileNew>& serviceInfoProfiles);
-    int32_t GetServiceInfoProfileByRegServiceId(int32_t regServiceId, ServiceInfoProfileNew& serviceInfoProfile);
-    //delete end
 
 public:
     class SystemAbilityListener : public SystemAbilityStatusChangeStub {

@@ -253,39 +253,6 @@ bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<DeviceIconIn
     }
     return true;
 }
-//delete start
-bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<ServiceInfoProfile>& serviceInfoProfiles)
-{
-    uint32_t size = serviceInfoProfiles.size();
-    WRITE_HELPER_RET(parcel, Uint32, size, false);
-    if (serviceInfoProfiles.empty() || serviceInfoProfiles.size() > MAX_PROFILE_SIZE) {
-        HILOGE("deviceInfos size is invalid!size : %{public}zu", serviceInfoProfiles.size());
-        return false;
-    }
-    for (const auto& item : serviceInfoProfiles) {
-        item.Marshalling(parcel);
-    }
-    return true;
-}
-
-bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<ServiceInfoProfile>& serviceInfoProfiles)
-{
-    uint32_t size = parcel.ReadUint32();
-    if (size == 0 || size > MAX_PROFILE_SIZE) {
-        HILOGE("Profile size is invalid!size : %{public}u", size);
-        return false;
-    }
-    for (uint32_t i = 0; i < size; i++) {
-        ServiceInfoProfile serviceInfoProfile;
-        if (!serviceInfoProfile.UnMarshalling(parcel)) {
-            HILOGE("Profile UnMarshalling fail!");
-            return false;
-        }
-        serviceInfoProfiles.emplace_back(serviceInfoProfile);
-    }
-    return true;
-}
-//delete end
 
 bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<DeviceIconInfo>& deviceIconInfos)
 {
@@ -551,43 +518,6 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<TrustedDeviceInf
     }
     return true;
 }
-
-//delete start
-bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<ServiceInfoProfileNew>& serviceInfoProfiles)
-{
-    uint32_t size = static_cast<uint32_t>(serviceInfoProfiles.size());
-    if (size > MAX_PROFILE_SIZE) {
-        HILOGE("serviceInfoProfiles size is invalid!size : %{public}u", size);
-        return false;
-    }
-    WRITE_HELPER_RET(parcel, Uint32, size, false);
-    for (const auto& serviceInfoProfile : serviceInfoProfiles) {
-        if (!serviceInfoProfile.Marshalling(parcel)) {
-            HILOGE("serviceInfoProfile Marshalling fail!");
-            return false;
-        }
-    }
-    return true;
-}
-
-bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<ServiceInfoProfileNew>& serviceInfoProfiles)
-{
-    uint32_t size = parcel.ReadUint32();
-    if (size > MAX_PROFILE_SIZE) {
-        HILOGE("Profile size is invalid!size : %{public}u", size);
-        return false;
-    }
-    for (uint32_t i = 0; i < size; i++) {
-        ServiceInfoProfileNew serviceInfoProfile;
-        if (!serviceInfoProfile.UnMarshalling(parcel)) {
-            HILOGE("serviceInfoProfile UnMarshalling fail!");
-            return false;
-        }
-        serviceInfoProfiles.emplace_back(serviceInfoProfile);
-    }
-    return true;
-}
-//delete end
 
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<ServiceInfo>& serviceInfos)
 {

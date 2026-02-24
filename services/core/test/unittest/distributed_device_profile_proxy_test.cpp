@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2025-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,11 +14,15 @@
  */
 
 #include <gtest/gtest.h>
-#include "service_info_profile_new.h"
+#include <gmock/gmock.h>
+#include "service_info.h"
+#include "user_info.h"
 #include "distributed_device_profile_proxy.h"
+#include "distributed_device_profile_errors.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
+using namespace testing;
 using namespace testing::ext;
 using namespace std;
 
@@ -30,49 +34,217 @@ public:
     void TearDown() override {}
 };
 
-HWTEST_F(DistributedDeviceProfileProxyTest, PutServiceInfoProfile_001, TestSize.Level0)
+/**
+ * @tc.name: PutServiceInfo_001
+ * @tc.desc: PutServiceInfo with nullptr remote object
+ *           Step 1: Create proxy with nullptr remote object
+ *           Step 2: Call PutServiceInfo with valid ServiceInfo
+ *           Step 3: Verify return value indicates remote object is null
+ * @tc.type: FUNC
+ */
+HWTEST_F(DistributedDeviceProfileProxyTest, PutServiceInfo_001, TestSize.Level1)
 {
     DistributedDeviceProfileProxy proxy(nullptr);
-    ServiceInfoProfileNew profile;
 
-    int32_t ret = proxy.PutServiceInfoProfile(profile);
-    EXPECT_FALSE(ret == DP_READ_PARCEL_FAIL);
-}
+    ServiceInfo serviceInfo;
+    serviceInfo.SetServiceName("test_service");
+    serviceInfo.SetUdid("test_udid");
 
-HWTEST_F(DistributedDeviceProfileProxyTest, DeleteServiceInfoProfile_001, TestSize.Level0)
-{
-    DistributedDeviceProfileProxy proxy(nullptr);
-    int32_t regServiceId = 123;
-    int32_t userId = 0;
-    int32_t ret = proxy.DeleteServiceInfoProfile(regServiceId, userId);
-    EXPECT_FALSE(ret == DP_READ_PARCEL_FAIL);
-}
-
-HWTEST_F(DistributedDeviceProfileProxyTest, GetServiceInfoProfileByServiceId_001, TestSize.Level0)
-{
-    DistributedDeviceProfileProxy proxy(nullptr);
-    ServiceInfoProfileNew profile;
-    int64_t serviceId = 0;
-    int32_t ret = proxy.GetServiceInfoProfileByServiceId(serviceId, profile);
-    EXPECT_FALSE(ret == DP_READ_PARCEL_FAIL);
-}
-
-HWTEST_F(DistributedDeviceProfileProxyTest, GetServiceInfoProfileByTokenId_001, TestSize.Level0)
-{
-    DistributedDeviceProfileProxy proxy(nullptr);
-    std::vector<ServiceInfoProfileNew> profiles;
-    int64_t tokenId = 0;
-    int32_t ret = proxy.GetServiceInfoProfileByTokenId(tokenId, profiles);
+    int32_t ret = proxy.PutServiceInfo(serviceInfo);
     EXPECT_EQ(ret, DP_IPC_REMOTE_OBJECT_NULLPTR);
 }
 
-HWTEST_F(DistributedDeviceProfileProxyTest, GetServiceInfoProfileByRegServiceId_001, TestSize.Level1)
+/**
+ * @tc.name: PutServiceInfo_002
+ * @tc.desc: PutServiceInfo with empty ServiceInfo and nullptr remote
+ *           Step 1: Create proxy with nullptr and empty ServiceInfo
+ *           Step 2: Call PutServiceInfo with empty info
+ *           Step 3: Verify return value indicates remote object is null
+ * @tc.type: FUNC
+ */
+HWTEST_F(DistributedDeviceProfileProxyTest, PutServiceInfo_002, TestSize.Level1)
 {
     DistributedDeviceProfileProxy proxy(nullptr);
-    ServiceInfoProfileNew profile;
-    int32_t regServiceId = 0;
-    int32_t ret = proxy.GetServiceInfoProfileByRegServiceId(regServiceId, profile);
-    EXPECT_FALSE(ret == DP_READ_PARCEL_FAIL);
+
+    ServiceInfo serviceInfo;
+
+    int32_t ret = proxy.PutServiceInfo(serviceInfo);
+    EXPECT_EQ(ret, DP_IPC_REMOTE_OBJECT_NULLPTR);
 }
+
+/**
+ * @tc.name: DeleteServiceInfo_001
+ * @tc.desc: DeleteServiceInfo with nullptr remote object
+ *           Step 1: Create proxy with nullptr remote object
+ *           Step 2: Call DeleteServiceInfo with valid UserInfo
+ *           Step 3: Verify return value indicates remote object is null
+ * @tc.type: FUNC
+ */
+HWTEST_F(DistributedDeviceProfileProxyTest, DeleteServiceInfo_001, TestSize.Level1)
+{
+    DistributedDeviceProfileProxy proxy(nullptr);
+
+    UserInfo userInfo;
+    userInfo.udid = "test_udid";
+    userInfo.userId = 100;
+    userInfo.serviceId = 1001;
+
+    int32_t ret = proxy.DeleteServiceInfo(userInfo);
+    EXPECT_EQ(ret, DP_IPC_REMOTE_OBJECT_NULLPTR);
+}
+
+/**
+ * @tc.name: DeleteServiceInfo_002
+ * @tc.desc: DeleteServiceInfo with empty UserInfo and nullptr remote
+ *           Step 1: Create proxy with nullptr and empty UserInfo
+ *           Step 2: Call DeleteServiceInfo with empty info
+ *           Step 3: Verify return value indicates remote object is null
+ * @tc.type: FUNC
+ */
+HWTEST_F(DistributedDeviceProfileProxyTest, DeleteServiceInfo_002, TestSize.Level1)
+{
+    DistributedDeviceProfileProxy proxy(nullptr);
+
+    UserInfo userInfo;
+
+    int32_t ret = proxy.DeleteServiceInfo(userInfo);
+    EXPECT_EQ(ret, DP_IPC_REMOTE_OBJECT_NULLPTR);
+}
+
+/**
+ * @tc.name: GetAllServiceInfoList_001
+ * @tc.desc: GetAllServiceInfoList with nullptr remote object
+ *           Step 1: Create proxy with nullptr remote object
+ *           Step 2: Call GetAllServiceInfoList with empty vector
+ *           Step 3: Verify return value indicates remote object is null
+ * @tc.type: FUNC
+ */
+HWTEST_F(DistributedDeviceProfileProxyTest, GetAllServiceInfoList_001, TestSize.Level1)
+{
+    DistributedDeviceProfileProxy proxy(nullptr);
+
+    std::vector<ServiceInfo> serviceInfos;
+
+    int32_t ret = proxy.GetAllServiceInfoList(serviceInfos);
+    EXPECT_EQ(ret, DP_IPC_REMOTE_OBJECT_NULLPTR);
+}
+
+/**
+ * @tc.name: GetAllServiceInfoList_002
+ * @tc.desc: GetAllServiceInfoList with pre-allocated vector and nullptr remote
+ *           Step 1: Create proxy with nullptr and pre-allocated vector
+ *           Step 2: Call GetAllServiceInfoList
+ *           Step 3: Verify return value indicates remote object is null
+ * @tc.type: FUNC
+ */
+HWTEST_F(DistributedDeviceProfileProxyTest, GetAllServiceInfoList_002, TestSize.Level1)
+{
+    DistributedDeviceProfileProxy proxy(nullptr);
+
+    std::vector<ServiceInfo> serviceInfos;
+    serviceInfos.reserve(10);
+
+    int32_t ret = proxy.GetAllServiceInfoList(serviceInfos);
+    EXPECT_EQ(ret, DP_IPC_REMOTE_OBJECT_NULLPTR);
+}
+
+/**
+ * @tc.name: GetServiceInfosByUserInfo_001
+ * @tc.desc: GetServiceInfosByUserInfo with nullptr remote object
+ *           Step 1: Create proxy with nullptr remote object
+ *           Step 2: Call GetServiceInfosByUserInfo with valid UserInfo
+ *           Step 3: Verify return value indicates remote object is null
+ * @tc.type: FUNC
+ */
+HWTEST_F(DistributedDeviceProfileProxyTest, GetServiceInfosByUserInfo_001, TestSize.Level1)
+{
+    DistributedDeviceProfileProxy proxy(nullptr);
+
+    UserInfo userInfo;
+    userInfo.udid = "test_udid";
+    userInfo.userId = 100;
+    userInfo.serviceId = 1001;
+    std::vector<ServiceInfo> serviceInfos;
+
+    int32_t ret = proxy.GetServiceInfosByUserInfo(userInfo, serviceInfos);
+    EXPECT_EQ(ret, DP_IPC_REMOTE_OBJECT_NULLPTR);
+}
+
+/**
+ * @tc.name: GetServiceInfosByUserInfo_002
+ * @tc.desc: GetServiceInfosByUserInfo with empty UserInfo and nullptr remote
+ *           Step 1: Create proxy with nullptr and empty UserInfo
+ *           Step 2: Call GetServiceInfosByUserInfo with empty info
+ *           Step 3: Verify return value indicates remote object is null
+ * @tc.type: FUNC
+ */
+HWTEST_F(DistributedDeviceProfileProxyTest, GetServiceInfosByUserInfo_002, TestSize.Level1)
+{
+    DistributedDeviceProfileProxy proxy(nullptr);
+
+    UserInfo userInfo;
+    std::vector<ServiceInfo> serviceInfos;
+
+    int32_t ret = proxy.GetServiceInfosByUserInfo(userInfo, serviceInfos);
+    EXPECT_EQ(ret, DP_IPC_REMOTE_OBJECT_NULLPTR);
+}
+
+/**
+ * @tc.name: SubscribeAllServiceInfo_001
+ * @tc.desc: SubscribeAllServiceInfo with nullptr remote object
+ *           Step 1: Create proxy with nullptr remote object
+ *           Step 2: Call SubscribeAllServiceInfo with valid saId and listener
+ *           Step 3: Verify return value indicates remote object is null
+ * @tc.type: FUNC
+ */
+HWTEST_F(DistributedDeviceProfileProxyTest, SubscribeAllServiceInfo_001, TestSize.Level1)
+{
+    DistributedDeviceProfileProxy proxy(nullptr);
+
+    int32_t saId = 4801;
+    sptr<IRemoteObject> listener = nullptr;
+
+    int32_t ret = proxy.SubscribeAllServiceInfo(saId, listener);
+    EXPECT_EQ(ret, DP_IPC_REMOTE_OBJECT_NULLPTR);
+}
+
+/**
+ * @tc.name: SubscribeAllServiceInfo_002
+ * @tc.desc: SubscribeAllServiceInfo with nullptr listener and nullptr remote
+ *           Step 1: Create proxy with nullptr and nullptr listener
+ *           Step 2: Call SubscribeAllServiceInfo
+ *           Step 3: Verify return value indicates remote object is null
+ * @tc.type: FUNC
+ */
+HWTEST_F(DistributedDeviceProfileProxyTest, SubscribeAllServiceInfo_002, TestSize.Level1)
+{
+    DistributedDeviceProfileProxy proxy(nullptr);
+
+    int32_t saId = 4801;
+    sptr<IRemoteObject> listener = nullptr;
+
+    int32_t ret = proxy.SubscribeAllServiceInfo(saId, listener);
+    EXPECT_EQ(ret, DP_IPC_REMOTE_OBJECT_NULLPTR);
+}
+
+/**
+ * @tc.name: SubscribeAllServiceInfo_003
+ * @tc.desc: SubscribeAllServiceInfo with zero saId and nullptr remote
+ *           Step 1: Create proxy with nullptr and zero saId
+ *           Step 2: Call SubscribeAllServiceInfo with zero saId
+ *           Step 3: Verify return value indicates remote object is null
+ * @tc.type: FUNC
+ */
+HWTEST_F(DistributedDeviceProfileProxyTest, SubscribeAllServiceInfo_003, TestSize.Level1)
+{
+    DistributedDeviceProfileProxy proxy(nullptr);
+
+    int32_t saId = 0;
+    sptr<IRemoteObject> listener = nullptr;
+
+    int32_t ret = proxy.SubscribeAllServiceInfo(saId, listener);
+    EXPECT_EQ(ret, DP_IPC_REMOTE_OBJECT_NULLPTR);
+}
+
 }  //namespace DistributedDeviceProfile
 }  //namespace OHOS

@@ -25,7 +25,6 @@
 #include "kvstore_observer.h"
 #include "values_bucket.h"
 
-#include "service_info_profile.h"
 #include "service_info_rdb_adapter.h"
 #include "service_info_unique_key.h"
 #include "single_instance.h"

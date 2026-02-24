@@ -73,9 +73,6 @@ void KvDeathRecipient::OnRemoteDied()
         }
         if (storeId == SERVICE_INFO_STORE_ID) {
             ServiceInfoManager::GetInstance().ReInit();
-        //delete start
-            ServiceInfoProfileManage::GetInstance().ReInit();
-        //delete end
         }
     };
     {
