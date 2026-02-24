@@ -42,8 +42,6 @@
 #include "local_service_info.h"
 #include "iremote_broker.h"
 #include "user_info.h"
-#include "service_info_profile_new.h"
-#include "service_info_profile.h"
 
 
 namespace OHOS {

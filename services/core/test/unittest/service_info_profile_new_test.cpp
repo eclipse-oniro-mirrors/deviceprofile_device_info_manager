@@ -17,7 +17,6 @@
 
 #include "dp_parcel.h"
 #include "distributed_device_profile_constants.h"
-#include "service_info_profile_new.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {

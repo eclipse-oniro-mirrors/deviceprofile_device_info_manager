@@ -25,7 +25,6 @@
 #include "profile_utils.h"
 #include "profile_control_utils.h"
 #include "service_info_manager.h"
-#include "service_info_profile_new.h"
 #include "service_info_kv_adapter.h"
 
 namespace OHOS {

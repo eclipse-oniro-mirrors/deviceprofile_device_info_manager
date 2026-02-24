@@ -28,7 +28,6 @@
 #include "service_info_manager.h"
 #include "distributed_device_profile_constants.h"
 #include "ipc_skeleton.h"
-#include "service_info_profile_new.h"
 #include "profile_utils.h"
 
 namespace OHOS {

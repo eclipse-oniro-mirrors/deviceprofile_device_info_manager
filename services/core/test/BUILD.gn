@@ -510,16 +510,6 @@ ohos_unittest("service_info_kv_adapter_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("service_info_profile_new_test") {
-  module_out_path = module_output_path
-  sources = [ "unittest/service_info_profile_new_test.cpp" ]
-  configs = device_profile_configs
-  deps = device_profile_deps
-  external_deps = device_profile_external_deps
-  part_name = "device_info_manager"
-  subsystem_name = "deviceprofile"
-}
-
 ohos_unittest("service_info_manager_test") {
   module_out_path = module_output_path
   sources = [ "unittest/service_info_manager_test.cpp" ]
@@ -619,7 +609,6 @@ group("unittest") {
     ":rdb_adapter_new_test",
     ":session_key_manager_test",
     ":service_info_kv_adapter_test",
-    ":service_info_profile_new_test",
     ":static_capability_collector_test",
     ":static_capability_loader_test",
     ":static_profile_manager_test",

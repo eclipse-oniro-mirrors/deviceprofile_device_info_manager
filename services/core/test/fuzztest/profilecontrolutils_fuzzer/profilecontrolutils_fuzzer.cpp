@@ -28,7 +28,6 @@
 #include "distributed_kv_data_manager.h"
 #include "ikv_adapter.h"
 
-#include "service_info_profile_new.h"
 #include "distributed_device_profile_constants.h"
 #include "profile_control_utils.h"
 #include "listener/kv_data_change_listener.h"

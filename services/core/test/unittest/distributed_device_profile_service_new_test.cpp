@@ -25,7 +25,6 @@
 #include "profile_utils.h"
 #include "permission_manager.h"
 #include "service_info_manager.h"
-#include "service_info_profile_new.h"
 
 using namespace testing::ext;
 namespace OHOS {

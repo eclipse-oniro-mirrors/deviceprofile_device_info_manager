@@ -18,7 +18,6 @@
 #include <string>
 #include <fuzzer/FuzzedDataProvider.h>
 #include "distributed_device_profile_client.h"
-#include "service_info_profile_new.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
