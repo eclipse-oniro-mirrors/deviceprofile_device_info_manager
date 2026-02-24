@@ -91,14 +91,6 @@ class MockDistributedDeviceProfileStubNew : public DistributedDeviceProfileStubN
     int32_t PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos) override;
     int32_t GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
         std::vector<DeviceIconInfo>& deviceIconInfos) override;
-    int32_t UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile) override;
-    int32_t GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key,
-        ServiceInfoProfile& serviceInfoProfile) override;
-    int32_t GetServiceInfoProfileListByTokenId(const ServiceInfoUniqueKey& key,
-        std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
-    int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
-    int32_t GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
-        std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
     int32_t PutLocalServiceInfo(const LocalServiceInfo& localServiceInfo) override;
     int32_t UpdateLocalServiceInfo(const LocalServiceInfo& localServiceInfo) override;
     int32_t GetLocalServiceInfoByBundleAndPinType(const std::string& bundleName,
@@ -407,40 +399,6 @@ int32_t MockDistributedDeviceProfileStubNew::GetDeviceIconInfos(const DeviceIcon
     return 0;
 }
 
-int32_t MockDistributedDeviceProfileStubNew::UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile)
-{
-    (void)serviceInfoProfile;
-    return 0;
-}
-
-int32_t MockDistributedDeviceProfileStubNew::GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key,
-    ServiceInfoProfile& serviceInfoProfile)
-{
-    (void)key;
-    (void)serviceInfoProfile;
-    return 0;
-}
-
-int32_t MockDistributedDeviceProfileStubNew::GetServiceInfoProfileListByTokenId(const ServiceInfoUniqueKey& key,
-    std::vector<ServiceInfoProfile>& serviceInfoProfiles)
-{
-    (void)key;
-    (void)serviceInfoProfiles;
-    return 0;
-}
-int32_t MockDistributedDeviceProfileStubNew::GetAllServiceInfoProfileList(
-    std::vector<ServiceInfoProfile>& serviceInfoProfiles)
-{
-    (void)serviceInfoProfiles;
-    return 0;
-}
-int32_t MockDistributedDeviceProfileStubNew::GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
-    std::vector<ServiceInfoProfile>& serviceInfoProfiles)
-{
-    (void)key;
-    (void)serviceInfoProfiles;
-    return 0;
-}
 int32_t MockDistributedDeviceProfileStubNew::PutLocalServiceInfo(const LocalServiceInfo& localServiceInfo)
 {
     (void)localServiceInfo;

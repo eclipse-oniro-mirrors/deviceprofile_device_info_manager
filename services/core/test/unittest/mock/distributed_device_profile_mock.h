@@ -88,14 +88,6 @@ public:
     MOCK_METHOD(int32_t, PutDeviceIconInfoBatch, (const std::vector<DeviceIconInfo>&), (override));
     MOCK_METHOD(int32_t, GetDeviceIconInfos,
         (const DeviceIconInfoFilterOptions&, std::vector<DeviceIconInfo>&), (override));
-    MOCK_METHOD(int32_t, UpdateServiceInfoProfile, (const ServiceInfoProfile&), (override));
-    MOCK_METHOD(int32_t, GetServiceInfoProfileByUniqueKey,
-        (const ServiceInfoUniqueKey&, ServiceInfoProfile&), (override));
-    MOCK_METHOD(int32_t, GetServiceInfoProfileListByTokenId,
-        (const ServiceInfoUniqueKey&, std::vector<ServiceInfoProfile>&), (override));
-    MOCK_METHOD(int32_t, GetAllServiceInfoProfileList, (std::vector<ServiceInfoProfile>&), (override));
-    MOCK_METHOD(int32_t, GetServiceInfoProfileListByBundleName,
-        (const ServiceInfoUniqueKey&, std::vector<ServiceInfoProfile>&), (override));
     MOCK_METHOD(int32_t, PutLocalServiceInfo, (const LocalServiceInfo&), (override));
     MOCK_METHOD(int32_t, UpdateLocalServiceInfo, (const LocalServiceInfo&), (override));
     MOCK_METHOD(int32_t, GetLocalServiceInfoByBundleAndPinType,
