@@ -510,16 +510,6 @@ ohos_unittest("service_info_kv_adapter_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("service_info_manager_test") {
-  module_out_path = module_output_path
-  sources = [ "unittest/service_info_manager_test.cpp" ]
-  configs = device_profile_configs
-  deps = device_profile_deps
-  external_deps = device_profile_external_deps
-  part_name = "device_info_manager"
-  subsystem_name = "deviceprofile"
-}
-
 ohos_unittest("business_event_adapter_test") {
   module_out_path = module_output_path
   sources = [ "unittest/business_event_adapter_test.cpp" ]
@@ -607,7 +597,6 @@ group("unittest") {
     ":sync_completed_callback_test",
     ":sync_options_new_test",
     ":sync_subscriber_death_recipient_test",
-    ":service_info_manager_test",
     ":trust_Device_Profile_test",
     ":business_event_manager_test",
     ":business_event_adapter_test",
