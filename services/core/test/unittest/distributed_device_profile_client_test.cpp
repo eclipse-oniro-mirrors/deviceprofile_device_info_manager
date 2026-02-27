@@ -93,7 +93,7 @@ HWTEST_F(DistributedDeviceProfileClientTest, PutServiceInfo_001, TestSize.Level1
     serviceInfo.SetServiceName("test_service");
 
     int32_t ret = DistributedDeviceProfileClient::GetInstance().PutServiceInfo(serviceInfo);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_GET_SERVICE_FAILED);
 }
 
 /**
@@ -187,7 +187,7 @@ HWTEST_F(DistributedDeviceProfileClientTest, DeleteServiceInfo_001, TestSize.Lev
     userInfo.serviceId = 1001;
 
     int32_t ret = DistributedDeviceProfileClient::GetInstance().DeleteServiceInfo(userInfo);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_GET_SERVICE_FAILED);
 }
 
 /**
@@ -253,7 +253,7 @@ HWTEST_F(DistributedDeviceProfileClientTest, GetAllServiceInfoList_001, TestSize
     std::vector<ServiceInfo> serviceInfos;
 
     int32_t ret = DistributedDeviceProfileClient::GetInstance().GetAllServiceInfoList(serviceInfos);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_GET_SERVICE_FAILED);
 }
 
 /**
@@ -322,7 +322,7 @@ HWTEST_F(DistributedDeviceProfileClientTest, GetServiceInfosByUserInfo_001, Test
     std::vector<ServiceInfo> serviceInfos;
 
     int32_t ret = DistributedDeviceProfileClient::GetInstance().GetServiceInfosByUserInfo(userInfo, serviceInfos);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_EQ(ret, DP_GET_SERVICE_FAILED);
 }
 
 /**
