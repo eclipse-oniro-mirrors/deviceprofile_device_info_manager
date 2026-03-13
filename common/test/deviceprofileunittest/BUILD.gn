@@ -59,7 +59,48 @@ ohos_unittest("DeviceProfileTest") {
   ]
 }
 
+ohos_unittest("ServiceInfoTest") {
+  module_out_path = module_output_path
+  cflags = [
+    "-Dprivate=public",
+    "-Dprotected=public",
+  ]
+  include_dirs = [
+    "include/interfaces",
+    "include/constants",
+    "include/utils",
+  ]
+
+  sources = [ "service_info_test.cpp" ]
+
+  deps = [ "${device_profile_common}:distributed_device_profile_common" ]
+
+  defines = [
+    "HI_LOG_ENABLE",
+    "DH_LOG_TAG=\"DeviceProfileTest\"",
+    "LOG_DOMAIN=0xD004400",
+  ]
+
+  external_deps = [
+    "access_token:libaccesstoken_sdk",
+    "cJSON:cjson",
+    "c_utils:utils",
+    "device_manager:devicemanagersdk",
+    "dmsfwk:common_sdk",
+    "eventhandler:libeventhandler",
+    "hilog:libhilog",
+    "init:libbegetutil",
+    "ipc:ipc_core",
+    "relational_store:native_rdb",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+  ]
+}
+
 group("device_profile_test") {
   testonly = true
-  deps = [ ":DeviceProfileTest" ]
+  deps = [
+    ":DeviceProfileTest",
+    ":ServiceInfoTest",
+  ]
 }
