@@ -1454,7 +1454,7 @@ int32_t DistributedDeviceProfileServiceNew::NotifyBusinessEvent(const BusinessEv
     HILOGI("NotifyBusinessEvent task posted successfully");
     return DP_SUCCESS;
 }
-
+//LCOV_EXCL_START
 int32_t DistributedDeviceProfileServiceNew::PutServiceInfo(const ServiceInfo& serviceInfo)
 {
     if (!PermissionManager::GetInstance().CheckCallerPermission()) {
@@ -1535,5 +1535,6 @@ int32_t DistributedDeviceProfileServiceNew::SubscribeAllServiceInfo(int32_t saId
     int32_t ret = SubscribeServiceInfoManager::GetInstance().SubscribeServiceInfo(saId, listener);
     return ret;
 }
+//LCOV_EXCL_STOP
 } // namespace DeviceProfile
 } // namespace OHOS

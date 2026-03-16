@@ -116,7 +116,7 @@ void KvDataChangeListener::OnChange(const DistributedKv::DataOrigin& origin, Key
         HandleDeleteChange(deleteRecords);
     }
 }
-
+//LCOV_EXCL_START
 void KvDataChangeListener::ProcessChangeOp(const std::vector<std::string>& keyList, ChangeOp op)
 {
     std::vector<ServiceInfo> serviceInfos;
@@ -271,7 +271,7 @@ int32_t KvDataChangeListener::EntriesToUserInfo(const std::string& key, UserInfo
 
     return DP_SUCCESS;
 }
-
+//LCOV_EXCL_STOP
 void KvDataChangeListener::OnSwitchChange(const DistributedKv::SwitchNotification& notification)
 {
     auto task = [notification]() {

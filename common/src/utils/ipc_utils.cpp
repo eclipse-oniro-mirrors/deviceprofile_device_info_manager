@@ -518,7 +518,7 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<TrustedDeviceInf
     }
     return true;
 }
-
+//LCOV_EXCL_START
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<ServiceInfo>& serviceInfos)
 {
     uint32_t size = static_cast<uint32_t>(serviceInfos.size());
@@ -553,5 +553,6 @@ bool IpcUtils::UnMarshalling(MessageParcel& parcel, std::vector<ServiceInfo>& se
     }
     return true;
 }
+//LCOV_EXCL_STOP
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

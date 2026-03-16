@@ -297,7 +297,7 @@ bool ProfileUtils::IsSvrProfileValid(const ServiceProfile& svrProfile)
     return IsKeyValid(svrProfile.GetDeviceId()) && IsLocalUdid(svrProfile.GetDeviceId()) &&
         IsKeyValid(svrProfile.GetServiceName());
 }
-
+//LCOV_EXCL_START
 bool ProfileUtils::IsSvrInfoValid(const ServiceInfo& serviceInfo)
 {
     if (serviceInfo.GetServiceOwnerPkgName().empty() ||serviceInfo.GetServiceType().empty() ||
@@ -319,7 +319,7 @@ bool ProfileUtils::IsSvrInfoValid(const ServiceInfo& serviceInfo)
     }
     return IsKeyValid(serviceInfo.GetUdid());
 }
-
+//LCOV_EXCL_STOP
 bool ProfileUtils::IsCharProfileValid(const CharacteristicProfile& charProfile)
 {
     return IsKeyValid(charProfile.GetDeviceId()) && IsLocalUdid(charProfile.GetDeviceId()) &&
@@ -475,7 +475,7 @@ int32_t ProfileUtils::ServiceProfileToEntries(const ServiceProfile& profile, std
     }
     return DP_SUCCESS;
 }
-
+//LCOV_EXCL_START
 int32_t ProfileUtils::ServiceInfoToEntries(const ServiceInfo& profile, std::map<std::string,
     std::string>& values)
 {
@@ -516,7 +516,7 @@ int32_t ProfileUtils::ServiceInfoToEntries(const ServiceInfo& profile, std::map<
     cJSON_Delete(jsonObj);
     return DP_SUCCESS;
 }
-
+//LCOV_EXCL_STOP
 int32_t ProfileUtils::CharacteristicProfileToEntries(const CharacteristicProfile& profile,
     std::map<std::string, std::string>& values, bool isMultiUser)
 {

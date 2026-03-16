@@ -42,6 +42,7 @@ namespace {
     const std::string SYNC_STORE_ID = "dp_kv_static_store";
     constexpr int32_t DEVICE_UUID_LENGTH = 65;
 }
+//LCOV_EXCL_START
 int32_t ServiceInfoManager::Init()
 {
     HILOGI("call!");

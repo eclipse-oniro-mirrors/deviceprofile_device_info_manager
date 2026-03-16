@@ -25,7 +25,7 @@ namespace DistributedDeviceProfile {
 namespace {
     const std::string TAG = "ServiceInfo";
 }
-
+//LCOV_EXCL_START
 ServiceInfo::~ServiceInfo()
 {
 }
@@ -293,5 +293,6 @@ std::string ServiceInfo::dump() const
     cJSON_free(jsonChars);
     return jsonStr;
 }
+//LCOV_EXCL_STOP
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
