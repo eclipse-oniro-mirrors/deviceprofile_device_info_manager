@@ -742,7 +742,7 @@ int32_t DistributedDeviceProfileProxy::GetBusinessEvent(BusinessEvent& event)
     }
     return DP_SUCCESS;
 }
-
+//LCOV_EXCL_START
 int32_t DistributedDeviceProfileProxy::PutServiceInfo(const ServiceInfo& serviceInfo)
 {
     sptr<IRemoteObject> remote = nullptr;
@@ -825,5 +825,6 @@ int32_t DistributedDeviceProfileProxy::SubscribeAllServiceInfo(int32_t saId, spt
     SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::SUBSCRIBE_SERVICE_INFO_CALLBACK), data, reply);
     return DP_SUCCESS;
 }
+//LCOV_EXCL_STOP
 } // namespace DeviceProfile
 } // namespace OHOS

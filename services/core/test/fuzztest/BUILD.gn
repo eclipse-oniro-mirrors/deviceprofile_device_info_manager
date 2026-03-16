@@ -16,10 +16,12 @@ group("fuzztest") {
 
   deps = [
     "allinterface_fuzzer:fuzztest",
-    "newdeviceprofile_fuzzer:fuzztest",
-    "profileutils_fuzzer:fuzztest",
-    "trustprofilemanager_fuzzer:fuzztest",
     "businesseventmanager_fuzzer:fuzztest",
     "highriskinterface_fuzzer:fuzztest",
+    "newdeviceprofile_fuzzer:fuzztest",
+    "profileutils_fuzzer:fuzztest",
+    "serviceinfo_client_fuzzer:fuzztest",
+    "serviceinfoproxy_fuzzer:fuzztest",
+    "trustprofilemanager_fuzzer:fuzztest",
   ]
 }

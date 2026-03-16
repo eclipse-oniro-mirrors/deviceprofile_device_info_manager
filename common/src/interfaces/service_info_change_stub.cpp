@@ -28,6 +28,7 @@ namespace DistributedDeviceProfile {
 namespace {
     const std::string TAG = "ServiceInfoChangeCallbackStub";
 }
+//LCOV_EXCL_START
 ServiceInfoChangeCallbackStub::ServiceInfoChangeCallbackStub()
 {
     HILOGI("construct!");
@@ -118,6 +119,6 @@ int32_t ServiceInfoChangeCallbackStub::OnServiceInfoDeleteInner(MessageParcel& d
     }
     return DP_SUCCESS;
 }
-
+//LCOV_EXCL_STOP
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

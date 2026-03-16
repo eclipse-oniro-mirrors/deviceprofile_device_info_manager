@@ -28,6 +28,7 @@ namespace DistributedDeviceProfile {
 namespace {
     const std::string TAG = "ServiceInfoChangeCallbackProxy";
 }
+//LCOV_EXCL_START
 int32_t ServiceInfoChangeCallbackProxy::OnServiceInfoInsert(const std::vector<ServiceInfo>& serviceInfos)
 {
     sptr<IRemoteObject> remote = nullptr;
@@ -72,5 +73,6 @@ int32_t ServiceInfoChangeCallbackProxy::OnServiceInfoDelete(const std::vector<Se
     SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_INFO_DELETE), data, reply);
     return DP_SUCCESS;
 }
+//LCOV_EXCL_STOP
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

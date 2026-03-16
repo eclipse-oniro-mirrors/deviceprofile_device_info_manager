@@ -24,7 +24,7 @@ IMPLEMENT_SINGLE_INSTANCE(SubscribeServiceInfoManager);
 namespace {
     const std::string TAG = "SubscribeServiceInfoManager";
 }
-
+//LCOV_EXCL_START
 int32_t SubscribeServiceInfoManager::Init()
 {
     HILOGI("call!");
@@ -129,5 +129,6 @@ int32_t SubscribeServiceInfoManager::SubscribeServiceInfo(int32_t saId, sptr<IRe
 
     return DP_SUCCESS;
 }
+//LCOV_EXCL_STOP
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

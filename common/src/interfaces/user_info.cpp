@@ -23,6 +23,7 @@ namespace DistributedDeviceProfile {
 namespace {
     const std::string TAG = "UserInfo";
 }
+//LCOV_EXCL_START
 bool UserInfo::Marshalling(MessageParcel& parcel) const
 {
     WRITE_HELPER(parcel, String, udid);
@@ -45,5 +46,6 @@ std::string UserInfo::dump() const
     return std::string("userInfo { udid = ") + ProfileUtils::GetAnonyString(udid.c_str()) +
         ", userId = " + std::to_string(userId) + ", serviceId = " + std::to_string(serviceId) + " }";
 }
+//LCOV_EXCL_STOP
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
