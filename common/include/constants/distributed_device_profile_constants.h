@@ -49,9 +49,6 @@ extern const std::string DEV_TYPE;
 extern const std::string MANU;
 extern const std::string SN;
 extern const std::string PRODUCT_ID;
-//delete start
-extern const std::string PRODUCT_NAME;
-//delete end
 extern const std::string SUB_PRODUCT_ID;
 extern const std::string HIV;
 extern const std::string MAC;
@@ -118,15 +115,6 @@ extern const std::string PINCODE;
 extern const std::string DESCRIPTION;
 extern const std::string SERVICE_DISCOVERY_SCOPE;
 extern const std::string EXTRAINFO;
-//delete start
-extern const std::string PUT_SERVICE_INFO_PROFILE;
-extern const std::string DELETE_SERVICE_INFO_PROFILE;
-extern const std::string UPDATE_SERVICE_INFO_PROFILE;
-extern const std::string GET_SERVICE_INFO_PROFILE_BY_UNIQUE_KEY;
-extern const std::string GET_SERVICE_INFO_PROFILE_LIST_BY_TOKEN_ID;
-extern const std::string GET_ALL_SERVICE_INFO_PROFILE_LIST;
-extern const std::string GET_SERVICE_INFO_PROFILE_LIST_BY_BUNDLE_NAME;
-//delete end
 extern const std::string PUT_SERVICE_INFO;
 extern const std::string DELETE_SERVICE_INFO;
 extern const std::string GET_ALL_SERVICE_INFO_LIST;
@@ -283,9 +271,6 @@ extern const std::string SLASHES;
 extern const std::string DEV_PREFIX;
 extern const std::string SVR_PREFIX;
 extern const std::string CHAR_PREFIX;
-//delete start
-extern const std::string USER_ID;
-//delete end
 extern const std::string SERINFO_PREFIX;
 extern const std::string TOKEN_ID;
 extern const std::string DEVICE_PROFILE_ID;

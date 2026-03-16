@@ -1589,31 +1589,6 @@ HWTEST_F(ProfileUtilsTest, IsNumStr001, TestSize.Level1)
     bool isNumStr = ProfileUtils::IsNumStr("");
     EXPECT_EQ(isNumStr, false);
 }
-
-
-HWTEST_F(ProfileUtilsTest, ServiceInfoProfileToEntries_001, TestSize.Level1)
-{
-    OHOS::DistributedDeviceProfile::ServiceInfoProfileNew serviceInfoProfile;
-    serviceInfoProfile.SetServiceId(1);
-    serviceInfoProfile.SetDeviceId("test_deviceIdValue");
-    serviceInfoProfile.SetTokenId(0);
-    std::map<std::string, std::string> entries;
-    int32_t res1 = ProfileUtils::ServiceInfoProfileToEntries(serviceInfoProfile, entries);
-    EXPECT_NE(DP_READ_PARCEL_FAIL, res1);
-    EXPECT_FALSE(entries.empty());
-}
- 
-HWTEST_F(ProfileUtilsTest, ServiceInfoProfileToEntries_002, TestSize.Level1)
-{
-    OHOS::DistributedDeviceProfile::ServiceInfoProfileNew serviceInfoProfile;
-    serviceInfoProfile.SetServiceId(1);
-    serviceInfoProfile.SetDeviceId("test_deviceIdValue");
-    serviceInfoProfile.SetTokenId(0);
-    std::map<std::string, std::string> entries;
-    int32_t res1 = ProfileUtils::ServiceInfoProfileToEntries(serviceInfoProfile, entries);
-    EXPECT_NE(DP_READ_PARCEL_FAIL, res1);
-    EXPECT_FALSE(entries.empty());
-}
  
 HWTEST_F(ProfileUtilsTest, GenerateServiceDBKey_001, TestSize.Level1)
 {
@@ -1634,22 +1609,6 @@ HWTEST_F(ProfileUtilsTest, GenerateServiceDBKey_002, TestSize.Level1)
     EXPECT_EQ("serviceInfo" + SEPARATOR + regServiceId + SEPARATOR + std::to_string(userId)
         + SEPARATOR + trailInfo, res1);
 }
- 
-HWTEST_F(ProfileUtilsTest, GenerateServiceInfoProfilekeys_001, TestSize.Level1)
-{
-    std::string regServiceId = "test_regServiceId";
-    std::vector<std::string> dbKeys = {"test_dbKeys"};
-    int32_t userId = 100;
-    int32_t res1 = ProfileUtils::GenerateServiceInfoProfilekeys(regServiceId, dbKeys, userId);
-    EXPECT_NE(DP_READ_PARCEL_FAIL, res1);
-}
-HWTEST_F(ProfileUtilsTest, GenerateServiceInfoProfilekeys_002, TestSize.Level1)
-{
-    std::string regServiceId = "test_regServiceId";
-    std::vector<std::string> dbKeys = {"test_dbKeys"};
-    int32_t userId = 100;
-    int32_t res1 = ProfileUtils::GenerateServiceInfoProfilekeys(regServiceId, dbKeys, userId);
-    EXPECT_NE(DP_READ_PARCEL_FAIL, res1);
-}
+
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

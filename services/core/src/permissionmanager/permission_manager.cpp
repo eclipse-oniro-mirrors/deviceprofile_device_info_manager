@@ -123,15 +123,6 @@ void PermissionManager::SetRdbPermissionMap(const cJSON *const permissionJson)
     }
     SetPermissionMap(permissionJson, PUT_SERVICE_INFO);
     SetPermissionMap(permissionJson, DELETE_SERVICE_INFO);
-    //delete start
-    SetPermissionMap(permissionJson, PUT_SERVICE_INFO_PROFILE);
-    SetPermissionMap(permissionJson, DELETE_SERVICE_INFO_PROFILE);
-    SetPermissionMap(permissionJson, UPDATE_SERVICE_INFO_PROFILE);
-    SetPermissionMap(permissionJson, GET_SERVICE_INFO_PROFILE_BY_UNIQUE_KEY);
-    SetPermissionMap(permissionJson, GET_SERVICE_INFO_PROFILE_LIST_BY_TOKEN_ID);
-    SetPermissionMap(permissionJson, GET_ALL_SERVICE_INFO_PROFILE_LIST);
-    SetPermissionMap(permissionJson, GET_SERVICE_INFO_PROFILE_LIST_BY_BUNDLE_NAME);
-    //delete end
     SetPermissionMap(permissionJson, GET_ALL_SERVICE_INFO_LIST);
     SetPermissionMap(permissionJson, GET_SERVICE_INFO_BY_USER_INFO);
     SetPermissionMap(permissionJson, PUT_LOCAL_SERVICE_INFO);

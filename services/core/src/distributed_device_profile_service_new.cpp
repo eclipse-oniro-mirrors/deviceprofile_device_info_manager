@@ -43,9 +43,6 @@
 #include "permission_manager.h"
 #include "profile_cache.h"
 #include "profile_data_manager.h"
-//delete start
-#include "service_info_profile_manager.h"
-//delete end
 #include "service_info_manager.h"
 #include "session_key_manager.h"
 #include "settings_data_manager.h"
@@ -138,12 +135,6 @@ int32_t DistributedDeviceProfileServiceNew::PostInit()
         HILOGE("StaticCapabilityCollector init failed");
         return DP_CONTENT_SENSOR_MANAGER_INIT_FAIL;
     }
-    //delete start
-    if (ServiceInfoProfileManager::GetInstance().Init() != DP_SUCCESS) {
-        HILOGE("ServiceInfoProfileManager init failed");
-        return DP_SERVICE_INFO_PROFILE_MANAGER_INIT_FAIL;
-    }
-    //delete end
     if (LocalServiceInfoManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("LocalServiceInfoManager init failed");
         return DP_LOCAL_SERVICE_INFO_MANAGER_INIT_FAIL;
@@ -306,11 +297,6 @@ int32_t DistributedDeviceProfileServiceNew::UnInitNext()
     if (ServiceInfoManager::GetInstance().UnInit() != DP_SUCCESS) {
         HILOGE("ServiceInfoManager uninit failed");
     }
-    //delete start
-    if (ServiceInfoProfileManage::GetInstance().UnInit() != DP_SUCCESS) {
-        HILOGE("ServiceInfoManager uninit failed");
-    }
-    //delete end
     return DP_SUCCESS;
 }
 
@@ -568,69 +554,6 @@ int32_t DistributedDeviceProfileServiceNew::PutServiceProfileBatch(const std::ve
     DpRadarHelper::GetInstance().ReportPutServiceProfileBatch(ret, serviceProfiles);
     return ret;
 }
-
-//delete start
-int32_t DistributedDeviceProfileServiceNew::UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile)
-{
-    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
-        HILOGE("the caller is permission denied!");
-        return DP_PERMISSION_DENIED;
-    }
-    HILOGD("CheckCallerPermission success interface UpdateServiceInfoProfile");
-    int32_t ret = ServiceInfoProfileManager::GetInstance().UpdateServiceInfoProfile(serviceInfoProfile);
-    return ret;
-}
-
-int32_t DistributedDeviceProfileServiceNew::GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key,
-    ServiceInfoProfile& serviceInfoProfile)
-{
-    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
-        HILOGE("the caller is permission denied!");
-        return DP_PERMISSION_DENIED;
-    }
-    HILOGD("CheckCallerPermission success interface GetServiceInfoProfileByUniqueKey");
-    int32_t ret = ServiceInfoProfileManager::GetInstance().GetServiceInfoProfileByUniqueKey(key, serviceInfoProfile);
-    return ret;
-}
-
-int32_t DistributedDeviceProfileServiceNew::GetServiceInfoProfileListByTokenId(const ServiceInfoUniqueKey& key,
-    std::vector<ServiceInfoProfile>& serviceInfoProfiles)
-{
-    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
-        HILOGE("the caller is permission denied!");
-        return DP_PERMISSION_DENIED;
-    }
-    HILOGD("CheckCallerPermission success interface GetServiceInfoProfileListByTokenId");
-    int32_t ret = ServiceInfoProfileManager::GetInstance().GetServiceInfoProfileListByTokenId(key,
-        serviceInfoProfiles);
-    return ret;
-}
-
-int32_t DistributedDeviceProfileServiceNew::GetAllServiceInfoProfileList(
-    std::vector<ServiceInfoProfile>& serviceInfoProfiles)
-{
-    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
-        HILOGE("the caller is permission denied!");
-        return DP_PERMISSION_DENIED;
-    }
-    HILOGD("CheckCallerPermission success interface GetAllServiceInfoProfileList");
-    int32_t ret = ServiceInfoProfileManager::GetInstance().GetAllServiceInfoProfileList(serviceInfoProfiles);
-    return ret;
-}
-
-int32_t DistributedDeviceProfileServiceNew::GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
-    std::vector<ServiceInfoProfile>& serviceInfoProfiles)
-{
-    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
-        HILOGE("the caller is permission denied!");
-        return DP_PERMISSION_DENIED;
-    }
-    HILOGD("CheckCallerPermission success interface GetServiceInfoProfileListByBundleName");
-    int32_t ret = ServiceInfoProfileManager::GetInstance().GetServiceInfoProfileListByBundleName(key,
-        serviceInfoProfiles);
-    return ret;
-}
-//delete end
 
 int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfile(const CharacteristicProfile& charProfile)
 {
@@ -1531,88 +1454,6 @@ int32_t DistributedDeviceProfileServiceNew::NotifyBusinessEvent(const BusinessEv
     HILOGI("NotifyBusinessEvent task posted successfully");
     return DP_SUCCESS;
 }
-
-//delete start
-int32_t DistributedDeviceProfileServiceNew::PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfoProfile)
-{
-    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
-        HILOGE("the caller is permission denied!");
-        return DP_PERMISSION_DENIED;
-    }
-    HILOGD("CheckCallerPermission success interface PutServiceInfoProfile");
-    int32_t ret = ServiceInfoProfileManage::GetInstance().PutServiceInfoProfile(serviceInfoProfile);
-    if (ret != DP_SUCCESS) {
-        HILOGE("PutServiceInfoProfile failed, ret: %{public}d", ret);
-        return ret;
-    }
-    return DP_SUCCESS;
-}
-
-int32_t DistributedDeviceProfileServiceNew::DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId)
-{
-    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
-        HILOGE("the caller is permission denied!");
-        return DP_PERMISSION_DENIED;
-    }
-    HILOGD("CheckCallerPermission success interface DeleteServiceInfoProfile");
-    int32_t ret = ServiceInfoProfileManage::GetInstance().DeleteServiceInfoProfile(regServiceId, userId);
-    if (ret != DP_SUCCESS) {
-        HILOGE("DeleteServiceInfoProfile failed, ret: %{public}d", ret);
-        return ret;
-    }
-    return DP_SUCCESS;
-}
-
-int32_t DistributedDeviceProfileServiceNew::GetServiceInfoProfileByServiceId(int64_t serviceId,
-    ServiceInfoProfileNew& serviceInfoProfile)
-{
-    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
-        HILOGE("the caller is permission denied!");
-        return DP_PERMISSION_DENIED;
-    }
-    HILOGD("CheckCallerPermission success interface");
-    int32_t ret = ServiceInfoProfileManage::GetInstance().GetServiceInfoProfileByServiceId(serviceId,
-        serviceInfoProfile);
-    if (ret != DP_SUCCESS) {
-        HILOGE("failed, ret: %{public}d", ret);
-        return ret;
-    }
-    return DP_SUCCESS;
-}
-
-int32_t DistributedDeviceProfileServiceNew::GetServiceInfoProfileByTokenId(int64_t tokenId,
-    std::vector<ServiceInfoProfileNew>& serviceInfoProfiles)
-{
-    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
-        HILOGE("the caller is permission denied!");
-        return DP_PERMISSION_DENIED;
-    }
-    HILOGD("CheckCallerPermission success interface");
-    int32_t ret = ServiceInfoProfileManage::GetInstance().GetServiceInfoProfileByTokenId(tokenId, serviceInfoProfiles);
-    if (ret != DP_SUCCESS) {
-        HILOGE("failed, ret: %{public}d", ret);
-        return ret;
-    }
-    return ret;
-}
-
-int32_t DistributedDeviceProfileServiceNew::GetServiceInfoProfileByRegServiceId(int32_t regServiceId,
-    ServiceInfoProfileNew& serviceInfoProfile)
-{
-    if (!PermissionManager::GetInstance().CheckCallerPermission()) {
-        HILOGE("the caller is permission denied!");
-        return DP_PERMISSION_DENIED;
-    }
-    HILOGD("CheckCallerPermission success interface");
-    int32_t ret = ServiceInfoProfileManage::GetInstance().GetServiceInfoProfileByRegServiceId(regServiceId,
-        serviceInfoProfile);
-    if (ret != DP_SUCCESS) {
-        HILOGE("failed, ret: %{public}d", ret);
-        return ret;
-    }
-    return DP_SUCCESS;
-}
-//delete end
 
 int32_t DistributedDeviceProfileServiceNew::PutServiceInfo(const ServiceInfo& serviceInfo)
 {

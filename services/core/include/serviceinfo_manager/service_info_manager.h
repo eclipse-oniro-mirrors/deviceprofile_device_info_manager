@@ -21,9 +21,6 @@
 #include <mutex>
 
 #include "service_info.h"
-//delete start
-#include "service_info_profile_new.h"
-//delete end
 #include "service_info_kv_adapter.h"
 #include "distributed_device_profile_constants.h"
 #include "single_instance.h"
@@ -33,30 +30,6 @@
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
-    //delete start
-class ServiceInfoProfileManage {
-DECLARE_SINGLE_INSTANCE(ServiceInfoProfileManage);
-public:
-    int32_t Init();
-    int32_t UnInit();
-    int32_t ReInit();
-    int32_t PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfoProfile);
-    int32_t DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId = DEFAULT_USER_ID);
-    int32_t UpdateServiceInfoProfile(int32_t regServiceId, const ServiceInfoProfileNew& serviceInfoProfile);
-    int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfileNew>& serviceInfoProfileList);
-    int32_t GetServiceInfoProfileByServiceId(int64_t serviceId, ServiceInfoProfileNew& serviceInfoProfile);
-    int32_t GetServiceInfoProfileByRegServiceId(int32_t regServiceId, ServiceInfoProfileNew& serviceInfoProfile);
-    int32_t GetServiceInfoProfileByTokenId(int64_t tokenId, std::vector<ServiceInfoProfileNew>& serviceInfoProfiles);
-private:
-    std::string FindRegServiceId(const std::string& str);
-    int32_t SetServiceInfoProfile(const std::string& regServiceId,
-        const std::map<std::string, std::string>& finalSerProfile, ServiceInfoProfileNew& serviceInfoProfile);
-    int32_t GetServiceInfoProfileByRegServiceId(const std::string& regServiceIdStr,
-        ServiceInfoProfileNew& serviceInfoProfile);
-    std::mutex storeMutex_;
-    std::shared_ptr<ServiceInfoKvAdapter> serviceInfoKvAdapter_ = nullptr;
-};
-    //delete end
     struct ParsedJSONFields {
         cJSON* udidItem;
         cJSON* userIdItem;

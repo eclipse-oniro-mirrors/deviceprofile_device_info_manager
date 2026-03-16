@@ -30,16 +30,10 @@
 #include "i_dp_inited_callback.h"
 #include "local_service_info.h"
 #include "product_info.h"
-//delete start
-#include "service_info_profile.h"
-//delete end
 #include "service_info_unique_key.h"
 #include "single_instance.h"
 #include "system_ability.h"
 #include "system_ability_definition.h"
-//delete start
-#include "service_info_profile_new.h"
-//delete end
 #include "service_info.h"
 #include "user_info.h"
 namespace OHOS {
@@ -91,16 +85,6 @@ public:
     int32_t PutDeviceIconInfoBatch(const std::vector<DeviceIconInfo>& deviceIconInfos) override;
     int32_t GetDeviceIconInfos(const DeviceIconInfoFilterOptions& filterOptions,
         std::vector<DeviceIconInfo>& deviceIconInfos) override;
-    //delete start
-    int32_t UpdateServiceInfoProfile(const ServiceInfoProfile& serviceInfoProfile) override;
-    int32_t GetServiceInfoProfileByUniqueKey(const ServiceInfoUniqueKey& key,
-        ServiceInfoProfile& serviceInfoProfile) override;
-    int32_t GetServiceInfoProfileListByTokenId(const ServiceInfoUniqueKey& key,
-        std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
-    int32_t GetAllServiceInfoProfileList(std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
-    int32_t GetServiceInfoProfileListByBundleName(const ServiceInfoUniqueKey& key,
-        std::vector<ServiceInfoProfile>& serviceInfoProfiles) override;
-    //delete end
     int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo) override;
     int32_t SyncDeviceProfile(const DistributedDeviceProfile::DpSyncOptions& syncOptions,
@@ -131,15 +115,6 @@ public:
     int32_t UnRegisterBusinessCallback(const std::string& saId, const std::string& businessKey) override;
     int32_t PutBusinessEvent(const BusinessEvent& event) override;
     int32_t GetBusinessEvent(BusinessEvent& event) override;
-    //delete start
-    int32_t PutServiceInfoProfile(const ServiceInfoProfileNew& serviceInfoProfile) override;
-    int32_t DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId) override;
-    int32_t GetServiceInfoProfileByServiceId(int64_t serviceId, ServiceInfoProfileNew& serviceInfoProfile) override;
-    int32_t GetServiceInfoProfileByTokenId(int64_t tokenId,
-        std::vector<ServiceInfoProfileNew>& serviceInfoProfile) override;
-    int32_t GetServiceInfoProfileByRegServiceId(int32_t regServiceId,
-        ServiceInfoProfileNew& serviceInfoProfile) override;
-    //delete end
     int32_t PutServiceInfo(const ServiceInfo& serviceInfo) override;
     int32_t DeleteServiceInfo(const UserInfo& userInfo) override;
     int32_t GetAllServiceInfoList(std::vector<ServiceInfo>& serviceInfos) override;
