@@ -53,8 +53,10 @@ IMPLEMENT_SINGLE_INSTANCE(PermissionManager);
 int32_t PermissionManager::Init()
 {
     HILOGI("call!");
-    if (!LoadPermissionCfg(PERMISSION_JSON_PATH)) {
-        return false;
+    int32_t ret = LoadPermissionCfg(PERMISSION_JSON_PATH);
+    if (ret != DP_SUCCESS) {
+        HILOGE("LoadPermissionCfg failed,ret:%{public}d", ret);
+        return ret;
     }
     HILOGI("init succeeded");
     return DP_SUCCESS;

@@ -35,6 +35,10 @@ namespace {
 
 int32_t TrustProfileManager::Init()
 {
+    if (isInited_.load()) {
+        HILOGI("TrustProfileManager already inited");
+        return DP_SUCCESS;
+    }
     {
         std::lock_guard<std::mutex> lock(rdbMutex_);
         rdbStore_ = std::make_shared<RdbAdapter>();
@@ -54,6 +58,7 @@ int32_t TrustProfileManager::Init()
         HILOGE("acee table add aceeCreId failed");
         return DP_CREATE_TABLE_FAIL;
     }
+    isInited_.store(true);
     HILOGI("end!");
     return DP_SUCCESS;
 }
@@ -73,6 +78,7 @@ int32_t TrustProfileManager::UnInit()
         }
         rdbStore_ = nullptr;
     }
+    isInited_.store(false);
     HILOGI("end!");
     return DP_SUCCESS;
 }

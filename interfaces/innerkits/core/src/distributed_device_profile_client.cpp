@@ -66,6 +66,7 @@ sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::LoadDeviceProfil
         return nullptr;
     }
 
+    HILOGI("start LoadSystemAbility");
     int32_t ret = samgrProxy->LoadSystemAbility(DISTRIBUTED_DEVICE_PROFILE_SA_ID, loadCallback);
     int32_t stageRes = (ret == ERR_OK) ?
         static_cast<int32_t>(StageRes::STAGE_IDLE) : static_cast<int32_t>(StageRes::STAGE_FAIL);
@@ -76,13 +77,14 @@ sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::LoadDeviceProfil
     }
     {
         std::unique_lock<std::mutex> lock(serviceLock_);
-        auto waitStatus = proxyConVar_.wait_for(lock, std::chrono::milliseconds(LOAD_SA_TIMEOUT_MS),
-            [this]() { return dpProxy_ != nullptr; });
-        if (waitStatus && dpProxy_ != nullptr) {
-            HILOGE("Get profile Service success!");
+        proxyConVar_.wait_for(lock, std::chrono::milliseconds(LOAD_SA_TIMEOUT_MS),
+            [this]() { return loadSystemAbilityFinish_; });
+        if (dpProxy_ != nullptr) {
+            HILOGI("Get profile Service success!");
             return dpProxy_;
         }
     }
+    HILOGE("Get profile Service failed!");
     return nullptr;
 }
 
@@ -98,6 +100,7 @@ void DistributedDeviceProfileClient::LoadSystemAbilitySuccess(const sptr<IRemote
     if (remoteObject != nullptr) {
         remoteObject->AddDeathRecipient(dpDeathRecipient_);
         dpProxy_ = iface_cast<IDistributedDeviceProfile>(remoteObject);
+        loadSystemAbilityFinish_ = true;
         proxyConVar_.notify_one();
         DpRadarHelper::GetInstance().SetDeviceProfileInit(true);
     }
@@ -109,6 +112,8 @@ void DistributedDeviceProfileClient::LoadSystemAbilityFail()
     DpRadarHelper::GetInstance().ReportLoadDpSaCb(stageRes);
     std::lock_guard<std::mutex> lock(serviceLock_);
     dpProxy_ = nullptr;
+    loadSystemAbilityFinish_ = true;
+    proxyConVar_.notify_one();
 }
 
 void DistributedDeviceProfileClient::SendSubscribeInfosToService()
@@ -525,9 +530,10 @@ sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfile
     if (LoadDeviceProfileService()) {
         std::lock_guard<std::mutex> lock(serviceLock_);
         if (dpProxy_ != nullptr) {
+            HILOGI("load dp service succeed");
             return dpProxy_;
         } else {
-            HILOGE("load dp service failed");
+            HILOGE("dpProxy_ is nullptr");
             return nullptr;
         }
     }

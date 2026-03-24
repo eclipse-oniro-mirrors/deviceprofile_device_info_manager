@@ -16,6 +16,7 @@
 #ifndef OHOS_DP_TRUST_PROFILE_MANAGER_H
 #define OHOS_DP_TRUST_PROFILE_MANAGER_H
 
+#include <atomic>
 #include <map>
 #include <string>
 #include <memory>
@@ -135,6 +136,7 @@ private:
     std::shared_ptr<IRdbAdapter> rdbStore_;
     std::mutex aclMutex_;
     std::mutex rdbMutex_;
+    std::atomic<bool> isInited_{false};
 };
 
 } // namespace DistributedDeviceProfile

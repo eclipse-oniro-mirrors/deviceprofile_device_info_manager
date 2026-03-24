@@ -165,7 +165,8 @@ private:
     std::mutex saListenerLock_;
     sptr<SystemAbilityListener> saListenerCallback_ = nullptr;
 
-    const std::set<int32_t> retryErrCodes_ = {DP_SERVICE_STOPPED, DP_LOAD_SERVICE_ERR};
+    const std::set<int32_t> retryErrCodes_ =
+        {DP_SERVICE_STOPPED, DP_LOAD_SERVICE_ERR, DP_ERR_DEAD_OBJECT, DP_BR_DEAD_REPLY};
     std::mutex businessLock_;
     sptr<IBusinessCallback> businessCallback_ = nullptr;
     std::string strSaId_ = "";
@@ -174,6 +175,8 @@ private:
     int32_t serviceInfoSaId_ = 0;
     std::mutex serInfolistenerLock_;
     sptr<IRemoteObject> serviceInfolistener_ = nullptr;
+
+    bool loadSystemAbilityFinish_ = false;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

@@ -16,6 +16,7 @@
 #ifndef OHOS_DP_PROFILE_DATA_MANAGER_H
 #define OHOS_DP_PROFILE_DATA_MANAGER_H
 
+#include <atomic>
 #include <cstdint>
 
 #include "kvstore_observer.h"
@@ -48,6 +49,7 @@ private:
     bool FilterInvaildSymbol(std::string str);
     int32_t PutDeviceIconInfo(const DeviceIconInfo& deviceIconInfo);
     int32_t PutProductInfo(const ProductInfo& productInfo);
+    std::atomic<bool> isInited_{false};
 };
 } // DistributedDeviceProfile
 } // OHOS
