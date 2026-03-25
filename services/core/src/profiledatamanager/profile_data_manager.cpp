@@ -36,6 +36,10 @@ const std::string TAG = "ProfileDataManager";
 
 int32_t ProfileDataManager::Init()
 {
+    if (isInited_.load()) {
+        HILOGI("ProfileDataManager already inited");
+        return DP_SUCCESS;
+    }
     if (DeviceProfileDao::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("DeviceProfileDao init failed");
         return DP_DEVICE_PROFILE_DAO_INIT_FAIL;
@@ -48,6 +52,8 @@ int32_t ProfileDataManager::Init()
         HILOGE("DeviceIconInfoDao init failed");
         return DP_DEVICE_ICON_INFO_DAO_INIT_FAIL;
     }
+    isInited_.store(true);
+    HILOGI("end!");
     return DP_SUCCESS;
 }
 
@@ -65,6 +71,7 @@ int32_t ProfileDataManager::UnInit()
         HILOGE("DeviceIconInfoDao unInit failed");
         return DP_DEVICE_ICON_INFO_DAO_UNINIT_FAIL;
     }
+    isInited_.store(false);
     return 0;
 }
 

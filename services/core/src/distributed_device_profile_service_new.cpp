@@ -23,6 +23,8 @@
 #include "ipc_skeleton.h"
 #include "iservice_registry.h"
 #include "sa_profiles.h"
+#include "xcollie/xcollie.h"
+#include "xcollie/xcollie_define.h"
 
 #include "business_event_manager.h"
 #include "common_event_support.h"
@@ -59,6 +61,7 @@ namespace {
 const std::string TAG = "ServiceNew";
 const std::string UNLOAD_TASK_ID = "unload_dp_svr";
 const std::string IDLE_REASON_LOW_MEMORY = "resourceschedule.memmgr.low.memory.prepare";
+const std::string DP_ONSTART_TIMER = "dp_onstart_timer";
 constexpr int32_t DELAY_TIME = 180000;
 constexpr int32_t SA_READY_INTO_IDLE = 0;
 constexpr int32_t SA_REFUSE_INTO_IDLE = -1;
@@ -67,6 +70,7 @@ constexpr int32_t WRTE_CACHE_PROFILE_DELAY_TIME_US = 200 * 1000;
 constexpr int32_t WRTE_CACHE_PROFILE_RETRY_TIMES = 20;
 constexpr int32_t DP_IPC_THREAD_NUM = 32;
 constexpr uint32_t MAX_CALLBACK_LEN = 1000;
+constexpr int32_t ONSTART_TIMEOUT_TIME = 12; // 12s
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileServiceNew);
@@ -82,13 +86,11 @@ DistributedDeviceProfileServiceNew::DistributedDeviceProfileServiceNew()
 int32_t DistributedDeviceProfileServiceNew::Init()
 {
     HILOGI("init begin");
-    if (EventHandlerFactory::GetInstance().Init() != DP_SUCCESS) {
-        HILOGE("EventHandlerFactory init failed");
-        return DP_CACHE_INIT_FAIL;
-    }
-    if (PermissionManager::GetInstance().Init() != DP_SUCCESS) {
-        HILOGE("DpDeviceManager init failed");
-        return DP_DEVICE_MANAGER_INIT_FAIL;
+    EventHandlerFactory::GetInstance().Init();
+    int32_t ret = PermissionManager::GetInstance().Init();
+    if (ret != DP_SUCCESS) {
+        HILOGE("PermissionManager init failed,ret:%{public}d", ret);
+        return ret;
     }
     if (TrustProfileManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("TrustProfileManager init failed");
@@ -96,10 +98,7 @@ int32_t DistributedDeviceProfileServiceNew::Init()
     if (ProfileDataManager::GetInstance().Init() != DP_SUCCESS) {
         HILOGE("ProfileDataManager init failed");
     }
-    if (SubscribeProfileManager::GetInstance().Init() != DP_SUCCESS) {
-        HILOGE("SubscribeProfileManager init failed");
-        return DP_SUBSCRIBE_PROFILE_MANAGER_INIT_FAIL;
-    }
+    SubscribeProfileManager::GetInstance().Init();
     HILOGI("init finish");
     return DP_SUCCESS;
 }
@@ -913,8 +912,13 @@ void DistributedDeviceProfileServiceNew::DelayUnloadTask()
 void DistributedDeviceProfileServiceNew::OnStart(const SystemAbilityOnDemandReason& startReason)
 {
     HILOGI("start reason %{public}s", startReason.GetName().c_str());
-    if (Init() != DP_SUCCESS) {
-        HILOGE("init failed");
+    int32_t onStartTimerId = HiviewDFX::XCollie::GetInstance().SetTimer(
+        DP_ONSTART_TIMER, ONSTART_TIMEOUT_TIME, nullptr, nullptr, HiviewDFX::XCOLLIE_FLAG_DEFAULT);
+    int32_t initRet = Init();
+    if (initRet != DP_SUCCESS) {
+        HILOGE("init failed,ret:%{public}d", initRet);
+        HiviewDFX::XCollie::GetInstance().CancelTimer(onStartTimerId);
+        SystemAbility::OnStartFail(initRet);
         return;
     }
     AddSystemAbilityListener(SOFTBUS_SERVER_SA_ID);
@@ -923,6 +927,7 @@ void DistributedDeviceProfileServiceNew::OnStart(const SystemAbilityOnDemandReas
     AddSystemAbilityListener(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN);
     AddSystemAbilityListener(MEMORY_MANAGER_SA_ID);
     IPCSkeleton::SetMaxWorkThreadNum(DP_IPC_THREAD_NUM);
+    HiviewDFX::XCollie::GetInstance().CancelTimer(onStartTimerId);
     if (!Publish(this)) {
         HILOGE("publish SA failed");
         return;

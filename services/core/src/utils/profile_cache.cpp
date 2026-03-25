@@ -806,7 +806,7 @@ std::string ProfileCache::GetLocalNetworkId()
     DistributedHardware::DmDeviceInfo localDevInfo;
     int32_t res = DistributedHardware::DeviceManager::GetInstance().GetLocalDeviceInfo(DP_PKG_NAME, localDevInfo);
     if (res != DP_SUCCESS) {
-        HILOGE("GetLocalDeviceInfo fail, res: %{public}d.", res);
+        HILOGE("GetLocalDeviceInfo fail");
         return "";
     }
     localNetworkId_ = localDevInfo.networkId;

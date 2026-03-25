@@ -160,6 +160,7 @@ ohos_shared_library("distributed_device_profile_svr") {
     "dmsfwk:common_sdk",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "hicollie:libhicollie",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hitrace:hitrace_meter",
