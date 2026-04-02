@@ -11,15 +11,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-
 import("//build/ohos.gni")
 import("//build/ohos_var.gni")
 import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
-if (!device_info_manager_capability) {
-  install_enable = false
-} else {
-  ohos_shared_library("device_profile_radar") {
+ohos_shared_library("device_profile_radar") {
+  if (!device_info_manager_capability) {
+    install_enable = false
+  } else {
     branch_protector_ret = "pac_ret"
     sanitize = {
       cfi = true
