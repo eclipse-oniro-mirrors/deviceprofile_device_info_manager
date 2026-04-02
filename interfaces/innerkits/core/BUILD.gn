@@ -53,7 +53,6 @@ ohos_shared_library("distributed_device_profile_sdk") {
 
   install_enable = true
 
-  sources = []
   if (!device_info_manager_capability) {
     sources += [
       "src/distributed_device_profile_client_fail_to_support.cpp",
