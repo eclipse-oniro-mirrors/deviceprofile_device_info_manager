@@ -56,6 +56,9 @@ config("device_info_manager_config") {
 }
 
 ohos_shared_library("distributed_device_profile_svr") {
+  if (!device_info_manager_capability) {
+  install_enable = false
+  } else {
   branch_protector_ret = "pac_ret"
 
   ldflags = [
@@ -180,7 +183,7 @@ ohos_shared_library("distributed_device_profile_svr") {
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
 }
-
+}
 group("unittest") {
   testonly = true
   deps = [ "test:unittest" ]
