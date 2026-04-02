@@ -24,7 +24,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
 const std::string TAG = "ProxyFailToSupport";
-constexpr int32_t DP_NOT_SUPPORT = DP_DEVICE_UNSUPPORTED_SWITCH;
+constexpr int32_t DP_NOT_SUPPORT = 801;
 }
 
 int32_t DistributedDeviceProfileProxy::PutAccessControlProfile(const AccessControlProfile& aclProfile)
