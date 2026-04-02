@@ -24,7 +24,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
 const std::string TAG = "ClientFailToSupport";
-constexpr int32_t DP_NOT_SUPPORT = 801;
+constexpr int32_t DP_NOT_SUPPORT = DP_DEVICE_UNSUPPORTED_SWITCH;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileClient);
@@ -215,12 +215,16 @@ int32_t DistributedDeviceProfileClient::GetDeviceIconInfos(
 
 int32_t DistributedDeviceProfileClient::SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)
 {
+    std::lock_guard<std::mutex> lock(subscribeLock_);
+    subscribeInfos_.clear();
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
 }
 
 int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)
 {
+    std::lock_guard<std::mutex> lock(subscribeLock_);
+    subscribeInfos_.clear();
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
 }
@@ -242,12 +246,18 @@ int32_t DistributedDeviceProfileClient::SyncStaticProfile(
 int32_t DistributedDeviceProfileClient::SubscribeDeviceProfileInited(
     int32_t saId, sptr<IDpInitedCallback> initedCb)
 {
+    std::lock_guard<std::mutex> lock(dpInitedLock_);
+    saId_ = saId;
+    dpInitedCallback_ = initedCb;
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
 }
 
 int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfileInited(int32_t saId)
 {
+    std::lock_guard<std::mutex> lock(dpInitedLock_);
+    saId_ = 0;
+    dpInitedCallback_ = nullptr;
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
 }
@@ -255,6 +265,10 @@ int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfileInited(int32_t s
 int32_t DistributedDeviceProfileClient::SubscribePinCodeInvalid(
     const std::string& bundleName, int32_t pinExchangeType, sptr<IPincodeInvalidCallback> pinCodeCallback)
 {
+    std::lock_guard<std::mutex> lock(pinCodeLock_);
+    bundleName_ = bundleName;
+    pinExchangeType_ = pinExchangeType;
+    pinCodeCallback_ = pinCodeCallback;
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
 }
@@ -262,47 +276,16 @@ int32_t DistributedDeviceProfileClient::SubscribePinCodeInvalid(
 int32_t DistributedDeviceProfileClient::UnSubscribePinCodeInvalid(
     const std::string& bundleName, int32_t pinExchangeType)
 {
+    std::lock_guard<std::mutex> lock(pinCodeLock_);
+    bundleName_.clear();
+    pinExchangeType_ = DEFAULT_PIN_EXCHANGE_TYPE;
+    pinCodeCallback_ = nullptr;
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
 }
 
 int32_t DistributedDeviceProfileClient::PutAllTrustedDevices(
     const std::vector<TrustedDeviceInfo>& deviceInfos)
-{
-    HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
-    return DP_NOT_SUPPORT;
-}
-
-int32_t DistributedDeviceProfileClient::UpdateServiceInfoProfile(
-    const ServiceInfoProfile& serviceInfoProfile)
-{
-    HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
-    return DP_NOT_SUPPORT;
-}
-
-int32_t DistributedDeviceProfileClient::GetServiceInfoProfileByUniqueKey(
-    const ServiceInfoUniqueKey& key, ServiceInfoProfile& serviceInfoProfile)
-{
-    HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
-    return DP_NOT_SUPPORT;
-}
-
-int32_t DistributedDeviceProfileClient::GetServiceInfoProfileListByTokenId(
-    const ServiceInfoUniqueKey& key, std::vector<ServiceInfoProfile>& serviceInfoProfiles)
-{
-    HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
-    return DP_NOT_SUPPORT;
-}
-
-int32_t DistributedDeviceProfileClient::GetAllServiceInfoProfileList(
-    std::vector<ServiceInfoProfile>& serviceInfoProfiles)
-{
-    HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
-    return DP_NOT_SUPPORT;
-}
-
-int32_t DistributedDeviceProfileClient::GetServiceInfoProfileListByBundleName(
-    const ServiceInfoUniqueKey& key, std::vector<ServiceInfoProfile>& serviceInfoProfiles)
 {
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
@@ -337,6 +320,10 @@ int32_t DistributedDeviceProfileClient::DeleteLocalServiceInfo(
 int32_t DistributedDeviceProfileClient::RegisterBusinessCallback(
     const std::string& saId, const std::string& businessKey, sptr<IBusinessCallback> businessCallback)
 {
+    std::lock_guard<std::mutex> lock(businessLock_);
+    strSaId_ = saId;
+    businessKey_ = businessKey;
+    businessCallback_ = businessCallback;
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
 }
@@ -344,6 +331,10 @@ int32_t DistributedDeviceProfileClient::RegisterBusinessCallback(
 int32_t DistributedDeviceProfileClient::UnRegisterBusinessCallback(
     const std::string& saId, const std::string& businessKey)
 {
+    std::lock_guard<std::mutex> lock(businessLock_);
+    strSaId_.clear();
+    businessKey_.clear();
+    businessCallback_ = nullptr;
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
 }
@@ -360,36 +351,37 @@ int32_t DistributedDeviceProfileClient::GetBusinessEvent(BusinessEvent& event)
     return DP_NOT_SUPPORT;
 }
 
-int32_t DistributedDeviceProfileClient::PutServiceInfoProfile(
-    const ServiceInfoProfileNew& serviceInfoProfile)
+int32_t DistributedDeviceProfileClient::PutServiceInfo(const ServiceInfo& serviceInfo)
 {
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
 }
 
-int32_t DistributedDeviceProfileClient::DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId)
+int32_t DistributedDeviceProfileClient::DeleteServiceInfo(const UserInfo& userInfo)
 {
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
 }
 
-int32_t DistributedDeviceProfileClient::GetServiceInfoProfileByServiceId(
-    int64_t serviceId, ServiceInfoProfileNew& serviceInfoProfile)
+int32_t DistributedDeviceProfileClient::GetAllServiceInfoList(std::vector<ServiceInfo>& serviceInfos)
 {
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
 }
 
-int32_t DistributedDeviceProfileClient::GetServiceInfoProfileByTokenId(
-    int64_t tokenId, std::vector<ServiceInfoProfileNew>& serviceInfoProfiles)
+int32_t DistributedDeviceProfileClient::GetServiceInfosByUserInfo(
+    const UserInfo& userInfo, std::vector<ServiceInfo>& serviceInfos)
 {
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
 }
 
-int32_t DistributedDeviceProfileClient::GetServiceInfoProfileByRegServiceId(
-    int32_t regServiceId, ServiceInfoProfileNew& serviceInfoProfile)
+int32_t DistributedDeviceProfileClient::SubscribeAllServiceInfo(
+    int32_t saId, sptr<IRemoteObject> listener)
 {
+    std::lock_guard<std::mutex> lock(serInfolistenerLock_);
+    serviceInfoSaId_ = saId;
+    serviceInfolistener_ = listener;
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
 }
@@ -399,6 +391,7 @@ void DistributedDeviceProfileClient::LoadSystemAbilitySuccess(const sptr<IRemote
     std::lock_guard<std::mutex> lock(serviceLock_);
     dpProxy_ = nullptr;
     dpDeathRecipient_ = nullptr;
+    loadSystemAbilityFinish_ = true;
     proxyConVar_.notify_all();
     HILOGI("%{public}s no-build", __func__);
 }
@@ -407,6 +400,7 @@ void DistributedDeviceProfileClient::LoadSystemAbilityFail()
 {
     std::lock_guard<std::mutex> lock(serviceLock_);
     dpProxy_ = nullptr;
+    loadSystemAbilityFinish_ = false;
     proxyConVar_.notify_all();
     HILOGI("%{public}s no-build", __func__);
 }
@@ -418,7 +412,16 @@ void DistributedDeviceProfileClient::ReleaseResource()
     ReleaseSubscribePinCodeInvalid();
     ReleaseDeathRecipient();
     ReleaseRegisterBusinessCallback();
+    ReSubscribeAllServiceInfo();
     (void)retryErrCodes_.size();
+    HILOGI("%{public}s no-build", __func__);
+}
+
+void DistributedDeviceProfileClient::ReSubscribeAllServiceInfo()
+{
+    std::lock_guard<std::mutex> lock(serInfolistenerLock_);
+    serviceInfoSaId_ = 0;
+    serviceInfolistener_ = nullptr;
     HILOGI("%{public}s no-build", __func__);
 }
 
@@ -445,6 +448,7 @@ sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::LoadDeviceProfil
 {
     std::lock_guard<std::mutex> lock(serviceLock_);
     dpProxy_ = nullptr;
+    loadSystemAbilityFinish_ = false;
     HILOGI("%{public}s no-build", __func__);
     return dpProxy_;
 }
@@ -461,6 +465,7 @@ void DistributedDeviceProfileClient::OnServiceDied(const sptr<IRemoteObject>& re
     std::lock_guard<std::mutex> lock(serviceLock_);
     dpProxy_ = nullptr;
     dpDeathRecipient_ = nullptr;
+    loadSystemAbilityFinish_ = false;
     proxyConVar_.notify_all();
     HILOGI("%{public}s no-build", __func__);
 }
@@ -528,12 +533,14 @@ void DistributedDeviceProfileClient::ReleaseDeathRecipient()
     std::lock_guard<std::mutex> lock(serviceLock_);
     dpDeathRecipient_ = nullptr;
     dpProxy_ = nullptr;
+    loadSystemAbilityFinish_ = false;
     proxyConVar_.notify_all();
     HILOGI("%{public}s no-build", __func__);
 }
 
 template <typename Method, typename... Args>
-int32_t DistributedDeviceProfileClient::RetryClientRequest(int32_t firesRet, Method method, Args&& ... args)
+int32_t DistributedDeviceProfileClient::RetryClientRequest(
+    int32_t firesRet, Method method, Args&& ... args)
 {
     (void)firesRet;
     (void)method;
