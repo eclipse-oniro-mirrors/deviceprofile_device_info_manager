@@ -24,7 +24,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
 const std::string TAG = "ProxyFailToSupport";
-constexpr int32_t DP_NOT_SUPPORT = 801;
+constexpr int32_t DP_NOT_SUPPORT = DP_DEVICE_UNSUPPORTED_SWITCH;
 }
 
 int32_t DistributedDeviceProfileProxy::PutAccessControlProfile(const AccessControlProfile& aclProfile)
@@ -275,41 +275,6 @@ int32_t DistributedDeviceProfileProxy::GetDeviceIconInfos(
     return DP_NOT_SUPPORT;
 }
 
-int32_t DistributedDeviceProfileProxy::UpdateServiceInfoProfile(
-    const ServiceInfoProfile& serviceInfoProfile)
-{
-    HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
-    return DP_NOT_SUPPORT;
-}
-
-int32_t DistributedDeviceProfileProxy::GetServiceInfoProfileByUniqueKey(
-    const ServiceInfoUniqueKey& key, ServiceInfoProfile& serviceInfoProfile)
-{
-    HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
-    return DP_NOT_SUPPORT;
-}
-
-int32_t DistributedDeviceProfileProxy::GetServiceInfoProfileListByTokenId(
-    const ServiceInfoUniqueKey& key, std::vector<ServiceInfoProfile>& serviceInfoProfiles)
-{
-    HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
-    return DP_NOT_SUPPORT;
-}
-
-int32_t DistributedDeviceProfileProxy::GetAllServiceInfoProfileList(
-    std::vector<ServiceInfoProfile>& serviceInfoProfiles)
-{
-    HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
-    return DP_NOT_SUPPORT;
-}
-
-int32_t DistributedDeviceProfileProxy::GetServiceInfoProfileListByBundleName(
-    const ServiceInfoUniqueKey& key, std::vector<ServiceInfoProfile>& serviceInfoProfiles)
-{
-    HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
-    return DP_NOT_SUPPORT;
-}
-
 int32_t DistributedDeviceProfileProxy::PutLocalServiceInfo(const LocalServiceInfo& localServiceInfo)
 {
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
@@ -362,35 +327,33 @@ int32_t DistributedDeviceProfileProxy::GetBusinessEvent(BusinessEvent& event)
     return DP_NOT_SUPPORT;
 }
 
-int32_t DistributedDeviceProfileProxy::PutServiceInfoProfile(
-    const ServiceInfoProfileNew& serviceInfoProfile)
+int32_t DistributedDeviceProfileProxy::PutServiceInfo(const ServiceInfo& serviceInfo)
 {
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
 }
 
-int32_t DistributedDeviceProfileProxy::DeleteServiceInfoProfile(int32_t regServiceId, int32_t userId)
+int32_t DistributedDeviceProfileProxy::DeleteServiceInfo(const UserInfo& userInfo)
 {
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
 }
 
-int32_t DistributedDeviceProfileProxy::GetServiceInfoProfileByServiceId(
-    int64_t serviceId, ServiceInfoProfileNew& serviceInfoProfile)
+int32_t DistributedDeviceProfileProxy::GetAllServiceInfoList(std::vector<ServiceInfo>& serviceInfos)
 {
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
 }
 
-int32_t DistributedDeviceProfileProxy::GetServiceInfoProfileByTokenId(
-    int64_t tokenId, std::vector<ServiceInfoProfileNew>& serviceInfoProfiles)
+int32_t DistributedDeviceProfileProxy::GetServiceInfosByUserInfo(
+    const UserInfo& userInfo, std::vector<ServiceInfo>& serviceInfos)
 {
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
 }
 
-int32_t DistributedDeviceProfileProxy::GetServiceInfoProfileByRegServiceId(
-    int32_t regServiceId, ServiceInfoProfileNew& serviceInfoProfile)
+int32_t DistributedDeviceProfileProxy::SubscribeAllServiceInfo(
+    int32_t saId, sptr<IRemoteObject> listener)
 {
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
