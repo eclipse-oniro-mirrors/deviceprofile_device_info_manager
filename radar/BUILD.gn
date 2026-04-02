@@ -11,50 +11,56 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+
 import("//build/ohos.gni")
 import("//build/ohos_var.gni")
 import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
-ohos_shared_library("device_profile_radar") {
-  branch_protector_ret = "pac_ret"
-  sanitize = {
-    cfi = true
-    cfi_cross_dso = true
-    debug = false
+if (!device_info_manager_capability) {
+  install_enable = false
+} else {
+  ohos_shared_library("device_profile_radar") {
+    branch_protector_ret = "pac_ret"
+    sanitize = {
+      cfi = true
+      cfi_cross_dso = true
+      debug = false
+    }
+
+    ldflags = [
+      "-Wl,-z,relro",
+      "-Wl,-z,now",
+    ]
+
+    cflags = [
+      "-fPIC",
+      "-D_FORTIFY_SOURCE=2",
+      "-O2",
+    ]
+
+    cflags_cc = cflags
+
+    include_dirs = [
+      "include",
+      "${device_profile_common}/include/constants",
+      "${device_profile_common}/include/interfaces",
+      "${device_profile_common}/include/utils",
+    ]
+
+    sources = [ "src/dp_radar_helper.cpp" ]
+
+    deps = [ "${device_profile_common}:distributed_device_profile_common" ]
+
+    external_deps = [
+      "cJSON:cjson",
+      "c_utils:utils",
+      "hilog:libhilog",
+      "hisysevent:libhisysevent",
+      "ipc:ipc_single",
+      "relational_store:native_rdb",
+    ]
+
+    part_name = "device_info_manager"
+    subsystem_name = "deviceprofile"
   }
-
-  ldflags = [
-    "-Wl,-z,relro",
-    "-Wl,-z,now",
-  ]
-
-  cflags = [
-    "-fPIC",
-    "-D_FORTIFY_SOURCE=2",
-    "-O2",
-  ]
-
-  cflags_cc = cflags
-
-  include_dirs = [
-    "include",
-    "${device_profile_common}/include/constants",
-    "${device_profile_common}/include/interfaces",
-    "${device_profile_common}/include/utils",
-  ]
-
-  sources = [ "src/dp_radar_helper.cpp" ]
-
-  deps = [ "${device_profile_common}:distributed_device_profile_common" ]
-
-  external_deps = [
-    "cJSON:cjson",
-    "c_utils:utils",
-    "hilog:libhilog",
-    "hisysevent:libhisysevent",
-    "ipc:ipc_single",
-    "relational_store:native_rdb",
-  ]
-
-  part_name = "device_info_manager"
-  subsystem_name = "deviceprofile"
 }
