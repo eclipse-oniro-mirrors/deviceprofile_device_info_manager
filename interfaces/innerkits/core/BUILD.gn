@@ -75,9 +75,6 @@ ohos_shared_library("distributed_device_profile_sdk") {
     "${device_profile_common}:business_callback_interfaces_ipc",
     "${device_profile_common}:distributed_device_profile_common",
   ]
-  if (device_info_manager_capability) {
-    deps += [ "${device_profile_path}/radar:device_profile_radar" ]
-  }
 
   external_deps = [
     "cJSON:cjson",
