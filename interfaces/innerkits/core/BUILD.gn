@@ -56,6 +56,7 @@ ohos_shared_library("distributed_device_profile_sdk") {
   if (!device_info_manager_capability) {
     sources = [
       "src/distributed_device_profile_client_fail_to_support.cpp"
+    ]
   } else {
     sources = [
       "src/callback/device_profile_load_callback.cpp",
