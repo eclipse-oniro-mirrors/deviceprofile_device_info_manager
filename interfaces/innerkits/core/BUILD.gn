@@ -53,11 +53,17 @@ ohos_shared_library("distributed_device_profile_sdk") {
 
   install_enable = true
 
-  sources = [
-    "src/callback/device_profile_load_callback.cpp",
-    "src/distributed_device_profile_client.cpp",
-    "src/distributed_device_profile_proxy.cpp",
-  ]
+  if (!device_info_manager_capability) {
+    sources = [
+      "src/distributed_device_profile_client_fail_to_support.cpp"
+    ]
+  } else {
+    sources = [
+      "src/callback/device_profile_load_callback.cpp",
+      "src/distributed_device_profile_client.cpp",
+      "src/distributed_device_profile_proxy.cpp",
+    ]
+  }
 
   public_configs = [
     ":distributed_device_profile_sdk_config",

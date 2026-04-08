@@ -37,9 +37,6 @@ config("device_info_manager_config") {
     "include/persistenceadapter/rdbadapter",
     "include/profiledatamanager",
     "include/publishcommonevent",
-    #delete start
-    "include/serviceinfoprofile_manager",
-    #delete end
     "include/serviceinfo_manager",
     "include/sessionkeymanager",
     "include/subscribeprofilemanager",
@@ -56,129 +53,133 @@ config("device_info_manager_config") {
 }
 
 ohos_shared_library("distributed_device_profile_svr") {
-  branch_protector_ret = "pac_ret"
+  if (!device_info_manager_capability) {
+    install_enable = false
+  } else {
+    branch_protector_ret = "pac_ret"
 
-  ldflags = [
-    "-Wl,-z,relro",
-    "-Wl,-z,now",
-  ]
+    ldflags = [
+      "-Wl,-z,relro",
+      "-Wl,-z,now",
+    ]
 
-  cflags = [
-    "-fPIC",
-    "-D_FORTIFY_SOURCE=2",
-    "-O2",
-  ]
-  if (dp_os_account_part_exists) {
-    cflags += [ "-DDP_OS_ACCOUNT_PART_EXISTS" ]
+    cflags = [
+      "-fPIC",
+      "-D_FORTIFY_SOURCE=2",
+      "-O2",
+    ]
+    if (dp_os_account_part_exists) {
+      cflags += [ "-DDP_OS_ACCOUNT_PART_EXISTS" ]
+    }
+    if (!device_info_manager_supported_switch || device_info_manager_common) {
+      cflags += [ "-DDEVICE_PROFILE_SWITCH_DISABLE" ]
+    }
+
+    cflags_cc = cflags
+
+    sanitize = {
+      boundary_sanitize = true
+      integer_overflow = true
+      ubsan = true
+      cfi = true
+      cfi_cross_dso = true
+      debug = false
+    }
+
+    install_enable = true
+    sources = [
+      "src/businesseventmanager/business_event_manager.cpp",
+      "src/common/dp_services_constants.cpp",
+      "src/contentsensormanager/collaboration_info_collector.cpp",
+      "src/contentsensormanager/collector.cpp",
+      "src/contentsensormanager/content_sensor_manager.cpp",
+      "src/contentsensormanager/dms_info_collector.cpp",
+      "src/contentsensormanager/pasteboard_info_collector.cpp",
+      "src/contentsensormanager/switch_status_collector.cpp",
+      "src/contentsensormanager/syscap_info_collector.cpp",
+      "src/contentsensormanager/system_info_collector.cpp",
+      "src/datashare/settings_data_manager.cpp",
+      "src/deviceprofilemanager/device_profile_manager.cpp",
+      "src/deviceprofilemanager/listener/kv_data_change_listener.cpp",
+      "src/deviceprofilemanager/listener/kv_store_death_recipient.cpp",
+      "src/deviceprofilemanager/listener/kv_sync_completed_listener.cpp",
+      "src/deviceprofilemanager/listener/sync_subscriber_death_recipient.cpp",
+      "src/deviceprofilemanager/static_profile_manager.cpp",
+      "src/deviceprofilemanager/switch_profile_manager.cpp",
+      "src/dfx/device_profile_dumper.cpp",
+      "src/distributed_device_profile_service_new.cpp",
+      "src/distributed_device_profile_stub_new.cpp",
+      "src/dm_adapter/dm_adapter.cpp",
+      "src/localserviceinfomanager/local_service_info_manager.cpp",
+      "src/multiusermanager/multi_user_manager.cpp",
+      "src/permissionmanager/permission_manager.cpp",
+      "src/persistenceadapter/assetadapter/asset_adapter.cpp",
+      "src/persistenceadapter/kvadapter/business_event_adapter.cpp",
+      "src/persistenceadapter/kvadapter/kv_adapter.cpp",
+      "src/persistenceadapter/kvadapter/service_info_kv_adapter.cpp",
+      "src/persistenceadapter/kvadapter/switch_adapter.cpp",
+      "src/persistenceadapter/rdbadapter/local_service_info_rdb_adapter.cpp",
+      "src/persistenceadapter/rdbadapter/profile_data_rdb_adapter.cpp",
+      "src/persistenceadapter/rdbadapter/rdb_adapter.cpp",
+      "src/persistenceadapter/rdbadapter/service_info_rdb_adapter.cpp",
+      "src/profiledatamanager/device_icon_info_dao.cpp",
+      "src/profiledatamanager/device_profile_dao.cpp",
+      "src/profiledatamanager/product_info_dao.cpp",
+      "src/profiledatamanager/profile_data_manager.cpp",
+      "src/publishcommonevent/dp_account_common_event.cpp",
+      "src/serviceinfo_manager/service_info_manager.cpp",
+      "src/sessionkeymanager/session_key_manager.cpp",
+      "src/staticcapabilitycollector/static_capability_collector.cpp",
+      "src/staticcapabilityloader/static_capability_loader.cpp",
+      "src/subscribeserviceinfomanager/subscribe_service_info_manager.cpp",
+      "src/subscribeprofilemanager/subscribe_profile_manager.cpp",
+      "src/trustprofilemanager/trust_profile_manager.cpp",
+      "src/utils/event_handler_factory.cpp",
+      "src/utils/profile_cache.cpp",
+      "src/utils/profile_control_utils.cpp",
+    ]
+
+    deps = [
+      "${device_profile_common}:distributed_device_profile_common",
+      "${device_profile_path}/radar:device_profile_radar",
+    ]
+
+    configs = [ ":device_info_manager_config" ]
+
+    external_deps = [
+      "access_token:libaccesstoken_sdk",
+      "asset:asset_sdk",
+      "cJSON:cjson",
+      "c_utils:utils",
+      "common_event_service:cesfwk_core",
+      "common_event_service:cesfwk_innerkits",
+      "config_policy:configpolicy_util",
+      "data_share:datashare_consumer",
+      "device_auth:deviceauth_sdk",
+      "device_manager:devicemanagersdk",
+      "dmsfwk:common_sdk",
+      "eventhandler:libeventhandler",
+      "ffrt:libffrt",
+      "hicollie:libhicollie",
+      "hilog:libhilog",
+      "hisysevent:libhisysevent",
+      "hitrace:hitrace_meter",
+      "init:libbegetutil",
+      "ipc:ipc_core",
+      "kv_store:distributeddata_inner",
+      "os_account:libaccountkits",
+      "os_account:os_account_innerkits",
+      "relational_store:native_rdb",
+      "safwk:system_ability_fwk",
+      "samgr:samgr_common",
+      "samgr:samgr_proxy",
+      "syscap_codec:syscap_interface_shared",
+      "memmgr:memmgrclient",
+    ]
+
+    part_name = "device_info_manager"
+    subsystem_name = "deviceprofile"
   }
-  if (!device_info_manager_supported_switch || device_info_manager_common) {
-    cflags += [ "-DDEVICE_PROFILE_SWITCH_DISABLE" ]
-  }
-
-  cflags_cc = cflags
-
-  sanitize = {
-    boundary_sanitize = true
-    integer_overflow = true
-    ubsan = true
-    cfi = true
-    cfi_cross_dso = true
-    debug = false
-  }
-
-  install_enable = true
-  sources = [
-    "src/businesseventmanager/business_event_manager.cpp",
-    "src/common/dp_services_constants.cpp",
-    "src/contentsensormanager/collaboration_info_collector.cpp",
-    "src/contentsensormanager/collector.cpp",
-    "src/contentsensormanager/content_sensor_manager.cpp",
-    "src/contentsensormanager/dms_info_collector.cpp",
-    "src/contentsensormanager/pasteboard_info_collector.cpp",
-    "src/contentsensormanager/switch_status_collector.cpp",
-    "src/contentsensormanager/syscap_info_collector.cpp",
-    "src/contentsensormanager/system_info_collector.cpp",
-    "src/datashare/settings_data_manager.cpp",
-    "src/deviceprofilemanager/device_profile_manager.cpp",
-    "src/deviceprofilemanager/listener/kv_data_change_listener.cpp",
-    "src/deviceprofilemanager/listener/kv_store_death_recipient.cpp",
-    "src/deviceprofilemanager/listener/kv_sync_completed_listener.cpp",
-    "src/deviceprofilemanager/listener/sync_subscriber_death_recipient.cpp",
-    "src/deviceprofilemanager/static_profile_manager.cpp",
-    "src/deviceprofilemanager/switch_profile_manager.cpp",
-    "src/dfx/device_profile_dumper.cpp",
-    "src/distributed_device_profile_service_new.cpp",
-    "src/distributed_device_profile_stub_new.cpp",
-    "src/dm_adapter/dm_adapter.cpp",
-    "src/localserviceinfomanager/local_service_info_manager.cpp",
-    "src/multiusermanager/multi_user_manager.cpp",
-    "src/permissionmanager/permission_manager.cpp",
-    "src/persistenceadapter/assetadapter/asset_adapter.cpp",
-    "src/persistenceadapter/kvadapter/business_event_adapter.cpp",
-    "src/persistenceadapter/kvadapter/kv_adapter.cpp",
-    "src/persistenceadapter/kvadapter/service_info_kv_adapter.cpp",
-    "src/persistenceadapter/kvadapter/switch_adapter.cpp",
-    "src/persistenceadapter/rdbadapter/local_service_info_rdb_adapter.cpp",
-    "src/persistenceadapter/rdbadapter/profile_data_rdb_adapter.cpp",
-    "src/persistenceadapter/rdbadapter/rdb_adapter.cpp",
-    "src/persistenceadapter/rdbadapter/service_info_rdb_adapter.cpp",
-    "src/profiledatamanager/device_icon_info_dao.cpp",
-    "src/profiledatamanager/device_profile_dao.cpp",
-    "src/profiledatamanager/product_info_dao.cpp",
-    "src/profiledatamanager/profile_data_manager.cpp",
-    "src/publishcommonevent/dp_account_common_event.cpp",
-    "src/serviceinfo_manager/service_info_manager.cpp",
-    "src/sessionkeymanager/session_key_manager.cpp",
-    "src/staticcapabilitycollector/static_capability_collector.cpp",
-    "src/staticcapabilityloader/static_capability_loader.cpp",
-    "src/subscribeserviceinfomanager/subscribe_service_info_manager.cpp",
-    "src/subscribeprofilemanager/subscribe_profile_manager.cpp",
-    "src/trustprofilemanager/trust_profile_manager.cpp",
-    "src/utils/event_handler_factory.cpp",
-    "src/utils/profile_cache.cpp",
-    "src/utils/profile_control_utils.cpp",
-  ]
-
-  deps = [
-    "${device_profile_common}:distributed_device_profile_common",
-    "${device_profile_path}/radar:device_profile_radar",
-  ]
-
-  configs = [ ":device_info_manager_config" ]
-
-  external_deps = [
-    "access_token:libaccesstoken_sdk",
-    "asset:asset_sdk",
-    "cJSON:cjson",
-    "c_utils:utils",
-    "common_event_service:cesfwk_core",
-    "common_event_service:cesfwk_innerkits",
-    "config_policy:configpolicy_util",
-    "data_share:datashare_consumer",
-    "device_auth:deviceauth_sdk",
-    "device_manager:devicemanagersdk",
-    "dmsfwk:common_sdk",
-    "eventhandler:libeventhandler",
-    "ffrt:libffrt",
-    "hicollie:libhicollie",
-    "hilog:libhilog",
-    "hisysevent:libhisysevent",
-    "hitrace:hitrace_meter",
-    "init:libbegetutil",
-    "ipc:ipc_core",
-    "kv_store:distributeddata_inner",
-    "os_account:libaccountkits",
-    "os_account:os_account_innerkits",
-    "relational_store:native_rdb",
-    "safwk:system_ability_fwk",
-    "samgr:samgr_common",
-    "samgr:samgr_proxy",
-    "syscap_codec:syscap_interface_shared",
-    "memmgr:memmgrclient",
-  ]
-
-  part_name = "device_info_manager"
-  subsystem_name = "deviceprofile"
 }
 
 group("unittest") {
