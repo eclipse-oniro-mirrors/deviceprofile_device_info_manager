@@ -221,6 +221,7 @@ constexpr int32_t DP_DEVICE_UNSUPPORTED_SWITCH = 98566338;
 constexpr int32_t DP_PRE_MIGRATION_DB_AVAILABLE = 98566339;
 constexpr int32_t DP_PRE_MIGRATION_DB_UNAVAILABLE = 98566340;
 constexpr int32_t DP_NOT_NEED_MIGRATION = 98566341;
+constexpr int32_t DP_NOT_SUPPORT = 98566342;
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_DISTRIBUTED_DEVICE_PROFILE_ERRORS_H
