@@ -24,7 +24,6 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
 const std::string TAG = "ClientFailToSupport";
-constexpr int32_t DP_NOT_SUPPORT = 801;
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileClient);
