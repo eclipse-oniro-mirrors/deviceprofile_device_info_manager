@@ -113,7 +113,8 @@ enum StaticCapabilityFlag {
     CAPABILITY_FLAG_DMS = 0,
     CAPABILITY_FLAG_PASTE_BOARD = 1,
     CAPABILITY_FLAG_DISTRIBUTED_FILE_DAEMON = 2,
-    CAPABILITY_FLAG_MAX = 3,
+    CAPABILITY_FLAG_DISTRIBUTED_INTENT = 3,
+    CAPABILITY_FLAG_MAX = 4,
 };
 enum class SwitchFlag : int32_t {
     SWITCH_FLAG_MIN = -1,
@@ -134,7 +135,8 @@ const std::unordered_map<std::string, SwitchFlag> SWITCH_SERVICE_MAP = {
 const std::unordered_map<std::string, StaticCapabilityFlag> CAPABILITY_FLAG_MAP = {
     { "dmsfwk_svr_id", StaticCapabilityFlag::CAPABILITY_FLAG_DMS },
     { "pasteboardService", StaticCapabilityFlag::CAPABILITY_FLAG_PASTE_BOARD },
-    { "distributedfiledaemon", StaticCapabilityFlag::CAPABILITY_FLAG_DISTRIBUTED_FILE_DAEMON }
+    { "distributedfiledaemon", StaticCapabilityFlag::CAPABILITY_FLAG_DISTRIBUTED_FILE_DAEMON },
+    { "distributedIntent", StaticCapabilityFlag::CAPABILITY_FLAG_DISTRIBUTED_INTENT }
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
