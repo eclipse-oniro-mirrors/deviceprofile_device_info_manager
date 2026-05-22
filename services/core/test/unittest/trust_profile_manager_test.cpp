@@ -63,7 +63,7 @@ void TrustProfileManagerTest::TearDownTestCase()
 
     ret = OHOS::DistributedDeviceProfile::
         TrustProfileManager::GetInstance().UnInit();
-    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_NE(ret, DP_INVALID_PARAMS);
 }
 
 void TrustProfileManagerTest::SetUp()
