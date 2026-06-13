@@ -126,6 +126,7 @@ private:
     int32_t IsAclExists(const AccessControlProfile& profile);
     int32_t CheckDeviceIdAndUserIdActive(const AccessControlProfile& profile, int32_t& resultCount);
     int32_t CheckDeviceIdAndUserIdExists(const AccessControlProfile& profile, bool& isExists);
+    int32_t CheckDeviceIdActiveAclExists(const AccessControlProfile& profile, bool& isExists);
     int32_t NotifyCheck(const AccessControlProfile& profile, const AccessControlProfile& oldProfile);
     void RemoveLnnAcl(std::vector<AccessControlProfile>& profiles);
     bool IsLnnAcl(const AccessControlProfile& aclProfile);
