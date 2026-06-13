@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -834,6 +834,16 @@ int32_t DistributedDeviceProfileClient::GetSessionKey(
         return DP_GET_SERVICE_FAILED;
     }
     return dpService->GetSessionKey(userId, sessionKeyId, sessionKey);
+}
+
+int32_t DistributedDeviceProfileClient::GetSessionKey(int32_t sessionKeyId, std::vector<uint8_t>& sessionKey)
+{
+    auto dpService = GetDeviceProfileService();
+    if (dpService == nullptr) {
+        HILOGE("get dp service failed");
+        return DP_GET_SERVICE_FAILED;
+    }
+    return dpService->GetSessionKey(sessionKeyId, sessionKey);
 }
 
 int32_t DistributedDeviceProfileClient::UpdateSessionKey(

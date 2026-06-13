@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2025-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -94,7 +94,10 @@ enum class DpIpcInterfaceCode : uint32_t {
     ON_SERVICE_INFO_UPDATE = 75,
     ON_SERVICE_INFO_DELETE = 76,
     SUBSCRIBE_SERVICE_INFO_CALLBACK = 77,
-    MAX = 78
+	GET_SESSION_KEY_BY_SESSIONKEYID = 78,
+	ON_DEVICE_ACL_INACTIVE_BY_DELETE = 79,
+	ON_DEVICE_ACL_INACTIVE_BY_UPDATE = 80,
+    MAX = 81
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

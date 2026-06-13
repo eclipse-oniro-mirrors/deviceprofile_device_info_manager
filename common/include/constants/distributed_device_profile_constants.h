@@ -247,7 +247,7 @@ constexpr int32_t MAX_DUMP_ARGS_SIZE = 1000;
 constexpr int32_t MAX_LISTENER_SIZE = 100;
 constexpr int32_t MAX_EVENT_HANDLER_SIZE = 50;
 constexpr int32_t MAX_DB_RECORD_SIZE = 10000;
-constexpr int32_t MAX_SUBSCRIBE_CHANGE_SIZE = 6;
+constexpr int32_t MAX_SUBSCRIBE_CHANGE_SIZE = 20;
 constexpr int32_t MAX_INTERFACE_SIZE = 60;
 constexpr int32_t MAX_SUBSCRIBE_INFO_SIZE = 500;
 constexpr int32_t MAX_SYNC_RESULTS_SIZE = 50;
@@ -445,6 +445,8 @@ extern const std::string SELECT_ACCESSER_TABLE_WHERE_ACCESSERID_AND_ACCESSERBUND
 extern const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEBUNDLENAME;
 extern const std::string SELECT_ACCESSEE_TABLE;
 extern const std::string SELECT_ACCESSER_TABLE;
+extern const std::string SELECT_ACCESSER_TABLE_WHERE_SESSIONKEYID;
+extern const std::string SELECT_ACCESSEE_TABLE_WHERE_SESSIONKEYID;
 extern const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_ALL_EXCEPT_STATUS;
 extern const std::string SELECT_ACCESSER_TABLE_WHERE_ALL;
 extern const std::string SELECT_ACCESSEE_TABLE_WHERE_ALL;

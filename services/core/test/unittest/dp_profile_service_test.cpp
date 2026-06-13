@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -232,6 +232,14 @@ HWTEST_F(DpProfileServiceTest, GetSessionKey_001, TestSize.Level1)
     std::vector<uint8_t> sessionKey;
     int32_t sessionKeyId = 0;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetSessionKey(userId, sessionKeyId, sessionKey);
+    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+}
+
+HWTEST_F(DpProfileServiceTest, GetSessionKey_002, TestSize.Level1)
+{
+    std::vector<uint8_t> sessionKey;
+    int32_t sessionKeyId = 0;
+    int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetSessionKey(sessionKeyId, sessionKey);
     EXPECT_EQ(DP_PERMISSION_DENIED, ret);
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -483,6 +483,16 @@ int32_t DistributedDeviceProfileServiceNew::GetSessionKey(uint32_t userId,
         return DP_PERMISSION_DENIED;
     }
     int32_t ret = SessionKeyManager::GetInstance().GetSessionKey(userId, sessionKeyId, sessionKey);
+    return ret;
+}
+
+int32_t DistributedDeviceProfileServiceNew::GetSessionKey(int32_t sessionKeyId, std::vector<uint8_t>& sessionKey)
+{
+    if (!PermissionManager::GetInstance().IsCallerTrust(GET_SESSION_KEY)) {
+        HILOGE("the caller is permission denied!");
+        return DP_PERMISSION_DENIED;
+    }
+    int32_t ret = SessionKeyManager::GetInstance().GetSessionKey(sessionKeyId, sessionKey);
     return ret;
 }
 

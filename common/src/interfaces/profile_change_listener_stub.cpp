@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -45,6 +45,10 @@ ProfileChangeListenerStub::ProfileChangeListenerStub()
         &ProfileChangeListenerStub::OnTrustDeviceProfileActiveInner;
     funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_INACTIVE)] =
         &ProfileChangeListenerStub::OnTrustDeviceProfileInactiveInner;
+    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_DELETE)] =
+        &ProfileChangeListenerStub::OnDeviceAclInactiveByDeleteInner;
+    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_UPDATE)] =
+        &ProfileChangeListenerStub::OnDeviceAclInactiveByUpdateInner;
     funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_ADD)] =
         &ProfileChangeListenerStub::OnDeviceProfileAddInner;
     funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_DELETE)] =
@@ -95,6 +99,10 @@ int32_t ProfileChangeListenerStub::OnRemoteRequest(uint32_t code, MessageParcel&
             return ProfileChangeListenerStub::OnTrustDeviceProfileActiveInner(data, reply);
         case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_INACTIVE):
             return ProfileChangeListenerStub::OnTrustDeviceProfileInactiveInner(data, reply);
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_DELETE):
+            return ProfileChangeListenerStub::OnDeviceAclInactiveByDeleteInner(data, reply);
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_UPDATE):
+            return ProfileChangeListenerStub::OnDeviceAclInactiveByUpdateInner(data, reply);
         case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_ADD):
             return ProfileChangeListenerStub::OnDeviceProfileAddInner(data, reply);
         case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_DELETE):
@@ -197,6 +205,38 @@ int32_t ProfileChangeListenerStub::OnTrustDeviceProfileInactiveInner(MessageParc
         return ERR_FLATTEN_OBJECT;
     }
     OnTrustDeviceProfileInactive(trustDeviceProfile);
+    if (!reply.WriteInt32(DP_SUCCESS)) {
+        HILOGE("Read reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileChangeListenerStub::OnDeviceAclInactiveByDeleteInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    TrustDeviceProfile trustDeviceProfile;
+    if (!trustDeviceProfile.UnMarshalling(data)) {
+        HILOGE("Read reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    OnDeviceAclInactiveByDelete(trustDeviceProfile);
+    if (!reply.WriteInt32(DP_SUCCESS)) {
+        HILOGE("Read reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileChangeListenerStub::OnDeviceAclInactiveByUpdateInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    TrustDeviceProfile trustDeviceProfile;
+    if (!trustDeviceProfile.UnMarshalling(data)) {
+        HILOGE("Read reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    OnDeviceAclInactiveByUpdate(trustDeviceProfile);
     if (!reply.WriteInt32(DP_SUCCESS)) {
         HILOGE("Read reply failed");
         return ERR_FLATTEN_OBJECT;
@@ -370,6 +410,18 @@ int32_t ProfileChangeListenerStub::OnTrustDeviceProfileActive(const TrustDeviceP
 }
 
 int32_t ProfileChangeListenerStub::OnTrustDeviceProfileInactive(const TrustDeviceProfile& profile)
+{
+    (void)profile;
+    return DP_SUCCESS;
+}
+
+int32_t ProfileChangeListenerStub::OnDeviceAclInactiveByDelete(const TrustDeviceProfile& profile)
+{
+    (void)profile;
+    return DP_SUCCESS;
+}
+
+int32_t ProfileChangeListenerStub::OnDeviceAclInactiveByUpdate(const TrustDeviceProfile& profile)
 {
     (void)profile;
     return DP_SUCCESS;

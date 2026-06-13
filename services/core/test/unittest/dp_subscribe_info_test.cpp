@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -254,6 +254,10 @@ HWTEST_F(DPSubscribeInfoTest, Stub_001, TestSize.Level1)
     EXPECT_EQ(ret, DP_SUCCESS);
     ret = proxy->OnTrustDeviceProfileUpdate(oldTrustProfile, newTrustProfile);
     EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->OnDeviceAclInactiveByDelete(oldTrustProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->OnDeviceAclInactiveByUpdate(oldTrustProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
 
     DeviceProfile oldDeviceProfile;
     DeviceProfile newDeviceProfile;
@@ -323,6 +327,49 @@ HWTEST_F(DPSubscribeInfoTest, IProfileChangeListener_001, TestSize.Level1)
     int32_t ret = subscribeDPChangeListener->OnTrustDeviceProfileActive(profile);
     EXPECT_EQ(ret, DP_SUCCESS);
     ret = subscribeDPChangeListener->OnTrustDeviceProfileInactive(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: IProfileChangeListener_002
+ * @tc.desc: Normal testCase of DPSubscribeInfoTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(DPSubscribeInfoTest, IProfileChangeListener_001, TestSize.Level1)
+{
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+	    sptr<IProfileChangeListener>(new DPSubscribeInfoTest::SubscribeDPChangeListener);
+    TrustDeviceProfile profile;
+    profile.SetPeerUserId(1001);
+    int32_t ret = subscribeDPChangeListener->OnDeviceAclInactiveByDelete(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = subscribeDPChangeListener->OnDeviceAclInactiveByUpdate(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: Stub_003
+ * @tc.desc: Normal testCase of DPSubscribeInfoTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(DPSubscribeInfoTest, Stub_003, TestSize.Level1)
+{
+    uint32_t saId = 4801;
+    std::string subscribeKey = "trust_device_profile";
+    std::unordered_set<ProfileChangeType> subscribeTypes = {ProfileChangeType::DEVICE_ACL_INACTIVE_BY_DELETE,
+        ProfileChangeType::DEVICE_ACL_INACTIVE_BY_UPDATE};
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        sptr<IProfileChangeListener>(new DPSubscribeInfoTest::SubscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    OHOS::sptr<IProfileChangeListener> proxy = OHOS::iface_cast<IProfileChangeListener>(subscribeInfo.GetListener());
+    TrustDeviceProfile profile;
+    profile.SetPeerUserId(1001);
+    int32_t userId = profile.GetPeerUserId();
+    EXPECT_EQ(userId, 1001);
+    ASSERT_NE(proxy, nullptr);
+    int32_t ret = proxy->IProfileChangeListener::OnDeviceAclInactiveByDelete(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->IProfileChangeListener::OnDeviceAclInactiveByUpdate(profile);
     EXPECT_EQ(ret, DP_SUCCESS);
 }
 } // namespace DistributedDeviceProfile

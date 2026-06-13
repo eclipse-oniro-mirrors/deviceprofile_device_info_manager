@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,20 +14,22 @@
  */
 
 #include "trust_profile_manager.h"
-#include "cJSON.h"
-#include "subscribe_profile_manager.h"
-#include "distributed_device_profile_log.h"
-#include "rdb_adapter.h"
-#include "profile_utils.h"
-#include "device_manager.h"
-#include "distributed_device_profile_constants.h"
-#include "distributed_device_profile_errors.h"
 #include "accesser.h"
 #include "accessee.h"
+#include "cJSON.h"
+#include "distributed_device_profile_constants.h"
+#include "distributed_device_profile_errors.h"
+#include "distributed_device_profile_log.h"
+#include "device_manager.h"
+#include "profile_utils.h"
+#include "rdb_adapter.h"
+#include "subscribe_profile_manager.h"
+#include "values_bucket.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(TrustProfileManager);
+using namespace OHOS::NativeRdb;
 namespace {
     const std::string TAG = "TrustProfileManager";
     const std::string NAME = "name";
@@ -1484,7 +1486,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(std::shared_ptr<ResultSet> 
     int32_t rowCount = ROWCOUNT_INIT;
     accesserResultSet->GetRowCount(rowCount);
     if (rowCount == 0) {
-        HILOGE("not find data");
+        HILOGE("accesser table not find data by accesserId : %{public}" PRId64 "", accesserId);
         accesserResultSet->Close();
         return DP_NOT_FIND_DATA;
     }
@@ -1496,7 +1498,7 @@ int32_t TrustProfileManager::GetAccessControlProfile(std::shared_ptr<ResultSet> 
     }
     accesseeResultSet->GetRowCount(rowCount);
     if (rowCount == 0) {
-        HILOGE("not find data");
+        HILOGE("accessee table not find data by accesseeId : %{public}" PRId64 "", accesseeId);
         accesserResultSet->Close();
         accesseeResultSet->Close();
         return DP_NOT_FIND_DATA;
@@ -2058,9 +2060,18 @@ int32_t TrustProfileManager::NotifyCheck(const AccessControlProfile& profile, co
     }
     if (resultCount == 0 && profile.GetStatus() == STATUS_INACTIVE &&
         oldProfile.GetStatus() == STATUS_ACTIVE && !IsLnnAcl(profile)) {
-        int32_t ret = SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileInactive(trustProfile);
+        ret = SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileInactive(trustProfile);
         if (ret != DP_SUCCESS) {
             HILOGE("NotifyTrustDeviceProfileInactive failed");
+            return DP_NOTIFY_TRUST_DEVICE_FAIL;
+        }
+    }
+    bool isExists = false;
+    CheckDeviceIdActiveAclExists(profile, isExists);
+    if (!isExists && !IsLnnAcl(profile)) {
+        ret = SubscribeProfileManager::GetInstance().NotifyDeviceAclInactiveByUpdate(trustProfile);
+        if (ret != DP_SUCCESS) {
+            HILOGE("NotifyDeviceAclInactiveByUpdate failed");
             return DP_NOTIFY_TRUST_DEVICE_FAIL;
         }
     }
@@ -2115,6 +2126,14 @@ int32_t TrustProfileManager::DeleteTrustDeviceCheck(const AccessControlProfile& 
         int32_t ret = SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileDelete(trustProfile);
         if (ret != DP_SUCCESS) {
             HILOGE("NotifyTrustDeviceProfileDelete failed");
+            return DP_NOTIFY_TRUST_DEVICE_FAIL;
+        }
+    }
+    CheckDeviceIdActiveAclExists(profile, isExists);
+    if (!isExists && !IsLnnAcl(profile)) {
+        int32_t ret = SubscribeProfileManager::GetInstance().NotifyDeviceAclInactiveByDelete(trustProfile);
+        if (ret != DP_SUCCESS) {
+            HILOGE("NotifyDeviceAclInactiveByDelete failed");
             return DP_NOTIFY_TRUST_DEVICE_FAIL;
         }
     }
@@ -2218,6 +2237,104 @@ int32_t TrustProfileManager::AddAceeCreIdColumnToAceeTable()
     if (ret != DP_SUCCESS) {
         HILOGE("add column accesseeCredentialId to acee table failed");
         return DP_CREATE_TABLE_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t TrustProfileManager::GetUserIdBySessionKeyId(int32_t sessionKeyId, int32_t& userId)
+{
+    std::lock_guard<std::mutex> lock(aclMutex_);
+    std::shared_ptr<ResultSet> accesserResultSet =
+        GetResultSet(SELECT_ACCESSER_TABLE_WHERE_SESSIONKEYID,
+            std::vector<ValueObject>{ ValueObject(sessionKeyId)});
+    if (accesserResultSet == nullptr) {
+        HILOGE("accesserResultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    int32_t rowCount = ROWCOUNT_INIT;
+    int32_t columnIndex = COLUMNINDEX_INIT;
+    accesserResultSet->GetRowCount(rowCount);
+    if (rowCount > 0) {
+        while (accesserResultSet->GoToNextRow() == DP_SUCCESS) {
+            accesserResultSet->GetColumnIndex(ACCESSER_USER_ID, columnIndex);
+            accesserResultSet->GetInt(columnIndex, userId);
+        }
+        accesserResultSet->Close();
+        return DP_SUCCESS;
+    }
+    accesserResultSet->Close();
+
+    std::shared_ptr<ResultSet> accesseeResultSet =
+        GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_SESSIONKEYID,
+            std::vector<ValueObject>{ ValueObject(sessionKeyId)});
+    if (accesseeResultSet == nullptr) {
+        HILOGE("accesseeResultSet is nullptr");
+        return DP_GET_RESULTSET_FAIL;
+    }
+    accesseeResultSet->GetRowCount(rowCount);
+    if (rowCount <= 0) {
+        accesseeResultSet->Close();
+        return DP_NOT_FIND_DATA;
+    }
+    while (accesseeResultSet->GoToNextRow() == DP_SUCCESS) {
+        accesseeResultSet->GetColumnIndex(ACCESSEE_USER_ID, columnIndex);
+        accesseeResultSet->GetInt(columnIndex, userId);
+    }
+    accesseeResultSet->Close();
+    return DP_SUCCESS;
+}
+
+bool TrustProfileManager::CheckSessionKeyIdExists(int32_t sessionKeyId)
+{
+    std::lock_guard<std::mutex> lock(aclMutex_);
+    std::shared_ptr<ResultSet> accesserResultSet =
+        GetResultSet(SELECT_ACCESSER_TABLE_WHERE_SESSIONKEYID,
+            std::vector<ValueObject>{ ValueObject(sessionKeyId)});
+    if (accesserResultSet == nullptr) {
+        HILOGE("accesserResultSet is nullptr");
+        return false;
+    }
+    int32_t rowCount = ROWCOUNT_INIT;
+    accesserResultSet->GetRowCount(rowCount);
+    accesserResultSet->Close();
+    if (rowCount > 0) {
+        return true;
+    }
+
+    std::shared_ptr<ResultSet> accesseeResultSet =
+        GetResultSet(SELECT_ACCESSEE_TABLE_WHERE_SESSIONKEYID,
+            std::vector<ValueObject>{ ValueObject(sessionKeyId)});
+    if (accesseeResultSet == nullptr) {
+        HILOGE("accesseeResultSet is nullptr");
+        return false;
+    }
+    accesseeResultSet->GetRowCount(rowCount);
+    accesseeResultSet->Close();
+    if (rowCount <= 0) {
+        return false;
+    }
+    return true;
+}
+
+int32_t TrustProfileManager::CheckDeviceIdActiveAclExists(const AccessControlProfile& profile, bool& isExists)
+{
+    std::string peerDeviceId = profile.GetTrustDeviceId();
+    std::vector<AccessControlProfile> aclProfiles;
+    int32_t ret = GetAllAccessControlProfiles(aclProfiles);
+    if (ret != DP_SUCCESS) {
+        HILOGE("GetAllAccessControlProfiles failed");
+        return ret;
+    }
+    RemoveLnnAcl(aclProfiles);
+    for (auto aclProfile : aclProfiles) {
+        if (peerDeviceId != aclProfile.GetTrustDeviceId()) {
+            continue;
+        }
+        if (aclProfile.GetStatus() == STATUS_ACTIVE) {
+            isExists = true;
+            HILOGE("peerDeviceId active acl exist");
+            break;
+        }
     }
     return DP_SUCCESS;
 }

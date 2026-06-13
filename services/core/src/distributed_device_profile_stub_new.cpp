@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -75,6 +75,7 @@ void DistributedDeviceProfileStubNew::InitAclAndSubscribe()
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::DELETE_SERVICE_INFO));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::GET_ALL_SERVICE_INFO_LIST));
     aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::GET_SERVICE_INFO_BY_USER_INFO));
+    aclAndSubscribeFuncs_.insert(static_cast<uint32_t>(DpIpcInterfaceCode::GET_SESSION_KEY_BY_SESSIONKEYID));
 }
 
 DistributedDeviceProfileStubNew::~DistributedDeviceProfileStubNew()
@@ -116,6 +117,8 @@ int32_t DistributedDeviceProfileStubNew::NotifyAclEventInner(uint32_t code, Mess
             return UpdateSessionKeyInner(data, reply);
         case static_cast<uint32_t>(DpIpcInterfaceCode::DELETE_SESSION_KEY):
             return DeleteSessionKeyInner(data, reply);
+        case static_cast<uint32_t>(DpIpcInterfaceCode::GET_SESSION_KEY_BY_SESSIONKEYID):
+            return GetSessionKeyBySessionKeyIdInner(data, reply);
         default:
             return NotifyProfileDataEventInner(code, data, reply, option);
     }
@@ -429,6 +432,26 @@ int32_t DistributedDeviceProfileStubNew::GetSessionKeyInner(MessageParcel& data,
     READ_HELPER(data, Uint32, userId);
     READ_HELPER(data, Int32, sessionKeyId);
     int32_t ret = GetSessionKey(userId, sessionKeyId, sessionKey);
+    if (!reply.WriteInt32(ret)) {
+        ProfileUtils::SecureClearSessionKey(sessionKey);
+        HILOGE("Write reply failed");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    if (!IpcUtils::Marshalling(reply, sessionKey)) {
+        ProfileUtils::SecureClearSessionKey(sessionKey);
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    ProfileUtils::SecureClearSessionKey(sessionKey);
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileStubNew::GetSessionKeyBySessionKeyIdInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGD("called");
+    int32_t sessionKeyId = 0;
+    std::vector<uint8_t> sessionKey;
+    READ_HELPER(data, Int32, sessionKeyId);
+    int32_t ret = GetSessionKey(sessionKeyId, sessionKey);
     if (!reply.WriteInt32(ret)) {
         ProfileUtils::SecureClearSessionKey(sessionKey);
         HILOGE("Write reply failed");

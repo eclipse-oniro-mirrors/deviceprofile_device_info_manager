@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -227,6 +227,22 @@ int32_t DistributedDeviceProfileProxy::GetSessionKey(
     WRITE_HELPER(data, Int32, sessionKeyId);
     MessageParcel reply;
     SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::GET_SESSION_KEY), data, reply);
+    if (!IpcUtils::UnMarshalling(reply, sessionKey)) {
+        HILOGE("dp ipc read parcel fail");
+        return DP_WRITE_PARCEL_FAIL;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t DistributedDeviceProfileProxy::GetSessionKey(int32_t sessionKeyId, std::vector<uint8_t>& sessionKey)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_INTERFACE_TOKEN(data);
+    WRITE_HELPER(data, Int32, sessionKeyId);
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::GET_SESSION_KEY_BY_SESSIONKEYID), data, reply);
     if (!IpcUtils::UnMarshalling(reply, sessionKey)) {
         HILOGE("dp ipc read parcel fail");
         return DP_WRITE_PARCEL_FAIL;

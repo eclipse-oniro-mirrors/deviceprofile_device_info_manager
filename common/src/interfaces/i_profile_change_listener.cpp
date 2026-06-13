@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,6 +29,18 @@ int32_t IProfileChangeListener::OnTrustDeviceProfileActive(const TrustDeviceProf
 }
 
 int32_t IProfileChangeListener::OnTrustDeviceProfileInactive(const TrustDeviceProfile& profile)
+{
+    (void)profile;
+    return DP_SUCCESS;
+}
+
+int32_t IProfileChangeListener::OnDeviceAclInactiveByDelete(const TrustDeviceProfile& profile)
+{
+    (void)profile;
+    return DP_SUCCESS;
+}
+
+int32_t IProfileChangeListener::OnDeviceAclInactiveByUpdate(const TrustDeviceProfile& profile)
 {
     (void)profile;
     return DP_SUCCESS;
