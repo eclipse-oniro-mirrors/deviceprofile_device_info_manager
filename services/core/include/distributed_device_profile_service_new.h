@@ -140,7 +140,6 @@ private:
     int32_t NotifyDeviceProfileInited();
     int32_t NotifyPinCodeInvalid(const LocalServiceInfo& localServiceInfo);
     int32_t NotifyBusinessEvent(const BusinessEvent& event);
-    void NotifySingleBusinessEvent(const sptr<IRemoteObject>& callback, const BusinessEvent& event);
     void GetDynamicProfilesFromTempCache(std::map<std::string, std::string>& entries);
     void ClearProfileCache();
     int32_t UnInitNext();
