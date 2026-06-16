@@ -178,9 +178,9 @@ int32_t DistributedDeviceProfileServiceNew::Init()
     auto handler = EventHandlerFactory::GetInstance().GetEventHandler();
     if (handler != nullptr) {
         handler->PostTask([this]() {
-            this->CleanupExpiredAcls();
-        },
-        "cleanup_acl", ACL_CLEANUP_INTERVAL_MS);
+            this->CleanupExpiredAcls();},
+            "cleanup_acl",
+            ACL_CLEANUP_INTERVAL_MS);
     }
     HILOGI("init finish");
     return DP_SUCCESS;
@@ -1569,21 +1569,28 @@ int32_t DistributedDeviceProfileServiceNew::NotifyBusinessEvent(const BusinessEv
         if (key.second != event.GetBusinessKey()) {
             continue;
         }
-        sptr<IBusinessCallback> callbackProxy = iface_cast<IBusinessCallback>(callback);
-        if (callbackProxy == nullptr) {
-            continue;
-        }
-        auto handler = EventHandlerFactory::GetInstance().GetEventHandler();
-        if (handler != nullptr) {
-            handler->PostTask([callbackProxy, event]() {
-                if (callbackProxy != nullptr) {
-                    BusinessEventExt eventExt(event.GetBusinessKey(), event.GetBusinessValue());
-                    callbackProxy->OnBusinessEvent(eventExt);
-                }
-            });
-        }
+        NotifySingleBusinessEvent(callback, event);
     }
     return DP_SUCCESS;
+}
+
+void DistributedDeviceProfileServiceNew::NotifySingleBusinessEvent(const sptr<IRemoteObject>& callback,
+    const BusinessEvent& event)
+{
+    sptr<IBusinessCallback> callbackProxy = iface_cast<IBusinessCallback>(callback);
+    if (callbackProxy == nullptr) {
+        return;
+    }
+    auto handler = EventHandlerFactory::GetInstance().GetEventHandler();
+    if (handler == nullptr) {
+        return;
+    }
+    handler->PostTask([callbackProxy, event]() {
+        if (callbackProxy != nullptr) {
+            BusinessEventExt eventExt(event.GetBusinessKey(), event.GetBusinessValue());
+            callbackProxy->OnBusinessEvent(eventExt);
+        }
+    });
 }
 
 int32_t DistributedDeviceProfileServiceNew::PutServiceInfo(const ServiceInfo& serviceInfo)
