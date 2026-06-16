@@ -177,8 +177,7 @@ int32_t DistributedDeviceProfileServiceNew::Init()
     // 启动ACL清理任务（原则17）
     auto handler = EventHandlerFactory::GetInstance().GetEventHandler();
     if (handler != nullptr) {
-        handler->PostTask([this]() {
-            this->CleanupExpiredAcls();},
+        handler->PostTask([this]() {this->CleanupExpiredAcls();},
             "cleanup_acl",
             ACL_CLEANUP_INTERVAL_MS);
     }
