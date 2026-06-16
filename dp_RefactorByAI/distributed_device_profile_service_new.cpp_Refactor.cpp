@@ -179,7 +179,8 @@ int32_t DistributedDeviceProfileServiceNew::Init()
     if (handler != nullptr) {
         handler->PostTask([this]() {
             this->CleanupExpiredAcls();
-        }, "cleanup_acl", ACL_CLEANUP_INTERVAL_MS);
+        },
+        "cleanup_acl", ACL_CLEANUP_INTERVAL_MS);
     }
     HILOGI("init finish");
     return DP_SUCCESS;
@@ -875,7 +876,8 @@ int32_t DistributedDeviceProfileServiceNew::PutCharacteristicProfileBatch(
             return AddCharProfilesToCache(charProfiles);
         }
     }
-    std::vector<CharacteristicProfile> switchCharProfiles, dynamicCharProfiles;
+    std::vector<CharacteristicProfile> switchCharProfiles;
+    std::vector<CharacteristicProfile> dynamicCharProfiles;
     for (auto& profile : charProfiles) {
         if (profile.GetCharacteristicKey() == SWITCH_STATUS) {
             if (!IsSwitchStatusValid()) {
