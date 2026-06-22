@@ -61,9 +61,6 @@ public:
     int32_t SyncDeviceProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t SyncStaticProfileInner(MessageParcel& data, MessageParcel& reply);
     int32_t SendSubscribeInfosInner(MessageParcel& data, MessageParcel& reply);
-    int32_t SubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply);
-    int32_t UnSubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply);
-
 
 private:
     using Func = int32_t(DistributedDeviceProfileStubNew::*)(MessageParcel& data, MessageParcel& reply);

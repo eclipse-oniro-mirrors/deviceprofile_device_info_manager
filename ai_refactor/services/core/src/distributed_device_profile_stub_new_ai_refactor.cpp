@@ -893,36 +893,6 @@ int32_t DistributedDeviceProfileStubNew::SendSubscribeInfosInner(MessageParcel& 
     }
     return DP_SUCCESS;
 }
-
-int32_t DistributedDeviceProfileStubNew::SubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply)
-{
-    int32_t saId = -1;
-    READ_HELPER(data, Int32, saId);
-    sptr<IRemoteObject> dpInitedCallback = data.ReadRemoteObject();
-    // 安全增强：服务信息参数验证（原则19）
-    if (!ValidateServiceInfoParams(saId, dpInitedCallback)) {
-        HILOGE("Service info params validation failed");
-        return ERR_FLATTEN_OBJECT;
-    }
-    int32_t ret = SubscribeDeviceProfileInited(saId, dpInitedCallback);
-    if (!reply.WriteInt32(ret)) {
-        HILOGE("Write reply failed");
-        return ERR_FLATTEN_OBJECT;
-    }
-    return DP_SUCCESS;
-}
-
-int32_t DistributedDeviceProfileStubNew::UnSubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply)
-{
-    int32_t saId = -1;
-    READ_HELPER(data, Int32, saId);
-    int32_t ret = UnSubscribeDeviceProfileInited(saId);
-    if (!reply.WriteInt32(ret)) {
-        HILOGE("Write reply failed");
-        return ERR_FLATTEN_OBJECT;
-    }
-    return DP_SUCCESS;
-}
 //LCOV_EXCL_STOP
 } // namespace DeviceProfile
 } // namespace OHOS
