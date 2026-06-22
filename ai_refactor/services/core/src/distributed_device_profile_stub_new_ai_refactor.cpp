@@ -863,36 +863,6 @@ int32_t DistributedDeviceProfileStubNew::SyncDeviceProfileInner(MessageParcel& d
     }
     return DP_SUCCESS;
 }
-
-int32_t DistributedDeviceProfileStubNew::SyncStaticProfileInner(MessageParcel& data, MessageParcel& reply)
-{
-    DistributedDeviceProfile::DpSyncOptions syncOptions;
-    if (!syncOptions.UnMarshalling(data)) {
-        HILOGE("read parcel fail!");
-        return DP_READ_PARCEL_FAIL;
-    }
-    sptr<IRemoteObject> syncCompletedCallback = data.ReadRemoteObject();
-    int32_t ret = SyncStaticProfile(syncOptions, syncCompletedCallback);
-    if (!reply.WriteInt32(ret)) {
-        HILOGE("Write reply failed");
-        return ERR_FLATTEN_OBJECT;
-    }
-    return DP_SUCCESS;
-}
-
-int32_t DistributedDeviceProfileStubNew::SendSubscribeInfosInner(MessageParcel& data, MessageParcel& reply)
-{
-    std::map<std::string, SubscribeInfo> listenerMap;
-    if (!IpcUtils::UnMarshalling(data, listenerMap)) {
-        return DP_READ_PARCEL_FAIL;
-    }
-    int32_t ret = SendSubscribeInfos(listenerMap);
-    if (!reply.WriteInt32(ret)) {
-        HILOGE("Write reply failed");
-        return ERR_FLATTEN_OBJECT;
-    }
-    return DP_SUCCESS;
-}
 //LCOV_EXCL_STOP
 } // namespace DeviceProfile
 } // namespace OHOS
