@@ -63,29 +63,7 @@ public:
     int32_t SendSubscribeInfosInner(MessageParcel& data, MessageParcel& reply);
     int32_t SubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply);
     int32_t UnSubscribeDeviceProfileInitedInner(MessageParcel& data, MessageParcel& reply);
-    int32_t PutAllTrustedDevicesInner(MessageParcel& data, MessageParcel& reply);
-    int32_t PutLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply);
-    int32_t UpdateLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply);
-    int32_t GetLocalServiceInfoByBundleAndPinTypeInner(MessageParcel& data, MessageParcel& reply);
-    int32_t DeleteLocalServiceInfoInner(MessageParcel& data, MessageParcel& reply);
-    int32_t GetDeviceProfilesInner(MessageParcel& data, MessageParcel& reply);
-    int32_t DeleteDeviceProfileBatchInner(MessageParcel& data, MessageParcel& reply);
-    int32_t PutProductInfoBatchInner(MessageParcel& data, MessageParcel& reply);
-    int32_t PutDeviceIconInfoBatchInner(MessageParcel& data, MessageParcel& reply);
-    int32_t GetDeviceIconInfosInner(MessageParcel& data, MessageParcel& reply);
-    int32_t SubscribePinCodeInvalidInner(MessageParcel& data, MessageParcel& reply);
-    int32_t UnSubscribePinCodeInvalidInner(MessageParcel& data, MessageParcel& reply);
-    virtual void DelayUnloadTask() = 0;
-    virtual bool IsInited() = 0;
-    int32_t RegisterBusinessCallbackInner(MessageParcel& data, MessageParcel& reply);
-    int32_t UnRegisterBusinessCallbackInner(MessageParcel& data, MessageParcel& reply);
-    int32_t PutBusinessEventInner(MessageParcel& data, MessageParcel& reply);
-    int32_t GetBusinessEventInner(MessageParcel& data, MessageParcel& reply);
-    int32_t PutServiceInfoInner(MessageParcel& data, MessageParcel& reply);
-    int32_t DeleteServiceInfoInner(MessageParcel& data, MessageParcel& reply);
-    int32_t GetAllServiceInfoListInner(MessageParcel& data, MessageParcel& reply);
-    int32_t GetServiceInfosByUserInfoInner(MessageParcel& data, MessageParcel& reply);
-    int32_t SubscribeAllServiceInfoInner(MessageParcel& data, MessageParcel& reply);
+
 
 private:
     using Func = int32_t(DistributedDeviceProfileStubNew::*)(MessageParcel& data, MessageParcel& reply);
