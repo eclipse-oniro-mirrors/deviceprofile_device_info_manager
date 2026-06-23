@@ -253,51 +253,7 @@ void KvDataChangeListener::ProcessDelete(const std::vector<std::string>& keyList
         }
     }
 }
-
-// [原则3] 使用安全的整数解析替代atoi/atoll，防止溢出和未定义行为
-int32_t KvDataChangeListener::EntriesToUserInfo(const std::string& key, UserInfo& userInfo, ServiceInfo& serviceInfo)
-{
-    std::vector<std::string> res;
-    std::vector<ServiceInfo> serviceInfos;
-    if (ProfileUtils::SplitString(key, SEPARATOR, res) != DP_SUCCESS ||
-        res.size() != MIN_KEY_PARTS_REQUIRED) {
-        HILOGE("key is invalid: %{public}s", key.c_str());
-        return DP_INVALID_PARAMS;
-    }
-
-    userInfo.udid = res[UDID_INDEX];
-
-    // [原则3] 使用strtol替代atoi，添加溢出和格式校验
-    char* endPtr = nullptr;
-    errno = 0;
-    long userId = strtol(res[USERID_INDEX].c_str(), &endPtr, 10);
-    if (errno != 0 || endPtr == res[USERID_INDEX].c_str() || *endPtr != '\0' ||
-        userId < INT32_MIN || userId > INT32_MAX) {
-        HILOGE("Invalid userId: %{public}s", res[USERID_INDEX].c_str());
-        return DP_INVALID_PARAMS;
-    }
-    userInfo.userId = static_cast<int32_t>(userId);
-
-    // [原则3] 使用strtoll替代atoll，添加溢出和格式校验
-    errno = 0;
-    long long serviceId = strtoll(res[SERVICEID_INDEX].c_str(), &endPtr, 10);
-    if (errno != 0 || endPtr == res[SERVICEID_INDEX].c_str() || *endPtr != '\0') {
-        HILOGE("Invalid serviceId: %{public}s", res[SERVICEID_INDEX].c_str());
-        return DP_INVALID_PARAMS;
-    }
-    userInfo.serviceId = static_cast<int64_t>(serviceId);
-
-    int ret = ServiceInfoManager::GetInstance().GetServiceInfosByUserInfo(userInfo, serviceInfos);
-    if (ret != DP_SUCCESS) {
-        HILOGE("GetServiceInfosByUserInfo Fail");
-        return ret;
-    }
-    if (!serviceInfos.empty()) {
-        serviceInfo = serviceInfos[NUM_0];
-    }
-
-    return DP_SUCCESS;
-}
+    
 //LCOV_EXCL_STOP
 // [原则12] OnSwitchChange使用detach线程处理异步通知，lambda仅捕获notification值对象（不含this），无线程安全风险
 void KvDataChangeListener::OnSwitchChange(const DistributedKv::SwitchNotification& notification)
