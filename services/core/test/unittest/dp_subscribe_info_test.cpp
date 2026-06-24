@@ -335,7 +335,7 @@ HWTEST_F(DPSubscribeInfoTest, IProfileChangeListener_001, TestSize.Level1)
  * @tc.desc: Normal testCase of DPSubscribeInfoTest for CRUD
  * @tc.type: FUNC
  */
-HWTEST_F(DPSubscribeInfoTest, IProfileChangeListener_001, TestSize.Level1)
+HWTEST_F(DPSubscribeInfoTest, IProfileChangeListener_002, TestSize.Level1)
 {
     OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
 	    sptr<IProfileChangeListener>(new DPSubscribeInfoTest::SubscribeDPChangeListener);
