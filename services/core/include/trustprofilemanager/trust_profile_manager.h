@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,11 +29,9 @@
 #include "query_profile.h"
 #include "single_instance.h"
 #include "trust_device_profile.h"
-#include "values_bucket.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
-using namespace OHOS::NativeRdb;
 
 class TrustProfileManager {
     DECLARE_SINGLE_INSTANCE(TrustProfileManager);
@@ -53,6 +51,8 @@ public:
         std::vector<AccessControlProfile>& profile);
     int32_t DeleteTrustDeviceProfile(const std::string& deviceId);
     int32_t DeleteAccessControlProfile(int64_t accessControlId);
+    int32_t GetUserIdBySessionKeyId(int32_t sessionKeyId, int32_t& userId);
+    bool CheckSessionKeyIdExists(int32_t sessionKeyId);
 
 private:
     int32_t CreateTable();
@@ -126,6 +126,7 @@ private:
     int32_t IsAclExists(const AccessControlProfile& profile);
     int32_t CheckDeviceIdAndUserIdActive(const AccessControlProfile& profile, int32_t& resultCount);
     int32_t CheckDeviceIdAndUserIdExists(const AccessControlProfile& profile, bool& isExists);
+    int32_t CheckDeviceIdActiveAclExists(const AccessControlProfile& profile, bool& isExists);
     int32_t NotifyCheck(const AccessControlProfile& profile, const AccessControlProfile& oldProfile);
     void RemoveLnnAcl(std::vector<AccessControlProfile>& profiles);
     bool IsLnnAcl(const AccessControlProfile& aclProfile);

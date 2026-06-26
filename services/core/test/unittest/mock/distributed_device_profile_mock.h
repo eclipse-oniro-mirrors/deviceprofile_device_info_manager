@@ -49,6 +49,8 @@ public:
     MOCK_METHOD(int32_t, PutSessionKey,
         (uint32_t, const std::vector<uint8_t>&, int32_t&), (override));
     MOCK_METHOD(int32_t, GetSessionKey,
+        (int32_t, std::vector<uint8_t>&), (override));
+    MOCK_METHOD(int32_t, GetSessionKey,
         (uint32_t, int32_t, std::vector<uint8_t>&), (override));
     MOCK_METHOD(int32_t, UpdateSessionKey,
         (uint32_t, int32_t, const std::vector<uint8_t>&), (override));

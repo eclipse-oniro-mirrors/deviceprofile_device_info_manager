@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -35,12 +35,17 @@ public:
     int32_t UnInit();
     int32_t NotifyProfileChange(ProfileType profileType, ChangeType changeType, const std::string& dbKey,
         const std::string& dbValue);
+    /* User level */
     int32_t NotifyTrustDeviceProfileAdd(const TrustDeviceProfile& trustDeviceProfile);
     int32_t NotifyTrustDeviceProfileUpdate(const TrustDeviceProfile& oldDeviceProfile,
                                            const TrustDeviceProfile& newDeviceProfile);
     int32_t NotifyTrustDeviceProfileDelete(const TrustDeviceProfile& trustDeviceProfile);
     int32_t NotifyTrustDeviceProfileActive(const TrustDeviceProfile& trustDeviceProfile);
     int32_t NotifyTrustDeviceProfileInactive(const TrustDeviceProfile& trustDeviceProfile);
+    /* Device level */
+    int32_t NotifyDeviceAclInactiveByDelete(const TrustDeviceProfile& trustDeviceProfile);
+    int32_t NotifyDeviceAclInactiveByUpdate(const TrustDeviceProfile& trustDeviceProfile);
+
     int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo);
     int32_t SubscribeDeviceProfile(std::map<std::string, SubscribeInfo> subscribeInfos);
     int32_t UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo);

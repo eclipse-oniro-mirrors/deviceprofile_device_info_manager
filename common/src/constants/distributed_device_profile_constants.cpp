@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -489,6 +489,10 @@ const std::string SELECT_ACCESSEE_TABLE_WHERE_ACCESSEEID_AND_ACCESSEEBUNDLENAME 
     "SELECT * FROM accessee_table WHERE accesseeId = ? and accesseeBundleName = ? ";
 const std::string SELECT_ACCESSEE_TABLE = "SELECT * FROM accessee_table ";
 const std::string SELECT_ACCESSER_TABLE = "SELECT * FROM accesser_table ";
+const std::string SELECT_ACCESSER_TABLE_WHERE_SESSIONKEYID =
+    "SELECT * FROM accesser_table WHERE accesserSessionKeyId = ? ";
+const std::string SELECT_ACCESSEE_TABLE_WHERE_SESSIONKEYID =
+    "SELECT * FROM accessee_table WHERE accesseeSessionKeyId = ? ";
 const std::string SELECT_ACCESS_CONTROL_TABLE_WHERE_ALL_EXCEPT_STATUS =
     "SELECT * FROM access_control_table WHERE accesserId = ? and accesseeId = ? and trustDeviceId = ? and \
     sessionKey = ? and bindType = ? and authenticationType = ? and deviceIdType = ? and deviceIdHash = ? \

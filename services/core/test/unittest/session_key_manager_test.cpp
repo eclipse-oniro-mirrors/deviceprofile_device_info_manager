@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2025-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -128,6 +128,20 @@ HWTEST_F(SessionKeyManagerTest, GetSessionKey001, TestSize.Level1)
 }
 
 /*
+ * @tc.name: GetSessionKeyBySessionKeyId001
+ * @tc.desc: GetSessionKey
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SessionKeyManagerTest, GetSessionKeyBySessionKeyId001, TestSize.Level1)
+{
+    std::vector<uint8_t> sessionKey;
+    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+        GetInstance().GetSessionKey(g_sessionKeyId, sessionKey);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
  * @tc.name: GetSessionKey004
  * @tc.desc: GetSessionKey
  * @tc.type: FUNC
@@ -138,6 +152,19 @@ HWTEST_F(SessionKeyManagerTest, GetSessionKey004, TestSize.Level1)
     uint32_t userId = 100;
     std::vector<uint8_t> sessionKey;
     int32_t ret = SessionKeyManager::GetInstance().GetSessionKey(userId, g_sessionKeyId, sessionKey);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: GetSessionKeyBySessionKeyId004
+ * @tc.desc: GetSessionKey
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SessionKeyManagerTest, GetSessionKeyBySessionKeyId004, TestSize.Level1)
+{
+    std::vector<uint8_t> sessionKey;
+    int32_t ret = SessionKeyManager::GetInstance().GetSessionKey(g_sessionKeyId, sessionKey);
     EXPECT_NE(ret, DP_SUCCESS);
 }
 
@@ -215,6 +242,20 @@ HWTEST_F(SessionKeyManagerTest, GetSessionKey002, TestSize.Level1)
 }
 
 /*
+ * @tc.name: GetSessionKeyBySessionKeyId002
+ * @tc.desc: GetSessionKey
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SessionKeyManagerTest, GetSessionKeyBySessionKeyId002, TestSize.Level1)
+{
+    std::vector<uint8_t> sessionKey;
+    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+        GetInstance().GetSessionKey(g_sessionKeyId, sessionKey);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
  * @tc.name: GetSessionKey005
  * @tc.desc: GetSessionKey
  * @tc.type: FUNC
@@ -225,6 +266,19 @@ HWTEST_F(SessionKeyManagerTest, GetSessionKey005, TestSize.Level1)
     uint32_t userId = 100;
     std::vector<uint8_t> sessionKey;
     int32_t ret = SessionKeyManager::GetInstance().GetSessionKey(userId, g_sessionKeyId, sessionKey);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: GetSessionKeyBySessionKeyId005
+ * @tc.desc: GetSessionKey
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SessionKeyManagerTest, GetSessionKeyBySessionKeyId005, TestSize.Level1)
+{
+    std::vector<uint8_t> sessionKey;
+    int32_t ret = SessionKeyManager::GetInstance().GetSessionKey(g_sessionKeyId, sessionKey);
     EXPECT_NE(ret, DP_SUCCESS);
 }
 
@@ -309,6 +363,33 @@ HWTEST_F(SessionKeyManagerTest, GetSessionKey007, TestSize.Level1)
     std::vector<uint8_t> sessionKey;
     int32_t ret = SessionKeyManager::GetInstance().GetSessionKey(userId, g_sessionKeyId, sessionKey);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/*
+ * @tc.name: GetSessionKeyBySessionKeyId003
+ * @tc.desc: GetSessionKey
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SessionKeyManagerTest, GetSessionKeyBySessionKeyId003, TestSize.Level1)
+{
+    std::vector<uint8_t> sessionKey;
+    int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
+        GetInstance().GetSessionKey(g_sessionKeyId, sessionKey);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: GetSessionKeyBySessionKeyId006
+ * @tc.desc: GetSessionKey
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SessionKeyManagerTest, GetSessionKeyBySessionKeyId006, TestSize.Level1)
+{
+    std::vector<uint8_t> sessionKey;
+    int32_t ret = SessionKeyManager::GetInstance().GetSessionKey(g_sessionKeyId, sessionKey);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 }
 }

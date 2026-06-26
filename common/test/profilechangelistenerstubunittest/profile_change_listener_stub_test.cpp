@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -69,6 +69,18 @@ int32_t MockProfileChangeListenerStub::OnTrustDeviceProfileInactive(const TrustD
 }
 
 int32_t MockProfileChangeListenerStub::OnTrustDeviceProfileActive(const TrustDeviceProfile& profile)
+{
+    (void)profile;
+    return 0;
+}
+
+int32_t MockProfileChangeListenerStub::OnDeviceAclInactiveByDelete(const TrustDeviceProfile& profile)
+{
+    (void)profile;
+    return 0;
+}
+
+int32_t MockProfileChangeListenerStub::OnDeviceAclInactiveByUpdate(const TrustDeviceProfile& profile)
 {
     (void)profile;
     return 0;
@@ -183,6 +195,24 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileUpdateInner_001, Tes
     MessageParcel reply;
     ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnTrustDeviceProfileUpdateInner(data, reply);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnDeviceAclInactiveByDeleteInner_001, TestSize.Level0)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->OnDeviceAclInactiveByDeleteInner(data, reply);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnDeviceAclInactiveByUpdateInner_001, TestSize.Level0)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->OnDeviceAclInactiveByUpdateInner(data, reply);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2025-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,7 +18,11 @@
 
 #include "distributed_device_profile_errors.h"
 #include "distributed_device_profile_log.h"
+#include "trust_profile_manager.h"
 
+using DpAssetValue = AssetValue;
+using DpAssetAttr = AssetAttr;
+using DpAssetResultSet = AssetResultSet;
 namespace OHOS {
 namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(SessionKeyManager);
@@ -34,14 +38,14 @@ int32_t SessionKeyManager::PutSessionKey(uint32_t userId,
         return DP_INVALID_PARAMS;
     }
     GeneratedSessionKeyId(userId, sessionKeyId);
-    AssetValue aliasValue = { .blob = { static_cast<uint32_t>(sizeof(sessionKeyId)),
+    DpAssetValue aliasValue = { .blob = { static_cast<uint32_t>(sizeof(sessionKeyId)),
         const_cast<uint8_t *>(reinterpret_cast<const uint8_t *>(&sessionKeyId)) } };
-    AssetValue userIdValue = { .u32 = userId };
-    AssetValue secretValue = { .blob = { static_cast<uint32_t>(sessionKey.size()),
+    DpAssetValue userIdValue = { .u32 = userId };
+    DpAssetValue secretValue = { .blob = { static_cast<uint32_t>(sessionKey.size()),
         const_cast<uint8_t *>(reinterpret_cast<const uint8_t *>(sessionKey.data())) } };
-    AssetValue accessibilityValue = { .u32 = SEC_ASSET_ACCESSIBILITY_DEVICE_FIRST_UNLOCKED };
+    DpAssetValue accessibilityValue = { .u32 = SEC_ASSET_ACCESSIBILITY_DEVICE_FIRST_UNLOCKED };
 
-    AssetAttr attr[] = {
+    DpAssetAttr attr[] = {
         { .tag = SEC_ASSET_TAG_ALIAS, .value = aliasValue },
         { .tag = SEC_ASSET_TAG_USER_ID, .value = userIdValue },
         { .tag = SEC_ASSET_TAG_SECRET, .value = secretValue },
@@ -65,17 +69,17 @@ int32_t SessionKeyManager::GetSessionKey(uint32_t userId,
         HILOGE("params is invalid");
         return DP_INVALID_PARAMS;
     }
-    AssetValue aliasValue = { .blob = { static_cast<uint32_t>(sizeof(sessionKeyId)),
+    DpAssetValue aliasValue = { .blob = { static_cast<uint32_t>(sizeof(sessionKeyId)),
         const_cast<uint8_t *>(reinterpret_cast<const uint8_t *>(&sessionKeyId)) } };
-    AssetValue userIdValue = { .u32 = userId };
-    AssetValue returnValue = { .u32 = SEC_ASSET_RETURN_ALL };
-    AssetAttr attr[] = {
+    DpAssetValue userIdValue = { .u32 = userId };
+    DpAssetValue returnValue = { .u32 = SEC_ASSET_RETURN_ALL };
+    DpAssetAttr attr[] = {
         { .tag = SEC_ASSET_TAG_ALIAS, .value = aliasValue },
         { .tag = SEC_ASSET_TAG_USER_ID, .value = userIdValue },
         { .tag = SEC_ASSET_TAG_RETURN_TYPE, .value = returnValue }
     };
 
-    AssetResultSet resultSet = {0};
+    DpAssetResultSet resultSet = {0};
     int32_t ret = AssetAdapter::GetInstance().GetAsset(attr, sizeof(attr) / sizeof(attr[0]), &resultSet);
     if (ret != DP_SUCCESS) {
         HILOGE("GetAsset failed");
@@ -83,7 +87,7 @@ int32_t SessionKeyManager::GetSessionKey(uint32_t userId,
         return ret;
     }
 
-    AssetAttr* secret = AssetAdapter::GetInstance().ParseAttr(resultSet.results, SEC_ASSET_TAG_SECRET);
+    DpAssetAttr* secret = AssetAdapter::GetInstance().ParseAttr(resultSet.results, SEC_ASSET_TAG_SECRET);
     if (secret == nullptr) {
         HILOGE("ParseAttr failed");
         AssetAdapter::GetInstance().FreeResultSet(&resultSet);
@@ -103,6 +107,23 @@ int32_t SessionKeyManager::GetSessionKey(uint32_t userId,
     return DP_SUCCESS;
 }
 
+int32_t SessionKeyManager::GetSessionKey(int32_t sessionKeyId, std::vector<uint8_t>& sessionKey)
+{
+    HILOGI("call! sessionKeyId : %{public}d", sessionKeyId);
+    int32_t userId = 0;
+    int32_t ret = TrustProfileManager::GetInstance().GetUserIdBySessionKeyId(sessionKeyId, userId);
+    if (ret != DP_SUCCESS || userId < 0) {
+        HILOGI("GetUserIdBySessionKeyId failed");
+        return ret;
+    }
+    ret = GetSessionKey(userId, sessionKeyId, sessionKey);
+    if (ret != DP_SUCCESS) {
+        HILOGI("GetSessionKey failed");
+        return ret;
+    }
+    return DP_SUCCESS;
+}
+
 int32_t SessionKeyManager::UpdateSessionKey(uint32_t userId,
     int32_t sessionKeyId, const std::vector<uint8_t>& sessionKey)
 {
@@ -111,17 +132,17 @@ int32_t SessionKeyManager::UpdateSessionKey(uint32_t userId,
         HILOGE("params is invalid");
         return DP_INVALID_PARAMS;
     }
-    AssetValue aliasValue = { .blob = { static_cast<uint32_t>(sizeof(sessionKeyId)),
+    DpAssetValue aliasValue = { .blob = { static_cast<uint32_t>(sizeof(sessionKeyId)),
         const_cast<uint8_t *>(reinterpret_cast<const uint8_t *>(&sessionKeyId)) } };
-    AssetValue userIdValue = { .u32 = userId };
-    AssetValue secretValue = { .blob = { static_cast<uint32_t>(sessionKey.size()),
+    DpAssetValue userIdValue = { .u32 = userId };
+    DpAssetValue secretValue = { .blob = { static_cast<uint32_t>(sessionKey.size()),
         const_cast<uint8_t *>(reinterpret_cast<const uint8_t *>(sessionKey.data())) } };
 
-    AssetAttr attrQuery[] = {
+    DpAssetAttr attrQuery[] = {
         { .tag = SEC_ASSET_TAG_ALIAS, .value = aliasValue },
         { .tag = SEC_ASSET_TAG_USER_ID, .value = userIdValue }
     };
-    AssetAttr attrUpdate[] = {
+    DpAssetAttr attrUpdate[] = {
         { .tag = SEC_ASSET_TAG_SECRET, .value = secretValue }
     };
 
@@ -142,10 +163,10 @@ int32_t SessionKeyManager::DeleteSessionKey(uint32_t userId, int32_t sessionKeyI
         HILOGE("params is invalid");
         return DP_INVALID_PARAMS;
     }
-    AssetValue aliasValue = { .blob = { static_cast<uint32_t>(sizeof(sessionKeyId)),
+    DpAssetValue aliasValue = { .blob = { static_cast<uint32_t>(sizeof(sessionKeyId)),
         const_cast<uint8_t *>(reinterpret_cast<const uint8_t *>(&sessionKeyId)) } };
-    AssetValue userIdValue = { .u32 = userId };
-    AssetAttr attr[] = {
+    DpAssetValue userIdValue = { .u32 = userId };
+    DpAssetAttr attr[] = {
         { .tag = SEC_ASSET_TAG_ALIAS, .value = aliasValue },
         { .tag = SEC_ASSET_TAG_USER_ID, .value = userIdValue }
     };
@@ -162,7 +183,7 @@ int32_t SessionKeyManager::DeleteSessionKey(uint32_t userId, int32_t sessionKeyI
 void SessionKeyManager::GeneratedSessionKeyId(uint32_t userId, int32_t& sessionKeyId)
 {
     HILOGI("call");
-    int32_t ret = 0;
+    bool ret = false;
     int32_t randomNumber = 0;
     do {
         int32_t seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -170,8 +191,8 @@ void SessionKeyManager::GeneratedSessionKeyId(uint32_t userId, int32_t& sessionK
         std::uniform_int_distribution<int32_t> distribution(0, INT32_MAX);
         randomNumber = distribution(generator);
         std::vector<uint8_t> sessionKey;
-        ret = GetSessionKey(userId, randomNumber, sessionKey);
-    } while (ret == DP_SUCCESS);
+        ret = TrustProfileManager::GetInstance().CheckSessionKeyIdExists(randomNumber);
+    } while (ret);
     sessionKeyId = randomNumber;
     HILOGI("success! userId : %{public}u, sessionKeyId : %{public}d", userId, sessionKeyId);
     return;

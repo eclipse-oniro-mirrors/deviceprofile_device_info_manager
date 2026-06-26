@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -106,7 +106,9 @@ enum ProfileChangeType {
     CHAR_PROFILE_DELETE = 12,
     TRUST_DEVICE_PROFILE_ACTIVE = 13,
     TRUST_DEVICE_PROFILE_INACTIVE = 14,
-    PROFILE_CHANGE_TYPE_MAX = 15
+    DEVICE_ACL_INACTIVE_BY_DELETE = 15,
+    DEVICE_ACL_INACTIVE_BY_UPDATE = 16,
+    PROFILE_CHANGE_TYPE_MAX = 17
 };
 enum StaticCapabilityFlag {
     CAPABILITY_FLAG_MIN = -1,

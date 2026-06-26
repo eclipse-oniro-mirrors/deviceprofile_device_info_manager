@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -43,6 +43,8 @@ public:
         const TrustDeviceProfile& newProfile) override;
     int32_t OnTrustDeviceProfileInactive(const TrustDeviceProfile& profile) override;
     int32_t OnTrustDeviceProfileActive(const TrustDeviceProfile& profile) override;
+    int32_t OnDeviceAclInactiveByDelete(const TrustDeviceProfile& profile) override;
+    int32_t OnDeviceAclInactiveByUpdate(const TrustDeviceProfile& profile) override;
     int32_t OnDeviceProfileAdd(const DeviceProfile& profile) override;
     int32_t OnDeviceProfileDelete(const DeviceProfile& profile) override;
     int32_t OnDeviceProfileUpdate(const DeviceProfile& oldProfile, const DeviceProfile& newProfile) override;
