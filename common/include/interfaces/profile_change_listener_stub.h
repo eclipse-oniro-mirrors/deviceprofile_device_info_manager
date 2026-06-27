@@ -39,6 +39,8 @@ public:
     int32_t OnTrustDeviceProfileInactiveInner(MessageParcel& data, MessageParcel& reply);
     int32_t OnDeviceAclInactiveByDeleteInner(MessageParcel& data, MessageParcel& reply);
     int32_t OnDeviceAclInactiveByUpdateInner(MessageParcel& data, MessageParcel& reply);
+    int32_t OnAccountAclDeleteInner(MessageParcel& data, MessageParcel& reply);
+    int32_t OnAccountAclInactiveInner(MessageParcel& data, MessageParcel& reply);
     int32_t OnDeviceProfileAddInner(MessageParcel& data, MessageParcel& reply);
     int32_t OnDeviceProfileDeleteInner(MessageParcel& data, MessageParcel& reply);
     int32_t OnDeviceProfileUpdateInner(MessageParcel& data, MessageParcel& reply);
@@ -52,6 +54,8 @@ public:
     int32_t OnTrustDeviceProfileInactive(const TrustDeviceProfile& profile) override;
     int32_t OnDeviceAclInactiveByDelete(const TrustDeviceProfile& profile) override;
     int32_t OnDeviceAclInactiveByUpdate(const TrustDeviceProfile& profile) override;
+    int32_t OnAccountAclDelete(const TrustDeviceProfile& profile) override;
+    int32_t OnAccountAclInactive(const TrustDeviceProfile& profile) override;
 
 private:
     using Func = int32_t(ProfileChangeListenerStub::*)(MessageParcel& data, MessageParcel& reply);

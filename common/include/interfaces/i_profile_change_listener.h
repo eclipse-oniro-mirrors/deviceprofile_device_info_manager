@@ -37,6 +37,8 @@ public:
     virtual int32_t OnTrustDeviceProfileInactive(const TrustDeviceProfile& profile);
     virtual int32_t OnDeviceAclInactiveByDelete(const TrustDeviceProfile& profile);
     virtual int32_t OnDeviceAclInactiveByUpdate(const TrustDeviceProfile& profile);
+    virtual int32_t OnAccountAclDelete(const TrustDeviceProfile& profile);
+    virtual int32_t OnAccountAclInactive(const TrustDeviceProfile& profile);
     virtual int32_t OnDeviceProfileAdd(const DeviceProfile& profile) = 0;
     virtual int32_t OnDeviceProfileDelete(const DeviceProfile& profile) = 0;
     virtual int32_t OnDeviceProfileUpdate(const DeviceProfile& oldProfile, const DeviceProfile& newProfile) = 0;

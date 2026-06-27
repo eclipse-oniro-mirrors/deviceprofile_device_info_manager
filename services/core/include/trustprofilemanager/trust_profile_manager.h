@@ -132,6 +132,11 @@ private:
     bool IsLnnAcl(const AccessControlProfile& aclProfile);
     bool IsAceeCreIdExistToAceeTable();
     int32_t AddAceeCreIdColumnToAceeTable();
+    int32_t CheckAccountAclExists(const AccessControlProfile& profile, bool& isExists);
+    int32_t CheckAccountAclActiveCount(const AccessControlProfile& profile, int32_t& resultCount);
+    int32_t NotifyAccountAclCheck(const AccessControlProfile& profile, const AccessControlProfile& oldProfile);
+    int32_t QueryServiceIdList(const AccessControlProfile& profile, std::vector<int32_t>& serviceIdList);
+    int32_t ParseServiceIdFromJson(const std::string& jsonStr, int32_t& serviceId);
 
 private:
     std::shared_ptr<IRdbAdapter> rdbStore_;

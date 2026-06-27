@@ -45,5 +45,17 @@ int32_t IProfileChangeListener::OnDeviceAclInactiveByUpdate(const TrustDevicePro
     (void)profile;
     return DP_SUCCESS;
 }
+
+int32_t IProfileChangeListener::OnAccountAclDelete(const TrustDeviceProfile& profile)
+{
+    (void)profile;
+    return DP_SUCCESS;
+}
+
+int32_t IProfileChangeListener::OnAccountAclInactive(const TrustDeviceProfile& profile)
+{
+    (void)profile;
+    return DP_SUCCESS;
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

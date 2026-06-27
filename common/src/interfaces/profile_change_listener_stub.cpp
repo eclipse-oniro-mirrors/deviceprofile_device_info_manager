@@ -49,6 +49,10 @@ ProfileChangeListenerStub::ProfileChangeListenerStub()
         &ProfileChangeListenerStub::OnDeviceAclInactiveByDeleteInner;
     funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_UPDATE)] =
         &ProfileChangeListenerStub::OnDeviceAclInactiveByUpdateInner;
+    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_DELETE)] =
+        &ProfileChangeListenerStub::OnAccountAclDeleteInner;
+    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_INACTIVE)] =
+        &ProfileChangeListenerStub::OnAccountAclInactiveInner;
     funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_ADD)] =
         &ProfileChangeListenerStub::OnDeviceProfileAddInner;
     funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_DELETE)] =
@@ -103,6 +107,10 @@ int32_t ProfileChangeListenerStub::OnRemoteRequest(uint32_t code, MessageParcel&
             return ProfileChangeListenerStub::OnDeviceAclInactiveByDeleteInner(data, reply);
         case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_UPDATE):
             return ProfileChangeListenerStub::OnDeviceAclInactiveByUpdateInner(data, reply);
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_DELETE):
+            return ProfileChangeListenerStub::OnAccountAclDeleteInner(data, reply);
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_INACTIVE):
+            return ProfileChangeListenerStub::OnAccountAclInactiveInner(data, reply);
         case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_ADD):
             return ProfileChangeListenerStub::OnDeviceProfileAddInner(data, reply);
         case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_DELETE):
@@ -237,6 +245,38 @@ int32_t ProfileChangeListenerStub::OnDeviceAclInactiveByUpdateInner(MessageParce
         return ERR_FLATTEN_OBJECT;
     }
     OnDeviceAclInactiveByUpdate(trustDeviceProfile);
+    if (!reply.WriteInt32(DP_SUCCESS)) {
+        HILOGE("Read reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileChangeListenerStub::OnAccountAclDeleteInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    TrustDeviceProfile trustDeviceProfile;
+    if (!trustDeviceProfile.UnMarshalling(data)) {
+        HILOGE("Read reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    OnAccountAclDelete(trustDeviceProfile);
+    if (!reply.WriteInt32(DP_SUCCESS)) {
+        HILOGE("Read reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileChangeListenerStub::OnAccountAclInactiveInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    TrustDeviceProfile trustDeviceProfile;
+    if (!trustDeviceProfile.UnMarshalling(data)) {
+        HILOGE("Read reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    OnAccountAclInactive(trustDeviceProfile);
     if (!reply.WriteInt32(DP_SUCCESS)) {
         HILOGE("Read reply failed");
         return ERR_FLATTEN_OBJECT;
@@ -422,6 +462,18 @@ int32_t ProfileChangeListenerStub::OnDeviceAclInactiveByDelete(const TrustDevice
 }
 
 int32_t ProfileChangeListenerStub::OnDeviceAclInactiveByUpdate(const TrustDeviceProfile& profile)
+{
+    (void)profile;
+    return DP_SUCCESS;
+}
+
+int32_t ProfileChangeListenerStub::OnAccountAclDelete(const TrustDeviceProfile& profile)
+{
+    (void)profile;
+    return DP_SUCCESS;
+}
+
+int32_t ProfileChangeListenerStub::OnAccountAclInactive(const TrustDeviceProfile& profile)
 {
     (void)profile;
     return DP_SUCCESS;

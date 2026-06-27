@@ -86,6 +86,18 @@ int32_t MockProfileChangeListenerStub::OnDeviceAclInactiveByUpdate(const TrustDe
     return 0;
 }
 
+int32_t MockProfileChangeListenerStub::OnAccountAclDelete(const TrustDeviceProfile& profile)
+{
+    (void)profile;
+    return 0;
+}
+
+int32_t MockProfileChangeListenerStub::OnAccountAclInactive(const TrustDeviceProfile& profile)
+{
+    (void)profile;
+    return 0;
+}
+
 int32_t MockProfileChangeListenerStub::OnDeviceProfileAdd(const DeviceProfile& profile)
 {
     (void)profile;
@@ -213,6 +225,24 @@ HWTEST_F(ProfileChangeListenerStubTest, OnDeviceAclInactiveByUpdateInner_001, Te
     MessageParcel reply;
     ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnDeviceAclInactiveByUpdateInner(data, reply);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclDeleteInner_001, TestSize.Level0)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->OnAccountAclDeleteInner(data, reply);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclInactiveInner_001, TestSize.Level0)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->OnAccountAclInactiveInner(data, reply);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
 
@@ -432,6 +462,28 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_013, TestSize.Level0)
 
 HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_014, TestSize.Level0)
 {
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_DELETE);
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_015, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_INACTIVE);
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_016, TestSize.Level0)
+{
     uint32_t code = 1000;
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
@@ -503,6 +555,20 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactive_003, TestSi
 {
     TrustDeviceProfile profile;
     int32_t ret = listenerStub_->OnTrustDeviceProfileInactive(profile);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclDelete_001, TestSize.Level0)
+{
+    TrustDeviceProfile profile;
+    int32_t ret = listenerStub_->OnAccountAclDelete(profile);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclInactive_001, TestSize.Level0)
+{
+    TrustDeviceProfile profile;
+    int32_t ret = listenerStub_->OnAccountAclInactive(profile);
     EXPECT_EQ(DP_SUCCESS, ret);
 }
 } // namespace DistributedDeviceProfile

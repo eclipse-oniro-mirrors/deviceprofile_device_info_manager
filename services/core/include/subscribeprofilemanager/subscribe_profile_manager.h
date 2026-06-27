@@ -45,6 +45,8 @@ public:
     /* Device level */
     int32_t NotifyDeviceAclInactiveByDelete(const TrustDeviceProfile& trustDeviceProfile);
     int32_t NotifyDeviceAclInactiveByUpdate(const TrustDeviceProfile& trustDeviceProfile);
+    int32_t NotifyAccountAclDelete(const TrustDeviceProfile& trustDeviceProfile);
+    int32_t NotifyAccountAclInactive(const TrustDeviceProfile& trustDeviceProfile);
 
     int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo);
     int32_t SubscribeDeviceProfile(std::map<std::string, SubscribeInfo> subscribeInfos);
