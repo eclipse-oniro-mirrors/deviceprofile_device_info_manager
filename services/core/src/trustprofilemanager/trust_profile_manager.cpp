@@ -2140,6 +2140,9 @@ int32_t TrustProfileManager::DeleteTrustDeviceCheck(const AccessControlProfile& 
     }
     CheckAccountAclExists(profile, isExists);
     if (!isExists && !IsLnnAcl(profile)) {
+        std::vector<int32_t> serviceIdList;
+        QueryServiceIdList(profile, serviceIdList);
+        trustProfile.SetServiceIdList(serviceIdList);
         int32_t ret = SubscribeProfileManager::GetInstance().NotifyAccountAclDelete(trustProfile);
         if (ret != DP_SUCCESS) {
             HILOGE("NotifyAccountAclDelete failed");
