@@ -2461,6 +2461,7 @@ int32_t TrustProfileManager::NotifyAccountAclCheck(const AccessControlProfile &p
             return DP_NOTIFY_TRUST_DEVICE_FAIL;
         }
     }
+    return DP_SUCCESS;
 }
 int32_t TrustProfileManager::QueryServiceIdList(const AccessControlProfile &profile,
     std::vector<int32_t> &serviceIdList)
@@ -2502,11 +2503,12 @@ int32_t TrustProfileManager::QueryServiceIdList(const AccessControlProfile &prof
             localUserId == aclProfile.GetAccessee().GetAccesseeUserId() &&
             localAccountId == aclProfile.GetAccessee().GetAccesseeAccountId())) {
             int32_t serviceId = 0;
-            ParseServiceIdFromJson(aclProfile.GetAccessee().GetAccesseeExtraData(), serviceId)
+            ParseServiceIdFromJson(aclProfile.GetAccessee().GetAccesseeExtraData(), serviceId);
             serviceIdList.emplace_back(serviceId);
             continue;
         }
     }
+    return DP_SUCCESS;
 }
 int32_t TrustProfileManager::ParseServiceIdFromJson(const std::string& jsonStr, int32_t& serviceId)
 {

@@ -34,7 +34,7 @@ public:
         localUserId_(-1),
         peerAccountId_(""),
         localAccountId_(""),
-        serviceIdList_({});
+        serviceIdList_({})
     {}
     ~TrustDeviceProfile() = default;
 
