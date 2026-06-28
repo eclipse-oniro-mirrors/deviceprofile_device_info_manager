@@ -2158,25 +2158,13 @@ int32_t TrustProfileManager::DeleteTrustDeviceCheck(const AccessControlProfile& 
     int32_t rowCount = ROWCOUNT_INIT;
     resultSet->GetRowCount(rowCount);
     resultSet->Close();
-    int32_t ret = RET_INIT;
     if (rowCount == DELETE_TRUST_CONDITION) {
-        ret = this->DeleteTrustDeviceProfile(profile.GetTrustDeviceId());
-        if (ret != DP_SUCCESS) {
-            HILOGE("DeleteTrustDeviceProfile failed");
-            return DP_DELETE_TRUST_DEVICE_PROFILE_FAIL;
-        }
-    } else {
-        int32_t status = STATUS_INIT;
-        this->GetResultStatus(profile.GetTrustDeviceId(), status);
-        TrustDeviceProfile trustDeviceProfile(trustProfile);
-        trustDeviceProfile.SetStatus(status);
-        ret = this->UpdateTrustDeviceProfile(trustDeviceProfile);
-        if (ret != DP_SUCCESS) {
-            HILOGE("UpdateTrustDeviceProfile failed");
-            return DP_UPDATE_TRUST_DEVICE_PROFILE_FAIL;
-        }
+        return DeleteTrustDeviceProfile(profile.GetTrustDeviceId());
     }
-    return DP_SUCCESS;
+    int32_t status = STATUS_INIT;
+    GetResultStatus(profile.GetTrustDeviceId(), status);
+    trustProfile.SetStatus(status);
+    return UpdateTrustDeviceProfile(trustProfile);
 }
 
 void TrustProfileManager::RemoveLnnAcl(std::vector<AccessControlProfile>& profiles)

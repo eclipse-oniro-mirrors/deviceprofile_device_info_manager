@@ -92,47 +92,12 @@ int32_t ProfileChangeListenerStub::OnRemoteRequest(uint32_t code, MessageParcel&
         HILOGE("check interface token failed");
         return DP_INTERFACE_CHECK_FAILED;
     }
-    switch (code) {
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_ADD):
-            return ProfileChangeListenerStub::OnTrustDeviceProfileAddInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_DELETE):
-            return ProfileChangeListenerStub::OnTrustDeviceProfileDeleteInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_UPDATE):
-            return ProfileChangeListenerStub::OnTrustDeviceProfileUpdateInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_ACTIVE):
-            return ProfileChangeListenerStub::OnTrustDeviceProfileActiveInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_INACTIVE):
-            return ProfileChangeListenerStub::OnTrustDeviceProfileInactiveInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_DELETE):
-            return ProfileChangeListenerStub::OnDeviceAclInactiveByDeleteInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_UPDATE):
-            return ProfileChangeListenerStub::OnDeviceAclInactiveByUpdateInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_DELETE):
-            return ProfileChangeListenerStub::OnAccountAclDeleteInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_INACTIVE):
-            return ProfileChangeListenerStub::OnAccountAclInactiveInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_ADD):
-            return ProfileChangeListenerStub::OnDeviceProfileAddInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_DELETE):
-            return ProfileChangeListenerStub::OnDeviceProfileDeleteInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_UPDATE):
-            return ProfileChangeListenerStub::OnDeviceProfileUpdateInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_ADD):
-            return ProfileChangeListenerStub::OnServiceProfileAddInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_DELETE):
-            return ProfileChangeListenerStub::OnServiceProfileDeleteInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_UPDATE):
-            return ProfileChangeListenerStub::OnServiceProfileUpdateInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_ADD):
-            return ProfileChangeListenerStub::OnCharacteristicProfileAddInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_DELETE):
-            return ProfileChangeListenerStub::OnCharacteristicProfileDeleteInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_UPDATE):
-            return ProfileChangeListenerStub::OnCharacteristicProfileUpdateInner(data, reply);
-        default:
-            HILOGW("unknown request code, please check, code = %{public}u", code);
-            return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
+    auto it = funcsMap_.find(static_cast<int32_t>(code));
+    if (it != funcsMap_.end()) {
+        return (this->*(it->second))(data, reply);
     }
+    HILOGW("unknown request code, please check, code = %{public}u", code);
+    return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
 int32_t ProfileChangeListenerStub::OnTrustDeviceProfileAddInner(MessageParcel& data, MessageParcel& reply)
