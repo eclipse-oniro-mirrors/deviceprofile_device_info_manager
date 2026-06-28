@@ -2041,7 +2041,7 @@ int32_t TrustProfileManager::CheckDeviceIdAndUserIdExists(const AccessControlPro
 
 int32_t TrustProfileManager::NotifyCheck(const AccessControlProfile& profile, const AccessControlProfile& oldProfile)
 {
-#ifdef CAR_DEVICE_ENABLE    
+#ifdef CAR_DEVICE_ENABLE
     NotifyAccountAclCheck(profile, oldProfile);
 #endif
     int32_t resultCount = 0;
