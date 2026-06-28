@@ -62,7 +62,7 @@ private:
     bool IsInterfaceToken(MessageParcel& data);
 
 private:
-    std::map<int32_t, Func> funcsMap_;
+    std::map<uint32_t, Func> funcsMap_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

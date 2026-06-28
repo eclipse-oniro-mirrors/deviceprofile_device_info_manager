@@ -92,7 +92,7 @@ int32_t ProfileChangeListenerStub::OnRemoteRequest(uint32_t code, MessageParcel&
         HILOGE("check interface token failed");
         return DP_INTERFACE_CHECK_FAILED;
     }
-    auto it = funcsMap_.find(static_cast<int32_t>(code));
+    auto it = funcsMap_.find(code);
     if (it != funcsMap_.end()) {
         return (this->*(it->second))(data, reply);
     }
