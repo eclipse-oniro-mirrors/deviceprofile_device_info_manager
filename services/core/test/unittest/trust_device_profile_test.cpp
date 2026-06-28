@@ -124,5 +124,119 @@ HWTEST_F(TrustDeviceProfileTest, GetBindType001, TestSize.Level1)
     uint32_t ret = trustDeviceProfile.GetBindType();
     EXPECT_EQ(bindType, ret);
 }
+
+/*
+ * @tc.name: GetPeerUserId001
+ * @tc.desc: GetPeerUserId
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(TrustDeviceProfileTest, GetPeerUserId001, TestSize.Level1)
+{
+    int32_t peerUserId = 100;
+    TrustDeviceProfile trustDeviceProfile;
+    trustDeviceProfile.SetPeerUserId(peerUserId);
+    int32_t ret = trustDeviceProfile.GetPeerUserId();
+    EXPECT_EQ(peerUserId, ret);
 }
+
+/*
+ * @tc.name: GetLocalUserId001
+ * @tc.desc: GetLocalUserId
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(TrustDeviceProfileTest, GetLocalUserId001, TestSize.Level1)
+{
+    int32_t localUserId = 200;
+    TrustDeviceProfile trustDeviceProfile;
+    trustDeviceProfile.SetLocalUserId(localUserId);
+    int32_t ret = trustDeviceProfile.GetLocalUserId();
+    EXPECT_EQ(localUserId, ret);
 }
+
+/*
+ * @tc.name: GetPeerAccountId001
+ * @tc.desc: GetPeerAccountId
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(TrustDeviceProfileTest, GetPeerAccountId001, TestSize.Level1)
+{
+    std::string peerAccountId = "peerAccountId";
+    TrustDeviceProfile trustDeviceProfile;
+    trustDeviceProfile.SetPeerAccountId(peerAccountId);
+    std::string ret = trustDeviceProfile.GetPeerAccountId();
+    EXPECT_EQ(peerAccountId, ret);
+}
+
+/*
+ * @tc.name: GetLocalAccountId001
+ * @tc.desc: GetLocalAccountId
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(TrustDeviceProfileTest, GetLocalAccountId001, TestSize.Level1)
+{
+    std::string localAccountId = "localAccountId";
+    TrustDeviceProfile trustDeviceProfile;
+    trustDeviceProfile.SetLocalAccountId(localAccountId);
+    std::string ret = trustDeviceProfile.GetLocalAccountId();
+    EXPECT_EQ(localAccountId, ret);
+}
+
+/*
+ * @tc.name: GetServiceIdList001
+ * @tc.desc: GetServiceIdList
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(TrustDeviceProfileTest, GetServiceIdList001, TestSize.Level1)
+{
+    std::vector<int32_t> serviceIdList = {1, 2, 3};
+    TrustDeviceProfile trustDeviceProfile;
+    trustDeviceProfile.SetServiceIdList(serviceIdList);
+    std::vector<int32_t> ret = trustDeviceProfile.GetServiceIdList();
+    EXPECT_EQ(serviceIdList, ret);
+}
+
+/*
+ * @tc.name: Marshalling001
+ * @tc.desc: Marshalling and UnMarshalling round-trip
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(TrustDeviceProfileTest, Marshalling001, TestSize.Level1)
+{
+    TrustDeviceProfile srcProfile;
+    srcProfile.SetDeviceId("deviceId");
+    srcProfile.SetDeviceIdType(1);
+    srcProfile.SetDeviceIdHash("deviceIdHash");
+    srcProfile.SetStatus(2);
+    srcProfile.SetBindType(3);
+    srcProfile.SetPeerUserId(100);
+    srcProfile.SetLocalUserId(200);
+    srcProfile.SetPeerAccountId("peerAccountId");
+    srcProfile.SetLocalAccountId("localAccountId");
+    std::vector<int32_t> serviceIdList = {10, 20, 30};
+    srcProfile.SetServiceIdList(serviceIdList);
+
+    MessageParcel parcel;
+    EXPECT_TRUE(srcProfile.Marshalling(parcel));
+
+    TrustDeviceProfile dstProfile;
+    EXPECT_TRUE(dstProfile.UnMarshalling(parcel));
+    EXPECT_EQ(srcProfile.GetDeviceId(), dstProfile.GetDeviceId());
+    EXPECT_EQ(srcProfile.GetDeviceIdType(), dstProfile.GetDeviceIdType());
+    EXPECT_EQ(srcProfile.GetDeviceIdHash(), dstProfile.GetDeviceIdHash());
+    EXPECT_EQ(srcProfile.GetStatus(), dstProfile.GetStatus());
+    EXPECT_EQ(srcProfile.GetBindType(), dstProfile.GetBindType());
+    EXPECT_EQ(srcProfile.GetPeerUserId(), dstProfile.GetPeerUserId());
+    EXPECT_EQ(srcProfile.GetLocalUserId(), dstProfile.GetLocalUserId());
+    EXPECT_EQ(srcProfile.GetPeerAccountId(), dstProfile.GetPeerAccountId());
+    EXPECT_EQ(srcProfile.GetLocalAccountId(), dstProfile.GetLocalAccountId());
+    std::vector<int32_t> dstServiceIdList = dstProfile.GetServiceIdList();
+    EXPECT_EQ(serviceIdList, dstServiceIdList);
+}
+} // namespace DistributedDeviceProfile
+} // namespace OHOS
