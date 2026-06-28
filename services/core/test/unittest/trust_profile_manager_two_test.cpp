@@ -38,6 +38,8 @@ using namespace OHOS::NativeRdb;
 using namespace std;
 namespace {
     const std::string TAG = "TrustProfileManagerTwoTest";
+    constexpr int32_t DEFAULT_VALID_PERIOD = 1;
+    constexpr int32_t DEFAULT_LAST_AUTH_TIME = 5;
 }
 
 static int64_t GetAclIdByDeviceId(const std::string& deviceId)
@@ -66,7 +68,7 @@ static Accesser MakeAccesser(const std::string& deviceId, int32_t userId,
     accesser.SetAccesserTokenId(tokenId);
     accesser.SetAccesserBundleName("bundle_" + deviceId);
     accesser.SetAccesserHapSignature("sig_" + deviceId);
-    accesser.SetAccesserBindLevel(1);
+    accesser.SetAccesserBindLevel(static_cast<uint32_t>(BindLevel::USER));
     return accesser;
 }
 
@@ -81,7 +83,7 @@ static Accessee MakeAccessee(const std::string& deviceId, int32_t userId,
     accessee.SetAccesseeTokenId(tokenId);
     accessee.SetAccesseeBundleName("bundle_" + deviceId);
     accessee.SetAccesseeHapSignature("sig_" + deviceId);
-    accessee.SetAccesseeBindLevel(1);
+    accessee.SetAccesseeBindLevel(static_cast<uint32_t>(BindLevel::USER));
     accessee.SetAccesseeExtraData(extraData);
     return accessee;
 }
@@ -93,14 +95,14 @@ static AccessControlProfile MakeProfile(const std::string& trustDeviceId,
     AccessControlProfile profile;
     profile.SetTrustDeviceId(trustDeviceId);
     profile.SetSessionKey(sessionKey);
-    profile.SetBindType(256);
-    profile.SetAuthenticationType(1);
-    profile.SetDeviceIdType(1);
+    profile.SetBindType(static_cast<uint32_t>(BindType::POINT_TO_POINT));
+    profile.SetAuthenticationType(static_cast<int32_t>(AuthenticationType::TEMPORARY));
+    profile.SetDeviceIdType(static_cast<uint32_t>(DeviceIdType::UDID));
     profile.SetDeviceIdHash("hsh_" + trustDeviceId);
     profile.SetStatus(status);
-    profile.SetValidPeriod(1);
-    profile.SetLastAuthTime(5);
-    profile.SetBindLevel(1);
+    profile.SetValidPeriod(DEFAULT_VALID_PERIOD);
+    profile.SetLastAuthTime(DEFAULT_LAST_AUTH_TIME);
+    profile.SetBindLevel(static_cast<uint32_t>(BindLevel::USER));
     profile.SetAccesser(accesser);
     profile.SetAccessee(accessee);
     return profile;
@@ -229,12 +231,10 @@ HWTEST_F(TrustProfileManagerTwoTest, CheckAccountAclExists_001, TestSize.Level1)
  */
 HWTEST_F(TrustProfileManagerTwoTest, CheckAccountAclExists_002, TestSize.Level1)
 {
-    Accesser storedAccesser = MakeAccesser("acer_other", 999, "acc_other", 9999,
-        "b_other", "h_other", 1);
-    Accessee storedAccessee = MakeAccessee("dev_other", 888, "acc_other", 8888,
-        "bb_other", "h_other", 1, "x");
-    AccessControlProfile storedProfile = MakeProfile("dev_other", "k_other", 1,
-        storedAccesser, storedAccessee);
+    Accesser storedAccesser = MakeAccesser("acer_other", 999, "acc_other", 9999);
+    Accessee storedAccessee = MakeAccessee("dev_other", 888, "acc_other", 8888, "x");
+    AccessControlProfile storedProfile = MakeProfile("dev_other", "k_other",
+        static_cast<int32_t>(Status::ACTIVE), storedAccesser, storedAccessee);
 
     int32_t putRet = TrustProfileManager::GetInstance().PutAccessControlProfile(storedProfile);
     EXPECT_EQ(putRet, DP_SUCCESS);
@@ -242,8 +242,8 @@ HWTEST_F(TrustProfileManagerTwoTest, CheckAccountAclExists_002, TestSize.Level1)
 
     Accesser queryAccesser = MakeAccesser("acer_no_match", 11, "acc_no_match", 111);
     Accessee queryAccessee = MakeAccessee("dev_no_match", 22, "acc_no_match", 222);
-    AccessControlProfile queryProfile = MakeProfile("dev_no_match", "k1", 0,
-        queryAccesser, queryAccessee);
+    AccessControlProfile queryProfile = MakeProfile("dev_no_match", "k1",
+        static_cast<int32_t>(Status::INACTIVE), queryAccesser, queryAccessee);
 
     bool isExists = true;
     int32_t ret = TrustProfileManager::GetInstance().CheckAccountAclExists(queryProfile, isExists);
@@ -264,8 +264,8 @@ HWTEST_F(TrustProfileManagerTwoTest, CheckAccountAclExists_003, TestSize.Level1)
 {
     Accesser storedAccesser = MakeAccesser("acer_fwd", 111, "acc_fwd", 1111);
     Accessee storedAccessee = MakeAccessee("dev_fwd", 222, "acc_fwd", 2222, "extra");
-    AccessControlProfile storedProfile = MakeProfile("dev_fwd", "kf1", 1,
-        storedAccesser, storedAccessee);
+    AccessControlProfile storedProfile = MakeProfile("dev_fwd", "kf1",
+        static_cast<int32_t>(Status::ACTIVE), storedAccesser, storedAccessee);
 
     int32_t putRet = TrustProfileManager::GetInstance().PutAccessControlProfile(storedProfile);
     EXPECT_EQ(putRet, DP_SUCCESS);
@@ -273,8 +273,8 @@ HWTEST_F(TrustProfileManagerTwoTest, CheckAccountAclExists_003, TestSize.Level1)
 
     Accesser queryAccesser = MakeAccesser("acer_fwd", 111, "acc_fwd", 1111);
     Accessee queryAccessee = MakeAccessee("dev_fwd", 222, "acc_fwd", 2222);
-    AccessControlProfile queryProfile = MakeProfile("dev_fwd", "kf1", 1,
-        queryAccesser, queryAccessee);
+    AccessControlProfile queryProfile = MakeProfile("dev_fwd", "kf1",
+        static_cast<int32_t>(Status::ACTIVE), queryAccesser, queryAccessee);
 
     bool isExists = false;
     int32_t ret = TrustProfileManager::GetInstance().CheckAccountAclExists(queryProfile, isExists);
@@ -295,8 +295,8 @@ HWTEST_F(TrustProfileManagerTwoTest, CheckAccountAclExists_004, TestSize.Level1)
 {
     Accesser storedAccesser = MakeAccesser("acer_swap", 333, "acc_swap", 3333);
     Accessee storedAccessee = MakeAccessee("dev_swap", 444, "acc_swap", 4444, "x");
-    AccessControlProfile storedProfile = MakeProfile("dev_swap", "ks1", 1,
-        storedAccesser, storedAccessee);
+    AccessControlProfile storedProfile = MakeProfile("dev_swap", "ks1",
+        static_cast<int32_t>(Status::ACTIVE), storedAccesser, storedAccessee);
 
     int32_t putRet = TrustProfileManager::GetInstance().PutAccessControlProfile(storedProfile);
     EXPECT_EQ(putRet, DP_SUCCESS);
@@ -304,8 +304,8 @@ HWTEST_F(TrustProfileManagerTwoTest, CheckAccountAclExists_004, TestSize.Level1)
 
     Accesser queryAccesser = MakeAccesser("dev_swap", 444, "acc_swap", 4444);
     Accessee queryAccessee = MakeAccessee("acer_swap", 333, "acc_swap", 3333);
-    AccessControlProfile queryProfile = MakeProfile("dev_swap", "ks1", 1,
-        queryAccesser, queryAccessee);
+    AccessControlProfile queryProfile = MakeProfile("dev_swap", "ks1",
+        static_cast<int32_t>(Status::ACTIVE), queryAccesser, queryAccessee);
 
     bool isExists = false;
     int32_t ret = TrustProfileManager::GetInstance().CheckAccountAclExists(queryProfile, isExists);
@@ -343,8 +343,8 @@ HWTEST_F(TrustProfileManagerTwoTest, CheckAccountAclActiveCount_002, TestSize.Le
 {
     Accesser storedAccesser = MakeAccesser("acer_cnt_other", 555, "acc_cnt_other", 5555);
     Accessee storedAccessee = MakeAccessee("dev_cnt_other", 666, "acc_cnt_other", 6666, "x");
-    AccessControlProfile storedProfile = MakeProfile("dev_cnt_other", "kc_other", 1,
-        storedAccesser, storedAccessee);
+    AccessControlProfile storedProfile = MakeProfile("dev_cnt_other", "kc_other",
+        static_cast<int32_t>(Status::ACTIVE), storedAccesser, storedAccessee);
 
     int32_t putRet = TrustProfileManager::GetInstance().PutAccessControlProfile(storedProfile);
     EXPECT_EQ(putRet, DP_SUCCESS);
@@ -352,8 +352,8 @@ HWTEST_F(TrustProfileManagerTwoTest, CheckAccountAclActiveCount_002, TestSize.Le
 
     Accesser queryAccesser = MakeAccesser("acer_cnt1", 555, "acc_cnt1", 5555);
     Accessee queryAccessee = MakeAccessee("dev_cnt1", 666, "acc_cnt1", 6666);
-    AccessControlProfile queryProfile = MakeProfile("dev_cnt1", "kc1", 0,
-        queryAccesser, queryAccessee);
+    AccessControlProfile queryProfile = MakeProfile("dev_cnt1", "kc1",
+        static_cast<int32_t>(Status::INACTIVE), queryAccesser, queryAccessee);
 
     int32_t resultCount = 0;
     int32_t ret = TrustProfileManager::GetInstance().CheckAccountAclActiveCount(queryProfile, resultCount);
@@ -374,8 +374,8 @@ HWTEST_F(TrustProfileManagerTwoTest, CheckAccountAclActiveCount_003, TestSize.Le
 {
     Accesser storedAccesser = MakeAccesser("acer_act", 777, "acc_act", 7777);
     Accessee storedAccessee = MakeAccessee("dev_act", 888, "acc_act", 8888, "x");
-    AccessControlProfile storedProfile = MakeProfile("dev_act", "ka1", 1,
-        storedAccesser, storedAccessee);
+    AccessControlProfile storedProfile = MakeProfile("dev_act", "ka1",
+        static_cast<int32_t>(Status::ACTIVE), storedAccesser, storedAccessee);
 
     int32_t putRet = TrustProfileManager::GetInstance().PutAccessControlProfile(storedProfile);
     EXPECT_EQ(putRet, DP_SUCCESS);
@@ -383,8 +383,8 @@ HWTEST_F(TrustProfileManagerTwoTest, CheckAccountAclActiveCount_003, TestSize.Le
 
     Accesser queryAccesser = MakeAccesser("acer_act", 777, "acc_act", 7777);
     Accessee queryAccessee = MakeAccessee("dev_act", 888, "acc_act", 8888);
-    AccessControlProfile queryProfile = MakeProfile("dev_act", "ka1", 1,
-        queryAccesser, queryAccessee);
+    AccessControlProfile queryProfile = MakeProfile("dev_act", "ka1",
+        static_cast<int32_t>(Status::ACTIVE), queryAccesser, queryAccessee);
 
     int32_t resultCount = 0;
     int32_t ret = TrustProfileManager::GetInstance().CheckAccountAclActiveCount(queryProfile, resultCount);
@@ -422,8 +422,8 @@ HWTEST_F(TrustProfileManagerTwoTest, NotifyAccountAclCheck_002, TestSize.Level1)
 {
     Accesser storedAccesser = MakeAccesser("acer_n_other", 999, "acc_n_other", 9999);
     Accessee storedAccessee = MakeAccessee("dev_n_other", 1010, "acc_n_other", 10101, "x");
-    AccessControlProfile storedProfile = MakeProfile("dev_n_other", "kn_other", 1,
-        storedAccesser, storedAccessee);
+    AccessControlProfile storedProfile = MakeProfile("dev_n_other", "kn_other",
+        static_cast<int32_t>(Status::ACTIVE), storedAccesser, storedAccessee);
 
     int32_t putRet = TrustProfileManager::GetInstance().PutAccessControlProfile(storedProfile);
     EXPECT_EQ(putRet, DP_SUCCESS);
@@ -431,11 +431,11 @@ HWTEST_F(TrustProfileManagerTwoTest, NotifyAccountAclCheck_002, TestSize.Level1)
 
     Accesser accesser = MakeAccesser("acer_notify", 1111, "acc_notify", 11111);
     Accessee accessee = MakeAccessee("dev_notify", 2222, "acc_notify", 22222);
-    AccessControlProfile profile = MakeProfile("dev_notify", "kn1", 0,
-        accesser, accessee);
+    AccessControlProfile profile = MakeProfile("dev_notify", "kn1",
+        static_cast<int32_t>(Status::INACTIVE), accesser, accessee);
 
     AccessControlProfile oldProfile;
-    oldProfile.SetStatus(1);
+    oldProfile.SetStatus(static_cast<int32_t>(Status::ACTIVE));
 
     int32_t ret = TrustProfileManager::GetInstance().NotifyAccountAclCheck(profile, oldProfile);
     EXPECT_EQ(ret, DP_SUCCESS);
@@ -471,8 +471,8 @@ HWTEST_F(TrustProfileManagerTwoTest, QueryServiceIdList_002, TestSize.Level1)
 {
     Accesser storedAccesser = MakeAccesser("acer_q_other", 1111, "acc_q_other", 11111);
     Accessee storedAccessee = MakeAccessee("dev_q_other", 2222, "acc_q_other", 22222, "x");
-    AccessControlProfile storedProfile = MakeProfile("dev_q_other", "kq_other", 1,
-        storedAccesser, storedAccessee);
+    AccessControlProfile storedProfile = MakeProfile("dev_q_other", "kq_other",
+        static_cast<int32_t>(Status::ACTIVE), storedAccesser, storedAccessee);
 
     int32_t putRet = TrustProfileManager::GetInstance().PutAccessControlProfile(storedProfile);
     EXPECT_EQ(putRet, DP_SUCCESS);
@@ -480,7 +480,8 @@ HWTEST_F(TrustProfileManagerTwoTest, QueryServiceIdList_002, TestSize.Level1)
 
     Accesser accesser = MakeAccesser("acer_qry", 3333, "acc_qry", 33333);
     Accessee accessee = MakeAccessee("dev_qry", 4444, "acc_qry", 44444);
-    AccessControlProfile profile = MakeProfile("dev_qry", "kq1", 0, accesser, accessee);
+    AccessControlProfile profile = MakeProfile("dev_qry", "kq1",
+        static_cast<int32_t>(Status::INACTIVE), accesser, accessee);
 
     std::vector<int32_t> serviceIdList;
     int32_t ret = TrustProfileManager::GetInstance().QueryServiceIdList(profile, serviceIdList);
@@ -502,8 +503,8 @@ HWTEST_F(TrustProfileManagerTwoTest, QueryServiceIdList_003, TestSize.Level1)
     Accesser storedAccesser = MakeAccesser("acer_qry2", 3333, "acc_qry2", 33333);
     Accessee storedAccessee = MakeAccessee("dev_qry2", 4444, "acc_qry2", 44444,
         "{\"serviceId\": 100}");
-    AccessControlProfile storedProfile = MakeProfile("dev_qry2", "kq2", 1,
-        storedAccesser, storedAccessee);
+    AccessControlProfile storedProfile = MakeProfile("dev_qry2", "kq2",
+        static_cast<int32_t>(Status::ACTIVE), storedAccesser, storedAccessee);
 
     int32_t putRet = TrustProfileManager::GetInstance().PutAccessControlProfile(storedProfile);
     EXPECT_EQ(putRet, DP_SUCCESS);
@@ -511,8 +512,8 @@ HWTEST_F(TrustProfileManagerTwoTest, QueryServiceIdList_003, TestSize.Level1)
 
     Accesser queryAccesser = MakeAccesser("acer_qry2", 3333, "acc_qry2", 33333);
     Accessee queryAccessee = MakeAccessee("dev_qry2", 4444, "acc_qry2", 44444);
-    AccessControlProfile queryProfile = MakeProfile("dev_qry2", "kq2", 1,
-        queryAccesser, queryAccessee);
+    AccessControlProfile queryProfile = MakeProfile("dev_qry2", "kq2",
+        static_cast<int32_t>(Status::ACTIVE), queryAccesser, queryAccessee);
 
     std::vector<int32_t> serviceIdList;
     int32_t ret = TrustProfileManager::GetInstance().QueryServiceIdList(queryProfile, serviceIdList);

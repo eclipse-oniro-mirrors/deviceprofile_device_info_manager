@@ -177,6 +177,10 @@ ohos_shared_library("distributed_device_profile_svr") {
       "memmgr:memmgrclient",
     ]
 
+    if (car_device_enable) {
+      defiens += [ "CAR_DEVICE_ENABLE" ]
+    }
+
     part_name = "device_info_manager"
     subsystem_name = "deviceprofile"
   }

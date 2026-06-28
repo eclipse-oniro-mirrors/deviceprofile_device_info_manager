@@ -2041,7 +2041,9 @@ int32_t TrustProfileManager::CheckDeviceIdAndUserIdExists(const AccessControlPro
 
 int32_t TrustProfileManager::NotifyCheck(const AccessControlProfile& profile, const AccessControlProfile& oldProfile)
 {
+#ifdef CAR_DEVICE_ENABLE    
     NotifyAccountAclCheck(profile, oldProfile);
+#endif
     int32_t resultCount = 0;
     int32_t ret = CheckDeviceIdAndUserIdActive(profile, resultCount);
     if (ret != DP_SUCCESS) {
@@ -2138,6 +2140,7 @@ int32_t TrustProfileManager::DeleteTrustDeviceCheck(const AccessControlProfile& 
             return DP_NOTIFY_TRUST_DEVICE_FAIL;
         }
     }
+#ifdef CAR_DEVICE_ENABLE
     CheckAccountAclExists(profile, isExists);
     if (!isExists && !IsLnnAcl(profile)) {
         std::vector<int32_t> serviceIdList;
@@ -2149,6 +2152,7 @@ int32_t TrustProfileManager::DeleteTrustDeviceCheck(const AccessControlProfile& 
             return DP_NOTIFY_TRUST_DEVICE_FAIL;
         }
     }
+#endif
     std::shared_ptr<ResultSet> resultSet = GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_TRUSTDEVICEID,
         std::vector<ValueObject>{ ValueObject(profile.GetTrustDeviceId()) });
     if (resultSet == nullptr) {

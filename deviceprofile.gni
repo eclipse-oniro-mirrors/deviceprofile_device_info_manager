@@ -49,3 +49,9 @@ third_party_json = "//third_party/json"
 third_party_cjson = "//third_party/cJSON"
 fuzz_test_output_path = "device_info_manager/device_info_manager"
 build_flags = [ "-Werror" ]
+
+if ("${target_platform}" == "car") {
+  car_device_enable = true
+} else {
+  car_device_enable = false
+}
