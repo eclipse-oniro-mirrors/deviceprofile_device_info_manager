@@ -2356,8 +2356,8 @@ int32_t TrustProfileManager::CheckAccountAclExists(const AccessControlProfile& p
     std::string peerDeviceId = profile.GetTrustDeviceId();
     std::string localDeviceId = profile.GetAccessee().GetAccesseeDeviceId();
     int32_t peerUserId = profile.GetAccesser().GetAccesserUserId();
-    std::string peerAccountId = profile.GetAccesser().GetAccesserAccountId();
     int32_t localUserId = profile.GetAccessee().GetAccesseeUserId();
+    std::string peerAccountId = profile.GetAccesser().GetAccesserAccountId();
     std::string localAccountId = profile.GetAccessee().GetAccesseeAccountId();
     if (profile.GetAccessee().GetAccesseeDeviceId() == peerDeviceId) {
         peerUserId = profile.GetAccessee().GetAccesseeUserId();
@@ -2402,8 +2402,8 @@ int32_t TrustProfileManager::CheckAccountAclActiveCount(const AccessControlProfi
     std::string peerDeviceId = profile.GetTrustDeviceId();
     std::string localDeviceId = profile.GetAccessee().GetAccesseeDeviceId();
     int32_t peerUserId = profile.GetAccesser().GetAccesserUserId();
-    std::string peerAccountId = profile.GetAccesser().GetAccesserAccountId();
     int32_t localUserId = profile.GetAccessee().GetAccesseeUserId();
+    std::string peerAccountId = profile.GetAccesser().GetAccesserAccountId();
     std::string localAccountId = profile.GetAccessee().GetAccesseeAccountId();
     if (profile.GetAccessee().GetAccesseeDeviceId() == peerDeviceId) {
         peerUserId = profile.GetAccessee().GetAccesseeUserId();
@@ -2442,6 +2442,7 @@ int32_t TrustProfileManager::CheckAccountAclActiveCount(const AccessControlProfi
     }
     return DP_SUCCESS;
 }
+
 int32_t TrustProfileManager::NotifyAccountAclCheck(const AccessControlProfile &profile,
     const AccessControlProfile &oldProfile)
 {
@@ -2466,6 +2467,7 @@ int32_t TrustProfileManager::NotifyAccountAclCheck(const AccessControlProfile &p
     }
     return DP_SUCCESS;
 }
+
 int32_t TrustProfileManager::QueryServiceIdList(const AccessControlProfile &profile,
     std::vector<int32_t> &serviceIdList)
 {
@@ -2513,6 +2515,7 @@ int32_t TrustProfileManager::QueryServiceIdList(const AccessControlProfile &prof
     }
     return DP_SUCCESS;
 }
+
 int32_t TrustProfileManager::ParseServiceIdFromJson(const std::string& jsonStr, int32_t& serviceId)
 {
     if (jsonStr.empty()) {
