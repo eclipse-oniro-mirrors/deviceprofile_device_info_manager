@@ -55,8 +55,8 @@ void BusinessEvent::SetBusinessValue(const std::string& businessValue)
 
 bool BusinessEvent::Marshalling(MessageParcel& parcel) const
 {
-    WRITE_HELPER(parcel, String, businessKey_);
-    WRITE_HELPER(parcel, String, businessValue_);
+    WRITE_HELPER_RET(parcel, String, businessKey_, false);
+    WRITE_HELPER_RET(parcel, String, businessValue_, false);
     return true;
 }
 
@@ -120,8 +120,8 @@ void BusinessEventExt::SetBusinessValue(const std::string& businessValue)
 
 bool BusinessEventExt::Marshalling(Parcel& parcel) const
 {
-    WRITE_HELPER(parcel, String, businessKey_);
-    WRITE_HELPER(parcel, String, businessValue_);
+    WRITE_HELPER_RET(parcel, String, businessKey_, false);
+    WRITE_HELPER_RET(parcel, String, businessValue_, false);
     return true;
 }
 

@@ -390,7 +390,6 @@ void DistributedDeviceProfileClient::LoadSystemAbilitySuccess(const sptr<IRemote
     std::lock_guard<std::mutex> lock(serviceLock_);
     dpProxy_ = nullptr;
     dpDeathRecipient_ = nullptr;
-    loadSystemAbilityFinish_ = true;
     proxyConVar_.notify_all();
     HILOGI("%{public}s no-build", __func__);
 }
@@ -399,7 +398,6 @@ void DistributedDeviceProfileClient::LoadSystemAbilityFail()
 {
     std::lock_guard<std::mutex> lock(serviceLock_);
     dpProxy_ = nullptr;
-    loadSystemAbilityFinish_ = false;
     proxyConVar_.notify_all();
     HILOGI("%{public}s no-build", __func__);
 }
@@ -448,7 +446,6 @@ sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::LoadDeviceProfil
 {
     std::lock_guard<std::mutex> lock(serviceLock_);
     dpProxy_ = nullptr;
-    loadSystemAbilityFinish_ = false;
     HILOGI("%{public}s no-build", __func__);
     return dpProxy_;
 }
@@ -465,7 +462,6 @@ void DistributedDeviceProfileClient::OnServiceDied(const sptr<IRemoteObject>& re
     std::lock_guard<std::mutex> lock(serviceLock_);
     dpProxy_ = nullptr;
     dpDeathRecipient_ = nullptr;
-    loadSystemAbilityFinish_ = false;
     proxyConVar_.notify_all();
     HILOGI("%{public}s no-build", __func__);
 }
@@ -533,7 +529,6 @@ void DistributedDeviceProfileClient::ReleaseDeathRecipient()
     std::lock_guard<std::mutex> lock(serviceLock_);
     dpDeathRecipient_ = nullptr;
     dpProxy_ = nullptr;
-    loadSystemAbilityFinish_ = false;
     proxyConVar_.notify_all();
     HILOGI("%{public}s no-build", __func__);
 }

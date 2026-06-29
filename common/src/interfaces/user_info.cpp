@@ -26,9 +26,9 @@ namespace {
 //LCOV_EXCL_START
 bool UserInfo::Marshalling(MessageParcel& parcel) const
 {
-    WRITE_HELPER(parcel, String, udid);
-    WRITE_HELPER(parcel, Int32, userId);
-    WRITE_HELPER(parcel, Int64, serviceId);
+    WRITE_HELPER_RET(parcel, String, udid, false);
+    WRITE_HELPER_RET(parcel, Int32, userId, false);
+    WRITE_HELPER_RET(parcel, Int64, serviceId, false);
 
     return true;
 }
