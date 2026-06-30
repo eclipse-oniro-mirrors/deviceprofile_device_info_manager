@@ -1058,7 +1058,7 @@ int32_t DistributedDeviceProfileStubNew::GetBusinessEventInner(MessageParcel& da
     }
     return DP_SUCCESS;
 }
-//LCOV_EXCL_START
+
 int32_t DistributedDeviceProfileStubNew::PutServiceInfoInner(MessageParcel& data, MessageParcel& reply)
 {
     ServiceInfo serviceInfo;
@@ -1143,6 +1143,6 @@ int32_t DistributedDeviceProfileStubNew::SubscribeAllServiceInfoInner(MessagePar
     }
     return DP_SUCCESS;
 }
-//LCOV_EXCL_STOP
+
 } // namespace DeviceProfile
 } // namespace OHOS

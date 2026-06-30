@@ -25,7 +25,7 @@ namespace DistributedDeviceProfile {
 namespace {
     const std::string TAG = "ServiceInfo";
 }
-//LCOV_EXCL_START
+
 ServiceInfo::~ServiceInfo()
 {
 }
@@ -208,24 +208,24 @@ void ServiceInfo::SetDescription(const std::string& description)
 
 bool ServiceInfo::Marshalling(MessageParcel& parcel) const
 {
-    WRITE_HELPER(parcel, String, udid_);
-    WRITE_HELPER(parcel, Int32, userId_);
-    WRITE_HELPER(parcel, Int64, displayId_);
-    WRITE_HELPER(parcel, Int32, serviceOwnerTokenId_);
-    WRITE_HELPER(parcel, String, serviceOwnerPkgName_);
-    WRITE_HELPER(parcel, Int32, serviceRegisterTokenId_);
-    WRITE_HELPER(parcel, Int64, serviceId_);
-    WRITE_HELPER(parcel, Int64, timeStamp_);
-    WRITE_HELPER(parcel, Int8, publishState_);
-    WRITE_HELPER(parcel, String, serviceType_);
-    WRITE_HELPER(parcel, String, serviceName_);
-    WRITE_HELPER(parcel, String, serviceDisplayName_);
-    WRITE_HELPER(parcel, String, customData_);
-    WRITE_HELPER(parcel, String, serviceCode_);
-    WRITE_HELPER(parcel, Uint32, dataLen_);
-    WRITE_HELPER(parcel, String, extraData_);
-    WRITE_HELPER(parcel, String, version_);
-    WRITE_HELPER(parcel, String, description_);
+    WRITE_HELPER_RET(parcel, String, udid_, false);
+    WRITE_HELPER_RET(parcel, Int32, userId_, false);
+    WRITE_HELPER_RET(parcel, Int64, displayId_, false);
+    WRITE_HELPER_RET(parcel, Int32, serviceOwnerTokenId_, false);
+    WRITE_HELPER_RET(parcel, String, serviceOwnerPkgName_, false);
+    WRITE_HELPER_RET(parcel, Int32, serviceRegisterTokenId_, false);
+    WRITE_HELPER_RET(parcel, Int64, serviceId_, false);
+    WRITE_HELPER_RET(parcel, Int64, timeStamp_, false);
+    WRITE_HELPER_RET(parcel, Int8, publishState_, false);
+    WRITE_HELPER_RET(parcel, String, serviceType_, false);
+    WRITE_HELPER_RET(parcel, String, serviceName_, false);
+    WRITE_HELPER_RET(parcel, String, serviceDisplayName_, false);
+    WRITE_HELPER_RET(parcel, String, customData_, false);
+    WRITE_HELPER_RET(parcel, String, serviceCode_, false);
+    WRITE_HELPER_RET(parcel, Uint32, dataLen_, false);
+    WRITE_HELPER_RET(parcel, String, extraData_, false);
+    WRITE_HELPER_RET(parcel, String, version_, false);
+    WRITE_HELPER_RET(parcel, String, description_, false);
 
     return true;
 }
@@ -293,6 +293,6 @@ std::string ServiceInfo::dump() const
     cJSON_free(jsonChars);
     return jsonStr;
 }
-//LCOV_EXCL_STOP
+
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
