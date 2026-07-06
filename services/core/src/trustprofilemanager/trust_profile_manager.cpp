@@ -33,6 +33,8 @@ using namespace OHOS::NativeRdb;
 namespace {
     const std::string TAG = "TrustProfileManager";
     const std::string NAME = "name";
+    const std::string SERVICE_ID_KEY = "serviceId";
+    const std::string ACCOUNT_ID_KEY = "accountId";
 }
 
 int32_t TrustProfileManager::Init()
@@ -2460,21 +2462,61 @@ int32_t TrustProfileManager::NotifyAccountAclCheck(const AccessControlProfile &p
     return DP_SUCCESS;
 }
 
-int32_t TrustProfileManager::QueryServiceIdList(const AccessControlProfile &profile,
-    std::vector<int32_t> &serviceIdList)
+bool TrustProfileManager::IsMatchingAclProfile(const AccessControlProfile& profile,
+    const AccessControlProfile& aclProfile, const ProfileQueryParams& params)
 {
-    std::string peerDeviceId = profile.GetTrustDeviceId();
-    std::string localDeviceId = profile.GetAccessee().GetAccesseeDeviceId();
-    int32_t peerUserId = profile.GetAccesser().GetAccesserUserId();
-    std::string peerAccountId = profile.GetAccesser().GetAccesserAccountId();
-    int32_t localUserId = profile.GetAccessee().GetAccesseeUserId();
-    std::string localAccountId = profile.GetAccessee().GetAccesseeAccountId();
-    if (profile.GetAccessee().GetAccesseeDeviceId() == peerDeviceId) {
-        peerUserId = profile.GetAccessee().GetAccesseeUserId();
-        localUserId = profile.GetAccesser().GetAccesserUserId();
-        localDeviceId = profile.GetAccesser().GetAccesserDeviceId();
-        peerAccountId = profile.GetAccessee().GetAccesseeAccountId();
-        localAccountId = profile.GetAccesser().GetAccesserAccountId();
+    if (params.peerDeviceId != aclProfile.GetTrustDeviceId()) {
+        return false;
+    }
+    return (params.localDeviceId == aclProfile.GetAccesser().GetAccesserDeviceId() &&
+        params.localUserId == aclProfile.GetAccesser().GetAccesserUserId() &&
+        params.localAccountId == aclProfile.GetAccesser().GetAccesserAccountId() &&
+        params.peerDeviceId == aclProfile.GetAccessee().GetAccesseeDeviceId() &&
+        params.peerUserId == aclProfile.GetAccessee().GetAccesseeUserId() &&
+        params.peerAccountId == profile.GetAccessee().GetAccesseeAccountId()) ||
+        (params.peerDeviceId == aclProfile.GetAccesser().GetAccesserDeviceId() &&
+        params.peerUserId == aclProfile.GetAccesser().GetAccesserUserId() &&
+        params.peerAccountId == profile.GetAccesser().GetAccesserAccountId() &&
+        params.localDeviceId == aclProfile.GetAccessee().GetAccesseeDeviceId() &&
+        params.localUserId == aclProfile.GetAccessee().GetAccesseeUserId() &&
+        params.localAccountId == aclProfile.GetAccessee().GetAccesseeAccountId());
+}
+
+void TrustProfileManager::CollectSameAccountServiceIds(const std::string& peerDeviceId,
+    int32_t peerUserId, const std::string& peerAccountId, std::vector<int64_t>& serviceIdList)
+{
+    std::vector<ServiceInfo> serviceInfoList;
+    ServiceInfoManager::GetInstance().GetAllServiceInfoList(serviceInfoList);
+    for (const auto& serviceInfo : serviceInfoList) {
+        if (serviceInfo.GetUdid() != peerDeviceId || serviceInfo.GetUserId() != peerUserId) {
+            continue;
+        }
+        std::string accountId;
+        if (ParseAccountIdFromJson(serviceInfo.GetExtraData(), accountId) != DP_SUCCESS) {
+            continue;
+        }
+        if (accountId == peerAccountId) {
+            serviceIdList.emplace_back(serviceInfo.GetServiceId());
+        }
+    }
+}
+
+int32_t TrustProfileManager::QueryServiceIdList(const AccessControlProfile &profile,
+    std::vector<int64_t> &serviceIdList)
+{
+    ProfileQueryParams params;
+    params.peerDeviceId = profile.GetTrustDeviceId();
+    params.localDeviceId = profile.GetAccessee().GetAccesseeDeviceId();
+    params.peerUserId = profile.GetAccesser().GetAccesserUserId();
+    params.peerAccountId = profile.GetAccesser().GetAccesserAccountId();
+    params.localUserId = profile.GetAccessee().GetAccesseeUserId();
+    params.localAccountId = profile.GetAccessee().GetAccesseeAccountId();
+    if (profile.GetAccessee().GetAccesseeDeviceId() == params.peerDeviceId) {
+        params.peerUserId = profile.GetAccessee().GetAccesseeUserId();
+        params.localUserId = profile.GetAccesser().GetAccesserUserId();
+        params.localDeviceId = profile.GetAccesser().GetAccesserDeviceId();
+        params.peerAccountId = profile.GetAccessee().GetAccesseeAccountId();
+        params.localAccountId = profile.GetAccesser().GetAccesserAccountId();
     }
     std::vector<AccessControlProfile> aclProfiles;
     int32_t ret = GetAllAccessControlProfiles(aclProfiles);
@@ -2483,32 +2525,24 @@ int32_t TrustProfileManager::QueryServiceIdList(const AccessControlProfile &prof
         return ret;
     }
     RemoveLnnAcl(aclProfiles);
-    for (auto aclProfile : aclProfiles) {
-        if (peerDeviceId != aclProfile.GetTrustDeviceId()) {
+    for (const auto& aclProfile : aclProfiles) {
+        if (!IsMatchingAclProfile(profile, aclProfile, params)) {
             continue;
         }
-        if ((localDeviceId == aclProfile.GetAccesser().GetAccesserDeviceId() &&
-            localUserId == aclProfile.GetAccesser().GetAccesserUserId() &&
-            localAccountId == aclProfile.GetAccesser().GetAccesserAccountId() &&
-            peerDeviceId == aclProfile.GetAccessee().GetAccesseeDeviceId() &&
-            peerUserId == aclProfile.GetAccessee().GetAccesseeUserId() &&
-            peerAccountId == profile.GetAccessee().GetAccesseeAccountId()) ||
-            (peerDeviceId == aclProfile.GetAccesser().GetAccesserDeviceId() &&
-            peerUserId == aclProfile.GetAccesser().GetAccesserUserId() &&
-            peerAccountId == profile.GetAccesser().GetAccesserAccountId() &&
-            localDeviceId == aclProfile.GetAccessee().GetAccesseeDeviceId() &&
-            localUserId == aclProfile.GetAccessee().GetAccesseeUserId() &&
-            localAccountId == aclProfile.GetAccessee().GetAccesseeAccountId())) {
-            int32_t serviceId = 0;
-            ParseServiceIdFromJson(aclProfile.GetAccessee().GetAccesseeExtraData(), serviceId);
-            serviceIdList.emplace_back(serviceId);
+        if (aclProfile.GetBindType() == BindType::SAME_ACCOUNT) {
+            CollectSameAccountServiceIds(params.peerDeviceId, params.peerUserId,
+                params.peerAccountId, serviceIdList);
             continue;
+        }
+        int64_t serviceId = 0;
+        if (ParseServiceIdFromJson(aclProfile.GetAccessee().GetAccesseeExtraData(), serviceId) == DP_SUCCESS) {
+            serviceIdList.emplace_back(serviceId);
         }
     }
     return DP_SUCCESS;
 }
 
-int32_t TrustProfileManager::ParseServiceIdFromJson(const std::string& jsonStr, int32_t& serviceId)
+int32_t TrustProfileManager::ParseServiceIdFromJson(const std::string& jsonStr, int64_t& serviceId)
 {
     if (jsonStr.empty()) {
         HILOGW("jsonStr is empty");
@@ -2520,13 +2554,36 @@ int32_t TrustProfileManager::ParseServiceIdFromJson(const std::string& jsonStr, 
         cJSON_Delete(json);
         return DP_INVALID_PARAMS;
     }
-    cJSON* item = cJSON_GetObjectItemCaseSensitive(json, "serviceId");
+    cJSON* item = cJSON_GetObjectItemCaseSensitive(json, SERVICE_ID_KEY.c_str());
     if (item == NULL || !cJSON_IsNumber(item)) {
         HILOGW("serviceId not found or not a number");
         cJSON_Delete(json);
         return DP_INVALID_PARAMS;
     }
     serviceId = item->valueint;
+    cJSON_Delete(json);
+    return DP_SUCCESS;
+}
+
+int32_t TrustProfileManager::ParseAccountIdFromJson(const std::string& jsonStr, std::string& accountId)
+{
+    if (jsonStr.empty()) {
+        HILOGW("jsonStr is empty");
+        return DP_INVALID_PARAMS;
+    }
+    cJSON* json = cJSON_Parse(jsonStr.c_str());
+    if (!cJSON_IsObject(json)) {
+        HILOGW("cJSON_Parse jsonStr fail!");
+        cJSON_Delete(json);
+        return DP_INVALID_PARAMS;
+    }
+    cJSON* item = cJSON_GetObjectItemCaseSensitive(json, ACCOUNT_ID_KEY.c_str());
+    if (item == NULL || !cJSON_IsString(item)) {
+        HILOGW("accountId not found or not a string");
+        cJSON_Delete(json);
+        return DP_INVALID_PARAMS;
+    }
+    accountId = item->valuestring;
     cJSON_Delete(json);
     return DP_SUCCESS;
 }

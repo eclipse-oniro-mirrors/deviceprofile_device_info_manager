@@ -28,6 +28,7 @@
 #include "distributed_device_profile_log.h"
 #include "distributed_device_profile_errors.h"
 #include "rdb_open_callback.h"
+#include "service_info_manager.h"
 #undef private
 #undef protected
 
@@ -520,6 +521,237 @@ HWTEST_F(TrustProfileManagerTwoTest, QueryServiceIdList_003, TestSize.Level1)
     EXPECT_EQ(ret, DP_SUCCESS);
     EXPECT_EQ(serviceIdList.size(), 1);
     EXPECT_EQ(serviceIdList[0], 100);
+
+    if (storedAclId != -1) {
+        TrustProfileManager::GetInstance().DeleteAccessControlProfile(storedAclId);
+    }
+}
+
+/*
+ * @tc.name: ParseAccountIdFromJson_001
+ * @tc.desc: ParseAccountIdFromJson with empty string
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTwoTest, ParseAccountIdFromJson_001, TestSize.Level1)
+{
+    std::string accountId;
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().ParseAccountIdFromJson("", accountId);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/*
+ * @tc.name: ParseAccountIdFromJson_002
+ * @tc.desc: ParseAccountIdFromJson with invalid JSON
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTwoTest, ParseAccountIdFromJson_002, TestSize.Level1)
+{
+    std::string accountId;
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().ParseAccountIdFromJson("{invalid}", accountId);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/*
+ * @tc.name: ParseAccountIdFromJson_003
+ * @tc.desc: ParseAccountIdFromJson with missing accountId field
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTwoTest, ParseAccountIdFromJson_003, TestSize.Level1)
+{
+    std::string accountId;
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().ParseAccountIdFromJson("{\"other\": \"val\"}", accountId);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/*
+ * @tc.name: ParseAccountIdFromJson_004
+ * @tc.desc: ParseAccountIdFromJson with non-string accountId
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTwoTest, ParseAccountIdFromJson_004, TestSize.Level1)
+{
+    std::string accountId;
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().ParseAccountIdFromJson("{\"accountId\": 123}", accountId);
+    EXPECT_EQ(ret, DP_INVALID_PARAMS);
+}
+
+/*
+ * @tc.name: ParseAccountIdFromJson_005
+ * @tc.desc: ParseAccountIdFromJson with valid accountId
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTwoTest, ParseAccountIdFromJson_005, TestSize.Level1)
+{
+    std::string accountId;
+    int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
+        GetInstance().ParseAccountIdFromJson("{\"accountId\": \"testAccount123\"}", accountId);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_EQ(accountId, "testAccount123");
+}
+
+/*
+ * @tc.name: IsMatchingAclProfile_001
+ * @tc.desc: IsMatchingAclProfile with mismatched peerDeviceId -> false
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTwoTest, IsMatchingAclProfile_001, TestSize.Level1)
+{
+    Accesser accesser = MakeAccesser("acerDev", 100, "sharedAcc", 1111);
+    Accessee accessee = MakeAccessee("eceDev", 200, "sharedAcc", 2222);
+    AccessControlProfile profile = MakeProfile("trustDev", "key1",
+        static_cast<int32_t>(Status::ACTIVE), accesser, accessee);
+
+    ProfileQueryParams params;
+    params.localDeviceId = "eceDev";
+    params.localUserId = 200;
+    params.localAccountId = "sharedAcc";
+    params.peerDeviceId = "trustDev";
+    params.peerUserId = 100;
+    params.peerAccountId = "sharedAcc";
+
+    Accesser aclAccesser = MakeAccesser("anyDev", 999, "anyAcc", 3333);
+    Accessee aclAccessee = MakeAccessee("anyDev2", 888, "anyAcc", 4444);
+    AccessControlProfile aclProfile = MakeProfile("otherTrustDev", "key2",
+        static_cast<int32_t>(Status::ACTIVE), aclAccesser, aclAccessee);
+
+    bool result = TrustProfileManager::GetInstance().IsMatchingAclProfile(
+        profile, aclProfile, params);
+    EXPECT_FALSE(result);
+}
+
+/*
+ * @tc.name: IsMatchingAclProfile_002
+ * @tc.desc: IsMatchingAclProfile forward match (accesser=local, accessee=peer) -> true
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTwoTest, IsMatchingAclProfile_002, TestSize.Level1)
+{
+    Accesser accesser = MakeAccesser("acerDev", 100, "sharedAcc", 1111);
+    Accessee accessee = MakeAccessee("eceDev", 200, "sharedAcc", 2222);
+    AccessControlProfile profile = MakeProfile("trustDev", "key1",
+        static_cast<int32_t>(Status::ACTIVE), accesser, accessee);
+
+    ProfileQueryParams params;
+    params.localDeviceId = "eceDev";
+    params.localUserId = 200;
+    params.localAccountId = "sharedAcc";
+    params.peerDeviceId = "trustDev";
+    params.peerUserId = 100;
+    params.peerAccountId = "sharedAcc";
+
+    Accesser aclAccesser = MakeAccesser("eceDev", 200, "sharedAcc", 2222);
+    Accessee aclAccessee = MakeAccessee("trustDev", 100, "sharedAcc", 1111);
+    AccessControlProfile aclProfile = MakeProfile("trustDev", "key2",
+        static_cast<int32_t>(Status::ACTIVE), aclAccesser, aclAccessee);
+
+    bool result = TrustProfileManager::GetInstance().IsMatchingAclProfile(
+        profile, aclProfile, params);
+    EXPECT_TRUE(result);
+}
+
+/*
+ * @tc.name: IsMatchingAclProfile_003
+ * @tc.desc: IsMatchingAclProfile reverse match (accesser=peer, accessee=local) -> true
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTwoTest, IsMatchingAclProfile_003, TestSize.Level1)
+{
+    Accesser accesser = MakeAccesser("acerDev", 100, "sharedAcc", 1111);
+    Accessee accessee = MakeAccessee("eceDev", 200, "sharedAcc", 2222);
+    AccessControlProfile profile = MakeProfile("trustDev", "key1",
+        static_cast<int32_t>(Status::ACTIVE), accesser, accessee);
+
+    ProfileQueryParams params;
+    params.localDeviceId = "eceDev";
+    params.localUserId = 200;
+    params.localAccountId = "sharedAcc";
+    params.peerDeviceId = "trustDev";
+    params.peerUserId = 100;
+    params.peerAccountId = "sharedAcc";
+
+    Accesser aclAccesser = MakeAccesser("trustDev", 100, "sharedAcc", 1111);
+    Accessee aclAccessee = MakeAccessee("eceDev", 200, "sharedAcc", 2222);
+    AccessControlProfile aclProfile = MakeProfile("trustDev", "key2",
+        static_cast<int32_t>(Status::ACTIVE), aclAccesser, aclAccessee);
+
+    bool result = TrustProfileManager::GetInstance().IsMatchingAclProfile(
+        profile, aclProfile, params);
+    EXPECT_TRUE(result);
+}
+
+/*
+ * @tc.name: IsMatchingAclProfile_004
+ * @tc.desc: IsMatchingAclProfile partial field mismatch -> false
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTwoTest, IsMatchingAclProfile_004, TestSize.Level1)
+{
+    Accesser accesser = MakeAccesser("acerDev", 100, "sharedAcc", 1111);
+    Accessee accessee = MakeAccessee("eceDev", 200, "sharedAcc", 2222);
+    AccessControlProfile profile = MakeProfile("trustDev", "key1",
+        static_cast<int32_t>(Status::ACTIVE), accesser, accessee);
+
+    ProfileQueryParams params;
+    params.localDeviceId = "eceDev";
+    params.localUserId = 200;
+    params.localAccountId = "sharedAcc";
+    params.peerDeviceId = "trustDev";
+    params.peerUserId = 100;
+    params.peerAccountId = "sharedAcc";
+
+    Accesser aclAccesser = MakeAccesser("eceDev", 999, "sharedAcc", 2222);
+    Accessee aclAccessee = MakeAccessee("trustDev", 100, "sharedAcc", 1111);
+    AccessControlProfile aclProfile = MakeProfile("trustDev", "key2",
+        static_cast<int32_t>(Status::ACTIVE), aclAccesser, aclAccessee);
+
+    bool result = TrustProfileManager::GetInstance().IsMatchingAclProfile(
+        profile, aclProfile, params);
+    EXPECT_FALSE(result);
+}
+
+/*
+ * @tc.name: CollectSameAccountServiceIds_001
+ * @tc.desc: CollectSameAccountServiceIds with no service info data -> empty result
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTwoTest, CollectSameAccountServiceIds_001, TestSize.Level1)
+{
+    std::vector<int64_t> serviceIdList;
+    TrustProfileManager::GetInstance().CollectSameAccountServiceIds(
+        "testDev", 100, "testAcc", serviceIdList);
+    EXPECT_EQ(serviceIdList.size(), 0);
+}
+
+/*
+ * @tc.name: QueryServiceIdList_004
+ * @tc.desc: QueryServiceIdList with SAME_ACCOUNT bind type and matching profile, no service info
+ * @tc.type: FUNC
+ */
+HWTEST_F(TrustProfileManagerTwoTest, QueryServiceIdList_004, TestSize.Level1)
+{
+    Accesser storedAccesser = MakeAccesser("acer_sa", 111, "acc_sa", 11111);
+    Accessee storedAccessee = MakeAccessee("dev_sa", 222, "acc_sa", 22222, "{\"serviceId\": 200}");
+    AccessControlProfile storedProfile = MakeProfile("dev_sa", "ksa1",
+        static_cast<int32_t>(Status::ACTIVE), storedAccesser, storedAccessee);
+    storedProfile.SetBindType(static_cast<uint32_t>(BindType::SAME_ACCOUNT));
+
+    int32_t putRet = TrustProfileManager::GetInstance().PutAccessControlProfile(storedProfile);
+    EXPECT_EQ(putRet, DP_SUCCESS);
+    int64_t storedAclId = GetAclIdByDeviceId("dev_sa");
+
+    Accesser queryAccesser = MakeAccesser("acer_sa", 111, "acc_sa", 11111);
+    Accessee queryAccessee = MakeAccessee("dev_sa", 222, "acc_sa", 22222);
+    AccessControlProfile queryProfile = MakeProfile("dev_sa", "ksa1",
+        static_cast<int32_t>(Status::ACTIVE), queryAccesser, queryAccessee);
+
+    std::vector<int32_t> serviceIdList;
+    int32_t ret = TrustProfileManager::GetInstance().QueryServiceIdList(queryProfile, serviceIdList);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    EXPECT_EQ(serviceIdList.size(), 0);
 
     if (storedAclId != -1) {
         TrustProfileManager::GetInstance().DeleteAccessControlProfile(storedAclId);

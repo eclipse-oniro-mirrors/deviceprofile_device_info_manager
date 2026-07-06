@@ -72,7 +72,7 @@ private:
     int32_t localUserId_;
     std::string peerAccountId_;
     std::string localAccountId_;
-    std::vector<int32_t> serviceIdList_;
+    std::vector<int64_t> serviceIdList_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

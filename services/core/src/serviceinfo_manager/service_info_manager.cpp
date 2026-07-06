@@ -27,6 +27,7 @@
 #include "kv_store_death_recipient.h"
 #include "kv_sync_completed_listener.h"
 #include "profile_control_utils.h"
+#include "service_info_manager.h"
 
 #include "multi_user_manager.h"
 #include "parameter.h"

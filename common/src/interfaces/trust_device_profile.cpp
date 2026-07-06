@@ -137,7 +137,7 @@ bool TrustDeviceProfile::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, String, localAccountId_, false);
     WRITE_HELPER_RET(parcel, Uint32, serviceIdList_.size(), false);
     for (auto serviceId : serviceIdList_) {
-        WRITE_HELPER_RET(parcel, Int32, serviceId, false);
+        WRITE_HELPER_RET(parcel, Int64, serviceId, false);
     }
     return true;
 }
@@ -157,7 +157,7 @@ bool TrustDeviceProfile::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, Uint32, serviceIdListSize, false);
     for (uint32_t i = 0; i < serviceIdListSize; i++) {
         int32_t serviceId = 0;
-        READ_HELPER_RET(parcel, Int32, serviceId, false);
+        READ_HELPER_RET(parcel, Int64, serviceId, false);
         serviceIdList_.emplace_back(serviceId);
     }
     return true;
