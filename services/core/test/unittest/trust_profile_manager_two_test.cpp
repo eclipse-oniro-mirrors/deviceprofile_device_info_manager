@@ -145,7 +145,7 @@ void TrustProfileManagerTwoTest::TearDown()
  */
 HWTEST_F(TrustProfileManagerTwoTest, ParseServiceIdFromJson_001, TestSize.Level1)
 {
-    int32_t serviceId = -1;
+    int64_t serviceId = -1;
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().ParseServiceIdFromJson("", serviceId);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
@@ -159,7 +159,7 @@ HWTEST_F(TrustProfileManagerTwoTest, ParseServiceIdFromJson_001, TestSize.Level1
  */
 HWTEST_F(TrustProfileManagerTwoTest, ParseServiceIdFromJson_002, TestSize.Level1)
 {
-    int32_t serviceId = -1;
+    int64_t serviceId = -1;
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().ParseServiceIdFromJson("{invalid}", serviceId);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
@@ -173,7 +173,7 @@ HWTEST_F(TrustProfileManagerTwoTest, ParseServiceIdFromJson_002, TestSize.Level1
  */
 HWTEST_F(TrustProfileManagerTwoTest, ParseServiceIdFromJson_003, TestSize.Level1)
 {
-    int32_t serviceId = -1;
+    int64_t serviceId = -1;
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().ParseServiceIdFromJson("{\"other\": 123}", serviceId);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
@@ -187,7 +187,7 @@ HWTEST_F(TrustProfileManagerTwoTest, ParseServiceIdFromJson_003, TestSize.Level1
  */
 HWTEST_F(TrustProfileManagerTwoTest, ParseServiceIdFromJson_004, TestSize.Level1)
 {
-    int32_t serviceId = -1;
+    int64_t serviceId = -1;
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().ParseServiceIdFromJson("{\"serviceId\": \"abc\"}", serviceId);
     EXPECT_EQ(ret, DP_INVALID_PARAMS);
@@ -201,7 +201,7 @@ HWTEST_F(TrustProfileManagerTwoTest, ParseServiceIdFromJson_004, TestSize.Level1
  */
 HWTEST_F(TrustProfileManagerTwoTest, ParseServiceIdFromJson_005, TestSize.Level1)
 {
-    int32_t serviceId = -1;
+    int64_t serviceId = -1;
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().ParseServiceIdFromJson("{\"serviceId\": 42}", serviceId);
     EXPECT_EQ(ret, DP_SUCCESS);
