@@ -74,6 +74,9 @@ ohos_shared_library("distributed_device_profile_svr") {
     if (!device_info_manager_supported_switch || device_info_manager_common) {
       cflags += [ "-DDEVICE_PROFILE_SWITCH_DISABLE" ]
     }
+    if (car_device_enable) {
+      cflags += [ "-DCAR_DEVICE_ENABLE" ]
+    }
 
     cflags_cc = cflags
 
@@ -176,10 +179,6 @@ ohos_shared_library("distributed_device_profile_svr") {
       "syscap_codec:syscap_interface_shared",
       "memmgr:memmgrclient",
     ]
-
-    if (car_device_enable) {
-      defiens += [ "CAR_DEVICE_ENABLE" ]
-    }
 
     part_name = "device_info_manager"
     subsystem_name = "deviceprofile"
