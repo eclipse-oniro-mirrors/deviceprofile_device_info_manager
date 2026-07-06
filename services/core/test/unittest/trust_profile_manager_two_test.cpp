@@ -454,7 +454,7 @@ HWTEST_F(TrustProfileManagerTwoTest, NotifyAccountAclCheck_002, TestSize.Level1)
 HWTEST_F(TrustProfileManagerTwoTest, QueryServiceIdList_001, TestSize.Level1)
 {
     AccessControlProfile profile;
-    std::vector<int32_t> serviceIdList;
+    std::vector<int64_t> serviceIdList;
     OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().rdbStore_ = nullptr;
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
@@ -484,7 +484,7 @@ HWTEST_F(TrustProfileManagerTwoTest, QueryServiceIdList_002, TestSize.Level1)
     AccessControlProfile profile = MakeProfile("dev_qry", "kq1",
         static_cast<int32_t>(Status::INACTIVE), accesser, accessee);
 
-    std::vector<int32_t> serviceIdList;
+    std::vector<int64_t> serviceIdList;
     int32_t ret = TrustProfileManager::GetInstance().QueryServiceIdList(profile, serviceIdList);
     EXPECT_EQ(ret, DP_SUCCESS);
     EXPECT_EQ(serviceIdList.size(), 0);
@@ -516,7 +516,7 @@ HWTEST_F(TrustProfileManagerTwoTest, QueryServiceIdList_003, TestSize.Level1)
     AccessControlProfile queryProfile = MakeProfile("dev_qry2", "kq2",
         static_cast<int32_t>(Status::ACTIVE), queryAccesser, queryAccessee);
 
-    std::vector<int32_t> serviceIdList;
+    std::vector<int64_t> serviceIdList;
     int32_t ret = TrustProfileManager::GetInstance().QueryServiceIdList(queryProfile, serviceIdList);
     EXPECT_EQ(ret, DP_SUCCESS);
     EXPECT_EQ(serviceIdList.size(), 1);
@@ -748,7 +748,7 @@ HWTEST_F(TrustProfileManagerTwoTest, QueryServiceIdList_004, TestSize.Level1)
     AccessControlProfile queryProfile = MakeProfile("dev_sa", "ksa1",
         static_cast<int32_t>(Status::ACTIVE), queryAccesser, queryAccessee);
 
-    std::vector<int32_t> serviceIdList;
+    std::vector<int64_t> serviceIdList;
     int32_t ret = TrustProfileManager::GetInstance().QueryServiceIdList(queryProfile, serviceIdList);
     EXPECT_EQ(ret, DP_SUCCESS);
     EXPECT_EQ(serviceIdList.size(), 0);

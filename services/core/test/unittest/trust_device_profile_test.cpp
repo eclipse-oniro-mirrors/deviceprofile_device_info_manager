@@ -193,10 +193,10 @@ HWTEST_F(TrustDeviceProfileTest, GetLocalAccountId001, TestSize.Level1)
  */
 HWTEST_F(TrustDeviceProfileTest, GetServiceIdList001, TestSize.Level1)
 {
-    std::vector<int32_t> serviceIdList = {1, 2, 3};
+    std::vector<int64_t> serviceIdList = {1, 2, 3};
     TrustDeviceProfile trustDeviceProfile;
     trustDeviceProfile.SetServiceIdList(serviceIdList);
-    std::vector<int32_t> ret = trustDeviceProfile.GetServiceIdList();
+    std::vector<int64_t> ret = trustDeviceProfile.GetServiceIdList();
     EXPECT_EQ(serviceIdList, ret);
 }
 
@@ -218,7 +218,7 @@ HWTEST_F(TrustDeviceProfileTest, Marshalling001, TestSize.Level1)
     srcProfile.SetLocalUserId(200);
     srcProfile.SetPeerAccountId("peerAccountId");
     srcProfile.SetLocalAccountId("localAccountId");
-    std::vector<int32_t> serviceIdList = {10, 20, 30};
+    std::vector<int64_t> serviceIdList = {10, 20, 30};
     srcProfile.SetServiceIdList(serviceIdList);
 
     MessageParcel parcel;
@@ -235,7 +235,7 @@ HWTEST_F(TrustDeviceProfileTest, Marshalling001, TestSize.Level1)
     EXPECT_EQ(srcProfile.GetLocalUserId(), dstProfile.GetLocalUserId());
     EXPECT_EQ(srcProfile.GetPeerAccountId(), dstProfile.GetPeerAccountId());
     EXPECT_EQ(srcProfile.GetLocalAccountId(), dstProfile.GetLocalAccountId());
-    std::vector<int32_t> dstServiceIdList = dstProfile.GetServiceIdList();
+    std::vector<int64_t> dstServiceIdList = dstProfile.GetServiceIdList();
     EXPECT_EQ(serviceIdList, dstServiceIdList);
 }
 } // namespace DistributedDeviceProfile

@@ -114,12 +114,12 @@ void TrustDeviceProfile::SetLocalAccountId(const std::string &localAccountId)
     localAccountId_ = localAccountId;
 }
 
-std::vector<int32_t> TrustDeviceProfile::GetServiceIdList()
+std::vector<int64_t> TrustDeviceProfile::GetServiceIdList()
 {
     return serviceIdList_;
 }
 
-void TrustDeviceProfile::SetServiceIdList(const std::vector<int32_t> serviceIdList)
+void TrustDeviceProfile::SetServiceIdList(const std::vector<int64_t> serviceIdList)
 {
     serviceIdList_ = serviceIdList;
 }
@@ -156,7 +156,7 @@ bool TrustDeviceProfile::UnMarshalling(MessageParcel& parcel)
     uint32_t serviceIdListSize = 0;
     READ_HELPER_RET(parcel, Uint32, serviceIdListSize, false);
     for (uint32_t i = 0; i < serviceIdListSize; i++) {
-        int32_t serviceId = 0;
+        int64_t serviceId = 0;
         READ_HELPER_RET(parcel, Int64, serviceId, false);
         serviceIdList_.emplace_back(serviceId);
     }

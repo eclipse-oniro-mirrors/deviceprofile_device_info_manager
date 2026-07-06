@@ -24,6 +24,7 @@
 #include "profile_utils.h"
 #include "rdb_adapter.h"
 #include "subscribe_profile_manager.h"
+#include "service_info_manager.h"
 #include "values_bucket.h"
 
 namespace OHOS {
@@ -33,8 +34,6 @@ using namespace OHOS::NativeRdb;
 namespace {
     const std::string TAG = "TrustProfileManager";
     const std::string NAME = "name";
-    const std::string SERVICE_ID_KEY = "serviceId";
-    const std::string ACCOUNT_ID_KEY = "accountId";
 }
 
 int32_t TrustProfileManager::Init()
@@ -2145,7 +2144,7 @@ int32_t TrustProfileManager::DeleteTrustDeviceCheck(const AccessControlProfile& 
 #ifdef CAR_DEVICE_ENABLE
     CheckAccountAclExists(profile, isExists);
     if (!isExists && !IsLnnAcl(profile)) {
-        std::vector<int32_t> serviceIdList;
+        std::vector<int64_t> serviceIdList;
         QueryServiceIdList(profile, serviceIdList);
         trustProfile.SetServiceIdList(serviceIdList);
         int32_t ret = SubscribeProfileManager::GetInstance().NotifyAccountAclDelete(trustProfile);
@@ -2448,7 +2447,7 @@ int32_t TrustProfileManager::NotifyAccountAclCheck(const AccessControlProfile &p
     }
     TrustDeviceProfile trustProfile;
     ProfileUtils::ConvertToTrustDeviceProfile(profile, trustProfile);
-    std::vector<int32_t> serviceIdList;
+    std::vector<int64_t> serviceIdList;
     QueryServiceIdList(profile, serviceIdList);
     trustProfile.SetServiceIdList(serviceIdList);
     if (accountAclActiveCount == 0 && profile.GetStatus() == STATUS_INACTIVE &&
@@ -2529,7 +2528,7 @@ int32_t TrustProfileManager::QueryServiceIdList(const AccessControlProfile &prof
         if (!IsMatchingAclProfile(profile, aclProfile, params)) {
             continue;
         }
-        if (aclProfile.GetBindType() == BindType::SAME_ACCOUNT) {
+        if (aclProfile.GetBindType() == static_cast<uint32_t>(BindType::SAME_ACCOUNT)) {
             CollectSameAccountServiceIds(params.peerDeviceId, params.peerUserId,
                 params.peerAccountId, serviceIdList);
             continue;
@@ -2554,7 +2553,7 @@ int32_t TrustProfileManager::ParseServiceIdFromJson(const std::string& jsonStr, 
         cJSON_Delete(json);
         return DP_INVALID_PARAMS;
     }
-    cJSON* item = cJSON_GetObjectItemCaseSensitive(json, SERVICE_ID_KEY.c_str());
+    cJSON* item = cJSON_GetObjectItemCaseSensitive(json, SERVICEID.c_str());
     if (item == NULL || !cJSON_IsNumber(item)) {
         HILOGW("serviceId not found or not a number");
         cJSON_Delete(json);
@@ -2577,7 +2576,7 @@ int32_t TrustProfileManager::ParseAccountIdFromJson(const std::string& jsonStr, 
         cJSON_Delete(json);
         return DP_INVALID_PARAMS;
     }
-    cJSON* item = cJSON_GetObjectItemCaseSensitive(json, ACCOUNT_ID_KEY.c_str());
+    cJSON* item = cJSON_GetObjectItemCaseSensitive(json, ACCOUNTID.c_str());
     if (item == NULL || !cJSON_IsString(item)) {
         HILOGW("accountId not found or not a string");
         cJSON_Delete(json);
