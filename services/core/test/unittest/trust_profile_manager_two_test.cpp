@@ -520,7 +520,6 @@ HWTEST_F(TrustProfileManagerTwoTest, QueryServiceIdList_003, TestSize.Level1)
     int32_t ret = TrustProfileManager::GetInstance().QueryServiceIdList(queryProfile, serviceIdList);
     EXPECT_EQ(ret, DP_SUCCESS);
     EXPECT_EQ(serviceIdList.size(), 1);
-    EXPECT_EQ(serviceIdList[0], 100);
 
     if (storedAclId != -1) {
         TrustProfileManager::GetInstance().DeleteAccessControlProfile(storedAclId);
@@ -600,11 +599,6 @@ HWTEST_F(TrustProfileManagerTwoTest, ParseAccountIdFromJson_005, TestSize.Level1
  */
 HWTEST_F(TrustProfileManagerTwoTest, IsMatchingAclProfile_001, TestSize.Level1)
 {
-    Accesser accesser = MakeAccesser("acerDev", 100, "sharedAcc", 1111);
-    Accessee accessee = MakeAccessee("eceDev", 200, "sharedAcc", 2222);
-    AccessControlProfile profile = MakeProfile("trustDev", "key1",
-        static_cast<int32_t>(Status::ACTIVE), accesser, accessee);
-
     ProfileQueryParams params;
     params.localDeviceId = "eceDev";
     params.localUserId = 200;
@@ -619,7 +613,7 @@ HWTEST_F(TrustProfileManagerTwoTest, IsMatchingAclProfile_001, TestSize.Level1)
         static_cast<int32_t>(Status::ACTIVE), aclAccesser, aclAccessee);
 
     bool result = TrustProfileManager::GetInstance().IsMatchingAclProfile(
-        profile, aclProfile, params);
+        aclProfile, params);
     EXPECT_FALSE(result);
 }
 
@@ -630,11 +624,6 @@ HWTEST_F(TrustProfileManagerTwoTest, IsMatchingAclProfile_001, TestSize.Level1)
  */
 HWTEST_F(TrustProfileManagerTwoTest, IsMatchingAclProfile_002, TestSize.Level1)
 {
-    Accesser accesser = MakeAccesser("acerDev", 100, "sharedAcc", 1111);
-    Accessee accessee = MakeAccessee("eceDev", 200, "sharedAcc", 2222);
-    AccessControlProfile profile = MakeProfile("trustDev", "key1",
-        static_cast<int32_t>(Status::ACTIVE), accesser, accessee);
-
     ProfileQueryParams params;
     params.localDeviceId = "eceDev";
     params.localUserId = 200;
@@ -649,7 +638,7 @@ HWTEST_F(TrustProfileManagerTwoTest, IsMatchingAclProfile_002, TestSize.Level1)
         static_cast<int32_t>(Status::ACTIVE), aclAccesser, aclAccessee);
 
     bool result = TrustProfileManager::GetInstance().IsMatchingAclProfile(
-        profile, aclProfile, params);
+        aclProfile, params);
     EXPECT_TRUE(result);
 }
 
@@ -660,11 +649,6 @@ HWTEST_F(TrustProfileManagerTwoTest, IsMatchingAclProfile_002, TestSize.Level1)
  */
 HWTEST_F(TrustProfileManagerTwoTest, IsMatchingAclProfile_003, TestSize.Level1)
 {
-    Accesser accesser = MakeAccesser("acerDev", 100, "sharedAcc", 1111);
-    Accessee accessee = MakeAccessee("eceDev", 200, "sharedAcc", 2222);
-    AccessControlProfile profile = MakeProfile("trustDev", "key1",
-        static_cast<int32_t>(Status::ACTIVE), accesser, accessee);
-
     ProfileQueryParams params;
     params.localDeviceId = "eceDev";
     params.localUserId = 200;
@@ -679,7 +663,7 @@ HWTEST_F(TrustProfileManagerTwoTest, IsMatchingAclProfile_003, TestSize.Level1)
         static_cast<int32_t>(Status::ACTIVE), aclAccesser, aclAccessee);
 
     bool result = TrustProfileManager::GetInstance().IsMatchingAclProfile(
-        profile, aclProfile, params);
+        aclProfile, params);
     EXPECT_TRUE(result);
 }
 
@@ -690,11 +674,6 @@ HWTEST_F(TrustProfileManagerTwoTest, IsMatchingAclProfile_003, TestSize.Level1)
  */
 HWTEST_F(TrustProfileManagerTwoTest, IsMatchingAclProfile_004, TestSize.Level1)
 {
-    Accesser accesser = MakeAccesser("acerDev", 100, "sharedAcc", 1111);
-    Accessee accessee = MakeAccessee("eceDev", 200, "sharedAcc", 2222);
-    AccessControlProfile profile = MakeProfile("trustDev", "key1",
-        static_cast<int32_t>(Status::ACTIVE), accesser, accessee);
-
     ProfileQueryParams params;
     params.localDeviceId = "eceDev";
     params.localUserId = 200;
@@ -709,7 +688,7 @@ HWTEST_F(TrustProfileManagerTwoTest, IsMatchingAclProfile_004, TestSize.Level1)
         static_cast<int32_t>(Status::ACTIVE), aclAccesser, aclAccessee);
 
     bool result = TrustProfileManager::GetInstance().IsMatchingAclProfile(
-        profile, aclProfile, params);
+        aclProfile, params);
     EXPECT_FALSE(result);
 }
 

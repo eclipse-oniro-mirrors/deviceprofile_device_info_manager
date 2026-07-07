@@ -145,7 +145,7 @@ private:
     int32_t CheckAccountAclActiveCount(const AccessControlProfile& profile, int32_t& resultCount);
     int32_t NotifyAccountAclCheck(const AccessControlProfile& profile, const AccessControlProfile& oldProfile);
     int32_t QueryServiceIdList(const AccessControlProfile& profile, std::vector<int64_t>& serviceIdList);
-    bool IsMatchingAclProfile(const AccessControlProfile& profile, const AccessControlProfile& aclProfile,
+    bool IsMatchingAclProfile(const AccessControlProfile& aclProfile,
         const ProfileQueryParams& params);
     void CollectSameAccountServiceIds(const std::string& peerDeviceId, int32_t peerUserId,
         const std::string& peerAccountId, std::vector<int64_t>& serviceIdList);

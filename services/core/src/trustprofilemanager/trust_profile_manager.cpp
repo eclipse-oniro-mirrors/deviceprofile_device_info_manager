@@ -2461,24 +2461,25 @@ int32_t TrustProfileManager::NotifyAccountAclCheck(const AccessControlProfile &p
     return DP_SUCCESS;
 }
 
-bool TrustProfileManager::IsMatchingAclProfile(const AccessControlProfile& profile,
-    const AccessControlProfile& aclProfile, const ProfileQueryParams& params)
+bool TrustProfileManager::IsMatchingAclProfile(const AccessControlProfile& aclProfile,
+    const ProfileQueryParams& params)
 {
     if (params.peerDeviceId != aclProfile.GetTrustDeviceId()) {
         return false;
     }
-    return (params.localDeviceId == aclProfile.GetAccesser().GetAccesserDeviceId() &&
+    bool fwdMatch = (params.localDeviceId == aclProfile.GetAccesser().GetAccesserDeviceId() &&
         params.localUserId == aclProfile.GetAccesser().GetAccesserUserId() &&
         params.localAccountId == aclProfile.GetAccesser().GetAccesserAccountId() &&
         params.peerDeviceId == aclProfile.GetAccessee().GetAccesseeDeviceId() &&
-        params.peerUserId == aclProfile.GetAccessee().GetAccesseeUserId() &&
-        params.peerAccountId == profile.GetAccessee().GetAccesseeAccountId()) ||
-        (params.peerDeviceId == aclProfile.GetAccesser().GetAccesserDeviceId() &&
+        params.peerUserId == aclProfile.GetAccessee().GetAccesseeUserId()) &&
+        params.peerAccountId == aclProfile.GetAccessee().GetAccesseeAccountId();
+    bool revMatch = (params.peerDeviceId == aclProfile.GetAccesser().GetAccesserDeviceId() &&
         params.peerUserId == aclProfile.GetAccesser().GetAccesserUserId() &&
-        params.peerAccountId == profile.GetAccesser().GetAccesserAccountId() &&
+        params.peerAccountId == aclProfile.GetAccesser().GetAccesserAccountId() &&
         params.localDeviceId == aclProfile.GetAccessee().GetAccesseeDeviceId() &&
         params.localUserId == aclProfile.GetAccessee().GetAccesseeUserId() &&
         params.localAccountId == aclProfile.GetAccessee().GetAccesseeAccountId());
+    return fwdMatch || revMatch;
 }
 
 void TrustProfileManager::CollectSameAccountServiceIds(const std::string& peerDeviceId,
@@ -2525,7 +2526,7 @@ int32_t TrustProfileManager::QueryServiceIdList(const AccessControlProfile &prof
     }
     RemoveLnnAcl(aclProfiles);
     for (const auto& aclProfile : aclProfiles) {
-        if (!IsMatchingAclProfile(profile, aclProfile, params)) {
+        if (!IsMatchingAclProfile(aclProfile, params)) {
             continue;
         }
         if (aclProfile.GetBindType() == static_cast<uint32_t>(BindType::SAME_ACCOUNT)) {
@@ -2559,7 +2560,13 @@ int32_t TrustProfileManager::ParseServiceIdFromJson(const std::string& jsonStr, 
         cJSON_Delete(json);
         return DP_INVALID_PARAMS;
     }
-    serviceId = item->valueint;
+    double numberValue = cJSON_GetNumberValue(item);
+    if (numberValue != static_cast<int64_t>(numberValue) || numberValue < INT64_MIN || numberValue > INT64_MAX) {
+        HILOGW("serviceId value is not a valid integer");
+        cJSON_Delete(json);
+        return DP_INVALID_PARAMS;
+    }
+    serviceId = static_cast<int64_t>(numberValue);
     cJSON_Delete(json);
     return DP_SUCCESS;
 }
