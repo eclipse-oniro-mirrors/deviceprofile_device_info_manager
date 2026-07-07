@@ -114,7 +114,7 @@ void TrustDeviceProfile::SetLocalAccountId(const std::string &localAccountId)
     localAccountId_ = localAccountId;
 }
 
-std::vector<int64_t> TrustDeviceProfile::GetServiceIdList()
+std::vector<int64_t> TrustDeviceProfile::GetServiceIdList() const
 {
     return serviceIdList_;
 }
