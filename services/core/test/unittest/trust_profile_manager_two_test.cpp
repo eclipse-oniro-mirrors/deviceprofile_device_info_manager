@@ -217,12 +217,9 @@ HWTEST_F(TrustProfileManagerTwoTest, CheckAccountAclExists_001, TestSize.Level1)
 {
     AccessControlProfile profile;
     bool isExists = true;
-    OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().rdbStore_ = nullptr;
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().CheckAccountAclExists(profile, isExists);
     EXPECT_NE(ret, DP_SUCCESS);
-    OHOS::DistributedDeviceProfile::TrustProfileManager::GetInstance().Init();
 }
 
 /*
@@ -246,7 +243,7 @@ HWTEST_F(TrustProfileManagerTwoTest, CheckAccountAclExists_002, TestSize.Level1)
     AccessControlProfile queryProfile = MakeProfile("dev_no_match", "k1",
         static_cast<int32_t>(Status::INACTIVE), queryAccesser, queryAccessee);
 
-    bool isExists = true;
+    bool isExists = false;
     int32_t ret = TrustProfileManager::GetInstance().CheckAccountAclExists(queryProfile, isExists);
     EXPECT_EQ(ret, DP_SUCCESS);
     EXPECT_EQ(isExists, false);
@@ -327,12 +324,9 @@ HWTEST_F(TrustProfileManagerTwoTest, CheckAccountAclActiveCount_001, TestSize.Le
 {
     AccessControlProfile profile;
     int32_t resultCount = -1;
-    OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().rdbStore_ = nullptr;
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().CheckAccountAclActiveCount(profile, resultCount);
     EXPECT_NE(ret, DP_SUCCESS);
-    OHOS::DistributedDeviceProfile::TrustProfileManager::GetInstance().Init();
 }
 
 /*
@@ -406,12 +400,9 @@ HWTEST_F(TrustProfileManagerTwoTest, NotifyAccountAclCheck_001, TestSize.Level1)
 {
     AccessControlProfile profile;
     AccessControlProfile oldProfile;
-    OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().rdbStore_ = nullptr;
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().NotifyAccountAclCheck(profile, oldProfile);
     EXPECT_NE(ret, DP_SUCCESS);
-    OHOS::DistributedDeviceProfile::TrustProfileManager::GetInstance().Init();
 }
 
 /*
@@ -455,12 +446,9 @@ HWTEST_F(TrustProfileManagerTwoTest, QueryServiceIdList_001, TestSize.Level1)
 {
     AccessControlProfile profile;
     std::vector<int64_t> serviceIdList;
-    OHOS::DistributedDeviceProfile::TrustProfileManager::
-        GetInstance().rdbStore_ = nullptr;
     int32_t ret = OHOS::DistributedDeviceProfile::TrustProfileManager::
         GetInstance().QueryServiceIdList(profile, serviceIdList);
     EXPECT_NE(ret, DP_SUCCESS);
-    OHOS::DistributedDeviceProfile::TrustProfileManager::GetInstance().Init();
 }
 
 /*

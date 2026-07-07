@@ -56,7 +56,7 @@ public:
     void SetPeerAccountId(const std::string& peerAccountId);
     std::string GetLocalAccountId() const;
     void SetLocalAccountId(const std::string& localAccountId);
-    std::vector<int64_t> GetServiceIdList();
+    std::vector<int64_t> GetServiceIdList() const;
     void SetServiceIdList(const std::vector<int64_t> serviceIdList);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
