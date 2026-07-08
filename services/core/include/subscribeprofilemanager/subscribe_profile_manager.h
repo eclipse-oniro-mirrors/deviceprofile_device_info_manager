@@ -48,6 +48,8 @@ public:
     /* Account level */
     int32_t NotifyAccountAclDelete(const TrustDeviceProfile& trustDeviceProfile);
     int32_t NotifyAccountAclInactive(const TrustDeviceProfile& trustDeviceProfile);
+    int32_t NotifyAccountAclAdd(const TrustDeviceProfile& trustDeviceProfile);
+    int32_t NotifyAccountAclActive(const TrustDeviceProfile& trustDeviceProfile);
 
     int32_t SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo);
     int32_t SubscribeDeviceProfile(std::map<std::string, SubscribeInfo> subscribeInfos);

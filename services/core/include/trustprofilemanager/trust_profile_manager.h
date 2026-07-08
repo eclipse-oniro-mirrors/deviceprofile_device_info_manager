@@ -131,7 +131,7 @@ private:
     int32_t DeleteAccesseeCheck(int64_t accesseeId, Accessee& accessee);
     int32_t DeleteTrustDeviceCheck(const AccessControlProfile& profile);
     int32_t UpdateAclCheck(const AccessControlProfile& profile, AccessControlProfile& oldProfile);
-    int32_t PutAclCheck(const AccessControlProfile& profile, bool peerDevInfoExists);
+    int32_t PutAclCheck(const AccessControlProfile& profile, bool isUserAclExists, bool isAccountAclExists);
     int32_t IsAclExists(const AccessControlProfile& profile);
     int32_t CheckDeviceIdAndUserIdActive(const AccessControlProfile& profile, int32_t& resultCount);
     int32_t CheckDeviceIdAndUserIdExists(const AccessControlProfile& profile, bool& isExists);

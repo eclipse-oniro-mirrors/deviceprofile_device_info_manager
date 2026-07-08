@@ -111,10 +111,12 @@ int32_t TrustProfileManager::PutTrustDeviceProfile(const TrustDeviceProfile& pro
 int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile& profile)
 {
     AccessControlProfile accessControlProfile(profile);
-    bool isExists = false;
+    bool isUserAclExists = false;
+    bool isAccountAclExists = false;
     {
         std::lock_guard<std::mutex> lock(aclMutex_);
-        CheckDeviceIdAndUserIdExists(profile, isExists);
+        CheckDeviceIdAndUserIdExists(profile, isUserAclExists);
+        CheckAccountAclExists(profile, isAccountAclExists);
         int32_t ret = this->SetAccessControlProfileId(accessControlProfile);
         if (ret != DP_SUCCESS) {
             HILOGE("SetAccessControlProfileId failed");
@@ -147,7 +149,7 @@ int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile&
         }
         HILOGI("PutAclProfile : %{public}s", accessControlProfile.dump().c_str());
     }
-    int32_t putRet = this->PutAclCheck(accessControlProfile, isExists);
+    int32_t putRet = this->PutAclCheck(accessControlProfile, isUserAclExists, isAccountAclExists);
     if (putRet != DP_SUCCESS) {
         HILOGE("PutAclCheck failed");
         return putRet;
@@ -1901,14 +1903,25 @@ int32_t TrustProfileManager::UpdateAclCheck(const AccessControlProfile& profile,
     return DP_SUCCESS;
 }
 
-int32_t TrustProfileManager::PutAclCheck(const AccessControlProfile& profile, bool peerDevInfoExists)
+int32_t TrustProfileManager::PutAclCheck(const AccessControlProfile& profile,
+    bool isUserAclExists, bool isAccountAclExists)
 {
     TrustDeviceProfile trustProfile;
     ProfileUtils::ConvertToTrustDeviceProfile(profile, trustProfile);
-    if (!peerDevInfoExists && !IsLnnAcl(profile)) {
+    if (!isUserAclExists && !IsLnnAcl(profile)) {
         int32_t ret = SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileAdd(trustProfile);
         if (ret != DP_SUCCESS) {
             HILOGE("NotifyTrustDeviceProfileAdd failed");
+            return DP_NOTIFY_TRUST_DEVICE_FAIL;
+        }
+    }
+    if (!isAccountAclExists && !IsLnnAcl(profile)) {
+        std::vector<int64_t> serviceIdList;
+        QueryServiceIdList(profile, serviceIdList);
+        trustProfile.SetServiceIdList(serviceIdList);
+        int32_t ret = SubscribeProfileManager::GetInstance().NotifyAccountAclAdd(trustProfile);
+        if (ret != DP_SUCCESS) {
+            HILOGE("NotifyAccountAclAdd failed");
             return DP_NOTIFY_TRUST_DEVICE_FAIL;
         }
     }
@@ -2042,9 +2055,7 @@ int32_t TrustProfileManager::CheckDeviceIdAndUserIdExists(const AccessControlPro
 
 int32_t TrustProfileManager::NotifyCheck(const AccessControlProfile& profile, const AccessControlProfile& oldProfile)
 {
-#ifdef CAR_DEVICE_ENABLE
     NotifyAccountAclCheck(profile, oldProfile);
-#endif
     int32_t resultCount = 0;
     int32_t ret = CheckDeviceIdAndUserIdActive(profile, resultCount);
     if (ret != DP_SUCCESS) {
@@ -2141,7 +2152,6 @@ int32_t TrustProfileManager::DeleteTrustDeviceCheck(const AccessControlProfile& 
             return DP_NOTIFY_TRUST_DEVICE_FAIL;
         }
     }
-#ifdef CAR_DEVICE_ENABLE
     CheckAccountAclExists(profile, isExists);
     if (!isExists && !IsLnnAcl(profile)) {
         std::vector<int64_t> serviceIdList;
@@ -2153,7 +2163,6 @@ int32_t TrustProfileManager::DeleteTrustDeviceCheck(const AccessControlProfile& 
             return DP_NOTIFY_TRUST_DEVICE_FAIL;
         }
     }
-#endif
     std::shared_ptr<ResultSet> resultSet = GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_TRUSTDEVICEID,
         std::vector<ValueObject>{ ValueObject(profile.GetTrustDeviceId()) });
     if (resultSet == nullptr) {
@@ -2455,6 +2464,14 @@ int32_t TrustProfileManager::NotifyAccountAclCheck(const AccessControlProfile &p
         ret = SubscribeProfileManager::GetInstance().NotifyAccountAclInactive(trustProfile);
         if (ret != DP_SUCCESS) {
             HILOGE("NotifyAccountAclInactive failed");
+            return DP_NOTIFY_TRUST_DEVICE_FAIL;
+        }
+    }
+    if (accountAclActiveCount == 1 && profile.GetStatus() == STATUS_ACTIVE &&
+        oldProfile.GetStatus() == STATUS_INACTIVE && !IsLnnAcl(profile)) {
+        ret = SubscribeProfileManager::GetInstance().NotifyAccountAclActive(trustProfile);
+        if (ret != DP_SUCCESS) {
+            HILOGE("NotifyAccountAclActive failed");
             return DP_NOTIFY_TRUST_DEVICE_FAIL;
         }
     }

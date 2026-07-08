@@ -493,6 +493,28 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_016, TestSize.Level0)
     EXPECT_EQ(305, ret);
 }
 
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_017, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_ADD);
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_018, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_ACTIVE);
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
 HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileActiveInner_001, TestSize.Level0)
 {
     MessageParcel data;
@@ -569,6 +591,20 @@ HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclInactive_001, TestSize.Level
 {
     TrustDeviceProfile profile;
     int32_t ret = listenerStub_->OnAccountAclInactive(profile);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclAdd_001, TestSize.Level0)
+{
+    TrustDeviceProfile profile;
+    int32_t ret = listenerStub_->OnAccountAclAdd(profile);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclActive_001, TestSize.Level0)
+{
+    TrustDeviceProfile profile;
+    int32_t ret = listenerStub_->OnAccountAclActive(profile);
     EXPECT_EQ(DP_SUCCESS, ret);
 }
 } // namespace DistributedDeviceProfile

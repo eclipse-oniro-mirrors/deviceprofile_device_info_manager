@@ -99,7 +99,9 @@ enum class DpIpcInterfaceCode : uint32_t {
 	ON_DEVICE_ACL_INACTIVE_BY_UPDATE = 80,
 	ON_ACCOUNT_ACL_DELETE = 81,
 	ON_ACCOUNT_ACL_INACTIVE = 82,
-    MAX = 83
+	ON_ACCOUNT_ACL_ADD = 83,
+	ON_ACCOUNT_ACL_ACTIVE = 84,
+    MAX = 85
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

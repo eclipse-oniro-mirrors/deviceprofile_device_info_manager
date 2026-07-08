@@ -53,6 +53,10 @@ ProfileChangeListenerStub::ProfileChangeListenerStub()
         &ProfileChangeListenerStub::OnAccountAclDeleteInner;
     funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_INACTIVE)] =
         &ProfileChangeListenerStub::OnAccountAclInactiveInner;
+    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_ADD)] =
+        &ProfileChangeListenerStub::OnAccountAclAddInner;
+    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_ACTIVE)] =
+        &ProfileChangeListenerStub::OnAccountAclActiveInner;
     funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_ADD)] =
         &ProfileChangeListenerStub::OnDeviceProfileAddInner;
     funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_DELETE)] =
@@ -242,6 +246,38 @@ int32_t ProfileChangeListenerStub::OnAccountAclInactiveInner(MessageParcel& data
         return ERR_FLATTEN_OBJECT;
     }
     OnAccountAclInactive(trustDeviceProfile);
+    if (!reply.WriteInt32(DP_SUCCESS)) {
+        HILOGE("Read reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileChangeListenerStub::OnAccountAclAddInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    TrustDeviceProfile trustDeviceProfile;
+    if (!trustDeviceProfile.UnMarshalling(data)) {
+        HILOGE("Read reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    OnAccountAclAdd(trustDeviceProfile);
+    if (!reply.WriteInt32(DP_SUCCESS)) {
+        HILOGE("Read reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    return DP_SUCCESS;
+}
+
+int32_t ProfileChangeListenerStub::OnAccountAclActiveInner(MessageParcel& data, MessageParcel& reply)
+{
+    HILOGI("called");
+    TrustDeviceProfile trustDeviceProfile;
+    if (!trustDeviceProfile.UnMarshalling(data)) {
+        HILOGE("Read reply failed");
+        return ERR_FLATTEN_OBJECT;
+    }
+    OnAccountAclActive(trustDeviceProfile);
     if (!reply.WriteInt32(DP_SUCCESS)) {
         HILOGE("Read reply failed");
         return ERR_FLATTEN_OBJECT;
@@ -439,6 +475,18 @@ int32_t ProfileChangeListenerStub::OnAccountAclDelete(const TrustDeviceProfile& 
 }
 
 int32_t ProfileChangeListenerStub::OnAccountAclInactive(const TrustDeviceProfile& profile)
+{
+    (void)profile;
+    return DP_SUCCESS;
+}
+
+int32_t ProfileChangeListenerStub::OnAccountAclAdd(const TrustDeviceProfile& profile)
+{
+    (void)profile;
+    return DP_SUCCESS;
+}
+
+int32_t ProfileChangeListenerStub::OnAccountAclActive(const TrustDeviceProfile& profile)
 {
     (void)profile;
     return DP_SUCCESS;

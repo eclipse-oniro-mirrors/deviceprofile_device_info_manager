@@ -125,6 +125,16 @@ public:
             cout << "OnAccountAclInactive" << profile.dump() <<endl;
             return 0;
         }
+        int32_t OnAccountAclAdd(const TrustDeviceProfile& profile)
+        {
+            cout << "OnAccountAclAdd" << profile.dump() <<endl;
+            return 0;
+        }
+        int32_t OnAccountAclActive(const TrustDeviceProfile& profile)
+        {
+            cout << "OnAccountAclActive" << profile.dump() <<endl;
+            return 0;
+        }
     };
 };
 
@@ -427,6 +437,10 @@ HWTEST_F(DPSubscribeInfoTest, IProfileChangeListener_003, TestSize.Level1)
     EXPECT_EQ(ret, DP_SUCCESS);
     ret = subscribeDPChangeListener->OnAccountAclInactive(profile);
     EXPECT_EQ(ret, DP_SUCCESS);
+    ret = subscribeDPChangeListener->OnAccountAclAdd(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = subscribeDPChangeListener->OnAccountAclActive(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
 }
 
 /*
@@ -478,6 +492,10 @@ HWTEST_F(DPSubscribeInfoTest, Stub_004, TestSize.Level1)
     int32_t ret = proxy->IProfileChangeListener::OnAccountAclDelete(profile);
     EXPECT_EQ(ret, DP_SUCCESS);
     ret = proxy->IProfileChangeListener::OnAccountAclInactive(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->IProfileChangeListener::OnAccountAclAdd(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->IProfileChangeListener::OnAccountAclActive(profile);
     EXPECT_EQ(ret, DP_SUCCESS);
 }
 } // namespace DistributedDeviceProfile

@@ -165,6 +165,36 @@ int32_t ProfileListenerProxy::OnAccountAclInactive(const TrustDeviceProfile& pro
     return DP_SUCCESS;
 }
 
+int32_t ProfileListenerProxy::OnAccountAclAdd(const TrustDeviceProfile& profile)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_CHANGE_LISTENER_TOKEN(data);
+    if (!profile.Marshalling(data)) {
+        HILOGE("write reply failed!");
+        return ERR_FLATTEN_OBJECT;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_ADD), data, reply);
+    return DP_SUCCESS;
+}
+
+int32_t ProfileListenerProxy::OnAccountAclActive(const TrustDeviceProfile& profile)
+{
+    sptr<IRemoteObject> remote = nullptr;
+    GET_REMOTE_OBJECT(remote);
+    MessageParcel data;
+    WRITE_CHANGE_LISTENER_TOKEN(data);
+    if (!profile.Marshalling(data)) {
+        HILOGE("write reply failed!");
+        return ERR_FLATTEN_OBJECT;
+    }
+    MessageParcel reply;
+    SEND_REQUEST(remote, static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_ACTIVE), data, reply);
+    return DP_SUCCESS;
+}
+
 int32_t ProfileListenerProxy::OnDeviceProfileAdd(const DeviceProfile& profile)
 {
     sptr<IRemoteObject> remote = nullptr;

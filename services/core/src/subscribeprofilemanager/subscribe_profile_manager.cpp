@@ -279,6 +279,46 @@ int32_t SubscribeProfileManager::NotifyAccountAclInactive(const TrustDeviceProfi
     return DP_SUCCESS;
 }
 
+int32_t SubscribeProfileManager::NotifyAccountAclAdd(const TrustDeviceProfile& trustDeviceProfile)
+{
+    auto subscriberInfos = GetSubscribeInfos(SUBSCRIBE_TRUST_DEVICE_PROFILE);
+    if (subscriberInfos.empty()) {
+        return DP_SUCCESS;
+    }
+    HILOGI("%{public}s!", trustDeviceProfile.dump().c_str());
+    for (const auto& subscriberInfo : subscriberInfos) {
+        sptr<IProfileChangeListener> listenerProxy = iface_cast<IProfileChangeListener>(subscriberInfo.GetListener());
+        if (listenerProxy == nullptr) {
+            HILOGE("Cast to IProfileChangeListener failed!");
+            continue;
+        }
+        if (subscriberInfo.GetProfileChangeTypes().count(ProfileChangeType::ACCOUNT_ACL_ADD) != 0) {
+            listenerProxy->OnAccountAclAdd(trustDeviceProfile);
+        }
+    }
+    return DP_SUCCESS;
+}
+
+int32_t SubscribeProfileManager::NotifyAccountAclActive(const TrustDeviceProfile& trustDeviceProfile)
+{
+    auto subscriberInfos = GetSubscribeInfos(SUBSCRIBE_TRUST_DEVICE_PROFILE);
+    if (subscriberInfos.empty()) {
+        return DP_SUCCESS;
+    }
+    HILOGI("%{public}s!", trustDeviceProfile.dump().c_str());
+    for (const auto& subscriberInfo : subscriberInfos) {
+        sptr<IProfileChangeListener> listenerProxy = iface_cast<IProfileChangeListener>(subscriberInfo.GetListener());
+        if (listenerProxy == nullptr) {
+            HILOGE("Cast to IProfileChangeListener failed!");
+            continue;
+        }
+        if (subscriberInfo.GetProfileChangeTypes().count(ProfileChangeType::ACCOUNT_ACL_ACTIVE) != 0) {
+            listenerProxy->OnAccountAclActive(trustDeviceProfile);
+        }
+    }
+    return DP_SUCCESS;
+}
+
 int32_t SubscribeProfileManager::SubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)
 {
     HILOGI("saId: %{public}d!, subscribeKey: %{public}s", subscribeInfo.GetSaId(),
