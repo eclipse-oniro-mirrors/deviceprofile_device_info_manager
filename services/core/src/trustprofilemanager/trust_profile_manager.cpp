@@ -2384,10 +2384,10 @@ int32_t TrustProfileManager::CheckAccountAclExists(const AccessControlProfile& p
             localAccountId == aclProfile.GetAccesser().GetAccesserAccountId() &&
             peerDeviceId == aclProfile.GetAccessee().GetAccesseeDeviceId() &&
             peerUserId == aclProfile.GetAccessee().GetAccesseeUserId() &&
-            peerAccountId == profile.GetAccessee().GetAccesseeAccountId()) ||
+            peerAccountId == aclProfile.GetAccessee().GetAccesseeAccountId()) ||
             (peerDeviceId == aclProfile.GetAccesser().GetAccesserDeviceId() &&
             peerUserId == aclProfile.GetAccesser().GetAccesserUserId() &&
-            peerAccountId == profile.GetAccesser().GetAccesserAccountId() &&
+            peerAccountId == aclProfile.GetAccesser().GetAccesserAccountId() &&
             localDeviceId == aclProfile.GetAccessee().GetAccesseeDeviceId() &&
             localUserId == aclProfile.GetAccessee().GetAccesseeUserId() &&
             localAccountId == aclProfile.GetAccessee().GetAccesseeAccountId())) {
@@ -2431,10 +2431,10 @@ int32_t TrustProfileManager::CheckAccountAclActiveCount(const AccessControlProfi
             localAccountId == aclProfile.GetAccesser().GetAccesserAccountId() &&
             peerDeviceId == aclProfile.GetAccessee().GetAccesseeDeviceId() &&
             peerUserId == aclProfile.GetAccessee().GetAccesseeUserId() &&
-            peerAccountId == profile.GetAccessee().GetAccesseeAccountId()) ||
+            peerAccountId == aclProfile.GetAccessee().GetAccesseeAccountId()) ||
             (peerDeviceId == aclProfile.GetAccesser().GetAccesserDeviceId() &&
             peerUserId == aclProfile.GetAccesser().GetAccesserUserId() &&
-            peerAccountId == profile.GetAccesser().GetAccesserAccountId() &&
+            peerAccountId == aclProfile.GetAccesser().GetAccesserAccountId() &&
             localDeviceId == aclProfile.GetAccessee().GetAccesseeDeviceId() &&
             localUserId == aclProfile.GetAccessee().GetAccesseeUserId() &&
             localAccountId == aclProfile.GetAccessee().GetAccesseeAccountId())) {
