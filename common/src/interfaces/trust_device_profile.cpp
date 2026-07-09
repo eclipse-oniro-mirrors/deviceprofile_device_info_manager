@@ -179,6 +179,10 @@ std::string TrustDeviceProfile::dump() const
         ProfileUtils::GetAnonyString(std::to_string(peerUserId_)).c_str());
     cJSON_AddStringToObject(json, LOCAL_USER_ID.c_str(),
         ProfileUtils::GetAnonyString(std::to_string(localUserId_)).c_str());
+    cJSON_AddStringToObject(json, PEER_ACCOUNT_ID.c_str(),
+        ProfileUtils::GetAnonyString(std::to_string(peerAccountId_)).c_str());
+    cJSON_AddStringToObject(json, LOCAL_ACCOUNT_ID.c_str(),
+        ProfileUtils::GetAnonyString(std::to_string(localAccountId_)).c_str());
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);

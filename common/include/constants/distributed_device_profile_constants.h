@@ -144,6 +144,8 @@ extern const std::string DEVICE_ID_TYPE;
 extern const std::string DEVICE_ID_HASH;
 extern const std::string PEER_USER_ID;
 extern const std::string LOCAL_USER_ID;
+extern const std::string PEER_ACCOUNT_ID;
+extern const std::string LOCAL_ACCOUNT_ID;
 /* AccessControlProfile Attribute */
 extern const std::string ACCESS_CONTROL_ID;
 extern const std::string ACCESSER_ID;

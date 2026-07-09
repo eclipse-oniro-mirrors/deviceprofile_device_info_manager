@@ -95,6 +95,8 @@ const std::string DEVICE_ID_TYPE = "deviceIdType";
 const std::string DEVICE_ID_HASH = "deviceIdHash";
 const std::string PEER_USER_ID = "peerUserId";
 const std::string LOCAL_USER_ID = "localUserId";
+const std::string PEER_ACCOUNT_ID = "peerAccountId";
+const std::string LOCAL_ACCOUNT_ID = "localAccountId";
 /* AccessControlProfile Attribute */
 const std::string ACCESS_CONTROL_ID = "accessControlId";
 const std::string ACCESSER_ID = "accesserId";
