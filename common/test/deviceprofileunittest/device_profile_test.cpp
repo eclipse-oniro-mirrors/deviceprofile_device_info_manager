@@ -16,6 +16,7 @@
 #include <gtest/gtest.h>
 
 #include "device_profile.h"
+#include "trust_device_profile.h"
 
 using namespace testing::ext;
 namespace OHOS {
@@ -98,6 +99,15 @@ HWTEST_F(DeviceProfileTest, SetUserId_001, TestSize.Level0)
     int32_t userId = 1;
     deviceProfile.SetUserId(userId);
     auto result = deviceProfile.userId_;
+    EXPECT_EQ(1, result);
+}
+
+HWTEST_F(DeviceProfileTest, GetLocalUserId_001, TestSize.Level0)
+{
+    TrustDeviceProfile trustDeviceProfile;
+    int32_t userId = 1;
+    trustDeviceProfile.SetLocalUserId(userId);
+    auto result = trustDeviceProfile.GetLocalUserId();
     EXPECT_EQ(1, result);
 }
 }
