@@ -155,6 +155,10 @@ bool TrustDeviceProfile::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, String, localAccountId_, false);
     uint32_t serviceIdListSize = 0;
     READ_HELPER_RET(parcel, Uint32, serviceIdListSize, false);
+    if (serviceIdListSize > MAX_SERVICE_SIZE) {
+        HILOGE("serviceIdListSize %{public}u exceeds max %{public}u", serviceIdListSize, MAX_SERVICE_SIZE);
+        return false;
+    }
     for (uint32_t i = 0; i < serviceIdListSize; i++) {
         int64_t serviceId = 0;
         READ_HELPER_RET(parcel, Int64, serviceId, false);
@@ -180,9 +184,9 @@ std::string TrustDeviceProfile::dump() const
     cJSON_AddStringToObject(json, LOCAL_USER_ID.c_str(),
         ProfileUtils::GetAnonyString(std::to_string(localUserId_)).c_str());
     cJSON_AddStringToObject(json, PEER_ACCOUNT_ID.c_str(),
-        ProfileUtils::GetAnonyString(std::to_string(peerAccountId_)).c_str());
+        ProfileUtils::GetAnonyString(peerAccountId_).c_str());
     cJSON_AddStringToObject(json, LOCAL_ACCOUNT_ID.c_str(),
-        ProfileUtils::GetAnonyString(std::to_string(localAccountId_)).c_str());
+        ProfileUtils::GetAnonyString(localAccountId_).c_str());
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);
