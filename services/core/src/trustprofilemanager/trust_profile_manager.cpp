@@ -1909,21 +1909,13 @@ int32_t TrustProfileManager::PutAclCheck(const AccessControlProfile& profile,
     TrustDeviceProfile trustProfile;
     ProfileUtils::ConvertToTrustDeviceProfile(profile, trustProfile);
     if (!isUserAclExists && !IsLnnAcl(profile)) {
-        int32_t ret = SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileAdd(trustProfile);
-        if (ret != DP_SUCCESS) {
-            HILOGE("NotifyTrustDeviceProfileAdd failed");
-            return DP_NOTIFY_TRUST_DEVICE_FAIL;
-        }
+        SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileAdd(trustProfile);
     }
     if (!isAccountAclExists && !IsLnnAcl(profile)) {
         std::vector<int64_t> serviceIdList;
         QueryServiceIdList(profile, serviceIdList);
         trustProfile.SetServiceIdList(serviceIdList);
-        int32_t ret = SubscribeProfileManager::GetInstance().NotifyAccountAclAdd(trustProfile);
-        if (ret != DP_SUCCESS) {
-            HILOGE("NotifyAccountAclAdd failed");
-            return DP_NOTIFY_TRUST_DEVICE_FAIL;
-        }
+        SubscribeProfileManager::GetInstance().NotifyAccountAclAdd(trustProfile);
     }
     std::string trustDeviceId = profile.GetTrustDeviceId();
     std::shared_ptr<ResultSet> resultSet = GetResultSet(SELECT_TRUST_DEVICE_TABLE_WHERE_DEVICEID,
