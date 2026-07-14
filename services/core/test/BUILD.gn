@@ -430,6 +430,16 @@ ohos_unittest("trust_Device_Profile_test") {
   subsystem_name = "deviceprofile"
 }
 
+ohos_unittest("trust_profile_manager_two_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/trust_profile_manager_two_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 ohos_unittest("multi_user_manager_test") {
   module_out_path = module_output_path
   sources = [ "unittest/multi_user_manager_test.cpp" ]
@@ -620,6 +630,7 @@ group("unittest") {
     ":sync_options_new_test",
     ":sync_subscriber_death_recipient_test",
     ":trust_Device_Profile_test",
+    ":trust_profile_manager_two_test",
     ":business_event_manager_test",
     ":business_event_adapter_test",
   ]

@@ -31,7 +31,10 @@ public:
         status_(static_cast<int32_t>(Status::MIN)),
         bindType_(static_cast<uint32_t>(BindType::MIN)),
         peerUserId_(-1),
-        localUserId_(-1)
+        localUserId_(-1),
+        peerAccountId_(""),
+        localAccountId_(""),
+        serviceIdList_({})
     {}
     ~TrustDeviceProfile() = default;
 
@@ -49,6 +52,12 @@ public:
     void SetPeerUserId(int32_t peerUserId);
     int32_t GetLocalUserId() const;
     void SetLocalUserId(int32_t localUserId);
+    std::string GetPeerAccountId() const;
+    void SetPeerAccountId(const std::string& peerAccountId);
+    std::string GetLocalAccountId() const;
+    void SetLocalAccountId(const std::string& localAccountId);
+    std::vector<int64_t> GetServiceIdList() const;
+    void SetServiceIdList(const std::vector<int64_t> serviceIdList);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     std::string dump() const override;
@@ -61,6 +70,9 @@ private:
     uint32_t bindType_;
     int32_t peerUserId_;
     int32_t localUserId_;
+    std::string peerAccountId_;
+    std::string localAccountId_;
+    std::vector<int64_t> serviceIdList_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

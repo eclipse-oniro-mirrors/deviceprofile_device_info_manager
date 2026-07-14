@@ -94,6 +94,36 @@ void TrustDeviceProfile::SetLocalUserId(int32_t localUserId)
     localUserId_ = localUserId;
 }
 
+std::string TrustDeviceProfile::GetPeerAccountId() const
+{
+    return peerAccountId_;
+}
+
+void TrustDeviceProfile::SetPeerAccountId(const std::string &peerAccountId)
+{
+    peerAccountId_ = peerAccountId;
+}
+
+std::string TrustDeviceProfile::GetLocalAccountId() const
+{
+    return localAccountId_;
+}
+
+void TrustDeviceProfile::SetLocalAccountId(const std::string &localAccountId)
+{
+    localAccountId_ = localAccountId;
+}
+
+std::vector<int64_t> TrustDeviceProfile::GetServiceIdList() const
+{
+    return serviceIdList_;
+}
+
+void TrustDeviceProfile::SetServiceIdList(const std::vector<int64_t> serviceIdList)
+{
+    serviceIdList_ = serviceIdList;
+}
+
 bool TrustDeviceProfile::Marshalling(MessageParcel& parcel) const
 {
     WRITE_HELPER_RET(parcel, String, deviceId_, false);
@@ -103,6 +133,12 @@ bool TrustDeviceProfile::Marshalling(MessageParcel& parcel) const
     WRITE_HELPER_RET(parcel, Uint32, bindType_, false);
     WRITE_HELPER_RET(parcel, Int32, peerUserId_, false);
     WRITE_HELPER_RET(parcel, Int32, localUserId_, false);
+    WRITE_HELPER_RET(parcel, String, peerAccountId_, false);
+    WRITE_HELPER_RET(parcel, String, localAccountId_, false);
+    WRITE_HELPER_RET(parcel, Uint32, serviceIdList_.size(), false);
+    for (auto serviceId : serviceIdList_) {
+        WRITE_HELPER_RET(parcel, Int64, serviceId, false);
+    }
     return true;
 }
 
@@ -115,6 +151,19 @@ bool TrustDeviceProfile::UnMarshalling(MessageParcel& parcel)
     READ_HELPER_RET(parcel, Uint32, bindType_, false);
     READ_HELPER_RET(parcel, Int32, peerUserId_, false);
     READ_HELPER_RET(parcel, Int32, localUserId_, false);
+    READ_HELPER_RET(parcel, String, peerAccountId_, false);
+    READ_HELPER_RET(parcel, String, localAccountId_, false);
+    uint32_t serviceIdListSize = 0;
+    READ_HELPER_RET(parcel, Uint32, serviceIdListSize, false);
+    if (serviceIdListSize > MAX_SERVICE_SIZE) {
+        HILOGE("serviceIdListSize %{public}u exceeds max %{public}u", serviceIdListSize, MAX_SERVICE_SIZE);
+        return false;
+    }
+    for (uint32_t i = 0; i < serviceIdListSize; i++) {
+        int64_t serviceId = 0;
+        READ_HELPER_RET(parcel, Int64, serviceId, false);
+        serviceIdList_.emplace_back(serviceId);
+    }
     return true;
 }
 
@@ -134,6 +183,10 @@ std::string TrustDeviceProfile::dump() const
         ProfileUtils::GetAnonyString(std::to_string(peerUserId_)).c_str());
     cJSON_AddStringToObject(json, LOCAL_USER_ID.c_str(),
         ProfileUtils::GetAnonyString(std::to_string(localUserId_)).c_str());
+    cJSON_AddStringToObject(json, PEER_ACCOUNT_ID.c_str(),
+        ProfileUtils::GetAnonyString(peerAccountId_).c_str());
+    cJSON_AddStringToObject(json, LOCAL_ACCOUNT_ID.c_str(),
+        ProfileUtils::GetAnonyString(localAccountId_).c_str());
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);

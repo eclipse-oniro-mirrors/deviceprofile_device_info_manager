@@ -177,5 +177,57 @@ HWTEST_F(ProfileChangeListenerProxyTest, OnDeviceAclInactiveByUpdate_001, TestSi
     int32_t ret = proxy.OnDeviceAclInactiveByUpdate(Profile);
     EXPECT_NE(ret, DP_SUCCESS);
 }
+
+/*
+ * @tc.name: OnAccountAclDelete_001
+ * @tc.desc: Normal testCase of ProfileChangeListenerProxyTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(ProfileChangeListenerProxyTest, OnAccountAclDelete_001, TestSize.Level1)
+{
+    TrustDeviceProfile Profile;
+    OHOS::DistributedDeviceProfile::ProfileListenerProxy proxy(nullptr);
+    int32_t ret = proxy.OnAccountAclDelete(Profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: OnAccountAclInactive_001
+ * @tc.desc: Normal testCase of ProfileChangeListenerProxyTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(ProfileChangeListenerProxyTest, OnAccountAclInactive_001, TestSize.Level1)
+{
+    TrustDeviceProfile Profile;
+    OHOS::DistributedDeviceProfile::ProfileListenerProxy proxy(nullptr);
+    int32_t ret = proxy.OnAccountAclInactive(Profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: OnAccountAclAdd_001
+ * @tc.desc: Normal testCase of ProfileChangeListenerProxyTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(ProfileChangeListenerProxyTest, OnAccountAclAdd_001, TestSize.Level1)
+{
+    TrustDeviceProfile Profile;
+    OHOS::DistributedDeviceProfile::ProfileListenerProxy proxy(nullptr);
+    int32_t ret = proxy.OnAccountAclAdd(Profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: OnAccountAclActive_001
+ * @tc.desc: Normal testCase of ProfileChangeListenerProxyTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(ProfileChangeListenerProxyTest, OnAccountAclActive_001, TestSize.Level1)
+{
+    TrustDeviceProfile Profile;
+    OHOS::DistributedDeviceProfile::ProfileListenerProxy proxy(nullptr);
+    int32_t ret = proxy.OnAccountAclActive(Profile);
+    EXPECT_NE(ret, DP_SUCCESS);
+}
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

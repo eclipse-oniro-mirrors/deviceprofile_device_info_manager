@@ -33,6 +33,15 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 
+struct ProfileQueryParams {
+    std::string localDeviceId;
+    int32_t localUserId = 0;
+    std::string localAccountId;
+    std::string peerDeviceId;
+    int32_t peerUserId = 0;
+    std::string peerAccountId;
+};
+
 class TrustProfileManager {
     DECLARE_SINGLE_INSTANCE(TrustProfileManager);
 
@@ -122,7 +131,7 @@ private:
     int32_t DeleteAccesseeCheck(int64_t accesseeId, Accessee& accessee);
     int32_t DeleteTrustDeviceCheck(const AccessControlProfile& profile);
     int32_t UpdateAclCheck(const AccessControlProfile& profile, AccessControlProfile& oldProfile);
-    int32_t PutAclCheck(const AccessControlProfile& profile, bool peerDevInfoExists);
+    int32_t PutAclCheck(const AccessControlProfile& profile, bool isUserAclExists, bool isAccountAclExists);
     int32_t IsAclExists(const AccessControlProfile& profile);
     int32_t CheckDeviceIdAndUserIdActive(const AccessControlProfile& profile, int32_t& resultCount);
     int32_t CheckDeviceIdAndUserIdExists(const AccessControlProfile& profile, bool& isExists);
@@ -132,6 +141,16 @@ private:
     bool IsLnnAcl(const AccessControlProfile& aclProfile);
     bool IsAceeCreIdExistToAceeTable();
     int32_t AddAceeCreIdColumnToAceeTable();
+    int32_t CheckAccountAclExists(const AccessControlProfile& profile, bool& isExists);
+    int32_t CheckAccountAclActiveCount(const AccessControlProfile& profile, int32_t& resultCount);
+    int32_t NotifyAccountAclCheck(const AccessControlProfile& profile, const AccessControlProfile& oldProfile);
+    int32_t QueryServiceIdList(const AccessControlProfile& profile, std::vector<int64_t>& serviceIdList);
+    bool IsMatchingAclProfile(const AccessControlProfile& aclProfile,
+        const ProfileQueryParams& params);
+    void CollectSameAccountServiceIds(const std::string& peerDeviceId, int32_t peerUserId,
+        const std::string& peerAccountId, std::vector<int64_t>& serviceIdList);
+    int32_t ParseServiceIdFromJson(const std::string& jsonStr, int64_t& serviceId);
+    int32_t ParseAccountIdFromJson(const std::string& jsonStr, std::string& accountId);
 
 private:
     std::shared_ptr<IRdbAdapter> rdbStore_;

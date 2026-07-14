@@ -1080,13 +1080,19 @@ int32_t ProfileUtils::ConvertToTrustDeviceProfile(
     trustDeviceProfile.SetBindType(accessControlProfile.GetBindType());
     std::string peerDeviceId = accessControlProfile.GetTrustDeviceId();
     int32_t peerUserId = accessControlProfile.GetAccesser().GetAccesserUserId();
+    std::string peerAccountId = accessControlProfile.GetAccesser().GetAccesserAccountId();
     int32_t localUserId = accessControlProfile.GetAccessee().GetAccesseeUserId();
+    std::string localAccountId = accessControlProfile.GetAccessee().GetAccesseeAccountId();
     if (accessControlProfile.GetAccessee().GetAccesseeDeviceId() == peerDeviceId) {
         peerUserId = accessControlProfile.GetAccessee().GetAccesseeUserId();
+        peerAccountId = accessControlProfile.GetAccessee().GetAccesseeAccountId();
         localUserId = accessControlProfile.GetAccesser().GetAccesserUserId();
+        localAccountId = accessControlProfile.GetAccesser().GetAccesserAccountId();
     }
     trustDeviceProfile.SetPeerUserId(peerUserId);
+    trustDeviceProfile.SetPeerAccountId(peerAccountId);
     trustDeviceProfile.SetLocalUserId(localUserId);
+    trustDeviceProfile.SetLocalAccountId(localAccountId);
     return DP_SUCCESS;
 }
 

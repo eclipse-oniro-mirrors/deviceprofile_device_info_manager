@@ -115,6 +115,26 @@ public:
         {
             return 0;
         }
+        int32_t OnAccountAclDelete(const TrustDeviceProfile& profile)
+        {
+            cout << "OnAccountAclDelete" << profile.dump() <<endl;
+            return 0;
+        }
+        int32_t OnAccountAclInactive(const TrustDeviceProfile& profile)
+        {
+            cout << "OnAccountAclInactive" << profile.dump() <<endl;
+            return 0;
+        }
+        int32_t OnAccountAclAdd(const TrustDeviceProfile& profile)
+        {
+            cout << "OnAccountAclAdd" << profile.dump() <<endl;
+            return 0;
+        }
+        int32_t OnAccountAclActive(const TrustDeviceProfile& profile)
+        {
+            cout << "OnAccountAclActive" << profile.dump() <<endl;
+            return 0;
+        }
     };
 };
 
@@ -258,28 +278,83 @@ HWTEST_F(DPSubscribeInfoTest, Stub_001, TestSize.Level1)
     EXPECT_EQ(ret, DP_SUCCESS);
     ret = proxy->OnDeviceAclInactiveByUpdate(oldTrustProfile);
     EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->OnAccountAclDelete(oldTrustProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->OnAccountAclInactive(oldTrustProfile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
 
+/*
+ * @tc.name: Stub_005
+ * @tc.desc: Normal testCase of DPSubscribeInfoTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(DPSubscribeInfoTest, Stub_005, TestSize.Level1)
+{
+    uint32_t saId = 4801;
+    std::string subscribeKey = "trust_device_profile";
+    std::unordered_set<ProfileChangeType> subscribeTypes = {ProfileChangeType::TRUST_DEVICE_PROFILE_ADD,
+        ProfileChangeType::TRUST_DEVICE_PROFILE_UPDATE, ProfileChangeType::TRUST_DEVICE_PROFILE_DELETE};
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        sptr<IProfileChangeListener>(new DPSubscribeInfoTest::SubscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    OHOS::sptr<IProfileChangeListener> proxy = OHOS::iface_cast<IProfileChangeListener>(subscribeInfo.GetListener());
+    ASSERT_NE(proxy, nullptr);
     DeviceProfile oldDeviceProfile;
     DeviceProfile newDeviceProfile;
-    ret = proxy->OnDeviceProfileAdd(oldDeviceProfile);
+    int32_t ret = proxy->OnDeviceProfileAdd(oldDeviceProfile);
     EXPECT_EQ(ret, DP_SUCCESS);
     ret = proxy->OnDeviceProfileDelete(oldDeviceProfile);
     EXPECT_EQ(ret, DP_SUCCESS);
     ret = proxy->OnDeviceProfileUpdate(oldDeviceProfile, newDeviceProfile);
     EXPECT_EQ(ret, DP_SUCCESS);
+}
 
+/*
+ * @tc.name: Stub_006
+ * @tc.desc: Normal testCase of DPSubscribeInfoTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(DPSubscribeInfoTest, Stub_006, TestSize.Level1)
+{
+    uint32_t saId = 4801;
+    std::string subscribeKey = "trust_device_profile";
+    std::unordered_set<ProfileChangeType> subscribeTypes = {ProfileChangeType::TRUST_DEVICE_PROFILE_ADD,
+        ProfileChangeType::TRUST_DEVICE_PROFILE_UPDATE, ProfileChangeType::TRUST_DEVICE_PROFILE_DELETE};
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        sptr<IProfileChangeListener>(new DPSubscribeInfoTest::SubscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    OHOS::sptr<IProfileChangeListener> proxy = OHOS::iface_cast<IProfileChangeListener>(subscribeInfo.GetListener());
+    ASSERT_NE(proxy, nullptr);
     ServiceProfile oldServiceProfile;
     ServiceProfile newServiceProfile;
-    ret = proxy->OnServiceProfileAdd(oldServiceProfile);
+    int32_t ret = proxy->OnServiceProfileAdd(oldServiceProfile);
     EXPECT_EQ(ret, DP_SUCCESS);
     ret = proxy->OnServiceProfileDelete(oldServiceProfile);
     EXPECT_EQ(ret, DP_SUCCESS);
     ret = proxy->OnServiceProfileUpdate(oldServiceProfile, newServiceProfile);
     EXPECT_EQ(ret, DP_SUCCESS);
+}
 
+/*
+ * @tc.name: Stub_007
+ * @tc.desc: Normal testCase of DPSubscribeInfoTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(DPSubscribeInfoTest, Stub_007, TestSize.Level1)
+{
+    uint32_t saId = 4801;
+    std::string subscribeKey = "trust_device_profile";
+    std::unordered_set<ProfileChangeType> subscribeTypes = {ProfileChangeType::TRUST_DEVICE_PROFILE_ADD,
+        ProfileChangeType::TRUST_DEVICE_PROFILE_UPDATE, ProfileChangeType::TRUST_DEVICE_PROFILE_DELETE};
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        sptr<IProfileChangeListener>(new DPSubscribeInfoTest::SubscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    OHOS::sptr<IProfileChangeListener> proxy = OHOS::iface_cast<IProfileChangeListener>(subscribeInfo.GetListener());
+    ASSERT_NE(proxy, nullptr);
     CharacteristicProfile oldChaProfile;
     CharacteristicProfile newChaProfile;
-    ret = proxy->OnCharacteristicProfileAdd(oldChaProfile);
+    int32_t ret = proxy->OnCharacteristicProfileAdd(oldChaProfile);
     EXPECT_EQ(ret, DP_SUCCESS);
     ret = proxy->OnCharacteristicProfileDelete(oldChaProfile);
     EXPECT_EQ(ret, DP_SUCCESS);
@@ -348,6 +423,27 @@ HWTEST_F(DPSubscribeInfoTest, IProfileChangeListener_002, TestSize.Level1)
 }
 
 /*
+ * @tc.name: IProfileChangeListener_003
+ * @tc.desc: Normal testCase of DPSubscribeInfoTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(DPSubscribeInfoTest, IProfileChangeListener_003, TestSize.Level1)
+{
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        sptr<IProfileChangeListener>(new DPSubscribeInfoTest::SubscribeDPChangeListener);
+    TrustDeviceProfile profile;
+    profile.SetPeerUserId(1001);
+    int32_t ret = subscribeDPChangeListener->OnAccountAclDelete(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = subscribeDPChangeListener->OnAccountAclInactive(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = subscribeDPChangeListener->OnAccountAclAdd(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = subscribeDPChangeListener->OnAccountAclActive(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/*
  * @tc.name: Stub_003
  * @tc.desc: Normal testCase of DPSubscribeInfoTest for CRUD
  * @tc.type: FUNC
@@ -370,6 +466,36 @@ HWTEST_F(DPSubscribeInfoTest, Stub_003, TestSize.Level1)
     int32_t ret = proxy->IProfileChangeListener::OnDeviceAclInactiveByDelete(profile);
     EXPECT_EQ(ret, DP_SUCCESS);
     ret = proxy->IProfileChangeListener::OnDeviceAclInactiveByUpdate(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: Stub_004
+ * @tc.desc: Normal testCase of DPSubscribeInfoTest for CRUD
+ * @tc.type: FUNC
+ */
+HWTEST_F(DPSubscribeInfoTest, Stub_004, TestSize.Level1)
+{
+    uint32_t saId = 4801;
+    std::string subscribeKey = "trust_device_profile";
+    std::unordered_set<ProfileChangeType> subscribeTypes = {ProfileChangeType::DEVICE_ACL_INACTIVE_BY_DELETE,
+        ProfileChangeType::DEVICE_ACL_INACTIVE_BY_UPDATE};
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        sptr<IProfileChangeListener>(new DPSubscribeInfoTest::SubscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    OHOS::sptr<IProfileChangeListener> proxy = OHOS::iface_cast<IProfileChangeListener>(subscribeInfo.GetListener());
+    TrustDeviceProfile profile;
+    profile.SetPeerUserId(1001);
+    int32_t userId = profile.GetPeerUserId();
+    EXPECT_EQ(userId, 1001);
+    ASSERT_NE(proxy, nullptr);
+    int32_t ret = proxy->IProfileChangeListener::OnAccountAclDelete(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->IProfileChangeListener::OnAccountAclInactive(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->IProfileChangeListener::OnAccountAclAdd(profile);
+    EXPECT_EQ(ret, DP_SUCCESS);
+    ret = proxy->IProfileChangeListener::OnAccountAclActive(profile);
     EXPECT_EQ(ret, DP_SUCCESS);
 }
 } // namespace DistributedDeviceProfile

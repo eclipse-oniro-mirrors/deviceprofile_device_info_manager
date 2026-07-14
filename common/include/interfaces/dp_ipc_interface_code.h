@@ -97,7 +97,11 @@ enum class DpIpcInterfaceCode : uint32_t {
 	GET_SESSION_KEY_BY_SESSIONKEYID = 78,
 	ON_DEVICE_ACL_INACTIVE_BY_DELETE = 79,
 	ON_DEVICE_ACL_INACTIVE_BY_UPDATE = 80,
-    MAX = 81
+	ON_ACCOUNT_ACL_DELETE = 81,
+	ON_ACCOUNT_ACL_INACTIVE = 82,
+	ON_ACCOUNT_ACL_ADD = 83,
+	ON_ACCOUNT_ACL_ACTIVE = 84,
+    MAX = 85
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
