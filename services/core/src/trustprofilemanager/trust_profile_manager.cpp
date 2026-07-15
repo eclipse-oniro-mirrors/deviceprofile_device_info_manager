@@ -2001,7 +2001,7 @@ int32_t TrustProfileManager::CheckDeviceIdAndUserIdActive(const AccessControlPro
             localDeviceId == aclProfile.GetAccessee().GetAccesseeDeviceId() &&
             localUserId == aclProfile.GetAccessee().GetAccesseeUserId())) {
             resultCount++;
-            HILOGE("localUserId and peerUserId have active acl exist, resultCount:{public}%d", resultCount);
+            HILOGE("localUserId and peerUserId have active acl exist, resultCount:%{public}d", resultCount);
         }
     }
     return DP_SUCCESS;
@@ -2009,6 +2009,7 @@ int32_t TrustProfileManager::CheckDeviceIdAndUserIdActive(const AccessControlPro
 
 int32_t TrustProfileManager::CheckDeviceIdAndUserIdExists(const AccessControlProfile& profile, bool& isExists)
 {
+    isExists = false;
     std::string peerDeviceId = profile.GetTrustDeviceId();
     std::string localDeviceId = profile.GetAccessee().GetAccesseeDeviceId();
     int32_t peerUserId = profile.GetAccesser().GetAccesserUserId();
@@ -2130,30 +2131,18 @@ int32_t TrustProfileManager::DeleteTrustDeviceCheck(const AccessControlProfile& 
     bool isExists = false;
     CheckDeviceIdAndUserIdExists(profile, isExists);
     if (!isExists && !IsLnnAcl(profile)) {
-        int32_t ret = SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileDelete(trustProfile);
-        if (ret != DP_SUCCESS) {
-            HILOGE("NotifyTrustDeviceProfileDelete failed");
-            return DP_NOTIFY_TRUST_DEVICE_FAIL;
-        }
+        SubscribeProfileManager::GetInstance().NotifyTrustDeviceProfileDelete(trustProfile);
     }
     CheckDeviceIdActiveAclExists(profile, isExists);
     if (!isExists && !IsLnnAcl(profile)) {
-        int32_t ret = SubscribeProfileManager::GetInstance().NotifyDeviceAclInactiveByDelete(trustProfile);
-        if (ret != DP_SUCCESS) {
-            HILOGE("NotifyDeviceAclInactiveByDelete failed");
-            return DP_NOTIFY_TRUST_DEVICE_FAIL;
-        }
+        SubscribeProfileManager::GetInstance().NotifyDeviceAclInactiveByDelete(trustProfile);
     }
     CheckAccountAclExists(profile, isExists);
     if (!isExists && !IsLnnAcl(profile)) {
         std::vector<int64_t> serviceIdList;
         QueryServiceIdList(profile, serviceIdList);
         trustProfile.SetServiceIdList(serviceIdList);
-        int32_t ret = SubscribeProfileManager::GetInstance().NotifyAccountAclDelete(trustProfile);
-        if (ret != DP_SUCCESS) {
-            HILOGE("NotifyAccountAclDelete failed");
-            return DP_NOTIFY_TRUST_DEVICE_FAIL;
-        }
+        SubscribeProfileManager::GetInstance().NotifyAccountAclDelete(trustProfile);
     }
     std::shared_ptr<ResultSet> resultSet = GetResultSet(SELECT_ACCESS_CONTROL_TABLE_WHERE_TRUSTDEVICEID,
         std::vector<ValueObject>{ ValueObject(profile.GetTrustDeviceId()) });
@@ -2324,6 +2313,7 @@ bool TrustProfileManager::CheckSessionKeyIdExists(int32_t sessionKeyId)
 
 int32_t TrustProfileManager::CheckDeviceIdActiveAclExists(const AccessControlProfile& profile, bool& isExists)
 {
+    isExists = false;
     std::string peerDeviceId = profile.GetTrustDeviceId();
     std::vector<AccessControlProfile> aclProfiles;
     int32_t ret = GetAllAccessControlProfiles(aclProfiles);
@@ -2347,6 +2337,7 @@ int32_t TrustProfileManager::CheckDeviceIdActiveAclExists(const AccessControlPro
 
 int32_t TrustProfileManager::CheckAccountAclExists(const AccessControlProfile& profile, bool& isExists)
 {
+    isExists = false;
     std::string peerDeviceId = profile.GetTrustDeviceId();
     std::string localDeviceId = profile.GetAccessee().GetAccesseeDeviceId();
     int32_t peerUserId = profile.GetAccesser().GetAccesserUserId();
@@ -2431,7 +2422,7 @@ int32_t TrustProfileManager::CheckAccountAclActiveCount(const AccessControlProfi
             localUserId == aclProfile.GetAccessee().GetAccesseeUserId() &&
             localAccountId == aclProfile.GetAccessee().GetAccesseeAccountId())) {
             resultCount++;
-            HILOGE("localUserId and peerUserId have active acl exist, resultCount:{public}%d", resultCount);
+            HILOGE("localUserId and peerUserId have active acl exist, resultCount:%{public}d", resultCount);
         }
     }
     return DP_SUCCESS;
@@ -2480,8 +2471,8 @@ bool TrustProfileManager::IsMatchingAclProfile(const AccessControlProfile& aclPr
         params.localUserId == aclProfile.GetAccesser().GetAccesserUserId() &&
         params.localAccountId == aclProfile.GetAccesser().GetAccesserAccountId() &&
         params.peerDeviceId == aclProfile.GetAccessee().GetAccesseeDeviceId() &&
-        params.peerUserId == aclProfile.GetAccessee().GetAccesseeUserId()) &&
-        params.peerAccountId == aclProfile.GetAccessee().GetAccesseeAccountId();
+        params.peerUserId == aclProfile.GetAccessee().GetAccesseeUserId() &&
+        params.peerAccountId == aclProfile.GetAccessee().GetAccesseeAccountId());
     bool revMatch = (params.peerDeviceId == aclProfile.GetAccesser().GetAccesserDeviceId() &&
         params.peerUserId == aclProfile.GetAccesser().GetAccesserUserId() &&
         params.peerAccountId == aclProfile.GetAccesser().GetAccesserAccountId() &&
