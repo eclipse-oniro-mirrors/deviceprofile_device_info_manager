@@ -17,6 +17,11 @@
 
 #include "file_ex.h"
 #include "string_ex.h"
+#ifdef DWATCH_SUPPORT
+#include "<sys/syscall.h>"
+#include "<sys/resource.h>"
+#include "unistd.h"
+#endif
 
 #include "if_system_ability_manager.h"
 #include "ipc_object_proxy.h"
