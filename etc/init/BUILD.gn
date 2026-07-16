@@ -12,6 +12,7 @@
 # limitations under the License.
 
 import("//build/ohos.gni")
+import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
 
 #################################################################################
 
@@ -20,7 +21,11 @@ group("etc") {
 }
 
 ohos_prebuilt_etc("deviceprofile_etc") {
-  source = "deviceprofile.cfg"
+  if (device_info_manager_adaptation_watch) {
+    source = "watch/deviceprofile.cfg"
+  } else {
+    source = "deviceprofile.cfg"
+  }
   relative_install_dir = "init"
   subsystem_name = "deviceprofile"
   part_name = "device_info_manager"
