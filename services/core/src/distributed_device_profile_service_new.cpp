@@ -17,9 +17,9 @@
 
 #include "file_ex.h"
 #include "string_ex.h"
-#ifdef DWATCH_SUPPORT
-#include "<sys/syscall.h>"
-#include "<sys/resource.h>"
+#ifdef WATCH_SUPPORT
+#include <sys/syscall.h>
+#include <sys/resource.h>
 #include "unistd.h"
 #endif
 
@@ -76,7 +76,7 @@ constexpr int32_t WRTE_CACHE_PROFILE_RETRY_TIMES = 20;
 constexpr int32_t DP_IPC_THREAD_NUM = 32;
 constexpr uint32_t MAX_CALLBACK_LEN = 1000;
 constexpr int32_t ONSTART_TIMEOUT_TIME = 12; // 12s
-#ifdef DWATCH_SUPPORT
+#ifdef WATCH_SUPPORT
 constexpr int DP_SERVICE_PRIORITY = -20; // DP thread priority
 #endif
 }
@@ -94,7 +94,7 @@ DistributedDeviceProfileServiceNew::DistributedDeviceProfileServiceNew()
 int32_t DistributedDeviceProfileServiceNew::Init()
 {
     HILOGI("init begin");
-#ifdef DWATCH_SUPPORT
+#ifdef WATCH_SUPPORT
     int tid = syscall(SYS_gettid);
     bool isRestorePriority = true;
     HILOGI("DistributedDeviceProfileServiceNew init SUCCESS");
@@ -117,7 +117,7 @@ int32_t DistributedDeviceProfileServiceNew::Init()
     }
     SubscribeProfileManager::GetInstance().Init();
     HILOGI("init finish");
-#ifdef DWATCH_SUPPORT
+#ifdef WATCH_SUPPORT
     // 还原线程优先级
     if (isRestorePriority && setpriority(PRIO_PROCESS, tid, 0) != 0) {
         HILOGE("DoProcessOutputBuffer failed to set priority 0.");

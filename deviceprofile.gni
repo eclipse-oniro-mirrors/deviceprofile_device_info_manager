@@ -13,7 +13,7 @@
 declare_args() {
   device_info_manager_supported_switch = true
   device_info_manager_capability = true
-  device_info_manager_adaptation_watch = true
+  device_info_manager_adaptation_watch = false
   if (defined(global_parts_info) &&
       defined(global_parts_info.account_os_account)) {
     dp_os_account_part_exists = true
