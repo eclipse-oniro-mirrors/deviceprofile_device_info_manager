@@ -77,6 +77,10 @@ sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::LoadDeviceProfil
     }
     {
         std::unique_lock<std::mutex> lock(serviceLock_);
+        if (dpProxy_ != nullptr) {
+            HILOGI("Get profile Service success!");
+            return dpProxy_;
+        }
         proxyConVar_.wait_for(lock, std::chrono::milliseconds(LOAD_SA_TIMEOUT_MS),
             [this]() { return loadSystemAbilityFinish_; });
         loadSystemAbilityFinish_ = false;
@@ -502,9 +506,11 @@ sptr<IDistributedDeviceProfile> DistributedDeviceProfileClient::GetDeviceProfile
 {
     {
         std::lock_guard<std::mutex> lock(serviceLock_);
-        if (dpProxy_ != nullptr) {
+        if (dpProxy_ != nullptr && dpProxy_->AsObject() != nullptr && !dpProxy_->AsObject()->IsObjectDead()) {
             return dpProxy_;
         }
+        HILOGI("dpProxy_ is invaild");
+        dpProxy_ = nullptr;
         auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
         if (samgrProxy == nullptr) {
             HILOGE("get samgr failed");
@@ -1025,6 +1031,10 @@ template <typename Method, typename... Args>
 int32_t DistributedDeviceProfileClient::RetryClientRequest(int32_t firesRet, Method method, Args&& ... args)
 {
     int32_t ret = firesRet;
+    if (ret == DP_BR_DEAD_REPLY) {
+        std::lock_guard<std::mutex> lock(serviceLock_);
+        dpProxy_ = nullptr;
+    }
     int32_t delays[MAX_RETRY_TIMES] = {US_100000, US_200000, US_300000, US_400000, US_500000, US_500000, US_500000};
     for (int32_t i = 0; i < MAX_RETRY_TIMES; ++i) {
         HILOGI("retry times:%{public}d, retry reason:%{public}d", i + 1, ret);
