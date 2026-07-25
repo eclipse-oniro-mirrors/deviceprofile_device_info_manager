@@ -145,6 +145,9 @@ private:
     void ClearProfileCache();
     int32_t UnInitNext();
     int32_t PutCharacteristicProfileBatchPreprocess(const std::vector<CharacteristicProfile>& charProfiles);
+#ifdef WATCH_SUPPORT
+    void ResetDpThreadPriority(int32_t tid, bool isRestorePriority);
+#endif
 
 private:
     std::mutex accountCommonEventManagerMtx_;

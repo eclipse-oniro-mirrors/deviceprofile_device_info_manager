@@ -77,7 +77,7 @@ constexpr int32_t DP_IPC_THREAD_NUM = 32;
 constexpr uint32_t MAX_CALLBACK_LEN = 1000;
 constexpr int32_t ONSTART_TIMEOUT_TIME = 12; // 12s
 #ifdef WATCH_SUPPORT
-constexpr int DP_SERVICE_PRIORITY = -20; // DP thread priority
+constexpr int32_t DP_SERVICE_PRIORITY = -20; // DP thread priority
 #endif
 }
 
@@ -91,13 +91,23 @@ DistributedDeviceProfileServiceNew::DistributedDeviceProfileServiceNew()
     HILOGI("DPService construct!");
 }
 
+#ifdef WATCH_SUPPORT
+void DistributedDeviceProfileServiceNew::ResetDpThreadPriority(int32_t tid, bool isRestorePriority)
+{
+    HILOGI("ResetDpThreadPriority start reset dp thread priority. tid: %{public}d.", tid);
+    if (isRestorePriority && setpriority(PRIO_PROCESS, tid, 0) != 0) {
+        HILOGE("DoProcessOutputBuffer failed to set priority 0.");
+    }
+}
+#endif
+
 int32_t DistributedDeviceProfileServiceNew::Init()
 {
     HILOGI("init begin");
 #ifdef WATCH_SUPPORT
-    int tid = syscall(SYS_gettid);
+    int32_t tid = syscall(SYS_gettid);
     bool isRestorePriority = true;
-    HILOGI("DistributedDeviceProfileServiceNew init SUCCESS");
+    HILOGI("DistributedDeviceProfileServiceNew start set dp thread priority. tid: %{public}d.", tid);
     if (setpriority(PRIO_PROCESS, tid, DP_SERVICE_PRIORITY) != 0) {
         HILOGE("DoProcessOutputBuffer failed to set priority -20.");
         isRestorePriority = false;
@@ -107,6 +117,9 @@ int32_t DistributedDeviceProfileServiceNew::Init()
     int32_t ret = PermissionManager::GetInstance().Init();
     if (ret != DP_SUCCESS) {
         HILOGE("PermissionManager init failed,ret:%{public}d", ret);
+#ifdef WATCH_SUPPORT
+    ResetDpThreadPriority(tid, isRestorePriority);
+#endif
         return ret;
     }
     if (TrustProfileManager::GetInstance().Init() != DP_SUCCESS) {
@@ -118,10 +131,7 @@ int32_t DistributedDeviceProfileServiceNew::Init()
     SubscribeProfileManager::GetInstance().Init();
     HILOGI("init finish");
 #ifdef WATCH_SUPPORT
-    // 还原线程优先级
-    if (isRestorePriority && setpriority(PRIO_PROCESS, tid, 0) != 0) {
-        HILOGE("DoProcessOutputBuffer failed to set priority 0.");
-    }
+    ResetDpThreadPriority(tid, isRestorePriority);
 #endif
     return DP_SUCCESS;
 }
