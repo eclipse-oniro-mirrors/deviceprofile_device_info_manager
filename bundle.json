@@ -14,7 +14,8 @@
       "subsystem": "deviceprofile",
       "features": [
         "device_info_manager_supported_switch",
-        "device_info_manager_capability"
+        "device_info_manager_capability",
+        "device_info_manager_adaptation_watch"
       ],
       "adapted_system_type": [ "standard" ],
       "hisysevent_config":[

@@ -74,6 +74,9 @@ ohos_shared_library("distributed_device_profile_svr") {
     if (!device_info_manager_supported_switch || device_info_manager_common) {
       cflags += [ "-DDEVICE_PROFILE_SWITCH_DISABLE" ]
     }
+    if (device_info_manager_adaptation_watch) {
+      cflags += [ "-DWATCH_SUPPORT" ]
+    }
 
     cflags_cc = cflags
 
