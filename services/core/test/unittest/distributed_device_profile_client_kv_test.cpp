@@ -54,7 +54,7 @@ public:
     static sptr<IDistributedDeviceProfileMock> mockDpProxy_;
 };
 
-+sptr<IDistributedDeviceProfileMock> DistributedDeviceProfileClientKvTest::mockDpProxy_ = nullptr;
+sptr<IDistributedDeviceProfileMock> DistributedDeviceProfileClientKvTest::mockDpProxy_ = nullptr;
 
 void DistributedDeviceProfileClientKvTest::SetUpTestCase(void) {
 }
@@ -110,7 +110,7 @@ void SetupMockSubscribeOps(sptr<IDistributedDeviceProfileMock>& mock)
         .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
     ON_CALL(*mock, SubscribeDeviceProfileInited(testing::_, testing::_))
         .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
-    ON_CALL(*mock, UnSubscribeDeviceProfileInited(testing::_, testing::_))
+    ON_CALL(*mock, UnSubscribeDeviceProfileInited(testing::_))
         .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
     ON_CALL(*mock, SubscribePinCodeInvalid(testing::_, testing::_, testing::_))
         .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
@@ -147,7 +147,7 @@ void DistributedDeviceProfileClientKvTest::SetUp() {
     SetupMockSubscribeOps(mockDpProxy_);
     SetupMockOtherDefaults(mockDpProxy_);
 }
- 
+
 void DistributedDeviceProfileClientKvTest::TearDown() {
     testing::Mock::VerifyAndClearExpectations(mockDpProxy_.GetRefPtr());
 }
