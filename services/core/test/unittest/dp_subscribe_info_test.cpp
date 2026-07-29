@@ -78,6 +78,16 @@ public:
             cout << "OnTrustDeviceProfileInactive" << profile.dump() <<endl;
             return 0;
         }
+        int32_t OnDeviceAclInactiveByDelete(const TrustDeviceProfile& profile)
+        {
+            cout << "OnDeviceAclInactiveByDelete" << profile.dump() <<endl;
+            return 0;
+        }
+        int32_t OnDeviceAclInactiveByUpdate(const TrustDeviceProfile& profile)
+        {
+            cout << "OnDeviceAclInactiveByUpdate" << profile.dump() <<endl;
+            return 0;
+        }
         int32_t OnDeviceProfileAdd(const DeviceProfile& profile)
         {
             return 0;
@@ -478,8 +488,9 @@ HWTEST_F(DPSubscribeInfoTest, Stub_004, TestSize.Level1)
 {
     uint32_t saId = 4801;
     std::string subscribeKey = "trust_device_profile";
-    std::unordered_set<ProfileChangeType> subscribeTypes = {ProfileChangeType::DEVICE_ACL_INACTIVE_BY_DELETE,
-        ProfileChangeType::DEVICE_ACL_INACTIVE_BY_UPDATE};
+    std::unordered_set<ProfileChangeType> subscribeTypes = {ProfileChangeType::ACCOUNT_ACL_ADD,
+        ProfileChangeType::ACCOUNT_ACL_DELETE, ProfileChangeType::ACCOUNT_ACL_ACTIVE,
+        ProfileChangeType::ACCOUNT_ACL_INACTIVE};
     OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
         sptr<IProfileChangeListener>(new DPSubscribeInfoTest::SubscribeDPChangeListener);
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);

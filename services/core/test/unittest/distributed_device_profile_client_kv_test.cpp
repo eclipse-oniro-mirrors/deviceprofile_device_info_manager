@@ -18,6 +18,7 @@
 #define private   public
 #define protected public
 #include "gtest/gtest.h"
+#include "gmock/gmock.h"
 #include "refbase.h"
 #include "business_callback_stub.h"
 #include "characteristic_profile.h"
@@ -35,6 +36,7 @@
 #include "pincode_invalid_callback_stub.h"
 #include "service_profile.h"
 #include "trusted_device_info.h"
+#include "mock/distributed_device_profile_mock.h"
 #undef private
 #undef protected
 
@@ -49,7 +51,10 @@ public:
     static void TearDownTestCase(void);
     void SetUp();
     void TearDown();
+    static sptr<IDistributedDeviceProfileMock> mockDpProxy_;
 };
+
++sptr<IDistributedDeviceProfileMock> DistributedDeviceProfileClientKvTest::mockDpProxy_ = nullptr;
 
 void DistributedDeviceProfileClientKvTest::SetUpTestCase(void) {
 }
@@ -57,69 +62,117 @@ void DistributedDeviceProfileClientKvTest::SetUpTestCase(void) {
 void DistributedDeviceProfileClientKvTest::TearDownTestCase(void) {
 }
 
-void DistributedDeviceProfileClientKvTest::SetUp() {
+void SetupMockProfileOps(sptr<IDistributedDeviceProfileMock>& mock)
+{
+    ON_CALL(*mock, PutServiceProfile(testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, PutServiceProfileBatch(testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, PutCharacteristicProfile(testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, PutCharacteristicProfileBatch(testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, PutAllTrustedDevices(testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, PutDeviceIconInfoBatch(testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, PutProductInfoBatch(testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, PutLocalServiceInfo(testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, UpdateLocalServiceInfo(testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, GetDeviceProfile(testing::_, testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, GetServiceProfile(testing::_, testing::_, testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, GetCharacteristicProfile(testing::_, testing::_, testing::_, testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, GetDeviceProfiles(testing::_, testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, GetDeviceIconInfos(testing::_, testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, GetLocalServiceInfoByBundleAndPinType(testing::_, testing::_, testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, DeleteServiceProfile(testing::_, testing::_, testing::_, testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, DeleteCharacteristicProfile(testing::_, testing::_, testing::_, testing::_, testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, DeleteLocalServiceInfo(testing::_, testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
 }
 
-void DistributedDeviceProfileClientKvTest::TearDown() {
+void SetupMockSubscribeOps(sptr<IDistributedDeviceProfileMock>& mock)
+{
+    ON_CALL(*mock, SubscribeDeviceProfile(testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, UnSubscribeDeviceProfile(testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, SubscribeDeviceProfileInited(testing::_, testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, UnSubscribeDeviceProfileInited(testing::_, testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, SubscribePinCodeInvalid(testing::_, testing::_, testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, UnSubscribePinCodeInvalid(testing::_, testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, RegisterBusinessCallback(testing::_, testing::_, testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, UnRegisterBusinessCallback(testing::_, testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, PutBusinessEvent(testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
+    ON_CALL(*mock, GetBusinessEvent(testing::_))
+        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
 }
+
+void SetupMockOtherDefaults(sptr<IDistributedDeviceProfileMock>& mock)
+{
+    ON_CALL(*mock, SyncDeviceProfile(testing::_, testing::_))
+        .WillByDefault(testing::Return(DP_SYNC_DEVICE_FAIL));
+    ON_CALL(*mock, SyncStaticProfile(testing::_, testing::_))
+        .WillByDefault(testing::Return(DP_SYNC_DEVICE_FAIL));
+    ON_CALL(*mock, PutDeviceProfileBatch(testing::_))
+        .WillByDefault(testing::Return(DP_WRITE_PARCEL_FAIL));
+    ON_CALL(*mock, DeleteDeviceProfileBatch(testing::_))
+        .WillByDefault(testing::Return(DP_WRITE_PARCEL_FAIL));
+}
+
+void DistributedDeviceProfileClientKvTest::SetUp() {
+    if (mockDpProxy_ == nullptr) {
+        mockDpProxy_ = sptr<IDistributedDeviceProfileMock>(new IDistributedDeviceProfileMock());
+    }
+    DistributedDeviceProfileClient::GetInstance().dpProxy_ = mockDpProxy_;
+    SetupMockProfileOps(mockDpProxy_);
+    SetupMockSubscribeOps(mockDpProxy_);
+    SetupMockOtherDefaults(mockDpProxy_);
+}
+ 
+void DistributedDeviceProfileClientKvTest::TearDown() {
+    testing::Mock::VerifyAndClearExpectations(mockDpProxy_.GetRefPtr());
+}
+
+#define PROFILE_CHANGE_STUB(method, ...) \
+    int32_t method(__VA_ARGS__) override { return 0; }
 
 class SubscribeDPChangeListener : public ProfileChangeListenerStub {
 public:
-    SubscribeDPChangeListener()
-    {
-    }
-    ~SubscribeDPChangeListener()
-    {
-    }
-    int32_t OnTrustDeviceProfileAdd(const TrustDeviceProfile &profile)
-    {
-        return 0;
-    }
-    int32_t OnTrustDeviceProfileDelete(const TrustDeviceProfile &profile)
-    {
-        return 0;
-    }
-    int32_t OnTrustDeviceProfileUpdate(const TrustDeviceProfile &oldProfile, const TrustDeviceProfile &newProfile)
-    {
-        return 0;
-    }
-    int32_t OnDeviceProfileAdd(const DeviceProfile &profile)
-    {
-        return 0;
-    }
-    int32_t OnDeviceProfileDelete(const DeviceProfile &profile)
-    {
-        return 0;
-    }
-    int32_t OnDeviceProfileUpdate(const DeviceProfile &oldProfile, const DeviceProfile &newProfile)
-    {
-        return 0;
-    }
-    int32_t OnServiceProfileAdd(const ServiceProfile &profile)
-    {
-        return 0;
-    }
-    int32_t OnServiceProfileDelete(const ServiceProfile &profile)
-    {
-        return 0;
-    }
-    int32_t OnServiceProfileUpdate(const ServiceProfile &oldProfile, const ServiceProfile &newProfile)
-    {
-        return 0;
-    }
-    int32_t OnCharacteristicProfileAdd(const CharacteristicProfile &profile)
-    {
-        return 0;
-    }
-    int32_t OnCharacteristicProfileDelete(const CharacteristicProfile &profile)
-    {
-        return 0;
-    }
-    int32_t OnCharacteristicProfileUpdate(const CharacteristicProfile &oldProfile,
-                                          const CharacteristicProfile &newProfile)
-    {
-        return 0;
-    }
+    SubscribeDPChangeListener() {}
+    ~SubscribeDPChangeListener() {}
+    PROFILE_CHANGE_STUB(OnTrustDeviceProfileAdd, const TrustDeviceProfile &profile)
+    PROFILE_CHANGE_STUB(OnTrustDeviceProfileDelete, const TrustDeviceProfile &profile)
+    PROFILE_CHANGE_STUB(OnTrustDeviceProfileUpdate, const TrustDeviceProfile &oldProfile,
+        const TrustDeviceProfile &newProfile)
+    PROFILE_CHANGE_STUB(OnDeviceProfileAdd, const DeviceProfile &profile)
+    PROFILE_CHANGE_STUB(OnDeviceProfileDelete, const DeviceProfile &profile)
+    PROFILE_CHANGE_STUB(OnDeviceProfileUpdate, const DeviceProfile &oldProfile, const DeviceProfile &newProfile)
+    PROFILE_CHANGE_STUB(OnServiceProfileAdd, const ServiceProfile &profile)
+    PROFILE_CHANGE_STUB(OnServiceProfileDelete, const ServiceProfile &profile)
+    PROFILE_CHANGE_STUB(OnServiceProfileUpdate, const ServiceProfile &oldProfile, const ServiceProfile &newProfile)
+    PROFILE_CHANGE_STUB(OnCharacteristicProfileAdd, const CharacteristicProfile &profile)
+    PROFILE_CHANGE_STUB(OnCharacteristicProfileDelete, const CharacteristicProfile &profile)
+    PROFILE_CHANGE_STUB(OnCharacteristicProfileUpdate, const CharacteristicProfile &oldProfile,
+        const CharacteristicProfile &newProfile)
 };
 
 class DpInitedCallback : public DpInitedCallbackStub {
@@ -202,6 +255,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutServiceProfile001, TestSize.Le
     serviceProfile.SetServiceName("serviceName");
     serviceProfile.SetServiceType("serviceType");
     DistributedDeviceProfileClient::GetInstance().ReleaseResource();
+    DistributedDeviceProfileClient::GetInstance().dpProxy_ = mockDpProxy_;
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutServiceProfile(serviceProfile);
     EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
 }
@@ -948,8 +1002,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_005, Tes
         RegisterBusinessCallback(saId, businessKey, businessCallback);
     EXPECT_NE(ret, DP_SUCCESS);
 
-    DistributedDeviceProfileClient::GetInstance().dpProxy_ =
-        DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    DistributedDeviceProfileClient::GetInstance().dpProxy_ = mockDpProxy_;
     EXPECT_NE(DistributedDeviceProfileClient::GetInstance().dpProxy_, nullptr);
 }
 
@@ -1026,8 +1079,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnRegisterBusinessCallback_005, T
     int32_t ret = DistributedDeviceProfileClient::GetInstance().UnRegisterBusinessCallback(saId, businessKey);
     EXPECT_NE(ret, DP_SUCCESS);
 
-    DistributedDeviceProfileClient::GetInstance().dpProxy_ =
-        DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    DistributedDeviceProfileClient::GetInstance().dpProxy_ = mockDpProxy_;
     EXPECT_NE(DistributedDeviceProfileClient::GetInstance().dpProxy_, nullptr);
 }
 
@@ -1042,8 +1094,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutBusinessEvent_001, TestSize.Le
     int32_t ret = DistributedDeviceProfileClient::GetInstance().PutBusinessEvent(event);
     EXPECT_NE(ret, DP_SUCCESS);
 
-    DistributedDeviceProfileClient::GetInstance().dpProxy_ =
-        DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    DistributedDeviceProfileClient::GetInstance().dpProxy_ = mockDpProxy_;
     EXPECT_NE(DistributedDeviceProfileClient::GetInstance().dpProxy_, nullptr);
 }
 
@@ -1067,8 +1118,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetBusinessEvent_001, TestSize.Le
     int32_t ret = DistributedDeviceProfileClient::GetInstance().GetBusinessEvent(event);
     EXPECT_NE(ret, DP_SUCCESS);
 
-    DistributedDeviceProfileClient::GetInstance().dpProxy_ =
-        DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
+    DistributedDeviceProfileClient::GetInstance().dpProxy_ = mockDpProxy_;
     EXPECT_NE(DistributedDeviceProfileClient::GetInstance().dpProxy_, nullptr);
 }
 

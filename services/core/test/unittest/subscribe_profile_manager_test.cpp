@@ -86,6 +86,38 @@ public:
     {
         return 0;
     }
+    int32_t OnTrustDeviceProfileActive(const TrustDeviceProfile &profile)
+    {
+        return 0;
+    }
+    int32_t OnTrustDeviceProfileInactive(const TrustDeviceProfile &profile)
+    {
+        return 0;
+    }
+    int32_t OnDeviceAclInactiveByDelete(const TrustDeviceProfile &profile)
+    {
+        return 0;
+    }
+    int32_t OnDeviceAclInactiveByUpdate(const TrustDeviceProfile &profile)
+    {
+        return 0;
+    }
+    int32_t OnAccountAclDelete(const TrustDeviceProfile &profile)
+    {
+        return 0;
+    }
+    int32_t OnAccountAclInactive(const TrustDeviceProfile &profile)
+    {
+        return 0;
+    }
+    int32_t OnAccountAclAdd(const TrustDeviceProfile &profile)
+    {
+        return 0;
+    }
+    int32_t OnAccountAclActive(const TrustDeviceProfile &profile)
+    {
+        return 0;
+    }
     int32_t OnDeviceProfileAdd(const DeviceProfile &profile)
     {
         return 0;
@@ -921,6 +953,372 @@ HWTEST_F(SubscribeProfileManagerTest, NotifyProfileChange_012, TestSize.Level1)
     int32_t errCode = SubscribeProfileManager::GetInstance().
         NotifyProfileChange(ProfileType::CHAR_PROFILE, ChangeType::CHANGE_TYPE_MIN, dbKey, dbValue);
     EXPECT_EQ(errCode, DP_INVALID_PARAMS);
+}
+
+/*
+ * @tc.name: NotifyDeviceAclInactiveByDelete_001
+ * @tc.desc: Normal testCase of NotifyDeviceAclInactiveByDelete for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyDeviceAclInactiveByDelete_001, TestSize.Level1)
+{
+    TrustDeviceProfile profile;
+    int32_t errCode = SubscribeProfileManager::GetInstance().NotifyDeviceAclInactiveByDelete(profile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyDeviceAclInactiveByDelete_002
+ * @tc.desc: Normal testCase of NotifyDeviceAclInactiveByDelete for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyDeviceAclInactiveByDelete_002, TestSize.Level1)
+{
+    string subscribeKey = "subscribeKey";
+    int32_t saId = 4801;
+    unordered_set<ProfileChangeType> subscribeTypes = {
+        ProfileChangeType::DEVICE_ACL_INACTIVE_BY_DELETE,
+    };
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    int32_t errCode = SubscribeProfileManager::GetInstance().SubscribeDeviceProfile(subscribeInfo);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+    TrustDeviceProfile profile;
+    errCode = SubscribeProfileManager::GetInstance().NotifyDeviceAclInactiveByDelete(profile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+    errCode = SubscribeProfileManager::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyDeviceAclInactiveByDelete_003
+ * @tc.desc: Normal testCase of NotifyDeviceAclInactiveByDelete for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyDeviceAclInactiveByDelete_003, TestSize.Level1)
+{
+    string subscribeKey = "subscribeKey";
+    int32_t saId = 4801;
+    unordered_set<ProfileChangeType> subscribeTypes = {
+        ProfileChangeType::DEVICE_ACL_INACTIVE_BY_DELETE,
+    };
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    int32_t errCode = SubscribeProfileManager::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+    TrustDeviceProfile profile;
+    errCode = SubscribeProfileManager::GetInstance().NotifyDeviceAclInactiveByDelete(profile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyDeviceAclInactiveByUpdate_001
+ * @tc.desc: Normal testCase of NotifyDeviceAclInactiveByUpdate for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyDeviceAclInactiveByUpdate_001, TestSize.Level1)
+{
+    TrustDeviceProfile profile;
+    int32_t errCode = SubscribeProfileManager::GetInstance().NotifyDeviceAclInactiveByUpdate(profile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyDeviceAclInactiveByUpdate_002
+ * @tc.desc: Normal testCase of NotifyDeviceAclInactiveByUpdate for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyDeviceAclInactiveByUpdate_002, TestSize.Level1)
+{
+    string subscribeKey = "subscribeKey";
+    int32_t saId = 4801;
+    unordered_set<ProfileChangeType> subscribeTypes = {
+        ProfileChangeType::DEVICE_ACL_INACTIVE_BY_UPDATE,
+    };
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    int32_t errCode = SubscribeProfileManager::GetInstance().SubscribeDeviceProfile(subscribeInfo);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+    TrustDeviceProfile profile;
+    errCode = SubscribeProfileManager::GetInstance().NotifyDeviceAclInactiveByUpdate(profile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+    errCode = SubscribeProfileManager::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyDeviceAclInactiveByUpdate_003
+ * @tc.desc: Normal testCase of NotifyDeviceAclInactiveByUpdate for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyDeviceAclInactiveByUpdate_003, TestSize.Level1)
+{
+    string subscribeKey = "subscribeKey";
+    int32_t saId = 4801;
+    unordered_set<ProfileChangeType> subscribeTypes = {
+        ProfileChangeType::DEVICE_ACL_INACTIVE_BY_UPDATE,
+    };
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    int32_t errCode = SubscribeProfileManager::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+    TrustDeviceProfile profile;
+    errCode = SubscribeProfileManager::GetInstance().NotifyDeviceAclInactiveByUpdate(profile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyAccountAclDelete_001
+ * @tc.desc: Normal testCase of NotifyAccountAclDelete for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyAccountAclDelete_001, TestSize.Level1)
+{
+    TrustDeviceProfile profile;
+    int32_t errCode = SubscribeProfileManager::GetInstance().NotifyAccountAclDelete(profile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyAccountAclDelete_002
+ * @tc.desc: Normal testCase of NotifyAccountAclDelete for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyAccountAclDelete_002, TestSize.Level1)
+{
+    string subscribeKey = "subscribeKey";
+    int32_t saId = 4801;
+    unordered_set<ProfileChangeType> subscribeTypes = {
+        ProfileChangeType::ACCOUNT_ACL_DELETE,
+    };
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    int32_t errCode = SubscribeProfileManager::GetInstance().SubscribeDeviceProfile(subscribeInfo);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+    TrustDeviceProfile profile;
+    errCode = SubscribeProfileManager::GetInstance().NotifyAccountAclDelete(profile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+    errCode = SubscribeProfileManager::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyAccountAclDelete_003
+ * @tc.desc: Normal testCase of NotifyAccountAclDelete for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyAccountAclDelete_003, TestSize.Level1)
+{
+    string subscribeKey = "subscribeKey";
+    int32_t saId = 4801;
+    unordered_set<ProfileChangeType> subscribeTypes = {
+        ProfileChangeType::ACCOUNT_ACL_DELETE,
+    };
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    int32_t errCode = SubscribeProfileManager::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+    TrustDeviceProfile profile;
+    errCode = SubscribeProfileManager::GetInstance().NotifyAccountAclDelete(profile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyAccountAclInactive_001
+ * @tc.desc: Normal testCase of NotifyAccountAclInactive for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyAccountAclInactive_001, TestSize.Level1)
+{
+    TrustDeviceProfile profile;
+    int32_t errCode = SubscribeProfileManager::GetInstance().NotifyAccountAclInactive(profile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyAccountAclInactive_002
+ * @tc.desc: Normal testCase of NotifyAccountAclInactive for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyAccountAclInactive_002, TestSize.Level1)
+{
+    string subscribeKey = "subscribeKey";
+    int32_t saId = 4801;
+    unordered_set<ProfileChangeType> subscribeTypes = {
+        ProfileChangeType::ACCOUNT_ACL_INACTIVE,
+    };
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    int32_t errCode = SubscribeProfileManager::GetInstance().SubscribeDeviceProfile(subscribeInfo);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+    TrustDeviceProfile profile;
+    errCode = SubscribeProfileManager::GetInstance().NotifyAccountAclInactive(profile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+    errCode = SubscribeProfileManager::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyAccountAclInactive_003
+ * @tc.desc: Normal testCase of NotifyAccountAclInactive for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyAccountAclInactive_003, TestSize.Level1)
+{
+    string subscribeKey = "subscribeKey";
+    int32_t saId = 4801;
+    unordered_set<ProfileChangeType> subscribeTypes = {
+        ProfileChangeType::ACCOUNT_ACL_INACTIVE,
+    };
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    int32_t errCode = SubscribeProfileManager::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+    TrustDeviceProfile profile;
+    errCode = SubscribeProfileManager::GetInstance().NotifyAccountAclInactive(profile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyAccountAclAdd_001
+ * @tc.desc: Normal testCase of NotifyAccountAclAdd for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyAccountAclAdd_001, TestSize.Level1)
+{
+    TrustDeviceProfile profile;
+    int32_t errCode = SubscribeProfileManager::GetInstance().NotifyAccountAclAdd(profile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyAccountAclAdd_002
+ * @tc.desc: Normal testCase of NotifyAccountAclAdd for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyAccountAclAdd_002, TestSize.Level1)
+{
+    string subscribeKey = "subscribeKey";
+    int32_t saId = 4801;
+    unordered_set<ProfileChangeType> subscribeTypes = {
+        ProfileChangeType::ACCOUNT_ACL_ADD,
+    };
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    int32_t errCode = SubscribeProfileManager::GetInstance().SubscribeDeviceProfile(subscribeInfo);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+    TrustDeviceProfile profile;
+    errCode = SubscribeProfileManager::GetInstance().NotifyAccountAclAdd(profile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+    errCode = SubscribeProfileManager::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyAccountAclAdd_003
+ * @tc.desc: Normal testCase of NotifyAccountAclAdd for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyAccountAclAdd_003, TestSize.Level1)
+{
+    string subscribeKey = "subscribeKey";
+    int32_t saId = 4801;
+    unordered_set<ProfileChangeType> subscribeTypes = {
+        ProfileChangeType::ACCOUNT_ACL_ADD,
+    };
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    int32_t errCode = SubscribeProfileManager::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+    TrustDeviceProfile profile;
+    errCode = SubscribeProfileManager::GetInstance().NotifyAccountAclAdd(profile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyAccountAclActive_001
+ * @tc.desc: Normal testCase of NotifyAccountAclActive for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyAccountAclActive_001, TestSize.Level1)
+{
+    TrustDeviceProfile profile;
+    int32_t errCode = SubscribeProfileManager::GetInstance().NotifyAccountAclActive(profile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyAccountAclActive_002
+ * @tc.desc: Normal testCase of NotifyAccountAclActive for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyAccountAclActive_002, TestSize.Level1)
+{
+    string subscribeKey = "subscribeKey";
+    int32_t saId = 4801;
+    unordered_set<ProfileChangeType> subscribeTypes = {
+        ProfileChangeType::ACCOUNT_ACL_ACTIVE,
+    };
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    int32_t errCode = SubscribeProfileManager::GetInstance().SubscribeDeviceProfile(subscribeInfo);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+    TrustDeviceProfile profile;
+    errCode = SubscribeProfileManager::GetInstance().NotifyAccountAclActive(profile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+    errCode = SubscribeProfileManager::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+}
+
+/*
+ * @tc.name: NotifyAccountAclActive_003
+ * @tc.desc: Normal testCase of NotifyAccountAclActive for CRUD
+ * @tc.type: FUNC
+ * @tc.require: I4NY1T
+ */
+HWTEST_F(SubscribeProfileManagerTest, NotifyAccountAclActive_003, TestSize.Level1)
+{
+    string subscribeKey = "subscribeKey";
+    int32_t saId = 4801;
+    unordered_set<ProfileChangeType> subscribeTypes = {
+        ProfileChangeType::ACCOUNT_ACL_ACTIVE,
+    };
+    OHOS::sptr<IProfileChangeListener> subscribeDPChangeListener =
+        OHOS::sptr<ProfileChangeListenerStub>(new SubscribeDPChangeListener);
+    SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
+    int32_t errCode = SubscribeProfileManager::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
+    EXPECT_EQ(errCode, DP_SUCCESS);
+    TrustDeviceProfile profile;
+    errCode = SubscribeProfileManager::GetInstance().NotifyAccountAclActive(profile);
+    EXPECT_EQ(errCode, DP_SUCCESS);
 }
 }
 }

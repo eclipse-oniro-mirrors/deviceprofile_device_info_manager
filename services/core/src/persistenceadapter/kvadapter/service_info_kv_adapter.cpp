@@ -90,12 +90,16 @@ int32_t ServiceInfoKvAdapter::UnInit()
 {
     HILOGI("ServiceInfoKvAdapter UnInit");
     if (isInited_.load()) {
-        if (kvStorePtr_ == nullptr) {
-            HILOGE("kvStorePtr is nullptr!");
-            return DP_KV_DB_PTR_NULL;
-        }
         UnregisterKvStoreDeathListener();
-        kvStorePtr_.reset();
+        {
+            std::lock_guard<std::mutex> lock(kvAdapterMutex_);
+            if (kvStorePtr_ == nullptr) {
+                HILOGE("kvStorePtr is nullptr!");
+                isInited_.store(false);
+                return DP_KV_DB_PTR_NULL;
+            }
+            kvStorePtr_.reset();
+        }
         isInited_.store(false);
     }
     return DP_SUCCESS;

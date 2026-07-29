@@ -97,6 +97,13 @@ int32_t DistributedDeviceProfileClient::GetSessionKey(
     return DP_NOT_SUPPORT;
 }
 
+int32_t DistributedDeviceProfileClient::GetSessionKey(
+    int32_t sessionKeyId, std::vector<uint8_t>& sessionKey)
+{
+    HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
+    return DP_NOT_SUPPORT;
+}
+
 int32_t DistributedDeviceProfileClient::UpdateSessionKey(
     uint32_t userId, int32_t sessionKeyId, const std::vector<uint8_t>& sessionKey)
 {
