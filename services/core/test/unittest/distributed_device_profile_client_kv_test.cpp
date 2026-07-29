@@ -138,7 +138,8 @@ void SetupMockOtherDefaults(sptr<IDistributedDeviceProfileMock>& mock)
         .WillByDefault(testing::Return(DP_WRITE_PARCEL_FAIL));
 }
 
-void DistributedDeviceProfileClientKvTest::SetUp() {
+void DistributedDeviceProfileClientKvTest::SetUp()
+{
     if (mockDpProxy_ == nullptr) {
         mockDpProxy_ = sptr<IDistributedDeviceProfileMock>(new IDistributedDeviceProfileMock());
     }
@@ -148,7 +149,8 @@ void DistributedDeviceProfileClientKvTest::SetUp() {
     SetupMockOtherDefaults(mockDpProxy_);
 }
 
-void DistributedDeviceProfileClientKvTest::TearDown() {
+void DistributedDeviceProfileClientKvTest::TearDown()
+{
     testing::Mock::VerifyAndClearExpectations(mockDpProxy_.GetRefPtr());
 }
 
