@@ -98,6 +98,18 @@ int32_t MockProfileChangeListenerStub::OnAccountAclInactive(const TrustDevicePro
     return 0;
 }
 
+int32_t MockProfileChangeListenerStub::OnAccountAclAdd(const TrustDeviceProfile& profile)
+{
+    (void)profile;
+    return 0;
+}
+
+int32_t MockProfileChangeListenerStub::OnAccountAclActive(const TrustDeviceProfile& profile)
+{
+    (void)profile;
+    return 0;
+}
+
 int32_t MockProfileChangeListenerStub::OnDeviceProfileAdd(const DeviceProfile& profile)
 {
     (void)profile;
@@ -606,6 +618,38 @@ HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclActive_001, TestSize.Level0)
     TrustDeviceProfile profile;
     int32_t ret = listenerStub_->OnAccountAclActive(profile);
     EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnDeviceAclInactiveByDelete_001, TestSize.Level0)
+{
+    TrustDeviceProfile profile;
+    int32_t ret = listenerStub_->OnDeviceAclInactiveByDelete(profile);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnDeviceAclInactiveByUpdate_001, TestSize.Level0)
+{
+    TrustDeviceProfile profile;
+    int32_t ret = listenerStub_->OnDeviceAclInactiveByUpdate(profile);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclAddInner_001, TestSize.Level0)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->OnAccountAclAddInner(data, reply);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclActiveInner_001, TestSize.Level0)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->OnAccountAclActiveInner(data, reply);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

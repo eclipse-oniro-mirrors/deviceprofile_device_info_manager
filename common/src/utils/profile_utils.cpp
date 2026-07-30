@@ -156,7 +156,7 @@ std::string ProfileUtils::GetDeviceIdByDBKey(const std::string& dbKey)
     if (SplitString(dbKey, SEPARATOR, res) != DP_SUCCESS) {
         return "";
     }
-    if (res.size() < NUM_1) {
+    if (res.size() <= NUM_1) {
         return "";
     }
     return res[NUM_1];
@@ -171,7 +171,7 @@ std::string ProfileUtils::GetServiceNameByDBKey(const std::string& dbKey)
     if (SplitString(dbKey, SEPARATOR, res) != DP_SUCCESS) {
         return "";
     }
-    if (res.size() < NUM_2) {
+    if (res.size() <= NUM_2) {
         return "";
     }
     return res[NUM_2];
@@ -227,7 +227,7 @@ std::string ProfileUtils::GetCharKeyByDBKey(const std::string& dbKey)
     if (SplitString(dbKey, SEPARATOR, res) != DP_SUCCESS) {
         return "";
     }
-    if (res.size() < NUM_3) {
+    if (res.size() <= NUM_3) {
         return "";
     }
     return res[NUM_3];

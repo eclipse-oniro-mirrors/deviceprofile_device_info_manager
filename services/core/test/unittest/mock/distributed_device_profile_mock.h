@@ -22,6 +22,7 @@
 #include <memory>
 #include <gmock/gmock.h>
 #include "iremote_broker.h"
+#include "iremote_object.h"
 #include "i_distributed_device_profile.h"
 #include "service_info.h"
 #include "user_info.h"
@@ -110,8 +111,46 @@ public:
 
     sptr<IRemoteObject> AsObject() override
     {
-        return nullptr;
+        if (remoteObj_ == nullptr) {
+            remoteObj_ = new TestRemoteObject();
+        }
+        return remoteObj_;
     }
+
+private:
+    class TestRemoteObject : public IRemoteObject {
+    public:
+        TestRemoteObject() : IRemoteObject(u"dp_mock") {}
+        ~TestRemoteObject() override = default;
+
+        int32_t SendRequest(uint32_t code, MessageParcel& data, MessageParcel& reply,
+            MessageOption& option) override
+        {
+            return 0;
+        }
+
+        int32_t GetObjectRefCount() override
+        {
+            return 0;
+        }
+
+        bool AddDeathRecipient(const sptr<DeathRecipient>& recipient) override
+        {
+            return false;
+        }
+
+        bool RemoveDeathRecipient(const sptr<DeathRecipient>& recipient) override
+        {
+            return false;
+        }
+
+        int32_t Dump(int fd, const std::vector<std::u16string>& args) override
+        {
+            return 0;
+        }
+    };
+
+    sptr<IRemoteObject> remoteObj_;
 };
 
 } // namespace DistributedDeviceProfile

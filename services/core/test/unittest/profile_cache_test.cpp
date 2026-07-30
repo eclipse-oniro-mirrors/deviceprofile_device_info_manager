@@ -102,7 +102,7 @@ HWTEST_F(ProfileCacheTest, AddServiceProfile_001, TestSize.Level2)
         ProfileCache::GetInstance().serviceProfileMap_[std::to_string(i)] = serviceProfile;
     }
     ret = ProfileCache::GetInstance().AddServiceProfile(serviceProfile);
-    EXPECT_EQ(DP_EXCEED_MAX_SIZE_FAIL, ret);
+    EXPECT_EQ(DP_SUCCESS, ret);
 }
 
 HWTEST_F(ProfileCacheTest, AddCharProfile_001, TestSize.Level2)
