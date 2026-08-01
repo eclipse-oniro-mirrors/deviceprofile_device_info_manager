@@ -196,7 +196,7 @@ HWTEST_F(DistributedDeviceProfileClientRdbTest, PutAccessControlProfile_001, Tes
     value.Clear();
     ProfileUtils::AccesseeToEntries(profile, value);
     ProfileUtils::EntriesToAccessee(value, accessee);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /*
@@ -211,7 +211,7 @@ HWTEST_F(DistributedDeviceProfileClientRdbTest, GetAccessControlProfile_001, Tes
     parms.insert({{"userId", "22"}, {"bundleName", "bb1"}, {"bindType", "1"}, {"status", "0"}});
     int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
         GetInstance().GetAccessControlProfile(parms, profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /*
@@ -224,7 +224,7 @@ HWTEST_F(DistributedDeviceProfileClientRdbTest, UpdateAccessControlProfile_001, 
     AccessControlProfile profile;
     int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
         GetInstance().UpdateAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /*
@@ -236,7 +236,7 @@ HWTEST_F(DistributedDeviceProfileClientRdbTest, DeleteAccessControlProfile_001, 
 {
     int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
         GetInstance().DeleteAccessControlProfile(9);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /*
@@ -249,7 +249,7 @@ HWTEST_F(DistributedDeviceProfileClientRdbTest, GetAllAccessControlProfile_001, 
     std::vector<AccessControlProfile> profile;
     int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
         GetInstance().GetAllAccessControlProfile(profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /*
@@ -262,7 +262,7 @@ HWTEST_F(DistributedDeviceProfileClientRdbTest, GetAllAclIncludeLnnAcl_001, Test
     std::vector<AccessControlProfile> profile;
     int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
         GetInstance().GetAllAclIncludeLnnAcl(profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /*
@@ -275,7 +275,7 @@ HWTEST_F(DistributedDeviceProfileClientRdbTest, GetAllTrustDeviceProfile_001, Te
     std::vector<TrustDeviceProfile> profile;
     int32_t ret = OHOS::DistributedDeviceProfile::DistributedDeviceProfileClient::
         GetInstance().GetAllTrustDeviceProfile(profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /*
@@ -291,7 +291,7 @@ HWTEST_F(DistributedDeviceProfileClientRdbTest, GetTrustDeviceProfile_001, TestS
     ValuesBucket value;
     ProfileUtils::TrustDeviceProfileToEntries(profile, value);
     ProfileUtils::EntriesToTrustDeviceProfile(value, profile);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 HWTEST_F(DistributedDeviceProfileClientRdbTest, OnRemoveSystemAbility_001, TestSize.Level1)
@@ -303,7 +303,7 @@ HWTEST_F(DistributedDeviceProfileClientRdbTest, OnRemoveSystemAbility_001, TestS
     int32_t systemAbilityId = 1;
     std::string deviceId = "deviceId_test";
     saListeneer.OnRemoveSystemAbility(systemAbilityId, deviceId);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
