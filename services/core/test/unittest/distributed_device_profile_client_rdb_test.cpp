@@ -14,7 +14,6 @@
  */
 
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <string>
@@ -28,7 +27,6 @@
 #include "distributed_device_profile_errors.h"
 #include "rdb_open_callback.h"
 #include "distributed_device_profile_client.h"
-#include "mock/distributed_device_profile_mock.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -46,7 +44,6 @@ public:
     void SetUp();
     void TearDown();
     int ResultSize(std::shared_ptr<ResultSet>& resultSet);
-    static sptr<IDistributedDeviceProfileMock> mockDpProxy_;
 
     class SubscribeDPChangeListener : public ProfileChangeListenerStub {
     public:
@@ -131,35 +128,12 @@ void DistributedDeviceProfileClientRdbTest::TearDownTestCase()
 {
 }
 
-sptr<IDistributedDeviceProfileMock> DistributedDeviceProfileClientRdbTest::mockDpProxy_ = nullptr;
-
 void DistributedDeviceProfileClientRdbTest::SetUp()
 {
-    if (mockDpProxy_ == nullptr) {
-        mockDpProxy_ = sptr<IDistributedDeviceProfileMock>(new IDistributedDeviceProfileMock());
-    }
-    DistributedDeviceProfileClient::GetInstance().dpProxy_ = mockDpProxy_;
-    ON_CALL(*mockDpProxy_, PutAccessControlProfile(testing::_))
-        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
-    ON_CALL(*mockDpProxy_, GetAccessControlProfile(testing::_, testing::_))
-        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
-    ON_CALL(*mockDpProxy_, UpdateAccessControlProfile(testing::_))
-        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
-    ON_CALL(*mockDpProxy_, DeleteAccessControlProfile(testing::_))
-        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
-    ON_CALL(*mockDpProxy_, GetAllAccessControlProfile(testing::_))
-        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
-    ON_CALL(*mockDpProxy_, GetAllAclIncludeLnnAcl(testing::_))
-        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
-    ON_CALL(*mockDpProxy_, GetAllTrustDeviceProfile(testing::_))
-        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
-    ON_CALL(*mockDpProxy_, GetTrustDeviceProfile(testing::_, testing::_))
-        .WillByDefault(testing::Return(DP_PERMISSION_DENIED));
 }
 
 void DistributedDeviceProfileClientRdbTest::TearDown()
 {
-    testing::Mock::VerifyAndClearExpectations(mockDpProxy_.GetRefPtr());
 }
 
 int DistributedDeviceProfileClientRdbTest::ResultSize(std::shared_ptr<ResultSet> &resultSet)

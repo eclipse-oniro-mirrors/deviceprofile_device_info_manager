@@ -201,6 +201,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactiveInner_002, T
 {
     MessageParcel data;
     MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnTrustDeviceProfileInactiveInner(data, reply);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -209,6 +210,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileActive_002, TestSize
 {
     MessageParcel data;
     MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnTrustDeviceProfileActiveInner(data, reply);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -347,6 +349,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_002, TestSize.Level0)
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
     MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -358,6 +361,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_003, TestSize.Level0)
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
     MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -369,6 +373,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_004, TestSize.Level0)
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
     MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -380,6 +385,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_005, TestSize.Level0)
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
     MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -391,6 +397,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_006, TestSize.Level0)
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
     MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -402,6 +409,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_007, TestSize.Level0)
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
     MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -413,6 +421,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_008, TestSize.Level0)
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
     MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -424,6 +433,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_009, TestSize.Level0)
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
     MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -435,6 +445,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_010, TestSize.Level0)
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
     MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -446,6 +457,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_011, TestSize.Level0)
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
     MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -457,6 +469,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_012, TestSize.Level0)
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
     MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -468,6 +481,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_013, TestSize.Level0)
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
     MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -479,6 +493,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_014, TestSize.Level0)
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
     MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -490,6 +505,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_015, TestSize.Level0)
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
     MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -501,6 +517,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_016, TestSize.Level0)
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
     MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(305, ret);
 }
@@ -512,6 +529,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_017, TestSize.Level0)
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
     MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -523,6 +541,31 @@ HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_018, TestSize.Level0)
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
     MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_019, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_DELETE);
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
+    EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnRemoteRequest_020, TestSize.Level0)
+{
+    uint32_t code = static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_UPDATE);
+    MessageParcel data;
+    data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
+    MessageParcel reply;
+    MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
 }
@@ -532,6 +575,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileActiveInner_001, Tes
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnTrustDeviceProfileActiveInner(data, reply);
     EXPECT_NE(DP_SUCCESS, ret);
 }
@@ -542,6 +586,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactiveInner_001, T
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnTrustDeviceProfileInactiveInner(data, reply);
     EXPECT_NE(DP_SUCCESS, ret);
 }
@@ -549,6 +594,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactiveInner_001, T
 HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileActive_001, TestSize.Level0)
 {
     TrustDeviceProfile profile;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->ProfileChangeListenerStub::OnTrustDeviceProfileActive(profile);
     EXPECT_EQ(DP_SUCCESS, ret);
 }
@@ -556,6 +602,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileActive_001, TestSize
 HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactive_001, TestSize.Level0)
 {
     TrustDeviceProfile profile;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->ProfileChangeListenerStub::OnTrustDeviceProfileInactive(profile);
     EXPECT_EQ(DP_SUCCESS, ret);
 }
@@ -565,6 +612,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileActiveInner_003, Tes
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnTrustDeviceProfileActiveInner(data, reply);
     EXPECT_NE(DP_SUCCESS, ret);
 }
@@ -574,6 +622,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactiveInner_003, T
     MessageParcel data;
     data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor());
     MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnTrustDeviceProfileInactiveInner(data, reply);
     EXPECT_NE(DP_SUCCESS, ret);
 }
@@ -581,6 +630,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactiveInner_003, T
 HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileActive_003, TestSize.Level0)
 {
     TrustDeviceProfile profile;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnTrustDeviceProfileActive(profile);
     EXPECT_EQ(DP_SUCCESS, ret);
 }
@@ -588,6 +638,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileActive_003, TestSize
 HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactive_003, TestSize.Level0)
 {
     TrustDeviceProfile profile;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnTrustDeviceProfileInactive(profile);
     EXPECT_EQ(DP_SUCCESS, ret);
 }
@@ -595,6 +646,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnTrustDeviceProfileInactive_003, TestSi
 HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclDelete_001, TestSize.Level0)
 {
     TrustDeviceProfile profile;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnAccountAclDelete(profile);
     EXPECT_EQ(DP_SUCCESS, ret);
 }
@@ -602,6 +654,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclDelete_001, TestSize.Level0)
 HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclInactive_001, TestSize.Level0)
 {
     TrustDeviceProfile profile;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnAccountAclInactive(profile);
     EXPECT_EQ(DP_SUCCESS, ret);
 }
@@ -609,6 +662,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclInactive_001, TestSize.Level
 HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclAdd_001, TestSize.Level0)
 {
     TrustDeviceProfile profile;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnAccountAclAdd(profile);
     EXPECT_EQ(DP_SUCCESS, ret);
 }
@@ -616,6 +670,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclAdd_001, TestSize.Level0)
 HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclActive_001, TestSize.Level0)
 {
     TrustDeviceProfile profile;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnAccountAclActive(profile);
     EXPECT_EQ(DP_SUCCESS, ret);
 }
@@ -623,6 +678,7 @@ HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclActive_001, TestSize.Level0)
 HWTEST_F(ProfileChangeListenerStubTest, OnDeviceAclInactiveByDelete_001, TestSize.Level0)
 {
     TrustDeviceProfile profile;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnDeviceAclInactiveByDelete(profile);
     EXPECT_EQ(DP_SUCCESS, ret);
 }
@@ -630,7 +686,56 @@ HWTEST_F(ProfileChangeListenerStubTest, OnDeviceAclInactiveByDelete_001, TestSiz
 HWTEST_F(ProfileChangeListenerStubTest, OnDeviceAclInactiveByUpdate_001, TestSize.Level0)
 {
     TrustDeviceProfile profile;
+    ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnDeviceAclInactiveByUpdate(profile);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnDeviceAclInactiveByDelete_002, TestSize.Level0)
+{
+    TrustDeviceProfile profile;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->ProfileChangeListenerStub::OnDeviceAclInactiveByDelete(profile);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnDeviceAclInactiveByUpdate_002, TestSize.Level0)
+{
+    TrustDeviceProfile profile;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->ProfileChangeListenerStub::OnDeviceAclInactiveByUpdate(profile);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclDelete_002, TestSize.Level0)
+{
+    TrustDeviceProfile profile;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->ProfileChangeListenerStub::OnAccountAclDelete(profile);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclInactive_002, TestSize.Level0)
+{
+    TrustDeviceProfile profile;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->ProfileChangeListenerStub::OnAccountAclInactive(profile);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclAdd_002, TestSize.Level0)
+{
+    TrustDeviceProfile profile;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->ProfileChangeListenerStub::OnAccountAclAdd(profile);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclActive_002, TestSize.Level0)
+{
+    TrustDeviceProfile profile;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->ProfileChangeListenerStub::OnAccountAclActive(profile);
     EXPECT_EQ(DP_SUCCESS, ret);
 }
 
@@ -650,6 +755,72 @@ HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclActiveInner_001, TestSize.Le
     ASSERT_NE(listenerStub_, nullptr);
     int32_t ret = listenerStub_->OnAccountAclActiveInner(data, reply);
     EXPECT_EQ(ERR_FLATTEN_OBJECT, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnDeviceAclInactiveByDeleteInner_002, TestSize.Level0)
+{
+    MessageParcel data;
+    TrustDeviceProfile profile;
+    ASSERT_TRUE(profile.Marshalling(data));
+    MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->OnDeviceAclInactiveByDeleteInner(data, reply);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnDeviceAclInactiveByUpdateInner_002, TestSize.Level0)
+{
+    MessageParcel data;
+    TrustDeviceProfile profile;
+    ASSERT_TRUE(profile.Marshalling(data));
+    MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->OnDeviceAclInactiveByUpdateInner(data, reply);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclDeleteInner_002, TestSize.Level0)
+{
+    MessageParcel data;
+    TrustDeviceProfile profile;
+    ASSERT_TRUE(profile.Marshalling(data));
+    MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->OnAccountAclDeleteInner(data, reply);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclInactiveInner_002, TestSize.Level0)
+{
+    MessageParcel data;
+    TrustDeviceProfile profile;
+    ASSERT_TRUE(profile.Marshalling(data));
+    MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->OnAccountAclInactiveInner(data, reply);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclAddInner_002, TestSize.Level0)
+{
+    MessageParcel data;
+    TrustDeviceProfile profile;
+    ASSERT_TRUE(profile.Marshalling(data));
+    MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->OnAccountAclAddInner(data, reply);
+    EXPECT_EQ(DP_SUCCESS, ret);
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclActiveInner_002, TestSize.Level0)
+{
+    MessageParcel data;
+    TrustDeviceProfile profile;
+    ASSERT_TRUE(profile.Marshalling(data));
+    MessageParcel reply;
+    ASSERT_NE(listenerStub_, nullptr);
+    int32_t ret = listenerStub_->OnAccountAclActiveInner(data, reply);
+    EXPECT_EQ(DP_SUCCESS, ret);
 }
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
