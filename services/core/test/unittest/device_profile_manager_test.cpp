@@ -1863,13 +1863,20 @@ HWTEST_F(DeviceProfileManagerTest, DeleteRemovedUserData005, TestSize.Level1)
  */
 HWTEST_F(DeviceProfileManagerTest, SyncWithNotOHBasedDevice001, TestSize.Level1)
 {
+    DeviceProfileManager::GetInstance().UnloadDpSyncAdapter();
+    bool adapterAvailable = DeviceProfileManager::GetInstance().LoadDpSyncAdapter();
+    DeviceProfileManager::GetInstance().UnloadDpSyncAdapter();
     const std::string callerDescriptor;
     sptr<IRemoteObject> syncCompletedCallback;
     const std::vector<std::tuple<std::string, std::string, bool>> notOHBasedDevices;
     int32_t ret = DeviceProfileManager::GetInstance().SyncWithNotOHBasedDevice(
         notOHBasedDevices, callerDescriptor, syncCompletedCallback);
     DeviceProfileManager::GetInstance().SyncWithNotOHBasedDeviceFailed(notOHBasedDevices, syncCompletedCallback);
-    EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
+    if (adapterAvailable) {
+        EXPECT_EQ(ret, DP_SUCCESS);
+    } else {
+        EXPECT_EQ(ret, DP_LOAD_SYNC_ADAPTER_FAILED);
+    }
 }
 
 /**
