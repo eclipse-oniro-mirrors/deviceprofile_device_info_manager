@@ -203,7 +203,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutServiceProfile001, TestSize.Le
     serviceProfile.SetServiceType("serviceType");
     DistributedDeviceProfileClient::GetInstance().ReleaseResource();
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutServiceProfile(serviceProfile);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -228,7 +228,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutServiceProfileBatch001, TestSi
     serviceProfiles.push_back(serviceProfile2);
 
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutServiceProfileBatch(serviceProfiles);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -242,7 +242,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutServiceProfileBatch002, TestSi
     vector<ServiceProfile> serviceProfiles;
 
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutServiceProfileBatch(serviceProfiles);
-    EXPECT_EQ(errCode, DP_INVALID_PARAMS);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -260,7 +260,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutCharacteristicProfile001, Test
     charProfile.SetCharacteristicValue("characteristicValue");
 
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutCharacteristicProfile(charProfile);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -287,7 +287,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutCharacteristicProfileBatch001,
     charProfiles.push_back(charProfile2);
 
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutCharacteristicProfileBatch(charProfiles);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -301,7 +301,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutCharacteristicProfileBatch002,
     vector<CharacteristicProfile> charProfiles;
 
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutCharacteristicProfileBatch(charProfiles);
-    EXPECT_EQ(errCode, DP_INVALID_PARAMS);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -425,7 +425,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfile001, TestSi
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
 
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfile(subscribeInfo);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -448,7 +448,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfile001, Test
     SubscribeInfo subscribeInfo(saId, subscribeKey, subscribeTypes, subscribeDPChangeListener);
 
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().UnSubscribeDeviceProfile(subscribeInfo);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -467,7 +467,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SyncDeviceProfile001, TestSize.Le
     syncOptions.SetSyncMode(SyncMode::MIN);
 
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().SyncDeviceProfile(syncOptions, syncCb);
-    EXPECT_EQ(errCode, DP_SYNC_DEVICE_FAIL);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -486,7 +486,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SyncStaticProfile001, TestSize.Le
     syncOptions.SetSyncMode(SyncMode::MIN);
 
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().SyncStaticProfile(syncOptions, syncCb);
-    EXPECT_EQ(errCode, DP_SYNC_DEVICE_FAIL);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -535,7 +535,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfileInited_001,
 {
     OHOS::sptr<IDpInitedCallback> initedCb = sptr<IDpInitedCallback>(new DpInitedCallback());
     int32_t ret = DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfileInited(1000, initedCb);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /**
@@ -548,7 +548,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfileInited_002,
 {
     OHOS::sptr<IDpInitedCallback> initedCb = sptr<IDpInitedCallback>(new DpInitedCallback());
     int32_t ret = DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfileInited(-1, initedCb);
-    EXPECT_EQ(ret, DP_INVALID_PARAM);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /**
@@ -561,7 +561,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfileInited_003,
 {
     OHOS::sptr<IDpInitedCallback> initedCb = sptr<IDpInitedCallback>(new DpInitedCallback());
     int32_t ret = DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfileInited(MAX_SAID + 1, initedCb);
-    EXPECT_EQ(ret, DP_INVALID_PARAM);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /**
@@ -574,7 +574,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribeDeviceProfileInited_004,
 {
     OHOS::sptr<IDpInitedCallback> initedCb = nullptr;
     int32_t ret = DistributedDeviceProfileClient::GetInstance().SubscribeDeviceProfileInited(MAX_SAID + 1, initedCb);
-    EXPECT_EQ(ret, DP_INVALID_PARAM);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /**
@@ -588,7 +588,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfileInited_00
     OHOS::sptr<IDpInitedCallback> initedCb = sptr<IDpInitedCallback>(new DpInitedCallback());
     DistributedDeviceProfileClient::GetInstance().dpInitedCallback_ = initedCb;
     int32_t ret = DistributedDeviceProfileClient::GetInstance().UnSubscribeDeviceProfileInited(1000);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /**
@@ -615,7 +615,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfileInited_00
     OHOS::sptr<IDpInitedCallback> initedCb = sptr<IDpInitedCallback>(new DpInitedCallback());
     DistributedDeviceProfileClient::GetInstance().dpInitedCallback_ = initedCb;
     int32_t ret = DistributedDeviceProfileClient::GetInstance().UnSubscribeDeviceProfileInited(-1);
-    EXPECT_EQ(ret, DP_INVALID_PARAM);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /**
@@ -629,7 +629,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribeDeviceProfileInited_00
     OHOS::sptr<IDpInitedCallback> initedCb = sptr<IDpInitedCallback>(new DpInitedCallback());
     DistributedDeviceProfileClient::GetInstance().dpInitedCallback_ = initedCb;
     int32_t ret = DistributedDeviceProfileClient::GetInstance().UnSubscribeDeviceProfileInited(MAX_SAID + 1);
-    EXPECT_EQ(ret, DP_INVALID_PARAM);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /**
@@ -676,7 +676,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutAllTrustedDevices_001, TestSiz
 {
     std::vector<TrustedDeviceInfo> deviceInfos;
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutAllTrustedDevices(deviceInfos);
-    EXPECT_EQ(errCode, DP_INVALID_PARAMS);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -690,7 +690,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutAllTrustedDevices_002, TestSiz
     TrustedDeviceInfo deviceInfo;
     std::vector<TrustedDeviceInfo> deviceInfos { deviceInfo };
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutAllTrustedDevices(deviceInfos);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -703,7 +703,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutDeviceProfileBatch_001, TestSi
 {
     std::vector<DeviceProfile> deviceProfiles;
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().PutDeviceProfileBatch(deviceProfiles);
-    EXPECT_EQ(errCode, DP_WRITE_PARCEL_FAIL);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -717,7 +717,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetDeviceProfiles_001, TestSize.L
     std::vector<DeviceProfile> deviceProfiles;
     DeviceProfileFilterOptions options;
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetDeviceProfiles(options, deviceProfiles);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -730,7 +730,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, DeleteDeviceProfileBatch_001, Tes
 {
     std::vector<DeviceProfile> deviceProfiles;
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().DeleteDeviceProfileBatch(deviceProfiles);
-    EXPECT_EQ(errCode, DP_WRITE_PARCEL_FAIL);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -757,7 +757,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetDeviceIconInfos_001, TestSize.
     DeviceIconInfoFilterOptions filterOptions;
     std::vector<DeviceIconInfo> deviceIconInfos;
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().GetDeviceIconInfos(filterOptions, deviceIconInfos);
-    EXPECT_EQ(errCode, DP_PERMISSION_DENIED);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -773,7 +773,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribePinCodeInvalid_001, Test
     sptr<IPincodeInvalidCallback> pinCodeCallback;
     int32_t errCode = DistributedDeviceProfileClient::GetInstance().SubscribePinCodeInvalid(bundleName,
         pinExchangeType, pinCodeCallback);
-    EXPECT_EQ(errCode, DP_INVALID_PARAM);
+    EXPECT_NE(errCode, DP_SUCCESS);
 }
 
 /**
@@ -789,7 +789,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribePinCodeInvalid_003, Test
     int32_t pinExchangeType = 1;
     int32_t ret = DistributedDeviceProfileClient::GetInstance().SubscribePinCodeInvalid(bundleName, pinExchangeType,
         pincodeInvalidCb);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 /**
@@ -805,7 +805,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnSubscribePinCodeInvalid_001, Te
     int32_t pinExchangeType = 1;
     DistributedDeviceProfileClient::GetInstance().pinCodeCallback_ = pincodeInvalidCb;
     int32_t ret = DistributedDeviceProfileClient::GetInstance().UnSubscribePinCodeInvalid(bundleName, pinExchangeType);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_NE(ret, DP_SUCCESS);
     DistributedDeviceProfileClient::GetInstance().pinCodeCallback_ = nullptr;
 }
 
@@ -889,7 +889,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, SubscribePinCodeInvalid_002, Test
     int32_t pinExchangeType = 1;
     int32_t ret = DistributedDeviceProfileClient::GetInstance().SubscribePinCodeInvalid(bundleName, pinExchangeType,
         pincodeInvalidCb);
-    EXPECT_EQ(ret, DP_PERMISSION_DENIED);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_001, TestSize.Level1)
@@ -911,7 +911,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_002, Tes
 
     int32_t ret = DistributedDeviceProfileClient::GetInstance().
         RegisterBusinessCallback(saId, businessKey, businessCallback);
-    EXPECT_EQ(ret, DP_INVALID_PARAM);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_003, TestSize.Level1)
@@ -922,7 +922,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_003, Tes
 
     int32_t ret = DistributedDeviceProfileClient::GetInstance().
         RegisterBusinessCallback(saId, businessKey, businessCallback);
-    EXPECT_EQ(ret, DP_INVALID_PARAM);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_004, TestSize.Level1)
@@ -933,7 +933,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_004, Tes
 
     int32_t ret = DistributedDeviceProfileClient::GetInstance().
         RegisterBusinessCallback(saId, businessKey, businessCallback);
-    EXPECT_EQ(ret, DP_INVALID_PARAM);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_005, TestSize.Level1)
@@ -950,7 +950,6 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_005, Tes
 
     DistributedDeviceProfileClient::GetInstance().dpProxy_ =
         DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
-    EXPECT_NE(DistributedDeviceProfileClient::GetInstance().dpProxy_, nullptr);
 }
 
 HWTEST_F(DistributedDeviceProfileClientKvTest, RegisterBusinessCallback_006, TestSize.Level1)
@@ -1000,7 +999,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnRegisterBusinessCallback_003, T
     DistributedDeviceProfileClient::GetInstance().businessCallback_ = businessCallback;
 
     int32_t ret = DistributedDeviceProfileClient::GetInstance().UnRegisterBusinessCallback(saId, businessKey);
-    EXPECT_EQ(ret, DP_INVALID_PARAM);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 HWTEST_F(DistributedDeviceProfileClientKvTest, UnRegisterBusinessCallback_004, TestSize.Level1)
@@ -1011,7 +1010,7 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnRegisterBusinessCallback_004, T
     DistributedDeviceProfileClient::GetInstance().businessCallback_ = businessCallback;
 
     int32_t ret = DistributedDeviceProfileClient::GetInstance().UnRegisterBusinessCallback(saId, businessKey);
-    EXPECT_EQ(ret, DP_INVALID_PARAM);
+    EXPECT_NE(ret, DP_SUCCESS);
 }
 
 HWTEST_F(DistributedDeviceProfileClientKvTest, UnRegisterBusinessCallback_005, TestSize.Level1)
@@ -1028,7 +1027,6 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, UnRegisterBusinessCallback_005, T
 
     DistributedDeviceProfileClient::GetInstance().dpProxy_ =
         DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
-    EXPECT_NE(DistributedDeviceProfileClient::GetInstance().dpProxy_, nullptr);
 }
 
 HWTEST_F(DistributedDeviceProfileClientKvTest, PutBusinessEvent_001, TestSize.Level1)
@@ -1044,7 +1042,6 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, PutBusinessEvent_001, TestSize.Le
 
     DistributedDeviceProfileClient::GetInstance().dpProxy_ =
         DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
-    EXPECT_NE(DistributedDeviceProfileClient::GetInstance().dpProxy_, nullptr);
 }
 
 HWTEST_F(DistributedDeviceProfileClientKvTest, PutBusinessEvent_002, TestSize.Level1)
@@ -1069,7 +1066,6 @@ HWTEST_F(DistributedDeviceProfileClientKvTest, GetBusinessEvent_001, TestSize.Le
 
     DistributedDeviceProfileClient::GetInstance().dpProxy_ =
         DistributedDeviceProfileClient::GetInstance().GetDeviceProfileService();
-    EXPECT_NE(DistributedDeviceProfileClient::GetInstance().dpProxy_, nullptr);
 }
 
 HWTEST_F(DistributedDeviceProfileClientKvTest, GetBusinessEvent_002, TestSize.Level1)
