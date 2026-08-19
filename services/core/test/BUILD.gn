@@ -94,6 +94,11 @@ ohos_unittest("distributed_device_profile_client_kv_new_test") {
   external_deps = device_profile_external_deps
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 }
 
 ohos_unittest("device_profile_manager_new_test") {
@@ -104,6 +109,11 @@ ohos_unittest("device_profile_manager_new_test") {
   external_deps = device_profile_external_deps
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 }
 
 ohos_unittest("ClientRdbTest") {
@@ -114,6 +124,11 @@ ohos_unittest("ClientRdbTest") {
   external_deps = device_profile_external_deps
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 }
 
 ohos_unittest("dp_dumper_new_test") {
@@ -134,6 +149,11 @@ ohos_unittest("profile_cache_new_test") {
   external_deps = device_profile_external_deps
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 }
 
 ohos_unittest("profile_utils_new_test") {
@@ -184,6 +204,11 @@ ohos_unittest("DPSubscribeInfoTest") {
   external_deps = device_profile_external_deps
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 }
 
 ohos_unittest("PermissionManagerTest") {
@@ -224,6 +249,11 @@ ohos_unittest("device_profile_manager_new_three_test") {
   external_deps = device_profile_external_deps
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 }
 
 ohos_unittest("content_sensor_pasteboard_info_test") {
@@ -304,6 +334,11 @@ ohos_unittest("subscribe_profile_manager_test") {
   external_deps = device_profile_external_deps
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 }
 
 ohos_unittest("sync_completed_callback_test") {
@@ -314,6 +349,11 @@ ohos_unittest("sync_completed_callback_test") {
   external_deps = device_profile_external_deps
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 }
 
 ohos_unittest("dp_profile_service_new_test") {
@@ -348,6 +388,11 @@ ohos_unittest("distributed_device_profile_stub_new_test") {
     "-Dprivate=public",
     "-Dprotected=public",
   ]
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 }
 
 ohos_unittest("content_sensor_manager_utils_test") {
@@ -408,6 +453,11 @@ ohos_unittest("static_profile_manager_test") {
   external_deps = device_profile_external_deps
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 }
 
 ohos_unittest("switch_profile_manager_test") {
@@ -548,6 +598,11 @@ ohos_unittest("distributed_device_profile_client_test") {
   external_deps = device_profile_external_deps
   part_name = "device_info_manager"
   subsystem_name = "deviceprofile"
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 }
 
 ohos_unittest("distributed_device_profile_proxy_test") {
