@@ -303,7 +303,7 @@ std::vector<DistributedKv::Entry> ServiceInfoManager::GetEntriesByKeys(const std
             entry.value = value;
             entries.emplace_back(entry);
             HILOGE("Found value for key: %{public}s, value: %{public}s",
-                key.c_str(), value.c_str());
+                ProfileUtils::GetDbKeyAnonyString(key).c_str(), ProfileUtils::GetAnonyString(value).c_str());
         }
     }
     return entries;
