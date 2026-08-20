@@ -166,7 +166,7 @@ void KvDataChangeListener::ConvertRecordsToMap(const std::vector<DistributedKv::
         if (ProfileUtils::SplitString(dbKey, SEPARATOR, res) == DP_SUCCESS &&
             res.size() == MIN_KEY_PARTS_REQUIRED) {
             if (res[SERINFO_INDEX] != SERINFO_PREFIX) {
-                HILOGE("%{public}s is invalid", dbKey.c_str());
+                HILOGE("%{public}s is invalid", ProfileUtils::GetAnonyString(dbKey).c_str());
                 continue;
             }
         }
@@ -253,7 +253,7 @@ int32_t KvDataChangeListener::EntriesToUserInfo(const std::string& key, UserInfo
     std::vector<ServiceInfo> serviceInfos;
     if (ProfileUtils::SplitString(key, SEPARATOR, res) != DP_SUCCESS ||
         res.size() != MIN_KEY_PARTS_REQUIRED) {
-        HILOGE("key is invalid: %{public}s", key.c_str());
+        HILOGE("key is invalid: %{public}s", ProfileUtils::GetAnonyString(key).c_str());
         return DP_INVALID_PARAMS;
     }
 
