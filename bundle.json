@@ -65,7 +65,6 @@
           "service_group": [
             "//foundation/deviceprofile/device_info_manager/etc/profile:deviceprofile_trust",
             "//foundation/deviceprofile/device_info_manager/etc/init:etc",
-            "//foundation/deviceprofile/device_info_manager/permission:permission_json",
             "//foundation/deviceprofile/device_info_manager/sa_profile:dps_sa_profile",
             "//foundation/deviceprofile/device_info_manager/services/core:distributed_device_profile_svr"
           ]

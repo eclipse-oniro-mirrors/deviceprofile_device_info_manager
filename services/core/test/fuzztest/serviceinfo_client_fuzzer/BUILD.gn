@@ -34,6 +34,15 @@ ohos_fuzztest("ServiceInfoClientFuzzTest") {
   fuzz_config_file =
       "${device_profile_service}/test/fuzztest/serviceinfo_client_fuzzer"
 
+  sanitize = {
+    boundary_sanitize = true
+    cfi = true
+    cfi_cross_dso = true
+    debug = true
+    integer_overflow = true
+    ubsan = true
+  }
+
   cflags = [
     "-g",
     "-O0",

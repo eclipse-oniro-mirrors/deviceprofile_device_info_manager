@@ -16,11 +16,7 @@
 #ifndef OHOS_DP_PERMISSION_MANAGER_H
 #define OHOS_DP_PERMISSION_MANAGER_H
 
-#include <mutex>
 #include <string>
-#include <unordered_set>
-#include <unordered_map>
-#include "cJSON.h"
 #include "single_instance.h"
 
 namespace OHOS {
@@ -35,18 +31,6 @@ public:
     bool CheckCallerPermission();
     bool CheckCallerSyncPermission();
     std::string GetCallerProcName();
-
-private:
-    bool CheckInterfacePermission(const std::string& interfaceName);
-    int32_t LoadPermissionCfg(const std::string& filePath);
-    int32_t ParsePermissionJson(const cJSON* const permissionJson);
-    void SetRdbPermissionMap(const cJSON* const permissionJson);
-    void SetKVPermissionMap(const cJSON* const permissionJson);
-    void SetPermissionMap(const cJSON* const permissionJson, const std::string& interfaceName);
-
-private:
-    std::mutex permissionMutex_;
-    std::unordered_map<std::string, std::unordered_set<std::string>> permissionMap_;
 };
 } // namespace DeviceProfile
 } // namespace OHOS

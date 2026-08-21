@@ -40,7 +40,6 @@ namespace DistributedDeviceProfile {
 using namespace testing;
 using namespace testing::ext;
 namespace {
-const std::string PERMISSION_JSON_PATH = "/system/etc/deviceprofile/permission.json";
 const int32_t PERMS_NUM = 2;
 }
 class DpProfileServiceTest : public testing::Test {
@@ -132,7 +131,7 @@ HWTEST_F(DpProfileServiceTest, PutAccessControlProfile_001, TestSize.Level1)
 {
     AccessControlProfile accessControlProfile;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutAccessControlProfile(accessControlProfile);
-    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+    EXPECT_EQ(DP_GET_RESULTSET_FAIL, ret);
     DistributedDeviceProfileServiceNew::GetInstance().DelayUnloadTask();
 }
 
@@ -140,7 +139,7 @@ HWTEST_F(DpProfileServiceTest, UpdateAccessControlProfile_001, TestSize.Level1)
 {
     AccessControlProfile accessControlProfile;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().UpdateAccessControlProfile(accessControlProfile);
-    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+    EXPECT_EQ(DP_GET_RESULTSET_FAIL, ret);
 }
 
 HWTEST_F(DpProfileServiceTest, PutProductInfoBatch_001, TestSize.Level1)
@@ -177,14 +176,14 @@ HWTEST_F(DpProfileServiceTest, GetTrustDeviceProfile_001, TestSize.Level1)
     std::string devid;
     TrustDeviceProfile trustDeviceProfile;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetTrustDeviceProfile(devid, trustDeviceProfile);
-    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+    EXPECT_EQ(DP_GET_RESULTSET_FAIL, ret);
 }
 
 HWTEST_F(DpProfileServiceTest, GetAllTrustDeviceProfile_001, TestSize.Level1)
 {
     std::vector<TrustDeviceProfile> trustDeviceProfiles;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetAllTrustDeviceProfile(trustDeviceProfiles);
-    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+    EXPECT_EQ(DP_GET_RESULTSET_FAIL, ret);
 }
 
 HWTEST_F(DpProfileServiceTest, GetAccessControlProfile_001, TestSize.Level1)
@@ -193,28 +192,28 @@ HWTEST_F(DpProfileServiceTest, GetAccessControlProfile_001, TestSize.Level1)
     std::vector<AccessControlProfile> accessControlProfiles;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetAccessControlProfile(queryParams,
         accessControlProfiles);
-    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret);
 }
 
 HWTEST_F(DpProfileServiceTest, GetAllAccessControlProfile_001, TestSize.Level1)
 {
     std::vector<AccessControlProfile> accessControlProfiles;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetAllAccessControlProfile(accessControlProfiles);
-    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+    EXPECT_EQ(DP_GET_RESULTSET_FAIL, ret);
 }
 
 HWTEST_F(DpProfileServiceTest, GetAllAclIncludeLnnAcl_001, TestSize.Level1)
 {
     std::vector<AccessControlProfile> accessControlProfiles;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetAllAclIncludeLnnAcl(accessControlProfiles);
-    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+    EXPECT_EQ(DP_GET_RESULTSET_FAIL, ret);
 }
 
 HWTEST_F(DpProfileServiceTest, DeleteAccessControlProfile_001, TestSize.Level1)
 {
     int32_t accessControlId = 0;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().DeleteAccessControlProfile(accessControlId);
-    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+    EXPECT_EQ(DP_GET_RESULTSET_FAIL, ret);
 }
 
 HWTEST_F(DpProfileServiceTest, PutSessionKey_001, TestSize.Level1)
@@ -223,7 +222,7 @@ HWTEST_F(DpProfileServiceTest, PutSessionKey_001, TestSize.Level1)
     std::vector<uint8_t> sessionKey;
     int32_t sessionKeyId = 0;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutSessionKey(userId, sessionKey, sessionKeyId);
-    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret);
 }
 
 HWTEST_F(DpProfileServiceTest, GetSessionKey_001, TestSize.Level1)
@@ -232,7 +231,7 @@ HWTEST_F(DpProfileServiceTest, GetSessionKey_001, TestSize.Level1)
     std::vector<uint8_t> sessionKey;
     int32_t sessionKeyId = 0;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetSessionKey(userId, sessionKeyId, sessionKey);
-    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret);
 }
 
 HWTEST_F(DpProfileServiceTest, GetSessionKey_002, TestSize.Level1)
@@ -240,7 +239,7 @@ HWTEST_F(DpProfileServiceTest, GetSessionKey_002, TestSize.Level1)
     std::vector<uint8_t> sessionKey;
     int32_t sessionKeyId = 0;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().GetSessionKey(sessionKeyId, sessionKey);
-    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+    EXPECT_EQ(DP_GET_RESULTSET_FAIL, ret);
 }
 
 HWTEST_F(DpProfileServiceTest, UpdateSessionKey_001, TestSize.Level1)
@@ -249,7 +248,7 @@ HWTEST_F(DpProfileServiceTest, UpdateSessionKey_001, TestSize.Level1)
     std::vector<uint8_t> sessionKey;
     int32_t sessionKeyId = 0;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().UpdateSessionKey(userId, sessionKeyId, sessionKey);
-    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret);
 }
 
 HWTEST_F(DpProfileServiceTest, DeleteSessionKey_001, TestSize.Level1)
@@ -257,7 +256,7 @@ HWTEST_F(DpProfileServiceTest, DeleteSessionKey_001, TestSize.Level1)
     uint32_t userId = 0;
     int32_t sessionKeyId = 0;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().DeleteSessionKey(userId, sessionKeyId);
-    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+    EXPECT_EQ(DP_INVALID_PARAMS, ret);
 }
 
 HWTEST_F(DpProfileServiceTest, PutCharacteristicProfileBatch_001, TestSize.Level1)
@@ -449,7 +448,7 @@ HWTEST_F(DpProfileServiceTest, PutAllTrustedDevices_001, TestSize.Level1)
 {
     std::vector<TrustedDeviceInfo> deviceInfos;
     int32_t ret = DistributedDeviceProfileServiceNew::GetInstance().PutAllTrustedDevices(deviceInfos);
-    EXPECT_EQ(DP_PERMISSION_DENIED, ret);
+    EXPECT_EQ(DP_INVALID_PARAM, ret);
 }
 
 HWTEST_F(DpProfileServiceTest, UnInitNext_001, TestSize.Level1)
