@@ -63,6 +63,26 @@ void KvDataChangeListener::OnChange(const DistributedKv::ChangeNotification& cha
 {
     HILOGI("storeId=%{public}s", storeId_.c_str());
     if (storeId_ == STATIC_STORE_ID) {
+        std::vector<std::string> insertKeys;
+        for (const auto& entry : changeNotification.GetInsertEntries()) {
+            insertKeys.push_back(entry.key.ToString());
+        }
+        std::vector<std::string> updateKeys;
+        for (const auto& entry : changeNotification.GetUpdateEntries()) {
+            updateKeys.push_back(entry.key.ToString());
+        }
+        std::vector<std::string> deleteKeys;
+        for (const auto& entry : changeNotification.GetDeleteEntries()) {
+            deleteKeys.push_back(entry.key.ToString());
+        }
+
+        auto task = [this, insertKeys, updateKeys, deleteKeys]() {
+            ProcessChangeOp(insertKeys, ChangeOp::OP_INSERT);
+            ProcessChangeOp(updateKeys, ChangeOp::OP_UPDATE);
+            ProcessChangeOp(deleteKeys, ChangeOp::OP_DELETE);
+        };
+
+        std::thread(task).detach();
         return;
     }
     if (!changeNotification.GetInsertEntries().empty() &&
@@ -130,12 +150,18 @@ void KvDataChangeListener::ProcessChangeOp(const std::vector<std::string>& keyLi
             ProcessInsertOrUpdate(keyList, localUdid, serviceInfos);
             if (!serviceInfos.empty()) {
                 SubscribeServiceInfoManager::GetInstance().NotifyServiceInfoAdd(serviceInfos);
+                for (const auto& info : serviceInfos) {
+                    HILOGI("OP_INSERT: %{public}s", info.dump().c_str());
+                }
             }
             break;
         case OP_UPDATE:
             ProcessInsertOrUpdate(keyList, localUdid, serviceInfos);
             if (!serviceInfos.empty()) {
                 SubscribeServiceInfoManager::GetInstance().NotifyServiceInfoUpdate(serviceInfos);
+                for (const auto& info : serviceInfos) {
+                    HILOGI("OP_UPDATE: %{public}s", info.dump().c_str());
+                }
             }
             break;
             
@@ -143,6 +169,9 @@ void KvDataChangeListener::ProcessChangeOp(const std::vector<std::string>& keyLi
             ProcessDelete(keyList, localUdid, serviceInfos);
             if (!serviceInfos.empty()) {
                 SubscribeServiceInfoManager::GetInstance().NotifyServiceInfoDelete(serviceInfos);
+                for (const auto& info : serviceInfos) {
+                    HILOGI("OP_DELETE: %{public}s", info.dump().c_str());
+                }
             }
             break;
             
