@@ -654,7 +654,6 @@ group("unittest") {
     ":device_profile_manager_new_two_test",
     ":distributed_device_profile_client_kv_new_test",
     ":distributed_device_profile_stub_new_test",
-    ":distributed_device_profile_client_test",
     ":distributed_device_profile_proxy_test",
     ":dp_account_common_event_test",
     ":dp_content_sensor_test",
@@ -691,5 +690,8 @@ group("unittest") {
   ]
   if (device_info_manager_supported_switch && !device_info_manager_common) {
     deps += [ ":switch_profile_manager_test" ]
+  }
+  if (!device_info_manager_common) {
+    deps += [ ":distributed_device_profile_client_test" ]
   }
 }
