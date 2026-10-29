@@ -38,7 +38,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(StaticProfileManager);
 namespace {
-    const std::string TAG = "StaticProfileManager";
+    constexpr char TAG[] = "StaticProfileManager";
     const std::string APP_ID = "distributed_device_profile_service";
     const std::string STORE_ID = "dp_kv_static_store";
 }

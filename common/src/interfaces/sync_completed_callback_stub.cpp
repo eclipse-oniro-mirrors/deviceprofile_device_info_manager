@@ -30,7 +30,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "SyncCompletedCallbackStub";
+    constexpr char TAG[] = "SyncCompletedCallbackStub";
 }
 
 SyncCompletedCallbackStub::SyncCompletedCallbackStub()

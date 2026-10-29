@@ -24,7 +24,7 @@ namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(EventHandlerFactory);
 
 namespace {
-    const std::string TAG = "EventHandlerFactory";
+    constexpr char TAG[] = "EventHandlerFactory";
 }
 
 int32_t EventHandlerFactory::Init()

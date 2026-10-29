@@ -26,7 +26,7 @@ namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(SwitchAdapter);
 
 namespace {
-    const std::string TAG = "SwitchAdapter";
+    constexpr char TAG[] = "SwitchAdapter";
 }
 
 void SwitchAdapter::Init()

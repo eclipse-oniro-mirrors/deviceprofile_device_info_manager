@@ -38,7 +38,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "ContentSensorManager";
+    constexpr char TAG[] = "ContentSensorManager";
 }
 
 IMPLEMENT_SINGLE_INSTANCE(ContentSensorManager);

@@ -22,7 +22,7 @@ namespace OHOS { class IRemoteObject; }
 namespace OHOS {
 namespace DistributedDeviceProfile {
 
-const std::string TAG = "DeviceProfileLoadCallback";
+constexpr char TAG[] = "DeviceProfileLoadCallback";
 
 void DeviceProfileLoadCallback::OnLoadSystemAbilitySuccess(
     int32_t systemAbilityId, const sptr<IRemoteObject> &remoteObject)

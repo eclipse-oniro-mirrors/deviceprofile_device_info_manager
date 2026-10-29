@@ -37,7 +37,7 @@ namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(ProfileCache);
 
 namespace {
-    const std::string TAG = "ProfileCache";
+    constexpr char TAG[] = "ProfileCache";
 }
 
 int32_t ProfileCache::Init()

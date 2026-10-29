@@ -33,7 +33,7 @@ namespace DistributedDeviceProfile {
 using namespace OHOS::Security::AccessToken;
 
 namespace {
-    const std::string TAG = "PermissionManager";
+    constexpr char TAG[] = "PermissionManager";
     constexpr uint32_t INVALID_TOKEN_ID = 0;
     const std::string DP_SERVICE_ACCESS_PERMISSION = "ohos.permission.ACCESS_SERVICE_DP";
     const std::string DP_SERVICE_SYNC_PERMISSION = "ohos.permission.SYNC_PROFILE_DP";

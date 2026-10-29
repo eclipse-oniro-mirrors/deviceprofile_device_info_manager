@@ -23,7 +23,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-const std::string TAG = "ClientFailToSupport";
+constexpr char TAG[] = "ClientFailToSupport";
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileClient);

@@ -23,7 +23,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "DeviceProfileFilterOptions";
+    constexpr char TAG[] = "DeviceProfileFilterOptions";
 }
 int32_t DeviceProfileFilterOptions::GetUserId() const
 {

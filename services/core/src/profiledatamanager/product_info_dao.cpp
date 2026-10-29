@@ -25,7 +25,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(ProductInfoDao);
 namespace {
-    const std::string TAG = "ProductInfoDao";
+    constexpr char TAG[] = "ProductInfoDao";
 }
 
 int32_t ProductInfoDao::Init()

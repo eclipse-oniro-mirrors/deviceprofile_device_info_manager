@@ -23,7 +23,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "PinCodeInvalidCallbackProxy";
+    constexpr char TAG[] = "PinCodeInvalidCallbackProxy";
 }
 
 int32_t PinCodeInvalidCallbackProxy::OnPincodeInvalid(const LocalServiceInfo& localServiceInfo)

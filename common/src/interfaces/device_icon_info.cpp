@@ -24,7 +24,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "DeviceIconInfo";
+    constexpr char TAG[] = "DeviceIconInfo";
     const std::string DEVICE_ICON_WISE_VERSION = "wiseVersion";
     const std::string DEVICE_ICON_SIZE = "iconSize";
     constexpr const char* UK_SEPARATOR = "#";

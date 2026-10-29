@@ -24,7 +24,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "SyscapInfoCollector";
+    constexpr char TAG[] = "SyscapInfoCollector";
     const std::string SERVICE_ID = "syscap";
     const std::string SERVICE_TYPE = "syscap";
     const std::string CHARACTER_PRIVATE_SYSCAP = "privatesyscap";

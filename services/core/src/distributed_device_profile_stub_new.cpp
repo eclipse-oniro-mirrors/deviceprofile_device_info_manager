@@ -30,7 +30,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-const std::string TAG = "Stub";
+constexpr char TAG[] = "Stub";
 }
 
 DistributedDeviceProfileStubNew::DistributedDeviceProfileStubNew()

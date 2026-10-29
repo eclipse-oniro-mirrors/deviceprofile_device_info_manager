@@ -30,7 +30,7 @@ namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(MultiUserManager);
 
 namespace {
-    const std::string TAG = "MultiUserManager";
+    constexpr char TAG[] = "MultiUserManager";
     const std::string OHOS_ANONYMOUS_UID = "ohosAnonymousUid";
 }
 

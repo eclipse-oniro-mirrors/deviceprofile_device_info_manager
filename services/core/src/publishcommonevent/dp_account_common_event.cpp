@@ -34,7 +34,7 @@ using OHOS::EventFwk::CommonEventManager;
 constexpr int32_t MAX_TRY_TIMES = 3;
 
 namespace {
-    const std::string TAG = "AccountCommonEvent";
+    constexpr char TAG[] = "AccountCommonEvent";
 }
 
 std::vector<std::string> DpAccountEventSubscriber::GetSubscriberEventNameVec() const

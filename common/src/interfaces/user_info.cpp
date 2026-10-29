@@ -21,7 +21,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "UserInfo";
+    constexpr char TAG[] = "UserInfo";
 }
 //LCOV_EXCL_START
 bool UserInfo::Marshalling(MessageParcel& parcel) const

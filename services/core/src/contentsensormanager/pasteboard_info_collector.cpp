@@ -22,7 +22,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-const std::string TAG = "PasteboardInfoCollector";
+constexpr char TAG[] = "PasteboardInfoCollector";
 constexpr const char *SERVICE_ID = "pasteboardService";
 constexpr const char *CHARACTER_ID = "supportDistributedPasteboard";
 constexpr const char *VERSION_ID = "PasteboardVersionId";

@@ -20,7 +20,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "IpcUtils";
+    constexpr char TAG[] = "IpcUtils";
 }
 bool IpcUtils::Marshalling(MessageParcel& parcel, const std::vector<TrustDeviceProfile>& trustDeviceProfiles)
 {

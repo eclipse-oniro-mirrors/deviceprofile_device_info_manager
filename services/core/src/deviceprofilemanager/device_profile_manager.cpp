@@ -45,7 +45,7 @@ IMPLEMENT_SINGLE_INSTANCE(DeviceProfileManager);
 namespace {
     const std::string APP_ID = "distributed_device_profile_service";
     const std::string STORE_ID = "dp_kv_store";
-    const std::string TAG = "DeviceProfileManager";
+    constexpr char TAG[] = "DeviceProfileManager";
     const std::unordered_set<std::string> NON_OHBASE_NEED_CLEAR_SVR_NAMES {
         "collaborationFwk", "Nfc_Publish_Br_Mac_Address" };
     constexpr uint32_t MAX_MAP_LEN = 1000;

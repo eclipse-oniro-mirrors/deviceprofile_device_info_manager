@@ -27,7 +27,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(SessionKeyManager);
 namespace {
-    const std::string TAG = "SessionKeyManager";
+    constexpr char TAG[] = "SessionKeyManager";
 }
 
 int32_t SessionKeyManager::PutSessionKey(uint32_t userId,

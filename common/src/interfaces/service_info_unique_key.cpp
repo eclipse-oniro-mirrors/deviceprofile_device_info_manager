@@ -24,7 +24,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "ServiceInfoUniqueKey";
+    constexpr char TAG[] = "ServiceInfoUniqueKey";
 }
 ServiceInfoUniqueKey::ServiceInfoUniqueKey()
 {

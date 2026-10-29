@@ -27,7 +27,7 @@ namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(LocalServiceInfoManager)
 
 namespace {
-const std::string TAG = "LocalServiceInfoManager";
+constexpr char TAG[] = "LocalServiceInfoManager";
 }
 
 int32_t LocalServiceInfoManager::Init()

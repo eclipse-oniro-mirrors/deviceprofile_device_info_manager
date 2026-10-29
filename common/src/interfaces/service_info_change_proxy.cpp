@@ -26,7 +26,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "ServiceInfoChangeCallbackProxy";
+    constexpr char TAG[] = "ServiceInfoChangeCallbackProxy";
 }
 //LCOV_EXCL_START
 int32_t ServiceInfoChangeCallbackProxy::OnServiceInfoInsert(const std::vector<ServiceInfo>& serviceInfos)

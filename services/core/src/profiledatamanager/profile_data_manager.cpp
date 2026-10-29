@@ -31,7 +31,7 @@ namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(ProfileDataManager)
 
 namespace {
-const std::string TAG = "ProfileDataManager";
+constexpr char TAG[] = "ProfileDataManager";
 }
 
 int32_t ProfileDataManager::Init()

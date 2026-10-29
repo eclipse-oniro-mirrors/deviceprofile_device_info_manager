@@ -31,14 +31,24 @@ namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(ProfileDataRdbAdapter);
 using namespace std::chrono_literals;
 namespace {
-    const std::set<std::string> TABLES = {
+    constexpr const char* TABLES[] = {
         "device_profile",
         "service_profile",
         "characteristic_profile",
         "device_icon_info",
         "product_info"
     };
-    const std::string TAG = "ProfileDatardbAdapter";
+
+    bool IsKnownTable(const std::string& table)
+    {
+        for (const char* name : TABLES) {
+            if (table == name) {
+                return true;
+            }
+        }
+        return false;
+    }
+    constexpr char TAG[] = "ProfileDatardbAdapter";
     constexpr int32_t PROFILE_DATA_VER_3 = 3;
 }
 
@@ -69,7 +79,7 @@ int32_t ProfileDataRdbAdapter::UnInit()
 
 int32_t ProfileDataRdbAdapter::Put(int64_t& outRowId, const std::string& table, const ValuesBucket& values)
 {
-    if (TABLES.find(table) == TABLES.end()) {
+    if (!IsKnownTable(table)) {
         HILOGE("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
     }
@@ -100,7 +110,7 @@ int32_t ProfileDataRdbAdapter::Put(int64_t& outRowId, const std::string& table, 
 int32_t ProfileDataRdbAdapter::Delete(int32_t& deleteRows, const std::string& table, const std::string& whereClause,
     const std::vector<ValueObject>& bindArgs)
 {
-    if (TABLES.find(table) == TABLES.end()) {
+    if (!IsKnownTable(table)) {
         HILOGE("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
     }
@@ -131,7 +141,7 @@ int32_t ProfileDataRdbAdapter::Delete(int32_t& deleteRows, const std::string& ta
 int32_t ProfileDataRdbAdapter::Update(int32_t& changedRows, const std::string& table, const ValuesBucket& values,
     const std::string& whereClause, const std::vector<ValueObject>& bindArgs)
 {
-    if (TABLES.find(table) == TABLES.end()) {
+    if (!IsKnownTable(table)) {
         HILOGE("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
     }

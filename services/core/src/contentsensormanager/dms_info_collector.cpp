@@ -23,7 +23,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-const std::string TAG = "DmsInfoCollector";
+constexpr char TAG[] = "DmsInfoCollector";
 }
 
 bool DmsInfoCollector::ConvertToProfile(std::vector<ServiceProfile>& svrProfileList)

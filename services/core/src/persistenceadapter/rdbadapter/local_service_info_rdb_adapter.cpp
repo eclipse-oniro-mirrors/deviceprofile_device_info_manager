@@ -30,10 +30,20 @@ namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(LocalServiceInfoRdbAdapter);
 using namespace std::chrono_literals;
 namespace {
-    const std::set<std::string> TABLES = {
+    constexpr const char* TABLES[] = {
         "local_service_info"
     };
-    const std::string TAG = "LocalServiceInfoRdbAdapter";
+
+    bool IsKnownTable(const std::string& table)
+    {
+        for (const char* name : TABLES) {
+            if (table == name) {
+                return true;
+            }
+        }
+        return false;
+    }
+    constexpr char TAG[] = "LocalServiceInfoRdbAdapter";
 }
 
 int32_t LocalServiceInfoRdbAdapter::Init()
@@ -63,7 +73,7 @@ int32_t LocalServiceInfoRdbAdapter::UnInit()
 
 int32_t LocalServiceInfoRdbAdapter::Put(int64_t& outRowId, const std::string& table, const ValuesBucket& values)
 {
-    if (TABLES.find(table) == TABLES.end()) {
+    if (!IsKnownTable(table)) {
         HILOGE("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
     }
@@ -94,7 +104,7 @@ int32_t LocalServiceInfoRdbAdapter::Put(int64_t& outRowId, const std::string& ta
 int32_t LocalServiceInfoRdbAdapter::Delete(int32_t& deleteRows, const std::string& table,
     const std::string& whereClause, const std::vector<ValueObject>& bindArgs)
 {
-    if (TABLES.find(table) == TABLES.end()) {
+    if (!IsKnownTable(table)) {
         HILOGE("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
     }
@@ -125,7 +135,7 @@ int32_t LocalServiceInfoRdbAdapter::Delete(int32_t& deleteRows, const std::strin
 int32_t LocalServiceInfoRdbAdapter::Update(int32_t& changedRows, const std::string& table, const ValuesBucket& values,
     const std::string& whereClause, const std::vector<ValueObject>& bindArgs)
 {
-    if (TABLES.find(table) == TABLES.end()) {
+    if (!IsKnownTable(table)) {
         HILOGE("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
     }

@@ -22,7 +22,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "DpInitedCallbackStub";
+    constexpr char TAG[] = "DpInitedCallbackStub";
 }
 
 DpInitedCallbackStub::DpInitedCallbackStub()

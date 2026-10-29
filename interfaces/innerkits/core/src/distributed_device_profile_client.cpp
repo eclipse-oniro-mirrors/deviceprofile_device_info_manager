@@ -45,9 +45,17 @@ namespace DistributedDeviceProfile {
 using namespace std::chrono_literals;
 
 namespace {
-    const std::string TAG = "Client";
+    constexpr char TAG[] = "Client";
     constexpr int32_t LOAD_SA_TIMEOUT_MS = 10000;
     constexpr int32_t MAX_RETRY_TIMES = 7;
+
+    bool IsRetryableError(int32_t code)
+    {
+        return code == DP_SERVICE_STOPPED ||
+            code == DP_LOAD_SERVICE_ERR ||
+            code == DP_ERR_DEAD_OBJECT ||
+            code == DP_BR_DEAD_REPLY;
+    }
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileClient);
@@ -146,7 +154,7 @@ int32_t DistributedDeviceProfileClient::PutAccessControlProfile(const AccessCont
         return DP_GET_SERVICE_FAILED;
     }
     int32_t ret = dpService->PutAccessControlProfile(accessControlProfile);
-    if (retryErrCodes_.count(ret) != 0) {
+    if (IsRetryableError(ret)) {
         ret = RetryClientRequest(ret, &IDistributedDeviceProfile::PutAccessControlProfile, accessControlProfile);
     }
     return ret;
@@ -160,7 +168,7 @@ int32_t DistributedDeviceProfileClient::UpdateAccessControlProfile(const AccessC
         return DP_GET_SERVICE_FAILED;
     }
     int32_t ret = dpService->UpdateAccessControlProfile(accessControlProfile);
-    if (retryErrCodes_.count(ret) != 0) {
+    if (IsRetryableError(ret)) {
         ret = RetryClientRequest(ret, &IDistributedDeviceProfile::UpdateAccessControlProfile, accessControlProfile);
     }
     return ret;
@@ -175,7 +183,7 @@ int32_t DistributedDeviceProfileClient::GetTrustDeviceProfile(const std::string&
         return DP_GET_SERVICE_FAILED;
     }
     int32_t ret = dpService->GetTrustDeviceProfile(deviceId, trustDeviceProfile);
-    if (retryErrCodes_.count(ret) != 0) {
+    if (IsRetryableError(ret)) {
         ret = RetryClientRequest(ret, &IDistributedDeviceProfile::GetTrustDeviceProfile, deviceId, trustDeviceProfile);
     }
     return ret;
@@ -189,7 +197,7 @@ int32_t DistributedDeviceProfileClient::GetAllTrustDeviceProfile(std::vector<Tru
         return DP_GET_SERVICE_FAILED;
     }
     int32_t ret = dpService->GetAllTrustDeviceProfile(trustDeviceProfiles);
-    if (retryErrCodes_.count(ret) != 0) {
+    if (IsRetryableError(ret)) {
         ret = RetryClientRequest(ret, &IDistributedDeviceProfile::GetAllTrustDeviceProfile, trustDeviceProfiles);
     }
     return ret;
@@ -208,7 +216,7 @@ int32_t DistributedDeviceProfileClient::GetAccessControlProfile(std::map<std::st
         return DP_INVALID_PARAMS;
     }
     int32_t ret = dpService->GetAccessControlProfile(params, accessControlProfiles);
-    if (retryErrCodes_.count(ret) != 0) {
+    if (IsRetryableError(ret)) {
         ret = RetryClientRequest(ret, &IDistributedDeviceProfile::GetAccessControlProfile, params,
             accessControlProfiles);
     }
@@ -224,7 +232,7 @@ int32_t DistributedDeviceProfileClient::GetAllAccessControlProfile(
         return DP_GET_SERVICE_FAILED;
     }
     int32_t ret = dpService->GetAllAccessControlProfile(accessControlProfiles);
-    if (retryErrCodes_.count(ret) != 0) {
+    if (IsRetryableError(ret)) {
         ret = RetryClientRequest(ret, &IDistributedDeviceProfile::GetAllAccessControlProfile, accessControlProfiles);
     }
     return ret;
@@ -238,7 +246,7 @@ int32_t DistributedDeviceProfileClient::GetAllAclIncludeLnnAcl(std::vector<Acces
         return DP_GET_SERVICE_FAILED;
     }
     int32_t ret = dpService->GetAllAclIncludeLnnAcl(accessControlProfiles);
-    if (retryErrCodes_.count(ret) != 0) {
+    if (IsRetryableError(ret)) {
         ret = RetryClientRequest(ret, &IDistributedDeviceProfile::GetAllAclIncludeLnnAcl, accessControlProfiles);
     }
     return ret;
@@ -252,7 +260,7 @@ int32_t DistributedDeviceProfileClient::DeleteAccessControlProfile(int32_t acces
         return DP_GET_SERVICE_FAILED;
     }
     int32_t ret = dpService->DeleteAccessControlProfile(accessControlId);
-    if (retryErrCodes_.count(ret) != 0) {
+    if (IsRetryableError(ret)) {
         ret = RetryClientRequest(ret, &IDistributedDeviceProfile::DeleteAccessControlProfile, accessControlId);
     }
     return ret;
@@ -810,7 +818,7 @@ int32_t DistributedDeviceProfileClient::PutAllTrustedDevices(const std::vector<T
         return DP_INVALID_PARAMS;
     }
     int32_t ret = dpService->PutAllTrustedDevices(deviceInfos);
-    if (retryErrCodes_.count(ret) != 0) {
+    if (IsRetryableError(ret)) {
         ret = RetryClientRequest(ret, &IDistributedDeviceProfile::PutAllTrustedDevices, deviceInfos);
     }
     return ret;
@@ -825,7 +833,7 @@ int32_t DistributedDeviceProfileClient::PutSessionKey(
         return DP_GET_SERVICE_FAILED;
     }
     int32_t ret = dpService->PutSessionKey(userId, sessionKey, sessionKeyId);
-    if (retryErrCodes_.count(ret) != 0) {
+    if (IsRetryableError(ret)) {
         ret = RetryClientRequest(ret, &IDistributedDeviceProfile::PutSessionKey, userId, sessionKey, sessionKeyId);
     }
     return ret;
@@ -871,7 +879,7 @@ int32_t DistributedDeviceProfileClient::DeleteSessionKey(uint32_t userId, int32_
         return DP_GET_SERVICE_FAILED;
     }
     int32_t ret = dpService->DeleteSessionKey(userId, sessionKeyId);
-    if (retryErrCodes_.count(ret) != 0) {
+    if (IsRetryableError(ret)) {
         ret = RetryClientRequest(ret, &IDistributedDeviceProfile::DeleteSessionKey, userId, sessionKeyId);
     }
     return ret;
@@ -885,7 +893,7 @@ int32_t DistributedDeviceProfileClient::PutLocalServiceInfo(const LocalServiceIn
         return DP_GET_SERVICE_FAILED;
     }
     int32_t ret = dpService->PutLocalServiceInfo(localServiceInfo);
-    if (retryErrCodes_.count(ret) != 0) {
+    if (IsRetryableError(ret)) {
         ret = RetryClientRequest(ret, &IDistributedDeviceProfile::PutLocalServiceInfo, localServiceInfo);
     }
     return ret;
@@ -899,7 +907,7 @@ int32_t DistributedDeviceProfileClient::UpdateLocalServiceInfo(const LocalServic
         return DP_GET_SERVICE_FAILED;
     }
     int32_t ret = dpService->UpdateLocalServiceInfo(localServiceInfo);
-    if (retryErrCodes_.count(ret) != 0) {
+    if (IsRetryableError(ret)) {
         ret = RetryClientRequest(ret, &IDistributedDeviceProfile::UpdateLocalServiceInfo, localServiceInfo);
     }
     return ret;
@@ -914,7 +922,7 @@ int32_t DistributedDeviceProfileClient::GetLocalServiceInfoByBundleAndPinType(co
         return DP_GET_SERVICE_FAILED;
     }
     int32_t ret = dpService->GetLocalServiceInfoByBundleAndPinType(bundleName, pinExchangeType, localServiceInfo);
-    if (retryErrCodes_.count(ret) != 0) {
+    if (IsRetryableError(ret)) {
         ret = RetryClientRequest(ret, &IDistributedDeviceProfile::GetLocalServiceInfoByBundleAndPinType, bundleName,
             pinExchangeType, localServiceInfo);
     }
@@ -930,7 +938,7 @@ int32_t DistributedDeviceProfileClient::DeleteLocalServiceInfo(const std::string
         return DP_GET_SERVICE_FAILED;
     }
     int32_t ret = dpService->DeleteLocalServiceInfo(bundleName, pinExchangeType);
-    if (retryErrCodes_.count(ret) != 0) {
+    if (IsRetryableError(ret)) {
         ret = RetryClientRequest(ret, &IDistributedDeviceProfile::DeleteLocalServiceInfo, bundleName, pinExchangeType);
     }
     return ret;
@@ -1045,7 +1053,7 @@ int32_t DistributedDeviceProfileClient::RetryClientRequest(int32_t firesRet, Met
             return DP_GET_SERVICE_FAILED;
         }
         ret = (dpService->*method)(std::forward<Args>(args)...);
-        if (retryErrCodes_.count(ret) == 0) {
+        if (!IsRetryableError(ret)) {
             break;
         }
     }

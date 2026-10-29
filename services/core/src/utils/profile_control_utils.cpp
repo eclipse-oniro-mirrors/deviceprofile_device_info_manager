@@ -28,7 +28,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "ProfileControlUtils";
+    constexpr char TAG[] = "ProfileControlUtils";
 }
 int32_t ProfileControlUtils::PutDeviceProfile(std::shared_ptr<IKVAdapter> kvStore, const DeviceProfile& deviceProfile)
 {

@@ -14,7 +14,7 @@
  */
 
 #include "switch_status_collector.h"
-#include <fstream>
+#include "config_file_utils.h"
 #include "cJSON.h"
 #include "config_policy_utils.h"
 #include "content_sensor_manager_utils.h"
@@ -28,7 +28,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-const std::string TAG = "SwitchStatusCollector";
+constexpr char TAG[] = "SwitchStatusCollector";
 const std::string APP_ID = "distributed_device_profile_service";
 }
 
@@ -65,29 +65,7 @@ bool SwitchStatusCollector::ConvertToProfile(std::vector<CharacteristicProfile>&
 int32_t SwitchStatusCollector::LoadJsonFile(const std::string& filePath, std::string& fileContent)
 {
     HILOGI("call!");
-    if (filePath.empty() || filePath.size() > MAX_STRING_LEN) {
-        HILOGE("filePath is invalid!");
-        return DP_INVALID_PARAM;
-    }
-    char buf[MAX_PATH_LEN] = {0};
-    char targetPath[PATH_MAX + 1] = {0x00};
-    char *srcPath = GetOneCfgFile(filePath.c_str(), buf, MAX_PATH_LEN);
-    if (srcPath == nullptr) {
-        HILOGE("srcPath is invalid!");
-        return DP_LOAD_JSON_FILE_FAIL;
-    }
-    if (strlen(srcPath) == 0 || strlen(srcPath) > PATH_MAX || realpath(srcPath, targetPath) == nullptr) {
-        HILOGE("File canonicalization failed!");
-        return DP_LOAD_JSON_FILE_FAIL;
-    }
-    std::ifstream ifs(targetPath);
-    if (!ifs.is_open()) {
-        HILOGE("load json file failed");
-        return DP_LOAD_JSON_FILE_FAIL;
-    }
-    fileContent = std::string(std::istreambuf_iterator<char>{ifs}, std::istreambuf_iterator<char>{});
-    ifs.close();
-    return DP_SUCCESS;
+    return LoadConfigFile(filePath, fileContent);
 }
 
 int32_t SwitchStatusCollector::GenerateSwitchProfiles(const cJSON* const staticInfoJson,

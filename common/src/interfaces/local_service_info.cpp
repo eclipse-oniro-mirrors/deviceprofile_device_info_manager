@@ -22,7 +22,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "LocalServiceInfo";
+    constexpr char TAG[] = "LocalServiceInfo";
 }
 
 LocalServiceInfo::LocalServiceInfo()

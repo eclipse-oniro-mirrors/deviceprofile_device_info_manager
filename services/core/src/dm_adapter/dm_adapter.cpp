@@ -31,7 +31,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "DMAdapter";
+    constexpr char TAG[] = "DMAdapter";
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DMAdapter);

@@ -26,18 +26,12 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "ServiceInfoChangeCallbackStub";
+    constexpr char TAG[] = "ServiceInfoChangeCallbackStub";
 }
 //LCOV_EXCL_START
 ServiceInfoChangeCallbackStub::ServiceInfoChangeCallbackStub()
 {
     HILOGI("construct!");
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_INFO_INSERT)] =
-        &ServiceInfoChangeCallbackStub::OnServiceInfoInsertInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_INFO_UPDATE)] =
-        &ServiceInfoChangeCallbackStub::OnServiceInfoUpdateInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_INFO_DELETE)] =
-        &ServiceInfoChangeCallbackStub::OnServiceInfoDeleteInner;
 }
 
 ServiceInfoChangeCallbackStub::~ServiceInfoChangeCallbackStub()

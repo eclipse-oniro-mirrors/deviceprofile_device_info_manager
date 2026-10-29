@@ -166,12 +166,8 @@ private:
     std::mutex saListenerLock_;
     sptr<SystemAbilityListener> saListenerCallback_ = nullptr;
 
-    const std::set<int32_t> retryErrCodes_ = {
-        DP_SERVICE_STOPPED,
-        DP_LOAD_SERVICE_ERR,
-        DP_ERR_DEAD_OBJECT,
-        DP_BR_DEAD_REPLY
-    };
+    // Keep the SDK object layout for existing consumers; fixed retry codes use direct comparisons.
+    const std::set<int32_t> retryErrCodes_;
     std::mutex businessLock_;
     sptr<IBusinessCallback> businessCallback_ = nullptr;
     std::string strSaId_ = "";
