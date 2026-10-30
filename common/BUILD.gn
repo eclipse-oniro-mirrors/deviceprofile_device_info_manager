@@ -11,20 +11,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import("//build/config/components/idl_tool/idl.gni")
 import("//build/ohos.gni")
 import("//build/ohos_var.gni")
-import("//build/config/components/idl_tool/idl.gni")
 import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
 
 idl_gen_interface("dp_business_callback_interfaces") {
-  sources = [
-    "IBusinessCallback.idl",
-  ]
+  sources = [ "IBusinessCallback.idl" ]
   log_domainid = "0xD004400"
   log_tag = "DHDP"
 }
 
-config("business_callback_interfaces_ipc_config"){
+config("business_callback_interfaces_ipc_config") {
   include_dirs = [
     ".",
     "${target_gen_dir}/",
@@ -42,15 +40,13 @@ ohos_source_set("business_callback_interfaces_ipc") {
   output_values = get_target_outputs(":dp_business_callback_interfaces")
   sources = []
   sources += filter_include(output_values, [ "*.cpp" ])
-  public_configs = [
-    ":business_callback_interfaces_ipc_config"
-  ]
+  public_configs = [ ":business_callback_interfaces_ipc_config" ]
   include_dirs = [
     "${device_profile_common}/include/constants",
     "${device_profile_common}/include/interfaces",
     "${device_profile_common}/include/utils",
   ]
-  deps = [ ":dp_business_callback_interfaces",]
+  deps = [ ":dp_business_callback_interfaces" ]
   external_deps = [
     "cJSON:cjson",
     "c_utils:utils",
@@ -74,6 +70,12 @@ config("distributed_device_profile_common_config") {
   ]
 }
 
+config("dp_size_lto_config") {
+  # Keep the size policy local to DP common/service.
+  cflags = [ "-Oz" ]
+  cflags_cc = [ "-Oz" ]
+}
+
 ohos_shared_library("distributed_device_profile_common") {
   branch_protector_ret = "pac_ret"
   ldflags = [
@@ -84,10 +86,12 @@ ohos_shared_library("distributed_device_profile_common") {
   cflags = [
     "-fPIC",
     "-D_FORTIFY_SOURCE=2",
-    "-O2",
+    "-Oz",
   ]
 
   cflags_cc = cflags
+
+  configs = [ ":dp_size_lto_config" ]
 
   sanitize = {
     boundary_sanitize = true
@@ -123,26 +127,26 @@ ohos_shared_library("distributed_device_profile_common") {
     "src/interfaces/profile_change_listener_proxy.cpp",
     "src/interfaces/profile_change_listener_stub.cpp",
     "src/interfaces/query_profile.cpp",
+    "src/interfaces/service_info.cpp",
+    "src/interfaces/service_info_change_proxy.cpp",
+    "src/interfaces/service_info_change_stub.cpp",
     "src/interfaces/service_info_unique_key.cpp",
     "src/interfaces/service_profile.cpp",
-    "src/interfaces/service_info.cpp",
     "src/interfaces/sync_completed_callback_proxy.cpp",
     "src/interfaces/sync_completed_callback_stub.cpp",
     "src/interfaces/trust_device_profile.cpp",
-    "src/interfaces/user_info.cpp",
-    "src/interfaces/service_info_change_proxy.cpp",
-    "src/interfaces/service_info_change_stub.cpp",
     "src/interfaces/trusted_device_info.cpp",
+    "src/interfaces/user_info.cpp",
     "src/utils/content_sensor_manager_utils.cpp",
     "src/utils/ipc_utils.cpp",
     "src/utils/profile_utils.cpp",
   ]
 
-  deps = [":business_callback_interfaces_ipc"]
+  deps = [ ":business_callback_interfaces_ipc" ]
 
   public_configs = [
     ":business_callback_interfaces_ipc_config",
-    ":distributed_device_profile_common_config"
+    ":distributed_device_profile_common_config",
   ]
 
   external_deps = [

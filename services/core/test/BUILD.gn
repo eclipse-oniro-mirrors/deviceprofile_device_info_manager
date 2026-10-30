@@ -15,8 +15,18 @@ import("//build/ohos.gni")
 import("//build/ohos_var.gni")
 import("//build/test.gni")
 import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
+import(
+    "//foundation/deviceprofile/device_info_manager/services/core/test/dp_service_test.gni")
 
 module_output_path = "device_info_manager/device_info_manager"
+
+config("dp_service_test_runtime_config") {
+  visibility = [
+    ":*",
+    "fuzztest/*",
+  ]
+  ldflags = [ "-Wl,-rpath,/data/test/deviceprofile/lib" ]
+}
 
 config("device_profile_test_config") {
   cflags = [
@@ -36,7 +46,7 @@ device_profile_configs = [
 device_profile_deps = [
   "${device_profile_common}:distributed_device_profile_common",
   "${device_profile_innerkits}:distributed_device_profile_sdk",
-  "${device_profile_service}:distributed_device_profile_svr",
+  "${device_profile_service}:distributed_device_profile_svr_test",
 ]
 
 device_profile_external_deps = [
@@ -66,7 +76,7 @@ device_profile_external_deps = [
   "syscap_codec:syscap_interface_shared",
 ]
 
-ohos_unittest("rdb_adapter_new_test") {
+dp_service_unittest("rdb_adapter_new_test") {
   module_out_path = module_output_path
   sources = [ "unittest/rdb_adapter_test.cpp" ]
   configs = device_profile_configs
@@ -76,7 +86,7 @@ ohos_unittest("rdb_adapter_new_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("TrustProfileManagerTest") {
+dp_service_unittest("TrustProfileManagerTest") {
   module_out_path = module_output_path
   sources = [ "unittest/trust_profile_manager_test.cpp" ]
   configs = device_profile_configs
@@ -86,7 +96,7 @@ ohos_unittest("TrustProfileManagerTest") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("distributed_device_profile_client_kv_new_test") {
+dp_service_unittest("distributed_device_profile_client_kv_new_test") {
   module_out_path = module_output_path
   sources = [ "unittest/distributed_device_profile_client_kv_test.cpp" ]
   configs = device_profile_configs
@@ -101,7 +111,7 @@ ohos_unittest("distributed_device_profile_client_kv_new_test") {
   }
 }
 
-ohos_unittest("device_profile_manager_new_test") {
+dp_service_unittest("device_profile_manager_new_test") {
   module_out_path = module_output_path
   sources = [ "unittest/device_profile_manager_test.cpp" ]
   configs = device_profile_configs
@@ -116,7 +126,7 @@ ohos_unittest("device_profile_manager_new_test") {
   }
 }
 
-ohos_unittest("ClientRdbTest") {
+dp_service_unittest("ClientRdbTest") {
   module_out_path = module_output_path
   sources = [ "unittest/distributed_device_profile_client_rdb_test.cpp" ]
   configs = device_profile_configs
@@ -131,7 +141,7 @@ ohos_unittest("ClientRdbTest") {
   }
 }
 
-ohos_unittest("dp_dumper_new_test") {
+dp_service_unittest("dp_dumper_new_test") {
   module_out_path = module_output_path
   sources = [ "unittest/dp_dumper_test.cpp" ]
   configs = device_profile_configs
@@ -141,7 +151,7 @@ ohos_unittest("dp_dumper_new_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("profile_cache_new_test") {
+dp_service_unittest("profile_cache_new_test") {
   module_out_path = module_output_path
   sources = [ "unittest/profile_cache_test.cpp" ]
   configs = device_profile_configs
@@ -156,7 +166,7 @@ ohos_unittest("profile_cache_new_test") {
   }
 }
 
-ohos_unittest("profile_utils_new_test") {
+dp_service_unittest("profile_utils_new_test") {
   module_out_path = module_output_path
   sources = [ "unittest/profile_utils_test.cpp" ]
   configs = device_profile_configs
@@ -166,7 +176,7 @@ ohos_unittest("profile_utils_new_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("kv_adapter_new_test") {
+dp_service_unittest("kv_adapter_new_test") {
   module_out_path = module_output_path
   sources = [ "unittest/kv_adapter_test.cpp" ]
   configs = device_profile_configs
@@ -176,7 +186,7 @@ ohos_unittest("kv_adapter_new_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("event_handler_factory_new_test") {
+dp_service_unittest("event_handler_factory_new_test") {
   module_out_path = module_output_path
   sources = [ "unittest/event_handler_factory_test.cpp" ]
   configs = device_profile_configs
@@ -186,7 +196,7 @@ ohos_unittest("event_handler_factory_new_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("sync_options_new_test") {
+dp_service_unittest("sync_options_new_test") {
   module_out_path = module_output_path
   sources = [ "unittest/sync_options_test.cpp" ]
   configs = device_profile_configs
@@ -196,7 +206,7 @@ ohos_unittest("sync_options_new_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("DPSubscribeInfoTest") {
+dp_service_unittest("DPSubscribeInfoTest") {
   module_out_path = module_output_path
   sources = [ "unittest/dp_subscribe_info_test.cpp" ]
   configs = device_profile_configs
@@ -211,7 +221,7 @@ ohos_unittest("DPSubscribeInfoTest") {
   }
 }
 
-ohos_unittest("PermissionManagerTest") {
+dp_service_unittest("PermissionManagerTest") {
   module_out_path = module_output_path
   sources = [ "unittest/permission_manager_test.cpp" ]
   configs = device_profile_configs
@@ -221,7 +231,7 @@ ohos_unittest("PermissionManagerTest") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("IpcUtilsTest") {
+dp_service_unittest("IpcUtilsTest") {
   module_out_path = module_output_path
   sources = [ "unittest/ipc_utils_test.cpp" ]
   configs = device_profile_configs
@@ -231,7 +241,7 @@ ohos_unittest("IpcUtilsTest") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("content_sensor_manager_test") {
+dp_service_unittest("content_sensor_manager_test") {
   module_out_path = module_output_path
   sources = [ "unittest/content_sensor_manager_test.cpp" ]
   configs = device_profile_configs
@@ -241,7 +251,7 @@ ohos_unittest("content_sensor_manager_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("device_profile_manager_new_three_test") {
+dp_service_unittest("device_profile_manager_new_three_test") {
   module_out_path = module_output_path
   sources = [ "unittest/device_profile_manager_three_test.cpp" ]
   configs = device_profile_configs
@@ -256,7 +266,7 @@ ohos_unittest("device_profile_manager_new_three_test") {
   }
 }
 
-ohos_unittest("content_sensor_pasteboard_info_test") {
+dp_service_unittest("content_sensor_pasteboard_info_test") {
   module_out_path = module_output_path
   sources = [ "unittest/content_sensor_pasteboard_info_test.cpp" ]
   configs = device_profile_configs
@@ -266,7 +276,7 @@ ohos_unittest("content_sensor_pasteboard_info_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("kv_store_death_recipient_test") {
+dp_service_unittest("kv_store_death_recipient_test") {
   module_out_path = module_output_path
   sources = [ "unittest/kv_store_death_recipient_test.cpp" ]
   configs = device_profile_configs
@@ -276,7 +286,7 @@ ohos_unittest("kv_store_death_recipient_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("kv_sync_completed_listener_test") {
+dp_service_unittest("kv_sync_completed_listener_test") {
   module_out_path = module_output_path
   sources = [ "unittest/kv_sync_completed_listener_test.cpp" ]
   configs = device_profile_configs
@@ -286,7 +296,7 @@ ohos_unittest("kv_sync_completed_listener_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("sync_subscriber_death_recipient_test") {
+dp_service_unittest("sync_subscriber_death_recipient_test") {
   module_out_path = module_output_path
   sources = [ "unittest/sync_subscriber_death_recipient_test.cpp" ]
   configs = device_profile_configs
@@ -296,7 +306,7 @@ ohos_unittest("sync_subscriber_death_recipient_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("dp_content_sensor_test") {
+dp_service_unittest("dp_content_sensor_test") {
   module_out_path = module_output_path
   sources = [ "unittest/dp_content_sensor_test.cpp" ]
   configs = device_profile_configs
@@ -306,7 +316,7 @@ ohos_unittest("dp_content_sensor_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("ProfileChangeListenerProxyTest") {
+dp_service_unittest("ProfileChangeListenerProxyTest") {
   module_out_path = module_output_path
   sources = [ "unittest/profile_change_listener_proxy_test.cpp" ]
   configs = device_profile_configs
@@ -316,7 +326,7 @@ ohos_unittest("ProfileChangeListenerProxyTest") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("device_profile_locd_callback_test") {
+dp_service_unittest("device_profile_locd_callback_test") {
   module_out_path = module_output_path
   sources = [ "unittest/device_profile_locd_callback_test.cpp" ]
   configs = device_profile_configs
@@ -326,7 +336,7 @@ ohos_unittest("device_profile_locd_callback_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("subscribe_profile_manager_test") {
+dp_service_unittest("subscribe_profile_manager_test") {
   module_out_path = module_output_path
   sources = [ "unittest/subscribe_profile_manager_test.cpp" ]
   configs = device_profile_configs
@@ -341,7 +351,7 @@ ohos_unittest("subscribe_profile_manager_test") {
   }
 }
 
-ohos_unittest("sync_completed_callback_test") {
+dp_service_unittest("sync_completed_callback_test") {
   module_out_path = module_output_path
   sources = [ "unittest/sync_completed_callback_test.cpp" ]
   configs = device_profile_configs
@@ -356,7 +366,7 @@ ohos_unittest("sync_completed_callback_test") {
   }
 }
 
-ohos_unittest("dp_profile_service_new_test") {
+dp_service_unittest("dp_profile_service_new_test") {
   module_out_path = module_output_path
   sources = [ "unittest/dp_profile_service_test.cpp" ]
   configs = device_profile_configs
@@ -366,7 +376,7 @@ ohos_unittest("dp_profile_service_new_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("dp_dm_adapter_test") {
+dp_service_unittest("dp_dm_adapter_test") {
   module_out_path = module_output_path
   sources = [ "unittest/dm_adapter_test.cpp" ]
   configs = device_profile_configs
@@ -376,7 +386,7 @@ ohos_unittest("dp_dm_adapter_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("distributed_device_profile_stub_new_test") {
+dp_service_unittest("distributed_device_profile_stub_new_test") {
   module_out_path = module_output_path
   sources = [ "unittest/distributed_device_profile_stub_new_test.cpp" ]
   configs = device_profile_configs
@@ -395,7 +405,7 @@ ohos_unittest("distributed_device_profile_stub_new_test") {
   }
 }
 
-ohos_unittest("content_sensor_manager_utils_test") {
+dp_service_unittest("content_sensor_manager_utils_test") {
   module_out_path = module_output_path
   sources = [ "unittest/content_sensor_manager_utils_test.cpp" ]
   configs = device_profile_configs
@@ -405,7 +415,7 @@ ohos_unittest("content_sensor_manager_utils_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("static_capability_collector_test") {
+dp_service_unittest("static_capability_collector_test") {
   module_out_path = module_output_path
   sources = [ "unittest/static_capability_collector_test.cpp" ]
   configs = device_profile_configs
@@ -415,7 +425,7 @@ ohos_unittest("static_capability_collector_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("static_capability_loader_test") {
+dp_service_unittest("static_capability_loader_test") {
   module_out_path = module_output_path
   sources = [ "unittest/static_capability_loader_test.cpp" ]
   configs = device_profile_configs
@@ -425,7 +435,7 @@ ohos_unittest("static_capability_loader_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("switch_adapter_test") {
+dp_service_unittest("switch_adapter_test") {
   module_out_path = module_output_path
   sources = [ "unittest/switch_adapter_test.cpp" ]
   configs = device_profile_configs
@@ -435,7 +445,7 @@ ohos_unittest("switch_adapter_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("profile_control_utils_test") {
+dp_service_unittest("profile_control_utils_test") {
   module_out_path = module_output_path
   sources = [ "unittest/profile_control_utils_test.cpp" ]
   configs = device_profile_configs
@@ -445,7 +455,7 @@ ohos_unittest("profile_control_utils_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("static_profile_manager_test") {
+dp_service_unittest("static_profile_manager_test") {
   module_out_path = module_output_path
   sources = [ "unittest/static_profile_manager_test.cpp" ]
   configs = device_profile_configs
@@ -460,7 +470,7 @@ ohos_unittest("static_profile_manager_test") {
   }
 }
 
-ohos_unittest("switch_profile_manager_test") {
+dp_service_unittest("switch_profile_manager_test") {
   module_out_path = module_output_path
   sources = [ "unittest/switch_profile_manager_test.cpp" ]
   configs = device_profile_configs
@@ -470,7 +480,7 @@ ohos_unittest("switch_profile_manager_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("trust_Device_Profile_test") {
+dp_service_unittest("trust_Device_Profile_test") {
   module_out_path = module_output_path
   sources = [ "unittest/trust_device_profile_test.cpp" ]
   configs = device_profile_configs
@@ -480,7 +490,7 @@ ohos_unittest("trust_Device_Profile_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("trust_profile_manager_two_test") {
+dp_service_unittest("trust_profile_manager_two_test") {
   module_out_path = module_output_path
   sources = [ "unittest/trust_profile_manager_two_test.cpp" ]
   configs = device_profile_configs
@@ -490,7 +500,7 @@ ohos_unittest("trust_profile_manager_two_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("multi_user_manager_test") {
+dp_service_unittest("multi_user_manager_test") {
   module_out_path = module_output_path
   sources = [ "unittest/multi_user_manager_test.cpp" ]
   configs = device_profile_configs
@@ -500,7 +510,7 @@ ohos_unittest("multi_user_manager_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("dp_account_common_event_test") {
+dp_service_unittest("dp_account_common_event_test") {
   module_out_path = module_output_path
   sources = [ "unittest/dp_account_common_event_test.cpp" ]
   configs = device_profile_configs
@@ -510,7 +520,7 @@ ohos_unittest("dp_account_common_event_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("session_key_manager_test") {
+dp_service_unittest("session_key_manager_test") {
   module_out_path = module_output_path
   sources = [ "unittest/session_key_manager_test.cpp" ]
   configs = device_profile_configs
@@ -520,7 +530,7 @@ ohos_unittest("session_key_manager_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("profile_data_manager_test") {
+dp_service_unittest("profile_data_manager_test") {
   module_out_path = module_output_path
   sources = [ "unittest/profile_data_manager_test.cpp" ]
   configs = device_profile_configs
@@ -530,7 +540,7 @@ ohos_unittest("profile_data_manager_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("local_service_info_manager_test") {
+dp_service_unittest("local_service_info_manager_test") {
   module_out_path = module_output_path
   sources = [ "unittest/local_service_info_manager_test.cpp" ]
   configs = device_profile_configs
@@ -540,7 +550,7 @@ ohos_unittest("local_service_info_manager_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("device_profile_dao_test") {
+dp_service_unittest("device_profile_dao_test") {
   module_out_path = module_output_path
   sources = [ "unittest/device_profile_dao_test.cpp" ]
   configs = device_profile_configs
@@ -550,7 +560,7 @@ ohos_unittest("device_profile_dao_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("product_info_dao_test") {
+dp_service_unittest("product_info_dao_test") {
   module_out_path = module_output_path
   sources = [ "unittest/product_info_dao_test.cpp" ]
   configs = device_profile_configs
@@ -560,7 +570,7 @@ ohos_unittest("product_info_dao_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("business_event_manager_test") {
+dp_service_unittest("business_event_manager_test") {
   module_out_path = module_output_path
   sources = [ "unittest/business_event_manager_test.cpp" ]
   configs = device_profile_configs
@@ -570,7 +580,7 @@ ohos_unittest("business_event_manager_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("service_info_kv_adapter_test") {
+dp_service_unittest("service_info_kv_adapter_test") {
   module_out_path = module_output_path
   sources = [ "unittest/service_info_kv_adapter_test.cpp" ]
   configs = device_profile_configs
@@ -580,7 +590,7 @@ ohos_unittest("service_info_kv_adapter_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("business_event_adapter_test") {
+dp_service_unittest("business_event_adapter_test") {
   module_out_path = module_output_path
   sources = [ "unittest/business_event_adapter_test.cpp" ]
   configs = device_profile_configs
@@ -590,7 +600,7 @@ ohos_unittest("business_event_adapter_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("distributed_device_profile_client_test") {
+dp_service_unittest("distributed_device_profile_client_test") {
   module_out_path = module_output_path
   sources = [ "unittest/distributed_device_profile_client_test.cpp" ]
   configs = device_profile_configs
@@ -605,7 +615,7 @@ ohos_unittest("distributed_device_profile_client_test") {
   }
 }
 
-ohos_unittest("distributed_device_profile_proxy_test") {
+dp_service_unittest("distributed_device_profile_proxy_test") {
   module_out_path = module_output_path
   sources = [ "unittest/distributed_device_profile_proxy_test.cpp" ]
   configs = device_profile_configs
@@ -615,7 +625,7 @@ ohos_unittest("distributed_device_profile_proxy_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("device_profile_manager_new_two_test") {
+dp_service_unittest("device_profile_manager_new_two_test") {
   module_out_path = module_output_path
   sources = [ "unittest/device_profile_manager_two_test.cpp" ]
   configs = device_profile_configs
@@ -625,7 +635,7 @@ ohos_unittest("device_profile_manager_new_two_test") {
   subsystem_name = "deviceprofile"
 }
 
-ohos_unittest("subscribe_profile_manager_new_test") {
+dp_service_unittest("subscribe_profile_manager_new_test") {
   module_out_path = module_output_path
   sources = [ "unittest/subscribe_profile_manager_new_test.cpp" ]
   configs = device_profile_configs
@@ -644,6 +654,8 @@ group("unittest") {
     ":PermissionManagerTest",
     ":ProfileChangeListenerProxyTest",
     ":TrustProfileManagerTest",
+    ":business_event_adapter_test",
+    ":business_event_manager_test",
     ":content_sensor_manager_test",
     ":content_sensor_manager_utils_test",
     ":content_sensor_pasteboard_info_test",
@@ -653,8 +665,8 @@ group("unittest") {
     ":device_profile_manager_new_three_test",
     ":device_profile_manager_new_two_test",
     ":distributed_device_profile_client_kv_new_test",
-    ":distributed_device_profile_stub_new_test",
     ":distributed_device_profile_proxy_test",
+    ":distributed_device_profile_stub_new_test",
     ":dp_account_common_event_test",
     ":dp_content_sensor_test",
     ":dp_dm_adapter_test",
@@ -672,8 +684,8 @@ group("unittest") {
     ":profile_data_manager_test",
     ":profile_utils_new_test",
     ":rdb_adapter_new_test",
-    ":session_key_manager_test",
     ":service_info_kv_adapter_test",
+    ":session_key_manager_test",
     ":static_capability_collector_test",
     ":static_capability_loader_test",
     ":static_profile_manager_test",
@@ -685,8 +697,6 @@ group("unittest") {
     ":sync_subscriber_death_recipient_test",
     ":trust_Device_Profile_test",
     ":trust_profile_manager_two_test",
-    ":business_event_manager_test",
-    ":business_event_adapter_test",
   ]
   if (device_info_manager_supported_switch && !device_info_manager_common) {
     deps += [ ":switch_profile_manager_test" ]

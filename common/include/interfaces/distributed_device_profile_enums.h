@@ -131,14 +131,14 @@ enum class SwitchFlag : int32_t {
     SWITCH_FLAG_DISTRIBUTED_SUPER_MANAGER = 4,
     SWITCH_FLAG_MAX = 5
 };
-const std::unordered_map<std::string, SwitchFlag> SWITCH_SERVICE_MAP = {
+inline const std::unordered_map<std::string, SwitchFlag> SWITCH_SERVICE_MAP = {
     { "SwitchStatus_Key_Mouse_Edge_Crossing", SwitchFlag::SWITCH_FLAG_KEY_MOUSE_EDGE_CROSSING },
     { "SwitchStatus_Key_Distributed_Pasteboard", SwitchFlag::SWITCH_FLAG_KEY_DISTRIBUTED_PASTEBOARD },
     { "SwitchStatus_DcShareSwitch", SwitchFlag::SWITCH_FLAG_DCSHARESWITCH },
     { "SwitchStatus_Wifi_Display_Service", SwitchFlag::SWITCH_FLAG_WIFI_DISPLAY_SERVICE },
     { "SwitchStatus_Distributed_Super_Manager", SwitchFlag::SWITCH_FLAG_DISTRIBUTED_SUPER_MANAGER }
 };
-const std::unordered_map<std::string, StaticCapabilityFlag> CAPABILITY_FLAG_MAP = {
+inline const std::unordered_map<std::string, StaticCapabilityFlag> CAPABILITY_FLAG_MAP = {
     { "dmsfwk_svr_id", StaticCapabilityFlag::CAPABILITY_FLAG_DMS },
     { "pasteboardService", StaticCapabilityFlag::CAPABILITY_FLAG_PASTE_BOARD },
     { "distributedfiledaemon", StaticCapabilityFlag::CAPABILITY_FLAG_DISTRIBUTED_FILE_DAEMON },

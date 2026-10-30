@@ -1,0 +1,46 @@
+# Copyright (c) 2026 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Tests that directly call the service implementation use its non-hidden DSO.
+import("//build/test.gni")
+import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
+_dp_service_test_resources =
+    "${device_profile_path}/test/resource/device_info_manager/ohos_test.xml"
+
+template("dp_service_unittest") {
+  ohos_unittest(target_name) {
+    forward_variables_from(invoker, "*")
+    if (!defined(resource_config_file)) {
+      resource_config_file = _dp_service_test_resources
+    }
+    if (!defined(configs)) {
+      configs = []
+    }
+    configs +=
+        [ "${device_profile_service}/test:dp_service_test_runtime_config" ]
+  }
+}
+
+template("dp_service_fuzztest") {
+  ohos_fuzztest(target_name) {
+    forward_variables_from(invoker, "*")
+    if (!defined(resource_config_file)) {
+      resource_config_file = _dp_service_test_resources
+    }
+    if (!defined(configs)) {
+      configs = []
+    }
+    configs +=
+        [ "${device_profile_service}/test:dp_service_test_runtime_config" ]
+  }
+}
