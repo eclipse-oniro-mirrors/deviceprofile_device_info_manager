@@ -666,6 +666,7 @@ group("unittest") {
     ":kv_sync_completed_listener_test",
     ":local_service_info_manager_test",
     ":multi_user_manager_test",
+    ":dp_account_query_test",
     ":product_info_dao_test",
     ":profile_cache_new_test",
     ":profile_control_utils_test",
@@ -693,5 +694,25 @@ group("unittest") {
   }
   if (!device_info_manager_common) {
     deps += [ ":distributed_device_profile_client_test" ]
+  }
+}
+
+# Uses official account sequenceables as an independent wire oracle.
+ohos_unittest("dp_account_query_test") {
+  module_out_path = module_output_path
+  sources = [ "unittest/dp_account_query_test.cpp" ]
+  configs = device_profile_configs
+  deps = device_profile_deps
+  external_deps = device_profile_external_deps + [
+    "os_account:libaccountkits",
+    "os_account:os_account_innerkits",
+    "os_account:domain_account_innerkits",
+  ]
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
   }
 }

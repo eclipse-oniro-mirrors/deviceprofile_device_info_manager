@@ -21,9 +21,7 @@
 #include "distributed_device_profile_log.h"
 #include "profile_utils.h"
 
-#include "account_info.h"
-#include "ohos_account_kits.h"
-#include "os_account_manager.h"
+#include "dp_account_query.h"
 
 namespace OHOS {
 namespace DistributedDeviceProfile {
@@ -38,7 +36,7 @@ int32_t MultiUserManager::Init()
 {
     HILOGI("Init");
     int32_t foregroundId = DEFAULT_USER_ID;
-    int32_t res = OHOS::AccountSA::OsAccountManager::GetForegroundOsAccountLocalId(foregroundId);
+    int32_t res = DpAccountQuery::Connect().GetForegroundUserId(foregroundId);
     if (res != DP_SUCCESS || foregroundId == DEFAULT_USER_ID) {
         HILOGE("GetForegroundId failed, res: %{public}d", res);
     }
@@ -72,7 +70,7 @@ int32_t MultiUserManager::GetCurrentForegroundUserID()
 int32_t MultiUserManager::GetForegroundUserIDFromOs(int32_t& foregroundId)
 {
     foregroundId = DEFAULT_USER_ID;
-    int32_t res = OHOS::AccountSA::OsAccountManager::GetForegroundOsAccountLocalId(foregroundId);
+    int32_t res = DpAccountQuery::Connect().GetForegroundUserId(foregroundId);
     if (res != DP_SUCCESS || foregroundId == DEFAULT_USER_ID) {
         HILOGE("GetForegroundId failed, res:%{public}d", res);
         return DP_GET_FOREGROUND_ID_FAIL;
@@ -86,13 +84,13 @@ std::string MultiUserManager::GetOhosAccountId()
 #if (defined(__LITEOS_M__) || defined(LITE_DEVICE))
     return "";
 #elif DP_OS_ACCOUNT_PART_EXISTS
-    AccountSA::OhosAccountInfo accountInfo;
-    ErrCode ret = OHOS::AccountSA::OhosAccountKits::GetInstance().GetOhosAccountInfo(accountInfo);
-    if (ret != 0 || accountInfo.uid_ == "") {
+    std::string accountUid;
+    int32_t ret = DpAccountQuery::Connect().GetAccountUid(accountUid);
+    if (ret != 0 || accountUid == "") {
         HILOGE("GetOhosAccountId error ret: %{public}d", ret);
         return "";
     }
-    return accountInfo.uid_;
+    return accountUid;
 #else
     return "";
 #endif
@@ -104,13 +102,13 @@ std::string MultiUserManager::GetOhosAccountIdByUserId(int32_t userId)
     (void)userId;
     return "";
 #elif DP_OS_ACCOUNT_PART_EXISTS
-    AccountSA::OhosAccountInfo accountInfo;
-    ErrCode ret = OHOS::AccountSA::OhosAccountKits::GetInstance().GetOsAccountDistributedInfo(userId, accountInfo);
-    if (ret != 0 || accountInfo.uid_ == "" || accountInfo.uid_ == OHOS_ANONYMOUS_UID) {
+    std::string accountUid;
+    int32_t ret = DpAccountQuery::Connect().GetAccountUid(userId, accountUid);
+    if (ret != 0 || accountUid == "" || accountUid == OHOS_ANONYMOUS_UID) {
         HILOGE("error ret: %{public}d", ret);
         return "";
     }
-    return accountInfo.uid_;
+    return accountUid;
 #else
     (void)userId;
     return "";
@@ -119,13 +117,13 @@ std::string MultiUserManager::GetOhosAccountIdByUserId(int32_t userId)
 
 bool MultiUserManager::CurrentIsEnterpriseSpace()
 {
-    AccountSA::DomainAccountInfo domainInfo;
-    auto ret = AccountSA::OsAccountManager::GetOsAccountDomainInfo(GetCurrentForegroundUserID(), domainInfo);
+    bool enterprise = false;
+    auto ret = DpAccountQuery::Connect().IsEnterpriseUser(GetCurrentForegroundUserID(), enterprise);
     if (ret != DP_SUCCESS) {
         HILOGE("GetOsAccountDomainInfo failed");
         return false;
     }
-    return !domainInfo.accountName_.empty();
+    return enterprise;
 }
 
 } // namespace DistributedHardware

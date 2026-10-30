@@ -115,6 +115,7 @@ ohos_shared_library("distributed_device_profile_svr") {
       "src/dm_adapter/dm_adapter.cpp",
       "src/localserviceinfomanager/local_service_info_manager.cpp",
       "src/multiusermanager/multi_user_manager.cpp",
+      "src/multiusermanager/dp_account_query.cpp",
       "src/permissionmanager/permission_manager.cpp",
       "src/persistenceadapter/assetadapter/asset_adapter.cpp",
       "src/persistenceadapter/kvadapter/business_event_adapter.cpp",
