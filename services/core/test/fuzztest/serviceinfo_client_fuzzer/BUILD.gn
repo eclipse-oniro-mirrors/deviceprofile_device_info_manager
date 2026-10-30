@@ -16,8 +16,6 @@ import("//build/config/features.gni")
 import("//build/ohos.gni")
 import("//build/test.gni")
 import("//foundation/deviceprofile/device_info_manager/deviceprofile.gni")
-import(
-    "//foundation/deviceprofile/device_info_manager/services/core/test/dp_service_test.gni")
 module_output_path = fuzz_test_output_path
 
 device_profile_configs =
@@ -26,11 +24,11 @@ device_profile_configs =
 device_profile_deps = [
   "${device_profile_common}:distributed_device_profile_common",
   "${device_profile_innerkits}:distributed_device_profile_sdk",
-  "${device_profile_service}:distributed_device_profile_svr_test",
+  "${device_profile_service}:distributed_device_profile_svr",
 ]
 
 ##############################fuzztest##########################################
-dp_service_fuzztest("ServiceInfoClientFuzzTest") {
+ohos_fuzztest("ServiceInfoClientFuzzTest") {
   module_out_path = module_output_path
 
   fuzz_config_file =
