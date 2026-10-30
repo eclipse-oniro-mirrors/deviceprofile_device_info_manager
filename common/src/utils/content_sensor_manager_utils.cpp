@@ -16,10 +16,9 @@
 #include "content_sensor_manager_utils.h"
 
 #include <cstring>
-#include <cstdio>
-#include <memory>
-
-#include "config_file_utils.h"
+#include <fstream>
+#include <iomanip>
+#include <sstream>
 
 #include "cJSON.h"
 #include "config_policy_utils.h"
@@ -106,11 +105,10 @@ std::string ContentSensorManagerUtils::ObtainDeviceTypeId()
         return "";
     }
     uint16_t deviceTypeId = nodeBasicInfo.deviceTypeId;
-    // uint16_t needs at most four hexadecimal digits plus the terminator.
-    char typeText[5] = {};
-    std::snprintf(typeText, sizeof(typeText), "%03X", static_cast<unsigned int>(deviceTypeId));
+    std::stringstream strDeviceTypeId;
+    strDeviceTypeId << std::uppercase << std::setw(NUM_3) << std::setfill('0') << std::hex << deviceTypeId;
     std::lock_guard<std::mutex> lock(csMutex_);
-    deviceTypeId_ = typeText;
+    deviceTypeId_ = strDeviceTypeId.str();
     return deviceTypeId_;
 }
 
@@ -323,63 +321,46 @@ std::string ContentSensorManagerUtils::GetBackcolor()
     return backcolor_;
 }
 
-int32_t LoadConfigFile(const std::string& filePath, std::string& fileContent, size_t maxSize)
+int32_t ContentSensorManagerUtils::LoadJsonFile(const std::string &filePath, std::string &fileContent)
 {
     if (filePath.empty() || filePath.size() > MAX_STRING_LEN) {
         HILOGE("filePath is invalid!");
         return DP_INVALID_PARAM;
     }
-    char buf[MAX_PATH_LEN] = {};
-    char* srcPath = GetOneCfgFile(filePath.c_str(), buf, MAX_PATH_LEN);
+    char buf[MAX_PATH_LEN] = {0};
+    char *srcPath = GetOneCfgFile(filePath.c_str(), buf, MAX_PATH_LEN);
     if (srcPath == nullptr) {
         HILOGE("srcPath is invalid!");
         return DP_LOAD_JSON_FILE_FAIL;
     }
-    char targetPath[PATH_MAX + 1] = {};
+    char targetPath[PATH_MAX + 1] = {0x00};
     if (strlen(srcPath) == 0 || strlen(srcPath) > PATH_MAX || realpath(srcPath, targetPath) == nullptr) {
         HILOGE("File canonicalization failed!");
         return DP_LOAD_JSON_FILE_FAIL;
     }
-    std::unique_ptr<FILE, decltype(&std::fclose)> file(std::fopen(targetPath, "r"), std::fclose);
-    if (file == nullptr) {
+    std::ifstream ifs(targetPath);
+    if (!ifs.is_open()) {
         HILOGE("load json file failed");
         return DP_LOAD_JSON_FILE_FAIL;
     }
-    // The caller-owned string is the only dynamically growing read buffer.
-    std::setvbuf(file.get(), nullptr, _IONBF, 0);
-    size_t fileSize = 0;
-    if (maxSize != CONFIG_FILE_UNLIMITED) {
-        if (std::fseek(file.get(), 0, SEEK_END) != 0) {
-            HILOGE("Failed to determine file size.");
-            return DP_LOAD_JSON_FILE_FAIL;
-        }
-        long position = std::ftell(file.get());
-        if (position < 0 || std::fseek(file.get(), 0, SEEK_SET) != 0) {
-            HILOGE("Failed to determine file size.");
-            return DP_LOAD_JSON_FILE_FAIL;
-        }
-        fileSize = static_cast<size_t>(position);
-        if (fileSize > maxSize) {
-            HILOGE("config file too large: %zu", fileSize);
-            return DP_LOAD_JSON_FILE_FAIL;
-        }
+    ifs.seekg(0, std::ios::end);
+    std::streampos pos = ifs.tellg();
+    if (pos < 0 || static_cast<size_t>(pos) > std::numeric_limits<size_t>::max()) {
+        HILOGE("Failed to determine file size.");
+        ifs.close();
+        return DP_LOAD_JSON_FILE_FAIL;
     }
-    std::string contents;
-    contents.reserve(fileSize);
-    char chunk[4096];
-    size_t count;
-    while ((count = std::fread(chunk, 1, sizeof(chunk), file.get())) != 0) {
-        contents.append(chunk, count);
+    size_t fileSize = static_cast<size_t>(pos);
+    ifs.seekg(0, std::ios::beg);
+    if (fileSize > MAX_CONFIG_FILE_SIZE) {
+        HILOGE("config file too large: %zu", fileSize);
+        ifs.close();
+        return DP_LOAD_JSON_FILE_FAIL;
     }
-    // Preserve the existing stream-iterator contract: bytes read up to EOF or
-    // a read error form the result; only open/size checks reject the request.
-    fileContent.swap(contents);
+    fileContent.reserve(fileSize);
+    fileContent.assign(std::istreambuf_iterator<char>{ifs}, std::istreambuf_iterator<char>{});
+    ifs.close();
     return DP_SUCCESS;
-}
-
-int32_t ContentSensorManagerUtils::LoadJsonFile(const std::string& filePath, std::string& fileContent)
-{
-    return LoadConfigFile(filePath, fileContent, MAX_CONFIG_FILE_SIZE);
 }
 
 std::map<std::string, std::string> ContentSensorManagerUtils::GetSubProdIdMap()
