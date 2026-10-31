@@ -23,7 +23,6 @@
 #include <memory>
 #include <mutex>
 #include <stdint.h>
-#include <set>
 #include <condition_variable>
 #include "i_pincode_invalid_callback.h"
 #include "i_profile_change_listener.h"
@@ -166,8 +165,6 @@ private:
     std::mutex saListenerLock_;
     sptr<SystemAbilityListener> saListenerCallback_ = nullptr;
 
-    // Keep the SDK object layout for existing consumers; fixed retry codes use direct comparisons.
-    const std::set<int32_t> retryErrCodes_;
     std::mutex businessLock_;
     sptr<IBusinessCallback> businessCallback_ = nullptr;
     std::string strSaId_ = "";
