@@ -119,7 +119,7 @@ std::vector<int64_t> TrustDeviceProfile::GetServiceIdList() const
     return serviceIdList_;
 }
 
-void TrustDeviceProfile::SetServiceIdList(const std::vector<int64_t> serviceIdList)
+void TrustDeviceProfile::SetServiceIdList(const std::vector<int64_t> &serviceIdList)
 {
     serviceIdList_ = serviceIdList;
 }
@@ -187,6 +187,9 @@ std::string TrustDeviceProfile::dump() const
         ProfileUtils::GetAnonyString(peerAccountId_).c_str());
     cJSON_AddStringToObject(json, LOCAL_ACCOUNT_ID.c_str(),
         ProfileUtils::GetAnonyString(localAccountId_).c_str());
+    for (size_t i = 0; i < serviceIdList_.size(); i++) {
+        cJSON_AddStringToObject(json, SERVICEID.c_str(), std::to_string(serviceIdList_[i]).c_str());
+    }
     char* jsonChars = cJSON_PrintUnformatted(json);
     if (jsonChars == NULL) {
         cJSON_Delete(json);
