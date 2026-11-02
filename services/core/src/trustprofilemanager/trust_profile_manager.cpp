@@ -2559,7 +2559,7 @@ int32_t TrustProfileManager::QueryServiceIdList(const AccessControlProfile &prof
     if (!isProfileInDb) {
         CollectServiceIdsFromProfile(profile, params, serviceIdList);
     }
-    HILOGI("Params.peerDeviceId : %{public}s, Params.peerUserId : %{public}d, Params.peerAccountId : %{public}s,
+    HILOGI("Params.peerDeviceId : %{public}s, Params.peerUserId : %{public}d, Params.peerAccountId : %{public}s,\
         serviceIdListSize : %{public}zu", ProfileUtils::GetAnonyString(params.peerDeviceId).c_str(),
         params.peerUserId, params.peerAccountId.c_str(), serviceIdList.size());
     return DP_SUCCESS;
