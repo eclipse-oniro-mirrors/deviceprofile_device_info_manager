@@ -2520,7 +2520,7 @@ ProfileQueryParams TrustProfileManager::BuildProfileQueryParams(const AccessCont
     return params;
 }
 
-void TrustProfileManager::CollectServiceIdsFromProfile(const AccessControlProfile &profile,
+void TrustProfileManager::CollectServiceIdsFromProfile(const AccessControlProfile &aclProfile,
     const ProfileQueryParams &params, std::vector<int64_t> &serviceIdList)
 {
     if (aclProfile.GetBindType() == static_cast<uint32_t>(BindType::SAME_ACCOUNT)) {
@@ -2548,7 +2548,7 @@ int32_t TrustProfileManager::QueryServiceIdList(const AccessControlProfile &prof
     RemoveLnnAcl(aclProfiles);
     bool isProfileInDb = false;
     for (const auto& aclProfile : aclProfiles) {
-        if (aclProfile.GetAccessControlId() == profile..GetAccessControlId()) {
+        if (aclProfile.GetAccessControlId() == profile.GetAccessControlId()) {
             isProfileInDb = true;
         }
         if (!IsMatchingAclProfile(aclProfile, params)) {
@@ -2557,7 +2557,7 @@ int32_t TrustProfileManager::QueryServiceIdList(const AccessControlProfile &prof
         CollectServiceIdsFromProfile(aclProfile, params, serviceIdList);
     }
     if (!isProfileInDb) {
-        CollectServiceIdsFromProfile(aclProfile, params, serviceIdList);
+        CollectServiceIdsFromProfile(profile, params, serviceIdList);
     }
     HILOGI("Params.peerDeviceId : %{public}s, Params.peerUserId : %{public}d, Params.peerAccountId : %{public}s,
         serviceIdListSize : %{public}zu", ProfileUtils::GetAnonyString(params.peerDeviceId).c_str(),
