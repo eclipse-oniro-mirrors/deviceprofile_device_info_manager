@@ -74,6 +74,12 @@ config("distributed_device_profile_common_config") {
   ]
 }
 
+config("dp_size_lto_config") {
+  # Keep the size policy local to DP common/service.
+  cflags = [ "-Oz" ]
+  cflags_cc = [ "-Oz" ]
+}
+
 ohos_shared_library("distributed_device_profile_common") {
   branch_protector_ret = "pac_ret"
   ldflags = [
@@ -84,10 +90,12 @@ ohos_shared_library("distributed_device_profile_common") {
   cflags = [
     "-fPIC",
     "-D_FORTIFY_SOURCE=2",
-    "-O2",
+    "-Oz",
   ]
 
   cflags_cc = cflags
+
+  configs = [ ":dp_size_lto_config" ]
 
   sanitize = {
     boundary_sanitize = true

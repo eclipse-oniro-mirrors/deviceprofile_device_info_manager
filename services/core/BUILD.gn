@@ -66,7 +66,7 @@ ohos_shared_library("distributed_device_profile_svr") {
     cflags = [
       "-fPIC",
       "-D_FORTIFY_SOURCE=2",
-      "-O2",
+      "-Oz",
     ]
     if (dp_os_account_part_exists) {
       cflags += [ "-DDP_OS_ACCOUNT_PART_EXISTS" ]
@@ -147,7 +147,10 @@ ohos_shared_library("distributed_device_profile_svr") {
       "${device_profile_path}/radar:device_profile_radar",
     ]
 
-    configs = [ ":device_info_manager_config" ]
+    configs = [
+      ":device_info_manager_config",
+      "${device_profile_common}:dp_size_lto_config",
+    ]
 
     external_deps = [
       "access_token:libaccesstoken_sdk",
