@@ -53,11 +53,21 @@ constexpr const char* LogTagText(const char* tag) noexcept
 #undef HILOGD
 #endif
 
-#define HILOGF(fmt, ...) HILOG_FATAL(LOG_CORE, "%{public}s::%{public}s " fmt, ::OHOS::DistributedDeviceProfile::LogTagText(TAG), __FUNCTION__, ##__VA_ARGS__)
-#define HILOGE(fmt, ...) HILOG_ERROR(LOG_CORE, "%{public}s::%{public}s " fmt, ::OHOS::DistributedDeviceProfile::LogTagText(TAG), __FUNCTION__, ##__VA_ARGS__)
-#define HILOGW(fmt, ...) HILOG_WARN(LOG_CORE, "%{public}s::%{public}s " fmt, ::OHOS::DistributedDeviceProfile::LogTagText(TAG), __FUNCTION__, ##__VA_ARGS__)
-#define HILOGI(fmt, ...) HILOG_INFO(LOG_CORE, "%{public}s::%{public}s " fmt, ::OHOS::DistributedDeviceProfile::LogTagText(TAG), __FUNCTION__, ##__VA_ARGS__)
-#define HILOGD(fmt, ...) HILOG_DEBUG(LOG_CORE, "%{public}s::%{public}s " fmt, ::OHOS::DistributedDeviceProfile::LogTagText(TAG), __FUNCTION__, ##__VA_ARGS__)
+#define HILOGF(fmt, ...) \
+    HILOG_FATAL(LOG_CORE, "%{public}s::%{public}s " fmt, \
+        ::OHOS::DistributedDeviceProfile::LogTagText(TAG), __FUNCTION__, ##__VA_ARGS__)
+#define HILOGE(fmt, ...) \
+    HILOG_ERROR(LOG_CORE, "%{public}s::%{public}s " fmt, \
+        ::OHOS::DistributedDeviceProfile::LogTagText(TAG), __FUNCTION__, ##__VA_ARGS__)
+#define HILOGW(fmt, ...) \
+    HILOG_WARN(LOG_CORE, "%{public}s::%{public}s " fmt, \
+        ::OHOS::DistributedDeviceProfile::LogTagText(TAG), __FUNCTION__, ##__VA_ARGS__)
+#define HILOGI(fmt, ...) \
+    HILOG_INFO(LOG_CORE, "%{public}s::%{public}s " fmt, \
+        ::OHOS::DistributedDeviceProfile::LogTagText(TAG), __FUNCTION__, ##__VA_ARGS__)
+#define HILOGD(fmt, ...) \
+    HILOG_DEBUG(LOG_CORE, "%{public}s::%{public}s " fmt, \
+        ::OHOS::DistributedDeviceProfile::LogTagText(TAG), __FUNCTION__, ##__VA_ARGS__)
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
 #endif // OHOS_DP_DEVICE_PROFILE_LOG_H

@@ -30,7 +30,64 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    constexpr char TAG[] = "ProfileChangeListenerStub";
+constexpr char TAG[] = "ProfileChangeListenerStub";
+using ProfileChangeHandler = int32_t (ProfileChangeListenerStub::*)(MessageParcel&, MessageParcel&);
+
+ProfileChangeHandler FindTrustProfileHandler(uint32_t code)
+{
+    switch (code) {
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_ADD):
+            return &ProfileChangeListenerStub::OnTrustDeviceProfileAddInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_DELETE):
+            return &ProfileChangeListenerStub::OnTrustDeviceProfileDeleteInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_UPDATE):
+            return &ProfileChangeListenerStub::OnTrustDeviceProfileUpdateInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_ACTIVE):
+            return &ProfileChangeListenerStub::OnTrustDeviceProfileActiveInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_INACTIVE):
+            return &ProfileChangeListenerStub::OnTrustDeviceProfileInactiveInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_DELETE):
+            return &ProfileChangeListenerStub::OnDeviceAclInactiveByDeleteInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_UPDATE):
+            return &ProfileChangeListenerStub::OnDeviceAclInactiveByUpdateInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_DELETE):
+            return &ProfileChangeListenerStub::OnAccountAclDeleteInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_INACTIVE):
+            return &ProfileChangeListenerStub::OnAccountAclInactiveInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_ADD):
+            return &ProfileChangeListenerStub::OnAccountAclAddInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_ACTIVE):
+            return &ProfileChangeListenerStub::OnAccountAclActiveInner;
+        default:
+            return nullptr;
+    }
+}
+
+ProfileChangeHandler FindDeviceProfileHandler(uint32_t code)
+{
+    switch (code) {
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_ADD):
+            return &ProfileChangeListenerStub::OnDeviceProfileAddInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_DELETE):
+            return &ProfileChangeListenerStub::OnDeviceProfileDeleteInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_UPDATE):
+            return &ProfileChangeListenerStub::OnDeviceProfileUpdateInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_ADD):
+            return &ProfileChangeListenerStub::OnServiceProfileAddInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_DELETE):
+            return &ProfileChangeListenerStub::OnServiceProfileDeleteInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_UPDATE):
+            return &ProfileChangeListenerStub::OnServiceProfileUpdateInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_ADD):
+            return &ProfileChangeListenerStub::OnCharacteristicProfileAddInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_DELETE):
+            return &ProfileChangeListenerStub::OnCharacteristicProfileDeleteInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_UPDATE):
+            return &ProfileChangeListenerStub::OnCharacteristicProfileUpdateInner;
+        default:
+            return nullptr;
+    }
+}
 }
 ProfileChangeListenerStub::ProfileChangeListenerStub()
 {
@@ -56,49 +113,12 @@ int32_t ProfileChangeListenerStub::OnRemoteRequest(uint32_t code, MessageParcel&
         HILOGE("check interface token failed");
         return DP_INTERFACE_CHECK_FAILED;
     }
-    switch (code) {
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_ADD):
-            return OnTrustDeviceProfileAddInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_DELETE):
-            return OnTrustDeviceProfileDeleteInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_UPDATE):
-            return OnTrustDeviceProfileUpdateInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_ACTIVE):
-            return OnTrustDeviceProfileActiveInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_INACTIVE):
-            return OnTrustDeviceProfileInactiveInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_DELETE):
-            return OnDeviceAclInactiveByDeleteInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_UPDATE):
-            return OnDeviceAclInactiveByUpdateInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_DELETE):
-            return OnAccountAclDeleteInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_INACTIVE):
-            return OnAccountAclInactiveInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_ADD):
-            return OnAccountAclAddInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_ACTIVE):
-            return OnAccountAclActiveInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_ADD):
-            return OnDeviceProfileAddInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_DELETE):
-            return OnDeviceProfileDeleteInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_UPDATE):
-            return OnDeviceProfileUpdateInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_ADD):
-            return OnServiceProfileAddInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_DELETE):
-            return OnServiceProfileDeleteInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_UPDATE):
-            return OnServiceProfileUpdateInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_ADD):
-            return OnCharacteristicProfileAddInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_DELETE):
-            return OnCharacteristicProfileDeleteInner(data, reply);
-        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_UPDATE):
-            return OnCharacteristicProfileUpdateInner(data, reply);
-        default:
-            break;
+    auto handler = FindTrustProfileHandler(code);
+    if (handler == nullptr) {
+        handler = FindDeviceProfileHandler(code);
+    }
+    if (handler != nullptr) {
+        return (this->*handler)(data, reply);
     }
     HILOGW("unknown request code, please check, code = %{public}u", code);
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
