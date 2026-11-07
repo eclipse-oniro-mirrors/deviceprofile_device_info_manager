@@ -100,7 +100,7 @@ public:
     }
 };
 
-void CompareUid(const std::function<void(MessageParcel&)>& body, bool byUser, int32_t serviceResult = ERR_OK,
+int32_t CompareUid(const std::function<void(MessageParcel&)>& body, bool byUser, int32_t serviceResult = ERR_OK,
     int32_t transport = ERR_OK, int32_t id = TEST_USER_ID)
 {
     sptr<ReplyService> remote = new ReplyService;
@@ -137,6 +137,7 @@ void CompareUid(const std::function<void(MessageParcel&)>& body, bool byUser, in
     // Identity values in this suite are synthetic, never real account information.
     EXPECT_EQ(info.uid_, uid);
     EXPECT_EQ(remote->requests_, 1);
+    return newCode;
 }
 
 void CompareDomain(const std::function<void(MessageParcel&)>& body, int32_t error = ERR_OK)
@@ -218,9 +219,10 @@ TEST(DpAccountQueryTest, TruncatedUidSequenceableReturnsReadError)
 
 TEST(DpAccountQueryTest, InvalidAvatarAndNullParcelableKeepUidEmpty)
 {
-    CompareUid([](MessageParcel& reply) { reply.WriteInt32(0); }, false);
+    EXPECT_EQ(ERR_ACCOUNT_COMMON_READ_PARCEL_ERROR,
+        CompareUid([](MessageParcel& reply) { reply.WriteInt32(0); }, false));
     for (int32_t size : { -1, 0, INVALID_AVATAR_SIZE }) {
-        CompareUid(
+        int32_t result = CompareUid(
             [size](MessageParcel& reply) {
                 reply.WriteInt32(1);
                 reply.WriteString16(u"name");
@@ -231,14 +233,17 @@ TEST(DpAccountQueryTest, InvalidAvatarAndNullParcelableKeepUidEmpty)
                 reply.WriteInt32(size);
             },
             true);
+        EXPECT_EQ(ERR_ACCOUNT_COMMON_READ_PARCEL_ERROR, result);
     }
 }
 
 TEST(DpAccountQueryTest, AccountErrorsAndNegativeIdsMatchOriginalProxy)
 {
     for (int32_t error : std::vector<int32_t>{ ERR_INVALID_VALUE, ERR_INVALID_DATA, -1, TEST_SERVICE_ERROR }) {
-        CompareUid({}, false, error);
-        CompareUid({}, true, ERR_OK, error, -1);
+        int32_t serviceError = CompareUid({}, false, error);
+        EXPECT_EQ(error, serviceError);
+        int32_t transportError = CompareUid({}, true, ERR_OK, error, -1);
+        EXPECT_EQ(error, transportError);
     }
 }
 
