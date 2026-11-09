@@ -37,11 +37,7 @@ public:
     int32_t OnServiceInfoDeleteInner(MessageParcel& data, MessageParcel& reply);
 
 private:
-    using Func = int32_t(ServiceInfoChangeCallbackStub::*)(MessageParcel& data, MessageParcel& reply);
     bool IsInterfaceToken(MessageParcel& data);
-
-private:
-    std::map<int32_t, Func> funcsMap_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS
