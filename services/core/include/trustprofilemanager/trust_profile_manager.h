@@ -151,6 +151,9 @@ private:
         const std::string& peerAccountId, std::vector<int64_t>& serviceIdList);
     int32_t ParseServiceIdFromJson(const std::string& jsonStr, int64_t& serviceId);
     int32_t ParseAccountIdFromJson(const std::string& jsonStr, std::string& accountId);
+    ProfileQueryParams BuildProfileQueryParams(const AccessControlProfile& profile);
+    void CollectServiceIdsFromProfile(const AccessControlProfile& aclProfile,
+        const ProfileQueryParams& params, std::vector<int64_t>& serviceIdList);
 
 private:
     std::shared_ptr<IRdbAdapter> rdbStore_;

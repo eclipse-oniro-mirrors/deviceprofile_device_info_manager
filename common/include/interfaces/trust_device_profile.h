@@ -57,7 +57,7 @@ public:
     std::string GetLocalAccountId() const;
     void SetLocalAccountId(const std::string& localAccountId);
     std::vector<int64_t> GetServiceIdList() const;
-    void SetServiceIdList(const std::vector<int64_t> serviceIdList);
+    void SetServiceIdList(const std::vector<int64_t>& serviceIdList);
     bool Marshalling(MessageParcel& parcel) const override;
     bool UnMarshalling(MessageParcel& parcel) override;
     std::string dump() const override;

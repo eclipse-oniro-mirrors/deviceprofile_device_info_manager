@@ -2501,8 +2501,7 @@ void TrustProfileManager::CollectSameAccountServiceIds(const std::string& peerDe
     }
 }
 
-int32_t TrustProfileManager::QueryServiceIdList(const AccessControlProfile &profile,
-    std::vector<int64_t> &serviceIdList)
+ProfileQueryParams TrustProfileManager::BuildProfileQueryParams(const AccessControlProfile &profile)
 {
     ProfileQueryParams params;
     params.peerDeviceId = profile.GetTrustDeviceId();
@@ -2518,6 +2517,28 @@ int32_t TrustProfileManager::QueryServiceIdList(const AccessControlProfile &prof
         params.peerAccountId = profile.GetAccessee().GetAccesseeAccountId();
         params.localAccountId = profile.GetAccesser().GetAccesserAccountId();
     }
+    return params;
+}
+
+void TrustProfileManager::CollectServiceIdsFromProfile(const AccessControlProfile &aclProfile,
+    const ProfileQueryParams &params, std::vector<int64_t> &serviceIdList)
+{
+    if (aclProfile.GetBindType() == static_cast<uint32_t>(BindType::SAME_ACCOUNT)) {
+        CollectSameAccountServiceIds(params.peerDeviceId, params.peerUserId,
+            params.peerAccountId, serviceIdList);
+        return;
+    }
+    int64_t serviceId = 0;
+    if (ParseServiceIdFromJson(aclProfile.GetAccessee().GetAccesseeExtraData(), serviceId) == DP_SUCCESS) {
+        serviceIdList.emplace_back(serviceId);
+    }
+    return;
+}
+
+int32_t TrustProfileManager::QueryServiceIdList(const AccessControlProfile &profile,
+    std::vector<int64_t> &serviceIdList)
+{
+    ProfileQueryParams params = BuildProfileQueryParams(profile);
     std::vector<AccessControlProfile> aclProfiles;
     int32_t ret = GetAllAccessControlProfiles(aclProfiles);
     if (ret != DP_SUCCESS) {
@@ -2525,20 +2546,22 @@ int32_t TrustProfileManager::QueryServiceIdList(const AccessControlProfile &prof
         return ret;
     }
     RemoveLnnAcl(aclProfiles);
+    bool isProfileInDb = false;
     for (const auto& aclProfile : aclProfiles) {
+        if (aclProfile.GetAccessControlId() == profile.GetAccessControlId()) {
+            isProfileInDb = true;
+        }
         if (!IsMatchingAclProfile(aclProfile, params)) {
             continue;
         }
-        if (aclProfile.GetBindType() == static_cast<uint32_t>(BindType::SAME_ACCOUNT)) {
-            CollectSameAccountServiceIds(params.peerDeviceId, params.peerUserId,
-                params.peerAccountId, serviceIdList);
-            continue;
-        }
-        int64_t serviceId = 0;
-        if (ParseServiceIdFromJson(aclProfile.GetAccessee().GetAccesseeExtraData(), serviceId) == DP_SUCCESS) {
-            serviceIdList.emplace_back(serviceId);
-        }
+        CollectServiceIdsFromProfile(aclProfile, params, serviceIdList);
     }
+    if (!isProfileInDb) {
+        CollectServiceIdsFromProfile(profile, params, serviceIdList);
+    }
+    HILOGI("Params.peerDeviceId : %{public}s, Params.peerUserId : %{public}d, Params.peerAccountId : %{public}s,\
+        serviceIdListSize : %{public}zu", ProfileUtils::GetAnonyString(params.peerDeviceId).c_str(),
+        params.peerUserId, ProfileUtils::GetAnonyString(params.peerAccountId).c_str(), serviceIdList.size());
     return DP_SUCCESS;
 }
 
