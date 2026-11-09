@@ -123,17 +123,24 @@ bool CheckQueries(const DpAccountQuery& query, int32_t userId, bool failQuery)
     return (enterprise == (!failQuery && userId != TEST_USER_ID)) && valid;
 }
 
+int32_t RunQueryBatch(const DpAccountQuery& query, int32_t userId, bool failQuery)
+{
+    int32_t failures = 0;
+    for (int32_t i = 0; i < QUERIES_PER_THREAD; ++i) {
+        if (!CheckQueries(query, userId, failQuery)) {
+            ++failures;
+        }
+    }
+    return failures;
+}
+
 int32_t RunConcurrentQueries(const DpAccountQuery& query, bool failQuery)
 {
     std::atomic<int32_t> failures {0};
     std::vector<std::thread> threads;
     for (int32_t n = 0; n < QUERY_THREAD_COUNT; ++n) {
         threads.emplace_back([&query, &failures, failQuery, n] {
-            for (int32_t i = 0; i < QUERIES_PER_THREAD; ++i) {
-                if (!CheckQueries(query, TEST_USER_ID + n, failQuery)) {
-                    ++failures;
-                }
-            }
+            failures.fetch_add(RunQueryBatch(query, TEST_USER_ID + n, failQuery));
         });
     }
     for (auto& thread : threads) {
