@@ -22,6 +22,8 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 // DP-private, synchronous read-only adapter. Never retains account data or callbacks.
+// Concurrent queries use independent parcels and outputs. Callers must keep this
+// object alive and synchronize any output variables shared between threads.
 class DpAccountQuery final {
 public:
     explicit DpAccountQuery(const sptr<IRemoteObject>& account) : account_(account) {}
@@ -33,7 +35,7 @@ public:
 private:
     sptr<IRemoteObject> GetOsAccountService() const;
     int32_t GetAccountUidInner(bool byUser, int32_t userId, std::string& uid) const;
-    sptr<IRemoteObject> account_;
+    const sptr<IRemoteObject> account_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

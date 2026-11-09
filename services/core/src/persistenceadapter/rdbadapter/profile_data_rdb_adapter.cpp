@@ -42,7 +42,7 @@ namespace {
     bool IsKnownTable(const std::string& table)
     {
         for (const char* name : TABLES) {
-            if (table == name) {
+            if (table.compare(name) == 0) {
                 return true;
             }
         }

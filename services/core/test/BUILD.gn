@@ -700,7 +700,10 @@ group("unittest") {
 # Uses official account sequenceables as an independent wire oracle.
 ohos_unittest("dp_account_query_test") {
   module_out_path = module_output_path
-  sources = [ "unittest/dp_account_query_test.cpp" ]
+  sources = [
+    "unittest/dp_account_query_concurrency_test.cpp",
+    "unittest/dp_account_query_test.cpp",
+  ]
   configs = device_profile_configs
   deps = device_profile_deps
   external_deps = device_profile_external_deps + [
