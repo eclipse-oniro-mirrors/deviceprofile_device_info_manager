@@ -22,6 +22,7 @@
 #include <map>
 #include <memory>
 #include <mutex>
+#include <set>
 #include <stdint.h>
 #include <condition_variable>
 #include "i_pincode_invalid_callback.h"

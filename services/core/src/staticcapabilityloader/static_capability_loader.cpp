@@ -444,7 +444,7 @@ bool StaticCapabilityLoader::GetStaticCapabilityValue(const std::string& handler
         HILOGE("File canonicalization failed!");
         return false;
     }
-    void *so_handler = dlopen(handlerLoc.c_str(), RTLD_LAZY | RTLD_NODELETE);
+    void *so_handler = dlopen(handlerLoc.c_str(), RTLD_LAZY);
     if (so_handler == nullptr) {
         HILOGE("%{public}s handler load failed, failed reason : %{public}s", handlerLoc.c_str(), dlerror());
         return false;
