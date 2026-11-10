@@ -26,6 +26,7 @@
 #include "ios_account.h"
 #include "ipc_object_stub.h"
 
+using namespace testing::ext;
 using namespace OHOS;
 using namespace OHOS::AccountSA;
 using namespace OHOS::DistributedDeviceProfile;
@@ -154,7 +155,7 @@ int32_t RunConcurrentQueries(const DpAccountQuery& query, bool failQuery)
  * @tc.desc: All four query methods share one adapter and one remote without mixing replies.
  * @tc.type: FUNC
  */
-TEST(DpAccountQueryConcurrencyTest, SharedAdapterKeepsConcurrentQueryResultsSeparate)
+HWTEST(DpAccountQueryConcurrencyTest, SharedAdapterKeepsConcurrentQueryResultsSeparate_001, TestSize.Level1)
 {
     sptr<ConcurrentAccountService> remote = new ConcurrentAccountService(false);
     const DpAccountQuery query(remote);
@@ -168,7 +169,7 @@ TEST(DpAccountQueryConcurrencyTest, SharedAdapterKeepsConcurrentQueryResultsSepa
  * @tc.desc: Concurrent IPC failures preserve each caller's output and original error mapping.
  * @tc.type: FUNC
  */
-TEST(DpAccountQueryConcurrencyTest, SharedAdapterKeepsOutputsOnConcurrentTransportErrors)
+HWTEST(DpAccountQueryConcurrencyTest, SharedAdapterKeepsOutputsOnConcurrentTransportErrors_002, TestSize.Level1)
 {
     sptr<ConcurrentAccountService> remote = new ConcurrentAccountService(true);
     const DpAccountQuery query(remote);

@@ -843,7 +843,7 @@ void CheckSuccessfulDispatch(ProfileChangeListenerStub& listener, DpIpcInterface
 }
 } // namespace
 
-HWTEST_F(ProfileChangeListenerStubTest, DispatchTrustAndAclProfiles, TestSize.Level0)
+HWTEST_F(ProfileChangeListenerStubTest, DispatchTrustAndAclProfiles_001, TestSize.Level0)
 {
     ASSERT_NE(listenerStub_, nullptr);
     ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<TrustDeviceProfile>(*listenerStub_,
@@ -870,7 +870,7 @@ HWTEST_F(ProfileChangeListenerStubTest, DispatchTrustAndAclProfiles, TestSize.Le
         DpIpcInterfaceCode::ON_ACCOUNT_ACL_ACTIVE, false));
 }
 
-HWTEST_F(ProfileChangeListenerStubTest, DispatchDeviceProfiles, TestSize.Level0)
+HWTEST_F(ProfileChangeListenerStubTest, DispatchDeviceProfiles_001, TestSize.Level0)
 {
     ASSERT_NE(listenerStub_, nullptr);
     ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<DeviceProfile>(*listenerStub_,
@@ -881,7 +881,7 @@ HWTEST_F(ProfileChangeListenerStubTest, DispatchDeviceProfiles, TestSize.Level0)
         DpIpcInterfaceCode::ON_DEVICE_PROFILE_UPDATE, true));
 }
 
-HWTEST_F(ProfileChangeListenerStubTest, DispatchServiceProfiles, TestSize.Level0)
+HWTEST_F(ProfileChangeListenerStubTest, DispatchServiceProfiles_001, TestSize.Level0)
 {
     ASSERT_NE(listenerStub_, nullptr);
     ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<ServiceProfile>(*listenerStub_,
@@ -892,7 +892,7 @@ HWTEST_F(ProfileChangeListenerStubTest, DispatchServiceProfiles, TestSize.Level0
         DpIpcInterfaceCode::ON_SERVICE_PROFILE_UPDATE, true));
 }
 
-HWTEST_F(ProfileChangeListenerStubTest, DispatchCharacteristicProfiles, TestSize.Level0)
+HWTEST_F(ProfileChangeListenerStubTest, DispatchCharacteristicProfiles_001, TestSize.Level0)
 {
     ASSERT_NE(listenerStub_, nullptr);
     ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<CharacteristicProfile>(*listenerStub_,
@@ -903,7 +903,7 @@ HWTEST_F(ProfileChangeListenerStubTest, DispatchCharacteristicProfiles, TestSize
         DpIpcInterfaceCode::ON_CHAR_PROFILE_UPDATE, true));
 }
 
-HWTEST_F(ProfileChangeListenerStubTest, UnknownRequestUsesIpcFallback, TestSize.Level0)
+HWTEST_F(ProfileChangeListenerStubTest, UnknownRequestUsesIpcFallback_001, TestSize.Level0)
 {
     constexpr uint32_t UNKNOWN_REQUEST_CODE = UINT32_MAX;
     MessageParcel data;
@@ -919,7 +919,7 @@ HWTEST_F(ProfileChangeListenerStubTest, UnknownRequestUsesIpcFallback, TestSize.
     EXPECT_EQ(reply.GetDataSize(), referenceReply.GetDataSize());
 }
 
-HWTEST_F(ProfileChangeListenerStubTest, InvalidTokenRejectsBothDispatchGroups, TestSize.Level0)
+HWTEST_F(ProfileChangeListenerStubTest, InvalidTokenRejectsBothDispatchGroups_001, TestSize.Level0)
 {
     ASSERT_NE(listenerStub_, nullptr);
     for (auto code : {DpIpcInterfaceCode::ON_ACCOUNT_ACL_ACTIVE, DpIpcInterfaceCode::ON_CHAR_PROFILE_UPDATE}) {

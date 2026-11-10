@@ -26,6 +26,7 @@
 #include "ipc_object_stub.h"
 #include "ios_account.h"
 
+using namespace testing::ext;
 using namespace OHOS;
 using namespace OHOS::AccountSA;
 using namespace OHOS::DistributedDeviceProfile;
@@ -169,7 +170,7 @@ void CompareDomain(const std::function<void(MessageParcel&)>& body, int32_t erro
     EXPECT_EQ(remote->handshakes_, 1);
 }
 
-TEST(DpAccountQueryTest, UidUsesOriginalSequenceableForAllFields)
+HWTEST(DpAccountQueryTest, UidUsesOriginalSequenceableForAllFields_001, TestSize.Level1)
 {
     for (const auto& uid : { std::string(), std::string("ohosAnonymousUid"), std::string("synthetic-uid"),
              std::string("a\0b", EMBEDDED_NULL_LENGTH), std::string("虚构用户") }) {
@@ -186,7 +187,7 @@ TEST(DpAccountQueryTest, UidUsesOriginalSequenceableForAllFields)
     }
 }
 
-TEST(DpAccountQueryTest, LargeAvatarRetainsOriginalLimitAndRawDataHandling)
+HWTEST(DpAccountQueryTest, LargeAvatarRetainsOriginalLimitAndRawDataHandling_002, TestSize.Level1)
 {
     for (size_t size : { size_t{ 0 }, LARGE_AVATAR_SIZE, static_cast<size_t>(MAX_AVATAR_SIZE) }) {
         OhosAccountInfo info;
@@ -196,7 +197,7 @@ TEST(DpAccountQueryTest, LargeAvatarRetainsOriginalLimitAndRawDataHandling)
     }
 }
 
-TEST(DpAccountQueryTest, TruncatedUidSequenceableReturnsReadError)
+HWTEST(DpAccountQueryTest, TruncatedUidSequenceableReturnsReadError_003, TestSize.Level1)
 {
     OhosAccountInfo info;
     info.name_ = "name";
@@ -217,7 +218,7 @@ TEST(DpAccountQueryTest, TruncatedUidSequenceableReturnsReadError)
     }
 }
 
-TEST(DpAccountQueryTest, InvalidAvatarAndNullParcelableKeepUidEmpty)
+HWTEST(DpAccountQueryTest, InvalidAvatarAndNullParcelableKeepUidEmpty_004, TestSize.Level1)
 {
     EXPECT_EQ(ERR_ACCOUNT_COMMON_READ_PARCEL_ERROR,
         CompareUid([](MessageParcel& reply) { reply.WriteInt32(0); }, false));
@@ -237,7 +238,7 @@ TEST(DpAccountQueryTest, InvalidAvatarAndNullParcelableKeepUidEmpty)
     }
 }
 
-TEST(DpAccountQueryTest, AccountErrorsAndNegativeIdsMatchOriginalProxy)
+HWTEST(DpAccountQueryTest, AccountErrorsAndNegativeIdsMatchOriginalProxy_005, TestSize.Level1)
 {
     for (int32_t error : std::vector<int32_t>{ ERR_INVALID_VALUE, ERR_INVALID_DATA, -1, TEST_SERVICE_ERROR }) {
         int32_t serviceError = CompareUid({}, false, error);
@@ -247,7 +248,7 @@ TEST(DpAccountQueryTest, AccountErrorsAndNegativeIdsMatchOriginalProxy)
     }
 }
 
-TEST(DpAccountQueryTest, DomainFieldsMatchOriginalAndTruncationReturnsReadError)
+HWTEST(DpAccountQueryTest, DomainFieldsMatchOriginalAndTruncationReturnsReadError_006, TestSize.Level1)
 {
     for (const auto& name : { std::string(), std::string("enterprise"), std::string("x\0y", EMBEDDED_NULL_LENGTH) }) {
         DomainAccountInfo info;
@@ -270,7 +271,7 @@ TEST(DpAccountQueryTest, DomainFieldsMatchOriginalAndTruncationReturnsReadError)
     CompareDomain({}, ERR_INVALID_DATA);
 }
 
-TEST(DpAccountQueryTest, ForegroundUsesOriginalReplyAndErrorConversion)
+HWTEST(DpAccountQueryTest, ForegroundUsesOriginalReplyAndErrorConversion_007, TestSize.Level1)
 {
     for (int32_t value : { 0, TEST_USER_ID, NEXT_USER_ID, LARGE_USER_ID }) {
         for (int32_t error : std::vector<int32_t>{ ERR_OK, ERR_INVALID_VALUE, ERR_INVALID_DATA }) {
@@ -293,7 +294,7 @@ TEST(DpAccountQueryTest, ForegroundUsesOriginalReplyAndErrorConversion)
     }
 }
 
-TEST(DpAccountQueryTest, MissingServiceAndInvalidDomainUserReturnOriginalErrors)
+HWTEST(DpAccountQueryTest, MissingServiceAndInvalidDomainUserReturnOriginalErrors_008, TestSize.Level1)
 {
     DpAccountQuery query(nullptr);
     int32_t id = -1;
@@ -309,7 +310,7 @@ TEST(DpAccountQueryTest, MissingServiceAndInvalidDomainUserReturnOriginalErrors)
     EXPECT_FALSE(enterprise);
 }
 
-TEST(DpAccountQueryTest, ConcurrentQueriesKeepEachUserSeparate)
+HWTEST(DpAccountQueryTest, ConcurrentQueriesKeepEachUserSeparate_009, TestSize.Level1)
 {
     std::vector<std::thread> threads;
     for (int32_t n = 0; n < QUERY_THREAD_COUNT; ++n) {
@@ -327,7 +328,7 @@ TEST(DpAccountQueryTest, ConcurrentQueriesKeepEachUserSeparate)
     }
 }
 
-TEST(DpAccountQueryTest, MissingStatusOrForegroundValueCannotBecomeUserZero)
+HWTEST(DpAccountQueryTest, MissingStatusOrForegroundValueCannotBecomeUserZero_010, TestSize.Level1)
 {
     for (bool omitStatus : { false, true }) {
         sptr<ReplyService> remote = new ReplyService;
@@ -341,7 +342,7 @@ TEST(DpAccountQueryTest, MissingStatusOrForegroundValueCannotBecomeUserZero)
     }
 }
 
-TEST(DpAccountQueryTest, MalformedIdentityRepliesDoNotOverwriteCallerOutputs)
+HWTEST(DpAccountQueryTest, MalformedIdentityRepliesDoNotOverwriteCallerOutputs_011, TestSize.Level1)
 {
     for (bool omitStatus : { false, true }) {
         sptr<ReplyService> remote = new ReplyService;
@@ -360,7 +361,7 @@ TEST(DpAccountQueryTest, MalformedIdentityRepliesDoNotOverwriteCallerOutputs)
     }
 }
 
-TEST(DpAccountQueryTest, MissingHandshakeStatusDoesNotAcceptRemote)
+HWTEST(DpAccountQueryTest, MissingHandshakeStatusDoesNotAcceptRemote_012, TestSize.Level1)
 {
     sptr<ReplyService> remote = new ReplyService;
     remote->omitHandshakeStatus_ = true;
