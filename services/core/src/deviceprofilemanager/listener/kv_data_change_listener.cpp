@@ -27,6 +27,7 @@
 #include "device_profile_manager.h"
 #include "profile_utils.h"
 #include "profile_cache.h"
+#include "switch_profile_manager.h"
 #include "subscribe_profile_manager.h"
 #include "distributed_device_profile_log.h"
 #include "service_info.h"
@@ -446,6 +447,9 @@ void SwitchUpdater::OnDeviceOnline(const TrustedDeviceInfo& deviceInfo)
 void SwitchUpdater::HandleSwitchUpdateChange(const std::string& udid, uint32_t switchValue)
 {
     HILOGI("udid: %{public}s, switch: %{public}u", ProfileUtils::GetAnonyString(udid).c_str(), switchValue);
+    if (udid == ProfileCache::GetInstance().GetLocalUdid()) {
+        SwitchProfileManager::GetInstance().SetLocalSwitchFromUpdate(switchValue);
+    }
     std::string serviceName;
 
     for (int32_t i = (int32_t)SwitchFlag::SWITCH_FLAG_MIN + NUM_1;
@@ -461,10 +465,6 @@ void SwitchUpdater::HandleSwitchUpdateChange(const std::string& udid, uint32_t s
         if (res != DP_SUCCESS) {
             HILOGE("GenerateSwitchNotify failed, res: %{public}d", res);
             return;
-        }
-        if (udid == ProfileCache::GetInstance().GetLocalUdid()) {
-            ProfileCache::GetInstance().SetCurSwitch(switchValue);
-            HILOGD("update curLocalSwitch: %{public}d", ProfileCache::GetInstance().GetSwitch());
         }
     }
 }

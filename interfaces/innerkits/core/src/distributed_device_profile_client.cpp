@@ -438,12 +438,17 @@ int32_t DistributedDeviceProfileClient::SubscribeDeviceProfile(const SubscribeIn
             HILOGE("ProfileChangeListeners size is invalid!size: %{public}zu!", subscribeInfos_.size());
             return DP_EXCEED_MAX_SIZE_FAIL;
         }
+        int32_t ret = dpService->SubscribeDeviceProfile(subscribeInfo);
+        if (ret != DP_SUCCESS) {
+            HILOGE("SubscribeDeviceProfile failed, ret: %{public}d", ret);
+            return ret;
+        }
         std::string subscribeTag =
             subscribeInfo.GetSubscribeKey() + SEPARATOR + std::to_string(subscribeInfo.GetSaId());
         subscribeInfos_[subscribeTag] = subscribeInfo;
         HILOGI("subscribeInfos_.size is %{public}zu", subscribeInfos_.size());
+        return ret;
     }
-    return dpService->SubscribeDeviceProfile(subscribeInfo);
 }
 
 int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfile(const SubscribeInfo& subscribeInfo)
@@ -458,8 +463,8 @@ int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfile(const Subscribe
         std::lock_guard<std::mutex> lock(subscribeLock_);
         subscribeInfos_.erase(subscribeInfo.GetSubscribeKey() + SEPARATOR + std::to_string(subscribeInfo.GetSaId()));
         HILOGI("subscribeInfos_.size is %{public}zu", subscribeInfos_.size());
+        return dpService->UnSubscribeDeviceProfile(subscribeInfo);
     }
-    return dpService->UnSubscribeDeviceProfile(subscribeInfo);
 }
 
 int32_t DistributedDeviceProfileClient::SyncDeviceProfile(const DpSyncOptions& syncOptions,
@@ -688,25 +693,22 @@ int32_t DistributedDeviceProfileClient::SubscribeDeviceProfileInited(int32_t saI
 int32_t DistributedDeviceProfileClient::UnSubscribeDeviceProfileInited(int32_t saId)
 {
     HILOGI("enter");
+    if (saId <= 0 || saId > MAX_SAID) {
+        HILOGE("saId is invalid, saId:%{public}d", saId);
+        return DP_INVALID_PARAM;
+    }
+    SubscribeDeviceProfileSA();
+    auto dpService = GetDeviceProfileService();
     {
         std::lock_guard<std::mutex> lock(dpInitedLock_);
         if (dpInitedCallback_ == nullptr) {
             HILOGE("not subscribe dp inited, no need unsubscribe dp inited");
             return DP_SUCCESS;
         }
-    }
-    SubscribeDeviceProfileSA();
-    auto dpService = GetDeviceProfileService();
-    if (dpService == nullptr) {
-        HILOGE("Get dp service failed");
-        return DP_GET_SERVICE_FAILED;
-    }
-    if (saId <= 0 || saId > MAX_SAID) {
-        HILOGE("saId is invalid, saId:%{public}d", saId);
-        return DP_INVALID_PARAM;
-    }
-    {
-        std::lock_guard<std::mutex> lock(dpInitedLock_);
+        if (dpService == nullptr) {
+            HILOGE("Get dp service failed");
+            return DP_GET_SERVICE_FAILED;
+        }
         int32_t ret = dpService->UnSubscribeDeviceProfileInited(saId);
         if (ret != DP_SUCCESS) {
             HILOGE("Unsubscribe DP Inited failed!");
@@ -764,19 +766,6 @@ int32_t DistributedDeviceProfileClient::UnSubscribePinCodeInvalid(const std::str
     int32_t pinExchangeType)
 {
     HILOGI("enter");
-    {
-        std::lock_guard<std::mutex> lock(pinCodeLock_);
-        if (pinCodeCallback_ == nullptr) {
-            HILOGE("not subscribe pincode invalid, no need unsubscribe pincode invalid");
-            return DP_SUCCESS;
-        }
-    }
-    SubscribeDeviceProfileSA();
-    auto dpService = GetDeviceProfileService();
-    if (dpService == nullptr) {
-        HILOGE("Get dp service failed");
-        return DP_GET_SERVICE_FAILED;
-    }
     if (bundleName.empty()) {
         HILOGE("tokenId is invalid");
         return DP_INVALID_PARAM;
@@ -785,8 +774,18 @@ int32_t DistributedDeviceProfileClient::UnSubscribePinCodeInvalid(const std::str
         HILOGE("pinExchangeType is invalid");
         return DP_INVALID_PARAM;
     }
+    SubscribeDeviceProfileSA();
+    auto dpService = GetDeviceProfileService();
     {
         std::lock_guard<std::mutex> lock(pinCodeLock_);
+        if (pinCodeCallback_ == nullptr) {
+            HILOGE("not subscribe pincode invalid, no need unsubscribe pincode invalid");
+            return DP_SUCCESS;
+        }
+        if (dpService == nullptr) {
+            HILOGE("Get dp service failed");
+            return DP_GET_SERVICE_FAILED;
+        }
         int32_t ret = dpService->UnSubscribePinCodeInvalid(bundleName, pinExchangeType);
         if (ret != DP_SUCCESS) {
             HILOGE("Unsubscribe DP Inited failed!");

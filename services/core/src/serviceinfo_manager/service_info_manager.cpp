@@ -46,24 +46,34 @@ namespace {
 int32_t ServiceInfoManager::Init()
 {
     HILOGI("call!");
-    std::lock_guard<std::mutex> lock(storeMutex_);
-    serviceInfoKvAdapter_ = std::make_shared<ServiceInfoKvAdapter>(
-        std::make_shared<KvDeathRecipient>(STORE_ID), DistributedKv::TYPE_DYNAMICAL);
-    int32_t localRet = serviceInfoKvAdapter_->Init();
-    if (localRet != DP_SUCCESS) {
-        HILOGE("local KV adapters init failed, ret: %{public}d", localRet);
-        return DP_INIT_DB_FAILED;
+    {
+        std::lock_guard<std::mutex> lock(storeMutex_);
+        serviceInfoKvAdapter_ = std::make_shared<ServiceInfoKvAdapter>(
+            std::make_shared<KvDeathRecipient>(STORE_ID), DistributedKv::TYPE_DYNAMICAL);
+        int32_t localRet = serviceInfoKvAdapter_->Init();
+        if (localRet != DP_SUCCESS) {
+            HILOGE("local KV adapters init failed, ret: %{public}d", localRet);
+            return DP_INIT_DB_FAILED;
+        }
     }
-    syncServiceInfoKvAdapter_ = std::make_shared<KVAdapter>(
-        APP_ID, SYNC_STORE_ID, std::make_shared<KvDataChangeListener>(SYNC_STORE_ID),
-        nullptr, std::make_shared<KvDeathRecipient>(SYNC_STORE_ID), DistributedKv::TYPE_DYNAMICAL);
-    int32_t syncRet = syncServiceInfoKvAdapter_->Init();
+    int32_t syncRet = DP_SUCCESS;
+    {
+        std::lock_guard<std::mutex> lock(syncStoreMutex_);
+        syncServiceInfoKvAdapter_ = std::make_shared<KVAdapter>(
+            APP_ID, SYNC_STORE_ID, std::make_shared<KvDataChangeListener>(SYNC_STORE_ID),
+            nullptr, std::make_shared<KvDeathRecipient>(SYNC_STORE_ID), DistributedKv::TYPE_DYNAMICAL);
+        syncRet = syncServiceInfoKvAdapter_->Init();
+        if (syncRet != DP_SUCCESS) {
+            HILOGE("sync KV adapters init failed, ret: %{public}d", syncRet);
+            syncServiceInfoKvAdapter_.reset();
+        }
+    }
     if (syncRet != DP_SUCCESS) {
-        HILOGE("sync KV adapters init failed, ret: %{public}d", syncRet);
+        std::lock_guard<std::mutex> lock(storeMutex_);
         if (serviceInfoKvAdapter_ != nullptr) {
             serviceInfoKvAdapter_->UnInit();
+            serviceInfoKvAdapter_ = nullptr;
         }
-        syncServiceInfoKvAdapter_.reset();
         return DP_INIT_DB_FAILED;
     }
     HILOGI("Both local and sync KV adapters initialized successfully");
@@ -152,30 +162,26 @@ int32_t ServiceInfoManager::DeleteServiceInfo(const UserInfo& userInfo)
         HILOGE("udid is required but empty");
         return DP_INVALID_PARAMS;
     }
-    std::map<std::string, std::string> entries;
     std::string prefix = "serInfo" + SEPARATOR + userInfo.udid + SEPARATOR;
+    std::vector<std::string> matchedKeys;
     {
         std::lock_guard<std::mutex> lock(storeMutex_);
         if (serviceInfoKvAdapter_ == nullptr) {
             HILOGE("serviceInfoKvAdapter_ is nullptr");
             return DP_KV_DB_PTR_NULL;
         }
-
+        std::map<std::string, std::string> entries;
         if (serviceInfoKvAdapter_->GetByPrefix(prefix, entries) != DP_SUCCESS) {
             HILOGE("Query entries failed for prefix: %{public}s",
                 ProfileUtils::GetDbKeyAnonyString(prefix).c_str());
             return DP_GET_KV_DB_FAIL;
         }
-    }
-    std::vector<std::string> matchedKeys;
-    for (const auto &entry : entries) {
-        std::string remaining = entry.first.substr(prefix.length());
-        if (IsKeyMatch(remaining, userInfo)) {
-            matchedKeys.push_back(entry.first);
+        for (const auto &entry : entries) {
+            std::string remaining = entry.first.substr(prefix.length());
+            if (IsKeyMatch(remaining, userInfo)) {
+                matchedKeys.push_back(entry.first);
+            }
         }
-    }
-    {
-        std::lock_guard<std::mutex> lock(storeMutex_);
         if (serviceInfoKvAdapter_->DeleteBatch(matchedKeys) != DP_SUCCESS) {
             HILOGE("Batch delete failed for %{public}zu entries", matchedKeys.size());
             return DP_DEL_KV_DB_FAIL;

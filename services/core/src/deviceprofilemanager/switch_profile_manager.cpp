@@ -112,12 +112,22 @@ int32_t SwitchProfileManager::GetCharacteristicProfile(const std::string& device
 int32_t SwitchProfileManager::RefreshLocalSwitchProfile()
 {
     HILOGD("call!");
+    std::lock_guard<std::mutex> lock(switchProfileMutex_);
     int32_t res = ProfileControlUtils::RefreshLocalSwitchProfile(APP_ID);
     if (res != DP_SUCCESS) {
         HILOGE("RefreshLocalSwitchProfile fail, reason: %{public}d!", res);
         return res;
     }
     HILOGD("GetSwitchCharacteristicProfile success");
+    return DP_SUCCESS;
+}
+
+int32_t SwitchProfileManager::SetLocalSwitchFromUpdate(uint32_t switchValue)
+{
+    HILOGD("call!");
+    std::lock_guard<std::mutex> lock(switchProfileMutex_);
+    ProfileCache::GetInstance().SetCurSwitch(switchValue);
+    HILOGD("update curLocalSwitch from update: %{public}d", ProfileCache::GetInstance().GetSwitch());
     return DP_SUCCESS;
 }
 

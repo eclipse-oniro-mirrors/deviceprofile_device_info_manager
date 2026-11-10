@@ -85,6 +85,7 @@ int32_t ProfileDataManager::PutDeviceProfile(DeviceProfile deviceProfile)
     if (deviceProfile.GetUserId() == DEFAULT_USER_ID) {
         deviceProfile.SetUserId(MultiUserManager::GetInstance().GetCurrentForegroundUserID());
     }
+    std::lock_guard<std::mutex> lock(deviceProfileMutex_);
     DeviceProfileFilterOptions filterOptions;
     filterOptions.AddDeviceIds(deviceProfile.GetDeviceId());
     filterOptions.SetUserId(deviceProfile.GetUserId());
@@ -234,6 +235,7 @@ int32_t ProfileDataManager::PutDeviceIconInfoBatch(const std::vector<DeviceIconI
 
 int32_t ProfileDataManager::PutDeviceIconInfo(const DeviceIconInfo& deviceIconInfo)
 {
+    std::lock_guard<std::mutex> lock(deviceIconInfoMutex_);
     DeviceIconInfoFilterOptions filterOptions;
     std::vector<std::string> productIds;
     productIds.emplace_back(deviceIconInfo.GetProductId());
@@ -283,6 +285,7 @@ int32_t ProfileDataManager::PutProductInfo(const ProductInfo& productInfo)
         HILOGE("ProductId is nullptr");
         return DP_INVALID_PARAM;
     }
+    std::lock_guard<std::mutex> lock(productInfoMutex_);
     std::vector<std::string> productIds;
     productIds.emplace_back(productInfo.GetProductId());
     std::vector<ProductInfo> productInfos;

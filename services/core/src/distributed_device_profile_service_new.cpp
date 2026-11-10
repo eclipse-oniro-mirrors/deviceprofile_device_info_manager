@@ -201,10 +201,9 @@ int32_t DistributedDeviceProfileServiceNew::PostInitNext()
         SaveSwitchProfilesFromTempCache();
 #endif // DEVICE_PROFILE_SWITCH_DISABLE
         SaveDynamicProfilesFromTempCache();
-        isInited_ = true;
     }
-    HILOGI("PostInit finish");
     NotifyDeviceProfileInited();
+    HILOGI("PostInit finish");
     return DP_SUCCESS;
 }
 
@@ -240,7 +239,10 @@ void DistributedDeviceProfileServiceNew::SubtractRunningIpcCount()
 
 int32_t DistributedDeviceProfileServiceNew::UnInit()
 {
-    isInited_ = false;
+    {
+        std::lock_guard<std::mutex> lock(dpInitedCallbackMapMtx_);
+        isInited_ = false;
+    }
     if (TrustProfileManager::GetInstance().UnInit() != DP_SUCCESS) {
         HILOGE("TrustProfileManager UnInit failed");
         return DP_TRUST_PROFILE_MANAGER_UNINIT_FAIL;
@@ -1249,21 +1251,25 @@ int32_t DistributedDeviceProfileServiceNew::SubscribeDeviceProfileInited(int32_t
         HILOGE("saId is invalid, saId:%{public}d", saId);
         return DP_INVALID_PARAM;
     }
-    if (isInited_.load()) {
-        HILOGI("deviceProfile service is already inited.");
-        sptr<IDpInitedCallback> callbackProxy = iface_cast<IDpInitedCallback>(dpInitedCallback);
-        if (callbackProxy == nullptr) {
-            HILOGE("Cast to IDpInitedCallback failed!");
-            return DP_NULLPTR;
+    sptr<IDpInitedCallback> callbackProxy = iface_cast<IDpInitedCallback>(dpInitedCallback);
+    if (callbackProxy == nullptr) {
+        HILOGE("Cast to IDpInitedCallback failed!");
+        return DP_NULLPTR;
+    }
+    bool alreadyInited = false;
+    {
+        std::lock_guard<std::mutex> lock(dpInitedCallbackMapMtx_);
+        if (dpInitedCallbackMap_.size() > MAX_CALLBACK_LEN) {
+            HILOGE("too many callback");
+            return DP_INVALID_PARAM;
         }
+        dpInitedCallbackMap_[saId] = dpInitedCallback;
+        alreadyInited = isInited_.load();
+    }
+    if (alreadyInited) {
+        HILOGI("deviceProfile service is already inited.");
         callbackProxy->OnDpInited();
     }
-    std::lock_guard<std::mutex> lock(dpInitedCallbackMapMtx_);
-    if (dpInitedCallbackMap_.size() > MAX_CALLBACK_LEN) {
-        HILOGE("too many callback");
-        return DP_INVALID_PARAM;
-    }
-    dpInitedCallbackMap_[saId] = dpInitedCallback;
     return DP_SUCCESS;
 }
 
@@ -1328,13 +1334,20 @@ int32_t DistributedDeviceProfileServiceNew::UnSubscribePinCodeInvalid(const std:
 
 int32_t DistributedDeviceProfileServiceNew::NotifyDeviceProfileInited()
 {
-    std::lock_guard<std::mutex> lock(dpInitedCallbackMapMtx_);
-    for (const auto& [saId, callback] : dpInitedCallbackMap_) {
-        sptr<IDpInitedCallback> callbackProxy = iface_cast<IDpInitedCallback>(callback);
-        if (callbackProxy == nullptr) {
-            HILOGE("Cast to IDpInitedCallback failed!");
-            continue;
+    std::vector<sptr<IDpInitedCallback>> callbacks;
+    {
+        std::lock_guard<std::mutex> lock(dpInitedCallbackMapMtx_);
+        isInited_ = true;
+        for (const auto& [saId, callback] : dpInitedCallbackMap_) {
+            sptr<IDpInitedCallback> callbackProxy = iface_cast<IDpInitedCallback>(callback);
+            if (callbackProxy == nullptr) {
+                HILOGE("Cast to IDpInitedCallback failed!");
+                continue;
+            }
+            callbacks.push_back(callbackProxy);
         }
+    }
+    for (const auto& callbackProxy : callbacks) {
         callbackProxy->OnDpInited();
     }
     return DP_SUCCESS;
