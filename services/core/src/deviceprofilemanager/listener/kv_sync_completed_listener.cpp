@@ -30,7 +30,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "KvSyncCompletedListener";
+    constexpr char TAG[] = "KvSyncCompletedListener";
     const std::string ON_SYNC_TASK_ID = "on_sync_task";
     const std::string DYNAMIC_STORE_ID = "dp_kv_store";
     const std::string STATIC_STORE_ID = "dp_kv_static_store";

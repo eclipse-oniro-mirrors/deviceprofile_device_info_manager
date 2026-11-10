@@ -27,7 +27,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(DpRadarHelper);
 namespace {
-const std::string TAG = "DpRadarHelper";
+constexpr char TAG[] = "DpRadarHelper";
 }
 void DpRadarHelper::ReportCheckDpSa(int32_t stageRes)
 {

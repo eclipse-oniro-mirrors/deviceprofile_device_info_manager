@@ -21,7 +21,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "DpSyncOptions";
+    constexpr char TAG[] = "DpSyncOptions";
 }
 
 std::vector<std::string> DpSyncOptions::GetDeviceList() const

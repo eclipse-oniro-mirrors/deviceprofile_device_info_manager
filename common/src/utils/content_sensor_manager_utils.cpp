@@ -34,7 +34,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "ContentSensorManagerUtils";
+    constexpr char TAG[] = "ContentSensorManagerUtils";
     const char* SYS_SETTINGS_DATA_SYNC = "persist.distributed_scene.sys_settings_data_sync";
     const char* ENTERPRISE_SPACE_ENABLE_PARAM = "persist.space_mgr_service.enterprise_space_enable";
     const char* PRODUCT_ID_KEY = "const.distributed_collaboration.productId";

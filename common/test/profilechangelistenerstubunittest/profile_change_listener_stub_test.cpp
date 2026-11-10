@@ -822,5 +822,116 @@ HWTEST_F(ProfileChangeListenerStubTest, OnAccountAclActiveInner_002, TestSize.Le
     int32_t ret = listenerStub_->OnAccountAclActiveInner(data, reply);
     EXPECT_EQ(DP_SUCCESS, ret);
 }
+
+namespace {
+template<typename Profile>
+void CheckSuccessfulDispatch(ProfileChangeListenerStub& listener, DpIpcInterfaceCode code, bool update)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    Profile profile;
+    ASSERT_TRUE(data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor()));
+    ASSERT_TRUE(profile.Marshalling(data));
+    if (update) {
+        ASSERT_TRUE(profile.Marshalling(data));
+    }
+    EXPECT_EQ(listener.OnRemoteRequest(static_cast<uint32_t>(code), data, reply, option), DP_SUCCESS);
+    int32_t status = ERR_FLATTEN_OBJECT;
+    ASSERT_TRUE(reply.ReadInt32(status));
+    EXPECT_EQ(status, DP_SUCCESS);
+}
+} // namespace
+
+HWTEST_F(ProfileChangeListenerStubTest, DispatchTrustAndAclProfiles_001, TestSize.Level0)
+{
+    ASSERT_NE(listenerStub_, nullptr);
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<TrustDeviceProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_ADD, false));
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<TrustDeviceProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_DELETE, false));
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<TrustDeviceProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_UPDATE, true));
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<TrustDeviceProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_ACTIVE, false));
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<TrustDeviceProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_INACTIVE, false));
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<TrustDeviceProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_DELETE, false));
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<TrustDeviceProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_UPDATE, false));
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<TrustDeviceProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_ACCOUNT_ACL_DELETE, false));
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<TrustDeviceProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_ACCOUNT_ACL_INACTIVE, false));
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<TrustDeviceProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_ACCOUNT_ACL_ADD, false));
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<TrustDeviceProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_ACCOUNT_ACL_ACTIVE, false));
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, DispatchDeviceProfiles_001, TestSize.Level0)
+{
+    ASSERT_NE(listenerStub_, nullptr);
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<DeviceProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_DEVICE_PROFILE_ADD, false));
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<DeviceProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_DEVICE_PROFILE_DELETE, false));
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<DeviceProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_DEVICE_PROFILE_UPDATE, true));
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, DispatchServiceProfiles_001, TestSize.Level0)
+{
+    ASSERT_NE(listenerStub_, nullptr);
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<ServiceProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_SERVICE_PROFILE_ADD, false));
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<ServiceProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_SERVICE_PROFILE_DELETE, false));
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<ServiceProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_SERVICE_PROFILE_UPDATE, true));
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, DispatchCharacteristicProfiles_001, TestSize.Level0)
+{
+    ASSERT_NE(listenerStub_, nullptr);
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<CharacteristicProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_CHAR_PROFILE_ADD, false));
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<CharacteristicProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_CHAR_PROFILE_DELETE, false));
+    ASSERT_NO_FATAL_FAILURE(CheckSuccessfulDispatch<CharacteristicProfile>(*listenerStub_,
+        DpIpcInterfaceCode::ON_CHAR_PROFILE_UPDATE, true));
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, UnknownRequestUsesIpcFallback_001, TestSize.Level0)
+{
+    constexpr uint32_t UNKNOWN_REQUEST_CODE = UINT32_MAX;
+    MessageParcel data;
+    MessageParcel referenceData;
+    MessageParcel reply;
+    MessageParcel referenceReply;
+    MessageOption option;
+    ASSERT_NE(listenerStub_, nullptr);
+    ASSERT_TRUE(data.WriteInterfaceToken(IProfileChangeListener::GetDescriptor()));
+    int32_t expected = listenerStub_->IPCObjectStub::OnRemoteRequest(
+        UNKNOWN_REQUEST_CODE, referenceData, referenceReply, option);
+    EXPECT_EQ(listenerStub_->OnRemoteRequest(UNKNOWN_REQUEST_CODE, data, reply, option), expected);
+    EXPECT_EQ(reply.GetDataSize(), referenceReply.GetDataSize());
+}
+
+HWTEST_F(ProfileChangeListenerStubTest, InvalidTokenRejectsBothDispatchGroups_001, TestSize.Level0)
+{
+    ASSERT_NE(listenerStub_, nullptr);
+    for (auto code : {DpIpcInterfaceCode::ON_ACCOUNT_ACL_ACTIVE, DpIpcInterfaceCode::ON_CHAR_PROFILE_UPDATE}) {
+        MessageParcel data;
+        MessageParcel reply;
+        MessageOption option;
+        ASSERT_TRUE(data.WriteInterfaceToken(u"invalid.profile.listener"));
+        EXPECT_EQ(listenerStub_->OnRemoteRequest(static_cast<uint32_t>(code), data, reply, option),
+            DP_INTERFACE_CHECK_FAILED);
+        EXPECT_EQ(reply.GetDataSize(), 0U);
+    }
+}
+
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

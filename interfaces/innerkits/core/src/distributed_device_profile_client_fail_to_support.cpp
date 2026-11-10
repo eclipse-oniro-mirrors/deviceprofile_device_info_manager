@@ -23,7 +23,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-const std::string TAG = "ClientFailToSupport";
+constexpr char TAG[] = "ClientFailToSupport";
 }
 
 IMPLEMENT_SINGLE_INSTANCE(DistributedDeviceProfileClient);
@@ -418,7 +418,6 @@ void DistributedDeviceProfileClient::ReleaseResource()
     ReleaseRegisterBusinessCallback();
     ReSubscribeAllServiceInfo();
     (void)loadSystemAbilityFinish_;
-    (void)retryErrCodes_.size();
     HILOGI("%{public}s no-build", __func__);
 }
 
@@ -547,7 +546,6 @@ int32_t DistributedDeviceProfileClient::RetryClientRequest(
     (void)firesRet;
     (void)method;
     (void)sizeof...(Args);
-    (void)retryErrCodes_.size();
     HILOGI("%{public}s no-build, ret=%{public}d", __func__, DP_NOT_SUPPORT);
     return DP_NOT_SUPPORT;
 }

@@ -27,7 +27,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(SwitchProfileManager);
 namespace {
-    const std::string TAG = "SwitchProfileManager";
+    constexpr char TAG[] = "SwitchProfileManager";
     const std::string APP_ID = "distributed_device_profile_service";
 }
 

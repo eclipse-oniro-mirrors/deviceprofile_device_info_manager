@@ -33,7 +33,7 @@ namespace {
     constexpr int32_t MAX_INIT_RETRY_TIMES = 30;
     constexpr int32_t INIT_RETRY_SLEEP_INTERVAL = 200 * 1000; // 500ms
     const std::string DATABASE_DIR = "/data/service/el1/public/database/distributed_device_profile_service";
-    const std::string TAG = "KVAdapter";
+    constexpr char TAG[] = "KVAdapter";
     constexpr uint32_t MAX_BATCH_SIZE = 128;
 }
 

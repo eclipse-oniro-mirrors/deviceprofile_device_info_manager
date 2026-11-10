@@ -24,7 +24,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "SubscribeInfo";
+    constexpr char TAG[] = "SubscribeInfo";
 }
 SubscribeInfo::SubscribeInfo(int32_t saId, const std::string& subscribeKey,
     std::unordered_set<ProfileChangeType> subscribeChangeTypes, sptr<IProfileChangeListener> profileChangeListener,

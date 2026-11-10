@@ -22,7 +22,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "QueryProfile";
+    constexpr char TAG[] = "QueryProfile";
 }
 
 QueryProfile::QueryProfile()

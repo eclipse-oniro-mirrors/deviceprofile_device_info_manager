@@ -17,7 +17,6 @@
 #define OHOS_DP_PROFILE_SYSTEM_INFO_COLLECTOR_H
 
 #include <string>
-#include <map>
 
 #include "collector.h"
 #include "device_profile.h"
@@ -29,16 +28,6 @@ public:
     bool ConvertToProfile(DeviceProfile& profile) override;
 
 private:
-    const std::map<std::string, std::string> deviceTypeMap = {
-        {TYPE_UNKNOWN, "00A"},
-        {TYPE_PHONE, "00E"},
-        {TYPE_PAD, "011"},
-        {TYPE_TV, "09C"},
-        {TYPE_CAR, "083"},
-        {TYPE_WATCH, "06D"},
-        {TYPE_PC, "00C"},
-        {TYPE_2IN1, "A2F"}
-    };
     int32_t GetOsType();
     int32_t GetProtType();
     std::string GetOsVersion();

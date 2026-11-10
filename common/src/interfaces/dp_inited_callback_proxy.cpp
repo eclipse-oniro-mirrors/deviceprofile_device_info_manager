@@ -23,7 +23,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "DpInitedCallbackProxy";
+    constexpr char TAG[] = "DpInitedCallbackProxy";
 }
 
 int32_t DpInitedCallbackProxy::OnDpInited()

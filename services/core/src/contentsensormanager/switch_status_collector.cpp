@@ -28,7 +28,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-const std::string TAG = "SwitchStatusCollector";
+constexpr char TAG[] = "SwitchStatusCollector";
 const std::string APP_ID = "distributed_device_profile_service";
 }
 

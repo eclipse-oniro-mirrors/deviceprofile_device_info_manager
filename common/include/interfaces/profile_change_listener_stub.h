@@ -62,11 +62,7 @@ public:
     int32_t OnAccountAclActive(const TrustDeviceProfile& profile) override;
 
 private:
-    using Func = int32_t(ProfileChangeListenerStub::*)(MessageParcel& data, MessageParcel& reply);
     bool IsInterfaceToken(MessageParcel& data);
-
-private:
-    std::map<uint32_t, Func> funcsMap_;
 };
 } // namespace DistributedDeviceProfile
 } // namespace OHOS

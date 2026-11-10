@@ -30,51 +30,68 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "ProfileChangeListenerStub";
+constexpr char TAG[] = "ProfileChangeListenerStub";
+using ProfileChangeHandler = int32_t (ProfileChangeListenerStub::*)(MessageParcel&, MessageParcel&);
+
+ProfileChangeHandler FindTrustProfileHandler(uint32_t code)
+{
+    switch (code) {
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_ADD):
+            return &ProfileChangeListenerStub::OnTrustDeviceProfileAddInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_DELETE):
+            return &ProfileChangeListenerStub::OnTrustDeviceProfileDeleteInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_UPDATE):
+            return &ProfileChangeListenerStub::OnTrustDeviceProfileUpdateInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_ACTIVE):
+            return &ProfileChangeListenerStub::OnTrustDeviceProfileActiveInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_INACTIVE):
+            return &ProfileChangeListenerStub::OnTrustDeviceProfileInactiveInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_DELETE):
+            return &ProfileChangeListenerStub::OnDeviceAclInactiveByDeleteInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_UPDATE):
+            return &ProfileChangeListenerStub::OnDeviceAclInactiveByUpdateInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_DELETE):
+            return &ProfileChangeListenerStub::OnAccountAclDeleteInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_INACTIVE):
+            return &ProfileChangeListenerStub::OnAccountAclInactiveInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_ADD):
+            return &ProfileChangeListenerStub::OnAccountAclAddInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_ACTIVE):
+            return &ProfileChangeListenerStub::OnAccountAclActiveInner;
+        default:
+            return nullptr;
+    }
+}
+
+ProfileChangeHandler FindDeviceProfileHandler(uint32_t code)
+{
+    switch (code) {
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_ADD):
+            return &ProfileChangeListenerStub::OnDeviceProfileAddInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_DELETE):
+            return &ProfileChangeListenerStub::OnDeviceProfileDeleteInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_UPDATE):
+            return &ProfileChangeListenerStub::OnDeviceProfileUpdateInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_ADD):
+            return &ProfileChangeListenerStub::OnServiceProfileAddInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_DELETE):
+            return &ProfileChangeListenerStub::OnServiceProfileDeleteInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_UPDATE):
+            return &ProfileChangeListenerStub::OnServiceProfileUpdateInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_ADD):
+            return &ProfileChangeListenerStub::OnCharacteristicProfileAddInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_DELETE):
+            return &ProfileChangeListenerStub::OnCharacteristicProfileDeleteInner;
+        case static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_UPDATE):
+            return &ProfileChangeListenerStub::OnCharacteristicProfileUpdateInner;
+        default:
+            return nullptr;
+    }
+}
 }
 ProfileChangeListenerStub::ProfileChangeListenerStub()
 {
     HILOGI("construct!");
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_ADD)] =
-        &ProfileChangeListenerStub::OnTrustDeviceProfileAddInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_DELETE)] =
-        &ProfileChangeListenerStub::OnTrustDeviceProfileDeleteInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_UPDATE)] =
-        &ProfileChangeListenerStub::OnTrustDeviceProfileUpdateInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_ACTIVE)] =
-        &ProfileChangeListenerStub::OnTrustDeviceProfileActiveInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_TRUST_DEVICE_PROFILE_INACTIVE)] =
-        &ProfileChangeListenerStub::OnTrustDeviceProfileInactiveInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_DELETE)] =
-        &ProfileChangeListenerStub::OnDeviceAclInactiveByDeleteInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_ACL_INACTIVE_BY_UPDATE)] =
-        &ProfileChangeListenerStub::OnDeviceAclInactiveByUpdateInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_DELETE)] =
-        &ProfileChangeListenerStub::OnAccountAclDeleteInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_INACTIVE)] =
-        &ProfileChangeListenerStub::OnAccountAclInactiveInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_ADD)] =
-        &ProfileChangeListenerStub::OnAccountAclAddInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_ACCOUNT_ACL_ACTIVE)] =
-        &ProfileChangeListenerStub::OnAccountAclActiveInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_ADD)] =
-        &ProfileChangeListenerStub::OnDeviceProfileAddInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_DELETE)] =
-        &ProfileChangeListenerStub::OnDeviceProfileDeleteInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_DEVICE_PROFILE_UPDATE)] =
-        &ProfileChangeListenerStub::OnDeviceProfileUpdateInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_ADD)] =
-        &ProfileChangeListenerStub::OnServiceProfileAddInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_DELETE)] =
-        &ProfileChangeListenerStub::OnServiceProfileDeleteInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_SERVICE_PROFILE_UPDATE)] =
-        &ProfileChangeListenerStub::OnServiceProfileUpdateInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_ADD)] =
-        &ProfileChangeListenerStub::OnCharacteristicProfileAddInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_DELETE)] =
-        &ProfileChangeListenerStub::OnCharacteristicProfileDeleteInner;
-    funcsMap_[static_cast<uint32_t>(DpIpcInterfaceCode::ON_CHAR_PROFILE_UPDATE)] =
-        &ProfileChangeListenerStub::OnCharacteristicProfileUpdateInner;
 }
 
 ProfileChangeListenerStub::~ProfileChangeListenerStub()
@@ -96,9 +113,12 @@ int32_t ProfileChangeListenerStub::OnRemoteRequest(uint32_t code, MessageParcel&
         HILOGE("check interface token failed");
         return DP_INTERFACE_CHECK_FAILED;
     }
-    auto it = funcsMap_.find(code);
-    if (it != funcsMap_.end()) {
-        return (this->*(it->second))(data, reply);
+    auto handler = FindTrustProfileHandler(code);
+    if (handler == nullptr) {
+        handler = FindDeviceProfileHandler(code);
+    }
+    if (handler != nullptr) {
+        return (this->*handler)(data, reply);
     }
     HILOGW("unknown request code, please check, code = %{public}u", code);
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);

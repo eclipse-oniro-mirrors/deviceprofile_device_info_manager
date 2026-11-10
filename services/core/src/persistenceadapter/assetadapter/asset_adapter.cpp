@@ -22,7 +22,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(AssetAdapter);
 namespace {
-    const std::string TAG = "AssetAdapter";
+    constexpr char TAG[] = "AssetAdapter";
 }
 
 int32_t AssetAdapter::PutAsset(const AssetAttr *attr, uint32_t attrCnt)

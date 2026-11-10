@@ -32,8 +32,7 @@ namespace {
     const std::string DP_REJECT_KEY = "business_id_cast+_reject_event";
     const std::string DP_DISTURBANCE_KEY = "business_id_cast+_disturbance_event";
     const std::string STORE_ID = "dp_kv_store_business";
-    const std::string TAG = "BusinessEventManager";
-    const std::set<std::string> validKeys_ = { DP_REJECT_KEY, DP_DISTURBANCE_KEY };
+    constexpr char TAG[] = "BusinessEventManager";
 }
 //LCOV_EXCL_START
 int32_t BusinessEventManager::Init()
@@ -128,7 +127,7 @@ int32_t BusinessEventManager::GetBusinessEvent(BusinessEvent& event)
 
 bool BusinessEventManager::IsValidKey(const std::string& key)
 {
-    return validKeys_.find(key) != validKeys_.end();
+    return key == DP_REJECT_KEY || key == DP_DISTURBANCE_KEY;
 }
 //LCOV_EXCL_STOP
 } // namespace DistributedDeviceProfile

@@ -23,7 +23,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "ProfileListenerProxy";
+    constexpr char TAG[] = "ProfileListenerProxy";
 }
 int32_t ProfileListenerProxy::OnTrustDeviceProfileAdd(const TrustDeviceProfile& profile)
 {

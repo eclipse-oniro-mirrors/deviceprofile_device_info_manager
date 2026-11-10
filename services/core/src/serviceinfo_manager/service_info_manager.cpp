@@ -37,7 +37,7 @@ IMPLEMENT_SINGLE_INSTANCE(ServiceInfoManager)
 
 namespace {
     const std::string STORE_ID = "dp_kv_store_service_info_profile";
-    const std::string TAG = "ServiceInfoManager";
+    constexpr char TAG[] = "ServiceInfoManager";
     const std::string APP_ID = "distributed_device_profile_service";
     const std::string SYNC_STORE_ID = "dp_kv_static_store";
     constexpr int32_t DEVICE_UUID_LENGTH = 65;

@@ -26,7 +26,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(SettingsDataManager)
 namespace {
-const std::string TAG = "SettingsDataManager";
+constexpr char TAG[] = "SettingsDataManager";
 constexpr int32_t USERID_HELPER_NUMBER = 100;
 const std::string SETTING_URI_PROXY = "datashare:///com.ohos.settingsdata/entry/settingsdata/";
 const std::string SETTINGS_DATA_EXT_URI = "datashare:///com.ohos.settingsdata.DataAbility";

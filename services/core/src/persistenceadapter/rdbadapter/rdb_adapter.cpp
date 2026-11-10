@@ -26,14 +26,24 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 using namespace std::chrono_literals;
 namespace {
-    const std::set<std::string> TABLES = {
+    constexpr const char* TABLES[] = {
         "trust_device_table",
         "accesser_table",
         "accessee_table",
         "access_control_table",
         "subscribe_trust_info_table"
     };
-    const std::string TAG = "rdbAdapter";
+
+    bool IsKnownTable(const std::string& table)
+    {
+        for (const char* name : TABLES) {
+            if (table.compare(name) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+    constexpr char TAG[] = "rdbAdapter";
 }
 
 RdbAdapter::RdbAdapter()
@@ -79,7 +89,7 @@ int32_t RdbAdapter::UnInit()
 
 int32_t RdbAdapter::Put(int64_t& outRowId, const std::string& table, const ValuesBucket& values)
 {
-    if (TABLES.find(table) == TABLES.end()) {
+    if (!IsKnownTable(table)) {
         HILOGE("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
     }
@@ -110,7 +120,7 @@ int32_t RdbAdapter::Put(int64_t& outRowId, const std::string& table, const Value
 int32_t RdbAdapter::Delete(int32_t& deleteRows, const std::string& table, const std::string& whereClause,
     const std::vector<ValueObject>& bindArgs)
 {
-    if (TABLES.find(table) == TABLES.end()) {
+    if (!IsKnownTable(table)) {
         HILOGE("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
     }
@@ -141,7 +151,7 @@ int32_t RdbAdapter::Delete(int32_t& deleteRows, const std::string& table, const 
 int32_t RdbAdapter::Update(int32_t& changedRows, const std::string& table, const ValuesBucket& values,
     const std::string& whereClause, const std::vector<ValueObject>& bindArgs)
 {
-    if (TABLES.find(table) == TABLES.end()) {
+    if (!IsKnownTable(table)) {
         HILOGE("table does not exist");
         return DP_RDBADAPTER_TABLE_NOT_EXIST;
     }

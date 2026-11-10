@@ -22,7 +22,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "PinCodeInvalidCallbackStub";
+    constexpr char TAG[] = "PinCodeInvalidCallbackStub";
 }
 
 PinCodeInvalidCallbackStub::PinCodeInvalidCallbackStub()

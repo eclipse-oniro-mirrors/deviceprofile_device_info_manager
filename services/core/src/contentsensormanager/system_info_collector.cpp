@@ -30,7 +30,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-const std::string TAG = "SystemInfoCollector";
+constexpr char TAG[] = "SystemInfoCollector";
 const char* OHOS_API_VERSION = "const.ohos.apiversion";
 const char* OHOS_BOOT_SN = "ohos.boot.sn";
 const char* OHOS_FULL_NAME = "const.ohos.fullname";

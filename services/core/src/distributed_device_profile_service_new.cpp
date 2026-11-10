@@ -63,7 +63,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-const std::string TAG = "ServiceNew";
+constexpr char TAG[] = "ServiceNew";
 const std::string UNLOAD_TASK_ID = "unload_dp_svr";
 const std::string IDLE_REASON_LOW_MEMORY = "resourceschedule.memmgr.low.memory.prepare";
 const std::string DP_ONSTART_TIMER = "dp_onstart_timer";

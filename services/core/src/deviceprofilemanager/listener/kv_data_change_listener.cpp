@@ -42,7 +42,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "KvDataChangeListener";
+    constexpr char TAG[] = "KvDataChangeListener";
     const std::string STATIC_STORE_ID = "dp_kv_static_store";
     constexpr uint32_t MAX_SWITCH_CACHE_SIZE = 1000;
     constexpr int32_t DEVICE_UUID_LENGTH = 65;

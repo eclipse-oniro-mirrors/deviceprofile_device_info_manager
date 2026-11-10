@@ -24,7 +24,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "AccessControlProfile";
+    constexpr char TAG[] = "AccessControlProfile";
 }
 AccessControlProfile::AccessControlProfile()
     : accessControlId_(0),

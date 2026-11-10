@@ -22,7 +22,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "SyncCompletedCallbackProxy";
+    constexpr char TAG[] = "SyncCompletedCallbackProxy";
 }
 SyncCompletedCallbackProxy::SyncCompletedCallbackProxy(const sptr <IRemoteObject> &impl)
     : IRemoteProxy<ISyncCompletedCallback>(impl)

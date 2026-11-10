@@ -34,7 +34,7 @@ namespace {
     constexpr int32_t INIT_RETRY_SLEEP_INTERVAL = 200 * 1000;
     constexpr uint32_t MAX_BATCH_SIZE = 128;
     const std::string DATABASE_DIR = "/data/service/el1/public/database/distributed_device_profile_service";
-    const std::string TAG = "BusinessEventAdapter";
+    constexpr char TAG[] = "BusinessEventAdapter";
     const std::string APP_ID = "distributed_device_profile_service";
     const std::string STORE_ID = "dp_kv_store_business";
 }

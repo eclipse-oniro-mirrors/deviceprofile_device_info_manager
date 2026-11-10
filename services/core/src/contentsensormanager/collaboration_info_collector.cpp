@@ -23,7 +23,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-const std::string TAG = "CollaborationInfoCollector";
+constexpr char TAG[] = "CollaborationInfoCollector";
 const std::vector<std::string> COLLABORATION_SERVICE_ID_VECTOR = { "distributeCameraControllerService",
     "padCarCollaborate" };
 const std::string COLLABORATION_CHARACTERISTIC_KEY = "status";

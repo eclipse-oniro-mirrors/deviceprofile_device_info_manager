@@ -23,7 +23,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "TrustedDeviceInfo";
+    constexpr char TAG[] = "TrustedDeviceInfo";
     const std::string NETWORK_ID = "networkId";
     const std::string AUTH_FORM = "authForm";
     const std::string UDID = "udid";

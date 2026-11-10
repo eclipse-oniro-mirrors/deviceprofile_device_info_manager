@@ -24,7 +24,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "DeviceIconInfoFilterOptions";
+    constexpr char TAG[] = "DeviceIconInfoFilterOptions";
     const std::string PRODUCT_IDS = "productIds";
 }
 

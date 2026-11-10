@@ -22,7 +22,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "ServiceProfile";
+    constexpr char TAG[] = "ServiceProfile";
 }
 
 ServiceProfile::ServiceProfile(const std::string& deviceId, const std::string& serviceName,

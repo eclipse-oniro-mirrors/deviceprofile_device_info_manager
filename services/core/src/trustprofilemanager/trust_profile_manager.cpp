@@ -32,7 +32,7 @@ namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(TrustProfileManager);
 using namespace OHOS::NativeRdb;
 namespace {
-    const std::string TAG = "TrustProfileManager";
+    constexpr char TAG[] = "TrustProfileManager";
     const std::string NAME = "name";
 }
 

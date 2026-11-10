@@ -25,7 +25,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "KvStoreDeathRecipient";
+    constexpr char TAG[] = "KvStoreDeathRecipient";
     const std::string REINIT_TASK = "reInitTask";
     const std::string DYNAMIC_STORE_ID = "dp_kv_store";
     const std::string STATIC_STORE_ID = "dp_kv_static_store";

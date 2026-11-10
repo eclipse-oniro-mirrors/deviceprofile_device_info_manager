@@ -24,7 +24,7 @@ namespace {
 constexpr size_t MIN_ARGS_SIZE = 1;
 const std::string ARGS_H = "-h";
 const std::string ARGS_HELP = "-help";
-const std::string TAG = "DeviceProfileDumper";
+constexpr char TAG[] = "DeviceProfileDumper";
 constexpr int32_t UID_HIDUMPER = 1212;
 }
 

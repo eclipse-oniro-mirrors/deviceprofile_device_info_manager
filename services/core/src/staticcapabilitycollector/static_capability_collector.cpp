@@ -24,7 +24,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(StaticCapabilityCollector);
 namespace {
-    const std::string TAG = "StaticCapabilityCollector";
+    constexpr char TAG[] = "StaticCapabilityCollector";
 }
 int32_t StaticCapabilityCollector::Init()
 {

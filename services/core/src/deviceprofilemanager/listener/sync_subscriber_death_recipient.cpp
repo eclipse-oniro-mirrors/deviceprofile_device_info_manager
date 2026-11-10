@@ -22,7 +22,7 @@
 namespace OHOS {
 namespace DistributedDeviceProfile {
 namespace {
-    const std::string TAG = "SyncSubscriberDeathRecipient";
+    constexpr char TAG[] = "SyncSubscriberDeathRecipient";
 }
 
 SyncSubscriberDeathRecipient::SyncSubscriberDeathRecipient()

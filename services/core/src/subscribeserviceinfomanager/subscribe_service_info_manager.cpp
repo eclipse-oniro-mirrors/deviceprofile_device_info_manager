@@ -22,7 +22,7 @@ namespace OHOS {
 namespace DistributedDeviceProfile {
 IMPLEMENT_SINGLE_INSTANCE(SubscribeServiceInfoManager);
 namespace {
-    const std::string TAG = "SubscribeServiceInfoManager";
+    constexpr char TAG[] = "SubscribeServiceInfoManager";
 }
 //LCOV_EXCL_START
 int32_t SubscribeServiceInfoManager::Init()

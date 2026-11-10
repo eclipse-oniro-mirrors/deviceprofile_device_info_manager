@@ -22,8 +22,8 @@
 #include <map>
 #include <memory>
 #include <mutex>
-#include <stdint.h>
 #include <set>
+#include <stdint.h>
 #include <condition_variable>
 #include "i_pincode_invalid_callback.h"
 #include "i_profile_change_listener.h"
@@ -166,12 +166,6 @@ private:
     std::mutex saListenerLock_;
     sptr<SystemAbilityListener> saListenerCallback_ = nullptr;
 
-    const std::set<int32_t> retryErrCodes_ = {
-        DP_SERVICE_STOPPED,
-        DP_LOAD_SERVICE_ERR,
-        DP_ERR_DEAD_OBJECT,
-        DP_BR_DEAD_REPLY
-    };
     std::mutex businessLock_;
     sptr<IBusinessCallback> businessCallback_ = nullptr;
     std::string strSaId_ = "";
