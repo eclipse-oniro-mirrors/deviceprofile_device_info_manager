@@ -1147,28 +1147,24 @@ int32_t DistributedDeviceProfileClient::RegisterBusinessCallback(const std::stri
 int32_t DistributedDeviceProfileClient::UnRegisterBusinessCallback(const std::string& saId,
     const std::string& businessKey)
 {
-    {
-        std::lock_guard<std::mutex> lock(businessLock_);
-        if (businessCallback_ == nullptr) {
-            HILOGE("not subscribe pincode invalid, no need unsubscribe pincode invalid");
-            return DP_SUCCESS;
-        }
-    }
-    auto dpService = GetDeviceProfileService();
-    if (dpService == nullptr) {
-        HILOGE("Get dp service failed");
-        return DP_GET_SERVICE_FAILED;
-    }
     if (saId.empty() || businessKey.empty()) {
         HILOGE("Invalid parameters: saId or businessKey is empty");
         return DP_INVALID_PARAM;
     }
+    auto dpService = GetDeviceProfileService();
     {
         std::lock_guard<std::mutex> lock(businessLock_);
+        if (businessCallback_ == nullptr) {
+            HILOGE("not register business callback, no need unregister");
+            return DP_SUCCESS;
+        }
+        if (dpService == nullptr) {
+            HILOGE("Get dp service failed");
+            return DP_GET_SERVICE_FAILED;
+        }
         int32_t ret = dpService->UnRegisterBusinessCallback(saId, businessKey);
         if (ret != DP_SUCCESS) {
-            HILOGE("Unsubscribe DP Inited failed!");
-            businessCallback_ = nullptr;
+            HILOGE("UnRegisterBusinessCallback failed!");
             return ret;
         }
         businessCallback_ = nullptr;
