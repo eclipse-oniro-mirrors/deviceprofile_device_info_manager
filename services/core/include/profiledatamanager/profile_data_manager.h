@@ -18,6 +18,7 @@
 
 #include <atomic>
 #include <cstdint>
+#include <mutex>
 
 #include "kvstore_observer.h"
 
@@ -50,6 +51,9 @@ private:
     int32_t PutDeviceIconInfo(const DeviceIconInfo& deviceIconInfo);
     int32_t PutProductInfo(const ProductInfo& productInfo);
     std::atomic<bool> isInited_{false};
+    std::mutex deviceProfileMutex_;
+    std::mutex deviceIconInfoMutex_;
+    std::mutex productInfoMutex_;
 };
 } // DistributedDeviceProfile
 } // OHOS

@@ -113,41 +113,10 @@ int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile&
     AccessControlProfile accessControlProfile(profile);
     bool isUserAclExists = false;
     bool isAccountAclExists = false;
-    {
-        std::lock_guard<std::mutex> lock(aclMutex_);
-        CheckDeviceIdAndUserIdExists(profile, isUserAclExists);
-        CheckAccountAclExists(profile, isAccountAclExists);
-        int32_t ret = this->SetAccessControlProfileId(accessControlProfile);
-        if (ret != DP_SUCCESS) {
-            HILOGE("SetAccessControlProfileId failed");
-            return ret;
-        }
-        ret = this->PutAccesserProfile(accessControlProfile);
-        if (ret != DP_SUCCESS) {
-            HILOGE("PutAccesserProfile failed");
-            return ret;
-        }
-        ret = this->PutAccesseeProfile(accessControlProfile);
-        if (ret != DP_SUCCESS) {
-            HILOGE("PutAccesseeProfile failed");
-            return ret;
-        }
-        if (IsAclExists(accessControlProfile) == DP_DATA_EXISTS) {
-            HILOGE("acl is exists");
-            return DP_SUCCESS;
-        }
-        ValuesBucket values;
-        ProfileUtils::AccessControlProfileToEntries(accessControlProfile, values);
-        if (rdbStore_ == nullptr) {
-            HILOGE("rdbStore_ is nullptr");
-            return DP_GET_RDBSTORE_FAIL;
-        }
-        int64_t rowId = ROWID_INIT;
-        if (rdbStore_->Put(rowId, ACCESS_CONTROL_TABLE, values) != DP_SUCCESS) {
-            HILOGE("accesscontrol_table insert failed");
-            return DP_PUT_ACL_PROFILE_FAIL;
-        }
-        HILOGI("PutAclProfile : %{public}s", accessControlProfile.dump().c_str());
+    bool aclExisted = false;
+    int32_t ret = PutAclRecord(accessControlProfile, isUserAclExists, isAccountAclExists, aclExisted);
+    if (ret != DP_SUCCESS || aclExisted) {
+        return ret;
     }
     int32_t putRet = this->PutAclCheck(accessControlProfile, isUserAclExists, isAccountAclExists);
     if (putRet != DP_SUCCESS) {
@@ -157,6 +126,51 @@ int32_t TrustProfileManager::PutAccessControlProfile(const AccessControlProfile&
     DistributedHardware::DeviceManager::GetInstance().DpAclAdd(accessControlProfile.GetAccessControlId(),
         accessControlProfile.GetTrustDeviceId(), accessControlProfile.GetBindType());
     HILOGI("end!");
+    return DP_SUCCESS;
+}
+
+int32_t TrustProfileManager::PutAclRecord(AccessControlProfile& accessControlProfile,
+    bool& isUserAclExists, bool& isAccountAclExists, bool& aclExisted)
+{
+    aclExisted = false;
+    std::lock_guard<std::mutex> lock(aclMutex_);
+    CheckDeviceIdAndUserIdExists(accessControlProfile, isUserAclExists);
+    CheckAccountAclExists(accessControlProfile, isAccountAclExists);
+    int32_t ret = this->SetAccessControlProfileId(accessControlProfile);
+    if (ret != DP_SUCCESS) {
+        HILOGE("SetAccessControlProfileId failed");
+        return ret;
+    }
+    ret = this->PutAccesserProfile(accessControlProfile);
+    if (ret != DP_SUCCESS) {
+        HILOGE("PutAccesserProfile failed");
+        return ret;
+    }
+    ret = this->PutAccesseeProfile(accessControlProfile);
+    if (ret != DP_SUCCESS) {
+        HILOGE("PutAccesseeProfile failed");
+        return ret;
+    }
+    if (IsAclExists(accessControlProfile) == DP_DATA_EXISTS) {
+        HILOGE("acl is exists");
+        aclExisted = true;
+        return DP_SUCCESS;
+    }
+    ValuesBucket values;
+    ProfileUtils::AccessControlProfileToEntries(accessControlProfile, values);
+    {
+        std::lock_guard<std::mutex> rdbLock(rdbMutex_);
+        if (rdbStore_ == nullptr) {
+            HILOGE("rdbStore_ is nullptr");
+            return DP_GET_RDBSTORE_FAIL;
+        }
+        int64_t rowId = ROWID_INIT;
+        if (rdbStore_->Put(rowId, ACCESS_CONTROL_TABLE, values) != DP_SUCCESS) {
+            HILOGE("accesscontrol_table insert failed");
+            return DP_PUT_ACL_PROFILE_FAIL;
+        }
+    }
+    HILOGI("PutAclProfile : %{public}s", accessControlProfile.dump().c_str());
     return DP_SUCCESS;
 }
 
@@ -221,15 +235,18 @@ int32_t TrustProfileManager::UpdateAccessControlProfile(const AccessControlProfi
         ValuesBucket values;
         ProfileUtils::AccessControlProfileToEntries(profile, values);
         int32_t changeRowCnt = CHANGEROWCNT_INIT;
-        if (rdbStore_ == nullptr) {
-            HILOGE("rdbStore_ is nullptr");
-            return DP_GET_RDBSTORE_FAIL;
-        }
-        ret = rdbStore_->Update(changeRowCnt, ACCESS_CONTROL_TABLE, values, ACCESSCONTROLID_EQUAL_CONDITION,
-            std::vector<ValueObject>{ ValueObject(profile.GetAccessControlId()) });
-        if (ret != DP_SUCCESS) {
-            HILOGE("update accesscontrol_table failed");
-            return DP_UPDATE_ACL_PROFILE_FAIL;
+        {
+            std::lock_guard<std::mutex> rdbLock(rdbMutex_);
+            if (rdbStore_ == nullptr) {
+                HILOGE("rdbStore_ is nullptr");
+                return DP_GET_RDBSTORE_FAIL;
+            }
+            ret = rdbStore_->Update(changeRowCnt, ACCESS_CONTROL_TABLE, values, ACCESSCONTROLID_EQUAL_CONDITION,
+                std::vector<ValueObject>{ ValueObject(profile.GetAccessControlId()) });
+            if (ret != DP_SUCCESS) {
+                HILOGE("update accesscontrol_table failed");
+                return DP_UPDATE_ACL_PROFILE_FAIL;
+            }
         }
     }
     this->NotifyCheck(profile, oldProfile);
