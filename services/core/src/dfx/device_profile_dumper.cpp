@@ -76,7 +76,7 @@ void DeviceProfileDumper::IllegalInput(std::string& result)
 
 bool DeviceProfileDumper::CanDump()
 {
-    auto callingUid = IPCSkeleton::GetCallingUid();
+    auto callingUid = IPCSkeleton::GetCallingAppUid();
     HILOGI("calling uid = %{public}u", callingUid);
     if (callingUid != UID_HIDUMPER) {
         return false;
