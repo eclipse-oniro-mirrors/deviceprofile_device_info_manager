@@ -150,7 +150,7 @@ private:
     bool IsMatchingAclProfile(const AccessControlProfile& aclProfile,
         const ProfileQueryParams& params);
     void CollectSameAccountServiceIds(const std::string& peerDeviceId, int32_t peerUserId,
-        const std::string& peerAccountId, std::vector<int64_t>& serviceIdList);
+        std::vector<int64_t>& serviceIdList);
     int32_t ParseServiceIdFromJson(const std::string& jsonStr, int64_t& serviceId);
     int32_t ParseAccountIdFromJson(const std::string& jsonStr, std::string& accountId);
     ProfileQueryParams BuildProfileQueryParams(const AccessControlProfile& profile);

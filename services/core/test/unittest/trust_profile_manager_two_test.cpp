@@ -689,7 +689,7 @@ HWTEST_F(TrustProfileManagerTwoTest, CollectSameAccountServiceIds_001, TestSize.
 {
     std::vector<int64_t> serviceIdList;
     TrustProfileManager::GetInstance().CollectSameAccountServiceIds(
-        "testDev", 100, "testAcc", serviceIdList);
+        "testDev", 100, serviceIdList);
     EXPECT_EQ(serviceIdList.size(), 0);
 }
 
