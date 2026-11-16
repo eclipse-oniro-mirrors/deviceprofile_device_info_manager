@@ -1,4 +1,4 @@
-# Copyright (c) 2023-2025 Huawei Device Co., Ltd.
+# Copyright (c) 2023-2026 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -435,6 +435,23 @@ ohos_unittest("switch_adapter_test") {
   subsystem_name = "deviceprofile"
 }
 
+# Isolate invalid-parameter cases from the production service implementation.
+ohos_unittest("RefreshLocalSwitchProfileTest") {
+  module_out_path = module_output_path
+  sources = [
+    "${device_profile_service}/src/deviceprofilemanager/switch_profile_manager.cpp",
+    "${device_profile_service}/src/utils/profile_control_utils.cpp",
+    "unittest/mock/local_switch_profile_mock.cpp",
+    "unittest/refresh_local_switch_profile_test.cpp",
+  ]
+  configs = device_profile_configs
+  deps = [ "${device_profile_common}:distributed_device_profile_common" ]
+  external_deps = device_profile_external_deps -
+                  [ "device_manager:devicemanagersdk" ]
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
 ohos_unittest("profile_control_utils_test") {
   module_out_path = module_output_path
   sources = [ "unittest/profile_control_utils_test.cpp" ]
@@ -638,6 +655,12 @@ ohos_unittest("subscribe_profile_manager_new_test") {
 group("unittest") {
   testonly = true
   deps = [
+    ":RefreshLocalSwitchProfileTest",
+    ":AssetAdapterTest",
+    ":DmsInfoCollectorTest",
+    ":LocalServiceInfoRdbAdapterTest",
+    ":ServiceInfoRdbAdapterTest",
+    ":SettingsDataManagerTest",
     ":ClientRdbTest",
     ":DPSubscribeInfoTest",
     ":IpcUtilsTest",
@@ -718,4 +741,123 @@ ohos_unittest("dp_account_query_test") {
     cfi_cross_dso = true
     debug = false
   }
+}
+
+config("file_coverage_test_config") {
+  cflags = [
+    "-Dprivate=public",
+    "-Dprotected=public",
+  ]
+}
+
+ohos_unittest("SettingsDataManagerTest") {
+  module_out_path = "device_info_manager/device_info_manager"
+  sources = [
+    "${device_profile_service}/src/datashare/settings_data_manager.cpp",
+    "unittest/settings_data_manager_test.cpp",
+  ]
+  configs = [
+    ":file_coverage_test_config",
+    "${device_profile_service}:device_info_manager_config",
+  ]
+  deps = [ "${device_profile_common}:distributed_device_profile_common" ]
+  external_deps = [
+    "c_utils:utils",
+    "data_share:datashare_consumer",
+    "hilog:libhilog",
+    "ipc:ipc_core",
+    "samgr:samgr_proxy",
+  ]
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("DmsInfoCollectorTest") {
+  module_out_path = "device_info_manager/device_info_manager"
+  sources = [
+    "${device_profile_service}/src/contentsensormanager/collector.cpp",
+    "${device_profile_service}/src/contentsensormanager/dms_info_collector.cpp",
+    "unittest/dms_info_collector_test.cpp",
+  ]
+  configs = [
+    ":file_coverage_test_config",
+    "${device_profile_service}:device_info_manager_config",
+  ]
+  deps = [ "${device_profile_common}:distributed_device_profile_common" ]
+  external_deps = [
+    "cJSON:cjson",
+    "c_utils:utils",
+    "dmsfwk:common_sdk",
+    "hilog:libhilog",
+    "ipc:ipc_core",
+    "relational_store:native_rdb",
+  ]
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("AssetAdapterTest") {
+  module_out_path = "device_info_manager/device_info_manager"
+  sources = [
+    "${device_profile_service}/src/persistenceadapter/assetadapter/asset_adapter.cpp",
+    "unittest/asset_adapter_test.cpp",
+  ]
+  configs = [
+    ":file_coverage_test_config",
+    "${device_profile_service}:device_info_manager_config",
+  ]
+  deps = [ "${device_profile_common}:distributed_device_profile_common" ]
+  external_deps = [
+    "asset:asset_sdk",
+    "c_utils:utils",
+    "googletest:gmock",
+    "hilog:libhilog",
+    "ipc:ipc_core",
+  ]
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("LocalServiceInfoRdbAdapterTest") {
+  module_out_path = "device_info_manager/device_info_manager"
+  sources = [
+    "${device_profile_service}/src/common/dp_services_constants.cpp",
+    "${device_profile_service}/src/persistenceadapter/rdbadapter/local_service_info_rdb_adapter.cpp",
+    "unittest/local_service_info_rdb_adapter_test.cpp",
+  ]
+  configs = [
+    ":file_coverage_test_config",
+    "${device_profile_service}:device_info_manager_config",
+  ]
+  deps = [ "${device_profile_common}:distributed_device_profile_common" ]
+  external_deps = [
+    "c_utils:utils",
+    "hilog:libhilog",
+    "ipc:ipc_core",
+    "relational_store:native_rdb",
+  ]
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
+}
+
+ohos_unittest("ServiceInfoRdbAdapterTest") {
+  module_out_path = "device_info_manager/device_info_manager"
+  sources = [
+    "${device_profile_service}/src/common/dp_services_constants.cpp",
+    "${device_profile_service}/src/persistenceadapter/rdbadapter/service_info_rdb_adapter.cpp",
+    "unittest/service_info_rdb_adapter_test.cpp",
+  ]
+  configs = [
+    ":file_coverage_test_config",
+    "${device_profile_service}:device_info_manager_config",
+  ]
+  deps = [ "${device_profile_common}:distributed_device_profile_common" ]
+  external_deps = [
+    "c_utils:utils",
+    "hilog:libhilog",
+    "ipc:ipc_core",
+    "relational_store:native_rdb",
+  ]
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
 }

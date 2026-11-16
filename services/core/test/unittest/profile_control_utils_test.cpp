@@ -1144,20 +1144,6 @@ HWTEST_F(ProfileControlUtilsTest, GetCharacteristicProfile007, TestSize.Level1)
 }
 
 /**
- * @tc.name: RefreshLocalSwitchProfile001
- * @tc.desc: RefreshLocalSwitchProfile
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProfileControlUtilsTest, RefreshLocalSwitchProfile001, TestSize.Level1)
-{
-    std::string appId = "appId";
-    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
-    int32_t ret = profileControlUtils->RefreshLocalSwitchProfile(appId);
-    EXPECT_EQ(ret, DP_INVALID_PARAMS);
-}
-
-/**
  * @tc.name: RefreshLocalSwitchProfile002
  * @tc.desc: RefreshLocalSwitchProfile
  * @tc.type: FUNC
@@ -1166,22 +1152,6 @@ HWTEST_F(ProfileControlUtilsTest, RefreshLocalSwitchProfile001, TestSize.Level1)
 HWTEST_F(ProfileControlUtilsTest, RefreshLocalSwitchProfile002, TestSize.Level1)
 {
     std::string appId = "";
-    auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
-    ProfileCache::GetInstance().localNetworkId_ = "localNetwork";
-    int32_t ret = profileControlUtils->RefreshLocalSwitchProfile(appId);
-    EXPECT_EQ(ret, DP_INVALID_PARAMS);
-}
-
-/**
- * @tc.name: RefreshLocalSwitchProfile003
- * @tc.desc: RefreshLocalSwitchProfile
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProfileControlUtilsTest, RefreshLocalSwitchProfile003, TestSize.Level1)
-{
-    std::string appId = "appId";
-  
     auto profileControlUtils = std::shared_ptr<ProfileControlUtils>();
     ProfileCache::GetInstance().localNetworkId_ = "localNetwork";
     int32_t ret = profileControlUtils->RefreshLocalSwitchProfile(appId);

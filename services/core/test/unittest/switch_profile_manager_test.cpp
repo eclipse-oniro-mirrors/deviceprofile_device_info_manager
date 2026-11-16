@@ -138,18 +138,6 @@ HWTEST_F(SwitchProfileManagerTest, GetCharacteristicProfile_001, TestSize.Level1
 }
 
 /*
- * @tc.name: RefreshLocalSwitchProfile_001
- * @tc.desc: RefreshLocalSwitchProfile
- * @tc.type: FUNC
- * @tc.require: I4NY1T
- */
-HWTEST_F(SwitchProfileManagerTest, RefreshLocalSwitchProfile_001, TestSize.Level1)
-{
-    int32_t errCode = SwitchProfileManager::GetInstance().RefreshLocalSwitchProfile();
-    EXPECT_EQ(errCode, DP_INVALID_PARAMS);
-}
-
-/*
  * @tc.name: HandleSwitchUpdateChange_001
  * @tc.desc: HandleSwitchUpdateChange
  * @tc.type: FUNC

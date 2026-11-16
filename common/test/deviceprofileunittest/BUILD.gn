@@ -100,7 +100,26 @@ ohos_unittest("ServiceInfoTest") {
 group("device_profile_test") {
   testonly = true
   deps = [
+    ":DpCommonTest",
     ":DeviceProfileTest",
     ":ServiceInfoTest",
   ]
+}
+
+ohos_unittest("DpCommonTest") {
+  module_out_path = "device_info_manager/device_info_manager"
+  sources = [
+    "query_profile_test.cpp",
+    "service_info_unique_key_test.cpp",
+  ]
+  deps = [ "${device_profile_common}:distributed_device_profile_common" ]
+  external_deps = [
+    "cJSON:cjson",
+    "c_utils:utils",
+    "hilog:libhilog",
+    "ipc:ipc_core",
+    "relational_store:native_rdb",
+  ]
+  part_name = "device_info_manager"
+  subsystem_name = "deviceprofile"
 }
