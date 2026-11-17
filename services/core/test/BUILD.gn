@@ -133,7 +133,11 @@ ohos_unittest("ClientRdbTest") {
 
 ohos_unittest("dp_dumper_new_test") {
   module_out_path = module_output_path
-  sources = [ "unittest/dp_dumper_test.cpp" ]
+  include_dirs = [ "${device_profile_service}/test/unittest/mock" ]
+  sources = [
+    "unittest/dp_dumper_test.cpp",
+    "unittest/mock/ipc_skeleton_mock.cpp",
+  ]
   configs = device_profile_configs
   deps = device_profile_deps
   external_deps = device_profile_external_deps
