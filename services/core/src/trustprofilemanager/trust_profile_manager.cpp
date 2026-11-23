@@ -2500,7 +2500,7 @@ bool TrustProfileManager::IsMatchingAclProfile(const AccessControlProfile& aclPr
 }
 
 void TrustProfileManager::CollectSameAccountServiceIds(const std::string& peerDeviceId,
-    int32_t peerUserId, const std::string& peerAccountId, std::vector<int64_t>& serviceIdList)
+    int32_t peerUserId, std::vector<int64_t>& serviceIdList)
 {
     std::vector<ServiceInfo> serviceInfoList;
     ServiceInfoManager::GetInstance().GetAllServiceInfoList(serviceInfoList);
@@ -2508,13 +2508,7 @@ void TrustProfileManager::CollectSameAccountServiceIds(const std::string& peerDe
         if (serviceInfo.GetUdid() != peerDeviceId || serviceInfo.GetUserId() != peerUserId) {
             continue;
         }
-        std::string accountId;
-        if (ParseAccountIdFromJson(serviceInfo.GetExtraData(), accountId) != DP_SUCCESS) {
-            continue;
-        }
-        if (accountId == peerAccountId) {
-            serviceIdList.emplace_back(serviceInfo.GetServiceId());
-        }
+        serviceIdList.emplace_back(serviceInfo.GetServiceId());
     }
 }
 
@@ -2541,8 +2535,7 @@ void TrustProfileManager::CollectServiceIdsFromProfile(const AccessControlProfil
     const ProfileQueryParams &params, std::vector<int64_t> &serviceIdList)
 {
     if (aclProfile.GetBindType() == static_cast<uint32_t>(BindType::SAME_ACCOUNT)) {
-        CollectSameAccountServiceIds(params.peerDeviceId, params.peerUserId,
-            params.peerAccountId, serviceIdList);
+        CollectSameAccountServiceIds(params.peerDeviceId, params.peerUserId, serviceIdList);
         return;
     }
     int64_t serviceId = 0;
